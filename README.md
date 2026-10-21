@@ -1,4 +1,4 @@
-# Monster Apartment · V0.2.1 Next.js 技术栈
+# Monster Apartment · V0.2.2 Next.js 技术栈
 
 **游戏玩法：** 六间房、四类租客、招募 / 移动 / 交换、邻接加成、五日经营与重开。首版为可行性原型，并非商业发行游戏。
 
@@ -75,6 +75,14 @@ CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`�
 - GitHub Pages 使用可选静态导出构建（`NEXT_STATIC_EXPORT=1 pnpm build`）；常规开发模式无需修改。部署说明见 [DEPLOYMENT_NEXTJS.md](./docs/DEPLOYMENT_NEXTJS.md)。
 - **验证：PR #1 已通过常规构建、9/9 Playwright 测试和静态导出 CI；正式 Pages 链接仍须合并并配置 Pages 后人工验收。**
 
-## 8. 下一阶段
+## 8. V0.2.2 新功能
+
+- 四步非阻断式新手引导，支持自动推进、跳过与重新查看。
+- 本地自动存档：招募、搬家、经营结算后自动保存，页面刷新恢复进度。
+- 顶部选择中文或 English；租客、管理面板、Phaser 房间画面、事件和日志可切换语言。
+- 存档只属于当前浏览器和站点；清理浏览器存储或禁用 localStorage 会使进度无法恢复。
+- 在 V0.2.2 功能 PR 上验证类型检查、Vitest、Playwright 与静态部署构建。
+
+## 9. 下一阶段
 
 V0.3 优先：新手引导、英文、本地存档、数值调优与外部玩家测试。
