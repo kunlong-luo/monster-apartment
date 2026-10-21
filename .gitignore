@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.env
+.env.*.local
+
+# Local tooling artifacts
+.codegraph
+
+# Editor / OS noise
+.idea/
+.vscode/
+*.iml
+.DS_Store
+*.log
