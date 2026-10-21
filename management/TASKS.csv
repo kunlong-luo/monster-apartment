@@ -41,3 +41,7 @@ P039,界面,P1,DONE,移除无效重复组合面板,V0.2.1,保留ManagementPanel�
 P040,发行,P1,DOING,Next.js静态导出与GitHub Pages部署准备,V0.2.1,质量门禁完成静态导出且Pages首次部署验收
 P041,产品,P1,TODO,生产试玩地址人工验收,V0.2.1,桌面手机实际打开URL完成搬家交换及五天结算
 P042,项目管理,P1,DONE,同步V0.2.1版本及更新日志,V0.2.1,版本号文档与PR CI结论一致
+P043,技术,P0,DOING,V0.2.2本地自动存档,V0.2.2,刷新恢复房间与金币天数且无效存档回退
+P044,设计,P0,DOING,V0.2.2四步新手引导,V0.2.2,选房招募交换结算指引及回放
+P045,国际化,P0,DOING,V0.2.2中英文切换,V0.2.2,React和Phaser文字均可切换且刷新保存
+P046,测试,P0,DOING,V0.2.2质量检查,V0.2.2,TypeScript lint Vitest Next build 静态导出 Playwright 全通过
