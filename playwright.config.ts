@@ -11,7 +11,11 @@ export default defineConfig({
     baseURL,
     trace: 'on-first-retry',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [{ name: 'chromium', use: {
+    ...devices['Desktop Chrome'],
+    // CI uses the trusted preinstalled Chrome to avoid flaky CDN downloads.
+    ...(process.env.PLAYWRIGHT_USE_SYSTEM_CHROME === '1' ? { channel: 'chrome' as const } : {}),
+  } }],
   webServer: {
     command: 'pnpm dev',
     url: baseURL,
