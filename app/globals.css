@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: Inter, "Noto Sans CJK SC", "Microsoft YaHei", system-ui, sans-serif;
+
+  --color-ink-950: #0b1420;
+  --color-ink-900: #101b2d;
+  --color-ink-800: #132235;
+  --color-ink-700: #1b3045;
+  --color-ink-600: #20354a;
+  --color-line: #2b435d;
+  --color-line-strong: #35506a;
+
+  --color-mint-300: #a1efbd;
+  --color-mint-400: #7ff3ce;
+  --color-mint-500: #66dbbc;
+  --color-mint-900: #102a2d;
+  --color-gold-200: #f2deb0;
+  --color-gold-300: #f0c98f;
+  --color-mist-300: #e9f1fa;
+  --color-mist-400: #b1c8d8;
+  --color-mist-500: #8ba4ba;
+  --color-danger-300: #ffa8a8;
+
+  --radius-panel: 1.0625rem;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-ink-950 font-sans text-mist-300 antialiased;
+    background-image: radial-gradient(ellipse at 45% -20%, #24425b 0, transparent 48%);
+    background-repeat: no-repeat;
+  }
+}
+
+/*
+ * Phaser writes inline width/height onto the canvas it creates, so the frame
+ * needs !important to keep the floor plan fluid. Everything else is utilities.
+ */
+.apartment-canvas canvas {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+}

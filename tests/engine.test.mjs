@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { newGame, hire, moveOrSwap, advanceDay, synergyDetails, adjacency, TENANT_IDS, TARGET_COINS } from '../src/core/engine.js';
+import { newGame, hire, moveOrSwap, advanceDay, synergyDetails, adjacency, TENANT_IDS, TARGET_COINS } from '../src/core/engine.ts';
 
 test('starts with six empty rooms, 35 coins and five days',()=>{const s=newGame();assert.equal(s.coins,35);assert.equal(s.rooms.length,6);assert.equal(s.day,1);});
 test('hire charges price, forbids double booking and unaffordable tenant',()=>{let s=newGame();let x=hire(s,0,'slime');assert.equal(x.error,null);s=x.state;assert.equal(s.coins,29);assert.ok(hire(s,0,'golem').error);let zero={...s,coins:0};assert.ok(hire(zero,1,'golem').error);});

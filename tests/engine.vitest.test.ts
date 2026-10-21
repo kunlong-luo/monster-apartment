@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { advanceDay, hire, newGame } from '../src/core/engine.js';
+import { advanceDay, hire, newGame } from '../src/core/engine';
 
 describe('Monster Apartment deterministic game rules', () => {
   it('creates six rooms and begins on day 1', () => {

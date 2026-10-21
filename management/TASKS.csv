@@ -30,3 +30,8 @@ P028,工程,P0,DOING,Zustand状态迁移,14d,store已落地；待操作回归测
 P029,工程,P0,BLOCKED,生成pnpm-lock.yaml并提交,14d,本地pnpm install后生成，CI frozen-lockfile通过
 P030,测试,P0,BLOCKED,React/Phaser4浏览器冒烟测试,14d,Playwright浏览器测试通过，控制台无严重错误
 P031,工程,P1,DONE,稳定依赖检查脚本,14d,所有直接依赖为固定稳定semver且脚本通过
+P032,工程,P0,DONE,迁移到Next.js 16 App Router,14d,Vite依赖完全移除；dev/build由Next自带引擎驱动
+P033,工程,P0,DONE,业务规则迁移为TypeScript,14d,engine.ts为唯一真源；node:test 6/6与Vitest 3/3通过
+P034,工程,P0,DOING,UI组件化重构,14d,feature组件只组合ui primitives；E2E 6/6通过
+P035,工程,P1,DOING,样式迁移到Tailwind 4主题令牌,14d,globals.css定义@theme；组件无裸hex
+P036,工程,P1,DONE,清理Vite时代残留,14d,删除preview/、build_standalone.py、engine.js与d.ts；playable.html冻结到public/

@@ -1,5 +1,31 @@
 # 版本更新记录
 
+## V0.2.0 — 2026-10-21 — Next.js 16 迁移与全量组件化
+
+### Changed
+- 构建从 Vite 8 SPA 换为 Next.js 16.4.2 App Router + Turbopack：`app/layout.tsx` + `app/page.tsx`，开发/生产端口 5173 → 3000。
+- 规则层 `src/core/engine.js` → `src/core/engine.ts`：纯 TypeScript、零框架依赖，23 个导出，node:test / vitest / 浏览器共用。
+- 全量组件化：`src/components/ui/*` 9 个无依赖 primitive、`src/components/game/*` 11 个面板、`src/components/apartment/*` 3 个 Phaser 桥接组件。
+- Phaser 改为 `next/dynamic({ ssr:false })` 客户端独占加载；`next.config.ts` 设 `serverExternalPackages: ['phaser']` 与 `typedRoutes`。
+- Tailwind 4 主题迁到 `app/globals.css` 的 `@theme`，不再有 `tailwind.config.js`。
+- 测试拆分保持不变：`tests/engine.test.mjs` 走 Node 类型剥离（6 条），`tests/engine.vitest.test.ts` 走 Vitest（3 条）。
+
+### Removed
+- Vite 入口与产物：`index.html`、`src/main.tsx`、`src/App.tsx`、`src/components/GameBoard.tsx`、`vite.config.ts`、`preview/`、`dist/`、`scripts/build_standalone.py`、`src/vite-env.d.ts`。
+- 三个无引用遗留：`src/style.css`、`src/store/useGameStore.ts`、`src/game/ApartmentScene.ts`（git 历史仍可恢复）。
+- 依赖 `vite`、`@vitejs/plugin-react`、`@tailwindcss/vite`、`lucide-react`。
+
+### Fixed
+- `playwright.config.ts` 在 ESM（`"type": "module"`）下使用 `__dirname` 抛 `ReferenceError`，改用 `import.meta.dirname`，`pnpm e2e` 恢复。
+
+### Added
+- `AGENTS.md`：项目知识库（96 行，含规则/组件/测试契约）。
+- `next.config.ts`、`postcss.config.mjs`、`eslint.config.mjs`（flat config + Next + react-hooks）。
+- `.github/workflows/quality.yml`：`checks`（类型/lint/单测/构建）与 `e2e` 双 job。
+
+### Verified
+- 2026-10-21，Node v24.20.0 / pnpm 12.13.0 实测全绿：`check:stable-deps`、`typecheck`、`lint`（0 warning）、`test:rules` 6/6、`test` 3/3、`build`（Next 16.4.2 Turbopack，`/` 静态预渲染）、`e2e` 6/6（7.1s）。
+
 ## V0.1.2 — 2026-10-21 — 首次本地构建与修复
 
 ### Fixed
