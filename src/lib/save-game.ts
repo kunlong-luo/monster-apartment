@@ -61,7 +61,7 @@ export function decodeSave(value: string | null): SaveData | null {
     if (parsed.version !== 1 || !validGameState(parsed.state)) return null;
     if (parsed.locale !== 'zh' && parsed.locale !== 'en') return null;
     if (typeof parsed.tutorialActive !== 'boolean' || !integer(parsed.tutorialStep, 0, 3)) return null;
-    return parsed as SaveData;
+    return { version: 1, state: parsed.state, locale: parsed.locale, tutorialActive: parsed.tutorialActive, tutorialStep: parsed.tutorialStep };
   } catch {
     return null;
   }
