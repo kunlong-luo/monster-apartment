@@ -7,6 +7,7 @@ import { TenantCard } from './tenant-card';
 import { TENANT_IDS, TENANTS } from '@/core/engine';
 import { cn } from '@/components/ui/cn';
 import type { TenantId } from '@/core/engine';
+import { t } from '@/lib/i18n';
 
 type TenantListProps = {
   disabled: boolean;
@@ -14,11 +15,11 @@ type TenantListProps = {
 };
 
 export function TenantList({ disabled, onRecruit }: TenantListProps) {
-  const { state } = useGameStore();
+  const { state, locale } = useGameStore();
 
   return (
     <Panel>
-      <SectionHeading title="可招募租客" />
+      <SectionHeading title={t(locale, 'recruitTitle')} />
       <div
         className={cn(
           'grid gap-2',
@@ -31,6 +32,7 @@ export function TenantList({ disabled, onRecruit }: TenantListProps) {
             <TenantCard
               key={id}
               tenant={id}
+              locale={locale}
               disabled={disabled || state.coins < (TENANTS[id]?.price ?? 999)}
               onRecruit={onRecruit}
             />
