@@ -38,7 +38,7 @@ const catalog = {
     synergyConflict: '冷热争执：火精灵+幽灵 -3 租金 -4 满意度',
     stageTitle: 'MONSTER APARTMENT / FLOOR PLAN', stageFloor: '房间布局',
     stageEmpty: '＋ 空房', stagePick: '点击选择，安排租客',
-    stageFooter: '选择房间 · 搬家后选目标房间 · 布局影响收入',
+    stageFooter: '选择房间 · 搬家后选目标房间 · 布局影响收入', stageRent: '基础租金',
   },
   en: {
     title: 'Monster Apartment', help: 'How to play', hideHelp: 'Hide help', reset: 'New game',
@@ -77,7 +77,7 @@ const catalog = {
     synergyConflict: 'Temperature clash: Ember + Ghost, -3 rent, -4 satisfaction',
     stageTitle: 'MONSTER APARTMENT / FLOOR PLAN', stageFloor: 'Floor layout',
     stageEmpty: '+ VACANT', stagePick: 'Select to recruit',
-    stageFooter: 'Choose rooms · Move tenants · Layout affects income',
+    stageFooter: 'Choose rooms · Move tenants · Layout affects income', stageRent: 'Base rent',
   },
 } as const;
 
