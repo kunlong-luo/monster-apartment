@@ -1,5 +1,22 @@
 # 版本更新记录
 
+## V0.2.1 — 2026-10-21 — 搬家交互回归与 Web 部署准备
+
+### Fixed
+- Next.js 组件化后丢失的“移动 / 交换租客”入口恢复，未入住的房间与终局状态不可启动搬家。
+- React 经营面板内移除固定为空的重复 `BonusList`；组合收益展示继续使用 `ManagementPanel`。
+
+### Added
+- Playwright 端到端回归：搬入空房、已入住房间交换、取消操作、终局禁用。
+- `NEXT_STATIC_EXPORT=1` 可选 Next.js 静态构建，GitHub Pages 使用 `/monster-apartment` 子路径；默认 `pnpm dev/build/start` 保留 Next 常规模式。
+- PR 质量门禁新增静态导出构建，新增 Pages 部署 workflow 与 `docs/DEPLOYMENT_NEXTJS.md`。
+- `management/TASKS.csv` 更新了已在 V0.2.0 CI 确认的构建/测试状态。
+
+### Verification
+- 本条目记录的是开发分支提交；新回归测试、静态导出及正式部署需以本 PR 的 Actions 结果和站点验收为准。
+- 不包含游戏盈利或 Web 分发平台审核验证。
+
+
 ## V0.2.0 — 2026-10-21 — Next.js 16 迁移与全量组件化
 
 ### Changed
