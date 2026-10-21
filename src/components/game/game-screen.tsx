@@ -20,7 +20,7 @@ import { cn } from '@/components/ui/cn';
 
 export function GameScreen() {
   const {
-    state, selected, moveSource, error, help, locale, tutorialActive, tutorialStep, saveAvailable,
+    state, selected, moveSource, error, help, locale, tutorialActive, tutorialStep, saveAvailable, hydrated,
     pickRoom, recruit, beginMove, cancelMove, nextDay, reset, toggleHelp,
     setLocale, nextTutorial, skipTutorial, replayTutorial,
   } = useGameStore();
@@ -60,12 +60,18 @@ export function GameScreen() {
     } catch {
       useGameStore.getState().setSaveAvailable(false);
     }
+    useGameStore.getState().setHydrated();
     return () => unsubscribe();
   }, []);
 
   useEffect(() => {
     document.documentElement.lang = locale === 'en' ? 'en' : 'zh-CN';
   }, [locale]);
+
+  // Wait until the saved run has been restored before exposing interactive controls.
+  if (!hydrated) {
+    return <div className="min-h-screen bg-ink-950 grid place-items-center text-mist-300">正在加载公寓…</div>;
+  }
 
   const occupied = state.rooms.filter(Boolean).length;
   const canSettle = occupied > 0 && !state.over;
