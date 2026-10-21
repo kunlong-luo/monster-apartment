@@ -23,7 +23,7 @@ export function GameHeader({ helpOpen, onToggleHelp, onReset }: GameHeaderProps)
         <div>
           <h1 className="text-xl font-bold tracking-wide m-0">怪物租客公寓</h1>
           <small className="block mt-0.5 text-mist-500 text-[11px] tracking-widest uppercase">
-            MONSTER APARTMENT / V0.2.0
+            MONSTER APARTMENT / V0.2.1
           </small>
         </div>
       </div>

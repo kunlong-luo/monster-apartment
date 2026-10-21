@@ -25,13 +25,19 @@ P023,发行,P2,TODO,研究网页平台规则,60d,记录CrazyGames等审核要求
 P024,商业,P1,TODO,90天继续/调整/停止复盘,90d,依据反馈作出有记录的决策
 P025,发行,P3,TODO,Electron桌面封装调研,90d,仅在玩法验证后启动
 P026,工程,P0,DONE,Pagevela技术栈版本基线,14d,版本核对、package.json钉住稳定版本并产出说明
-P027,工程,P0,DOING,Phaser 3升级到Phaser 4,14d,代码导入方式已改；待构建与六房交互验收
-P028,工程,P0,DOING,Zustand状态迁移,14d,store已落地；待操作回归测试
-P029,工程,P0,BLOCKED,生成pnpm-lock.yaml并提交,14d,本地pnpm install后生成，CI frozen-lockfile通过
-P030,测试,P0,BLOCKED,React/Phaser4浏览器冒烟测试,14d,Playwright浏览器测试通过，控制台无严重错误
+P027,工程,P0,DONE,Phaser 3升级到Phaser 4,14d,Phaser4六房交互与生产构建在V0.2.0 CI通过
+P028,工程,P0,DONE,Zustand状态迁移,14d,store动作及移动交换交互经E2E验证
+P029,工程,P0,DONE,生成pnpm-lock.yaml并提交,14d,锁文件已提交且CI frozen-lockfile通过
+P030,测试,P0,DONE,React/Phaser4浏览器冒烟测试,14d,Playwright原有6条E2E与CI通过
 P031,工程,P1,DONE,稳定依赖检查脚本,14d,所有直接依赖为固定稳定semver且脚本通过
 P032,工程,P0,DONE,迁移到Next.js 16 App Router,14d,Vite依赖完全移除；dev/build由Next自带引擎驱动
 P033,工程,P0,DONE,业务规则迁移为TypeScript,14d,engine.ts为唯一真源；node:test 6/6与Vitest 3/3通过
-P034,工程,P0,DOING,UI组件化重构,14d,feature组件只组合ui primitives；E2E 6/6通过
+P034,工程,P0,DONE,UI组件化重构,14d,Next UI分层重构完成且E2E 9/9通过
 P035,工程,P1,DOING,样式迁移到Tailwind 4主题令牌,14d,globals.css定义@theme；组件无裸hex
 P036,工程,P1,DONE,清理Vite时代残留,14d,删除preview/、build_standalone.py、engine.js与d.ts；playable.html冻结到public/
+P037,游戏,P0,DONE,恢复移动交换租客操作入口,V0.2.1,从界面可启动搬家及交换；空房与终局禁用
+P038,测试,P0,DONE,搬家交换端到端回归,V0.2.1,新增3条Playwright且PR CI 9/9通过
+P039,界面,P1,DONE,移除无效重复组合面板,V0.2.1,保留ManagementPanel作为组合效果唯一显示入口
+P040,发行,P1,DOING,Next.js静态导出与GitHub Pages部署准备,V0.2.1,质量门禁完成静态导出且Pages首次部署验收
+P041,产品,P1,TODO,生产试玩地址人工验收,V0.2.1,桌面手机实际打开URL完成搬家交换及五天结算
+P042,项目管理,P1,DONE,同步V0.2.1版本及更新日志,V0.2.1,版本号文档与PR CI结论一致

@@ -1,0 +1,49 @@
+name: Deploy GitHub Pages
+
+on:
+  workflow_run:
+    workflows: [Quality]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: monster-apartment-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    # Only deploy verified pushes on main (or an explicit manual run).
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main') }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_STATIC_EXPORT: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.13.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: test -f out/index.html
+      - run: touch out/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: out
+      - id: deployment
+        uses: actions/deploy-pages@v4

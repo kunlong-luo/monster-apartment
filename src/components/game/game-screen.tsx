@@ -6,7 +6,6 @@ import { EconomyPanel } from './economy-panel';
 import { RoomPicker } from './room-picker';
 import { TenantList } from './tenant-list';
 import { ManagementPanel } from './management-panel';
-import { BonusList } from './bonus-list';
 import { ResultCard } from './result-card';
 import { PlayHelp } from './play-help';
 import { StatusBar } from './status-bar';
@@ -25,6 +24,7 @@ export function GameScreen() {
     help,
     pickRoom,
     recruit,
+    beginMove,
     cancelMove,
     nextDay,
     reset,
@@ -61,6 +61,16 @@ export function GameScreen() {
                 onPick={pickRoom}
               />
               <TenantList disabled={state.over || selected === null} onRecruit={recruit} />
+              <div className="mt-4">
+                <Button
+                  variant="secondary"
+                  fullWidth
+                  disabled={state.over || selected === null || !state.rooms[selected] || moveSource !== null}
+                  onClick={beginMove}
+                >
+                  移动 / 交换租客
+                </Button>
+              </div>
               {moveSource !== null && (
                 <div className="mt-4">
                   <Button variant="quiet" fullWidth onClick={cancelMove}>
@@ -87,7 +97,6 @@ export function GameScreen() {
             {/* Right Column */}
             <aside className="min-w-0 flex flex-col gap-4">
               <ManagementPanel />
-              <BonusList messages={[]} />
               <div className="flex flex-col gap-3">
                 <Button
                   variant="primary"
