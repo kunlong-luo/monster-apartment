@@ -14,6 +14,7 @@ type GameStore = {
   tutorialActive: boolean;
   tutorialStep: number;
   saveAvailable: boolean;
+  hydrated: boolean;
   pickRoom: (index: number) => void;
   recruit: (tenant: TenantId) => void;
   beginMove: () => void;
@@ -27,6 +28,7 @@ type GameStore = {
   replayTutorial: () => void;
   restoreSave: (saved: SaveData) => void;
   setSaveAvailable: (available: boolean) => void;
+  setHydrated: () => void;
 };
 
 const apply = (result: GameOutcome): Pick<GameStore, 'state' | 'error'> => ({
@@ -44,6 +46,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   tutorialActive: true,
   tutorialStep: 0,
   saveAvailable: false,
+  hydrated: false,
   pickRoom(index) {
     const { state, moveSource, tutorialActive, tutorialStep } = get();
     if (moveSource !== null) {
@@ -121,5 +124,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   setSaveAvailable(available) {
     if (get().saveAvailable !== available) set({ saveAvailable: available });
+  },
+  setHydrated() {
+    if (!get().hydrated) set({ hydrated: true });
   },
 }));
