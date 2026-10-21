@@ -3,6 +3,8 @@ import { Panel } from '@/components/ui/panel';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { cn } from '@/components/ui/cn';
 import type { RoomSlot } from '@/core/engine';
+import { useGameStore } from '@/store/game-store';
+import { t } from '@/lib/i18n';
 
 type RoomPickerProps = {
   rooms: RoomSlot[];
@@ -13,12 +15,13 @@ type RoomPickerProps = {
 };
 
 export function RoomPicker({ rooms, selected, moveSource, disabled, onPick }: RoomPickerProps) {
+  const locale = useGameStore((store) => store.locale);
   return (
     <Panel>
-      <SectionHeading title="选择房间" />
+      <SectionHeading title={t(locale, 'pickRoom')} />
       <div
         role="group"
-        aria-label="选择房间"
+        aria-label={t(locale, 'pickRoom')}
         className="grid grid-cols-6 gap-1.5"
       >
         {rooms.map((room, index) => {
@@ -34,7 +37,7 @@ export function RoomPicker({ rooms, selected, moveSource, disabled, onPick }: Ro
               fullWidth
               disabled={disabled}
               onClick={() => onPick(index)}
-              aria-label={`${index + 1} 号房${isOccupied ? '（已入住）' : '（空房）'}`}
+              aria-label={locale === 'zh' ? String(index + 1) + ' 号房' + (isOccupied ? '（已入住）' : '（空房）') : 'Room ' + (index + 1) + ' (' + t(locale, isOccupied ? 'occupiedRoom' : 'vacantRoom') + ')'}
               aria-pressed={isSelected}
               className={cn(
                 'py-2 text-sm font-bold',
@@ -42,15 +45,15 @@ export function RoomPicker({ rooms, selected, moveSource, disabled, onPick }: Ro
                 isMoving && 'border-danger-300',
               )}
             >
-              {index + 1} 号房
+              {locale === 'zh' ? String(index + 1) + ' 号房' : 'Room ' + (index + 1)}
             </Button>
           );
         })}
       </div>
       <p className="hint text-mist-500 text-xs mt-2 leading-relaxed">
         {moveSource !== null
-          ? '点击另一间房完成搬家/交换'
-          : '点击选择房间，再招募租客'}
+          ? t(locale, 'moveHint')
+          : t(locale, 'pickHint')}
       </p>
     </Panel>
   );
