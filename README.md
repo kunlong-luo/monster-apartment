@@ -29,7 +29,7 @@ pnpm lint               # ESLint flat config，0 warning
 pnpm test:rules         # node --test，6 条
 pnpm test               # vitest，3 条
 pnpm build              # Next 16 Turbopack
-pnpm e2e                # Playwright，原有6条 + 新增3条搬家交换测试（需 pnpm exec playwright install chromium）
+pnpm e2e                # Playwright，共12条（CI 使用系统 Chrome；本机需安装浏览器）
 ```
 
 CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`，分 `checks` 与 `e2e` 两个 job。
@@ -47,8 +47,8 @@ CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`�
 | `src/components/apartment/*` | 客户端专有边界（`next/dynamic({ ssr:false })`） |
 | `src/components/game/*` | 顶栏、租客面板、房间选择器、结算等 11 个面板 |
 | `src/components/ui/*` | 9 个自建 primitive（Button/Panel/Badge/…），不依赖第三方 UI 库 |
-| `tests/` | 引擎单测：Node 类型剥离 6 条 + Vitest 3 条 |
-| `e2e/` | Playwright：原有6项流程 + 3项搬家/交换/终局回归（PR CI 9/9 通过） |
+| `tests/` | Node 规则测试 6 项 + Vitest 6 项（含存档与国际化校验） |
+| `e2e/` | Playwright：六项基础流程、三项搬家回归、三项 V0.2.2 存档/英文/教学流程，共12项 |
 | `docs/` | 产品计划、技术栈矩阵、变更记录 |
 | `management/TASKS.csv` | 任务状态与验收标准 |
 
@@ -65,7 +65,7 @@ CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`�
 - TypeScript 固定 6.0.3：`typescript-eslint` 尚不支持 TypeScript 7 的编译器 API。
 - Phaser 通过 `next/dynamic` 独立分包，进入画面时会短暂显示“正在加载公寓地图…”。
 - 数值平衡：最优布局五天可达 232 金币 / 满意度 63（目标 135 / 55）；空置房会亏损。
-- 尚无存档、英文、音效、账号与 Electron 打包。
+- 已加入浏览器本地存档与英文界面；仍无音效、云端账号同步与 Electron 打包。
 
 ## 7. V0.2.1 修复与 Web 部署准备
 
@@ -81,7 +81,7 @@ CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`�
 - 本地自动存档：招募、搬家、经营结算后自动保存，页面刷新恢复进度。
 - 顶部选择中文或 English；租客、管理面板、Phaser 房间画面、事件和日志可切换语言。
 - 存档只属于当前浏览器和站点；清理浏览器存储或禁用 localStorage 会使进度无法恢复。
-- 在 V0.2.2 功能 PR 上验证类型检查、Vitest、Playwright 与静态部署构建。
+- PR #2 检查通过：TypeScript、ESLint、规则测试、Vitest、Next 构建、静态导出与 Playwright 12/12。尚未合并到线上版本。
 
 ## 9. 下一阶段
 
