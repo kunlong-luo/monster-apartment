@@ -48,7 +48,7 @@ CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`�
 | `src/components/game/*` | 顶栏、租客面板、房间选择器、结算等 11 个面板 |
 | `src/components/ui/*` | 9 个自建 primitive（Button/Panel/Badge/…），不依赖第三方 UI 库 |
 | `tests/` | 引擎单测：Node 类型剥离 6 条 + Vitest 3 条 |
-| `e2e/` | Playwright：原有6项流程 + 3项搬家/交换/终局回归（本次修复待PR CI复核） |
+| `e2e/` | Playwright：原有6项流程 + 3项搬家/交换/终局回归（PR CI 9/9 通过） |
 | `docs/` | 产品计划、技术栈矩阵、变更记录 |
 | `management/TASKS.csv` | 任务状态与验收标准 |
 
@@ -73,7 +73,7 @@ CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`�
 - 新增 `e2e/move-swap.spec.ts`，覆盖空房搬入、两间已入住房间交换、取消操作与终局禁用。
 - 删除无效的 `BonusList` 重复组件，组合详情仍由 `ManagementPanel` 显示。
 - GitHub Pages 使用可选静态导出构建（`NEXT_STATIC_EXPORT=1 pnpm build`）；常规开发模式无需修改。部署说明见 [DEPLOYMENT_NEXTJS.md](./docs/DEPLOYMENT_NEXTJS.md)。
-- **注意：本分支的新测试与静态导出须经 Pull Request CI 验证，正式 Pages 链接须在合并并配置 Pages 后人工验收。**
+- **验证：PR #1 已通过常规构建、9/9 Playwright 测试和静态导出 CI；正式 Pages 链接仍须合并并配置 Pages 后人工验收。**
 
 ## 8. 下一阶段
 
