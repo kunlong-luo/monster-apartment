@@ -13,7 +13,7 @@
 - `management/TASKS.csv` 更新了已在 V0.2.0 CI 确认的构建/测试状态。
 
 ### Verification
-- 本条目记录的是开发分支提交；新回归测试、静态导出及正式部署需以本 PR 的 Actions 结果和站点验收为准。
+- PR #1 首轮 Actions 验证已通过：类型检查、lint、规则测试、Vitest、常规 Next.js 构建、静态导出，以及 Playwright 9/9。后续文档提交仍需等待当前最新 SHA 的 CI；正式 Pages 部署与网页可访问性尚待合并后验收。
 - 不包含游戏盈利或 Web 分发平台审核验证。
 
 
