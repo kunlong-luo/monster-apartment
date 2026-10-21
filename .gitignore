@@ -8,6 +8,7 @@ test-results/
 
 # Local tooling artifacts
 .codegraph
+.omo/
 
 # Editor / OS noise
 .idea/
