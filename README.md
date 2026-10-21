@@ -1,4 +1,4 @@
-# Monster Apartment · V0.2.0 Next.js 技术栈
+# Monster Apartment · V0.2.1 Next.js 技术栈
 
 **游戏玩法：** 六间房、四类租客、招募 / 移动 / 交换、邻接加成、五日经营与重开。首版为可行性原型，并非商业发行游戏。
 
@@ -29,7 +29,7 @@ pnpm lint               # ESLint flat config，0 warning
 pnpm test:rules         # node --test，6 条
 pnpm test               # vitest，3 条
 pnpm build              # Next 16 Turbopack
-pnpm e2e                # Playwright，6 条（需 pnpm exec playwright install chromium）
+pnpm e2e                # Playwright，原有6条 + 新增3条搬家交换测试（需 pnpm exec playwright install chromium）
 ```
 
 CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`，分 `checks` 与 `e2e` 两个 job。
@@ -48,7 +48,7 @@ CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`�
 | `src/components/game/*` | 顶栏、租客面板、房间选择器、结算等 11 个面板 |
 | `src/components/ui/*` | 9 个自建 primitive（Button/Panel/Badge/…），不依赖第三方 UI 库 |
 | `tests/` | 引擎单测：Node 类型剥离 6 条 + Vitest 3 条 |
-| `e2e/` | Playwright：渲染、招募结算、五天胜利、五天失败、390×844 布局、纯键盘 |
+| `e2e/` | Playwright：原有6项流程 + 3项搬家/交换/终局回归（本次修复待PR CI复核） |
 | `docs/` | 产品计划、技术栈矩阵、变更记录 |
 | `management/TASKS.csv` | 任务状态与验收标准 |
 
@@ -67,6 +67,14 @@ CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`�
 - 数值平衡：最优布局五天可达 232 金币 / 满意度 63（目标 135 / 55）；空置房会亏损。
 - 尚无存档、英文、音效、账号与 Electron 打包。
 
-## 7. 下一阶段
+## 7. V0.2.1 修复与 Web 部署准备
+
+- 恢复“移动 / 交换租客”按钮，并在未选中已入住的房间、游戏结束或已进入搬家模式时禁用；取消搬家仍可使用。
+- 新增 `e2e/move-swap.spec.ts`，覆盖空房搬入、两间已入住房间交换、取消操作与终局禁用。
+- 删除无效的 `BonusList` 重复组件，组合详情仍由 `ManagementPanel` 显示。
+- GitHub Pages 使用可选静态导出构建（`NEXT_STATIC_EXPORT=1 pnpm build`）；常规开发模式无需修改。部署说明见 [DEPLOYMENT_NEXTJS.md](./docs/DEPLOYMENT_NEXTJS.md)。
+- **注意：本分支的新测试与静态导出须经 Pull Request CI 验证，正式 Pages 链接须在合并并配置 Pages 后人工验收。**
+
+## 8. 下一阶段
 
 V0.3 优先：新手引导、英文、本地存档、数值调优与外部玩家测试。
