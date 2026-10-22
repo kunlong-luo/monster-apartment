@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { placeStarter } from './helpers';
 test('summon, direct placement, codex and progression survive refresh', async ({ page }) => {
   await page.setViewportSize({ width:1440,height:900 });
-  await page.goto('/');
+  await page.goto('/legacy');
   await expect(page.getByTestId('spirit-portrait-seedling').first()).toBeVisible();
   await expect(page.getByTestId('spirit-portrait-seedling').first()).toHaveAttribute('viewBox', '0 0 120 120');
   await page.getByTestId('open-spirit-portal').click();
@@ -38,7 +38,7 @@ test('summon, direct placement, codex and progression survive refresh', async ({
 });
 test('mobile summons overlay does not replace core four tabs', async ({ page }) => {
   await page.setViewportSize({width:390,height:844});
-  await page.goto('/');
+  await page.goto('/legacy');
   await page.getByText('更多',{exact:true}).click();
   await page.getByRole('button',{name:'✦ 召唤 · 图鉴'}).click();
   await expect(page.getByTestId('spirit-portal')).toBeVisible();
@@ -51,7 +51,7 @@ test('mobile summons overlay does not replace core four tabs', async ({ page }) 
 test('guaranteed mythic reveal is distinct and remains accessible with reduced motion', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/');
+  await page.goto('/legacy');
   await expect.poll(() => page.evaluate(() => localStorage.getItem('monster-apartment:save:v1') !== null)).toBe(true);
   await page.evaluate(() => {
     const key = 'monster-apartment:save:v1';
