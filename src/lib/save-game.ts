@@ -1,6 +1,8 @@
 import { POLICY_IDS, NIGHT_DECISION_IDS } from '../core/engine';
 import type { GameState, DayResult, RoomSlot } from '@/core/engine';
 import type { Locale } from './i18n';
+import { newCollection, validCollection } from '../core/spirit-collection';
+import type { CollectionState } from '../core/spirit-collection';
 
 export const SAVE_KEY = 'monster-apartment:save:v1';
 export type SaveData = {
@@ -9,6 +11,7 @@ export type SaveData = {
   locale: Locale;
   tutorialActive: boolean;
   tutorialStep: number;
+  collection?: CollectionState;
 };
 
 function record(value: unknown): value is Record<string, unknown> {
@@ -40,7 +43,9 @@ function validDayResult(value: unknown): value is DayResult {
     (value.policySatisfaction === undefined || amount(value.policySatisfaction)) &&
     (value.nightDecision === undefined || NIGHT_DECISION_IDS.includes(value.nightDecision as typeof NIGHT_DECISION_IDS[number])) &&
     (value.decisionCoins === undefined || amount(value.decisionCoins)) &&
-    (value.decisionSatisfaction === undefined || amount(value.decisionSatisfaction));
+    (value.decisionSatisfaction === undefined || amount(value.decisionSatisfaction)) &&
+    (value.spiritCoins === undefined || amount(value.spiritCoins)) &&
+    (value.spiritSatisfaction === undefined || amount(value.spiritSatisfaction));
 }
 
 export function validGameState(value: unknown): value is GameState {
@@ -72,10 +77,12 @@ export function decodeSave(value: string | null): SaveData | null {
     if (parsed.version !== 1 || !validGameState(parsed.state)) return null;
     if (parsed.locale !== 'zh' && parsed.locale !== 'en') return null;
     if (typeof parsed.tutorialActive !== 'boolean' || !integer(parsed.tutorialStep, 0, 3)) return null;
+    if (parsed.collection !== undefined && !validCollection(parsed.collection)) return null;
     // Older v1 saves had no policy. Restore them without dropping progress.
     const state = { ...parsed.state, policy: parsed.state.policy ?? 'steady',
       nightDecision: parsed.state.nightDecision ?? 'none' };
-    return { version: 1, state, locale: parsed.locale, tutorialActive: parsed.tutorialActive, tutorialStep: parsed.tutorialStep };
+    return { version: 1, state, locale: parsed.locale, tutorialActive: parsed.tutorialActive,
+      tutorialStep: parsed.tutorialStep, collection: parsed.collection ?? newCollection() };
   } catch {
     return null;
   }
