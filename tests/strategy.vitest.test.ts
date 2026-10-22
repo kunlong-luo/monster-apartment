@@ -1,10 +1,26 @@
 import { describe, expect, it } from 'vitest';
 import { advanceDay, choosePolicy, dailyEstimate, hire, moveOrSwap,
-  newGame, preferenceDetails, ROOM_TRAITS, POLICIES } from '../src/core/engine';
+  newGame, preferenceDetails, ROOM_TRAITS, POLICIES, managementForecast, chooseNightDecision } from '../src/core/engine';
 import { decodeSave, encodeSave } from '../src/lib/save-game';
 import { localizeGameText } from '../src/lib/i18n';
 
 describe('V0.4.0 strategic depth', () => {
+  it('forecasts known mood and rent without pretending to know later events', () => {
+    const state = hire(newGame(), 0, 'slime').state;
+    const steady = managementForecast(state);
+    expect(steady.remainingNights).toBe(5);
+    expect(steady.coinsTonight).toBe(state.coins + 8);
+    expect(steady.satisfactionTonight).toBe(72);
+    expect(steady.coinsAtEnd).toBe(state.coins + 40);
+    expect(steady.satisfactionAtEnd).toBe(80);
+    const risk = managementForecast(chooseNightDecision(state, 'profit').state);
+    expect(risk.coinsTonight).toBe(steady.coinsTonight + 5);
+    expect(risk.satisfactionTonight).toBe(steady.satisfactionTonight - 4);
+    expect(risk.coinsAtEnd).toBe(steady.coinsAtEnd + 5);
+    expect(risk.satisfactionAtEnd).toBe(steady.satisfactionAtEnd - 4);
+    expect(state.nightDecision).toBe('none');
+  });
+
   it('assigns six permanent traits and rewards appropriate tenants', () => {
     expect(ROOM_TRAITS).toHaveLength(6);
     const rooms: Array<'slime' | 'ember' | 'ghost' | 'golem' | null> =
