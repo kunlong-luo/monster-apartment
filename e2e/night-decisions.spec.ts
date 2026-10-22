@@ -9,6 +9,8 @@ test('nightly event choice survives reload and changes after settlement', async 
   const profit = options.getByRole('button', { name: /卖夜间通行券/ });
   await profit.click();
   await expect(profit).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByTestId('balance-forecast')).toContainText('今晚满意度预测');
+  await expect(page.getByTestId('balance-forecast')).toContainText('五夜趋势');
   await page.reload();
   await expect(page.getByRole('group', { name: '今晚的事件应对' })
     .getByRole('button', { name: /卖夜间通行券/ })).toHaveAttribute('aria-pressed', 'true');
