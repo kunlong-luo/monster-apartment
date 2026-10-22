@@ -14,6 +14,13 @@ const withSpirits = (...ids: SpiritId[]): CollectionState => {
 };
 
 describe('Real-time tactical defense', () => {
+  it('supplies a playable first battle with three distinct starting roles', () => {
+    const collection = newCollection();
+    const raid = prepareRaid(collection);
+    expect(raid.lineup).toEqual(['seedling', 'dewdrop', 'lantern-beetle']);
+    expect(beginRaid(raid, collection).phase).toBe('fighting');
+  });
+
   it('provides a real three-lane strategy with only owned units', () => {
     const collection = withSpirits('aurora-whale', 'day-smith');
     let raid = prepareRaid(collection);
@@ -31,7 +38,10 @@ describe('Real-time tactical defense', () => {
 
   it('enemies move independently of clicks, letting wrong formations lose', () => {
     const collection = newCollection();
-    let raid = beginRaid(prepareRaid(collection), collection);
+    let raid = prepareRaid(collection);
+    raid = deployToLane(raid, 1, null, collection);
+    raid = deployToLane(raid, 2, null, collection);
+    raid = beginRaid(raid, collection);
     for (let n=0; n<42 && raid.phase==='fighting'; n++) raid = advanceRaid(raid, collection);
     expect(raid.phase).toBe('lost');
     expect(raid.baseHp).toBe(0);
