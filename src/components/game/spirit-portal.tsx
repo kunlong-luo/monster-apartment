@@ -41,7 +41,7 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
   const [revealed, setRevealed] = useState<SpiritId[]>([]);
   const [inspected, setInspected] = useState<SpiritId | null>(null);
   const { state, collection, collectionError, selected, locale,
-    summonSpirits, assignSpirit, trainSpirit, evolveCompanion } = useGameStore();
+    summonSpirits, assignSpirit, trainSpirit, evolveCompanion, awakenCompanion } = useGameStore();
   const zh = locale === 'zh';
   useEffect(() => {
     if (!open) return;
@@ -147,7 +147,8 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
           {tab === 'codex' && inspected && collection.owned[inspected] && (
             <SpiritProfile id={inspected} progress={collection.owned[inspected]} essence={collection.essence}
               locale={locale} onClose={() => setInspected(null)}
-              onLevel={() => trainSpirit(inspected)} onEvolve={() => evolveCompanion(inspected)} />
+              onLevel={() => trainSpirit(inspected)} onEvolve={(path) => evolveCompanion(inspected, path)}
+              onAwaken={() => awakenCompanion(inspected)} />
           )}
           {tab === 'codex' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2" data-testid="spirit-codex">
@@ -159,6 +160,7 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
                     <p className="text-mist-300 text-xs mt-1">
                       Lv.{progress.level} · XP {progress.xp}/{4 + progress.level * 2} ·
                       {zh ? ' 进化' : ' Evolution'} {progress.evolution}/2 ·
+                      {' ★'}{progress.stars ?? 0}/5 ·
                       {zh ? ' 碎片' : ' Shards'} {progress.shards}
                     </p>
                     <div className="flex gap-2 mt-2 flex-wrap">
@@ -170,7 +172,8 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
                         onClick={() => trainSpirit(spirit.id)}>{zh ? '升级' : 'Level up'}</Button>
                       <Button size="sm" variant="quiet"
                         disabled={progress.evolution >= 2 || progress.level < (progress.evolution + 1) * 10 ||
-                          collection.essence < (progress.evolution + 1) * 20}
+                          collection.essence < (progress.evolution + 1) * 20 ||
+                          (spirit.quality === 'UR' && progress.evolution === 1)}
                         onClick={() => evolveCompanion(spirit.id)}>{zh ? '进化' : 'Evolve'}</Button>
                     </div>
                   </SpiritTile>
