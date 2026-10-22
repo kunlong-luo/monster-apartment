@@ -644,3 +644,29 @@
     transition: none !important;
   }
 }
+
+
+/* V0.6 tactical defense: lightweight live lanes inside a scroll-contained modal. */
+.night-raid {
+  box-shadow: 0 22px 80px #05040dda, inset 0 1px 0 #ffd7b533;
+}
+.raid-lane {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 12.3%, #f8d8c118 12.5% 12.7%),
+    linear-gradient(90deg, #294446 0%, #2e2945 52%, #423043 100%);
+}
+.raid-lane::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 22px #10102088;
+}
+.raid-enemy {
+  transition: left 450ms linear;
+  filter: drop-shadow(0 4px 2px #0b0a20b8);
+  will-change: left;
+}
+@media (prefers-reduced-motion: reduce) {
+  .raid-enemy { transition: none !important; }
+}
