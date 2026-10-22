@@ -223,14 +223,18 @@ export function moveOrSwap(state: GameState, a: number, b: number): GameOutcome 
   };
 }
 
-export function nightlyEvent(rooms: RoomSlot[], day: number, satisfaction: number): NightlyEvent {
+export function nightlyEvent(rooms: RoomSlot[], day: number, satisfaction: number, history: readonly DayResult[] = []): NightlyEvent {
   const has = (id: TenantId) => rooms.includes(id);
+  const careNights = history.filter((entry) => entry.nightDecision === 'care').length;
+  const profitNights = history.filter((entry) => entry.nightDecision === 'profit').length;
   const goodPair = adjacency(rooms).some(([a, b]) => [rooms[a], rooms[b]].sort().join('+') === 'ghost+golem');
   switch (day) {
     case 1: return has('golem') ? { title: '夜间巡逻', detail: '石像鬼守夜尽责，收到 6 金币打赏。', coins: 6, satisfaction: 0 } : { title: '夜间巡逻', detail: '夜晚平静，没有额外收入。', coins: 0, satisfaction: 0 };
     case 2: return has('slime') ? { title: '水管爆裂', detail: '史莱姆抢修了管道，获得 4 金币感谢费。', coins: 4, satisfaction: 0 } : { title: '水管爆裂', detail: '管道损坏，支付 8 金币并损失 8 满意度。', coins: -8, satisfaction: -8 };
-    case 3: return goodPair ? { title: '古怪访客', detail: '幽灵与石像鬼合作处理访客，收到 12 金币。', coins: 12, satisfaction: 0 } : { title: '古怪访客', detail: '深夜骚动，住户满意度下降 7。', coins: 0, satisfaction: -7 };
-    case 4: return has('ember') ? { title: '供暖故障', detail: '火精灵及时修好供暖，获得 7 金币。', coins: 7, satisfaction: 0 } : { title: '供暖故障', detail: '供暖维修消耗 8 金币。', coins: -8, satisfaction: 0 };
+    case 3: if (careNights >= 2) return { title: '住户互助', detail: '前两夜积累的关怀让住户联手安抚访客，满意度 +5。', coins: 0, satisfaction: 5 };
+      return goodPair ? { title: '古怪访客', detail: '幽灵与石像鬼合作处理访客，收到 12 金币。', coins: 12, satisfaction: 0 } : { title: '古怪访客', detail: '深夜骚动，住户满意度下降 7。', coins: 0, satisfaction: -7 };
+    case 4: if (profitNights >= 2) return { title: '经营稽查', detail: '连续追求利润引来夜间稽查，支付 8 金币并损失 5 满意度。', coins: -8, satisfaction: -5 };
+      return has('ember') ? { title: '供暖故障', detail: '火精灵及时修好供暖，获得 7 金币。', coins: 7, satisfaction: 0 } : { title: '供暖故障', detail: '供暖维修消耗 8 金币。', coins: -8, satisfaction: 0 };
     default: return satisfaction >= 65 ? { title: '公寓年度评选', detail: '住户对公寓评价不错！奖励 20 金币。', coins: 20, satisfaction: 0 } : { title: '公寓年度评选', detail: '口碑一般，缴纳 10 金币整改费。', coins: -10, satisfaction: 0 };
   }
 }
@@ -303,7 +307,7 @@ export function advanceDay(state: GameState): GameOutcome {
   const decisionId = state.nightDecision ?? 'none';
   const satisfactionBeforeEvent = Math.max(0, Math.min(100,
     state.satisfaction + synergy.satisfaction + preference.satisfaction + policy.satisfaction + decision.satisfaction));
-  const event = nightlyEvent(state.rooms, state.day, satisfactionBeforeEvent);
+  const event = nightlyEvent(state.rooms, state.day, satisfactionBeforeEvent, state.history);
   const net = estimate.net + event.coins;
   const coins = state.coins + net;
   const satisfaction = Math.max(0, Math.min(100, satisfactionBeforeEvent + event.satisfaction));
