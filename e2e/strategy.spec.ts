@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { placeStarter } from './helpers';
 test('new elemental traits and policies preview the income', async ({ page }) => {
   await page.setViewportSize({width:1440,height:900});
-  await page.goto('/');
+  await page.goto('/legacy');
   await page.getByRole('button',{name:/^6 号房/}).click();
   await placeStarter(page,6);
   await expect(page.getByTestId('room-affinity')).toContainText('契合 +3 金币');
@@ -17,7 +17,7 @@ test('new elemental traits and policies preview the income', async ({ page }) =>
 });
 test('English mobile policies persist through nightly outcome', async ({ page }) => {
   await page.setViewportSize({width:390,height:844});
-  await page.goto('/');
+  await page.goto('/legacy');
   await page.getByRole('combobox',{name:'语言'}).selectOption('en');
   await page.getByRole('button',{name:'Place Seedcore in selected room'}).click();
   await page.getByRole('tab',{name:'Manage'}).click();
