@@ -71,12 +71,15 @@ export type CollectionState = {
   equipped: (SpiritId | null)[];
   recent: SpiritId[];
   totalPulls: number;
+  /** One tactical defense reward per night; optional for older saves. */
+  claimedRaids?: number[];
 };
 export function newCollection(): CollectionState {
   return {
     tickets: 10, essence: 0, pity: { sr: 0, ssr: 0, ur: 0 },
     owned: { seedling: { level: 1, xp: 0, shards: 0, evolution: 0 } },
     equipped: [null, null, null, null, null, null], recent: [], totalPulls: 0,
+    claimedRaids: [],
   };
 }
 
@@ -249,6 +252,10 @@ export function validCollection(value: unknown): value is CollectionState {
   if (!Array.isArray(value.equipped) || value.equipped.length !== 6 ||
     !value.equipped.every((id: unknown) => id === null || isSpiritId(id))) return false;
   if (!Array.isArray(value.recent) || value.recent.length > 10 || !value.recent.every(isSpiritId)) return false;
+  if (value.claimedRaids !== undefined && (!Array.isArray(value.claimedRaids) ||
+    value.claimedRaids.length > 5 ||
+    !value.claimedRaids.every((day: unknown) => inRange(day, 5) && day > 0) ||
+    new Set(value.claimedRaids).size !== value.claimedRaids.length)) return false;
   for (const [id, progress] of Object.entries(value.owned)) {
     if (!isSpiritId(id) || !isRecord(progress) || !inRange(progress.level, 30) ||
       progress.level < 1 || !inRange(progress.xp, 1000000) ||
