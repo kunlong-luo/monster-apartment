@@ -13,6 +13,7 @@ import { StrategyPanel } from './strategy-panel';
 import { NightDecisionPanel } from './night-decision-panel';
 import { ResultCard } from './result-card';
 import { NightSettlement } from './night-settlement';
+import { SpiritPortal } from './spirit-portal';
 import { PlayHelp } from './play-help';
 import { StatusBar } from './status-bar';
 import { LogList } from '@/components/ui/log-list';
@@ -24,8 +25,9 @@ type MobilePanel = 'recruit' | 'rooms' | 'manage' | 'log';
 
 export function GameScreen() {
   const [mobilePanel, setMobilePanel] = useState<MobilePanel>('recruit');
+  const [spiritOpen, setSpiritOpen] = useState(false);
   const {
-    state, selected, moveSource, error, help, locale, tutorialActive, tutorialStep, saveAvailable, hydrated,
+    state, collection, selected, moveSource, error, help, locale, tutorialActive, tutorialStep, saveAvailable, hydrated,
     pickRoom, recruit, beginMove, cancelMove, nextDay, reset, toggleHelp,
     setLocale, nextTutorial, skipTutorial, replayTutorial,
   } = useGameStore();
@@ -40,6 +42,7 @@ export function GameScreen() {
       return {
         version: 1 as const,
         state: current.state,
+        collection: current.collection,
         locale: current.locale,
         tutorialActive: current.tutorialActive,
         tutorialStep: current.tutorialStep,
@@ -95,7 +98,7 @@ export function GameScreen() {
         <header className="game-masthead game-container">
           <GameHeader helpOpen={help} locale={locale} onSetLocale={setLocale}
             onToggleHelp={toggleHelp} onReset={reset} onReplayTutorial={replayTutorial}
-            day={state.day} coins={state.coins} />
+            day={state.day} coins={state.coins} onOpenPortal={() => setSpiritOpen(true)} />
         </header>
 
         <main className="game-container game-main">
@@ -222,6 +225,7 @@ export function GameScreen() {
             </button>
           ))}
         </nav>
+        <SpiritPortal open={spiritOpen} onClose={() => setSpiritOpen(false)} />
         <footer className="game-footer game-container">
           ✧ MONSTER APARTMENT · {t(locale, saveAvailable ? 'saveReady' : 'saveUnavailable')} ✧
         </footer>
