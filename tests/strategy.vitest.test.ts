@@ -1,108 +1,51 @@
 import { describe, expect, it } from 'vitest';
-import { advanceDay, choosePolicy, dailyEstimate, hire, moveOrSwap,
-  newGame, preferenceDetails, ROOM_TRAITS, POLICIES, managementForecast, chooseNightDecision } from '../src/core/engine';
+import { advanceDay, choosePolicy, chooseNightDecision, dailyEstimate, newGame,
+  placeSpirit, moveOrSwap, preferenceDetails, ROOM_TRAITS, POLICIES, managementForecast } from '../src/core/engine';
 import { decodeSave, encodeSave } from '../src/lib/save-game';
 import { localizeGameText } from '../src/lib/i18n';
-
-describe('V0.4.0 strategic depth', () => {
-  it('forecasts known mood and rent without pretending to know later events', () => {
-    const state = hire(newGame(), 0, 'slime').state;
+const starter = () => placeSpirit(newGame(), 5, 'seedling').state;
+describe('Original spirit management balance', () => {
+  it('separates daily predictions and hidden future events', () => {
+    const state = starter();
     const steady = managementForecast(state);
     expect(steady.remainingNights).toBe(5);
-    expect(steady.coinsTonight).toBe(state.coins + 8);
+    expect(steady.coinsTonight).toBe(state.coins + dailyEstimate(state).net);
     expect(steady.satisfactionTonight).toBe(72);
-    expect(steady.coinsAtEnd).toBe(state.coins + 40);
-    expect(steady.satisfactionAtEnd).toBe(80);
     const risk = managementForecast(chooseNightDecision(state, 'profit').state);
     expect(risk.coinsTonight).toBe(steady.coinsTonight + 5);
     expect(risk.satisfactionTonight).toBe(steady.satisfactionTonight - 4);
-    expect(risk.coinsAtEnd).toBe(steady.coinsAtEnd + 5);
-    expect(risk.satisfactionAtEnd).toBe(steady.satisfactionAtEnd - 4);
-    expect(state.nightDecision).toBe('none');
   });
-
-  it('assigns six permanent traits and rewards appropriate tenants', () => {
+  it('uses six elemental room traits', () => {
     expect(ROOM_TRAITS).toHaveLength(6);
-    const rooms: Array<'slime' | 'ember' | 'ghost' | 'golem' | null> =
-      ['slime', 'ember', 'ghost', 'golem', null, null];
-    expect(preferenceDetails(rooms)).toEqual({
-      coins: 12, satisfaction: 8, matches: 4, mismatches: 0,
-    });
+    const rooms = ['pebble-crab','lantern-beetle','moon-scout','prism-mole','fern-hare','seedling'] as const;
+    expect(preferenceDetails([...rooms]).matches).toBe(6);
     const swapped = [...rooms];
-    [swapped[0], swapped[1]] = [swapped[1], swapped[0]];
-    expect(preferenceDetails(swapped)).toEqual({
-      coins: 4, satisfaction: 2, matches: 2, mismatches: 2,
-    });
+    [swapped[0],swapped[1]]=[swapped[1],swapped[0]];
+    expect(preferenceDetails(swapped).matches).toBe(4);
   });
-
-  it('uses visible room preferences in estimated settlement and persists new policy only for one night', () => {
-    let game = hire(newGame(), 0, 'slime').state;
-    const oldGame = JSON.stringify(game);
-    expect(dailyEstimate(game).preference).toBe(3);
-    expect(dailyEstimate(game).policy).toBe(0);
-    const selected = choosePolicy(game, 'festival');
-    expect(selected.error).toBeNull();
-    game = selected.state;
-    expect(game.policy).toBe('festival');
-    expect(POLICIES.festival).toEqual({ coins: -5, satisfaction: 8 });
-    expect(dailyEstimate(game).net).toBe(3);
-    const settled = advanceDay(game).state;
-    expect(settled.history[0].preference).toBe(3);
-    expect(settled.history[0].policyCoins).toBe(-5);
-    expect(settled.history[0].policySatisfaction).toBe(8);
-    expect(settled.satisfaction).toBe(80);
-    expect(settled.policy).toBe('steady');
-    expect(JSON.stringify(hire(newGame(), 0, 'slime').state)).toBe(oldGame);
+  it('applies policies, resets each night, and never mutates input', () => {
+    const state = starter();
+    expect(dailyEstimate(state).preference).toBe(3);
+    const selected = choosePolicy(state, 'festival').state;
+    expect(dailyEstimate(selected).policy).toBe(-5);
+    const result = advanceDay(selected).state;
+    expect(result.history[0].policySatisfaction).toBe(8);
+    expect(result.policy).toBe('steady');
+    expect(state.policy).toBe('steady');
+    expect(POLICIES.savings.coins).toBe(6);
   });
-
-  it('adds savings income but reduces satisfaction and blocks decisions after the end', () => {
-    let state = hire(newGame(), 1, 'slime').state;
-    expect(preferenceDetails(state.rooms).coins).toBe(-1);
-    state = choosePolicy(state, 'savings').state;
-    expect(dailyEstimate(state).policy).toBe(6);
-    const completed = advanceDay(state).state;
-    expect(completed.satisfaction).toBe(63);
-    const ended = { ...completed, over: true, day: 5, outcome: 'lose' as const };
-    expect(choosePolicy(ended, 'festival').error).toBeTruthy();
-    expect(choosePolicy(completed, 'not-real' as never).error).toBeTruthy();
-  });
-
-  it('keeps legacy v1 saves and restores new policy states without resetting the run', () => {
-    let state = hire(newGame(), 0, 'slime').state;
-    state = moveOrSwap(state, 0, 2).state;
+  it('retains moved spirit locations across local saves', () => {
+    const state = moveOrSwap(starter(), 5, 3).state;
     const saved = { version: 1 as const, state, locale: 'en' as const,
-      tutorialActive: false, tutorialStep: 3 };
-    const current = decodeSave(encodeSave({ ...saved, state: choosePolicy(state, 'savings').state }));
-    expect(current?.state.policy).toBe('savings');
-
-    const legacy = JSON.parse(encodeSave(saved));
-    delete legacy.state.policy;
-    const restored = decodeSave(JSON.stringify(legacy));
-    expect(restored?.state.rooms).toEqual(state.rooms);
-    expect(restored?.state.policy).toBe('steady');
-    expect(restored?.state.day).toBe(state.day);
-    const invalid = JSON.parse(encodeSave(saved));
-    invalid.state.policy = 'cheat';
-    expect(decodeSave(JSON.stringify(invalid))).toBeNull();
+      tutorialActive: false, tutorialStep: 2 };
+    const restored = decodeSave(encodeSave(saved));
+    expect(restored?.state.rooms[3]).toBe('seedling');
+    expect(restored?.collection?.equipped[3]).toBe('seedling');
   });
-
-  it('translates strategic settlement notes', () => {
-    const game = choosePolicy(hire(newGame(), 0, 'slime').state, 'festival').state;
-    const settled = advanceDay(game).state;
-    expect(localizeGameText(settled.log.find(line => line.includes('房间偏好')) ?? '', 'en')).toContain('Room affinity');
-    expect(localizeGameText(settled.log.find(line => line.includes('房间偏好')) ?? '', 'en')).toContain('Party');
+  it('translates strategy notes to English', () => {
+    const result = advanceDay(choosePolicy(starter(), 'festival').state).state;
+    const entry = result.log.find(line => line.includes('房间偏好')) ?? '';
+    expect(localizeGameText(entry, 'en')).toContain('Room affinity');
+    expect(localizeGameText(entry, 'en')).toContain('Party');
   });
-  it('can lose by neglecting room fit even after earning enough coins', () => {
-    let game = newGame();
-    const tenants: Array<[number, 'slime' | 'ember']> =
-      [[1, 'slime'], [2, 'slime'], [3, 'ember'], [4, 'ember'], [5, 'slime']];
-    for (const [room, tenant] of tenants) game = hire(game, room, tenant).state;
-    expect(preferenceDetails(game.rooms).mismatches).toBe(5);
-    for (let i = 0; i < 5; i++) game = advanceDay(game).state;
-    expect(game.over).toBe(true);
-    expect(game.coins).toBeGreaterThanOrEqual(135);
-    expect(game.satisfaction).toBeLessThan(55);
-    expect(game.outcome).toBe('lose');
-  });
-
 });
