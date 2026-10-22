@@ -119,4 +119,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Keep the GameScreen save/hydration and locale wiring from V0.2.2. Game logic remains exclusively in `src/core/engine.ts`.
 - Phaser canvas keeps 628x676 coordinate space and click event bridge. RoomPicker remains the accessible keyboard route.
 - Visual E2E in `e2e/visual-ui.spec.ts` captures screenshots into test-results; Actions uploads these as the `v030-ui-review` artifact.
-- The PR is stacked on PR #2. Merge PR #2 first and retarget PR #3 to main before release.
+- PR #2 is merged into main. PR #3 now targets main; release requires merge plus successful Pages deployment and manual site review.
