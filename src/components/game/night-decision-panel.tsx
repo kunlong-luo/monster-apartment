@@ -29,6 +29,8 @@ export function NightDecisionPanel() {
   if (!scenario) return null;
   const helper = NIGHT_DILEMMAS[state.day - 1].helper;
   const helperPresent = state.rooms.includes(helper);
+  const priorCare = state.history.filter((night) => night.nightDecision === 'care').length;
+  const priorProfit = state.history.filter((night) => night.nightDecision === 'profit').length;
   return (
     <Panel className="game-dilemma-panel">
       <p className="game-panel-heading">
@@ -55,6 +57,13 @@ export function NightDecisionPanel() {
           );
         })}
       </div>
+      {(state.day === 3 || state.day === 4) && (
+        <p className="text-[10px] text-gold-200 mt-1" data-testid="long-term-consequence">
+          {state.day === 3
+            ? (locale === 'zh' ? `前两夜关怀 ${priorCare}/2：达到两次可在今晚化解访客危机。` : `Earlier care ${priorCare}/2: two caring nights resolve the visitor crisis.`)
+            : (locale === 'zh' ? `此前逐利 ${priorProfit}/2：达到两次会在今晚触发稽查。` : `Earlier profit ${priorProfit}/2: two profit nights trigger an inspection.`)}
+        </p>
+      )}
       <p className="text-[10px] text-mist-500 mt-1">
         {locale === 'zh'
           ? (helperPresent ? '有' + tenantNames.zh[helper] + '协助，关怀方案包含协助奖励。' :
