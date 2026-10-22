@@ -1,9 +1,9 @@
 import { Panel } from '@/components/ui/panel';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { Badge } from '@/components/ui/badge';
-import { TENANTS, TENANT_IDS } from '@/core/engine';
+import { SPIRITS, FACTION_LABELS } from '@/core/spirit-collection';
 import { useGameStore } from '@/store/game-store';
-import { t, tenantNames } from '@/lib/i18n';
+import { t } from '@/lib/i18n';
 
 const intro = ['gameplayIntro1', 'gameplayIntro2', 'gameplayIntro3', 'gameplayIntro4'] as const;
 const events = ['event1', 'event2', 'event3', 'event4', 'event5'] as const;
@@ -23,29 +23,21 @@ export function PlayHelp() {
         <div>
           <p className="font-medium text-mist-300 mb-2">{t(locale, 'tenants')}</p>
           <div className="grid grid-cols-2 gap-2">
-            {TENANT_IDS.map((id) => {
-              const tenant = TENANTS[id];
-              return (
-                <div key={id} className="flex items-center gap-2 p-2 bg-ink-700 rounded-xl">
-                  <span className="text-xl" style={{ color: '#' + tenant.color.toString(16).padStart(6, '0') }}
-                    aria-hidden="true">{tenant.icon}</span>
-                  <div className="min-w-0">
-                    <p className="font-medium truncate">{tenantNames[locale][id]}</p>
-                    <p className="text-xs text-mist-500">-{tenant.price} {t(locale, 'coins')} · {t(locale, 'rent')} +{tenant.rent}</p>
-                  </div>
+            {SPIRITS.filter((s) => s.quality === 'SSR').map((spirit) => (
+              <div key={spirit.id} className="flex items-center gap-2 p-2 bg-ink-700 rounded-xl">
+                <span className="text-xl text-gold-200" aria-hidden="true">{spirit.icon}</span>
+                <div className="min-w-0">
+                  <p className="font-medium truncate">{spirit[locale]}</p>
+                  <p className="text-xs text-mist-500">{spirit.quality} · {FACTION_LABELS[spirit.faction][locale]}</p>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
         <div>
           <p className="font-medium text-mist-300 mb-2">{t(locale, 'synergies')}</p>
-          <div className="flex flex-wrap gap-1.5">
-            <Badge tone="mint">{t(locale, 'synergySteam')}</Badge>
-            <Badge tone="mint">{t(locale, 'synergyGuard')}</Badge>
-            <Badge tone="mint">{t(locale, 'synergyClean')}</Badge>
-            <Badge tone="danger">{t(locale, 'synergyConflict')}</Badge>
-          </div>
+          <Badge tone="mint">{locale === 'zh' ? '同阵营相邻 +4 金币、+1 满意度' : 'Adjacent allies: +4 coins, +1 mood'}</Badge>
+          <Badge tone="mint">{locale === 'zh' ? '相同阵营达到 2/4/6 可触发共鸣' : 'Faction 2/4/6 formation bonuses'}</Badge>
         </div>
         <div>
           <p className="font-medium text-mist-300 mb-2">{t(locale, 'events')}</p>
@@ -53,10 +45,8 @@ export function PlayHelp() {
             {events.map((key) => <li key={key}>{t(locale, key)}</li>)}
           </ul>
         </div>
-        <div>
-          <p className="font-medium text-mist-300 mb-2">{t(locale, 'moving')}</p>
-          <p className="text-xs">{t(locale, 'moveHelp')}</p>
-        </div>
+        <div><p className="font-medium text-mist-300 mb-2">{t(locale, 'moving')}</p>
+          <p className="text-xs">{t(locale, 'moveHelp')}</p></div>
       </div>
     </Panel>
   );
