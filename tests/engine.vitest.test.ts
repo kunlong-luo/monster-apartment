@@ -1,23 +1,21 @@
 import { describe, expect, it } from 'vitest';
-import { advanceDay, hire, newGame } from '../src/core/engine';
-
-describe('Monster Apartment deterministic game rules', () => {
-  it('creates six rooms and begins on day 1', () => {
-    const game = newGame();
-    expect(game.rooms).toHaveLength(6);
-    expect(game.day).toBe(1);
+import { advanceDay, placeSpirit, newGame, removeSpirit } from '../src/core/engine';
+describe('Spirit apartment pure gameplay rules', () => {
+  it('begins with six empty rooms', () => {
+    expect(newGame().rooms).toEqual(Array(6).fill(null));
+    expect(newGame().day).toBe(1);
   });
-  it('refuses to settle an empty building', () => {
-    const game = newGame();
-    const result = advanceDay(game);
-    expect(result.error).toBeTruthy();
-    expect(result.state).toBe(game);
+  it('does not advance an empty building', () => {
+    const state = newGame();
+    expect(advanceDay(state).state).toBe(state);
   });
-  it('can advance a day without mutating the original state', () => {
-    const game = hire(newGame(), 0, 'slime').state;
-    const result = advanceDay(game);
-    expect(game.day).toBe(1);
-    expect(result.error).toBeNull();
-    expect(result.state.day).toBe(2);
+  it('places and withdraws original spirits immutably', () => {
+    const state = newGame();
+    const deployed = placeSpirit(state, 0, 'seedling').state;
+    const advanced = advanceDay(deployed).state;
+    expect(advanced.day).toBe(2);
+    expect(deployed.day).toBe(1);
+    expect(removeSpirit(deployed, 0).state.rooms[0]).toBeNull();
+    expect(state.rooms[0]).toBeNull();
   });
 });
