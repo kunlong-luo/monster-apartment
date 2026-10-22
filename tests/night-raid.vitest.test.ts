@@ -3,7 +3,7 @@ import { SPIRITS, newCollection } from '../src/core/spirit-collection';
 import type { CollectionState, SpiritId } from '../src/core/spirit-collection';
 import {
   advanceRaid, applyRaidReward, beginRaid, castRaidSkill, deployToLane, prepareRaid,
-  raidReward, relocateRaid,
+  raidReward, relocateRaid, upcomingRaidWaves,
 } from '../src/core/night-raid';
 
 const withSpirits = (...ids: SpiritId[]): CollectionState => {
@@ -14,6 +14,19 @@ const withSpirits = (...ids: SpiritId[]): CollectionState => {
 };
 
 describe('Real-time tactical defense', () => {
+  it('forecasts exact upcoming lanes and warns about the boss before arrival', () => {
+    expect(upcomingRaidWaves(0)).toEqual([
+      {tick:1,lane:0,kind:'scout'},
+      {tick:4,lane:1,kind:'scout'},
+      {tick:7,lane:2,kind:'scout'},
+    ]);
+    expect(upcomingRaidWaves(27,2)).toEqual([
+      {tick:28,lane:1,kind:'boss'},
+      {tick:30,lane:0,kind:'scout'},
+    ]);
+    expect(upcomingRaidWaves(42)).toEqual([]);
+    expect(upcomingRaidWaves(1,0)).toEqual([]);
+  });
   it('supplies a playable first battle with three distinct starting roles', () => {
     const collection = newCollection();
     const raid = prepareRaid(collection);
