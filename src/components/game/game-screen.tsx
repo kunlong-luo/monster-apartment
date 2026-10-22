@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useGameStore } from '@/store/game-store';
 import { t, localizeGameText } from '@/lib/i18n';
 import { SAVE_KEY, decodeSave, encodeSave } from '@/lib/save-game';
@@ -17,7 +17,10 @@ import { ApartmentView } from '@/components/apartment/apartment-view';
 import { Panel } from '@/components/ui/panel';
 import { Button } from '@/components/ui/button';
 
+type MobilePanel = 'recruit' | 'rooms' | 'manage' | 'log';
+
 export function GameScreen() {
+  const [mobilePanel, setMobilePanel] = useState<MobilePanel>('recruit');
   const {
     state, selected, moveSource, error, help, locale, tutorialActive, tutorialStep, saveAvailable, hydrated,
     pickRoom, recruit, beginMove, cancelMove, nextDay, reset, toggleHelp,
@@ -76,6 +79,13 @@ export function GameScreen() {
   const canSettle = occupied > 0 && !state.over;
   const tutorialKeys = ['guide1', 'guide2', 'guide3', 'guide4'] as const;
 
+  const mobileTabs: Array<{ id: MobilePanel; zh: string; en: string; icon: string }> = [
+    { id: 'recruit', zh: '招募', en: 'Recruit', icon: '✦' },
+    { id: 'rooms', zh: '房间', en: 'Rooms', icon: '⌂' },
+    { id: 'manage', zh: '经营', en: 'Manage', icon: '◈' },
+    { id: 'log', zh: '手记', en: 'Journal', icon: '☾' },
+  ];
+
   return (
     <div className="game-shell font-sans text-mist-300 antialiased">
       <div className="game-page-layer">
@@ -85,99 +95,119 @@ export function GameScreen() {
             day={state.day} coins={state.coins} />
         </header>
 
-        <main className="game-container">
+        <main className="game-container game-main">
           <div className="game-layout">
-            <aside className="game-roster">
-              <EconomyPanel />
-              <RoomPicker rooms={state.rooms} selected={selected} moveSource={moveSource}
-                disabled={state.over} onPick={pickRoom} />
-              <TenantList disabled={state.over || selected === null} onRecruit={recruit} />
-              <div className="mt-4">
-                <Button variant="secondary" fullWidth
-                  disabled={state.over || selected === null || !state.rooms[selected] || moveSource !== null}
-                  onClick={beginMove}>
-                  {t(locale, 'move')}
-                </Button>
-              </div>
-              {moveSource !== null && (
-                <div className="mt-4">
-                  <Button variant="quiet" fullWidth onClick={cancelMove}>{t(locale, 'cancelMove')}</Button>
+            <aside className={'game-roster ' + (mobilePanel === 'recruit' || mobilePanel === 'rooms' ? '' : 'game-mobile-hidden')}
+              aria-label={locale === 'zh' ? '租客与房间操作' : 'Tenants and rooms'}>
+              <div className="game-mobile-pane" data-selected={mobilePanel === 'rooms'}>
+                <RoomPicker rooms={state.rooms} selected={selected} moveSource={moveSource}
+                  disabled={state.over} onPick={pickRoom} />
+                <div className="game-move-controls">
+                  <Button variant="secondary" size="sm" fullWidth
+                    disabled={state.over || selected === null || !state.rooms[selected] || moveSource !== null}
+                    onClick={beginMove}>{t(locale, 'move')}</Button>
+                  {moveSource !== null && (
+                    <Button variant="quiet" size="sm" fullWidth onClick={cancelMove}>
+                      {t(locale, 'cancelMove')}
+                    </Button>
+                  )}
                 </div>
-              )}
+              </div>
+              <div className="game-mobile-pane game-hire-pane" data-selected={mobilePanel === 'recruit'}>
+                <TenantList disabled={state.over || selected === null} onRecruit={recruit} />
+              </div>
             </aside>
 
             <section className="game-stage" data-testid="apartment-stage">
-              <div className="game-moon-card flex flex-wrap items-center justify-between gap-3">
+              <div className="game-moon-card game-stage-heading">
                 <div className="min-w-0">
-                  <p className="game-eyebrow mb-1">✧ MIDNIGHT RESIDENCE ✧</p>
-                  <h2 className="game-section-title">
-                    {locale === 'zh' ? '这栋楼，今夜住着谁？' : 'Who lives here tonight?'}
-                  </h2>
-                  <p className="game-subtitle mt-1">{locale === 'zh'
-                    ? '给怪物们安排房间，让奇妙邻居擦出火花。'
-                    : 'Find a room for every monster. Neighbor magic makes the difference.'}</p>
+                  <p className="game-eyebrow">✧ MIDNIGHT RESIDENCE ✧</p>
+                  <h2 className="game-section-title">{locale === 'zh'
+                    ? '今夜，谁住进公寓？' : 'Who moves in tonight?'}</h2>
                 </div>
-                <span className="game-day-chip">☾ {locale === 'zh' ? '第 ' + state.day + ' / 5 夜' : 'NIGHT ' + state.day + ' / 5'}</span>
+                <span className="game-day-chip">☾ {locale === 'zh'
+                  ? '第 ' + state.day + ' / 5 夜' : 'NIGHT ' + state.day + ' / 5'}</span>
               </div>
               {tutorialActive && (
-                <Panel className="border-gold-300/55 bg-ink-800">
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <strong className="text-gold-200">✦ {t(locale, 'guideTitle')}</strong>
-                    <span className="text-xs text-mist-500">
-                      {t(locale, 'guideStep')} {tutorialStep + 1}/4
-                    </span>
+                <div className="game-tutorial-banner" role="note" aria-label={t(locale, 'guideTitle')}>
+                  <div className="flex-1 min-w-0">
+                    <strong className="text-gold-200 text-xs">✦ {t(locale, 'guideTitle')} · {tutorialStep + 1}/4</strong>
+                    <p className="text-xs text-mist-300 leading-snug">{t(locale, tutorialKeys[tutorialStep])}</p>
                   </div>
-                  <p className="text-sm text-mist-300 mb-3">{t(locale, tutorialKeys[tutorialStep])}</p>
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex flex-col gap-1 shrink-0">
                     <Button size="sm" variant="primary" onClick={nextTutorial}>
                       {t(locale, tutorialStep === 3 ? 'guideDone' : 'guideNext')}
                     </Button>
                     <Button size="sm" variant="quiet" onClick={skipTutorial}>{t(locale, 'guideSkip')}</Button>
                   </div>
-                </Panel>
+                </div>
               )}
-              {help && <PlayHelp />}
-              <Panel className="game-board-frame min-h-0 p-0 overflow-hidden">
-                <ApartmentView state={state} selected={selected} moveSource={moveSource}
-                  locale={locale} onPick={pickRoom} />
-              </Panel>
-              <div className="game-tip">
-                <span className="text-xl leading-5" aria-hidden="true">✦</span>
-                <span>{moveSource !== null ? t(locale, 'moveHint') : locale === 'zh'
-                  ? '点击公寓房间或使用左侧房号；相邻怪物会触发特别收益。'
-                  : 'Tap an apartment room or use the room selector. Neighbors grant special bonuses.'}</span>
+              {help && (
+                <div className="game-help-drawer">
+                  <PlayHelp />
+                </div>
+              )}
+              <div className="game-board-frame">
+                <div className="game-board-inner">
+                  <ApartmentView state={state} selected={selected} moveSource={moveSource}
+                    locale={locale} onPick={(index) => {
+                      pickRoom(index);
+                      if (moveSource === null && !state.over) setMobilePanel('recruit');
+                    }} />
+                </div>
               </div>
-              <StatusBar message={localizeGameText(error || state.notice, locale)} />
+              <div className="game-stage-foot">
+                <span>{moveSource !== null
+                  ? t(locale, 'moveHint')
+                  : locale === 'zh' ? '点房间 · 招募租客 · 经营五夜'
+                    : 'Choose rooms · Recruit · Survive five nights'}</span>
+                <StatusBar message={localizeGameText(error || state.notice, locale)} />
+              </div>
             </section>
 
-            <aside className="game-ledger">
-              <ManagementPanel />
-              <div className="game-moon-card flex flex-col gap-3">
-                <p className="game-eyebrow">☾ NIGHTLY COLLECTION</p>
-                <p className="text-sm text-mist-400">{locale === 'zh'
-                  ? '准备好了吗？今晚的租金与奇遇都由你决定。'
-                  : 'Ready to close the books? Tonight brings rent and surprises.'}</p>
-                <Button variant="primary" size="lg" fullWidth className="game-action-primary" disabled={!canSettle} onClick={nextDay}>
-                  {t(locale, 'nextDay')}
-                </Button>
+            <aside className={'game-ledger ' + (mobilePanel === 'manage' || mobilePanel === 'log' ? '' : 'game-mobile-hidden')}
+              aria-label={locale === 'zh' ? '经营与结算' : 'Management and settlement'}>
+              <div className="game-mobile-pane game-manage-pane" data-selected={mobilePanel === 'manage'}>
+                <EconomyPanel />
+                <ManagementPanel />
+                <div className="game-night-action">
+                  <Button variant="primary" size="lg" fullWidth className="game-action-primary"
+                    disabled={!canSettle} onClick={nextDay}>
+                    ☾ {t(locale, 'nextDay')}
+                  </Button>
+                </div>
                 {state.over && (
                   <ResultCard outcome={state.outcome === 'win' ? 'win' : 'lose'}
                     locale={locale} notice={localizeGameText(state.notice, locale)} onReset={reset} />
                 )}
               </div>
-              <Panel className="game-log">
-                <p className="game-panel-heading">{locale === 'zh' ? '公寓夜间手记' : 'Nightly journal'}</p>
-                <LogList entries={state.log.map((entry) => localizeGameText(entry, locale))}
-                  empty={t(locale, 'emptyLog')} />
-              </Panel>
+              <div className="game-mobile-pane game-log-pane" data-selected={mobilePanel === 'log'}>
+                <Panel className="game-log">
+                  <p className="game-panel-heading">
+                    {locale === 'zh' ? '公寓夜间手记' : 'Nightly journal'}
+                  </p>
+                  <LogList entries={state.log.map((entry) => localizeGameText(entry, locale))}
+                    empty={t(locale, 'emptyLog')} />
+                </Panel>
+              </div>
             </aside>
           </div>
         </main>
 
+        <nav className="game-mobile-tabs" role="tablist"
+          aria-label={locale === 'zh' ? '游戏操作面板' : 'Game panels'}>
+          {mobileTabs.map((tab) => (
+            <button key={tab.id} type="button" role="tab"
+              aria-selected={mobilePanel === tab.id}
+              className={mobilePanel === tab.id ? 'is-current' : ''}
+              onClick={() => setMobilePanel(tab.id)}>
+              <span aria-hidden="true">{tab.icon}</span>
+              <span>{locale === 'zh' ? tab.zh : tab.en}</span>
+            </button>
+          ))}
+        </nav>
         <footer className="game-footer game-container">
-          <p className="text-center text-xs text-mist-500">
-            ✧ MONSTER APARTMENT · PHASER / NEXT.JS ✧ · {t(locale, saveAvailable ? 'saveReady' : 'saveUnavailable')}
-          </p>
+          ✧ MONSTER APARTMENT · {t(locale, saveAvailable ? 'saveReady' : 'saveUnavailable')} ✧
         </footer>
       </div>
     </div>
