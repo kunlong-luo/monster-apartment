@@ -104,3 +104,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## V0.2.2 implementation notes (PR #2)
+- GameScreen gates interaction behind store.hydrated while restoring localStorage; do not read it during SSR.
+- src/lib/save-game.ts validates a versioned save for current-browser persistence only. GameScreen attaches a Zustand subscription after restoration.
+- src/lib/i18n.ts translates UI, tenant names, night-event text and history without changing core engine rules.
+- New-player tutorial state is in src/store/game-store.ts; skip/replay and progress persist locally.
+- e2e/features.spec.ts covers refresh restoration, bilingual controls and tutorial; CI uses preinstalled Chrome via PLAYWRIGHT_USE_SYSTEM_CHROME=1 because Chromium CDN TLS failed on runner.
+- V0.2.2 CI baseline: Node rules 6, Vitest 6, Playwright 12; Next regular and static exports both build.

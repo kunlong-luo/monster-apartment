@@ -1,4 +1,4 @@
-# Monster Apartment · V0.2.1 Next.js 技术栈
+# Monster Apartment · V0.2.2 Next.js 技术栈
 
 **游戏玩法：** 六间房、四类租客、招募 / 移动 / 交换、邻接加成、五日经营与重开。首版为可行性原型，并非商业发行游戏。
 
@@ -29,7 +29,7 @@ pnpm lint               # ESLint flat config，0 warning
 pnpm test:rules         # node --test，6 条
 pnpm test               # vitest，3 条
 pnpm build              # Next 16 Turbopack
-pnpm e2e                # Playwright，原有6条 + 新增3条搬家交换测试（需 pnpm exec playwright install chromium）
+pnpm e2e                # Playwright，共12条（CI 使用系统 Chrome；本机需安装浏览器）
 ```
 
 CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`，分 `checks` 与 `e2e` 两个 job。
@@ -47,8 +47,8 @@ CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`�
 | `src/components/apartment/*` | 客户端专有边界（`next/dynamic({ ssr:false })`） |
 | `src/components/game/*` | 顶栏、租客面板、房间选择器、结算等 11 个面板 |
 | `src/components/ui/*` | 9 个自建 primitive（Button/Panel/Badge/…），不依赖第三方 UI 库 |
-| `tests/` | 引擎单测：Node 类型剥离 6 条 + Vitest 3 条 |
-| `e2e/` | Playwright：原有6项流程 + 3项搬家/交换/终局回归（PR CI 9/9 通过） |
+| `tests/` | Node 规则测试 6 项 + Vitest 6 项（含存档与国际化校验） |
+| `e2e/` | Playwright：六项基础流程、三项搬家回归、三项 V0.2.2 存档/英文/教学流程，共12项 |
 | `docs/` | 产品计划、技术栈矩阵、变更记录 |
 | `management/TASKS.csv` | 任务状态与验收标准 |
 
@@ -65,7 +65,7 @@ CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`�
 - TypeScript 固定 6.0.3：`typescript-eslint` 尚不支持 TypeScript 7 的编译器 API。
 - Phaser 通过 `next/dynamic` 独立分包，进入画面时会短暂显示“正在加载公寓地图…”。
 - 数值平衡：最优布局五天可达 232 金币 / 满意度 63（目标 135 / 55）；空置房会亏损。
-- 尚无存档、英文、音效、账号与 Electron 打包。
+- 已加入浏览器本地存档与英文界面；仍无音效、云端账号同步与 Electron 打包。
 
 ## 7. V0.2.1 修复与 Web 部署准备
 
@@ -75,6 +75,14 @@ CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`�
 - GitHub Pages 使用可选静态导出构建（`NEXT_STATIC_EXPORT=1 pnpm build`）；常规开发模式无需修改。部署说明见 [DEPLOYMENT_NEXTJS.md](./docs/DEPLOYMENT_NEXTJS.md)。
 - **验证：PR #1 已通过常规构建、9/9 Playwright 测试和静态导出 CI；正式 Pages 链接仍须合并并配置 Pages 后人工验收。**
 
-## 8. 下一阶段
+## 8. V0.2.2 新功能
+
+- 四步非阻断式新手引导，支持自动推进、跳过与重新查看。
+- 本地自动存档：招募、搬家、经营结算后自动保存，页面刷新恢复进度。
+- 顶部选择中文或 English；租客、管理面板、Phaser 房间画面、事件和日志可切换语言。
+- 存档只属于当前浏览器和站点；清理浏览器存储或禁用 localStorage 会使进度无法恢复。
+- PR #2 检查通过：TypeScript、ESLint、规则测试、Vitest、Next 构建、静态导出与 Playwright 12/12。尚未合并到线上版本。
+
+## 9. 下一阶段
 
 V0.3 优先：新手引导、英文、本地存档、数值调优与外部玩家测试。

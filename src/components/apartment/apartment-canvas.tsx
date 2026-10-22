@@ -3,11 +3,13 @@
 import * as Phaser from 'phaser';
 import { useEffect, useRef } from 'react';
 import type { GameState } from '@/core/engine';
+import type { Locale } from '@/lib/i18n';
 import { apartmentEvents } from '@/game/events';
 import ApartmentScene from '@/game/apartment-scene';
 
 type ApartmentCanvasProps = {
   state: GameState;
+  locale: Locale;
   selected: number | null;
   moveSource: number | null;
   onPick: (index: number) => void;
@@ -17,13 +19,13 @@ type ApartmentCanvasProps = {
  * Thin adapter around the Phaser game: React owns the data, the scene only renders.
  * All rendering calls flow through `updateBoard`, so the scene never holds state.
  */
-export function ApartmentCanvas({ state, selected, moveSource, onPick }: ApartmentCanvasProps) {
+export function ApartmentCanvas({ state, selected, moveSource, locale, onPick }: ApartmentCanvasProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const gameRef = useRef<Phaser.Game | null>(null);
-  const latest = useRef({ state, selected, moveSource, onPick });
+  const latest = useRef({ state, selected, moveSource, locale, onPick });
 
   useEffect(() => {
-    latest.current = { state, selected, moveSource, onPick };
+    latest.current = { state, selected, moveSource, locale, onPick };
   });
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export function ApartmentCanvas({ state, selected, moveSource, onPick }: Apartme
     const handlePick = (index: number) => latest.current.onPick(index);
     const handleReady = (scene: ApartmentScene) => {
       const snapshot = latest.current;
-      scene.updateBoard(snapshot.state, snapshot.selected, snapshot.moveSource);
+      scene.updateBoard(snapshot.state, snapshot.selected, snapshot.moveSource, snapshot.locale);
     };
 
     apartmentEvents.on('room-picked', handlePick);
@@ -61,14 +63,14 @@ export function ApartmentCanvas({ state, selected, moveSource, onPick }: Apartme
 
   useEffect(() => {
     const scene = gameRef.current?.scene.getScene<ApartmentScene>(ApartmentScene.KEY);
-    if (scene?.sys.isActive()) scene.updateBoard(state, selected, moveSource);
-  }, [state, selected, moveSource]);
+    if (scene?.sys.isActive()) scene.updateBoard(state, selected, moveSource, locale);
+  }, [state, selected, moveSource, locale]);
 
   return (
     <div
       ref={hostRef}
       role="img"
-      aria-label="六间房的怪物公寓楼层示意图，可用左侧房间按钮键盘选择"
+      aria-label={locale === 'en' ? 'Six-room monster apartment floor plan. Use the room buttons to select rooms with a keyboard.' : '六间房的怪物公寓楼层示意图，可用左侧房间按钮键盘选择'}
       className="apartment-canvas w-full overflow-hidden rounded-2xl border border-line-strong bg-ink-900 shadow-[0_15px_48px_#0005]"
     />
   );

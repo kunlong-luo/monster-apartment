@@ -32,6 +32,8 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_USE_SYSTEM_CHROME: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,7 +47,7 @@ jobs:
           path: .next/cache
           key: nextjs-e2e-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
+      - run: google-chrome --version
       - run: pnpm e2e
 
   static-export:

@@ -1,14 +1,17 @@
 import { Button } from '@/components/ui/button';
 import { Panel } from '@/components/ui/panel';
 import { cn } from '@/components/ui/cn';
+import { t } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
 type ResultCardProps = {
   outcome: 'win' | 'lose';
+  locale: Locale;
   notice: string;
   onReset: () => void;
 };
 
-export function ResultCard({ outcome, notice, onReset }: ResultCardProps) {
+export function ResultCard({ outcome, locale, notice, onReset }: ResultCardProps) {
   const isWin = outcome === 'win';
 
   return (
@@ -20,11 +23,11 @@ export function ResultCard({ outcome, notice, onReset }: ResultCardProps) {
       )}
     >
       <div className="text-2xl font-bold mb-2" style={{ color: isWin ? '#f0c98f' : '#ffa8a8' }}>
-        {isWin ? '🎉 经营成功' : '本局未达标'}
+        {t(locale, isWin ? 'win' : 'lose')}
       </div>
       <p className="text-mist-400 text-sm mb-4">{notice}</p>
       <Button variant="primary" size="lg" onClick={onReset}>
-        再玩一局
+        {t(locale, 'playAgain')}
       </Button>
     </Panel>
   );
