@@ -12,7 +12,6 @@ export function NightSettlement({ result, satisfaction, locale }: Props) {
   const decisionMood = result.decisionSatisfaction ?? 0;
   const policyMood = result.policySatisfaction ?? 0;
   const preferenceMood = result.preferenceSatisfaction ?? 0;
-  const eventMood = 0; // The historical format does not yet store the event's satisfaction delta.
   const knownMoodDelta = preferenceMood + policyMood + decisionMood;
   const lines = [
     { label: zh ? '租金' : 'Rent', value: result.rent },
@@ -23,14 +22,14 @@ export function NightSettlement({ result, satisfaction, locale }: Props) {
     { label: zh ? '夜间抉择' : 'Decision', value: result.decisionCoins ?? 0 },
     { label: zh ? '夜间事件' : 'Night event', value: result.event },
   ];
-  const previousMood = Math.max(0, Math.min(100, satisfaction - knownMoodDelta - eventMood));
   return (
-    <Panel className="game-settlement-reveal" >
-      <div className="flex items-center justify-between gap-2 mb-2">
+    <Panel className="game-settlement-reveal">
+      <details className="group">
+      <summary className="flex cursor-pointer items-center justify-between gap-2">
         <strong className="text-gold-200 text-sm">{zh ? `第 ${result.day} 夜 · 经营结算` : `Night ${result.day} · Settlement`}</strong>
         <span className="text-mint-300 font-bold">{signed(result.net)} ◈</span>
-      </div>
-      <p className="text-mist-300 text-xs mb-2">
+      </summary>
+      <p className="text-mist-300 text-xs my-2">
         ☾ {localizeGameText(result.eventTitle, locale)} · {localizeGameText(result.eventDetail, locale)}
       </p>
       <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs" data-testid="night-settlement">
@@ -46,9 +45,10 @@ export function NightSettlement({ result, satisfaction, locale }: Props) {
         </div>
       </div>
       <p className="text-mist-500 text-xs mt-2">
-        {zh ? '满意度：已结算' : 'Mood: settled'} · {zh ? '策略与房间影响' : 'Policy and room effects'} {signed(knownMoodDelta)}
-        {previousMood !== satisfaction - knownMoodDelta ? (zh ? '（含上限限制）' : ' (capped)') : ''}
+        {zh ? '满意度已结算；房间、策略及抉择的影响' : 'Mood settled; room, policy and decision effects'} {signed(knownMoodDelta)}
+        {zh ? '（不含邻接与事件变化）' : ' (excludes adjacency and event changes)'}
       </p>
+      </details>
     </Panel>
   );
 }
