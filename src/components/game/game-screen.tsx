@@ -27,7 +27,7 @@ export function GameScreen() {
   const [mobilePanel, setMobilePanel] = useState<MobilePanel>('recruit');
   const [spiritOpen, setSpiritOpen] = useState(false);
   const {
-    state, collection, selected, moveSource, error, help, locale, tutorialActive, tutorialStep, saveAvailable, hydrated,
+    state, selected, moveSource, error, help, locale, tutorialActive, tutorialStep, saveAvailable, hydrated,
     pickRoom, recruit, beginMove, cancelMove, nextDay, reset, toggleHelp,
     setLocale, nextTutorial, skipTutorial, replayTutorial,
   } = useGameStore();
