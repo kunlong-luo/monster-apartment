@@ -7,7 +7,13 @@ import type { SpiritId } from '@/core/spirit-collection';
 import { advanceRaid, beginRaid, castRaidSkill, deployToLane, prepareRaid, relocateRaid } from '@/core/night-raid';
 import type { Lane, RaidState } from '@/core/night-raid';
 import { SpiritPortrait } from './spirit-portrait';
-import { RaidBattleCanvas } from './raid-battle-canvas';
+import dynamic from 'next/dynamic';
+
+const RaidBattleCanvas = dynamic(
+  () => import('./raid-battle-canvas').then((mod) => mod.RaidBattleCanvas),
+  { ssr: false, loading: () => <div className="aspect-[960/342] rounded-xl bg-ink-800"
+    role="status" aria-label="Loading battle arena" /> },
+);
 import { Button } from '@/components/ui/button';
 
 const LANES = [0, 1, 2] as const;
