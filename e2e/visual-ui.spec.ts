@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('illustrated apartment dominates the desktop composition', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/');
+  await page.goto('/legacy');
   const stage = page.getByTestId('apartment-stage');
   const canvas = page.locator('.apartment-canvas canvas');
   await expect(stage).toBeVisible();
@@ -30,7 +30,7 @@ test('illustrated apartment dominates the desktop composition', async ({ page })
 
 test('mobile game has stage-first layout, readable controls, and no side scrolling', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/');
+  await page.goto('/legacy');
   const stage = page.getByTestId('apartment-stage');
   await expect(stage).toBeVisible();
   const canvas = page.locator('.apartment-canvas canvas');
