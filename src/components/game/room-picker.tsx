@@ -5,6 +5,7 @@ import { cn } from '@/components/ui/cn';
 import type { RoomSlot } from '@/core/engine';
 import { useGameStore } from '@/store/game-store';
 import { t } from '@/lib/i18n';
+import { traitLabel, tenantPreference } from '@/lib/strategy-labels';
 
 type RoomPickerProps = {
   rooms: RoomSlot[];
@@ -50,6 +51,12 @@ export function RoomPicker({ rooms, selected, moveSource, disabled, onPick }: Ro
           );
         })}
       </div>
+      {selected !== null && (
+        <p className="text-xs text-gold-200 mt-2" data-testid="room-affinity">
+          {locale === 'zh' ? '房间属性' : 'Room trait'} · {traitLabel(locale, selected)}
+          {' · '}{tenantPreference(locale, rooms[selected], selected)}
+        </p>
+      )}
       <p className="hint text-mist-500 text-xs mt-2 leading-relaxed">
         {moveSource !== null
           ? t(locale, 'moveHint')
