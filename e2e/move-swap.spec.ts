@@ -1,55 +1,34 @@
-import { expect, test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { placeStarter, seedSpirits } from './helpers';
 
-async function hireInto(page: import('@playwright/test').Page, room: number, name: RegExp) {
-  await page.getByRole('button', { name: new RegExp(`^${room} 号房`) }).click();
-  await page.getByRole('button', { name }).click();
-}
-
-test('move a resident to an empty room, then cancel a move', async ({ page }) => {
+test('move an original spirit and cancel another move', async ({ page }) => {
   await page.goto('/');
-  const move = page.getByRole('button', { name: '移动 / 交换租客' });
-
+  const move=page.getByRole('button', { name: '移动 / 交换灵核' });
   await expect(move).toBeDisabled();
-  await hireInto(page, 1, /史莱姆/);
-  await hireInto(page, 2, /火精灵/);
-  await expect(page.getByText('房间 1-2：蒸汽供能 +3 租金')).toBeVisible();
-
+  await placeStarter(page);
   await move.click();
-  await expect(page.getByRole('button', { name: '取消搬家' })).toBeVisible();
   await page.getByRole('button', { name: /^6 号房/ }).click();
-
-  await expect(page.getByRole('button', { name: '2 号房（空房）' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '1 号房（空房）' })).toBeVisible();
   await expect(page.getByRole('button', { name: '6 号房（已入住）' })).toBeVisible();
-  await expect(page.getByText('房间 1-2：蒸汽供能 +3 租金')).toHaveCount(0);
-
   await move.click();
-  await page.getByRole('button', { name: '取消搬家' }).click();
+  await page.getByRole('button', { name: '取消调配' }).click();
   await expect(page.getByRole('button', { name: '6 号房（已入住）' })).toBeVisible();
 });
-
-test('swap two occupied rooms and update adjacency descriptions', async ({ page }) => {
+test('swapping two collected spirits updates placement and affinity', async ({ page }) => {
+  await seedSpirits(page,['pebble-crab','lantern-beetle',null,null,null,null]);
   await page.goto('/');
-  await hireInto(page, 1, /史莱姆/);
-  await hireInto(page, 2, /火精灵/);
-  await hireInto(page, 3, /石像鬼/);
-
-  await expect(page.getByText('房间 1-2：蒸汽供能 +3 租金')).toBeVisible();
-  await expect(page.getByText('房间 1-3：整洁石像 +2 租金')).toBeVisible();
-
+  await expect(page.getByTestId('room-affinity')).toContainText('契合 +3');
+  await page.getByRole('button', { name: /^1 号房/ }).click();
+  await page.getByRole('button', { name: '移动 / 交换灵核' }).click();
   await page.getByRole('button', { name: /^2 号房/ }).click();
-  await page.getByRole('button', { name: '移动 / 交换租客' }).click();
-  await page.getByRole('button', { name: /^3 号房/ }).click();
-
-  await expect(page.getByText('房间 1-2：整洁石像 +2 租金')).toBeVisible();
-  await expect(page.getByText('房间 1-3：蒸汽供能 +3 租金')).toBeVisible();
+  await expect(page.getByTestId('room-affinity')).toContainText('不适 -1');
+  await page.reload();
+  await expect(page.getByTestId('room-affinity')).toContainText('不适 -1');
 });
-
-test('move action is unavailable when a game ends', async ({ page }) => {
+test('movement disabled when final night ends', async ({ page }) => {
   await page.goto('/');
-  await hireInto(page, 1, /史莱姆/);
-  for (let i = 0; i < 5; i++) {
-    await page.getByRole('button', { name: /结束今天/ }).click();
-  }
+  await placeStarter(page);
+  for (let i=0;i<5;i++) await page.getByRole('button',{name:'结束今天'}).click();
   await expect(page.getByText('本局未达标')).toBeVisible();
-  await expect(page.getByRole('button', { name: '移动 / 交换租客' })).toBeDisabled();
+  await expect(page.getByRole('button',{name:'移动 / 交换灵核'})).toBeDisabled();
 });
