@@ -6,6 +6,7 @@ import { Panel } from '@/components/ui/panel';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
 import { t } from '@/lib/i18n';
+import { SpiritPortrait } from './spirit-portrait';
 
 export function SpiritRoster({ onSummon }: { onSummon: () => void }) {
   const { state, collection, locale, selected, assignSpirit, collectionError } = useGameStore();
@@ -29,7 +30,7 @@ export function SpiritRoster({ onSummon }: { onSummon: () => void }) {
           return (
             <div className="game-tenant" key={spirit.id} data-spirit={spirit.id}>
               <div className="flex items-center gap-2">
-                <div className="game-tenant-avatar text-gold-200" aria-hidden="true">{spirit.icon}</div>
+                <SpiritPortrait id={spirit.id} evolution={collection.owned[spirit.id]?.evolution ?? 0} size={52} />
                 <div className="min-w-0 flex-1">
                   <strong className="block text-mist-300 text-sm truncate">{spirit[locale]}</strong>
                   <p className="text-[10px] text-mist-400">{spirit.quality} · {FACTION_LABELS[spirit.faction][locale]} · Lv.{level}</p>
