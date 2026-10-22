@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('mobile spirit residence has accessible controls and no overflow', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/');
+  await page.goto('/legacy');
   await expect(page.getByRole('heading', { name: '灵核公寓' })).toBeVisible();
   await expect(page.getByRole('tab', { name: '灵核' })).toBeVisible();
   await page.getByRole('tab', { name: '房间' }).click();
@@ -13,7 +13,7 @@ test('mobile spirit residence has accessible controls and no overflow', async ({
   expect(overflow).toBeLessThanOrEqual(1);
 });
 test('spirits can be deployed using keyboard only', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/legacy');
   const room = page.getByRole('button', { name: /^3 号房/ });
   await room.focus();
   await page.keyboard.press('Enter');
