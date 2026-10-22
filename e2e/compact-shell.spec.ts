@@ -37,6 +37,12 @@ test('V0.4 mobile uses recruit, room, management and journal tabs without page s
   await manage.click();
   const end = page.getByRole('button', { name: /结束今天/ });
   await expect(end).toBeEnabled();
+  const ledger = await page.locator('.game-ledger').boundingBox();
+  const action = await end.boundingBox();
+  expect(ledger).not.toBeNull();
+  expect(action).not.toBeNull();
+  expect(action!.y).toBeGreaterThanOrEqual(ledger!.y - 1);
+  expect(action!.y + action!.height).toBeLessThanOrEqual(ledger!.y + ledger!.height + 1);
   await end.click();
   await journal.click();
   await expect(page.locator('.game-log')).toContainText('第 1 天：租金');
