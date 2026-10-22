@@ -15,7 +15,7 @@ test('move an original spirit and cancel another move', async ({ page }) => {
   await expect(page.getByRole('button', { name: '6 号房（已入住）' })).toBeVisible();
 });
 test('swapping two collected spirits updates placement and affinity', async ({ page }) => {
-  await seedSpirits(page,['pebble-crab','lantern-beetle',null,null,null,null]);
+  await seedSpirits(page,['dewdrop','lantern-beetle',null,null,null,null]);
   await page.goto('/');
   await expect(page.getByTestId('room-affinity')).toContainText('契合 +3');
   await page.getByRole('button', { name: /^1 号房/ }).click();
