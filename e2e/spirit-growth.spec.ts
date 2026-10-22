@@ -29,7 +29,7 @@ test('fragment awakening persists and remains visible in the codex', async ({ pa
     const key = 'monster-apartment:save:v1';
     if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(data));
   }, initial);
-  await page.goto('/');
+  await page.goto('/legacy');
   await page.getByTestId('open-spirit-portal').click();
   const portal = page.getByTestId('spirit-portal');
   await portal.getByRole('tab', { name: '图鉴养成' }).click();
@@ -52,7 +52,7 @@ test('mythic final evolution offers meaningful exclusive paths', async ({ page }
     const key = 'monster-apartment:save:v1';
     if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(data));
   }, initial);
-  await page.goto('/');
+  await page.goto('/legacy');
   await page.getByTestId('open-spirit-portal').click();
   const portal = page.getByTestId('spirit-portal');
   await portal.getByRole('tab', { name: '图鉴养成' }).click();
