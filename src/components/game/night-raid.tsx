@@ -16,7 +16,9 @@ const enLane = ['Upper', 'Middle', 'Lower'];
 export function NightRaid({ onClose }: { onClose: () => void }) {
   const { state, collection, locale, claimRaidReward } = useGameStore();
   const [raid, setRaid] = useState<RaidState>(() => prepareRaid(collection));
-  const [selected, setSelected] = useState<SpiritId | null>(null);
+  const [selected, setSelected] = useState<SpiritId | null>(() =>
+    collection.equipped.find((id): id is SpiritId => id !== null) ??
+    (Object.keys(collection.owned)[0] as SpiritId | undefined) ?? null);
   const [moving, setMoving] = useState<Lane | null>(null);
   const zh = locale === 'zh';
   const claimed = collection.claimedRaids?.includes(state.day) ?? false;
