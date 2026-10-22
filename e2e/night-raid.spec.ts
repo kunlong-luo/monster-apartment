@@ -74,3 +74,32 @@ test('tactical pause freezes enemies and wave forecast predicts the next threat'
   await expect.poll(async () => raid.locator('footer > span').textContent()).not.toBe(progress);
   await raid.getByRole('button', { name: '退出防线' }).click();
 });
+
+test('stage choice changes enemy intel and losing reveals actionable lane report', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  await placeStarter(page);
+  await page.getByTestId('open-night-raid').click();
+  const raid = page.getByTestId('night-raid');
+  const intercept = page.getByTestId('raid-mission-intercept');
+  await expect(raid.getByTestId('raid-missions')).toBeVisible();
+  await intercept.click();
+  await expect(intercept).toHaveAttribute('aria-pressed', 'true');
+  await expect(raid.getByTestId('raid-next-waves')).toContainText('第3刻');
+  await expect(raid.locator('footer > span')).toContainText('/30');
+  await page.getByTestId('raid-start').click();
+  await page.getByTestId('raid-speed').click();
+  await expect(raid.getByTestId('raid-debrief')).toBeVisible({ timeout: 40000 });
+  await expect(raid.getByTestId('raid-stars')).toBeVisible();
+  await expect(raid.getByTestId('raid-lane-report')).toContainText('中路');
+  await expect(raid.getByTestId('raid-advice')).toBeVisible();
+  const lost = await raid.getByText('防线失守 · 战报').count();
+  if (lost) {
+    await raid.getByRole('button', { name: '调整阵容 · 再战' }).click();
+    await expect(page.getByTestId('raid-mission-intercept')).toHaveAttribute('aria-pressed','true');
+    await expect(raid.getByTestId('raid-next-waves')).toContainText('第3刻');
+  } else {
+    await expect(raid.getByTestId('raid-reward-preview')).toContainText('召唤券');
+  }
+  await raid.getByRole('button', { name: '退出防线' }).click();
+});
