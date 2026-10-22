@@ -1,10 +1,13 @@
 name: Quality
 on:
   push:
-    branches: [main, feat/nextjs]
+    branches: [main]
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
 env:
   NEXT_TELEMETRY_DISABLED: '1'
 jobs:
@@ -58,10 +61,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: v030-ui-review
+          name: v050-spirit-ui-review
           path: |
-            test-results/v030-desktop.png
-            test-results/v030-mobile.png
+            test-results/spirit-desktop.png
+            test-results/spirit-mobile.png
           if-no-files-found: warn
           retention-days: 14
 
