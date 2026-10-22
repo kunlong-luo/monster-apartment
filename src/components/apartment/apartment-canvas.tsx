@@ -57,6 +57,10 @@ export function ApartmentCanvas({ state, selected, moveSource, locale, onPick }:
       apartmentEvents.off('room-picked', handlePick);
       apartmentEvents.off('scene-ready', handleReady);
       instance.destroy(true);
+      // Next.js dev StrictMode replays effects. Phaser may remove its canvas on
+      // a later frame, so synchronously clear the old host before re-creating it.
+      // React does not own any children inside this dedicated Phaser div.
+      host.replaceChildren();
       gameRef.current = null;
     };
   }, []);
