@@ -16,8 +16,7 @@ test('nightly event choice survives reload and changes after settlement', async 
   await expect(page.locator('.game-log')).toContainText('夜间抉择 profit');
   await expect(page.getByRole('group', { name: '今晚的事件应对' })
     .getByRole('button', { name: /顺其自然/ })).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.getByRole('group', { name: '今晚的事件应对' }))
-    .toContainText('水管危机');
+  await expect(page.getByText('第 2 夜 · 水管危机')).toBeVisible();
   const vertical = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
   expect(vertical).toBeLessThanOrEqual(1);
 });
