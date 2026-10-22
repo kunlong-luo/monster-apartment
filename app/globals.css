@@ -393,7 +393,7 @@
   .game-status-line { padding: 6px 10px; }
   .game-footer { display: none; }
 }
-@media (max-width: 779px) {
+@media (max-width: 1199px) {
   .game-shell { height: 100dvh; min-height: 0; overflow: hidden; }
   .game-page-layer { height: 100%; display: flex; flex-direction: column; }
   .game-masthead { flex: 0 0 95px; height: 95px; padding: 6px 0; overflow: hidden; }

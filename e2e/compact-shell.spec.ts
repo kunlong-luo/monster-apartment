@@ -54,3 +54,15 @@ test('V0.4 mobile uses recruit, room, management and journal tabs without page s
   expect(extent.vertical).toBeLessThanOrEqual(1);
   expect(extent.horizontal).toBeLessThanOrEqual(1);
 });
+
+
+test('V0.4 tablet uses the compact dock rather than a long stacking page', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.goto('/');
+  await expect(page.locator('.apartment-canvas canvas')).toHaveCount(1);
+  await expect(page.getByRole('tablist')).toBeVisible();
+  await page.getByRole('tab', { name: '房间' }).click();
+  await expect(page.getByRole('button', { name: /^1 号房/ })).toBeVisible();
+  const vertical = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
+  expect(vertical).toBeLessThanOrEqual(1);
+});
