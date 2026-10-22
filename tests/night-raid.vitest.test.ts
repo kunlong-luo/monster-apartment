@@ -104,6 +104,7 @@ describe('Real-time tactical defense', () => {
     const enemy = { id: 99, lane: 1 as const, kind: 'boss' as const,
       hp: 200, maxHp: 200, distance: 12, damage: 3 };
     const empty = { ...beginRaid(prepareRaid(collection), collection),
+      lineup: ['seedling', null, null] as (SpiritId | null)[],
       tick: 28, baseHp: 12, nextId: 100, enemies: [enemy] };
     const alert = advanceRaid(empty, collection);
     expect(alert.bossWarning).toEqual({ lane:1, ticksLeft:3 });
