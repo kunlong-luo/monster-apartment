@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('game UI loads and displays apartment management', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByText('怪物租客公寓', { exact: true })).toBeVisible();
+  await expect(page.getByText('灵核公寓', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: /结束今天/ })).toBeVisible();
   await expect(page.locator('canvas').first()).toBeVisible();
 });
