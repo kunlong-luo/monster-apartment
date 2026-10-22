@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { SPIRITS, newCollection } from '../src/core/spirit-collection';
 import type { CollectionState, SpiritId } from '../src/core/spirit-collection';
+import { newGame } from '../src/core/engine';
+import { useGameStore } from '../src/store/game-store';
 import {
   advanceRaid, beginRaid, castRaidSkill, deployToLane, prepareRaid,
   raidReward, relocateRaid,
@@ -81,6 +83,21 @@ describe('Real-time tactical defense', () => {
     expect(switched.lineup[0]).toBeNull();
     expect(raid.lineup[0]).toBe('day-smith');
     expect(relocateRaid(switched, 0, 1)).toBe(switched);
+  });
+
+  it('awards the actual collection only once each night, retaining save compatibility', () => {
+    const collection = newCollection();
+    useGameStore.setState({ state: newGame(), collection });
+    const victory = { ...prepareRaid(collection), phase:'won' as const };
+    useGameStore.getState().claimRaidReward(victory);
+    expect(useGameStore.getState().collection.tickets).toBe(13);
+    expect(useGameStore.getState().collection.essence).toBe(10);
+    expect(useGameStore.getState().collection.claimedRaids).toEqual([1]);
+    useGameStore.getState().claimRaidReward(victory);
+    expect(useGameStore.getState().collection.tickets).toBe(13);
+    useGameStore.getState().reset();
+    expect(useGameStore.getState().collection.claimedRaids).toEqual([]);
+    useGameStore.setState({ state: newGame(), collection:newCollection() });
   });
 
   it('every spirit has valid stats for the action prototype', () => {
