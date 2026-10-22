@@ -7,7 +7,7 @@ import { SAVE_KEY, decodeSave, encodeSave } from '@/lib/save-game';
 import { GameHeader } from './game-header';
 import { EconomyPanel } from './economy-panel';
 import { RoomPicker } from './room-picker';
-import { TenantList } from './tenant-list';
+import { SpiritRoster } from './spirit-roster';
 import { ManagementPanel } from './management-panel';
 import { StrategyPanel } from './strategy-panel';
 import { NightDecisionPanel } from './night-decision-panel';
@@ -28,7 +28,7 @@ export function GameScreen() {
   const [spiritOpen, setSpiritOpen] = useState(false);
   const {
     state, selected, moveSource, error, help, locale, tutorialActive, tutorialStep, saveAvailable, hydrated,
-    pickRoom, recruit, beginMove, cancelMove, nextDay, reset, toggleHelp,
+    pickRoom, beginMove, cancelMove, nextDay, reset, toggleHelp,
     setLocale, nextTutorial, skipTutorial, replayTutorial,
   } = useGameStore();
 
@@ -86,7 +86,7 @@ export function GameScreen() {
   const tutorialKeys = ['guide1', 'guide2', 'guide3', 'guide4'] as const;
 
   const mobileTabs: Array<{ id: MobilePanel; zh: string; en: string; icon: string }> = [
-    { id: 'recruit', zh: '招募', en: 'Recruit', icon: '✦' },
+    { id: 'recruit', zh: '灵核', en: 'Spirits', icon: '✦' },
     { id: 'rooms', zh: '房间', en: 'Rooms', icon: '⌂' },
     { id: 'manage', zh: '经营', en: 'Manage', icon: '◈' },
     { id: 'log', zh: '手记', en: 'Journal', icon: '☾' },
@@ -104,7 +104,7 @@ export function GameScreen() {
         <main className="game-container game-main">
           <div className="game-layout">
             <aside className={'game-roster ' + (mobilePanel === 'recruit' || mobilePanel === 'rooms' ? '' : 'game-mobile-hidden')}
-              aria-label={locale === 'zh' ? '租客与房间操作' : 'Tenants and rooms'}>
+              aria-label={locale === 'zh' ? '灵核与房间操作' : 'Spirits and rooms'}>
               <div className="game-mobile-pane" data-selected={mobilePanel === 'rooms'}>
                 <RoomPicker rooms={state.rooms} selected={selected} moveSource={moveSource}
                   disabled={state.over} onPick={pickRoom} />
@@ -120,7 +120,7 @@ export function GameScreen() {
                 </div>
               </div>
               <div className="game-mobile-pane game-hire-pane" data-selected={mobilePanel === 'recruit'}>
-                <TenantList disabled={state.over || selected === null} onRecruit={recruit} />
+                <SpiritRoster onSummon={() => setSpiritOpen(true)} />
               </div>
             </aside>
 
@@ -168,8 +168,8 @@ export function GameScreen() {
               <div className="game-stage-foot">
                 <span>{moveSource !== null
                   ? t(locale, 'moveHint')
-                  : locale === 'zh' ? '点房间 · 招募租客 · 经营五夜'
-                    : 'Choose rooms · Recruit · Survive five nights'}</span>
+                  : locale === 'zh' ? '选房间 · 灵核入住 · 经营五夜'
+                    : 'Choose rooms · Place spirits · Survive five nights'}</span>
                 <div key={state.history.length + ':' + state.notice}
                   className={state.history.length > 0 ? 'game-settlement-reveal' : 'game-action-reveal'}>
                   <StatusBar message={localizeGameText(error || state.notice, locale)} />
