@@ -22,6 +22,7 @@ test('matching monsters to room traits wins a five-day run', async ({ page }) =>
   await settleDays(page, 5);
 
   await expect(page.getByText('🎉 经营成功')).toBeVisible();
+  await expect(page.getByTestId('final-grade')).toContainText('经营评级');
   await expect(page.getByRole('button', { name: /结束今天/ })).toBeDisabled();
 });
 
@@ -31,4 +32,5 @@ test('an under-built apartment loses after five days', async ({ page }) => {
   await settleDays(page, 5);
 
   await expect(page.getByText('本局未达标')).toBeVisible();
+  await expect(page.getByTestId('final-grade')).toContainText('经营评级');
 });
