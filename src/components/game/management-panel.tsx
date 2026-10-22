@@ -5,7 +5,7 @@ import { Panel } from '@/components/ui/panel';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { MeterRow } from '@/components/ui/meter-row';
 import { Badge } from '@/components/ui/badge';
-import { synergyDetails, preferenceDetails, dailyEstimate } from '@/core/engine';
+import { synergyDetails, preferenceDetails, dailyEstimate, managementForecast } from '@/core/engine';
 import { t, localizeGameText } from '@/lib/i18n';
 
 export function ManagementPanel() {
@@ -14,6 +14,7 @@ export function ManagementPanel() {
   const synergy = synergyDetails(state.rooms);
   const preference = preferenceDetails(state.rooms);
   const estimate = dailyEstimate(state);
+  const forecast = managementForecast(state);
 
   return (
     <Panel>
@@ -46,6 +47,14 @@ export function ManagementPanel() {
           tone={estimate.decision >= 0 ? 'positive' : 'negative'}
         />
         <MeterRow label={t(locale, 'estimated')} value={estimate.net} tone="default" />
+        <div className="game-balance-forecast" data-testid="balance-forecast">
+          <strong>{locale === 'zh' ? '今晚满意度预测' : 'Tonight mood preview'}</strong>
+          <span>{state.satisfaction} → {forecast.satisfactionTonight}</span>
+          <strong>{locale === 'zh' ? '五夜趋势（不含未知事件）' : 'Five-night trend (no surprise events)'}</strong>
+          <span>{locale === 'zh' ? '金币' : 'Coins'} {forecast.coinsAtEnd} / 135 · {locale === 'zh' ? '满意度' : 'Mood'} {forecast.satisfactionAtEnd} / 55</span>
+          <small>{locale === 'zh' ? '仅供参考：后续按现有住户和稳健策略计算，未包含未来招募、事件及额外选择。'
+            : 'Illustrative only: same tenants and steady policy afterward; excludes recruitment and surprise events.'}</small>
+        </div>
       </div>
       {synergy.messages.length > 0 && (
         <div className="space-y-1.5">
