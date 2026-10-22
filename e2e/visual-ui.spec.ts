@@ -8,7 +8,7 @@ test('illustrated apartment dominates the desktop composition', async ({ page })
   await expect(stage).toBeVisible();
   await expect(canvas).toHaveCount(1);
   await expect(canvas.first()).toBeVisible();
-  await expect(page.getByRole('heading', { name: '怪物租客公寓' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '灵核公寓' })).toBeVisible();
 
   const rosterBox = await page.locator('.game-roster').boundingBox();
   const stageBox = await stage.boundingBox();
