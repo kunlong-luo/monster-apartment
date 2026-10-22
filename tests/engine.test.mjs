@@ -19,16 +19,16 @@ test('an owned spirit is placed for free; duplicates are not allowed', () => {
   assert.equal(base.rooms[0], null);
 });
 test('move, swap and withdraw manage actual spirits', () => {
-  let s = placeSpirit(newGame(), 0, 'pebble-crab').state;
+  let s = placeSpirit(newGame(), 0, 'dewdrop').state;
   s = placeSpirit(s, 1, 'lantern-beetle').state;
   s = moveOrSwap(s, 0, 1).state;
   assert.equal(s.rooms[0], 'lantern-beetle');
   s = moveOrSwap(s, 1, 4).state;
-  assert.equal(s.rooms[4], 'pebble-crab');
+  assert.equal(s.rooms[4], 'dewdrop');
   assert.equal(removeSpirit(s, 4).state.rooms[4], null);
 });
 test('room traits and original faction synergy affect income', () => {
-  const rooms = ['pebble-crab', 'mirror-koi', null, null, null, null];
+  const rooms = ['dewdrop', 'mirror-koi', null, null, null, null];
   assert.equal(adjacency(rooms).length, 7);
   assert.equal(synergyDetails(rooms).coins, 4);
   assert.equal(preferenceDetails(rooms).matches, 1);
