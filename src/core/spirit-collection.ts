@@ -1,0 +1,180 @@
+import type { RoomSlot } from './engine';
+
+export type Quality = 'N' | 'R' | 'SR' | 'SSR' | 'UR';
+export type Faction = 'tide' | 'forge' | 'veil' | 'grove';
+export type Element = 'water' | 'fire' | 'stone' | 'wind' | 'light' | 'shadow';
+export type SpiritRole = 'economy' | 'repair' | 'guard' | 'explore';
+
+export type Spirit = {
+  id: string;
+  zh: string;
+  en: string;
+  quality: Quality;
+  faction: Faction;
+  element: Element;
+  role: SpiritRole;
+  icon: string;
+  skillZh: string;
+  skillEn: string;
+  coins: number;
+  mood: number;
+};
+
+export const SPIRITS = [
+  { id: 'aurora-whale', zh: '极昼鲸', en: 'Dawnwhale', quality: 'UR', faction: 'tide', element: 'light', role: 'guard', icon: '◉', skillZh: '潮汐屏障：提高满意度', skillEn: 'Tide ward: improves mood', coins: 1, mood: 3 },
+  { id: 'mirror-koi', zh: '镜鳞鲤', en: 'Mirrorkoi', quality: 'UR', faction: 'tide', element: 'water', role: 'repair', icon: '◇', skillZh: '镜潮修复：平衡收入与舒适', skillEn: 'Mirror tide: balanced repairs', coins: 2, mood: 2 },
+  { id: 'cinder-stag', zh: '烬角鹿', en: 'Cinderstag', quality: 'UR', faction: 'forge', element: 'fire', role: 'economy', icon: '✷', skillZh: '恒炉：大量增加金币收入', skillEn: 'Eternal forge: improves revenue', coins: 5, mood: -1 },
+  { id: 'prism-mole', zh: '晶脊鼹', en: 'Prismmole', quality: 'UR', faction: 'forge', element: 'stone', role: 'repair', icon: '◆', skillZh: '晶脊工坊：提升产能', skillEn: 'Crystal works: boosts production', coins: 4, mood: 0 },
+  { id: 'eclipse-moth', zh: '蚀月蛾', en: 'Eclipsemoth', quality: 'UR', faction: 'veil', element: 'shadow', role: 'explore', icon: '☾', skillZh: '夜航：高收益高风险', skillEn: 'Nightflight: risk and reward', coins: 6, mood: -2 },
+  { id: 'whisper-cat', zh: '谧语猫', en: 'Whispercat', quality: 'UR', faction: 'veil', element: 'wind', role: 'guard', icon: '✧', skillZh: '暗影抚慰：保护住户情绪', skillEn: 'Quiet veil: protects mood', coins: 0, mood: 4 },
+  { id: 'root-crown', zh: '根冠兽', en: 'Rootcrown', quality: 'UR', faction: 'grove', element: 'stone', role: 'guard', icon: '♧', skillZh: '森境守望：大幅稳定满意度', skillEn: 'Forest watch: stabilizes mood', coins: 1, mood: 4 },
+  { id: 'dew-phoenix', zh: '露焰鸾', en: 'Dewphoenix', quality: 'UR', faction: 'grove', element: 'fire', role: 'economy', icon: '❀', skillZh: '生机轮转：兼顾收入与成长', skillEn: 'Renewal: growth and income', coins: 3, mood: 2 },
+  { id: 'wave-healer', zh: '澜幕医师', en: 'Wavehealer', quality: 'SSR', faction: 'tide', element: 'water', role: 'repair', icon: '≈', skillZh: '潮幕庇护：显著提升满意度', skillEn: 'Tidal shelter: improves mood', coins: 0, mood: 4 },
+  { id: 'day-smith', zh: '昼锻者', en: 'Daysmith', quality: 'SSR', faction: 'forge', element: 'fire', role: 'economy', icon: '✦', skillZh: '熔金契约：强力增收', skillEn: 'Gilded pact: strong revenue', coins: 5, mood: -1 },
+  { id: 'dusk-bell', zh: '暮铃行者', en: 'Duskbell', quality: 'SSR', faction: 'veil', element: 'shadow', role: 'explore', icon: '♢', skillZh: '午夜交易：收益与满意度交换', skillEn: 'Midnight trade: profit at a cost', coins: 5, mood: -2 },
+  { id: 'moss-keeper', zh: '苔光园主', en: 'Mosskeeper', quality: 'SSR', faction: 'grove', element: 'light', role: 'guard', icon: '❖', skillZh: '生命温室：提高住户舒适', skillEn: 'Living greenhouse: improves comfort', coins: 1, mood: 3 },
+  { id: 'dewdrop', zh: '露珠灵', en: 'Dewdrop', quality: 'SR', faction: 'tide', element: 'water', role: 'repair', icon: '●', skillZh: '管路润泽：平衡收益', skillEn: 'Clear pipes: balanced support', coins: 2, mood: 1 },
+  { id: 'lantern-beetle', zh: '灯甲虫', en: 'Lanternbeetle', quality: 'SR', faction: 'forge', element: 'light', role: 'economy', icon: '✺', skillZh: '余温制造：增加金币', skillEn: 'Emberwork: earns coins', coins: 3, mood: 0 },
+  { id: 'moon-scout', zh: '月影雀', en: 'Moonscout', quality: 'SR', faction: 'veil', element: 'wind', role: 'explore', icon: '☽', skillZh: '夜探：冒险增收', skillEn: 'Night scouting: extra profits', coins: 3, mood: -1 },
+  { id: 'fern-hare', zh: '蕨尾兔', en: 'Fernhare', quality: 'R', faction: 'grove', element: 'wind', role: 'guard', icon: '❧', skillZh: '安睡祝福：提高满意度', skillEn: 'Sleep blessing: improves mood', coins: 0, mood: 2 },
+  { id: 'pebble-crab', zh: '卵石蟹', en: 'Pebblecrab', quality: 'R', faction: 'tide', element: 'stone', role: 'repair', icon: '◇', skillZh: '沙岸拾荒：少量金币', skillEn: 'Shore scavenging: a little income', coins: 1, mood: 1 },
+  { id: 'seedling', zh: '芽核', en: 'Seedcore', quality: 'N', faction: 'grove', element: 'light', role: 'guard', icon: '✿', skillZh: '初芽：小幅稳定满意度', skillEn: 'First bloom: small mood boost', coins: 0, mood: 1 },
+] as const satisfies readonly Spirit[];
+
+export type SpiritId = (typeof SPIRITS)[number]['id'];
+export const QUALITY_ORDER: readonly Quality[] = ['N', 'R', 'SR', 'SSR', 'UR'];
+export const QUALITY_RATES: Readonly<Record<Quality, number>> = { N: 45, R: 30, SR: 17, SSR: 7, UR: 1 };
+export const QUALITY_LABELS: Record<Quality, { zh: string; en: string }> = {
+  N: { zh: '普通', en: 'Common' }, R: { zh: '稀有', en: 'Rare' },
+  SR: { zh: '史诗', en: 'Epic' }, SSR: { zh: '传说', en: 'Legendary' },
+  UR: { zh: '神话', en: 'Mythic' },
+};
+export const FACTION_LABELS: Record<Faction, { zh: string; en: string }> = {
+  tide: { zh: '潮息族', en: 'Tideborn' }, forge: { zh: '星匠会', en: 'Starforge' },
+  veil: { zh: '影帷盟', en: 'Veilbound' }, grove: { zh: '森灯庭', en: 'Groveward' },
+};
+export const SPIRIT_BY_ID = Object.fromEntries(SPIRITS.map((s) => [s.id, s])) as Record<SpiritId, Spirit>;
+export const isSpiritId = (value: unknown): value is SpiritId => typeof value === 'string' && Object.hasOwn(SPIRIT_BY_ID, value);
+
+export type SpiritProgress = { level: number; xp: number; shards: number; evolution: number };
+export type CollectionState = {
+  tickets: number;
+  essence: number;
+  pity: { sr: number; ssr: number; ur: number };
+  owned: Partial<Record<SpiritId, SpiritProgress>>;
+  equipped: (SpiritId | null)[];
+  recent: SpiritId[];
+  totalPulls: number;
+};
+export function newCollection(): CollectionState {
+  return {
+    tickets: 10, essence: 0, pity: { sr: 0, ssr: 0, ur: 0 },
+    owned: { seedling: { level: 1, xp: 0, shards: 0, evolution: 0 } },
+    equipped: [null, null, null, null, null, null], recent: [], totalPulls: 0,
+  };
+}
+
+export type CollectionOutcome = { collection: CollectionState; error: string | null };
+const rank = (quality: Quality): number => QUALITY_ORDER.indexOf(quality);
+const poolFor = (quality: Quality) => SPIRITS.filter((s) => s.quality === quality);
+const sample = (random: () => number) => Math.min(0.999999999, Math.max(0, random()));
+
+export function summon(collection: CollectionState, count: 1 | 10, random: () => number): CollectionOutcome {
+  if (collection.tickets < count) return { collection, error: '召唤券不足。' };
+  const pity = { ...collection.pity };
+  const owned = { ...collection.owned };
+  const recent: SpiritId[] = [];
+  for (let i = 0; i < count; i++) {
+    const roll = sample(random) * 100;
+    let quality: Quality = roll < 45 ? 'N' : roll < 75 ? 'R' : roll < 92 ? 'SR' : roll < 99 ? 'SSR' : 'UR';
+    if (pity.ur >= 99) quality = 'UR';
+    else if (pity.ssr >= 49 && rank(quality) < rank('SSR')) quality = 'SSR';
+    else if (pity.sr >= 9 && rank(quality) < rank('SR')) quality = 'SR';
+    const pool = poolFor(quality);
+    const spirit = pool[Math.floor(sample(random) * pool.length)];
+    recent.push(spirit.id);
+    const previous = owned[spirit.id];
+    owned[spirit.id] = previous
+      ? { ...previous, shards: previous.shards + 20 }
+      : { level: 1, xp: 0, shards: 0, evolution: 0 };
+    pity.sr = rank(quality) >= rank('SR') ? 0 : pity.sr + 1;
+    pity.ssr = rank(quality) >= rank('SSR') ? 0 : pity.ssr + 1;
+    pity.ur = quality === 'UR' ? 0 : pity.ur + 1;
+  }
+  return {
+    collection: { ...collection, tickets: collection.tickets - count,
+      totalPulls: collection.totalPulls + count, pity, owned, recent },
+    error: null,
+  };
+}
+
+export function equipSpirit(collection: CollectionState, room: number, id: SpiritId | null, rooms: readonly RoomSlot[]): CollectionOutcome {
+  if (!Number.isInteger(room) || room < 0 || room >= 6) return { collection, error: '房间无效。' };
+  if (id !== null && (!collection.owned[id] || !rooms[room])) return { collection, error: '请先招募住户并获得这只灵核。' };
+  if (id !== null && collection.equipped.some((current, index) => current === id && index !== room)) {
+    return { collection, error: '同一只灵核不能同时驻守两个房间。' };
+  }
+  const equipped = [...collection.equipped];
+  equipped[room] = id;
+  return { collection: { ...collection, equipped }, error: null };
+}
+
+export function swapEquipped(collection: CollectionState, a: number, b: number): CollectionState {
+  const equipped = [...collection.equipped];
+  [equipped[a], equipped[b]] = [equipped[b], equipped[a]];
+  return { ...collection, equipped };
+}
+
+export function nightCollectionReward(collection: CollectionState): CollectionState {
+  const equippedIds = collection.equipped.filter((id): id is SpiritId => id !== null);
+  const owned = { ...collection.owned };
+  for (const id of equippedIds) {
+    const progress = owned[id];
+    if (progress) owned[id] = { ...progress, xp: progress.xp + 6 };
+  }
+  return { ...collection, owned, tickets: collection.tickets + 2, essence: collection.essence + 5 };
+}
+
+export function levelSpirit(collection: CollectionState, id: SpiritId): CollectionOutcome {
+  const progress = collection.owned[id];
+  if (!progress) return { collection, error: '尚未获得该灵核。' };
+  if (progress.level >= 30) return { collection, error: '已经达到等级上限。' };
+  const cost = 4 + progress.level * 2;
+  if (progress.xp < cost) return { collection, error: '经验不足。安排灵核驻守并完成夜晚可获得经验。' };
+  return { collection: { ...collection, owned: { ...collection.owned,
+    [id]: { ...progress, level: progress.level + 1, xp: progress.xp - cost } } }, error: null };
+}
+
+export function evolveSpirit(collection: CollectionState, id: SpiritId): CollectionOutcome {
+  const progress = collection.owned[id];
+  if (!progress) return { collection, error: '尚未获得该灵核。' };
+  if (progress.evolution >= 2) return { collection, error: '已达到最高进化形态。' };
+  const next = progress.evolution + 1;
+  if (progress.level < next * 10) return { collection, error: '需要达到对应等级才能进化。' };
+  const cost = next * 20;
+  if (collection.essence < cost) return { collection, error: '进化精华不足。' };
+  return { collection: { ...collection, essence: collection.essence - cost,
+    owned: { ...collection.owned, [id]: { ...progress, evolution: next } } }, error: null };
+}
+
+export function companionEffects(rooms: readonly RoomSlot[], collection?: CollectionState): { coins: number; satisfaction: number } {
+  if (!collection) return { coins: 0, satisfaction: 0 };
+  let coins = 0;
+  let satisfaction = 0;
+  const factions: Partial<Record<Faction, number>> = {};
+  collection.equipped.forEach((id, index) => {
+    if (!id || !rooms[index]) return;
+    const spirit = SPIRIT_BY_ID[id];
+    const progress = collection.owned[id];
+    if (!spirit || !progress) return;
+    coins += spirit.coins + Math.floor((progress.level - 1) / 5) + progress.evolution;
+    satisfaction += spirit.mood + progress.evolution;
+    factions[spirit.faction] = (factions[spirit.faction] ?? 0) + 1;
+  });
+  for (const count of Object.values(factions)) {
+    if (count >= 6) { coins += 8; satisfaction += 4; }
+    else if (count >= 4) { coins += 4; satisfaction += 2; }
+    else if (count >= 2) { coins += 2; satisfaction += 1; }
+  }
+  return { coins, satisfaction };
+}
