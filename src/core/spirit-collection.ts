@@ -54,7 +54,15 @@ export const FACTION_LABELS: Record<Faction, { zh: string; en: string }> = {
 export const SPIRIT_BY_ID = Object.fromEntries(SPIRITS.map((s) => [s.id, s])) as Record<SpiritId, Spirit>;
 export const isSpiritId = (value: unknown): value is SpiritId => typeof value === 'string' && Object.hasOwn(SPIRIT_BY_ID, value);
 
-export type SpiritProgress = { level: number; xp: number; shards: number; evolution: number };
+export type EvolutionPath = 'prosperity' | 'harmony';
+export const MAX_STARS = 5;
+export const starCost = (currentStars: number): number => (currentStars + 1) * 20;
+export type SpiritProgress = {
+  level: number; xp: number; shards: number; evolution: number;
+  /** Optional so existing V0.5 browser saves remain valid. */
+  stars?: number;
+  path?: EvolutionPath;
+};
 export type CollectionState = {
   tickets: number;
   essence: number;
@@ -143,7 +151,23 @@ export function levelSpirit(collection: CollectionState, id: SpiritId): Collecti
     [id]: { ...progress, level: progress.level + 1, xp: progress.xp - cost } } }, error: null };
 }
 
-export function evolveSpirit(collection: CollectionState, id: SpiritId): CollectionOutcome {
+/** Duplicate fragments are permanent collection resources, not summon currency. */
+export function awakenSpirit(collection: CollectionState, id: SpiritId): CollectionOutcome {
+  const progress = collection.owned[id];
+  if (!progress) return { collection, error: '尚未获得该灵核。' };
+  const stars = progress.stars ?? 0;
+  if (stars >= MAX_STARS) return { collection, error: '已达到五星上限。' };
+  const cost = starCost(stars);
+  if (progress.shards < cost) return { collection, error: '碎片不足，重复召唤同一灵核可以获得碎片。' };
+  return {
+    collection: { ...collection, owned: {
+      ...collection.owned,
+      [id]: { ...progress, stars: stars + 1, shards: progress.shards - cost },
+    } }, error: null,
+  };
+}
+
+export function evolveSpirit(collection: CollectionState, id: SpiritId, path?: EvolutionPath): CollectionOutcome {
   const progress = collection.owned[id];
   if (!progress) return { collection, error: '尚未获得该灵核。' };
   if (progress.evolution >= 2) return { collection, error: '已达到最高进化形态。' };
@@ -151,8 +175,15 @@ export function evolveSpirit(collection: CollectionState, id: SpiritId): Collect
   if (progress.level < next * 10) return { collection, error: '需要达到对应等级才能进化。' };
   const cost = next * 20;
   if (collection.essence < cost) return { collection, error: '进化精华不足。' };
+  const isMythicBranch = next === 2 && SPIRIT_BY_ID[id].quality === 'UR';
+  if (isMythicBranch && path !== 'prosperity' && path !== 'harmony') {
+    return { collection, error: '神话终极进化需选择繁荣或守护方向。' };
+  }
+  if (!isMythicBranch && path !== undefined) return { collection, error: '该形态无需选择分支。' };
   return { collection: { ...collection, essence: collection.essence - cost,
-    owned: { ...collection.owned, [id]: { ...progress, evolution: next } } }, error: null };
+    owned: { ...collection.owned, [id]: {
+      ...progress, evolution: next, ...(isMythicBranch ? { path } : {}),
+    } } }, error: null };
 }
 
 export function companionEffects(rooms: readonly (SpiritId | null)[], collection?: CollectionState): { coins: number; satisfaction: number } {
@@ -165,10 +196,36 @@ export function companionEffects(rooms: readonly (SpiritId | null)[], collection
     const spirit = SPIRIT_BY_ID[id];
     const progress = collection.owned[id];
     if (!spirit || !progress) return;
+    const stars = progress.stars ?? 0;
     coins += spirit.coins + Math.floor((progress.level - 1) / 5) + progress.evolution;
     satisfaction += spirit.mood + progress.evolution;
+    if (spirit.role === 'economy' || spirit.role === 'explore') coins += stars * 2;
+    else satisfaction += stars;
+    if (progress.evolution >= 2 && spirit.quality === 'UR') {
+      if (progress.path === 'prosperity') coins += 6;
+      if (progress.path === 'harmony') satisfaction += 5;
+    }
     factions[spirit.faction] = (factions[spirit.faction] ?? 0) + 1;
   });
+  // Each legendary has a distinct support niche beyond its base stats.
+  const active = collection.equipped.filter((id, index): id is SpiritId =>
+    id !== null && rooms[index] === id && !!collection.owned[id]);
+  if (active.includes('wave-healer')) {
+    satisfaction += Math.min(4, active.filter(id => id !== 'wave-healer' &&
+      SPIRIT_BY_ID[id].element === 'water').length * 2);
+  }
+  if (active.includes('day-smith')) {
+    coins += Math.min(9, active.filter(id => id !== 'day-smith' &&
+      SPIRIT_BY_ID[id].faction === 'forge').length * 3);
+  }
+  if (active.includes('dusk-bell') && (factions.veil ?? 0) >= 2) {
+    coins += 5;
+    satisfaction -= 2;
+  }
+  if (active.includes('moss-keeper')) {
+    satisfaction += Math.min(3, active.filter(id =>
+      SPIRIT_BY_ID[id].faction !== 'grove').length);
+  }
   for (const count of Object.values(factions)) {
     if (count >= 6) { coins += 8; satisfaction += 4; }
     else if (count >= 4) { coins += 4; satisfaction += 2; }
@@ -196,6 +253,9 @@ export function validCollection(value: unknown): value is CollectionState {
     if (!isSpiritId(id) || !isRecord(progress) || !inRange(progress.level, 30) ||
       progress.level < 1 || !inRange(progress.xp, 1000000) ||
       !inRange(progress.shards, 1000000) || !inRange(progress.evolution, 2) ||
+      (progress.stars !== undefined && !inRange(progress.stars, MAX_STARS)) ||
+      (progress.path !== undefined && progress.path !== 'prosperity' && progress.path !== 'harmony') ||
+      (progress.path !== undefined && (progress.evolution !== 2 || SPIRIT_BY_ID[id].quality !== 'UR')) ||
       (progress.evolution > 0 && progress.level < progress.evolution * 10)) return false;
   }
   const equipped = value.equipped.filter((id): id is SpiritId => id !== null);
