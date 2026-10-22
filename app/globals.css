@@ -574,3 +574,19 @@
 
 .game-action-reveal { flex: 1; min-width: 0; animation: night-receipt-pop 360ms ease-out both; }
 @media (prefers-reduced-motion: reduce) { .game-action-reveal { animation: none; } }
+
+/* Compact forecast: important consequences visible without adding page scroll. */
+.game-balance-forecast {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 4px 8px;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #84708570;
+  border-radius: 10px;
+  background: #30283f;
+  font-size: 10px;
+}
+.game-balance-forecast strong { color: #ffdfaf; font-weight: 700; }
+.game-balance-forecast span { color: #eee3e1; font-variant-numeric: tabular-nums; }
+.game-balance-forecast small { grid-column: 1 / -1; color: #bbabc2; line-height: 1.35; }
