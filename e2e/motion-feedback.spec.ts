@@ -3,7 +3,7 @@ import { placeStarter } from './helpers';
 
 test('moving original spirits keeps one animated canvas', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/');
+  await page.goto('/legacy');
   await placeStarter(page);
   await expect(page.getByRole('status')).toContainText('芽核 入住');
   await page.getByRole('button', { name: '移动 / 交换灵核' }).click();
@@ -15,7 +15,7 @@ test('moving original spirits keeps one animated canvas', async ({ page }) => {
 test('reduced motion disables visual feedback animations', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/');
+  await page.goto('/legacy');
   await placeStarter(page);
   const animation = await page.locator('.game-action-reveal').evaluate(el => getComputedStyle(el).animationName);
   expect(animation).toBe('none');
