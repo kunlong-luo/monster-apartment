@@ -7,6 +7,8 @@ import type { RaidState, Raider, Lane } from '@/core/night-raid';
 /** Phaser is only a visual renderer. React and pure rules own the fight. */
 export class RaidScene extends Phaser.Scene {
   static readonly KEY = 'starfall-battle';
+  /** Assigned before Phaser boots; safe even when Scene.events is not initialized yet. */
+  onReady?: () => void;
   private terrain?: Phaser.GameObjects.Graphics;
   private attackers = new Map<number, Phaser.GameObjects.Container>();
   private defenders: Phaser.GameObjects.Container[] = [];
@@ -46,7 +48,7 @@ export class RaidScene extends Phaser.Scene {
       g.fillTriangle(923, y + 38, 939, y + 49, 923, y + 60);
     }
     this.warningGfx = this.add.graphics();
-    this.events.emit('raid-ready');
+    this.onReady?.();
   }
 
   private enemyX(enemy: Raider): number {
