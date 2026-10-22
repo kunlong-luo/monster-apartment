@@ -40,6 +40,8 @@ test('mobile game has stage-first layout, readable controls, and no side scrolli
   const stageBox = await stage.boundingBox();
   const rosterBox = await page.locator('.game-roster').boundingBox();
   expect(stageBox!.y).toBeLessThan(rosterBox!.y);
+  const ledgerBox = await page.locator('.game-ledger').boundingBox();
+  expect(rosterBox!.y).toBeLessThan(ledgerBox!.y);
   const overflow = await page.evaluate(() =>
     document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
