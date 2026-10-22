@@ -7,10 +7,10 @@ type BadgeProps = {
 };
 
 const toneStyles = {
-  mint: 'bg-mint-900/50 text-mint-300 border-mint-500/30',
-  gold: 'bg-gold-200/10 text-gold-200 border-gold-300/30',
-  neutral: 'bg-ink-700 text-mist-400 border-line-strong',
-  danger: 'bg-ink-700 text-danger-300 border-danger-300/30',
+  mint: 'bg-[#244d48] text-[#aaf3d2] border-[#8ee6c567]',
+  gold: 'bg-[#674b48] text-[#ffe3a7] border-[#e9bb7c66]',
+  neutral: 'bg-[#42354b] text-[#e1cfdf] border-[#7d677b]',
+  danger: 'bg-[#593947] text-[#ffc6bd] border-[#f8a59b50]',
 };
 
 export function Badge({ children, tone = 'neutral' }: BadgeProps) {

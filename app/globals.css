@@ -1,48 +1,278 @@
 @import "tailwindcss";
 
+/*
+ * V0.3.0 Midnight Cozy — one visual language for the React HUD and Phaser stage.
+ * No remote fonts or image downloads; the game remains static-export friendly.
+ */
 @theme {
-  --font-sans: Inter, "Noto Sans CJK SC", "Microsoft YaHei", system-ui, sans-serif;
-
-  --color-ink-950: #0b1420;
-  --color-ink-900: #101b2d;
-  --color-ink-800: #132235;
-  --color-ink-700: #1b3045;
-  --color-ink-600: #20354a;
-  --color-line: #2b435d;
-  --color-line-strong: #35506a;
-
-  --color-mint-300: #a1efbd;
-  --color-mint-400: #7ff3ce;
-  --color-mint-500: #66dbbc;
-  --color-mint-900: #102a2d;
-  --color-gold-200: #f2deb0;
-  --color-gold-300: #f0c98f;
-  --color-mist-300: #e9f1fa;
-  --color-mist-400: #b1c8d8;
-  --color-mist-500: #8ba4ba;
-  --color-danger-300: #ffa8a8;
-
-  --radius-panel: 1.0625rem;
+  --font-sans: "Trebuchet MS", "Noto Sans CJK SC", "Microsoft YaHei", system-ui, sans-serif;
+  --color-ink-950: #100f20;
+  --color-ink-900: #181629;
+  --color-ink-800: #24223b;
+  --color-ink-700: #34314d;
+  --color-ink-600: #46415d;
+  --color-line: #50445f;
+  --color-line-strong: #73617a;
+  --color-mint-300: #b3f5d8;
+  --color-mint-400: #8fdfc4;
+  --color-mint-500: #66c4a6;
+  --color-mint-900: #183c3d;
+  --color-gold-200: #ffe5ae;
+  --color-gold-300: #f4bf74;
+  --color-mist-300: #f7f1ed;
+  --color-mist-400: #d8cddf;
+  --color-mist-500: #ab9fba;
+  --color-danger-300: #ffaaa7;
+  --radius-panel: 1.25rem;
 }
 
 @layer base {
-  html {
-    color-scheme: dark;
-  }
-
+  html { color-scheme: dark; scroll-behavior: smooth; }
   body {
-    @apply bg-ink-950 font-sans text-mist-300 antialiased;
-    background-image: radial-gradient(ellipse at 45% -20%, #24425b 0, transparent 48%);
-    background-repeat: no-repeat;
+    margin: 0;
+    @apply bg-ink-950 text-mist-300 antialiased;
+    background: #100f20;
   }
+  button, select { font: inherit; }
+  ::selection { background: #f2be75; color: #181629; }
 }
 
-/*
- * Phaser writes inline width/height onto the canvas it creates, so the frame
- * needs !important to keep the floor plan fluid. Everything else is utilities.
- */
-.apartment-canvas canvas {
-  display: block !important;
-  width: 100% !important;
-  height: auto !important;
+.game-shell {
+  isolation: isolate;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at 51% -60px, #39305d 0, transparent 560px),
+    radial-gradient(circle at 92% 38%, #46304966 0, transparent 370px),
+    radial-gradient(circle at 8% 78%, #243f5266 0, transparent 430px),
+    linear-gradient(180deg, #18152d 0%, #10101e 65%, #15121f 100%);
+}
+.game-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .5;
+  background-image:
+    radial-gradient(#efdfc2 0.8px, transparent 1.2px),
+    radial-gradient(#c2b4e9 0.7px, transparent 1.2px);
+  background-position: 2px 8px, 53px 61px;
+  background-size: 111px 119px, 143px 157px;
+  mask-image: linear-gradient(to bottom, #000, transparent 76%);
+  z-index: -1;
+}
+.game-container { width: min(100% - 32px, 1550px); margin-inline: auto; }
+.game-masthead {
+  padding: 24px 0 18px;
+  border-bottom: 1px solid #9a78902b;
+}
+.game-brand-title {
+  font-family: Georgia, "Noto Serif CJK SC", "Songti SC", serif;
+  font-size: clamp(1.65rem, 2.8vw, 2.55rem);
+  line-height: 1.1;
+  letter-spacing: .018em;
+  font-weight: 800;
+  color: #fff0d6;
+  text-shadow: 0 2px 0 #6e4257, 0 10px 24px #0009;
+}
+.game-brand-kicker {
+  margin-top: 6px;
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #e6be8c;
+}
+.game-logo {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  font-size: 2.3rem;
+  border-radius: 19px;
+  color: #ffd18a;
+  background: radial-gradient(circle at 35% 30%, #634861, #2e2946 70%);
+  border: 2px solid #b99178;
+  box-shadow: 0 5px 0 #0c0c1b, inset 0 2px 12px #e8ac7640, 0 0 30px #b8709c22;
+}
+.game-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: .17em; color: #dfc1a0; text-transform: uppercase; }
+.game-subtitle { color: #c1b5c7; font-size: 13px; line-height: 1.55; }
+.game-layout {
+  display: grid;
+  grid-template-areas: "stage" "roster" "ledger";
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 20px;
+  padding-block: 22px 44px;
+}
+.game-roster { grid-area: roster; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.game-stage { grid-area: stage; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.game-ledger { grid-area: ledger; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+@media (min-width: 780px) and (max-width: 1199px) {
+  .game-layout {
+    grid-template-areas: "stage stage" "roster ledger";
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+@media (min-width: 1200px) {
+  .game-layout {
+    grid-template-areas: "roster stage ledger";
+    grid-template-columns: minmax(0, 270px) minmax(0, 1fr) minmax(0, 275px);
+    gap: 18px;
+  }
+}
+.game-panel {
+  position: relative;
+  padding: 18px;
+  background:
+    linear-gradient(155deg, #302941d9 0%, #211f36f2 62%, #201b30ef 100%);
+  border: 1px solid #8b728050;
+  border-radius: 22px;
+  box-shadow: 0 5px 0 #080a19a6, 0 17px 28px #05051360, inset 0 1px 0 #f8d8c117;
+}
+.game-panel::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 6px;
+  border: 1px solid #f8d1ae0b;
+  border-radius: 16px;
+}
+.game-panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: -1px 0 14px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: #e6ccab;
+}
+.game-panel-heading::before {
+  content: "✦";
+  font-size: 15px;
+  color: #e9af79;
+}
+.game-moon-card {
+  padding: 16px 18px;
+  border-radius: 22px;
+  border: 1px solid #96718b88;
+  background:
+    radial-gradient(circle at 84% 16%, #f3cf9a2c 0 34px, transparent 35px),
+    linear-gradient(130deg, #3e3459, #2a2948 58%, #242338);
+  box-shadow: 0 5px 0 #09091a85, inset 0 1px 0 #f9e5d733;
+}
+.game-day-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #f4c58a55;
+  border-radius: 99px;
+  background: #493851aa;
+  color: #ffe4b7;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  padding: 8px 12px;
+}
+.game-section-title {
+  color: #ffe5c0;
+  font-family: Georgia, "Noto Serif CJK SC", "Songti SC", serif;
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  font-weight: 800;
+  line-height: 1.3;
+}
+.game-board-frame {
+  background: #100e20;
+  border-radius: 27px;
+  padding: 9px;
+  box-shadow: 0 12px 40px #05040dba, 0 5px 0 #090918;
+  border: 2px solid #aa836e;
+}
+.game-board-inner {
+  overflow: hidden;
+  border-radius: 19px;
+  border: 1px solid #ecbd8080;
+  background: #1e2036;
+}
+.game-tip {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  background: #2f29419e;
+  padding: 12px 14px;
+  border: 1px solid #78657c8c;
+  border-radius: 14px;
+  color: #e4d6da;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.game-tip strong { color: #f4c388; }
+.game-tenant {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: linear-gradient(110deg, #3a3249 0%, #2c293e 100%);
+  border: 1px solid #7f6b7966;
+  box-shadow: inset 0 1px 0 #fff1dc12;
+  padding: 13px;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+.game-tenant:hover { transform: translateY(-2px); border-color: #ecb77fa0; background: #40324e; }
+.game-tenant[data-tenant="slime"] { --monster-accent: #86d6ba; }
+.game-tenant[data-tenant="ember"] { --monster-accent: #ffac71; }
+.game-tenant[data-tenant="ghost"] { --monster-accent: #c5b3f3; }
+.game-tenant[data-tenant="golem"] { --monster-accent: #b8b1a6; }
+.game-tenant-avatar {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  font-size: 25px;
+  border: 1px solid color-mix(in srgb, var(--monster-accent), transparent 55%);
+  border-radius: 15px;
+  background: radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--monster-accent), transparent 63%), #27273e);
+  filter: drop-shadow(0 4px 3px #08061545);
+}
+.game-stats-tile {
+  border: 1px solid #cba47f4b;
+  border-radius: 15px;
+  padding: 13px 12px;
+  background: linear-gradient(160deg, #473a52, #2c2944);
+  box-shadow: inset 0 1px 0 #f8d0a91c;
+}
+.game-room-nav button { min-height: 45px; font-size: 12px; }
+.game-room-nav button[aria-pressed="true"] { box-shadow: inset 0 1px 0 #fff8dc80, 0 0 0 2px #f2c28255; }
+.game-action-primary {
+  letter-spacing: .035em;
+  border: 1px solid #fff0bc73;
+  text-shadow: 0 1px 0 #73503966;
+  box-shadow: inset 0 2px 0 #ffffff5c, 0 5px 0 #885b4e, 0 12px 25px #07061288;
+}
+.game-action-primary:active:not(:disabled) { transform: translateY(3px); box-shadow: inset 0 2px 0 #ffffff38, 0 2px 0 #885b4e; }
+.game-status-line { background: #2c2940ad; border: 1px solid #9b779154; border-radius: 16px; }
+.game-log { position: relative; }
+.game-log p:not(:first-child) { border-top: 1px dashed #b699a624; padding-top: 7px; }
+.game-footer { border-top: 1px solid #bb8d9b22; text-align: center; color: #b3a4bb; font-size: 12px; padding-block: 22px 30px; }
+.apartment-canvas canvas { display: block !important; width: 100% !important; height: auto !important; }
+@media (max-width: 500px) {
+  .game-container { width: min(100% - 20px, 1550px); }
+  .game-masthead { padding: 15px 0; }
+  .game-logo { width: 48px; height: 48px; border-radius: 14px; }
+  .game-board-frame { padding: 5px; border-radius: 19px; }
+  .game-board-inner { border-radius: 13px; }
+  .game-layout { padding-block: 14px 35px; gap: 16px; }
+  .game-panel { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -16,7 +16,6 @@ import { LogList } from '@/components/ui/log-list';
 import { ApartmentView } from '@/components/apartment/apartment-view';
 import { Panel } from '@/components/ui/panel';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/components/ui/cn';
 
 export function GameScreen() {
   const {
@@ -78,21 +77,17 @@ export function GameScreen() {
   const tutorialKeys = ['guide1', 'guide2', 'guide3', 'guide4'] as const;
 
   return (
-    <div className="min-h-screen bg-ink-950 font-sans text-mist-300 antialiased">
-      <div className="radial-gradient-ellipse-at-45%-20% from-[#24425b] via-transparent to-transparent bg-no-repeat">
-        <header className="max-w-[1470px] mx-auto px-4 sm:px-6 py-6 border-b border-ink-700">
+    <div className="game-shell font-sans text-mist-300 antialiased">
+      <div className="game-page-layer">
+        <header className="game-masthead game-container">
           <GameHeader helpOpen={help} locale={locale} onSetLocale={setLocale}
-            onToggleHelp={toggleHelp} onReset={reset} onReplayTutorial={replayTutorial} />
+            onToggleHelp={toggleHelp} onReset={reset} onReplayTutorial={replayTutorial}
+            day={state.day} coins={state.coins} />
         </header>
 
-        <main className="max-w-[1470px] mx-auto px-4 sm:px-6 py-6">
-          <div className={cn(
-            'grid gap-4',
-            'grid-cols-1',
-            'lg:grid-cols-[minmax(0,296px)_minmax(0,1fr)_minmax(0,298px)]',
-            'lg:items-start',
-          )}>
-            <aside className="min-w-0">
+        <main className="game-container">
+          <div className="game-layout">
+            <aside className="game-roster">
               <EconomyPanel />
               <RoomPicker rooms={state.rooms} selected={selected} moveSource={moveSource}
                 disabled={state.over} onPick={pickRoom} />
@@ -111,11 +106,23 @@ export function GameScreen() {
               )}
             </aside>
 
-            <section className="min-w-0 flex flex-col gap-4">
+            <section className="game-stage" data-testid="apartment-stage">
+              <div className="game-moon-card flex flex-wrap items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="game-eyebrow mb-1">✧ MIDNIGHT RESIDENCE ✧</p>
+                  <h2 className="game-section-title">
+                    {locale === 'zh' ? '这栋楼，今夜住着谁？' : 'Who lives here tonight?'}
+                  </h2>
+                  <p className="game-subtitle mt-1">{locale === 'zh'
+                    ? '给怪物们安排房间，让奇妙邻居擦出火花。'
+                    : 'Find a room for every monster. Neighbor magic makes the difference.'}</p>
+                </div>
+                <span className="game-day-chip">☾ {locale === 'zh' ? '第 ' + state.day + ' / 5 夜' : 'NIGHT ' + state.day + ' / 5'}</span>
+              </div>
               {tutorialActive && (
-                <Panel className="border-mint-400/50 bg-ink-800">
+                <Panel className="border-gold-300/55 bg-ink-800">
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <strong className="text-mint-300">{t(locale, 'guideTitle')}</strong>
+                    <strong className="text-gold-200">✦ {t(locale, 'guideTitle')}</strong>
                     <span className="text-xs text-mist-500">
                       {t(locale, 'guideStep')} {tutorialStep + 1}/4
                     </span>
@@ -130,17 +137,27 @@ export function GameScreen() {
                 </Panel>
               )}
               {help && <PlayHelp />}
-              <Panel className="flex-1 min-h-[360px] p-0 overflow-hidden">
+              <Panel className="game-board-frame min-h-0 p-0 overflow-hidden">
                 <ApartmentView state={state} selected={selected} moveSource={moveSource}
                   locale={locale} onPick={pickRoom} />
               </Panel>
+              <div className="game-tip">
+                <span className="text-xl leading-5" aria-hidden="true">✦</span>
+                <span>{moveSource !== null ? t(locale, 'moveHint') : locale === 'zh'
+                  ? '点击公寓房间或使用左侧房号；相邻怪物会触发特别收益。'
+                  : 'Tap an apartment room or use the room selector. Neighbors grant special bonuses.'}</span>
+              </div>
               <StatusBar message={localizeGameText(error || state.notice, locale)} />
             </section>
 
-            <aside className="min-w-0 flex flex-col gap-4">
+            <aside className="game-ledger">
               <ManagementPanel />
-              <div className="flex flex-col gap-3">
-                <Button variant="primary" size="lg" fullWidth disabled={!canSettle} onClick={nextDay}>
+              <div className="game-moon-card flex flex-col gap-3">
+                <p className="game-eyebrow">☾ NIGHTLY COLLECTION</p>
+                <p className="text-sm text-mist-400">{locale === 'zh'
+                  ? '准备好了吗？今晚的租金与奇遇都由你决定。'
+                  : 'Ready to close the books? Tonight brings rent and surprises.'}</p>
+                <Button variant="primary" size="lg" fullWidth className="game-action-primary" disabled={!canSettle} onClick={nextDay}>
                   {t(locale, 'nextDay')}
                 </Button>
                 {state.over && (
@@ -148,7 +165,8 @@ export function GameScreen() {
                     locale={locale} notice={localizeGameText(state.notice, locale)} onReset={reset} />
                 )}
               </div>
-              <Panel className="flex-1 min-h-0">
+              <Panel className="game-log">
+                <p className="game-panel-heading">{locale === 'zh' ? '公寓夜间手记' : 'Nightly journal'}</p>
                 <LogList entries={state.log.map((entry) => localizeGameText(entry, locale))}
                   empty={t(locale, 'emptyLog')} />
               </Panel>
@@ -156,9 +174,9 @@ export function GameScreen() {
           </div>
         </main>
 
-        <footer className="max-w-[1470px] mx-auto px-4 sm:px-6 py-6 border-t border-ink-700">
+        <footer className="game-footer game-container">
           <p className="text-center text-xs text-mist-500">
-            Phaser / Next.js / TypeScript · {t(locale, saveAvailable ? 'saveReady' : 'saveUnavailable')}
+            ✧ MONSTER APARTMENT · PHASER / NEXT.JS ✧ · {t(locale, saveAvailable ? 'saveReady' : 'saveUnavailable')}
           </p>
         </footer>
       </div>

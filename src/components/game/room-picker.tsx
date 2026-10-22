@@ -22,7 +22,7 @@ export function RoomPicker({ rooms, selected, moveSource, disabled, onPick }: Ro
       <div
         role="group"
         aria-label={t(locale, 'pickRoom')}
-        className="grid grid-cols-6 gap-1.5"
+        className="game-room-nav grid grid-cols-6 gap-1"
       >
         {rooms.map((room, index) => {
           const isSelected = selected === index;
@@ -40,8 +40,8 @@ export function RoomPicker({ rooms, selected, moveSource, disabled, onPick }: Ro
               aria-label={locale === 'zh' ? String(index + 1) + ' 号房' + (isOccupied ? '（已入住）' : '（空房）') : 'Room ' + (index + 1) + ' (' + t(locale, isOccupied ? 'occupiedRoom' : 'vacantRoom') + ')'}
               aria-pressed={isSelected}
               className={cn(
-                'py-2 text-sm font-bold',
-                isSelected && 'bg-gradient-to-r from-mint-400 to-mint-500 text-mint-900',
+                'py-2 px-1 text-[11px] font-extrabold',
+                isSelected && 'bg-gradient-to-b from-[#ffdb9c] to-[#d9a369] text-[#3a2940]',
                 isMoving && 'border-danger-300',
               )}
             >

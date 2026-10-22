@@ -16,8 +16,8 @@ const toneStyles = {
 export function MeterRow({ label, value, tone = 'default' }: MeterRowProps) {
   return (
     <div className="flex items-baseline justify-between gap-2 text-sm">
-      <span className="text-mist-500 truncate">{label}</span>
-      <span className={cn('font-mono font-medium whitespace-nowrap', toneStyles[tone])}>{value}</span>
+      <span className="text-mist-400 truncate">{label}</span>
+      <span className={cn('font-mono font-extrabold whitespace-nowrap tabular-nums', toneStyles[tone])}>{value}</span>
     </div>
   );
 }

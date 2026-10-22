@@ -112,3 +112,11 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - New-player tutorial state is in src/store/game-store.ts; skip/replay and progress persist locally.
 - e2e/features.spec.ts covers refresh restoration, bilingual controls and tutorial; CI uses preinstalled Chrome via PLAYWRIGHT_USE_SYSTEM_CHROME=1 because Chromium CDN TLS failed on runner.
 - V0.2.2 CI baseline: Node rules 6, Vitest 6, Playwright 12; Next regular and static exports both build.
+
+## V0.3.0 visual system and scene
+- Reference: `docs/UI_DIRECTION.md`. No third-party imagery; illustrated room and tenants are authored in `src/game/apartment-scene.ts`.
+- `app/globals.css` contains the Midnight Cozy tokens, responsive `game-layout`, headers and reusable panel/tenant classes.
+- Keep the GameScreen save/hydration and locale wiring from V0.2.2. Game logic remains exclusively in `src/core/engine.ts`.
+- Phaser canvas keeps 628x676 coordinate space and click event bridge. RoomPicker remains the accessible keyboard route.
+- Visual E2E in `e2e/visual-ui.spec.ts` captures screenshots into test-results; Actions uploads these as the `v030-ui-review` artifact.
+- PR #2 is merged into main. PR #3 now targets main; release requires merge plus successful Pages deployment and manual site review.
