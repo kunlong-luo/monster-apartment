@@ -74,7 +74,7 @@ export function ApartmentCanvas({ state, selected, moveSource, locale, onPick }:
     <div
       ref={hostRef}
       role="img"
-      aria-label={locale === 'en' ? 'Six-room monster apartment floor plan. Use the room buttons to select rooms with a keyboard.' : '六间房的怪物公寓楼层示意图，可用左侧房间按钮键盘选择'}
+      aria-label={locale === 'en' ? 'Six-room spirit residence floor plan. Use room buttons to select rooms with a keyboard.' : '六间房的原创灵核公寓楼层示意图，可用左侧房间按钮键盘选择'}
       className="apartment-canvas w-full overflow-hidden rounded-[18px] bg-[#15162e]"
     />
   );
