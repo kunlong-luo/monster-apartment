@@ -22,7 +22,7 @@ export function RaidBattleCanvas({ raid, collection }: {
     const scene = new RaidScene();
     sceneRef.current = scene;
     const ready = () => scene.sync(current.current.raid, current.current.collection);
-    scene.events.on('raid-ready', ready);
+    scene.onReady = ready;
     const instance = new Phaser.Game({
       type: Phaser.AUTO,
       parent: host,
@@ -34,7 +34,7 @@ export function RaidBattleCanvas({ raid, collection }: {
       scene: [scene],
     });
     return () => {
-      scene.events.off('raid-ready', ready);
+      scene.onReady = undefined;
       sceneRef.current = null;
       instance.destroy(true);
       host.replaceChildren();
