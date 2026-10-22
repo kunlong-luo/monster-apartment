@@ -77,7 +77,12 @@ export type CollectionState = {
 export function newCollection(): CollectionState {
   return {
     tickets: 10, essence: 0, pity: { sr: 0, ssr: 0, ur: 0 },
-    owned: { seedling: { level: 1, xp: 0, shards: 0, evolution: 0 } },
+    // A playable opening squad: guard, repair and energy generation. The rest are collectible.
+    owned: {
+      seedling: { level: 1, xp: 0, shards: 0, evolution: 0 },
+      dewdrop: { level: 1, xp: 0, shards: 0, evolution: 0 },
+      'lantern-beetle': { level: 1, xp: 0, shards: 0, evolution: 0 },
+    },
     equipped: [null, null, null, null, null, null], recent: [], totalPulls: 0,
     claimedRaids: [],
   };
