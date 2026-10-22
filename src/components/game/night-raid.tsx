@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useGameStore } from '@/store/game-store';
 import { SPIRIT_BY_ID, QUALITY_LABELS } from '@/core/spirit-collection';
 import type { SpiritId } from '@/core/spirit-collection';
-import { advanceRaid, beginRaid, castRaidSkill, deployToLane, prepareRaid, relocateRaid } from '@/core/night-raid';
+import { advanceRaid, beginRaid, castRaidSkill, deployToLane, prepareRaid, relocateRaid, upcomingRaidWaves } from '@/core/night-raid';
 import type { Lane, RaidState } from '@/core/night-raid';
 import { SpiritPortrait } from './spirit-portrait';
 import dynamic from 'next/dynamic';
@@ -33,25 +33,36 @@ export function NightRaid({ onClose }: { onClose: () => void }) {
     collection.equipped.find((id): id is SpiritId => id !== null) ??
     (Object.keys(collection.owned)[0] as SpiritId | undefined) ?? null);
   const [moving, setMoving] = useState<Lane | null>(null);
+  const [paused, setPaused] = useState(false);
+  const [speed, setSpeed] = useState<1 | 2>(1);
   const zh = locale === 'zh';
   const claimed = collection.claimedRaids?.includes(state.day) ?? false;
   const eligible = !state.over && !claimed;
   const owned = Object.keys(collection.owned).filter(
     (id): id is SpiritId => id in SPIRIT_BY_ID);
   const laneName = (lane: Lane) => (zh ? zhLane : enLane)[lane];
+  const nextWaves = upcomingRaidWaves(raid.tick, 3);
+  const enemyName = (kind: 'scout' | 'brute' | 'boss') =>
+    zh ? {scout:'斥候',brute:'重装',boss:'首领'}[kind]
+      : {scout:'Scout',brute:'Brute',boss:'Boss'}[kind];
 
   useEffect(() => {
-    if (raid.phase !== 'fighting') return;
+    if (raid.phase !== 'fighting' || paused) return;
     const interval = window.setInterval(() => {
       setRaid(current => advanceRaid(current, collection));
-    }, 620);
+    }, speed === 1 ? 690 : 365);
     return () => window.clearInterval(interval);
-  }, [raid.phase, collection]);
+  }, [raid.phase, collection, paused, speed]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') { onClose(); return; }
       if (event.repeat || raid.phase !== 'fighting') return;
+      if (event.key.toLowerCase() === 'p') {
+        event.preventDefault();
+        setPaused(value => !value);
+        return;
+      }
       if (['1','2','3'].includes(event.key)) {
         event.preventDefault();
         const lane = Number(event.key) - 1 as Lane;
@@ -110,7 +121,34 @@ export function NightRaid({ onClose }: { onClose: () => void }) {
                   : 'Live combat: press 1 / 2 / 3 to cast a lane skill (3 energy), or shift a spirit (2).')
                 : zh ? raid.notice : raid.phase === 'won' ? 'Defense held! Claim your reward.' : 'The defenses fell. Rearrange and try again.'}
           </p>
-          <RaidBattleCanvas raid={raid} collection={collection} />
+          <div className="relative">
+            <RaidBattleCanvas raid={raid} collection={collection} />
+            {paused && raid.phase === 'fighting' && (
+              <div data-testid="raid-paused" className="absolute inset-0 flex items-center justify-center pointer-events-none rounded-xl bg-ink-950/60">
+                <span className="rounded-xl border border-gold-300/70 bg-ink-900/90 px-5 py-3 font-black tracking-widest text-gold-200">
+                  {zh ? '⏸ 战术暂停 · 可调整战技' : '⏸ PAUSED · Plan your next move'}
+                </span>
+              </div>
+            )}
+          </div>
+          {raid.phase !== 'won' && raid.phase !== 'lost' && (
+            <div data-testid="raid-next-waves" className="flex items-center gap-2 overflow-x-auto py-2 text-[11px]">
+              <strong className="shrink-0 text-mist-400">{zh ? '敌情预报' : 'Wave intel'}</strong>
+              {nextWaves.map(wave => (
+                <span key={wave.tick} className={'shrink-0 rounded-lg border px-2 py-1 ' +
+                  (wave.kind === 'boss' ? 'border-danger-300/70 text-danger-300' : 'border-line text-mist-300')}>
+                  {zh ? '第' + wave.tick + '刻' : 'T' + wave.tick} · {laneName(wave.lane)} · {enemyName(wave.kind)}
+                </span>
+              ))}
+              {!nextWaves.length && <span className="text-mint-300">{zh ? '后续无增援' : 'No more waves'}</span>}
+            </div>
+          )}
+          {raid.phase === 'fighting' && <p data-testid="raid-feedback" role="status"
+            className="text-[11px] text-gold-200 pb-1">
+            {zh ? raid.notice : raid.lastSkill?.serial
+              ? 'Skill deployed. Watch for breaches and the boss pulse!'
+              : 'Watch the boss warning and defend all three lanes.'}
+          </p>
           {raid.bossWarning && (
             <div role="alert" data-testid="boss-warning"
               className="mt-2 rounded-lg border border-danger-300/70 bg-[#6a314b] p-2 text-center text-xs font-bold text-mist-100">
@@ -209,7 +247,19 @@ export function NightRaid({ onClose }: { onClose: () => void }) {
           )}
         </div>
         <footer className="flex justify-between items-center shrink-0 border-t border-line px-3 py-2 sm:px-5 gap-2">
-          <span className="text-xs text-mist-400">{zh ? '进度' : 'Progress'} {raid.tick}/42</span>
+          <span className="text-xs text-mist-400 shrink-0">{zh ? '进度' : 'Progress'} {raid.tick}/42</span>
+          {raid.phase === 'fighting' && (
+            <div className="flex items-center gap-1.5" data-testid="raid-time-controls">
+              <Button size="sm" variant={paused ? 'primary' : 'secondary'} onClick={() => setPaused(value => !value)}
+                aria-pressed={paused} data-testid="raid-pause">
+                {paused ? (zh ? '▶ 继续 P' : '▶ Resume P') : (zh ? '⏸ 暂停 P' : '⏸ Pause P')}
+              </Button>
+              <Button size="sm" variant="quiet" data-testid="raid-speed"
+                onClick={() => setSpeed(value => value === 1 ? 2 : 1)}>
+                {speed}×
+              </Button>
+            </div>
+          )}
           {raid.phase === 'preparing' && (
             <Button variant="primary" size="md" data-testid="raid-start"
               disabled={!raid.lineup.some(Boolean)}
