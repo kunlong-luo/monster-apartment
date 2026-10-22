@@ -30,6 +30,14 @@ const schedule: readonly { tick: number; lane: Lane; kind: Raider['kind'] }[] = 
   {tick:25,lane:1,kind:'scout'}, {tick:28,lane:1,kind:'boss'},
   {tick:30,lane:0,kind:'scout'}, {tick:32,lane:2,kind:'scout'},
 ];
+export type RaidWaveHint = { tick: number; lane: Lane; kind: Raider['kind'] };
+
+/** Predictable intel lets players plan formation and save energy for incoming threats. */
+export function upcomingRaidWaves(tick: number, limit = 3): RaidWaveHint[] {
+  return schedule.filter(wave => wave.tick > tick).slice(0, Math.max(0, limit))
+    .map(wave => ({ ...wave }));
+}
+
 const power = (id: SpiritId, collection: CollectionState): number => {
   const quality = SPIRIT_BY_ID[id].quality;
   const progress = collection.owned[id];
