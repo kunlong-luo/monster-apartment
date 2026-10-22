@@ -3,6 +3,8 @@ import { placeStarter } from './helpers';
 test('summon, direct placement, codex and progression survive refresh', async ({ page }) => {
   await page.setViewportSize({ width:1440,height:900 });
   await page.goto('/');
+  await expect(page.getByTestId('spirit-portrait-seedling').first()).toBeVisible();
+  await expect(page.getByTestId('spirit-portrait-seedling').first()).toHaveAttribute('viewBox', '0 0 120 120');
   await page.getByTestId('open-spirit-portal').click();
   const portal=page.getByTestId('spirit-portal');
   await expect(portal).toBeVisible();
