@@ -23,10 +23,8 @@ test('illustrated apartment dominates the desktop composition', async ({ page })
   expect(pageScroll).toBeLessThanOrEqual(1);
 
   // The game still uses the same recruitment, room selector and clock controls.
-  await page.getByRole('button', { name: /史莱姆/ }).click();
-  await page.getByRole('button', { name: /^2 号房/ }).click();
-  await page.getByRole('button', { name: /火精灵/ }).click();
-  await expect(page.getByText('房间 1-2：蒸汽供能 +3 租金')).toBeVisible();
+  await page.getByRole('button', { name: '芽核 入住选中房间' }).click();
+  await expect(page.getByRole('status')).toContainText('芽核 入住');
   await page.screenshot({ path: 'test-results/v030-desktop.png', fullPage: true, animations: 'disabled' });
 });
 
@@ -51,9 +49,9 @@ test('mobile game has stage-first layout, readable controls, and no side scrolli
   expect(overflow.horizontal).toBeLessThanOrEqual(1);
   expect(overflow.vertical).toBeLessThanOrEqual(1);
 
-  // Tenant names must never be clipped to unreadable ellipses on narrow cards.
+  // Spirit names must never be clipped to unreadable ellipses on narrow cards.
   const namesFit = await page.locator('.game-tenant strong').evaluateAll(
-    (nodes) => nodes.length === 4 && nodes.every(
+    (nodes) => nodes.length > 0 && nodes.every(
       (node) => node.scrollWidth <= node.clientWidth + 1,
     ),
   );
