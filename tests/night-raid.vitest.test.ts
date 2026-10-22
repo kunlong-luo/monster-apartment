@@ -72,6 +72,7 @@ describe('Real-time tactical defense', () => {
     let raid = prepareRaid(collection);
     raid = deployToLane(raid, 0, 'day-smith', collection);
     raid = deployToLane(raid, 1, 'dewdrop', collection);
+    raid = deployToLane(raid, 2, null, collection);
     raid = beginRaid(raid, collection);
     const old = raid.energy;
     const switched = relocateRaid(raid, 0, 2);
