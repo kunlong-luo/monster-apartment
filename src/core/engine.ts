@@ -246,7 +246,7 @@ export function advanceDay(state: GameState): GameOutcome {
   return {
     state: { ...state, day: over ? LAST_DAY : state.day + 1, coins, satisfaction,
       policy: 'steady', over, outcome, history: [...state.history, result],
-      notice, log: [...state.log, eventLog, detailLog] },
+      notice, log: [...state.log, detailLog, eventLog] },
     error: null
   };
 }
