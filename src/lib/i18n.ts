@@ -2,7 +2,7 @@ export type Locale = 'zh' | 'en';
 
 const catalog = {
   zh: {
-    title: '怪物租客公寓', help: '怎么玩？', hideHelp: '收起帮助', reset: '重新开始',
+    title: '灵核公寓', help: '怎么玩？', hideHelp: '收起帮助', reset: '重新开始',
     language: '语言', saveReady: '本地自动存档', saveUnavailable: '本地存档不可用',
     overview: '经营概况', coins: '金币', occupied: '入住', coinTarget: '目标金币',
     satisfactionTarget: '目标满意度', goalPrefix: '金币需达', satisfactionPrefix: '满意度需达',
@@ -36,12 +36,12 @@ const catalog = {
     synergyGuard: '夜间守护：幽灵+石像鬼 +4 租金',
     synergyClean: '整洁石像：石像鬼+史莱姆 +2 租金',
     synergyConflict: '冷热争执：火精灵+幽灵 -3 租金 -4 满意度',
-    stageTitle: 'MONSTER APARTMENT / FLOOR PLAN', stageFloor: '房间布局',
+    stageTitle: 'SPIRIT CORE RESIDENCE / FLOOR PLAN', stageFloor: '房间布局',
     stageEmpty: '＋ 空房', stagePick: '点击选择，安排租客',
     stageFooter: '选择房间 · 搬家后选目标房间 · 布局影响收入', stageRent: '基础租金',
   },
   en: {
-    title: 'Monster Apartment', help: 'How to play', hideHelp: 'Hide help', reset: 'New game',
+    title: 'Spirit Core Residence', help: 'How to play', hideHelp: 'Hide help', reset: 'New game',
     language: 'Language', saveReady: 'Autosaved locally', saveUnavailable: 'Local save unavailable',
     overview: 'Overview', coins: 'Coins', occupied: 'Tenants', coinTarget: 'Coin goal',
     satisfactionTarget: 'Satisfaction goal', goalPrefix: 'Reach', satisfactionPrefix: 'Satisfaction',
