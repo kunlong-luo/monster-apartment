@@ -118,7 +118,7 @@ export function advanceRaid(raid: RaidState, collection: CollectionState): RaidS
     ? { lane: 1 as Lane, ticksLeft: 32 - tick } : null;
   const bossBlast = tick === 32 && bossAlive;
   const middleGuard = raid.lineup[1] && SPIRIT_BY_ID[raid.lineup[1]].role === 'guard';
-  const blastDamage = bossBlast ? middleGuard ? 1 : 4 : 0;
+  const blastDamage = bossBlast ? middleGuard ? 1 : 13 : 0;
   const damage = breached.reduce((sum,e)=>sum + e.damage,0) + blastDamage;
   enemies = enemies.filter(e => e.distance > 1).map(e => ({...e,distance:e.distance - 1}));
   const hasRepair = raid.lineup.some(id => id && SPIRIT_BY_ID[id].role === 'repair');
