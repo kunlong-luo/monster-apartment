@@ -6,7 +6,8 @@ test('illustrated apartment dominates the desktop composition', async ({ page })
   const stage = page.getByTestId('apartment-stage');
   const canvas = page.locator('.apartment-canvas canvas');
   await expect(stage).toBeVisible();
-  await expect(canvas).toBeVisible();
+  await expect(canvas).toHaveCount(1);
+  await expect(canvas.first()).toBeVisible();
   await expect(page.getByRole('heading', { name: '怪物租客公寓' })).toBeVisible();
 
   const rosterBox = await page.locator('.game-roster').boundingBox();
@@ -32,7 +33,9 @@ test('mobile game has stage-first layout, readable controls, and no side scrolli
   await page.goto('/');
   const stage = page.getByTestId('apartment-stage');
   await expect(stage).toBeVisible();
-  await expect(page.locator('.apartment-canvas canvas')).toBeVisible();
+  const canvas = page.locator('.apartment-canvas canvas');
+  await expect(canvas).toHaveCount(1);
+  await expect(canvas.first()).toBeVisible();
 
   const stageBox = await stage.boundingBox();
   const rosterBox = await page.locator('.game-roster').boundingBox();
