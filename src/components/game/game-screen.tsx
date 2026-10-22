@@ -131,7 +131,7 @@ export function GameScreen() {
                 <div className="min-w-0">
                   <p className="game-eyebrow">✧ MIDNIGHT RESIDENCE ✧</p>
                   <h2 className="game-section-title">{locale === 'zh'
-                    ? '今夜，谁住进公寓？' : 'Who moves in tonight?'}</h2>
+                    ? '布阵迎击，守住今夜！' : 'Build your squad. Defend tonight!'}</h2>
                 </div>
                 <div className="flex flex-wrap items-center justify-end gap-2">
                   <Button size="sm" variant="primary" data-testid="open-night-raid"
@@ -176,8 +176,8 @@ export function GameScreen() {
               <div className="game-stage-foot">
                 <span>{moveSource !== null
                   ? t(locale, 'moveHint')
-                  : locale === 'zh' ? '选房间 · 灵核入住 · 经营五夜'
-                    : 'Choose rooms · Place spirits · Survive five nights'}</span>
+                  : locale === 'zh' ? '灵核入住 · 守卫战 · 五夜经营'
+                    : 'Place spirits · Defend · Manage five nights'}</span>
                 <div key={state.history.length + ':' + state.notice}
                   className={state.history.length > 0 ? 'game-settlement-reveal' : 'game-action-reveal'}>
                   <StatusBar message={localizeGameText(error || state.notice, locale)} />
