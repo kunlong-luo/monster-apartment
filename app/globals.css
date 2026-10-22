@@ -515,3 +515,30 @@
   }
 }
 
+
+
+/* Stage 2: compact strategic choices stay within the existing one-screen layout. */
+.game-policy-option {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; min-width: 0; min-height: 48px; padding: 5px 3px;
+  border-radius: 10px; border: 1px solid #7e6774;
+  color: #eee1dd; background: #392e47;
+  text-align: center; cursor: pointer;
+}
+.game-policy-option strong { font-size: 11px; }
+.game-policy-option span { font-size: 9px; line-height: 1.2; color: #d2c3d0; }
+.game-policy-option.is-selected {
+  background: #6a4c57; color: #fff4dc; border-color: #f4bf74;
+  box-shadow: inset 0 2px 0 #ffe1a8, 0 0 0 1px #edb97a55;
+}
+.game-policy-option:focus-visible { outline: 2px solid #f4bf74; outline-offset: 2px; }
+.game-policy-option:disabled { cursor: not-allowed; opacity: .5; }
+@media (max-width: 1199px) {
+  .game-policy-panel { order: -2; }
+  .game-manage-pane .game-night-action { order: -1; }
+  .game-policy-panel { padding: 6px 8px !important; }
+  .game-policy-panel .game-panel-heading { margin-bottom: 4px; }
+  .game-policy-option { min-height: 35px; padding: 3px 2px; }
+  .game-policy-option strong { font-size: 10px; }
+  .game-policy-option span { font-size: 8px; }
+}

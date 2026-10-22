@@ -9,6 +9,7 @@ import { EconomyPanel } from './economy-panel';
 import { RoomPicker } from './room-picker';
 import { TenantList } from './tenant-list';
 import { ManagementPanel } from './management-panel';
+import { StrategyPanel } from './strategy-panel';
 import { ResultCard } from './result-card';
 import { PlayHelp } from './play-help';
 import { StatusBar } from './status-bar';
@@ -171,6 +172,7 @@ export function GameScreen() {
             <aside className={'game-ledger ' + (mobilePanel === 'manage' || mobilePanel === 'log' ? '' : 'game-mobile-hidden')}
               aria-label={locale === 'zh' ? '经营与结算' : 'Management and settlement'}>
               <div className="game-mobile-pane game-manage-pane" data-selected={mobilePanel === 'manage'}>
+                <StrategyPanel />
                 <EconomyPanel />
                 <ManagementPanel />
                 <div className="game-night-action">

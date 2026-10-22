@@ -1,7 +1,8 @@
 import * as Phaser from 'phaser';
-import { LAST_DAY, TENANTS, synergyDetails } from '@/core/engine';
+import { LAST_DAY, TENANTS, ROOM_TRAITS, synergyDetails } from '@/core/engine';
 import type { GameState, TenantId } from '@/core/engine';
 import { t, tenantNames } from '@/lib/i18n';
+import { traitLabel } from '@/lib/strategy-labels';
 import type { Locale } from '@/lib/i18n';
 import { apartmentEvents } from './events';
 
@@ -251,6 +252,9 @@ export default class ApartmentScene extends Phaser.Scene {
       scene.fillRoundedRect(x + 9, y + 8, 89, 23, 8);
       const name = locale === 'zh' ? String(i + 1) + ' 号房' : 'Room ' + (i + 1);
       this.text(name + ' · ' + (3 - row) + 'F', x + 17, y + 12, 12, '#fff0dd', true);
+      // A permanent icon makes room characteristics visible before hiring.
+      this.text(ROOM_TRAITS[i].icon + ' ' + traitLabel(locale, i), x + roomW - 13, y + 12,
+        11, '#ffe2ac', true).setOrigin(1, 0);
 
       if (id && tenant) {
         scene.fillStyle(0x211c34, .92);
