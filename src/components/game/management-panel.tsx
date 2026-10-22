@@ -9,12 +9,12 @@ import { synergyDetails, preferenceDetails, dailyEstimate, managementForecast } 
 import { t, localizeGameText } from '@/lib/i18n';
 
 export function ManagementPanel() {
-  const { state, locale } = useGameStore();
+  const { state, collection, locale } = useGameStore();
   const occupied = state.rooms.filter(Boolean).length;
   const synergy = synergyDetails(state.rooms);
   const preference = preferenceDetails(state.rooms);
-  const estimate = dailyEstimate(state);
-  const forecast = managementForecast(state);
+  const estimate = dailyEstimate(state, collection);
+  const forecast = managementForecast(state, collection);
 
   return (
     <Panel>
@@ -46,6 +46,7 @@ export function ManagementPanel() {
           value={estimate.decision >= 0 ? '+' + estimate.decision : estimate.decision}
           tone={estimate.decision >= 0 ? 'positive' : 'negative'}
         />
+        {estimate.spirit !== 0 && <MeterRow label={locale === 'zh' ? '灵核驻守' : 'Spirit support'} value={estimate.spirit > 0 ? '+' + estimate.spirit : estimate.spirit} tone={estimate.spirit > 0 ? 'positive' : 'negative'} />}
         <MeterRow label={t(locale, 'estimated')} value={estimate.net} tone="default" />
         <div className="game-balance-forecast" data-testid="balance-forecast">
           <strong>{locale === 'zh' ? '今晚满意度预测' : 'Tonight mood preview'}</strong>
