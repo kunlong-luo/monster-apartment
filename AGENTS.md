@@ -120,3 +120,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Phaser canvas keeps 628x676 coordinate space and click event bridge. RoomPicker remains the accessible keyboard route.
 - Visual E2E in `e2e/visual-ui.spec.ts` captures screenshots into test-results; Actions uploads these as the `v030-ui-review` artifact.
 - PR #2 is merged into main. PR #3 now targets main; release requires merge plus successful Pages deployment and manual site review.
+
+## Current development workflow (2026-10-22)
+- Project owner requests **direct-to-`main` development** for future iterations: do not create feature branches or PRs by default.
+- Verify the current main head before edits; submit each coherent change directly to `main` and inspect the resulting GitHub Actions checks and Pages deployment.
+- Do not bypass tests, overwrite unrelated changes, or claim a live deployment before Pages reports success. Keep changes small and reversible.
+- V0.4.0 Stage 2 room affinity / nightly policies entered `main` via PR #5; older AGENTS.md notes about PR status and balance baseline are historical and must not be treated as current.
