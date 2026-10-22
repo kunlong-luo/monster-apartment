@@ -76,4 +76,17 @@ describe('V0.4.0 strategic depth', () => {
     expect(localizeGameText(settled.log.find(line => line.includes('房间偏好')) ?? '', 'en')).toContain('Room affinity');
     expect(localizeGameText(settled.log.find(line => line.includes('房间偏好')) ?? '', 'en')).toContain('Party');
   });
+  it('can lose by neglecting room fit even after earning enough coins', () => {
+    let game = newGame();
+    const tenants: Array<[number, 'slime' | 'ember']> =
+      [[1, 'slime'], [2, 'slime'], [3, 'ember'], [4, 'ember'], [5, 'slime']];
+    for (const [room, tenant] of tenants) game = hire(game, room, tenant).state;
+    expect(preferenceDetails(game.rooms).mismatches).toBe(5);
+    for (let i = 0; i < 5; i++) game = advanceDay(game).state;
+    expect(game.over).toBe(true);
+    expect(game.coins).toBeGreaterThanOrEqual(135);
+    expect(game.satisfaction).toBeLessThan(55);
+    expect(game.outcome).toBe('lose');
+  });
+
 });
