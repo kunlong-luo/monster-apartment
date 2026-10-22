@@ -73,7 +73,7 @@ describe('V0.4.0 strategic depth', () => {
   it('translates strategic settlement notes', () => {
     const game = choosePolicy(hire(newGame(), 0, 'slime').state, 'festival').state;
     const settled = advanceDay(game).state;
-    expect(localizeGameText(settled.log.at(-1) ?? '', 'en')).toContain('Room affinity');
-    expect(localizeGameText(settled.log.at(-1) ?? '', 'en')).toContain('Party');
+    expect(localizeGameText(settled.log.find(line => line.includes('房间偏好')) ?? '', 'en')).toContain('Room affinity');
+    expect(localizeGameText(settled.log.find(line => line.includes('房间偏好')) ?? '', 'en')).toContain('Party');
   });
 });
