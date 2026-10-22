@@ -45,11 +45,26 @@ export function GameHeader({
             <option value="en">English</option>
           </select>
         </label>
-        <Button variant="quiet" size="sm" onClick={onReplayTutorial}>{t(locale, 'guideReplay')}</Button>
-        <Button variant="quiet" size="sm" onClick={onToggleHelp} aria-pressed={helpOpen}>
-          {t(locale, helpOpen ? 'hideHelp' : 'help')}
-        </Button>
-        <Button variant="secondary" size="sm" onClick={onReset}>{t(locale, 'reset')}</Button>
+        <div className="game-desktop-actions flex items-center gap-2">
+          <Button variant="quiet" size="sm" onClick={onReplayTutorial}>{t(locale, 'guideReplay')}</Button>
+          <Button variant="quiet" size="sm" onClick={onToggleHelp} aria-pressed={helpOpen}>
+            {t(locale, helpOpen ? 'hideHelp' : 'help')}
+          </Button>
+          <Button variant="secondary" size="sm" onClick={onReset}>{t(locale, 'reset')}</Button>
+        </div>
+        <details className="game-mobile-menu">
+          <summary aria-label={locale === 'zh' ? '更多设置' : 'More options'}>
+            <span aria-hidden="true">⋯</span>
+            <span>{locale === 'zh' ? '更多' : 'More'}</span>
+          </summary>
+          <div className="game-mobile-menu-popover">
+            <Button variant="quiet" size="sm" onClick={onReplayTutorial}>{t(locale, 'guideReplay')}</Button>
+            <Button variant="quiet" size="sm" onClick={onToggleHelp} aria-pressed={helpOpen}>
+              {t(locale, helpOpen ? 'hideHelp' : 'help')}
+            </Button>
+            <Button variant="secondary" size="sm" onClick={onReset}>{t(locale, 'reset')}</Button>
+          </div>
+        </details>
       </div>
     </div>
   );
