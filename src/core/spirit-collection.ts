@@ -178,3 +178,29 @@ export function companionEffects(rooms: readonly RoomSlot[], collection?: Collec
   }
   return { coins, satisfaction };
 }
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+function inRange(value: unknown, max: number): value is number {
+  return typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= max;
+}
+export function validCollection(value: unknown): value is CollectionState {
+  if (!isRecord(value) || !isRecord(value.pity) || !isRecord(value.owned)) return false;
+  if (!inRange(value.tickets, 100000) || !inRange(value.essence, 1000000) ||
+    !inRange(value.totalPulls, 1000000)) return false;
+  const pity = value.pity;
+  if (!inRange(pity.sr, 9) || !inRange(pity.ssr, 49) || !inRange(pity.ur, 99)) return false;
+  if (!Array.isArray(value.equipped) || value.equipped.length !== 6 ||
+    !value.equipped.every((id: unknown) => id === null || isSpiritId(id))) return false;
+  if (!Array.isArray(value.recent) || value.recent.length > 10 || !value.recent.every(isSpiritId)) return false;
+  for (const [id, progress] of Object.entries(value.owned)) {
+    if (!isSpiritId(id) || !isRecord(progress) || !inRange(progress.level, 30) ||
+      progress.level < 1 || !inRange(progress.xp, 1000000) ||
+      !inRange(progress.shards, 1000000) || !inRange(progress.evolution, 2) ||
+      (progress.evolution > 0 && progress.level < progress.evolution * 10)) return false;
+  }
+  const equipped = value.equipped.filter((id): id is SpiritId => id !== null);
+  return new Set(equipped).size === equipped.length &&
+    equipped.every((id) => Object.hasOwn(value.owned as object, id));
+}
