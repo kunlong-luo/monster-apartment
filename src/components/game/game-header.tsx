@@ -25,7 +25,7 @@ export function GameHeader({
           <p className="game-brand-kicker">✦ WELCOME TO THE NIGHT SHIFT</p>
           <h1 className="game-brand-title">{t(locale, 'title')}</h1>
           <small className="block mt-1 text-mist-500 text-[10px] tracking-[.16em] uppercase">
-            MONSTER APARTMENT / V0.4.0
+            SPIRIT CORE RESIDENCE / V0.5.0
           </small>
         </div>
       </div>
