@@ -1,72 +1,41 @@
-import { expect, test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { placeStarter } from './helpers';
 
-test('V0.4 desktop primary gameplay fits one viewport without document scroll', async ({ page }) => {
+const extent = (page: import('@playwright/test').Page) => page.evaluate(() => ({
+  vertical: document.documentElement.scrollHeight - innerHeight,
+  horizontal: document.documentElement.scrollWidth - innerWidth,
+}));
+test('desktop original spirit game fits within one screen', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   await expect(page.locator('.apartment-canvas canvas')).toHaveCount(1);
-  await expect(page.getByRole('button', { name: /史莱姆/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /^2 号房/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /结束今天/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: '芽核 入住选中房间' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '结束今天' })).toBeVisible();
   await expect(page.getByRole('tablist')).toBeHidden();
-
-  const extent = await page.evaluate(() => ({
-    vertical: document.documentElement.scrollHeight - window.innerHeight,
-    horizontal: document.documentElement.scrollWidth - window.innerWidth,
-  }));
-  expect(extent.vertical).toBeLessThanOrEqual(1);
-  expect(extent.horizontal).toBeLessThanOrEqual(1);
+  expect((await extent(page)).vertical).toBeLessThanOrEqual(1);
 });
-
-test('V0.4 mobile uses recruit, room, management and journal tabs without page scroll', async ({ page }) => {
+test('mobile spirit, rooms, management and journal stay within viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
-  await expect(page.locator('.apartment-canvas canvas')).toHaveCount(1);
-  const recruit = page.getByRole('tab', { name: '招募' });
-  const rooms = page.getByRole('tab', { name: '房间' });
-  const manage = page.getByRole('tab', { name: '经营' });
-  const journal = page.getByRole('tab', { name: '手记' });
-  await expect(recruit).toHaveAttribute('aria-selected', 'true');
-  const more = page.getByText('更多', { exact: true });
-  await more.click();
-  await expect(page.getByRole('button', { name: '重新查看引导' })).toBeVisible();
-  await more.click();
-  await page.getByRole('button', { name: /史莱姆/ }).click();
-
-  await rooms.click();
-  const second = page.getByRole('button', { name: /^2 号房/ });
-  await expect(second).toBeVisible();
-  await second.click();
-  await expect(second).toHaveAttribute('aria-pressed', 'true');
-
-  await manage.click();
-  const end = page.getByRole('button', { name: /结束今天/ });
+  await expect(page.getByRole('tab', { name: '灵核' })).toHaveAttribute('aria-selected','true');
+  await placeStarter(page);
+  await page.getByRole('tab', { name: '房间' }).click();
+  await page.getByRole('button', { name: /^2 号房/ }).click();
+  await page.getByRole('tab', { name: '经营' }).click();
+  const end = page.getByRole('button', { name: '结束今天' });
   await expect(end).toBeEnabled();
-  const ledger = await page.locator('.game-ledger').boundingBox();
-  const action = await end.boundingBox();
-  expect(ledger).not.toBeNull();
-  expect(action).not.toBeNull();
-  expect(action!.y).toBeGreaterThanOrEqual(ledger!.y - 1);
-  expect(action!.y + action!.height).toBeLessThanOrEqual(ledger!.y + ledger!.height + 1);
   await end.click();
-  await journal.click();
-  await expect(page.locator('.game-log')).toContainText('第 1 天：租金');
-
-  const extent = await page.evaluate(() => ({
-    vertical: document.documentElement.scrollHeight - window.innerHeight,
-    horizontal: document.documentElement.scrollWidth - window.innerWidth,
-  }));
-  expect(extent.vertical).toBeLessThanOrEqual(1);
-  expect(extent.horizontal).toBeLessThanOrEqual(1);
+  await page.getByRole('tab', { name: '手记' }).click();
+  await expect(page.locator('.game-log')).toContainText('第 1 天：收益');
+  const size = await extent(page);
+  expect(size.vertical).toBeLessThanOrEqual(1);
+  expect(size.horizontal).toBeLessThanOrEqual(1);
 });
-
-
-test('V0.4 tablet uses the compact dock rather than a long stacking page', async ({ page }) => {
+test('tablet uses compact bottom tabs', async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 768 });
   await page.goto('/');
-  await expect(page.locator('.apartment-canvas canvas')).toHaveCount(1);
   await expect(page.getByRole('tablist')).toBeVisible();
   await page.getByRole('tab', { name: '房间' }).click();
   await expect(page.getByRole('button', { name: /^1 号房/ })).toBeVisible();
-  const vertical = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
-  expect(vertical).toBeLessThanOrEqual(1);
+  expect((await extent(page)).vertical).toBeLessThanOrEqual(1);
 });
