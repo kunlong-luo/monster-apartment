@@ -10,10 +10,17 @@ test('summon, direct placement, codex and progression survive refresh', async ({
   await expect(portal).toBeVisible();
   await expect(page.getByTestId('summon-resources')).toContainText('召唤券 10');
   await portal.getByRole('button',{name:'召唤 1 次 · 1 券'}).click();
+  await expect(page.getByTestId('summon-reveal')).toBeVisible();
+  await expect(page.getByTestId('summon-reveal-cards')).toHaveCount(1);
+  await page.getByTestId('summon-reveal-close').click();
   await expect(page.getByTestId('summon-results')).toBeVisible();
   await expect(page.getByTestId('summon-resources')).toContainText('召唤券 9');
   await portal.getByRole('tab',{name:'图鉴养成'}).click();
   await expect(page.getByTestId('spirit-codex')).toContainText('芽核');
+  await portal.getByRole('button', { name: '芽核 · 查看详情' }).click();
+  await expect(page.getByTestId('spirit-profile')).toContainText('初生');
+  await expect(page.getByTestId('spirit-profile')).toContainText('Lv.1/30');
+  await portal.getByRole('button', { name: '收起详情' }).click();
   await portal.getByRole('button',{name:'关闭召唤所'}).click();
   await placeStarter(page);
   await expect(page.getByTestId('room-affinity')).toContainText('✦');
@@ -38,4 +45,32 @@ test('mobile summons overlay does not replace core four tabs', async ({ page }) 
   await page.getByRole('button',{name:'关闭召唤所'}).click();
   await page.getByRole('tab',{name:'经营'}).click();
   await expect(page.getByRole('button',{name:'结束今天'})).toBeVisible();
+});
+
+
+test('guaranteed mythic reveal is distinct and remains accessible with reduced motion', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await page.evaluate(() => {
+    const key = 'monster-apartment:save:v1';
+    const saved = JSON.parse(localStorage.getItem(key)!);
+    saved.collection.pity.ur = 99;
+    localStorage.setItem(key, JSON.stringify(saved));
+  });
+  await page.reload();
+  await page.getByText('更多', { exact: true }).click();
+  await page.getByRole('button', { name: '✦ 召唤 · 图鉴' }).click();
+  const portal = page.getByTestId('spirit-portal');
+  await portal.getByRole('button', { name: '召唤 1 次 · 1 券' }).click();
+  const reveal = page.getByTestId('summon-reveal');
+  await expect(reveal).toContainText('神话降临');
+  await expect(reveal).toContainText('UR');
+  const animation = await reveal.locator('.game-summon-card').evaluate(node => getComputedStyle(node).animationName);
+  expect(animation).toBe('none');
+  await page.getByTestId('summon-reveal-close').click();
+  await expect(reveal).toHaveCount(0);
+  await expect(page.getByTestId('summon-results')).toBeVisible();
+  await expect(page.getByTestId('summon-resources')).toContainText('召唤券 9');
+  expect(await page.evaluate(() => document.documentElement.scrollHeight - innerHeight)).toBeLessThanOrEqual(1);
 });
