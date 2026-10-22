@@ -47,6 +47,14 @@ test('mobile game has stage-first layout, readable controls, and no side scrolli
   );
   expect(overflow).toBeLessThanOrEqual(1);
 
+  // Tenant names must never be clipped to unreadable ellipses on narrow cards.
+  const namesFit = await page.locator('.game-tenant strong').evaluateAll(
+    (nodes) => nodes.length === 4 && nodes.every(
+      (node) => node.scrollWidth <= node.clientWidth + 1,
+    ),
+  );
+  expect(namesFit).toBe(true);
+
   const room = page.getByRole('button', { name: /^3 号房/ });
   await room.click();
   await expect(room).toHaveAttribute('aria-pressed', 'true');
