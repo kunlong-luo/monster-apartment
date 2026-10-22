@@ -53,8 +53,8 @@ export function ManagementPanel() {
           <span>{state.satisfaction} → {forecast.satisfactionTonight}</span>
           <strong>{locale === 'zh' ? '五夜趋势（不含未知事件）' : 'Five-night trend (no surprise events)'}</strong>
           <span>{locale === 'zh' ? '金币' : 'Coins'} {forecast.coinsAtEnd} / 135 · {locale === 'zh' ? '满意度' : 'Mood'} {forecast.satisfactionAtEnd} / 55</span>
-          <small>{locale === 'zh' ? '仅供参考：后续按现有住户和稳健策略计算，未包含未来招募、事件及额外选择。'
-            : 'Illustrative only: same tenants and steady policy afterward; excludes recruitment and surprise events.'}</small>
+          <small>{locale === 'zh' ? '仅供参考：后续按现有住户和稳健策略计算，未包含未来召唤、事件及额外选择。'
+            : 'Illustrative only: same tenants and steady policy afterward; excludes future summons and surprise events.'}</small>
         </div>
       </div>
       {synergy.messages.length > 0 && (
