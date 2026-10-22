@@ -2,7 +2,7 @@ import * as Phaser from 'phaser';
 import { LAST_DAY, ROOM_TRAITS, synergyDetails } from '@/core/engine';
 import { SPIRIT_BY_ID } from '@/core/spirit-collection';
 import { SPIRIT_ART } from '@/core/spirit-art';
-import type { SpiritId } from '@/core/spirit-collection';
+import type { SpiritId, CollectionState } from '@/core/spirit-collection';
 import type { GameState, RoomSlot } from '@/core/engine';
 import { roomMotionEvents } from './room-motion';
 import { t } from '@/lib/i18n';
@@ -132,7 +132,7 @@ function spiritSignature(g: Phaser.GameObjects.Graphics, id: SpiritId, x: number
   }
 }
 
-function spiritPortrait(g: Phaser.GameObjects.Graphics, id: SpiritId, cx: number, cy: number) {
+function spiritPortrait(g: Phaser.GameObjects.Graphics, id: SpiritId, cx: number, cy: number, evolution = 0) {
   const creature = SPIRIT_BY_ID[id];
   const colors = SPIRIT_ART[id];
   const color = {
@@ -184,6 +184,12 @@ function spiritPortrait(g: Phaser.GameObjects.Graphics, id: SpiritId, cx: number
     g.fillCircle(cx + 35, cy - 20, 5);
   }
   spiritSignature(g, id, cx, cy, color.light, color.shade);
+  if (evolution > 0) {
+    g.fillStyle(evolution > 1 ? 0xfbd595 : color.light, .95);
+    g.fillTriangle(cx - 18, cy - 39, cx - 10, cy - 55, cx, cy - 43);
+    g.fillTriangle(cx, cy - 43, cx + 10, cy - 55, cx + 18, cy - 39);
+    g.fillCircle(cx, cy - 43, evolution > 1 ? 6 : 3);
+  }
 }
 
 export default class ApartmentScene extends Phaser.Scene {
@@ -202,7 +208,7 @@ export default class ApartmentScene extends Phaser.Scene {
     });
   }
 
-  updateBoard(state: GameState, selected: number | null, moveSource: number | null, locale: Locale): void {
+  updateBoard(state: GameState, selected: number | null, moveSource: number | null, locale: Locale, collection?: CollectionState): void {
     const effects = roomMotionEvents(this.previousRooms, state.rooms);
     this.previousRooms = [...state.rooms];
     // A room selection redraws the board. Kill old infinite idle tweens first.
@@ -339,7 +345,7 @@ export default class ApartmentScene extends Phaser.Scene {
         scene.fillStyle(0x191321, .27);
         scene.fillEllipse(x + 180, y + 116, 76, 15);
         const actor = this.add.graphics();
-        spiritPortrait(actor, id, x + 180, y + 79);
+        spiritPortrait(actor, id, x + 180, y + 79, collection?.owned[id]?.evolution ?? 0);
         if (!reducedMotion) {
           const amplitude = spirit.faction === 'veil' ? 7 : spirit.faction === 'forge' ? 3 : 5;
           const period = spirit.faction === 'veil' ? 1600 : spirit.faction === 'forge' ? 1100 : 1400;
