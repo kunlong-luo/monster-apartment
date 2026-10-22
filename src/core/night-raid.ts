@@ -117,3 +117,16 @@ export function advanceRaid(raid: RaidState, collection: CollectionState): RaidS
 export function raidReward(raid: RaidState): {tickets:number;essence:number} | null {
   return raid.phase === 'won' ? {tickets:3,essence:10} : null;
 }
+
+/** One successful defense payout per night, independent of React/store state. */
+export function applyRaidReward(collection: CollectionState, raid: RaidState, night: number): CollectionState {
+  const reward = raidReward(raid);
+  if (!reward || !Number.isInteger(night) || night < 1 || night > 5 ||
+    collection.claimedRaids?.includes(night)) return collection;
+  return {
+    ...collection,
+    tickets: collection.tickets + reward.tickets,
+    essence: collection.essence + reward.essence,
+    claimedRaids: [...(collection.claimedRaids ?? []), night],
+  };
+}
