@@ -1,12 +1,14 @@
-# 灵核公寓 · V0.5.0（原创灵核召唤预览）
+# 灵核公寓 · V0.6.0（星域三路守卫战）
 
-**当前方向：** 六房五夜模拟经营 + 原创数字生命抽卡收集 + 品质保底 + 阵营编组 + 等级和进化。所有召唤资源仅通过免费游戏内经营获取，不含付费功能。
+**当前方向：** 原创灵核收集养成 + 三路实时战斗 + 六房五夜经营。通过布阵、战技时机和首领预警改变战局。所有召唤资源仅通过免费游戏内玩法获取，不含付费功能。
 
 已接入 18 种原创生物（UR 8、SSR 4、SR 3、R 2、N 1），五档品质概率、单抽十连保底、图鉴、升级、两阶段进化和六间房驻守加成。原四种怪物已从实际游戏、房间、招募和场景中移除，现由收集到的原创灵核直接入住。旧存档自动将旧房间映射为原创灵核并补入收藏。
 
-详见 [V0.5.0 灵核收集系统说明](./docs/SPIRIT_COLLECTION_V050.md)。以下保留旧版本迭代记录。
+新玩家会直接获得守护、修缮和经营三种职业的入门阵容，可以立刻体验战斗，而不需要先反复抽卡。
 
-**游戏玩法：** 六间房、原创灵核召唤与入住、移动 / 交换、阵营与属性共鸣、五夜经营及长期培养。
+玩法文档：[V0.6.0 三路守卫](./docs/V060_TACTICAL_DEFENSE.md) · [V0.5.0 灵核收集](./docs/SPIRIT_COLLECTION_V050.md)。以下保留旧版本迭代记录。
+
+**游戏玩法：** 三路实时防守、主动战技与换防、首领蓄力预警、守卫奖励、六房经营、原创灵核召唤与进化。
 
 **技术栈：** Next.js 16.4.2（App Router + Turbopack）、React 19.3.1、TypeScript 6.0.3、Tailwind CSS 4.3.3、Zustand 5.0.15、Phaser 4.2.1、Node 24 / pnpm 12.13.0。项目知识库见 [`AGENTS.md`](./AGENTS.md)。
 
@@ -26,16 +28,16 @@ pnpm dev                # http://127.0.0.1:3000/
 
 生产构建：`pnpm build && pnpm start`（同样监听 127.0.0.1:3000）。
 
-## 3. 提交前门禁（2026-10-21 实测全绿）
+## 3. 提交前门禁
 
 ```bash
 pnpm check:stable-deps  # 依赖必须为精确 semver
 pnpm typecheck          # tsc --noEmit
 pnpm lint               # ESLint flat config，0 warning
 pnpm test:rules         # node --test，6 条
-pnpm test               # vitest，3 条
+pnpm test               # Vitest 规则、战斗、存档与养成回归
 pnpm build              # Next 16 Turbopack
-pnpm e2e                # Playwright，共12条（CI 使用系统 Chrome；本机需安装浏览器）
+pnpm e2e                # Playwright 浏览器交互与响应式验证（CI 使用系统 Chrome）
 ```
 
 CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`，分 `checks` 与 `e2e` 两个 job。
@@ -46,15 +48,15 @@ CI（`.github/workflows/quality.yml`）使用 `pnpm install --frozen-lockfile`�
 |---|---|
 | `app/layout.tsx` / `app/page.tsx` | App Router 入口，唯一路由 `/` |
 | `app/globals.css` | Tailwind 4 入口与 `@theme` 设计令牌 |
-| `src/core/engine.ts` | 全部游戏规则；纯 TS，零框架依赖，唯一真源 |
+| `src/core/engine.ts` / `src/core/night-raid.ts` | 五夜经营与独立三路战斗；纯 TS，无框架依赖 |
 | `src/store/game-store.ts` | Zustand 状态与 7 个动作，包装引擎返回值 |
-| `src/game/apartment-scene.ts` | Phaser 4 六房平面图与点击映射 |
+| `src/game/apartment-scene.ts` / `src/game/raid-scene.ts` | Phaser 4 公寓场景及三路战斗、弹道、首领预警 |
 | `src/game/events.ts` | React ⇄ Phaser 的类型化事件总线 |
 | `src/components/apartment/*` | 客户端专有边界（`next/dynamic({ ssr:false })`） |
-| `src/components/game/*` | 顶栏、租客面板、房间选择器、结算等 11 个面板 |
+| `src/components/game/*` | 原创灵核图鉴、经营 UI、召唤演出与实时防线操作 |
 | `src/components/ui/*` | 9 个自建 primitive（Button/Panel/Badge/…），不依赖第三方 UI 库 |
-| `tests/` | Node 规则测试 6 项 + Vitest 6 项（含存档与国际化校验） |
-| `e2e/` | Playwright：六项基础流程、三项搬家回归、三项 V0.2.2 存档/英文/教学流程，共14项（含 V0.3 桌面与移动端视觉检查） |
+| `tests/` | Node + Vitest 规则、存档、角色养成、三路战斗与 Boss 回归 |
+| `e2e/` | Playwright：真实浏览器下的战斗、召唤、存档、移动端与视觉测试 |
 | `docs/` | 产品计划、技术栈矩阵、变更记录 |
 | `management/TASKS.csv` | 任务状态与验收标准 |
 
