@@ -10,6 +10,8 @@ test('players can defend live lanes using timed combat actions', async ({ page }
   await trigger.click();
   const raid = page.getByTestId('night-raid');
   await expect(raid).toBeVisible();
+  await expect(raid.getByTestId('raid-phaser-canvas').locator('canvas')).toBeVisible();
+  await expect(raid.getByTestId('raid-phaser-canvas').locator('canvas')).toHaveCount(1);
   await expect(raid.getByTestId('raid-lane-0')).toBeVisible();
   await expect(raid.getByTestId('raid-lane-1')).toBeVisible();
   await expect(raid.getByTestId('raid-lane-2')).toBeVisible();
@@ -31,6 +33,7 @@ test('mobile tactical overlay is accessible without expanding document height', 
   await page.getByTestId('open-night-raid').click();
   const raid = page.getByTestId('night-raid');
   await expect(raid).toBeVisible();
+  await expect(raid.getByTestId('raid-phaser-canvas').locator('canvas')).toBeVisible();
   await expect(page.getByTestId('raid-start')).toBeVisible();
   await page.getByTestId('raid-start').click();
   await expect(raid.getByTestId('raid-enemy').first()).toBeVisible();
