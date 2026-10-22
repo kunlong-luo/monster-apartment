@@ -1,4 +1,4 @@
-import { POLICY_IDS } from '@/core/engine';
+import { POLICY_IDS } from '../core/engine';
 import type { GameState, DayResult, RoomSlot } from '@/core/engine';
 import type { Locale } from './i18n';
 
