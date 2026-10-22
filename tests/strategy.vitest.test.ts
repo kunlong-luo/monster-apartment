@@ -17,7 +17,7 @@ describe('Original spirit management balance', () => {
   });
   it('uses six elemental room traits', () => {
     expect(ROOM_TRAITS).toHaveLength(6);
-    const rooms = ['pebble-crab','day-smith','dusk-bell','prism-mole','fern-hare','seedling'] as const;
+    const rooms = ['dewdrop','day-smith','dusk-bell','prism-mole','fern-hare','seedling'] as const;
     expect(preferenceDetails([...rooms]).matches).toBe(6);
     const swapped = [...rooms];
     [swapped[0],swapped[1]]=[swapped[1],swapped[0]];
