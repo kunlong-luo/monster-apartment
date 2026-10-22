@@ -26,6 +26,10 @@ test('V0.4 mobile uses recruit, room, management and journal tabs without page s
   const manage = page.getByRole('tab', { name: '经营' });
   const journal = page.getByRole('tab', { name: '手记' });
   await expect(recruit).toHaveAttribute('aria-selected', 'true');
+  const more = page.getByText('更多', { exact: true });
+  await more.click();
+  await expect(page.getByRole('button', { name: '重新查看引导' })).toBeVisible();
+  await more.click();
   await page.getByRole('button', { name: /史莱姆/ }).click();
 
   await rooms.click();
