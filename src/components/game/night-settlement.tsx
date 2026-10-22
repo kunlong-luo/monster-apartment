@@ -23,7 +23,7 @@ export function NightSettlement({ result, satisfaction, locale }: Props) {
     { label: zh ? '夜间事件' : 'Night event', value: result.event },
   ];
   return (
-    <Panel className="game-settlement-reveal">
+    <Panel className="game-night-summary">
       <details className="group">
       <summary className="flex cursor-pointer items-center justify-between gap-2">
         <strong className="text-gold-200 text-sm">{zh ? `第 ${result.day} 夜 · 经营结算` : `Night ${result.day} · Settlement`}</strong>
