@@ -148,7 +148,7 @@ export function NightRaid({ onClose }: { onClose: () => void }) {
             {zh ? raid.notice : raid.lastSkill?.serial
               ? 'Skill deployed. Watch for breaches and the boss pulse!'
               : 'Watch the boss warning and defend all three lanes.'}
-          </p>
+          </p>}
           {raid.bossWarning && (
             <div role="alert" data-testid="boss-warning"
               className="mt-2 rounded-lg border border-danger-300/70 bg-[#6a314b] p-2 text-center text-xs font-bold text-mist-100">
