@@ -5,7 +5,7 @@ test('players can defend live lanes using timed combat actions', async ({ page }
   await page.setViewportSize({ width: 1440, height: 900 });
   const runtimeErrors: string[] = [];
   page.on('pageerror', error => runtimeErrors.push(error.message));
-  await page.goto('/');
+  await page.goto('/legacy');
   await placeStarter(page);
   const trigger = page.getByTestId('open-night-raid');
   await expect(trigger).toBeEnabled();
@@ -31,7 +31,7 @@ test('players can defend live lanes using timed combat actions', async ({ page }
 test('mobile tactical overlay is accessible without expanding document height', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/');
+  await page.goto('/legacy');
   await placeStarter(page);
   await page.getByTestId('open-night-raid').click();
   const raid = page.getByTestId('night-raid');
@@ -54,7 +54,7 @@ test('mobile tactical overlay is accessible without expanding document height', 
 
 test('tactical pause freezes enemies and wave forecast predicts the next threat', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/');
+  await page.goto('/legacy');
   await placeStarter(page);
   await page.getByTestId('open-night-raid').click();
   const raid = page.getByTestId('night-raid');
@@ -77,7 +77,7 @@ test('tactical pause freezes enemies and wave forecast predicts the next threat'
 
 test('stage choice changes enemy intel and losing reveals actionable lane report', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/');
+  await page.goto('/legacy');
   await placeStarter(page);
   await page.getByTestId('open-night-raid').click();
   const raid = page.getByTestId('night-raid');
