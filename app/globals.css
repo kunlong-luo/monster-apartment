@@ -278,6 +278,29 @@
 }
 
 
+.game-mobile-menu { display: none; }
+@media (max-width: 1199px) {
+  .game-masthead { position: relative; z-index: 80; overflow: visible; }
+  .game-header-tools { overflow: visible; }
+  .game-desktop-actions { display: none; }
+  .game-mobile-menu { display: block; position: relative; margin-left: auto; }
+  .game-mobile-menu > summary {
+    list-style: none; display: flex; align-items: center; justify-content: center; gap: 3px;
+    min-height: 32px; padding: 3px 9px; cursor: pointer;
+    border: 1px solid #8a70839c; border-radius: 11px;
+    background: #3d304b; color: #ffe2ad; font-weight: 800; font-size: 11px;
+  }
+  .game-mobile-menu > summary::-webkit-details-marker { display: none; }
+  .game-mobile-menu > summary:focus-visible { outline: 2px solid #f4bf74; outline-offset: 2px; }
+  .game-mobile-menu-popover {
+    position: absolute; right: 0; top: calc(100% + 8px); z-index: 90;
+    display: flex; flex-direction: column; gap: 7px;
+    width: min(200px, 75vw); padding: 10px;
+    background: #2c2340; border: 1px solid #b796a88c; border-radius: 14px;
+    box-shadow: 0 14px 34px #000c;
+  }
+}
+
 /* V0.4.0 compact-play layout — the document itself stays within the viewport.
    Scrolling is reserved for overflow inside auxiliary panels, not the game stage. */
 .game-page-layer { min-height: 0; }
