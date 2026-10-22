@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { advanceDay, choosePolicy, chooseNightDecision, hire, moveOrSwap, newGame } from '@/core/engine';
-import type { GameOutcome, GameState, TenantId, PolicyId, NightDecisionId } from '@/core/engine';
+import { advanceDay, choosePolicy, chooseNightDecision, placeSpirit, removeSpirit, moveOrSwap, newGame } from '@/core/engine';
+import type { GameOutcome, GameState, PolicyId, NightDecisionId } from '@/core/engine';
 import type { Locale } from '@/lib/i18n';
 import type { SaveData } from '@/lib/save-game';
 import { newCollection, summon, equipSpirit, swapEquipped, nightCollectionReward, levelSpirit, evolveSpirit } from '@/core/spirit-collection';
@@ -20,7 +20,6 @@ type GameStore = {
   saveAvailable: boolean;
   hydrated: boolean;
   pickRoom: (index: number) => void;
-  recruit: (tenant: TenantId) => void;
   beginMove: () => void;
   cancelMove: () => void;
   nextDay: () => void;
@@ -74,18 +73,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
       tutorialStep: tutorialActive && tutorialStep === 0 ? 1 : tutorialStep,
     });
   },
-  recruit(tenant) {
-    const { state, selected, tutorialActive, tutorialStep } = get();
-    if (selected === null) {
-      set({ error: '请先选中一个房间。' });
-      return;
-    }
-    const result = hire(state, selected, tenant);
-    set({
-      ...apply(result),
-      tutorialStep: !result.error && tutorialActive && tutorialStep === 1 ? 2 : tutorialStep,
-    });
-  },
   beginMove() {
     const { selected, state, tutorialActive, tutorialStep } = get();
     if (selected !== null && state.rooms[selected] && !state.over) {
@@ -125,9 +112,23 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ collection: result.collection, collectionError: result.error ?? '' });
   },
   assignSpirit(id) {
-    const { selected, state, collection } = get();
-    const result = equipSpirit(collection, selected ?? -1, id, state.rooms);
-    set({ collection: result.collection, collectionError: result.error ?? '' });
+    const { selected, state, collection, tutorialActive, tutorialStep } = get();
+    if (selected === null || state.over) {
+      set({ collectionError: '请先选择可以操作的房间。' });
+      return;
+    }
+    const assigned = equipSpirit(collection, selected, id);
+    if (assigned.error) {
+      set({ collectionError: assigned.error });
+      return;
+    }
+    const outcome = id ? placeSpirit(state, selected, id) : removeSpirit(state, selected);
+    if (outcome.error) {
+      set({ collectionError: outcome.error });
+      return;
+    }
+    set({ ...apply(outcome), collection: assigned.collection, collectionError: '',
+      tutorialStep: id && tutorialActive && tutorialStep === 1 ? 2 : tutorialStep });
   },
   trainSpirit(id) {
     const result = levelSpirit(get().collection, id);
