@@ -3,7 +3,7 @@ import { SPIRITS, newCollection } from '../src/core/spirit-collection';
 import type { CollectionState, SpiritId } from '../src/core/spirit-collection';
 import {
   advanceRaid, applyRaidReward, beginRaid, castRaidSkill, deployToLane, prepareRaid,
-  raidReward, relocateRaid, upcomingRaidWaves,
+  raidReward, raidStars, relocateRaid, upcomingRaidWaves,
 } from '../src/core/night-raid';
 
 const withSpirits = (...ids: SpiritId[]): CollectionState => {
@@ -73,7 +73,8 @@ describe('Real-time tactical defense', () => {
     raid = beginRaid(raid, collection);
     while (raid.phase === 'fighting' && raid.tick < 50) raid = advanceRaid(raid, collection);
     expect(raid.phase).toBe('won');
-    expect(raidReward(raid)).toEqual({tickets:3,essence:10});
+    expect(raidStars(raid)).toBe(3);
+    expect(raidReward(raid)).toEqual({tickets:4,essence:12});
   });
 
   it('timed skills stop attackers but require energy and valid threats', () => {
