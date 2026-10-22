@@ -17,6 +17,8 @@ describe('Phaser visual motion contracts', () => {
       .toEqual(['arrival', 'arrival', 'none', 'none', 'none', 'none']);
     const after: RoomSlot[] = ['ember', 'slime', null, null, null, null];
     expect(roomMotionEvents(before, after).slice(0, 2)).toEqual(['rearranged', 'rearranged']);
+    const repeated: RoomSlot[] = ['slime', 'ember', 'slime', null, null, null];
+    expect(roomMotionEvents(before, repeated)[2]).toBe('arrival');
     const moved: RoomSlot[] = [null, 'ember', 'slime', null, null, null];
     expect(roomMotionEvents(before, moved).slice(0, 3)).toEqual(['vacated', 'none', 'rearranged']);
   });

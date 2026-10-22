@@ -13,7 +13,11 @@ export function roomMotionEvents(
     const before = previous[index] ?? null;
     if (before === tenant) return 'none';
     if (!tenant) return 'vacated';
-    if (!before && !previous.includes(tenant)) return 'arrival';
+    // Several rooms may contain the same species. A newly hired copy increases
+    // that species' total, whereas a move keeps its population unchanged.
+    const previousCount = previous.filter(id => id === tenant).length;
+    const currentCount = current.filter(id => id === tenant).length;
+    if (!before && currentCount > previousCount) return 'arrival';
     return 'rearranged';
   });
 }
