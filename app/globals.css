@@ -352,7 +352,14 @@
   .game-tenant-avatar { width: 37px; height: 37px; border-radius: 10px; font-size: 20px; }
   .game-tenant p { min-height: 0; font-size: 10px; }
   .game-tenant button { margin-top: 6px; padding-block: 5px; min-height: 30px; }
-  .game-hire-pane .game-panel > .grid { gap: 6px; }
+  .game-hire-pane .game-panel > .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .game-hire-pane .game-tenant > p { display: none; }
+  .game-hire-pane .game-tenant .flex.items-center { align-items: flex-start; gap: 4px; }
+  .game-hire-pane .game-tenant-avatar { height: 30px; width: 30px; font-size: 17px; }
+  .game-hire-pane .game-tenant strong { font-size: 11px; }
+  .game-hire-pane .game-tenant span { font-size: 9px; }
+  .game-hire-pane .game-tenant .flex.flex-wrap { gap: 2px; }
+  .game-hire-pane .game-tenant button { min-height: 26px; }
   .game-room-nav button { min-height: 34px; font-size: 10px; }
   .game-stats-tile { padding: 8px; }
   .game-ledger .game-panel { padding: 10px 12px; }
@@ -455,6 +462,16 @@
   .game-tenant .flex.flex-wrap span { font-size: 9px; padding-inline: 4px; }
   .game-room-nav button { min-height: 39px; }
   .game-manage-pane { overflow: visible; }
+  .game-manage-pane .game-night-action {
+    order: -1;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #241c32;
+    border-radius: 12px;
+    padding: 3px;
+  }
+  .game-manage-pane .game-night-action button { min-height: 42px; }
   .game-mobile-tabs {
     flex: 0 0 59px; min-height: 59px;
     display: grid; grid-template-columns: repeat(4,1fr);
