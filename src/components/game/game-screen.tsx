@@ -12,6 +12,7 @@ import { ManagementPanel } from './management-panel';
 import { StrategyPanel } from './strategy-panel';
 import { NightDecisionPanel } from './night-decision-panel';
 import { ResultCard } from './result-card';
+import { NightSettlement } from './night-settlement';
 import { PlayHelp } from './play-help';
 import { StatusBar } from './status-bar';
 import { LogList } from '@/components/ui/log-list';
@@ -180,6 +181,10 @@ export function GameScreen() {
                 <StrategyPanel />
                 <EconomyPanel />
                 <ManagementPanel />
+                {state.history.length > 0 && (
+                  <NightSettlement result={state.history[state.history.length - 1]}
+                    satisfaction={state.satisfaction} locale={locale} />
+                )}
                 <div className="game-night-action">
                   <Button variant="primary" size="lg" fullWidth className="game-action-primary"
                     disabled={!canSettle} onClick={nextDay} aria-label={t(locale, 'nextDay')}>
