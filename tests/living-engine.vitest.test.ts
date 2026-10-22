@@ -63,6 +63,22 @@ describe('The apartment is one interconnected playable system', () => {
     expect(blocked.integrity).toBeGreaterThan(breached.integrity);
     expect(breached.breaches).toBe(1);
   });
+  it('the same three workers survive when reassigned, while idle staffing fails', () => {
+    const col=newCollection();
+    let idle=startLiving(initial());
+    let managed=startLiving(initial());
+    managed=moveLivingWorker(managed,'dewdrop','reactor',col);
+    managed=advanceLiving(advanceLiving(managed));
+    managed=moveLivingWorker(managed,'seedling','gate',col);
+    for(let n=0;n<LIVING_DURATION;n++){
+      idle=advanceLiving(idle);
+      managed=advanceLiving(managed);
+    }
+    expect(idle.phase).toBe('lost');
+    expect(managed.phase).toBe('won');
+    expect(managed.integrity).toBeGreaterThan(idle.integrity);
+    expect(managed.moves).toBe(2);
+  });
   it('the entire night ends without an end-day button and freezes on result', () => {
     let game=startLiving(initial());
     for(let i=0;i<LIVING_DURATION&&game.phase==='running';i++)game=advanceLiving(game);
