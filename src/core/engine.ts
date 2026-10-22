@@ -20,6 +20,36 @@ export type RoomSlot = TenantId | null;
 
 export type RoomTraitId = 'damp' | 'sunny' | 'quiet' | 'stone';
 export type PolicyId = 'steady' | 'festival' | 'savings';
+export type NightDecisionId = 'none' | 'care' | 'profit';
+export const NIGHT_DECISION_IDS: readonly NightDecisionId[] = ['none', 'care', 'profit'];
+
+/** Each day presents a different optional dilemma; no decision preserves the previous rules. */
+export const NIGHT_DILEMMAS: readonly {
+  helper: TenantId; care: { coins: number; satisfaction: number; helperBonus: number };
+  profit: { coins: number; satisfaction: number };
+}[] = [
+  { helper: 'golem', care: { coins: -3, satisfaction: 5, helperBonus: 3 }, profit: { coins: 5, satisfaction: -4 } },
+  { helper: 'slime', care: { coins: -5, satisfaction: 7, helperBonus: 5 }, profit: { coins: 6, satisfaction: -6 } },
+  { helper: 'ghost', care: { coins: -4, satisfaction: 6, helperBonus: 4 }, profit: { coins: 7, satisfaction: -6 } },
+  { helper: 'ember', care: { coins: -5, satisfaction: 8, helperBonus: 4 }, profit: { coins: 6, satisfaction: -5 } },
+  { helper: 'golem', care: { coins: -8, satisfaction: 10, helperBonus: 4 }, profit: { coins: 9, satisfaction: -8 } },
+] as const;
+
+export function nightDecisionImpact(state: Pick<GameState, 'day' | 'rooms' | 'nightDecision'>): {
+  coins: number; satisfaction: number; helperBonus: number;
+} {
+  const scenario = NIGHT_DILEMMAS[state.day - 1];
+  if (!scenario || !state.nightDecision || state.nightDecision === 'none') {
+    return { coins: 0, satisfaction: 0, helperBonus: 0 };
+  }
+  if (state.nightDecision === 'profit') {
+    return { ...scenario.profit, helperBonus: 0 };
+  }
+  const helperBonus = state.rooms.includes(scenario.helper) ? scenario.care.helperBonus : 0;
+  return { coins: scenario.care.coins + helperBonus,
+    satisfaction: scenario.care.satisfaction, helperBonus };
+}
+
 export const POLICY_IDS: readonly PolicyId[] = ['steady', 'festival', 'savings'];
 /** Fixed architectural qualities: room choice and swaps change daily profitability. */
 export const ROOM_TRAITS: readonly { id: RoomTraitId; icon: string; preferred: TenantId }[] = [
@@ -67,6 +97,9 @@ export type DayResult = {
   policy?: PolicyId;
   policyCoins?: number;
   policySatisfaction?: number;
+  nightDecision?: NightDecisionId;
+  decisionCoins?: number;
+  decisionSatisfaction?: number;
 };
 
 export type Outcome = 'win' | 'lose';
@@ -77,6 +110,8 @@ export type GameState = {
   satisfaction: number;
   rooms: RoomSlot[];
   policy: PolicyId;
+  /** Optional for compatibility with older v1 local saves. */
+  nightDecision?: NightDecisionId;
   history: DayResult[];
   over: boolean;
   outcome: Outcome | null;
@@ -111,6 +146,7 @@ export function newGame(): GameState {
     satisfaction: 70,
     rooms: [null, null, null, null, null, null],
     policy: 'steady',
+    nightDecision: 'none',
     history: [],
     over: false,
     outcome: null,
@@ -205,17 +241,24 @@ export function choosePolicy(state: GameState, policy: PolicyId): GameOutcome {
   return { state: { ...state, policy }, error: null };
 }
 
+export function chooseNightDecision(state: GameState, decision: NightDecisionId): GameOutcome {
+  if (state.over) return { state, error: '本局已经结束。' };
+  if (!NIGHT_DECISION_IDS.includes(decision)) return { state, error: '无效夜间选择。' };
+  return { state: { ...state, nightDecision: decision }, error: null };
+}
+
 /** Preview excludes the day-specific surprise event, which is intentionally hidden. */
 export function dailyEstimate(state: GameState): {
-  rent: number; upkeep: number; synergy: number; preference: number; policy: number; net: number;
+  rent: number; upkeep: number; synergy: number; preference: number; policy: number; decision: number; net: number;
 } {
   const rent = state.rooms.reduce((sum, id) => sum + (id ? TENANTS[id].rent : 0), 0);
   const upkeep = state.rooms.filter(Boolean).length * UPKEEP_PER_ROOM;
   const synergy = synergyDetails(state.rooms).coins;
   const preference = preferenceDetails(state.rooms).coins;
   const policy = POLICIES[state.policy ?? 'steady'].coins;
-  return { rent, upkeep, synergy, preference, policy,
-    net: rent - upkeep + synergy + preference + policy };
+  const decision = nightDecisionImpact(state).coins;
+  return { rent, upkeep, synergy, preference, policy, decision,
+    net: rent - upkeep + synergy + preference + policy + decision };
 }
 
 export function advanceDay(state: GameState): GameOutcome {
@@ -227,8 +270,10 @@ export function advanceDay(state: GameState): GameOutcome {
   const preference = preferenceDetails(state.rooms);
   const policyId = state.policy ?? 'steady';
   const policy = POLICIES[policyId];
+  const decision = nightDecisionImpact(state);
+  const decisionId = state.nightDecision ?? 'none';
   const satisfactionBeforeEvent = Math.max(0, Math.min(100,
-    state.satisfaction + synergy.satisfaction + preference.satisfaction + policy.satisfaction));
+    state.satisfaction + synergy.satisfaction + preference.satisfaction + policy.satisfaction + decision.satisfaction));
   const event = nightlyEvent(state.rooms, state.day, satisfactionBeforeEvent);
   const net = estimate.net + event.coins;
   const coins = state.coins + net;
@@ -237,16 +282,19 @@ export function advanceDay(state: GameState): GameOutcome {
     synergy: synergy.coins, preference: preference.coins,
     preferenceSatisfaction: preference.satisfaction,
     policy: policyId, policyCoins: policy.coins, policySatisfaction: policy.satisfaction,
+    nightDecision: decisionId, decisionCoins: decision.coins,
+    decisionSatisfaction: decision.satisfaction,
     event: event.coins, eventTitle: event.title, eventDetail: event.detail, net };
   const over = state.day >= LAST_DAY;
   const outcome: Outcome | null = over ? (coins >= TARGET_COINS && satisfaction >= TARGET_SATISFACTION ? 'win' : 'lose') : null;
   const notice = over ? (outcome === 'win' ? '恭喜！你经营出了受欢迎的怪物公寓。' : '五天结束，经营目标未完成。再试一次不同的布局！') : `第 ${state.day} 天结算：${event.title}，净收入 ${net >= 0 ? '+' : ''}${net} 金币。`;
   const eventLog = `第 ${state.day} 天：租金 ${rent}，维护 -${upkeep}，组合 ${synergy.coins >= 0 ? '+' : ''}${synergy.coins}，事件 ${event.coins >= 0 ? '+' : ''}${event.coins}，结余 ${net >= 0 ? '+' : ''}${net}。${event.detail}`;
   const detailLog = `第 ${state.day} 天：房间偏好 ${preference.coins >= 0 ? '+' : ''}${preference.coins} 金币，满意度 ${preference.satisfaction >= 0 ? '+' : ''}${preference.satisfaction}；经营策略 ${policyId}，金币 ${policy.coins >= 0 ? '+' : ''}${policy.coins}，满意度 ${policy.satisfaction >= 0 ? '+' : ''}${policy.satisfaction}。`;
+  const choiceLog = decisionId === 'none' ? [] : [`第 ${state.day} 天：夜间抉择 ${decisionId}，金币 ${decision.coins >= 0 ? '+' : ''}${decision.coins}，满意度 ${decision.satisfaction >= 0 ? '+' : ''}${decision.satisfaction}。`];
   return {
     state: { ...state, day: over ? LAST_DAY : state.day + 1, coins, satisfaction,
-      policy: 'steady', over, outcome, history: [...state.history, result],
-      notice, log: [...state.log, detailLog, eventLog] },
+      policy: 'steady', nightDecision: 'none', over, outcome, history: [...state.history, result],
+      notice, log: [...state.log, detailLog, ...choiceLog, eventLog] },
     error: null
   };
 }
