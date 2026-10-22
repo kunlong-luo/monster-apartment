@@ -5,7 +5,7 @@ import { t, tenantNames } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 import { apartmentEvents } from './events';
 
-const FONT = '"Trebuchet MS",system-ui,sans-serif';
+const FONT = '"Noto Sans CJK SC","Microsoft YaHei","Trebuchet MS",system-ui,sans-serif';
 
 const COLOR = {
   sky: 0x15162e, skyLight: 0x292543, wall: 0x42334c,
