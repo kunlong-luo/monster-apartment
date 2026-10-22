@@ -1,24 +1,21 @@
-import { expect, test } from '@playwright/test';
-
-test('game UI loads and displays apartment management', async ({ page }) => {
+import { test, expect } from '@playwright/test';
+import { placeStarter } from './helpers';
+test('original spirit residence loads game and Phaser canvas', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByText('灵核公寓', { exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: /结束今天/ })).toBeVisible();
+  await expect(page.getByRole('heading',{name:'灵核公寓'})).toBeVisible();
+  await expect(page.getByRole('button',{name:'芽核 入住选中房间'})).toBeVisible();
+  await expect(page.getByRole('button',{name:'结束今天'})).toBeVisible();
   await expect(page.locator('canvas').first()).toBeVisible();
 });
-
-test('recruits a tenant and settles a day without runtime errors', async ({ page }) => {
-  const pageErrors: string[] = [];
-  page.on('pageerror', (error) => pageErrors.push(error.message));
-
+test('placing a spirit and settling a night has no runtime errors', async ({ page }) => {
+  const errors:string[]=[];
+  page.on('pageerror',err=>errors.push(err.message));
   await page.goto('/');
-  await page.getByRole('button', { name: /史莱姆/ }).click();
-  await expect(page.getByText('◈ 29')).toBeVisible();
+  await placeStarter(page);
+  await expect(page.getByText('◈ 35')).toBeVisible();
   await expect(page.getByText('1 / 6')).toBeVisible();
-
-  await page.getByRole('button', { name: /结束今天/ }).click();
+  await page.getByRole('button',{name:'结束今天'}).click();
   await expect(page.getByText(/DAY 2\/5/)).toBeVisible();
   await expect(page.getByText(/第 1 天结算/)).toBeVisible();
-
-  expect(pageErrors).toEqual([]);
+  expect(errors).toEqual([]);
 });
