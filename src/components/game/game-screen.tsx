@@ -193,7 +193,8 @@ export function GameScreen() {
                 </div>
                 {state.over && (
                   <ResultCard outcome={state.outcome === 'win' ? 'win' : 'lose'}
-                    locale={locale} notice={localizeGameText(state.notice, locale)} onReset={reset} />
+                    locale={locale} notice={localizeGameText(state.notice, locale)}
+                    coins={state.coins} satisfaction={state.satisfaction} onReset={reset} />
                 )}
               </div>
               <div className="game-mobile-pane game-log-pane" data-selected={mobilePanel === 'log'}>
