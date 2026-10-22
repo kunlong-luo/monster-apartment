@@ -51,18 +51,14 @@ jobs:
           key: nextjs-e2e-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
       - run: google-chrome --version
-      - name: Ensure CJK fonts for review screenshots
-        run: |
-          if ! fc-list --format '%{family}\n' | grep -qi 'Noto Sans CJK'; then
-            timeout 120s sudo apt-get install -y --no-install-recommends fonts-noto-cjk || echo "CJK font installation unavailable; using system fallback"
-          fi
-          fc-match "Noto Sans CJK SC"
+      - name: Use existing system font fallback
+        run: fc-match "sans-serif"
       - run: pnpm e2e
       - name: Upload desktop and mobile UI review screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: v060-battle-ui-review
+          name: v070-living-apartment-review
           path: |
             test-results/spirit-desktop.png
             test-results/spirit-mobile.png
