@@ -51,7 +51,7 @@ export class RaidScene extends Phaser.Scene {
 
   private laneY(lane: Lane): number { return 62 + lane * 110; }
 
-  private drawDefender(id: SpiritId, lane: Lane): Phaser.GameObjects.Container {
+  private drawDefender(id: SpiritId, lane: Lane, evolution: number): Phaser.GameObjects.Container {
     const art = SPIRIT_ART[id];
     const x = 75, y = this.laneY(lane);
     const objects: Phaser.GameObjects.GameObject[] = [];
@@ -67,6 +67,12 @@ export class RaidScene extends Phaser.Scene {
     glyph.fillStyle(highlight, 1);
     glyph.fillTriangle(-19, -16, -12, -31, -4, -14);
     glyph.fillTriangle(19, -16, 12, -31, 4, -14);
+    if (evolution > 0) {
+      glyph.fillStyle(0xffd8a5, .95);
+      glyph.fillTriangle(-17, -24, -9, -40, 0, -24);
+      glyph.fillTriangle(0, -24, 9, -40, 17, -24);
+      if (evolution > 1) glyph.fillCircle(0, -35, 5);
+    }
     glyph.fillStyle(0x20233d);
     glyph.fillCircle(-9, 6, 3.5);
     glyph.fillCircle(9, 6, 3.5);
@@ -147,12 +153,12 @@ export class RaidScene extends Phaser.Scene {
 
   sync(raid: RaidState, collection: CollectionState): void {
     if (!this.sys.isActive() || !this.terrain) return;
-    const nextDefenders = raid.lineup.map(id => id ?? null).join('|');
+    const nextDefenders = raid.lineup.map(id => id ? id + ':' + (collection.owned[id]?.evolution ?? 0) : '').join('|');
     if (this.registry.get('lineup') !== nextDefenders) {
       this.defenders.forEach(c => c.destroy());
       this.defenders = [];
       raid.lineup.forEach((id, lane) => {
-        if (id) this.defenders.push(this.drawDefender(id, lane as Lane));
+        if (id) this.defenders.push(this.drawDefender(id, lane as Lane, collection.owned[id]?.evolution ?? 0));
       });
       this.registry.set('lineup', nextDefenders);
     }
