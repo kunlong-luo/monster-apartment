@@ -261,6 +261,35 @@ export function dailyEstimate(state: GameState): {
     net: rent - upkeep + synergy + preference + policy + decision };
 }
 
+/** Excludes the unknown nightly surprise event. This is a decision aid, not a win forecast. */
+export function managementForecast(state: GameState): {
+  coinsTonight: number;
+  satisfactionTonight: number;
+  coinsAtEnd: number;
+  satisfactionAtEnd: number;
+  remainingNights: number;
+} {
+  const synergy = synergyDetails(state.rooms);
+  const preference = preferenceDetails(state.rooms);
+  const policy = POLICIES[state.policy ?? 'steady'];
+  const decision = nightDecisionImpact(state);
+  const satisfactionDelta = synergy.satisfaction + preference.satisfaction +
+    policy.satisfaction + decision.satisfaction;
+  const remainingNights = Math.max(0, LAST_DAY - state.history.length);
+  const passiveNet = dailyEstimate({ ...state, policy: 'steady', nightDecision: 'none' }).net;
+  const passiveMood = synergy.satisfaction + preference.satisfaction;
+  return {
+    coinsTonight: state.coins + dailyEstimate(state).net,
+    satisfactionTonight: Math.max(0, Math.min(100, state.satisfaction + satisfactionDelta)),
+    // Forecast carries only passive rent/room effects after the current choice.
+    coinsAtEnd: state.coins + dailyEstimate(state).net +
+      Math.max(0, remainingNights - 1) * passiveNet,
+    satisfactionAtEnd: Math.max(0, Math.min(100, state.satisfaction +
+      satisfactionDelta + Math.max(0, remainingNights - 1) * passiveMood)),
+    remainingNights,
+  };
+}
+
 export function advanceDay(state: GameState): GameOutcome {
   if (state.over) return { state, error: '本局已经结束。' };
   if (!state.rooms.some(Boolean)) return { state, error: '请至少招募一位租客，再开始结算。' };
