@@ -1,5 +1,3 @@
-import type { RoomSlot } from './engine';
-
 export type Quality = 'N' | 'R' | 'SR' | 'SSR' | 'UR';
 export type Faction = 'tide' | 'forge' | 'veil' | 'grove';
 export type Element = 'water' | 'fire' | 'stone' | 'wind' | 'light' | 'shadow';
@@ -108,9 +106,9 @@ export function summon(collection: CollectionState, count: 1 | 10, random: () =>
   };
 }
 
-export function equipSpirit(collection: CollectionState, room: number, id: SpiritId | null, rooms: readonly RoomSlot[]): CollectionOutcome {
+export function equipSpirit(collection: CollectionState, room: number, id: SpiritId | null): CollectionOutcome {
   if (!Number.isInteger(room) || room < 0 || room >= 6) return { collection, error: '房间无效。' };
-  if (id !== null && (!collection.owned[id] || !rooms[room])) return { collection, error: '请先招募住户并获得这只灵核。' };
+  if (id !== null && !collection.owned[id]) return { collection, error: '尚未获得这只灵核。' };
   if (id !== null && collection.equipped.some((current, index) => current === id && index !== room)) {
     return { collection, error: '同一只灵核不能同时驻守两个房间。' };
   }
@@ -157,13 +155,13 @@ export function evolveSpirit(collection: CollectionState, id: SpiritId): Collect
     owned: { ...collection.owned, [id]: { ...progress, evolution: next } } }, error: null };
 }
 
-export function companionEffects(rooms: readonly RoomSlot[], collection?: CollectionState): { coins: number; satisfaction: number } {
+export function companionEffects(rooms: readonly (SpiritId | null)[], collection?: CollectionState): { coins: number; satisfaction: number } {
   if (!collection) return { coins: 0, satisfaction: 0 };
   let coins = 0;
   let satisfaction = 0;
   const factions: Partial<Record<Faction, number>> = {};
   collection.equipped.forEach((id, index) => {
-    if (!id || !rooms[index]) return;
+    if (!id || rooms[index] !== id) return;
     const spirit = SPIRIT_BY_ID[id];
     const progress = collection.owned[id];
     if (!spirit || !progress) return;
