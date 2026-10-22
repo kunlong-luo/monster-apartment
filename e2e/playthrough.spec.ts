@@ -11,15 +11,14 @@ async function settleDays(page: import('@playwright/test').Page, days: number) {
   }
 }
 
-test('a full five-day optimal layout wins', async ({ page }) => {
+test('matching monsters to room traits wins a five-day run', async ({ page }) => {
   await page.goto('/');
-  await hireInto(page, 2, /史莱姆/);
-  await hireInto(page, 3, /史莱姆/);
-  await hireInto(page, 4, /火精灵/);
-  await hireInto(page, 5, /火精灵/);
-  await hireInto(page, 6, /史莱姆/);
+  await hireInto(page, 1, /史莱姆/);
+  await hireInto(page, 2, /火精灵/);
+  await hireInto(page, 3, /幽灵/);
+  await hireInto(page, 4, /石像鬼/);
 
-  await expect(page.getByText('◈ 1')).toBeVisible();
+  await expect(page.getByText('◈ 5')).toBeVisible();
   await settleDays(page, 5);
 
   await expect(page.getByText('🎉 经营成功')).toBeVisible();
