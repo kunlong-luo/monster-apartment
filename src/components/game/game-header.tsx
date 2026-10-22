@@ -17,18 +17,18 @@ export function GameHeader({
   helpOpen, locale, day, coins, onSetLocale, onToggleHelp, onReset, onReplayTutorial,
 }: GameHeaderProps) {
   return (
-    <div className="flex items-center justify-between gap-4 flex-wrap">
-      <div className="flex items-center gap-3 min-w-0">
+    <div className="game-header-content flex items-center justify-between gap-3 flex-wrap">
+      <div className="game-brand flex items-center gap-3 min-w-0">
         <div className="game-logo" aria-hidden="true">☾</div>
         <div>
           <p className="game-brand-kicker">✦ WELCOME TO THE NIGHT SHIFT</p>
           <h1 className="game-brand-title">{t(locale, 'title')}</h1>
           <small className="block mt-1 text-mist-500 text-[10px] tracking-[.16em] uppercase">
-            MONSTER APARTMENT / V0.3.0
+            MONSTER APARTMENT / V0.4.0
           </small>
         </div>
       </div>
-      <div className="flex items-center gap-2 flex-wrap justify-end">
+      <div className="game-header-tools flex items-center gap-2 flex-wrap justify-end">
         <div className="game-day-chip" aria-label={locale === 'zh' ? '第 ' + day + ' 天' : 'Day ' + day}>
           ☾ {locale === 'zh' ? '第 ' + day + ' 天' : 'DAY ' + day}
         </div>
