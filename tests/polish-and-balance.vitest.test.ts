@@ -3,7 +3,7 @@ import type { RoomSlot } from '../src/core/engine';
 import { roomMotionEvents } from '../src/game/room-motion';
 import {
   advanceDay, chooseNightDecision, choosePolicy, hire, newGame, TARGET_COINS,
-  TARGET_SATISFACTION,
+  TARGET_SATISFACTION, nightlyEvent,
 } from '../src/core/engine';
 
 describe('Phaser visual motion contracts', () => {
@@ -58,5 +58,28 @@ describe('Five-night balance regressions', () => {
     expect(state.coins).toBeGreaterThanOrEqual(TARGET_COINS);
     expect(state.satisfaction).toBeGreaterThanOrEqual(TARGET_SATISFACTION);
     expect(state.outcome).toBe('win');
+  });
+});
+
+describe('Decisions carry consequences across the five-night arc', () => {
+  const rooms: RoomSlot[] = ['slime', null, null, null, null, null];
+  const past = (choice: 'care' | 'profit') => [
+    { day: 1, rent: 8, upkeep: 3, synergy: 0, event: 0, eventTitle: '', eventDetail: '', net: 5, nightDecision: choice },
+    { day: 2, rent: 8, upkeep: 3, synergy: 0, event: 0, eventTitle: '', eventDetail: '', net: 5, nightDecision: choice },
+  ];
+  it('rewards consecutive resident care with a third-night recovery', () => {
+    expect(nightlyEvent(rooms, 3, 50).satisfaction).toBe(-7);
+    expect(nightlyEvent(rooms, 3, 50, past('care')).satisfaction).toBe(5);
+  });
+  it('makes repeated profit-taking risk an inspection on night four', () => {
+    expect(nightlyEvent(rooms, 4, 50).title).toBe('供暖故障');
+    const penalty = nightlyEvent(rooms, 4, 50, past('profit'));
+    expect(penalty.title).toBe('经营稽查');
+    expect(penalty.coins).toBe(-8);
+    expect(penalty.satisfaction).toBe(-5);
+  });
+  it('reads legacy history without choices as neutral', () => {
+    const legacy = past('care').map((entry) => ({ ...entry, nightDecision: undefined }));
+    expect(nightlyEvent(rooms, 3, 50, legacy)).toEqual(nightlyEvent(rooms, 3, 50));
   });
 });
