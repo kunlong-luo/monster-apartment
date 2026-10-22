@@ -18,6 +18,10 @@ export class RaidScene extends Phaser.Scene {
 
   constructor() { super({ key: RaidScene.KEY }); }
 
+  private get reducedMotion(): boolean {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
   create(): void {
     this.cameras.main.setBackgroundColor('#16182c');
     this.terrain = this.add.graphics();
@@ -81,8 +85,10 @@ export class RaidScene extends Phaser.Scene {
       fontSize: '16px', color: art.highlight, fontFamily: 'sans-serif',
     }).setOrigin(.5));
     const container = this.add.container(x, y, objects);
-    this.tweens.add({ targets: container, y: y - 4, yoyo: true, repeat: -1,
-      duration: 900 + lane * 160, ease: 'Sine.easeInOut' });
+    if (!this.reducedMotion) {
+      this.tweens.add({ targets: container, y: y - 4, yoyo: true, repeat: -1,
+        duration: 900 + lane * 160, ease: 'Sine.easeInOut' });
+    }
     return container;
   }
 
@@ -133,13 +139,14 @@ export class RaidScene extends Phaser.Scene {
   private shot(from: {x:number;y:number}, to: {x:number;y:number}, color: number, skill = false): void {
     const ray = this.add.circle(from.x, from.y, skill ? 10 : 5, color, 1);
     ray.setBlendMode(Phaser.BlendModes.ADD);
-    this.tweens.add({ targets: ray, x: to.x, y: to.y, duration: skill ? 260 : 350,
+    this.tweens.add({ targets: ray, x: to.x, y: to.y,
+      duration: this.reducedMotion ? 1 : skill ? 260 : 350,
       ease: 'Sine.easeIn', onComplete: () => {
         ray.destroy();
         const ring = this.add.circle(to.x, to.y, skill ? 27 : 12, color, .75);
         ring.setBlendMode(Phaser.BlendModes.ADD);
         this.tweens.add({targets:ring, scale: skill ? 1.8 : 1.5, alpha:0,
-          duration:300, onComplete:()=>ring.destroy()});
+          duration:this.reducedMotion ? 1 : 300, onComplete:()=>ring.destroy()});
       }});
   }
 
@@ -147,8 +154,9 @@ export class RaidScene extends Phaser.Scene {
     const y = this.laneY(lane);
     const wave = this.add.rectangle(481, y, 830, 91, color, .32);
     wave.setBlendMode(Phaser.BlendModes.ADD);
-    this.tweens.add({targets:wave, alpha:0, duration:650, onComplete:()=>wave.destroy()});
-    this.cameras.main.shake(180, .004);
+    this.tweens.add({targets:wave, alpha:0,
+      duration:this.reducedMotion ? 1 : 650, onComplete:()=>wave.destroy()});
+    if (!this.reducedMotion) this.cameras.main.shake(180, .004);
   }
 
   sync(raid: RaidState, collection: CollectionState): void {
@@ -167,20 +175,26 @@ export class RaidScene extends Phaser.Scene {
       if (live.has(id)) continue;
       this.attackers.delete(id);
       this.tweens.killTweensOf(sprite);
-      this.tweens.add({targets:sprite, alpha:0, scale:1.4, duration:180,
+      this.tweens.add({targets:sprite, alpha:0, scale:1.4, duration:this.reducedMotion ? 1 : 180,
         onComplete:()=>sprite.destroy()});
     }
     for (const enemy of raid.enemies) {
       let sprite = this.attackers.get(enemy.id);
+      const isNew = !sprite;
       if (!sprite) {
         sprite = this.drawRaider(enemy);
         this.attackers.set(enemy.id, sprite);
-        sprite.setScale(.65).setAlpha(.2);
-        this.tweens.add({targets:sprite, alpha:1, scale:1, duration:280});
+        if (!this.reducedMotion) {
+          sprite.setScale(.65).setAlpha(.2);
+          this.tweens.add({targets:sprite, alpha:1, scale:1, duration:280});
+        }
       }
       this.updateHealth(sprite, enemy);
-      this.tweens.killTweensOf(sprite);
-      this.tweens.add({targets:sprite, x:this.enemyX(enemy), duration:Math.max(60, raid.tick > 0 ? 470 : 10), ease:'Linear'});
+      if (!isNew) {
+        this.tweens.killTweensOf(sprite);
+        if (this.reducedMotion) sprite.x = this.enemyX(enemy);
+        else this.tweens.add({targets:sprite, x:this.enemyX(enemy), duration:470, ease:'Linear'});
+      }
     }
     const warning = this.warningGfx;
     if (warning) {
@@ -218,7 +232,7 @@ export class RaidScene extends Phaser.Scene {
     }
     if (raid.lastBreach && raid.lastBreach.serial !== this.renderedBreach) {
       this.renderedBreach = raid.lastBreach.serial;
-      this.cameras.main.flash(180, 155, 50, 75, false);
+      if (!this.reducedMotion) this.cameras.main.flash(180, 155, 50, 75, false);
     }
   }
 }
