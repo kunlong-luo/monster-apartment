@@ -4,7 +4,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: '灵核公寓 · Spirit Core Residence',
-  description: '原创灵核收集、五品质召唤、养成进化与六房五夜公寓经营。',
+  description: '在同一座灵核公寓中调配住户、控制能源、种植食物并抵御入侵。一个可互动的实时经营生存原型。',
   applicationName: 'Spirit Core Residence',
 };
 
