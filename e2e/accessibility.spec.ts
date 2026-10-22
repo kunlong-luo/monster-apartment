@@ -12,6 +12,7 @@ test.describe('mobile viewport', () => {
     );
     expect(overflow).toBeLessThanOrEqual(1);
 
+    await page.getByRole('tab', { name: '房间' }).click();
     for (let room = 1; room <= 6; room++) {
       await expect(page.getByRole('button', { name: new RegExp(`^${room} 号房`) })).toBeVisible();
     }
