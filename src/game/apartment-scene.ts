@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { LAST_DAY, TENANTS, ROOM_TRAITS, synergyDetails } from '@/core/engine';
-import type { GameState, TenantId } from '@/core/engine';
+import type { GameState, TenantId, RoomSlot } from '@/core/engine';
+import { roomMotionEvents } from './room-motion';
 import { t, tenantNames } from '@/lib/i18n';
 import { traitLabel } from '@/lib/strategy-labels';
 import type { Locale } from '@/lib/i18n';
@@ -16,10 +17,7 @@ const COLOR = {
 } as const;
 
 function monster(g: Phaser.GameObjects.Graphics, id: TenantId, cx: number, cy: number): void {
-  // Drop shadow gives the hand-drawn characters a little weight on the floor.
-  g.fillStyle(0x191321, .27);
-  g.fillEllipse(cx, cy + 37, 76, 15);
-
+  // The static floor shadow is drawn separately, keeping only the monster in motion.
   switch (id) {
     case 'slime':
       g.fillStyle(0x5dba9b);
@@ -89,6 +87,7 @@ function monster(g: Phaser.GameObjects.Graphics, id: TenantId, cx: number, cy: n
 
 export default class ApartmentScene extends Phaser.Scene {
   static readonly KEY = 'ApartmentScene';
+  private previousRooms: RoomSlot[] | null = null;
   constructor() { super(ApartmentScene.KEY); }
 
   create(): void {
@@ -103,7 +102,13 @@ export default class ApartmentScene extends Phaser.Scene {
   }
 
   updateBoard(state: GameState, selected: number | null, moveSource: number | null, locale: Locale): void {
+    const effects = roomMotionEvents(this.previousRooms, state.rooms);
+    this.previousRooms = [...state.rooms];
+    // A room selection redraws the board. Kill old infinite idle tweens first.
+    this.tweens.killAll();
     this.children.removeAll(true);
+    const reducedMotion = typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const { width, height } = this.scale;
     const bg = this.add.graphics();
@@ -229,7 +234,23 @@ export default class ApartmentScene extends Phaser.Scene {
       scene.fillEllipse(x + 216, y + 28, 24, 13);
 
       if (tenant && id) {
-        monster(scene, id, x + 180, y + 79);
+        // The stationary shadow anchors the character while the separate Graphics bobs.
+        scene.fillStyle(0x191321, .27);
+        scene.fillEllipse(x + 180, y + 116, 76, 15);
+        const actor = this.add.graphics();
+        monster(actor, id, x + 180, y + 79);
+        if (!reducedMotion) {
+          const amplitude = id === 'ghost' ? 7 : id === 'ember' ? 5 : id === 'slime' ? 4 : 2;
+          const period = id === 'ghost' ? 1600 : id === 'ember' ? 950 : id === 'slime' ? 1150 : 2100;
+          this.tweens.add({
+            targets: actor, y: -amplitude, duration: period, yoyo: true, repeat: -1,
+            ease: 'Sine.easeInOut', delay: i * 95,
+          });
+          if (effects[i] === 'arrival' || effects[i] === 'rearranged') {
+            actor.setAlpha(.25);
+            this.tweens.add({ targets: actor, alpha: 1, duration: 320, ease: 'Sine.easeOut' });
+          }
+        }
       } else {
         scene.lineStyle(2, 0xdebca8, .48);
         scene.strokeRoundedRect(x + 153, y + 49, 65, 51, 18);
@@ -265,6 +286,16 @@ export default class ApartmentScene extends Phaser.Scene {
         scene.fillStyle(0x211c34, .83);
         scene.fillRoundedRect(x + 133, y + 106, 133, 26, 8);
         this.text(locale === 'zh' ? '等待新租客' : 'VACANT', x + 200, y + 111, 13, '#edd1ba', true).setOrigin(.5, 0);
+      }
+
+      // Feedback appears only when an occupant changed, never for simple selection.
+      if (effects[i] !== 'none') {
+        const text = effects[i] === 'arrival' ? '✦' : effects[i] === 'rearranged' ? '↔' : '·';
+        const label = this.text(text, x + roomW / 2, y + 41, 24, '#ffe3a6', true).setOrigin(.5);
+        if (!reducedMotion) {
+          this.tweens.add({ targets: label, y: y + 12, alpha: 0,
+            duration: 760, ease: 'Sine.easeOut', onComplete: () => label.destroy() });
+        }
       }
 
       // Put input over the art but retain the keyboard-accessible room buttons in React.

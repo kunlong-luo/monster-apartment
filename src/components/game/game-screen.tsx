@@ -166,7 +166,8 @@ export function GameScreen() {
                   ? t(locale, 'moveHint')
                   : locale === 'zh' ? '点房间 · 招募租客 · 经营五夜'
                     : 'Choose rooms · Recruit · Survive five nights'}</span>
-                <div key={state.history.length} className={state.history.length > 0 ? 'game-settlement-reveal' : ''}>
+                <div key={state.history.length + ':' + state.notice}
+                  className={state.history.length > 0 ? 'game-settlement-reveal' : 'game-action-reveal'}>
                   <StatusBar message={localizeGameText(error || state.notice, locale)} />
                 </div>
               </div>
