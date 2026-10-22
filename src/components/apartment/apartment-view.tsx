@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import type { GameState } from '@/core/engine';
+import type { CollectionState } from '@/core/spirit-collection';
 import type { Locale } from '@/lib/i18n';
 import { ApartmentSkeleton } from './apartment-skeleton';
 
@@ -14,6 +15,7 @@ const ApartmentCanvas = dynamic(
 
 type ApartmentViewProps = {
   state: GameState;
+  collection: CollectionState;
   locale: Locale;
   selected: number | null;
   moveSource: number | null;
