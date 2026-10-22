@@ -156,5 +156,12 @@ export function localizeGameText(value: string, locale: Locale): string {
   if (moveLog) return 'Day ' + moveLog[1] + ': Rearranged rooms ' + moveLog[2] + ' and ' + moveLog[3] + '.';
   const dayLog = value.match(/^第 (\d+) 天：租金 (-?\d+)，维护 (-?\d+)，组合 ([+-]?\d+)，事件 ([+-]?\d+)，结余 ([+-]?\d+)。(.*)$/);
   if (dayLog) return 'Day ' + dayLog[1] + ': Rent ' + dayLog[2] + ', upkeep ' + dayLog[3] + ', synergy ' + dayLog[4] + ', event ' + dayLog[5] + ', net ' + dayLog[6] + '. ' + localizeGameText(dayLog[7], 'en');
+  const strategyLog = value.match(/^第 (\d+) 天：房间偏好 ([+-]?\d+) 金币，满意度 ([+-]?\d+)；经营策略 (steady|festival|savings)，金币 ([+-]?\d+)，满意度 ([+-]?\d+)。$/);
+  if (strategyLog) {
+    const labels: Record<string, string> = { steady: 'Steady', festival: 'Party', savings: 'Savings' };
+    return 'Day ' + strategyLog[1] + ': Room affinity ' + strategyLog[2] +
+      ' coins, ' + strategyLog[3] + ' mood. ' + labels[strategyLog[4]] +
+      ': ' + strategyLog[5] + ' coins, ' + strategyLog[6] + ' mood.';
+  }
   return value;
 }
