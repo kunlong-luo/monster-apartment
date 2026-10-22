@@ -11,10 +11,11 @@ type GameHeaderProps = {
   onToggleHelp: () => void;
   onReset: () => void;
   onReplayTutorial: () => void;
+  onOpenPortal: () => void;
 };
 
 export function GameHeader({
-  helpOpen, locale, day, coins, onSetLocale, onToggleHelp, onReset, onReplayTutorial,
+  helpOpen, locale, day, coins, onSetLocale, onToggleHelp, onReset, onReplayTutorial, onOpenPortal,
 }: GameHeaderProps) {
   return (
     <div className="game-header-content flex items-center justify-between gap-3 flex-wrap">
@@ -46,6 +47,7 @@ export function GameHeader({
           </select>
         </label>
         <div className="game-desktop-actions flex items-center gap-2">
+          <Button variant="primary" size="sm" onClick={onOpenPortal} data-testid="open-spirit-portal">✦ {locale === 'zh' ? '召唤 · 图鉴' : 'Summon · Codex'}</Button>
           <Button variant="quiet" size="sm" onClick={onReplayTutorial}>{t(locale, 'guideReplay')}</Button>
           <Button variant="quiet" size="sm" onClick={onToggleHelp} aria-pressed={helpOpen}>
             {t(locale, helpOpen ? 'hideHelp' : 'help')}
@@ -58,6 +60,7 @@ export function GameHeader({
             <span>{locale === 'zh' ? '更多' : 'More'}</span>
           </summary>
           <div className="game-mobile-menu-popover">
+            <Button variant="primary" size="sm" onClick={onOpenPortal}>✦ {locale === 'zh' ? '召唤 · 图鉴' : 'Summon · Codex'}</Button>
             <Button variant="quiet" size="sm" onClick={onReplayTutorial}>{t(locale, 'guideReplay')}</Button>
             <Button variant="quiet" size="sm" onClick={onToggleHelp} aria-pressed={helpOpen}>
               {t(locale, helpOpen ? 'hideHelp' : 'help')}
