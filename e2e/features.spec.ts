@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 test('automatically restores tenants and settled days after a reload', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/legacy');
   await page.getByRole('button', { name: '芽核 入住选中房间' }).click();
   await expect(page.getByText('◈ 35')).toBeVisible();
   await page.reload();
@@ -15,7 +15,7 @@ test('automatically restores tenants and settled days after a reload', async ({ 
 });
 
 test('English UI and saved language survive refresh', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/legacy');
   await page.getByRole('combobox', { name: '语言' }).selectOption('en');
   await expect(page.getByRole('heading', { name: 'Spirit Core Residence' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'End day' })).toBeVisible();
@@ -31,7 +31,7 @@ test('English UI and saved language survive refresh', async ({ page }) => {
 });
 
 test('new-player tutorial progresses and can be skipped or replayed', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/legacy');
   await expect(page.getByText('步骤 1/4')).toBeVisible();
   await page.getByRole('button', { name: /^3 号房/ }).click();
   await expect(page.getByText('步骤 2/4')).toBeVisible();
