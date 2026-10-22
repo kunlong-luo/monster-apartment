@@ -1,0 +1,75 @@
+import { describe, expect, it } from 'vitest';
+import { newCollection } from '../src/core/spirit-collection';
+import { createLivingGame, moveLivingWorker, advanceLiving, startLiving, livingTip, livingGrade, LIVING_DURATION } from '../src/core/living-engine';
+
+const initial = () => createLivingGame(newCollection());
+const at = (tick: number) => ({...startLiving(initial()),tick});
+
+describe('The apartment is one interconnected playable system', () => {
+  it('places starter crew in three working rooms, not disconnected popups', () => {
+    const game=initial();
+    expect(game.phase).toBe('ready');
+    expect(game.rooms).toEqual({reactor:'lantern-beetle',garden:'seedling',gate:'dewdrop'});
+    expect(game.power).toBe(7);
+    expect(game.food).toBe(8);
+    expect(startLiving(game).phase).toBe('running');
+    expect(advanceLiving(game)).toBe(game);
+  });
+  it('moving a spirit actually trades off responsibilities, without cloning units', () => {
+    const col=newCollection();
+    const base=startLiving(initial());
+    const changed=moveLivingWorker(base,'dewdrop','reactor',col);
+    expect(changed.rooms).toEqual({reactor:'dewdrop',garden:'seedling',gate:'lantern-beetle'});
+    expect(changed.moves).toBe(1);
+    expect(changed.cooldown).toBe(2);
+    expect(base.rooms.reactor).toBe('lantern-beetle');
+    expect(moveLivingWorker(changed,'seedling','reactor',col)).toBe(changed);
+    expect(moveLivingWorker(changed,'aurora-whale','gate',col)).toBe(changed);
+    expect(new Set(Object.values(changed.rooms)).size).toBe(3);
+  });
+  it('the greenhouse actually requires electric power to grow food', () => {
+    const starting={...at(3),power:0,rooms:{...initial().rooms,reactor:null}};
+    const starving=advanceLiving(starting);
+    expect(starving.food).toBe(8);
+    expect(starving.power).toBe(0);
+    const powered=advanceLiving({...starting,rooms:initial().rooms});
+    expect(powered.food).toBeGreaterThan(starving.food);
+    expect(powered.power).toBeGreaterThanOrEqual(0);
+  });
+  it('sending a repair spirit to the furnace cools heat at the cost of defense', () => {
+    const hot={...at(7),heat:8};
+    const unattended=advanceLiving(hot);
+    const repaired=advanceLiving({...hot,rooms:{reactor:'dewdrop',garden:'seedling',gate:'lantern-beetle'}});
+    expect(unattended.heat).toBeGreaterThan(repaired.heat);
+    expect(unattended.integrity).toBeLessThan(repaired.integrity);
+    expect(livingTip(hot)).toContain('过热');
+  });
+  it('spore infestation and blackout visibly change production by worker role', () => {
+    const spores={...at(39),crisis:'spores' as const,power:9,food:3};
+    const noRepair=advanceLiving(spores);
+    const repair=advanceLiving({...spores,rooms:{reactor:'lantern-beetle',garden:'dewdrop',gate:'seedling'}});
+    expect(repair.food).toBeGreaterThan(noRepair.food);
+    const blackout={...at(71),power:1,food:5};
+    const stalled=advanceLiving(blackout);
+    const fixed=advanceLiving({...blackout,rooms:{reactor:'dewdrop',garden:'seedling',gate:'lantern-beetle'}});
+    expect(fixed.power).toBeGreaterThan(stalled.power);
+    expect(fixed.crisis).toBe('blackout');
+  });
+  it('a defender can stop an imminent intruder, while an empty watch costs core', () => {
+    const intruder={id:99,kind:'wisp' as const,hp:4,maxHp:4,distance:6};
+    const guard={...at(11),invaders:[intruder],nextId:100};
+    const blocked=advanceLiving({...guard,rooms:{...guard.rooms,gate:'seedling'}});
+    const breached=advanceLiving({...guard,rooms:{...guard.rooms,gate:null}});
+    expect(blocked.integrity).toBeGreaterThan(breached.integrity);
+    expect(breached.breaches).toBe(1);
+  });
+  it('the entire night ends without an end-day button and freezes on result', () => {
+    let game=startLiving(initial());
+    for(let i=0;i<LIVING_DURATION&&game.phase==='running';i++)game=advanceLiving(game);
+    expect(['won','lost']).toContain(game.phase);
+    expect(advanceLiving(game)).toBe(game);
+    const victory=advanceLiving({...at(119),power:12,food:12,integrity:16,heat:0,invaders:[]});
+    expect(victory.phase).toBe('won');
+    expect(livingGrade(victory)).toBeGreaterThan(80);
+  });
+});
