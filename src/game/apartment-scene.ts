@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { LAST_DAY, ROOM_TRAITS, synergyDetails } from '@/core/engine';
 import { SPIRIT_BY_ID } from '@/core/spirit-collection';
+import { SPIRIT_ART } from '@/core/spirit-art';
 import type { SpiritId } from '@/core/spirit-collection';
 import type { GameState, RoomSlot } from '@/core/engine';
 import { roomMotionEvents } from './room-motion';
@@ -18,16 +19,127 @@ const COLOR = {
   lavender: 0xc9b4e6, mint: 0x8be1c0, coral: 0xf4a39a,
 } as const;
 
-const FACTION_COLORS = {
-  tide: { body: 0x65c9d4, light: 0xc4f8f4, shade: 0x28566b },
-  forge: { body: 0xf0b35e, light: 0xffe9ae, shade: 0x7d4855 },
-  veil: { body: 0xb49bea, light: 0xefdbff, shade: 0x4d3c77 },
-  grove: { body: 0x83cf96, light: 0xdcf9bb, shade: 0x36604a },
-} as const;
+function spiritSignature(g: Phaser.GameObjects.Graphics, id: SpiritId, x: number, y: number, light: number, shade: number) {
+  // Procedural silhouette accents: one unique readable motif per collectible species.
+  g.fillStyle(light, .88);
+  g.lineStyle(4, shade, .95);
+  switch (id) {
+    case 'aurora-whale':
+      g.fillTriangle(x - 26, y + 12, x - 48, y - 3, x - 40, y + 25);
+      g.fillTriangle(x + 26, y + 12, x + 48, y - 3, x + 40, y + 25);
+      g.fillCircle(x, y - 40, 7);
+      g.lineBetween(x, y - 43, x, y - 54);
+      break;
+    case 'mirror-koi':
+      g.fillTriangle(x - 33, y + 14, x - 48, y - 13, x - 48, y + 33);
+      g.fillTriangle(x + 33, y + 14, x + 48, y - 13, x + 48, y + 33);
+      g.strokeCircle(x, y - 29, 11);
+      g.lineBetween(x - 13, y + 13, x - 31, y + 18);
+      break;
+    case 'cinder-stag':
+      g.lineBetween(x - 20, y - 22, x - 30, y - 49);
+      g.lineBetween(x - 30, y - 39, x - 43, y - 44);
+      g.lineBetween(x + 20, y - 22, x + 30, y - 49);
+      g.lineBetween(x + 30, y - 39, x + 43, y - 44);
+      g.fillTriangle(x - 5, y - 31, x + 6, y - 49, x + 14, y - 31);
+      break;
+    case 'prism-mole':
+      for (let n = -1; n <= 1; n++) {
+        g.fillTriangle(x + n * 18 - 12, y - 30, x + n * 18, y - 52, x + n * 18 + 12, y - 30);
+      }
+      g.fillRoundedRect(x - 47, y + 19, 19, 13, 3);
+      g.fillRoundedRect(x + 28, y + 19, 19, 13, 3);
+      break;
+    case 'eclipse-moth':
+      g.fillTriangle(x - 20, y - 8, x - 50, y - 41, x - 45, y + 13);
+      g.fillTriangle(x + 20, y - 8, x + 50, y - 41, x + 45, y + 13);
+      g.strokeCircle(x - 40, y - 5, 7);
+      g.strokeCircle(x + 40, y - 5, 7);
+      break;
+    case 'whisper-cat':
+      g.fillTriangle(x - 29, y - 23, x - 27, y - 53, x - 7, y - 29);
+      g.fillTriangle(x + 29, y - 23, x + 27, y - 53, x + 7, y - 29);
+      g.lineBetween(x - 13, y + 22, x - 40, y + 17);
+      g.lineBetween(x + 13, y + 22, x + 40, y + 17);
+      break;
+    case 'root-crown':
+      g.lineBetween(x - 13, y - 23, x - 29, y - 47);
+      g.lineBetween(x - 29, y - 47, x - 37, y - 39);
+      g.lineBetween(x + 13, y - 23, x + 29, y - 47);
+      g.lineBetween(x + 29, y - 47, x + 37, y - 39);
+      g.fillEllipse(x, y - 37, 20, 29);
+      break;
+    case 'dew-phoenix':
+      g.fillTriangle(x - 23, y + 14, x - 47, y - 35, x - 42, y + 36);
+      g.fillTriangle(x + 23, y + 14, x + 47, y - 35, x + 42, y + 36);
+      g.fillTriangle(x - 9, y - 30, x + 3, y - 57, x + 11, y - 30);
+      break;
+    case 'wave-healer':
+      g.fillRoundedRect(x - 7, y - 37, 14, 40, 3);
+      g.fillRoundedRect(x - 19, y - 25, 38, 15, 3);
+      g.fillEllipse(x - 43, y + 12, 16, 26);
+      g.fillEllipse(x + 43, y + 12, 16, 26);
+      break;
+    case 'day-smith':
+      g.fillTriangle(x - 29, y - 29, x - 24, y - 54, x - 9, y - 28);
+      g.fillTriangle(x + 29, y - 29, x + 24, y - 54, x + 9, y - 28);
+      g.fillRoundedRect(x + 31, y + 5, 21, 14, 4);
+      g.lineBetween(x + 35, y + 15, x + 32, y + 33);
+      break;
+    case 'dusk-bell':
+      g.fillTriangle(x - 30, y - 7, x, y - 55, x + 30, y - 7);
+      g.fillEllipse(x, y + 37, 72, 12);
+      g.fillCircle(x, y + 45, 5);
+      break;
+    case 'moss-keeper':
+      g.fillEllipse(x - 31, y - 36, 24, 42);
+      g.fillEllipse(x + 31, y - 36, 24, 42);
+      g.fillTriangle(x - 12, y - 28, x, y - 52, x + 12, y - 28);
+      break;
+    case 'dewdrop':
+      g.fillTriangle(x - 19, y - 21, x, y - 57, x + 19, y - 21);
+      g.fillEllipse(x - 40, y + 18, 21, 12);
+      g.fillEllipse(x + 40, y + 18, 21, 12);
+      break;
+    case 'lantern-beetle':
+      g.lineBetween(x - 18, y - 24, x - 34, y - 48);
+      g.lineBetween(x + 18, y - 24, x + 34, y - 48);
+      g.fillCircle(x - 34, y - 48, 5);
+      g.fillCircle(x + 34, y - 48, 5);
+      g.lineBetween(x, y - 26, x, y + 36);
+      break;
+    case 'moon-scout':
+      g.fillTriangle(x - 20, y + 13, x - 49, y - 24, x - 41, y + 35);
+      g.fillTriangle(x + 20, y + 13, x + 49, y - 24, x + 41, y + 35);
+      g.fillTriangle(x - 3, y + 10, x + 12, y + 16, x - 3, y + 20);
+      break;
+    case 'fern-hare':
+      g.fillEllipse(x - 20, y - 39, 17, 46);
+      g.fillEllipse(x + 20, y - 39, 17, 46);
+      g.fillCircle(x, y + 31, 8);
+      break;
+    case 'pebble-crab':
+      g.fillTriangle(x - 30, y + 6, x - 52, y - 2, x - 43, y + 29);
+      g.fillTriangle(x + 30, y + 6, x + 52, y - 2, x + 43, y + 29);
+      g.lineBetween(x - 23, y + 30, x - 35, y + 43);
+      g.lineBetween(x + 23, y + 30, x + 35, y + 43);
+      break;
+    case 'seedling':
+      g.fillEllipse(x - 16, y - 35, 29, 17);
+      g.fillEllipse(x + 15, y - 38, 29, 18);
+      g.lineBetween(x, y - 18, x, y - 47);
+      break;
+  }
+}
 
 function spiritPortrait(g: Phaser.GameObjects.Graphics, id: SpiritId, cx: number, cy: number) {
   const creature = SPIRIT_BY_ID[id];
-  const color = FACTION_COLORS[creature.faction];
+  const colors = SPIRIT_ART[id];
+  const color = {
+    body: Number.parseInt(colors.primary.slice(1), 16),
+    light: Number.parseInt(colors.highlight.slice(1), 16),
+    shade: Number.parseInt(colors.shadow.slice(1), 16),
+  };
   const variant = Array.from(id).reduce((sum, letter) => sum + letter.charCodeAt(0), 0) % 4;
   const shine = creature.quality === 'UR' ? 0.32 : creature.quality === 'SSR' ? 0.24 : 0.14;
   g.fillStyle(color.body, shine);
@@ -71,6 +183,7 @@ function spiritPortrait(g: Phaser.GameObjects.Graphics, id: SpiritId, cx: number
     g.fillCircle(cx - 35, cy - 20, 5);
     g.fillCircle(cx + 35, cy - 20, 5);
   }
+  spiritSignature(g, id, cx, cy, color.light, color.shade);
 }
 
 export default class ApartmentScene extends Phaser.Scene {
