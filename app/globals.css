@@ -101,7 +101,7 @@
 .game-subtitle { color: #c1b5c7; font-size: 13px; line-height: 1.55; }
 .game-layout {
   display: grid;
-  grid-template-areas: "stage" "ledger" "roster";
+  grid-template-areas: "stage" "roster" "ledger";
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: 20px;
