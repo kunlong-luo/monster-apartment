@@ -107,7 +107,7 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
                 ? '基础概率如上；第 10 抽保底 SR+，第 50 抽保底 SSR+，第 100 抽保底 UR。保底计数跨十连与单抽累计；抽到相应品质会重置对应计数。'
                 : 'Base odds above. SR+ by pull 10, SSR+ by pull 50, UR by pull 100; single and ten-pulls share counters and qualifying pulls reset pity.'}</p>
               <p className="text-mist-400 text-xs" data-testid="summon-pity">
-                {zh ? '距保底' : 'Pity counters'} · SR {collection.pity.sr}/10 · SSR {collection.pity.ssr}/50 · UR {collection.pity.ur}/100
+                {zh ? '保底进度' : 'Pity progress'} · SR {collection.pity.sr}/10 · SSR {collection.pity.ssr}/50 · UR {collection.pity.ur}/100
               </p>
               {collection.recent.length > 0 && (
                 <div data-testid="summon-results" className="space-y-2">
@@ -124,6 +124,7 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
           )}
           {tab === 'codex' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2" data-testid="spirit-codex">
+              <p className="col-span-full text-mist-400 text-xs">{zh ? '驻守完成每夜可得 6 XP；等级达到 10 / 20 并消耗进化精华后可进化。' : 'Assigned spirits earn 6 XP each night. Evolve at level 10 / 20 using essence.'}</p>
               {SPIRITS.map((spirit) => {
                 const progress = collection.owned[spirit.id];
                 return progress ? (
