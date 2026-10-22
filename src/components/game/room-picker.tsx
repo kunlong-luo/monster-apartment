@@ -18,7 +18,6 @@ type RoomPickerProps = {
 
 export function RoomPicker({ rooms, selected, moveSource, disabled, onPick }: RoomPickerProps) {
   const locale = useGameStore((store) => store.locale);
-  const equipped = useGameStore((store) => store.collection.equipped);
   return (
     <Panel>
       <SectionHeading title={t(locale, 'pickRoom')} />
@@ -57,7 +56,7 @@ export function RoomPicker({ rooms, selected, moveSource, disabled, onPick }: Ro
         <p className="text-xs text-gold-200 mt-2" data-testid="room-affinity">
           {locale === 'zh' ? '房间属性' : 'Room trait'} · {traitLabel(locale, selected)}
           {' · '}{tenantPreference(locale, rooms[selected], selected)}
-          {equipped[selected] && <span> · ✦ {SPIRIT_BY_ID[equipped[selected]][locale]}</span>}
+          {rooms[selected] && <span> · ✦ {SPIRIT_BY_ID[rooms[selected]][locale]}</span>}
         </p>
       )}
       <p className="hint text-mist-500 text-xs mt-2 leading-relaxed">
