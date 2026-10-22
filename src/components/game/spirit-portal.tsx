@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import { useGameStore } from '@/store/game-store';
-import { SPIRITS, SPIRIT_BY_ID, FACTION_LABELS, QUALITY_LABELS, QUALITY_RATES } from '@/core/spirit-collection';
-import type { Quality, Spirit, SpiritId } from '@/core/spirit-collection';
+import { SPIRITS, SPIRIT_BY_ID, FACTION_LABELS, QUALITY_RATES } from '@/core/spirit-collection';
+import type { Quality, Spirit } from '@/core/spirit-collection';
 import { Button } from '@/components/ui/button';
 
 type Tab = 'summon' | 'codex' | 'formation';
@@ -16,7 +17,7 @@ const qualityColors: Record<Quality, string> = {
 };
 
 function SpiritTile({ spirit, locale, children }: {
-  spirit: Spirit; locale: 'zh' | 'en'; children?: React.ReactNode;
+  spirit: Spirit; locale: 'zh' | 'en'; children?: ReactNode;
 }) {
   return (
     <div className={'rounded-xl border bg-ink-800/80 px-3 py-2 min-w-0 ' + qualityColors[spirit.quality]}>
