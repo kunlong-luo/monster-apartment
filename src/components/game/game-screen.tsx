@@ -10,6 +10,7 @@ import { RoomPicker } from './room-picker';
 import { TenantList } from './tenant-list';
 import { ManagementPanel } from './management-panel';
 import { StrategyPanel } from './strategy-panel';
+import { NightDecisionPanel } from './night-decision-panel';
 import { ResultCard } from './result-card';
 import { PlayHelp } from './play-help';
 import { StatusBar } from './status-bar';
@@ -165,13 +166,16 @@ export function GameScreen() {
                   ? t(locale, 'moveHint')
                   : locale === 'zh' ? '点房间 · 招募租客 · 经营五夜'
                     : 'Choose rooms · Recruit · Survive five nights'}</span>
-                <StatusBar message={localizeGameText(error || state.notice, locale)} />
+                <div key={state.history.length} className={state.history.length > 0 ? 'game-settlement-reveal' : ''}>
+                  <StatusBar message={localizeGameText(error || state.notice, locale)} />
+                </div>
               </div>
             </section>
 
             <aside className={'game-ledger ' + (mobilePanel === 'manage' || mobilePanel === 'log' ? '' : 'game-mobile-hidden')}
               aria-label={locale === 'zh' ? '经营与结算' : 'Management and settlement'}>
               <div className="game-mobile-pane game-manage-pane" data-selected={mobilePanel === 'manage'}>
+                <NightDecisionPanel />
                 <StrategyPanel />
                 <EconomyPanel />
                 <ManagementPanel />
