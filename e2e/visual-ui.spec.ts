@@ -19,6 +19,8 @@ test('illustrated apartment dominates the desktop composition', async ({ page })
   expect(stageBox!.x).toBeGreaterThan(rosterBox!.x);
   expect(ledgerBox!.x).toBeGreaterThan(stageBox!.x);
   expect(stageBox!.width).toBeGreaterThan(rosterBox!.width);
+  const pageScroll = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
+  expect(pageScroll).toBeLessThanOrEqual(1);
 
   // The game still uses the same recruitment, room selector and clock controls.
   await page.getByRole('button', { name: /史莱姆/ }).click();
@@ -40,12 +42,14 @@ test('mobile game has stage-first layout, readable controls, and no side scrolli
   const stageBox = await stage.boundingBox();
   const rosterBox = await page.locator('.game-roster').boundingBox();
   expect(stageBox!.y).toBeLessThan(rosterBox!.y);
-  const ledgerBox = await page.locator('.game-ledger').boundingBox();
-  expect(rosterBox!.y).toBeLessThan(ledgerBox!.y);
-  const overflow = await page.evaluate(() =>
-    document.documentElement.scrollWidth - document.documentElement.clientWidth,
-  );
-  expect(overflow).toBeLessThanOrEqual(1);
+  expect(rosterBox!.y).toBeGreaterThan(stageBox!.y);
+  await expect(page.locator('.game-ledger')).toBeHidden();
+  const overflow = await page.evaluate(() => ({
+    horizontal: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    vertical: document.documentElement.scrollHeight - window.innerHeight,
+  }));
+  expect(overflow.horizontal).toBeLessThanOrEqual(1);
+  expect(overflow.vertical).toBeLessThanOrEqual(1);
 
   // Tenant names must never be clipped to unreadable ellipses on narrow cards.
   const namesFit = await page.locator('.game-tenant strong').evaluateAll(
@@ -55,9 +59,11 @@ test('mobile game has stage-first layout, readable controls, and no side scrolli
   );
   expect(namesFit).toBe(true);
 
+  await page.getByRole('tab', { name: '房间' }).click();
   const room = page.getByRole('button', { name: /^3 号房/ });
   await room.click();
   await expect(room).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('tab', { name: '经营' }).click();
   await expect(page.getByRole('button', { name: /结束今天/ })).toBeVisible();
 
   await page.screenshot({ path: 'test-results/v030-mobile.png', fullPage: true, animations: 'disabled' });
