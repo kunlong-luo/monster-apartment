@@ -7,7 +7,7 @@ const extent = (page: import('@playwright/test').Page) => page.evaluate(() => ({
 }));
 test('desktop original spirit game fits within one screen', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/');
+  await page.goto('/legacy');
   await expect(page.locator('.apartment-canvas canvas')).toHaveCount(1);
   await expect(page.getByRole('button', { name: '芽核 入住选中房间' })).toBeVisible();
   await expect(page.getByRole('button', { name: '结束今天' })).toBeVisible();
@@ -16,7 +16,7 @@ test('desktop original spirit game fits within one screen', async ({ page }) => 
 });
 test('mobile spirit, rooms, management and journal stay within viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/');
+  await page.goto('/legacy');
   await expect(page.getByRole('tab', { name: '灵核' })).toHaveAttribute('aria-selected','true');
   await placeStarter(page);
   await page.getByRole('tab', { name: '房间' }).click();
@@ -33,7 +33,7 @@ test('mobile spirit, rooms, management and journal stay within viewport', async 
 });
 test('tablet uses compact bottom tabs', async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 768 });
-  await page.goto('/');
+  await page.goto('/legacy');
   await expect(page.getByRole('tablist')).toBeVisible();
   await page.getByRole('tab', { name: '房间' }).click();
   await expect(page.getByRole('button', { name: /^1 号房/ })).toBeVisible();
