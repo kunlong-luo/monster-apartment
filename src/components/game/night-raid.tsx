@@ -19,6 +19,12 @@ import { Button } from '@/components/ui/button';
 const LANES = [0, 1, 2] as const;
 const zhLane = ['上路', '中路', '下路'];
 const enLane = ['Upper', 'Middle', 'Lower'];
+const roleHints = {
+  guard: { zh:'守护 · 战技回复 2 耐久', en:'Guard · Skill restores 2 HP' },
+  repair: { zh:'修缮 · 战技回复 3 耐久', en:'Repair · Skill restores 3 HP' },
+  economy: { zh:'经营 · 战技返还 1 能量', en:'Economy · Skill refunds 1 energy' },
+  explore: { zh:'探索 · 战技穿透伤害', en:'Explorer · Piercing skill' },
+} as const;
 
 export function NightRaid({ onClose }: { onClose: () => void }) {
   const { state, collection, locale, claimRaidReward } = useGameStore();
@@ -166,7 +172,7 @@ export function NightRaid({ onClose }: { onClose: () => void }) {
                         </span>
                       ))}
                     </span>
-                    <span className="text-gold-200">{defender ? SPIRIT_BY_ID[defender].role.toUpperCase() : '—'}</span>
+                    <span className="text-gold-200 truncate">{defender ? roleHints[SPIRIT_BY_ID[defender].role][locale] : (zh ? '紧急炮击' : 'Emergency cannon')}</span>
                   </div>
                 </section>
               );
