@@ -7,6 +7,7 @@ import { SPIRITS, SPIRIT_BY_ID, FACTION_LABELS, QUALITY_RATES } from '@/core/spi
 import type { Quality, Spirit, SpiritId } from '@/core/spirit-collection';
 import { Button } from '@/components/ui/button';
 import { SpiritPortrait } from './spirit-portrait';
+import { SpiritProfile, SummonReveal } from './spirit-showcase';
 
 type Tab = 'summon' | 'codex' | 'formation';
 const qualityColors: Record<Quality, string> = {
@@ -37,19 +38,35 @@ function SpiritTile({ spirit, locale, children, evolution = 0 }: {
 
 export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [tab, setTab] = useState<Tab>('summon');
+  const [revealed, setRevealed] = useState<SpiritId[]>([]);
+  const [inspected, setInspected] = useState<SpiritId | null>(null);
   const { state, collection, collectionError, selected, locale,
     summonSpirits, assignSpirit, trainSpirit, evolveCompanion } = useGameStore();
   const zh = locale === 'zh';
   useEffect(() => {
     if (!open) return;
-    const dismiss = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); };
+    const dismiss = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      if (revealed.length) setRevealed([]);
+      else if (inspected) setInspected(null);
+      else onClose();
+    };
     document.addEventListener('keydown', dismiss);
     return () => document.removeEventListener('keydown', dismiss);
-  }, [open, onClose]);
+  }, [open, onClose, revealed, inspected]);
 
   if (!open) return null;
 
   const ownedSpirits = SPIRITS.filter((spirit) => collection.owned[spirit.id]);
+  const draw = (count: 1 | 10) => {
+    summonSpirits(count);
+    const snapshot = useGameStore.getState();
+    if (!snapshot.collectionError) setRevealed([...snapshot.collection.recent]);
+  };
+  const viewProfile = (id: SpiritId) => {
+    setInspected(id);
+    setTab('codex');
+  };
   const roomReady = selected !== null && !state.over;
   const companionId = selected === null ? null : state.rooms[selected];
   const tabs: { id: Tab; zh: string; en: string }[] = [
@@ -62,7 +79,7 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-ink-950/90 backdrop-blur-md" role="presentation">
       <div role="dialog" aria-modal="true" aria-label={zh ? '灵核召唤与图鉴' : 'Spirit Summoning and Codex'}
         data-testid="spirit-portal"
-        className="w-full max-w-3xl max-h-[88dvh] flex flex-col rounded-2xl border border-gold-300/40 bg-ink-900 shadow-2xl overflow-hidden">
+        className="relative w-full max-w-3xl max-h-[88dvh] flex flex-col rounded-2xl border border-gold-300/40 bg-ink-900 shadow-2xl overflow-hidden">
         <div className="flex items-center justify-between gap-2 p-4 border-b border-line">
           <div>
             <p className="text-[10px] uppercase tracking-[.18em] text-gold-300">✧ SPIRIT CONVERGENCE / V0.5</p>
@@ -93,9 +110,9 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
                 : 'Earn tickets through nightly management. Start with 10 tickets and earn 2 more each night.'}</p>
               <div className="grid grid-cols-2 gap-2">
                 <Button size="md" variant="secondary" disabled={collection.tickets < 1}
-                  onClick={() => summonSpirits(1)}>{zh ? '召唤 1 次 · 1 券' : 'Summon ×1 · 1 ticket'}</Button>
+                  onClick={() => draw(1)}>{zh ? '召唤 1 次 · 1 券' : 'Summon ×1 · 1 ticket'}</Button>
                 <Button size="md" variant="primary" disabled={collection.tickets < 10}
-                  onClick={() => summonSpirits(10)}>{zh ? '召唤 10 次 · 10 券' : 'Summon ×10 · 10 tickets'}</Button>
+                  onClick={() => draw(10)}>{zh ? '召唤 10 次 · 10 券' : 'Summon ×10 · 10 tickets'}</Button>
               </div>
               <div className="grid grid-cols-5 gap-1.5 text-center text-xs">
                 {(['N', 'R', 'SR', 'SSR', 'UR'] as const).map((quality) => (
@@ -115,13 +132,22 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
                   <h3 className="text-gold-200 font-semibold text-sm">{zh ? '最近召唤' : 'Latest summons'}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {collection.recent.map((id, index) => (
-                      <SpiritTile key={index} spirit={SPIRIT_BY_ID[id]} locale={locale} />
+                      <SpiritTile key={index} spirit={SPIRIT_BY_ID[id]} locale={locale}>
+                        <Button size="sm" variant="quiet" className="mt-2" onClick={() => viewProfile(id)}>
+                          {zh ? '查看详情' : 'View profile'}
+                        </Button>
+                      </SpiritTile>
                     ))}
                   </div>
                   <p className="text-mist-500 text-xs">{zh ? '重复灵核转换为该角色 20 碎片。' : 'Duplicates convert into 20 character shards.'}</p>
                 </div>
               )}
             </div>
+          )}
+          {tab === 'codex' && inspected && collection.owned[inspected] && (
+            <SpiritProfile id={inspected} progress={collection.owned[inspected]} essence={collection.essence}
+              locale={locale} onClose={() => setInspected(null)}
+              onLevel={() => trainSpirit(inspected)} onEvolve={() => evolveCompanion(inspected)} />
           )}
           {tab === 'codex' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2" data-testid="spirit-codex">
@@ -135,7 +161,11 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
                       {zh ? ' 进化' : ' Evolution'} {progress.evolution}/2 ·
                       {zh ? ' 碎片' : ' Shards'} {progress.shards}
                     </p>
-                    <div className="flex gap-2 mt-2">
+                    <div className="flex gap-2 mt-2 flex-wrap">
+                      <Button size="sm" variant="quiet" onClick={() => viewProfile(spirit.id)}
+                        aria-label={spirit.zh + ' · 查看详情'}>
+                        {zh ? '详情' : 'Profile'}
+                      </Button>
                       <Button size="sm" variant="secondary" disabled={progress.level >= 30 || progress.xp < 4 + progress.level * 2}
                         onClick={() => trainSpirit(spirit.id)}>{zh ? '升级' : 'Level up'}</Button>
                       <Button size="sm" variant="quiet"
@@ -190,6 +220,8 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
             </div>
           )}
         </div>
+        {revealed.length > 0 && <SummonReveal results={revealed} locale={locale}
+          onConfirm={() => setRevealed([])} />}
         <div className="border-t border-line px-4 py-2 text-mist-500 text-xs">
           {zh ? '原创生物 · 免费游戏内召唤 · 本地自动存档' : 'Original creatures · Free in-game summons · Local autosave'}
         </div>
