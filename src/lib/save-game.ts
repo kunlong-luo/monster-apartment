@@ -1,4 +1,4 @@
-import { POLICY_IDS } from '../core/engine';
+import { POLICY_IDS, NIGHT_DECISION_IDS } from '../core/engine';
 import type { GameState, DayResult, RoomSlot } from '@/core/engine';
 import type { Locale } from './i18n';
 
@@ -37,7 +37,10 @@ function validDayResult(value: unknown): value is DayResult {
     (value.preferenceSatisfaction === undefined || amount(value.preferenceSatisfaction)) &&
     (value.policy === undefined || POLICY_IDS.includes(value.policy as typeof POLICY_IDS[number])) &&
     (value.policyCoins === undefined || amount(value.policyCoins)) &&
-    (value.policySatisfaction === undefined || amount(value.policySatisfaction));
+    (value.policySatisfaction === undefined || amount(value.policySatisfaction)) &&
+    (value.nightDecision === undefined || NIGHT_DECISION_IDS.includes(value.nightDecision as typeof NIGHT_DECISION_IDS[number])) &&
+    (value.decisionCoins === undefined || amount(value.decisionCoins)) &&
+    (value.decisionSatisfaction === undefined || amount(value.decisionSatisfaction));
 }
 
 export function validGameState(value: unknown): value is GameState {
@@ -51,6 +54,7 @@ export function validGameState(value: unknown): value is GameState {
   if (!Array.isArray(logs) || logs.length > 120 || !logs.every(smallText)) return false;
   if (!integer(value.day, 1, 5) || !amount(value.coins) || !integer(value.satisfaction, 0, 100)) return false;
   if (value.policy !== undefined && !POLICY_IDS.includes(value.policy as typeof POLICY_IDS[number])) return false;
+  if (value.nightDecision !== undefined && !NIGHT_DECISION_IDS.includes(value.nightDecision as typeof NIGHT_DECISION_IDS[number])) return false;
   if (typeof value.over !== 'boolean') return false;
   if (value.outcome !== null && value.outcome !== 'win' && value.outcome !== 'lose') return false;
   if (!smallText(value.notice)) return false;
@@ -69,7 +73,8 @@ export function decodeSave(value: string | null): SaveData | null {
     if (parsed.locale !== 'zh' && parsed.locale !== 'en') return null;
     if (typeof parsed.tutorialActive !== 'boolean' || !integer(parsed.tutorialStep, 0, 3)) return null;
     // Older v1 saves had no policy. Restore them without dropping progress.
-    const state = { ...parsed.state, policy: parsed.state.policy ?? 'steady' };
+    const state = { ...parsed.state, policy: parsed.state.policy ?? 'steady',
+      nightDecision: parsed.state.nightDecision ?? 'none' };
     return { version: 1, state, locale: parsed.locale, tutorialActive: parsed.tutorialActive, tutorialStep: parsed.tutorialStep };
   } catch {
     return null;
