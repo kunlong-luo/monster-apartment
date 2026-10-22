@@ -6,6 +6,7 @@ export class LivingScene extends Phaser.Scene {
   onReady?:()=>void;
   private brush?:Phaser.GameObjects.Graphics;
   private latest?:LivingState;
+  private lastPaint=0;
   constructor(){super({key:LivingScene.KEY});}
   create():void{
     this.cameras.main.setBackgroundColor('#151a30');
@@ -17,7 +18,10 @@ export class LivingScene extends Phaser.Scene {
     this.paint();
   }
   update():void{
-    if(this.latest&&this.brush)this.paint();
+    // Room geometry changes on simulation ticks; cap decorative frame work for mobile GPUs.
+    if(!this.latest||!this.brush||this.time.now-this.lastPaint<50)return;
+    this.lastPaint=this.time.now;
+    this.paint();
   }
   private paint():void{
     const g=this.brush;
@@ -81,8 +85,8 @@ export class LivingScene extends Phaser.Scene {
     for(let j=0;j<6;j++){
       const x=384+j*37;
       g.lineStyle(3,0x91a17a,.98);g.lineBetween(x,251,x,222);
-      g.fillStyle(0x99cc87,.85);g.fillEllipse(x-9,222,18,8,Math.PI/6);
-      g.fillStyle(0xc1da8c,.9);g.fillEllipse(x+9,217,18,8,-Math.PI/6);
+      g.fillStyle(0x99cc87,.85);g.fillEllipse(x-9,222,18,8);
+      g.fillStyle(0xc1da8c,.9);g.fillEllipse(x+9,217,18,8);
     }
     if(state.crisis==='spores'){
       for(let j=0;j<17;j++){
