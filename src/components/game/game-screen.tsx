@@ -172,7 +172,7 @@ export function GameScreen() {
                 <ManagementPanel />
                 <div className="game-night-action">
                   <Button variant="primary" size="lg" fullWidth className="game-action-primary"
-                    disabled={!canSettle} onClick={nextDay}>
+                    disabled={!canSettle} onClick={nextDay} aria-label={t(locale, 'nextDay')}>
                     ☾ {t(locale, 'nextDay')}
                   </Button>
                 </div>
