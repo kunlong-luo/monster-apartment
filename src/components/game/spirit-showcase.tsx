@@ -1,5 +1,5 @@
-import { SPIRIT_BY_ID, FACTION_LABELS, QUALITY_LABELS } from '@/core/spirit-collection';
-import type { SpiritId, SpiritProgress } from '@/core/spirit-collection';
+import { SPIRIT_BY_ID, FACTION_LABELS, QUALITY_LABELS, MAX_STARS, starCost } from '@/core/spirit-collection';
+import type { SpiritId, SpiritProgress, EvolutionPath } from '@/core/spirit-collection';
 import type { Locale } from '@/lib/i18n';
 import { SpiritPortrait } from './spirit-portrait';
 import { Button } from '@/components/ui/button';
@@ -14,14 +14,15 @@ const roleLabels = {
   guard: { zh: '守护', en: 'Guard' }, explore: { zh: '探索', en: 'Explore' },
 };
 
-export function SpiritProfile({ id, progress, essence, locale, onClose, onLevel, onEvolve }: {
+export function SpiritProfile({ id, progress, essence, locale, onClose, onLevel, onEvolve, onAwaken }: {
   id: SpiritId;
   progress: SpiritProgress;
   essence: number;
   locale: Locale;
   onClose: () => void;
   onLevel: () => void;
-  onEvolve: () => void;
+  onEvolve: (path?: EvolutionPath) => void;
+  onAwaken: () => void;
 }) {
   const spirit = SPIRIT_BY_ID[id];
   const zh = locale === 'zh';
@@ -29,6 +30,9 @@ export function SpiritProfile({ id, progress, essence, locale, onClose, onLevel,
   const evolutionCost = (progress.evolution + 1) * 20;
   const evolutionLevel = (progress.evolution + 1) * 10;
   const canEvolve = progress.evolution < 2 && progress.level >= evolutionLevel && essence >= evolutionCost;
+  const stars = progress.stars ?? 0;
+  const nextStarCost = starCost(stars);
+  const isMythicFinal = spirit.quality === 'UR' && progress.evolution === 1;
   const stage = progress.evolution === 0 ? (zh ? '初生' : 'Origin')
     : progress.evolution === 1 ? (zh ? '共鸣' : 'Resonance') : (zh ? '辉核' : 'Ascendant');
 
@@ -59,6 +63,7 @@ export function SpiritProfile({ id, progress, essence, locale, onClose, onLevel,
           </p>
           <p className="text-mist-400">{zh ? '碎片' : 'Shards'} {progress.shards} ·
             {zh ? '精华' : 'Essence'} {essence}</p>
+          <p className="text-amber-300" data-testid="spirit-stars">{'★'.repeat(stars)}{'☆'.repeat(MAX_STARS - stars)} {stars}/{MAX_STARS}</p>
         </div>
       </div>
       <p className="mt-3 text-sm text-mist-200">{zh ? spirit.skillZh : spirit.skillEn}</p>
@@ -76,16 +81,35 @@ export function SpiritProfile({ id, progress, essence, locale, onClose, onLevel,
           ? (zh ? '已达到最高形态。' : 'Final form reached.')
           : (zh ? '下次进化需要 Lv.' : 'Next evolution requires Lv.') + evolutionLevel +
             (zh ? ' 与 ' : ' and ') + evolutionCost + (zh ? ' 进化精华。' : ' essence.')}
+        {progress.path && (' · ' + (progress.path === 'prosperity'
+          ? (zh ? '繁荣进化：每夜 +6 金币' : 'Prosperity: +6 coins/night')
+          : (zh ? '守护进化：每夜 +5 满意度' : 'Harmony: +5 mood/night')))}
       </p>
       <div className="flex gap-2 mt-3">
         <Button size="sm" variant="secondary" onClick={onLevel}
           disabled={progress.level >= 30 || progress.xp < nextExperience}>
           {zh ? '升级灵核' : 'Level up'}
         </Button>
-        <Button size="sm" variant="primary" onClick={onEvolve} disabled={!canEvolve}>
+        {!isMythicFinal && <Button size="sm" variant="primary" onClick={() => onEvolve()} disabled={!canEvolve}>
           {zh ? '形态进化' : 'Evolve'}
+        </Button>}
+        <Button size="sm" variant="secondary" onClick={onAwaken}
+          disabled={stars >= MAX_STARS || progress.shards < nextStarCost} data-testid="awaken-spirit">
+          {zh ? '升星' : 'Awaken'} {stars >= MAX_STARS ? 'MAX' : nextStarCost + (zh ? ' 碎片' : ' shards')}
         </Button>
       </div>
+      {isMythicFinal && (
+        <div className="mt-3 grid grid-cols-2 gap-2" data-testid="mythic-paths">
+          <Button size="sm" variant="secondary" disabled={!canEvolve}
+            onClick={() => onEvolve('prosperity')}>
+            {zh ? '繁荣进化 · 金币 +6' : 'Prosperity · +6 coins'}
+          </Button>
+          <Button size="sm" variant="secondary" disabled={!canEvolve}
+            onClick={() => onEvolve('harmony')}>
+            {zh ? '守护进化 · 满意度 +5' : 'Harmony · +5 mood'}
+          </Button>
+        </div>
+      )}
     </section>
   );
 }
