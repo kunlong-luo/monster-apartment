@@ -12,7 +12,8 @@ export async function seedSpirits(page: Page, residents: Array<string | null>) {
     owned[id] = { level: 1, xp: 0, shards: 0, evolution: 0 };
   }
   await page.addInitScript((fixture) => {
-    localStorage.setItem('monster-apartment:save:v1', JSON.stringify({
+    if (!localStorage.getItem('monster-apartment:save:v1')) {
+      localStorage.setItem('monster-apartment:save:v1', JSON.stringify({
       version: 1,
       locale: 'zh', tutorialActive: false, tutorialStep: 0,
       state: {
@@ -24,6 +25,7 @@ export async function seedSpirits(page: Page, residents: Array<string | null>) {
         tickets: 10, essence: 0, pity: { sr: 0, ssr: 0, ur: 0 },
         totalPulls: 0, recent: [], owned: fixture.owned, equipped: fixture.rooms,
       },
-    }));
+      }));
+    }
   }, { rooms, owned });
 }
