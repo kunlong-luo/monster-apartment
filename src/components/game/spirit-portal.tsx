@@ -49,8 +49,8 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
   if (!open) return null;
 
   const ownedSpirits = SPIRITS.filter((spirit) => collection.owned[spirit.id]);
-  const roomReady = selected !== null && Boolean(state.rooms[selected]) && !state.over;
-  const companionId = selected === null ? null : collection.equipped[selected];
+  const roomReady = selected !== null && !state.over;
+  const companionId = selected === null ? null : state.rooms[selected];
   const tabs: { id: Tab; zh: string; en: string }[] = [
     { id: 'summon', zh: '灵核召唤', en: 'Summon' },
     { id: 'codex', zh: '图鉴养成', en: 'Codex & Growth' },
@@ -156,11 +156,11 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
             <div className="space-y-3">
               <p className="text-mist-300 text-sm">{zh ? '当前选中房间：' : 'Selected room: '}
                 {selected === null ? '—' : selected + 1} ·
-                {roomReady ? (zh ? '可设置驻守' : 'Ready to assign') : (zh ? '请先让该房间入住租客' : 'Recruit a tenant first')}
+                {roomReady ? (zh ? '可设置驻守' : 'Ready to assign') : (zh ? '可以选择已收集灵核直接入住' : 'Place any owned spirit')}
               </p>
               <p className="text-mist-500 text-xs">{zh
-                ? '灵核以驻守伙伴身份协助原有租客。不同阵营的灵核可以提升收益和满意度；同阵营 2/4/6 名激活额外加成。'
-                : 'Spirits assist existing tenants. Matching 2/4/6 of a faction unlocks bonus revenue and mood.'}</p>
+                ? '灵核是房间的真正住户。同阵营 2/4/6 名激活经营加成；可以替换或撤回当前房间的灵核。'
+                : 'Spirits live in the rooms directly. Faction 2/4/6 grants bonuses; you can replace or remove residents.'}</p>
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
                 {collection.equipped.map((id, index) => (
                   <div key={index} className="rounded-lg bg-ink-800 p-2 text-center text-xs">
