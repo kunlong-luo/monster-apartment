@@ -5,6 +5,8 @@ import type { Locale } from '@/lib/i18n';
 import type { SaveData } from '@/lib/save-game';
 import { newCollection, summon, equipSpirit, swapEquipped, nightCollectionReward, levelSpirit, evolveSpirit, awakenSpirit } from '@/core/spirit-collection';
 import type { CollectionState, SpiritId, EvolutionPath } from '@/core/spirit-collection';
+import { raidReward } from '@/core/night-raid';
+import type { RaidState } from '@/core/night-raid';
 
 type GameStore = {
   state: GameState;
@@ -28,6 +30,7 @@ type GameStore = {
   trainSpirit: (id: SpiritId) => void;
   evolveCompanion: (id: SpiritId, path?: EvolutionPath) => void;
   awakenCompanion: (id: SpiritId) => void;
+  claimRaidReward: (raid: RaidState) => void;
   setPolicy: (policy: PolicyId) => void;
   setNightDecision: (decision: NightDecisionId) => void;
   reset: () => void;
@@ -143,10 +146,20 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const result = awakenSpirit(get().collection, id);
     set({ collection: result.collection, collectionError: result.error ?? '' });
   },
+  claimRaidReward(raid) {
+    const { state, collection } = get();
+    const prize = raidReward(raid);
+    if (!prize || state.over || collection.claimedRaids?.includes(state.day)) return;
+    set({ collection: { ...collection,
+      tickets: collection.tickets + prize.tickets,
+      essence: collection.essence + prize.essence,
+      claimedRaids: [...(collection.claimedRaids ?? []), state.day],
+    } });
+  },
   reset() {
     set((current) => ({ state: newGame(), selected: 0, moveSource: null, error: '',
       collectionError: '', collection: { ...current.collection,
-        equipped: [null, null, null, null, null, null] } }));
+        claimedRaids: [], equipped: [null, null, null, null, null, null] } }));
   },
   toggleHelp() {
     set((store) => ({ help: !store.help }));
