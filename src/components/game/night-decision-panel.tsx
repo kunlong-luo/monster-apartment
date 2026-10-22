@@ -70,9 +70,9 @@ export function NightDecisionPanel() {
       <p className="text-[10px] text-mist-500 mt-1">
         {locale === 'zh'
           ? (helperPresent ? '有' + helperZh + '职业灵核' + '协助，关怀方案包含协助奖励。' :
-              tenantNames.zh[helper] + '在场时，关怀方案还有金币奖励。')
+              helperZh + '职业灵核' + '在场时，关怀方案还有金币奖励。')
           : (helperPresent ? helperEn + ' spirit' + ' is here to help.' :
-              tenantNames.en[helper] + ' unlocks a bonus for the care choice.')}
+              helperEn + ' spirit' + ' unlocks a bonus for the care choice.')}
       </p>
     </Panel>
   );
