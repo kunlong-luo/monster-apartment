@@ -131,7 +131,10 @@ export function GameScreen() {
               {tutorialActive && (
                 <div className="game-tutorial-banner" role="note" aria-label={t(locale, 'guideTitle')}>
                   <div className="flex-1 min-w-0">
-                    <strong className="text-gold-200 text-xs">✦ {t(locale, 'guideTitle')} · {tutorialStep + 1}/4</strong>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <strong className="text-gold-200 text-xs">✦ {t(locale, 'guideTitle')}</strong>
+                      <span className="text-gold-200 text-xs">{t(locale, 'guideStep')} {tutorialStep + 1}/4</span>
+                    </div>
                     <p className="text-xs text-mist-300 leading-snug">{t(locale, tutorialKeys[tutorialStep])}</p>
                   </div>
                   <div className="flex flex-col gap-1 shrink-0">
