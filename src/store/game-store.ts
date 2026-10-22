@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { advanceDay, choosePolicy, hire, moveOrSwap, newGame } from '@/core/engine';
-import type { GameOutcome, GameState, TenantId, PolicyId } from '@/core/engine';
+import { advanceDay, choosePolicy, chooseNightDecision, hire, moveOrSwap, newGame } from '@/core/engine';
+import type { GameOutcome, GameState, TenantId, PolicyId, NightDecisionId } from '@/core/engine';
 import type { Locale } from '@/lib/i18n';
 import type { SaveData } from '@/lib/save-game';
 
@@ -21,6 +21,7 @@ type GameStore = {
   cancelMove: () => void;
   nextDay: () => void;
   setPolicy: (policy: PolicyId) => void;
+  setNightDecision: (decision: NightDecisionId) => void;
   reset: () => void;
   toggleHelp: () => void;
   setLocale: (locale: Locale) => void;
@@ -87,6 +88,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   setPolicy(policy) {
     set(apply(choosePolicy(get().state, policy)));
+  },
+  setNightDecision(decision) {
+    set(apply(chooseNightDecision(get().state, decision)));
   },
   nextDay() {
     const { state, tutorialActive, tutorialStep } = get();
