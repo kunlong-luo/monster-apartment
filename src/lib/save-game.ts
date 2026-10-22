@@ -1,3 +1,4 @@
+import { POLICY_IDS } from '@/core/engine';
 import type { GameState, DayResult, RoomSlot } from '@/core/engine';
 import type { Locale } from './i18n';
 
@@ -31,7 +32,12 @@ function validDayResult(value: unknown): value is DayResult {
   return integer(value.day, 1, 5) &&
     amount(value.rent) && amount(value.upkeep) && amount(value.synergy) &&
     amount(value.event) && amount(value.net) &&
-    smallText(value.eventTitle) && smallText(value.eventDetail);
+    smallText(value.eventTitle) && smallText(value.eventDetail) &&
+    (value.preference === undefined || amount(value.preference)) &&
+    (value.preferenceSatisfaction === undefined || amount(value.preferenceSatisfaction)) &&
+    (value.policy === undefined || POLICY_IDS.includes(value.policy as typeof POLICY_IDS[number])) &&
+    (value.policyCoins === undefined || amount(value.policyCoins)) &&
+    (value.policySatisfaction === undefined || amount(value.policySatisfaction));
 }
 
 export function validGameState(value: unknown): value is GameState {
@@ -44,6 +50,7 @@ export function validGameState(value: unknown): value is GameState {
   if (!Array.isArray(history) || history.length > 5 || !history.every(validDayResult)) return false;
   if (!Array.isArray(logs) || logs.length > 120 || !logs.every(smallText)) return false;
   if (!integer(value.day, 1, 5) || !amount(value.coins) || !integer(value.satisfaction, 0, 100)) return false;
+  if (value.policy !== undefined && !POLICY_IDS.includes(value.policy as typeof POLICY_IDS[number])) return false;
   if (typeof value.over !== 'boolean') return false;
   if (value.outcome !== null && value.outcome !== 'win' && value.outcome !== 'lose') return false;
   if (!smallText(value.notice)) return false;
@@ -61,7 +68,9 @@ export function decodeSave(value: string | null): SaveData | null {
     if (parsed.version !== 1 || !validGameState(parsed.state)) return null;
     if (parsed.locale !== 'zh' && parsed.locale !== 'en') return null;
     if (typeof parsed.tutorialActive !== 'boolean' || !integer(parsed.tutorialStep, 0, 3)) return null;
-    return { version: 1, state: parsed.state, locale: parsed.locale, tutorialActive: parsed.tutorialActive, tutorialStep: parsed.tutorialStep };
+    // Older v1 saves had no policy. Restore them without dropping progress.
+    const state = { ...parsed.state, policy: parsed.state.policy ?? 'steady' };
+    return { version: 1, state, locale: parsed.locale, tutorialActive: parsed.tutorialActive, tutorialStep: parsed.tutorialStep };
   } catch {
     return null;
   }
