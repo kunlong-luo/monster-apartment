@@ -40,6 +40,11 @@ export function ManagementPanel() {
           value={estimate.policy >= 0 ? '+' + estimate.policy : estimate.policy}
           tone={estimate.policy >= 0 ? 'positive' : 'negative'}
         />
+        <MeterRow
+          label={locale === 'zh' ? '夜间抉择' : 'Night decision'}
+          value={estimate.decision >= 0 ? '+' + estimate.decision : estimate.decision}
+          tone={estimate.decision >= 0 ? 'positive' : 'negative'}
+        />
         <MeterRow label={t(locale, 'estimated')} value={estimate.net} tone="default" />
       </div>
       {synergy.messages.length > 0 && (
