@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { useGameStore } from '@/store/game-store';
 import { SPIRIT_BY_ID, QUALITY_LABELS } from '@/core/spirit-collection';
 import type { SpiritId } from '@/core/spirit-collection';
-import { advanceRaid, beginRaid, castRaidSkill, deployToLane, prepareRaid, relocateRaid, upcomingRaidWaves } from '@/core/night-raid';
-import type { Lane, RaidState } from '@/core/night-raid';
+import { advanceRaid, beginRaid, castRaidSkill, deployToLane, prepareRaid, relocateRaid, upcomingRaidWaves, RAID_MISSIONS, raidDebrief, raidReward } from '@/core/night-raid';
+import type { Lane, RaidState, RaidMissionId } from '@/core/night-raid';
 import { SpiritPortrait } from './spirit-portrait';
 import dynamic from 'next/dynamic';
 
@@ -17,8 +17,12 @@ const RaidBattleCanvas = dynamic(
 import { Button } from '@/components/ui/button';
 
 const LANES = [0, 1, 2] as const;
+const MISSIONS: RaidMissionId[] = ['standard','intercept','boss'];
 const zhLane = ['上路', '中路', '下路'];
 const enLane = ['Upper', 'Middle', 'Lower'];
+const outcomeDetails = (raid: RaidState, locale: 'zh' | 'en') =>
+  raid.phase === 'won' || raid.phase === 'lost' ? raidDebrief(raid,locale) : null;
+
 const roleHints = {
   guard: { zh:'守护 · 战技回复 2 耐久', en:'Guard · Skill restores 2 HP' },
   repair: { zh:'修缮 · 战技回复 3 耐久', en:'Repair · Skill restores 3 HP' },
@@ -41,7 +45,9 @@ export function NightRaid({ onClose }: { onClose: () => void }) {
   const owned = Object.keys(collection.owned).filter(
     (id): id is SpiritId => id in SPIRIT_BY_ID);
   const laneName = (lane: Lane) => (zh ? zhLane : enLane)[lane];
-  const nextWaves = upcomingRaidWaves(raid.tick, 3);
+  const mission = RAID_MISSIONS[raid.mission ?? 'standard'];
+  const nextWaves = upcomingRaidWaves(raid.tick, 3, raid.mission);
+  const debrief = outcomeDetails(raid, locale);
   const enemyName = (kind: 'scout' | 'brute' | 'boss') =>
     zh ? {scout:'斥候',brute:'重装',boss:'首领'}[kind]
       : {scout:'Scout',brute:'Brute',boss:'Boss'}[kind];
@@ -112,6 +118,34 @@ export function NightRaid({ onClose }: { onClose: () => void }) {
           </div>
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-3 sm:px-5">
+          {raid.phase === 'preparing' && (
+            <div data-testid="raid-missions" className="mb-3">
+              <p className="text-xs font-bold text-gold-200 mb-2">
+                {zh ? '选择作战目标 · 三种挑战' : 'Choose a mission · Three objectives'}
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {MISSIONS.map(id => {
+                  const item = RAID_MISSIONS[id];
+                  return (
+                    <button key={id} type="button" data-testid={'raid-mission-' + id}
+                      aria-pressed={(raid.mission ?? 'standard') === id}
+                      onClick={() => {setRaid(prepareRaid(collection, id));setMoving(null);}}
+                      className={'rounded-xl border px-2 py-2 text-left ' +
+                        ((raid.mission ?? 'standard') === id
+                          ? 'border-gold-300 bg-ink-700' : 'border-line bg-ink-800')}>
+                      <span className="block font-bold text-xs text-mist-100">{item[locale]}</span>
+                      <span className="block text-[10px] leading-snug text-mist-400 mt-1">
+                        {zh ? item.detailZh : item.detailEn}
+                      </span>
+                      <span className="block text-[10px] text-gold-200 mt-1">
+                        {item.lastTick} {zh ? '刻' : 'ticks'} · ✦{item.rewardTickets}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <p className="text-xs text-mist-400 mb-2" role="status">
             {raid.phase === 'preparing'
               ? (zh ? '先选灵核，再点对应路线安排站位。开始后敌人会持续逼近。'
@@ -234,20 +268,42 @@ export function NightRaid({ onClose }: { onClose: () => void }) {
               </div>
             </div>
           )}
-          {outcome && (
-            <div className="mt-3 rounded-xl border border-gold-300/50 bg-ink-800 p-3 text-center">
-              <p className="font-bold text-lg text-gold-200">
-                {raid.phase === 'won' ? (zh ? '守卫成功！' : 'Victory!') : (zh ? '防线失守' : 'Defeat')}
+          {outcome && debrief && (
+            <div data-testid="raid-debrief" className="mt-3 rounded-xl border border-gold-300/50 bg-ink-800 p-3">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="font-bold text-base text-gold-200">
+                  {raid.phase === 'won' ? (zh ? '守卫成功！' : 'Victory!') : (zh ? '防线失守 · 战报' : 'Defeat · Battle report')}
+                </h3>
+                <span data-testid="raid-stars" className="shrink-0 text-gold-300 font-bold" aria-label={(zh ? '星级' : 'Stars') + debrief.stars}>
+                  {'★'.repeat(debrief.stars)}{'☆'.repeat(3 - debrief.stars)}
+                </span>
+              </div>
+              <p className="text-xs text-mist-400 mt-1">{mission[locale]} · {debrief.summary}</p>
+              <div className="grid grid-cols-3 gap-2 mt-2" data-testid="raid-lane-report">
+                {LANES.map(lane => (
+                  <div key={lane} className={'rounded-lg p-2 text-xs text-center ' +
+                    (lane === debrief.worstLane && raid.report?.damage[lane]
+                      ? 'bg-[#593247] text-mist-100' : 'bg-ink-900 text-mist-300')}>
+                    <p className="font-semibold">{laneName(lane)}</p>
+                    <p>{zh ? '突破' : 'Breaches'} {raid.report?.breaches[lane] ?? 0}</p>
+                    <p>{zh ? '损失' : 'Damage'} {raid.report?.damage[lane] ?? 0}</p>
+                  </div>
+                ))}
+              </div>
+              <p data-testid="raid-advice" className="mt-2 text-xs leading-relaxed text-mint-300">
+                ◈ {debrief.advice}
               </p>
-              <p className="text-xs text-mist-400 mt-1">{raid.phase === 'won'
-                ? (zh ? '奖励：3 张召唤券 + 10 进化精华（每夜可领取一次）'
-                  : 'Reward: 3 tickets + 10 essence (once per night)')
-                : (zh ? '尝试重新调配路线，并把战技留给漏防敌人。' : 'Reassign lanes and save skills for threats that slip through.')}</p>
+              {raid.phase === 'won' && (
+                <p className="text-xs mt-2 text-gold-200" data-testid="raid-reward-preview">
+                  {zh ? '首胜奖励（本夜仅一次）：' : 'Reward (once this night): '}
+                  {raidReward(raid)?.tickets} {zh ? '召唤券' : 'tickets'} + {raidReward(raid)?.essence} {zh ? '进化精华' : 'essence'}
+                </p>
+              )}
             </div>
           )}
         </div>
         <footer className="flex justify-between items-center shrink-0 border-t border-line px-3 py-2 sm:px-5 gap-2">
-          <span className="text-xs text-mist-400 shrink-0">{zh ? '进度' : 'Progress'} {raid.tick}/42</span>
+          <span className="text-xs text-mist-400 shrink-0">{zh ? '进度' : 'Progress'} {raid.tick}/{mission.lastTick}</span>
           {raid.phase === 'fighting' && (
             <div className="flex items-center gap-1.5" data-testid="raid-time-controls">
               <Button size="sm" variant={paused ? 'primary' : 'secondary'} onClick={() => setPaused(value => !value)}
@@ -274,7 +330,7 @@ export function NightRaid({ onClose }: { onClose: () => void }) {
             </Button>
           )}
           {raid.phase === 'lost' && (
-            <Button variant="primary" size="md" onClick={() => {setRaid(prepareRaid(collection)); setMoving(null);}}>
+            <Button variant="primary" size="md" onClick={() => {setRaid(prepareRaid(collection, raid.mission)); setMoving(null); setPaused(false);}}>
               {zh ? '调整阵容 · 再战' : 'Rematch'}
             </Button>
           )}
