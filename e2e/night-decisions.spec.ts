@@ -3,7 +3,7 @@ import { placeStarter } from './helpers';
 
 test('five-night spirit decisions persist then reset after settlement', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/');
+  await page.goto('/legacy');
   await placeStarter(page);
   const options=page.getByRole('group',{name:'今晚的事件应对'});
   const profit=options.getByRole('button',{name:/卖夜间通行券/});
@@ -20,7 +20,7 @@ test('five-night spirit decisions persist then reset after settlement', async ({
 test('English mobile events work with reduced motion', async ({ page }) => {
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/legacy');
   await page.getByRole('combobox',{name:'语言'}).selectOption('en');
   await page.getByRole('button',{name:'Place Seedcore in selected room'}).click();
   await page.getByRole('tab',{name:'Manage'}).click();
