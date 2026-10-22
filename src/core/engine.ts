@@ -4,8 +4,8 @@
  * No UI/DOM/Phaser/React imports are allowed in this file.
  */
 
-import { companionEffects } from './spirit-collection';
-import type { CollectionState } from './spirit-collection';
+import { companionEffects } from './spirit-collection.ts';
+import type { CollectionState } from './spirit-collection.ts';
 
 export type TenantId = 'slime' | 'ember' | 'ghost' | 'golem';
 
