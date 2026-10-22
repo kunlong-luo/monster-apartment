@@ -3,8 +3,8 @@ import { advanceDay, choosePolicy, chooseNightDecision, placeSpirit, removeSpiri
 import type { GameOutcome, GameState, PolicyId, NightDecisionId } from '@/core/engine';
 import type { Locale } from '@/lib/i18n';
 import type { SaveData } from '@/lib/save-game';
-import { newCollection, summon, equipSpirit, swapEquipped, nightCollectionReward, levelSpirit, evolveSpirit } from '@/core/spirit-collection';
-import type { CollectionState, SpiritId } from '@/core/spirit-collection';
+import { newCollection, summon, equipSpirit, swapEquipped, nightCollectionReward, levelSpirit, evolveSpirit, awakenSpirit } from '@/core/spirit-collection';
+import type { CollectionState, SpiritId, EvolutionPath } from '@/core/spirit-collection';
 
 type GameStore = {
   state: GameState;
@@ -26,7 +26,8 @@ type GameStore = {
   summonSpirits: (count: 1 | 10) => void;
   assignSpirit: (id: SpiritId | null) => void;
   trainSpirit: (id: SpiritId) => void;
-  evolveCompanion: (id: SpiritId) => void;
+  evolveCompanion: (id: SpiritId, path?: EvolutionPath) => void;
+  awakenCompanion: (id: SpiritId) => void;
   setPolicy: (policy: PolicyId) => void;
   setNightDecision: (decision: NightDecisionId) => void;
   reset: () => void;
@@ -134,8 +135,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const result = levelSpirit(get().collection, id);
     set({ collection: result.collection, collectionError: result.error ?? '' });
   },
-  evolveCompanion(id) {
-    const result = evolveSpirit(get().collection, id);
+  evolveCompanion(id, path) {
+    const result = evolveSpirit(get().collection, id, path);
+    set({ collection: result.collection, collectionError: result.error ?? '' });
+  },
+  awakenCompanion(id) {
+    const result = awakenSpirit(get().collection, id);
     set({ collection: result.collection, collectionError: result.error ?? '' });
   },
   reset() {
