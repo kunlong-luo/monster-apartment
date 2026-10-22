@@ -4,7 +4,8 @@ import { NIGHT_DECISION_IDS, NIGHT_DILEMMAS, nightDecisionImpact } from '@/core/
 import type { NightDecisionId } from '@/core/engine';
 import { useGameStore } from '@/store/game-store';
 import { Panel } from '@/components/ui/panel';
-import { tenantNames } from '@/lib/i18n';
+import { SPIRIT_BY_ID } from '@/core/spirit-collection';
+
 
 const scenarios = [
   { zh: '夜间巡逻', en: 'Night patrol', careZh: '雇人巡夜', careEn: 'Extra patrol',
@@ -28,7 +29,9 @@ export function NightDecisionPanel() {
   const scenario = scenarios[state.day - 1];
   if (!scenario) return null;
   const helper = NIGHT_DILEMMAS[state.day - 1].helper;
-  const helperPresent = state.rooms.includes(helper);
+  const helperPresent = state.rooms.some(id => id && SPIRIT_BY_ID[id].role === helper);
+  const helperZh = { guard: '守护', repair: '修缮', explore: '探索', economy: '经营' }[helper];
+  const helperEn = { guard: 'Guard', repair: 'Repair', explore: 'Explorer', economy: 'Economy' }[helper];
   const priorCare = state.history.filter((night) => night.nightDecision === 'care').length;
   const priorProfit = state.history.filter((night) => night.nightDecision === 'profit').length;
   return (
@@ -66,9 +69,9 @@ export function NightDecisionPanel() {
       )}
       <p className="text-[10px] text-mist-500 mt-1">
         {locale === 'zh'
-          ? (helperPresent ? '有' + tenantNames.zh[helper] + '协助，关怀方案包含协助奖励。' :
+          ? (helperPresent ? '有' + helperZh + '职业灵核' + '协助，关怀方案包含协助奖励。' :
               tenantNames.zh[helper] + '在场时，关怀方案还有金币奖励。')
-          : (helperPresent ? tenantNames.en[helper] + ' is here to help.' :
+          : (helperPresent ? helperEn + ' spirit' + ' is here to help.' :
               tenantNames.en[helper] + ' unlocks a bonus for the care choice.')}
       </p>
     </Panel>
