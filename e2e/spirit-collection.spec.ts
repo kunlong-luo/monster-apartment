@@ -52,6 +52,7 @@ test('guaranteed mythic reveal is distinct and remains accessible with reduced m
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('monster-apartment:save:v1') !== null)).toBe(true);
   await page.evaluate(() => {
     const key = 'monster-apartment:save:v1';
     const saved = JSON.parse(localStorage.getItem(key)!);
