@@ -14,6 +14,7 @@ import { NightDecisionPanel } from './night-decision-panel';
 import { ResultCard } from './result-card';
 import { NightSettlement } from './night-settlement';
 import { SpiritPortal } from './spirit-portal';
+import { NightRaid } from './night-raid';
 import { PlayHelp } from './play-help';
 import { StatusBar } from './status-bar';
 import { LogList } from '@/components/ui/log-list';
@@ -26,6 +27,7 @@ type MobilePanel = 'recruit' | 'rooms' | 'manage' | 'log';
 export function GameScreen() {
   const [mobilePanel, setMobilePanel] = useState<MobilePanel>('recruit');
   const [spiritOpen, setSpiritOpen] = useState(false);
+  const [raidOpen, setRaidOpen] = useState(false);
   const {
     state, collection, selected, moveSource, error, help, locale, tutorialActive, tutorialStep, saveAvailable, hydrated,
     pickRoom, beginMove, cancelMove, nextDay, reset, toggleHelp,
@@ -131,8 +133,14 @@ export function GameScreen() {
                   <h2 className="game-section-title">{locale === 'zh'
                     ? '今夜，谁住进公寓？' : 'Who moves in tonight?'}</h2>
                 </div>
-                <span className="game-day-chip">☾ {locale === 'zh'
-                  ? '第 ' + state.day + ' / 5 夜' : 'NIGHT ' + state.day + ' / 5'}</span>
+                <div className="flex flex-wrap items-center justify-end gap-2">
+                  <Button size="sm" variant="primary" data-testid="open-night-raid"
+                    onClick={() => setRaidOpen(true)} disabled={!occupied || state.over}>
+                    ⚔ {locale === 'zh' ? '守卫战' : 'Defend'}
+                  </Button>
+                  <span className="game-day-chip">☾ {locale === 'zh'
+                    ? '第 ' + state.day + ' / 5 夜' : 'NIGHT ' + state.day + ' / 5'}</span>
+                </div>
               </div>
               {tutorialActive && (
                 <div className="game-tutorial-banner" role="note" aria-label={t(locale, 'guideTitle')}>
@@ -226,6 +234,7 @@ export function GameScreen() {
           ))}
         </nav>
         <SpiritPortal open={spiritOpen} onClose={() => setSpiritOpen(false)} />
+        {raidOpen && <NightRaid onClose={() => setRaidOpen(false)} />}
         <footer className="game-footer game-container">
           ✧ SPIRIT CORE RESIDENCE · {t(locale, saveAvailable ? 'saveReady' : 'saveUnavailable')} ✧
         </footer>
