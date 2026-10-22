@@ -24,6 +24,7 @@ describe('Real-time tactical defense', () => {
     expect(deployToLane(raid, 0, 'eclipse-moth', collection)).toBe(raid);
     raid = deployToLane(raid, 0, 'aurora-whale', collection);
     raid = deployToLane(raid, 1, 'day-smith', collection);
+    raid = deployToLane(raid, 2, null, collection);
     expect(raid.lineup[0]).toBe('aurora-whale');
     expect(raid.lineup[1]).toBe('day-smith');
     expect(new Set(raid.lineup.filter(Boolean)).size).toBe(2);
