@@ -71,7 +71,7 @@ describe('Original collectible spirits', () => {
     const initial = newCollection();
     expect(levelSpirit(initial, 'seedling').error).not.toBeNull();
     const prepared = { ...initial, essence: 100, owned: {
-      ...initial.owned, seedling: { level: 10, xp: 6, shards: 0, evolution: 0 },
+      ...initial.owned, seedling: { level: 10, xp: 24, shards: 0, evolution: 0 },
     } };
     expect(evolveSpirit(prepared, 'seedling').collection.owned.seedling?.evolution).toBe(1);
     expect(levelSpirit(prepared, 'seedling').collection.owned.seedling?.level).toBe(11);
