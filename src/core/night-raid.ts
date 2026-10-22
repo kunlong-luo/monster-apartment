@@ -1,5 +1,5 @@
 import { SPIRIT_BY_ID } from './spirit-collection';
-import type { CollectionState, SpiritId, SpiritRole } from './spirit-collection';
+import type { CollectionState, SpiritId } from './spirit-collection';
 
 /** A short, deterministic, player-directed 3-lane defense encounter.
  * No real-money randomness. Combat ticks only advance while the encounter is open.
