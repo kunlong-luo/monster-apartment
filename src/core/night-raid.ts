@@ -14,6 +14,12 @@ export type RaidState = {
   tick: number; baseHp: number; energy: number;
   lineup: (SpiritId | null)[]; enemies: Raider[];
   kills: number; nextId: number; notice: string;
+  /** Incremented only by manual casts; renderers use it for impact VFX. */
+  lastSkill?: { lane: Lane; serial: number; role: string };
+  /** A readable boss telegraph, not a surprise unavoidable hit. */
+  bossWarning?: { lane: Lane; ticksLeft: number } | null;
+  lastBreach?: { lane: Lane; serial: number };
+  lastBossBlast?: { lane: Lane; serial: number };
 };
 const RAID_LAST_TICK = 42;
 const schedule: readonly { tick: number; lane: Lane; kind: Raider['kind'] }[] = [
@@ -67,14 +73,23 @@ export function castRaidSkill(raid: RaidState, lane: Lane, collection: Collectio
   if (raid.phase !== 'fighting' || raid.energy < 3) return raid;
   const enemies = raid.enemies.filter(e => e.lane === lane);
   if (!enemies.length) return raid;
-  const best = raid.lineup.filter((id): id is SpiritId => !!id && !!collection.owned[id])
-    .reduce((max, id) => Math.max(max, power(id, collection)), 2);
-  const splash = 5 + Math.floor(best / 2);
+  const defender = raid.lineup[lane];
+  const role = defender ? SPIRIT_BY_ID[defender].role : 'emergency';
+  const damage = defender && collection.owned[defender] ? 5 + Math.floor(power(defender, collection) / 2) : 4;
+  const splash = role === 'explore' ? damage + 4 : damage;
   const remaining = raid.enemies.map(e => e.lane === lane ? {...e, hp:e.hp - splash} : e);
   const kills = remaining.filter(e => e.hp <= 0).length;
+  const sustain = role === 'guard' ? 2 : role === 'repair' ? 3 : 0;
+  const refund = role === 'economy' ? 1 : 0;
+  const labels: Record<string,string> = {
+    guard:'守护屏障', repair:'修缮治疗', economy:'蓄能爆裂', explore:'穿透风暴',
+    emergency:'防线炮击',
+  };
   return {...raid, enemies:remaining.filter(e => e.hp > 0),
-    energy:raid.energy - 3, kills:raid.kills + kills,
-    notice:'战技命中 ' + enemies.length + ' 个目标！'};
+    baseHp: Math.min(14, raid.baseHp + sustain),
+    energy:raid.energy - 3 + refund, kills:raid.kills + kills,
+    lastSkill: { lane, serial:(raid.lastSkill?.serial ?? 0) + 1, role },
+    notice:labels[role] + '！命中 ' + enemies.length + ' 个目标。'};
 }
 export function advanceRaid(raid: RaidState, collection: CollectionState): RaidState {
   if (raid.phase !== 'fighting') return raid;
@@ -98,7 +113,13 @@ export function advanceRaid(raid: RaidState, collection: CollectionState): RaidS
   const kills = enemies.filter(e => e.hp <= 0).length;
   enemies = enemies.filter(e => e.hp > 0);
   const breached = enemies.filter(e => e.distance <= 1);
-  const damage = breached.reduce((sum,e)=>sum + e.damage,0);
+  const bossAlive = enemies.some(e => e.kind === 'boss');
+  const bossWarning = bossAlive && tick >= 29 && tick <= 31
+    ? { lane: 1 as Lane, ticksLeft: 32 - tick } : null;
+  const bossBlast = tick === 32 && bossAlive;
+  const middleGuard = raid.lineup[1] && SPIRIT_BY_ID[raid.lineup[1]].role === 'guard';
+  const blastDamage = bossBlast ? middleGuard ? 1 : 4 : 0;
+  const damage = breached.reduce((sum,e)=>sum + e.damage,0) + blastDamage;
   enemies = enemies.filter(e => e.distance > 1).map(e => ({...e,distance:e.distance - 1}));
   const hasRepair = raid.lineup.some(id => id && SPIRIT_BY_ID[id].role === 'repair');
   const recovery = hasRepair && tick % 9 === 0 ? 1 : 0;
@@ -108,10 +129,15 @@ export function advanceRaid(raid: RaidState, collection: CollectionState): RaidS
   const phase = baseHp <= 0 ? 'lost'
     : tick >= RAID_LAST_TICK && enemies.length === 0 ? 'won' : 'fighting';
   return { ...raid, tick, nextId, enemies, baseHp:Math.max(0,baseHp), energy,
-    kills:raid.kills + kills, phase, notice:
+    kills:raid.kills + kills, phase, bossWarning,
+    lastBossBlast: bossBlast ? {lane:1,serial:tick} : raid.lastBossBlast,
+    lastBreach: damage > 0 ? {lane:bossBlast ? 1 : breached[0]?.lane ?? 1,serial:tick} : raid.lastBreach,
+    notice:
       phase === 'won' ? '防线坚守成功，获得探索奖励！' :
         phase === 'lost' ? '灵核防线失守，可以调整阵容再次挑战。' :
-          breached.length ? '有敌人突破了防线！' : raid.notice,
+          bossBlast ? (middleGuard ? '守护灵核挡下了首领脉冲！' : '首领脉冲命中核心！') :
+            bossWarning ? '中路危险：首领脉冲即将爆发，部署守护灵核！' :
+              breached.length ? '有敌人突破了防线！' : raid.notice,
   };
 }
 export function raidReward(raid: RaidState): {tickets:number;essence:number} | null {
