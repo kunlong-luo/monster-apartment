@@ -12,7 +12,7 @@ export function NightSettlement({ result, satisfaction, locale }: Props) {
   const decisionMood = result.decisionSatisfaction ?? 0;
   const policyMood = result.policySatisfaction ?? 0;
   const preferenceMood = result.preferenceSatisfaction ?? 0;
-  const knownMoodDelta = preferenceMood + policyMood + decisionMood;
+  const knownMoodDelta = preferenceMood + policyMood + decisionMood + (result.spiritSatisfaction ?? 0);
   const lines = [
     { label: zh ? '租金' : 'Rent', value: result.rent },
     { label: zh ? '维护成本' : 'Upkeep', value: -result.upkeep },
@@ -20,6 +20,7 @@ export function NightSettlement({ result, satisfaction, locale }: Props) {
     { label: zh ? '房间偏好' : 'Room affinity', value: result.preference ?? 0 },
     { label: zh ? '经营策略' : 'Policy', value: result.policyCoins ?? 0 },
     { label: zh ? '夜间抉择' : 'Decision', value: result.decisionCoins ?? 0 },
+    { label: zh ? '灵核驻守' : 'Spirit support', value: result.spiritCoins ?? 0 },
     { label: zh ? '夜间事件' : 'Night event', value: result.event },
   ];
   return (
