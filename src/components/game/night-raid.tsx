@@ -7,6 +7,7 @@ import type { SpiritId } from '@/core/spirit-collection';
 import { advanceRaid, beginRaid, castRaidSkill, deployToLane, prepareRaid, relocateRaid } from '@/core/night-raid';
 import type { Lane, RaidState } from '@/core/night-raid';
 import { SpiritPortrait } from './spirit-portrait';
+import { RaidBattleCanvas } from './raid-battle-canvas';
 import { Button } from '@/components/ui/button';
 
 const LANES = [0, 1, 2] as const;
@@ -97,7 +98,16 @@ export function NightRaid({ onClose }: { onClose: () => void }) {
                   : 'Live combat: press 1 / 2 / 3 to cast a lane skill (3 energy), or shift a spirit (2).')
                 : zh ? raid.notice : raid.phase === 'won' ? 'Defense held! Claim your reward.' : 'The defenses fell. Rearrange and try again.'}
           </p>
-          <div className="space-y-2">
+          <RaidBattleCanvas raid={raid} collection={collection} />
+          {raid.bossWarning && (
+            <div role="alert" data-testid="boss-warning"
+              className="mt-2 rounded-lg border border-danger-300/70 bg-[#6a314b] p-2 text-center text-xs font-bold text-mist-100">
+              {zh ? '⚠ 中路首领蓄力 · ' : '⚠ MID-LANE BOSS CHARGING · '}
+              {raid.bossWarning.ticksLeft}
+              {zh ? ' 刻后冲击！中路守护灵核可减伤' : ' ticks until impact! A guard in middle lane reduces damage'}
+            </div>
+          )}
+          <div className="space-y-2 mt-2">
             {LANES.map(lane => {
               const defender = raid.lineup[lane];
               const threats = raid.enemies.filter(enemy => enemy.lane === lane);
@@ -138,23 +148,19 @@ export function NightRaid({ onClose }: { onClose: () => void }) {
                       )}
                     </div>
                   </div>
-                  <div className="raid-lane relative h-[58px] sm:h-[70px] overflow-hidden rounded-lg border border-line/50"
+                  <div className="raid-lane relative min-h-[24px] overflow-hidden rounded-lg border border-line/50 flex items-center justify-between gap-2 px-2 text-[11px]"
                     data-testid={'raid-lane-' + lane}>
-                    <div className="absolute top-1/2 left-2 -translate-y-1/2 text-mint-300 text-lg">◆</div>
-                    <div className="absolute top-1/2 right-2 -translate-y-1/2 text-danger-300 text-lg">➜</div>
-                    {threats.map(enemy => (
-                      <div key={enemy.id} data-testid="raid-enemy"
-                        className={'raid-enemy absolute top-1/2 -translate-y-1/2 grid place-items-center ' +
-                          (enemy.kind === 'boss' ? 'text-2xl' : 'text-xl')}
-                        style={{ left: Math.max(8, Math.min(88, 8 + enemy.distance * 7)) + '%' }}>
-                        <span role="img" aria-label={enemy.kind === 'boss' ? 'Boss' : 'Invader'}>
-                          {enemy.kind === 'boss' ? '👁️' : enemy.kind === 'brute' ? '🛡️' : '⚔️'}
+                    <span className="text-mist-400">
+                      {zh ? '敌军' : 'Enemies'}: {threats.length}
+                      {threats.map(enemy => (
+                        <span key={enemy.id} data-testid="raid-enemy"
+                          className="raid-enemy inline-block ml-1 text-danger-300"
+                          aria-label={enemy.kind === 'boss' ? 'Boss' : 'Invader'}>
+                          {enemy.kind === 'boss' ? '◉' : enemy.kind === 'brute' ? '◆' : '✦'}
                         </span>
-                        <span className="block h-1 w-8 rounded-full bg-ink-950 overflow-hidden">
-                          <span className="block h-full bg-danger-300" style={{width: (enemy.hp / enemy.maxHp * 100) + '%'}} />
-                        </span>
-                      </div>
-                    ))}
+                      ))}
+                    </span>
+                    <span className="text-gold-200">{defender ? SPIRIT_BY_ID[defender].role.toUpperCase() : '—'}</span>
                   </div>
                 </section>
               );
