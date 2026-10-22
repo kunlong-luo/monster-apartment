@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { SAVE_KEY, decodeSave } from '@/lib/save-game';
 import { newCollection, isSpiritId, SPIRIT_BY_ID } from '@/core/spirit-collection';
 import type { CollectionState, SpiritId } from '@/core/spirit-collection';
@@ -14,7 +15,7 @@ const LivingCanvas = dynamic(() => import('./living-canvas').then(mod => mod.Liv
 });
 const STORAGE='monster-apartment:living:v1';
 type Lang='zh'|'en';
-const info:Record<WorkRoom,{zh:string;en:string;subZh:string;subEn:string;icon:string;position:React.CSSProperties}>={
+const info:Record<WorkRoom,{zh:string;en:string;subZh:string;subEn:string;icon:string;position:CSSProperties}>={
   reactor:{zh:'核心炉',en:'Core furnace',subZh:'产电 / 炉温',subEn:'Power / Heat',icon:'⚡',
     position:{left:'6.2%',top:'19.3%',width:'27.2%',height:'31.5%'}},
   garden:{zh:'星光温室',en:'Starlit greenhouse',subZh:'耗电 / 食物',subEn:'Power / Food',icon:'❀',
@@ -43,7 +44,7 @@ function isSavedState(data:unknown):data is LivingState{
     const id=v.rooms?.[room];
     return id===null||isSpiritId(id);
   }) && ['ready','running','lost','won'].includes(v.phase??'') &&
-    Number.isInteger(v.tick)&&v.tick!>=0&&v.tick!<=LIVING_DURATION &&
+    typeof v.tick==='number'&&Number.isInteger(v.tick)&&v.tick>=0&&v.tick<=LIVING_DURATION &&
     [v.power,v.food,v.integrity,v.heat].every(n=>typeof n==='number'&&Number.isFinite(n)&&n>=0&&n<=16) &&
     Array.isArray(v.invaders)&&v.invaders.length<=32 &&
     typeof v.nextId==='number'&&Number.isInteger(v.nextId);
