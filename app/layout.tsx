@@ -3,9 +3,9 @@ import type { ReactNode } from 'react';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: '怪物租客公寓 · Monster Apartment',
-  description: '六房五日经营原型：招募怪物租客，经营相邻组合，撑过五个夜晚。',
-  applicationName: 'Monster Apartment',
+  title: '灵核公寓 · Spirit Core Residence',
+  description: '原创灵核收集、五品质召唤、养成进化与六房五夜公寓经营。',
+  applicationName: 'Spirit Core Residence',
 };
 
 export const viewport: Viewport = {
