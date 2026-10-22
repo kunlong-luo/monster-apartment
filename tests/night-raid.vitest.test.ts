@@ -125,7 +125,7 @@ describe('Real-time tactical defense', () => {
     const blast = advanceRaid(one, collection);
     expect(blast.bossWarning).toBeNull();
     expect(blast.lastBossBlast).toEqual({lane:1, serial:32});
-    expect(blast.baseHp).toBe(8);
+    expect(blast.baseHp).toBe(0);
 
     const guarded = { ...empty,
       lineup:[null, 'aurora-whale', null] as (SpiritId | null)[] };
@@ -133,6 +133,21 @@ describe('Real-time tactical defense', () => {
     for (let step=0; step<4; step++) defense = advanceRaid(defense, collection);
     expect(defense.baseHp).toBe(11);
     expect(defense.notice).toContain('守护灵核挡下');
+  });
+
+  it('makes timing matter: starter trio fails unattended but can interrupt the boss', () => {
+    const collection = newCollection();
+    let idle = beginRaid(prepareRaid(collection), collection);
+    let proactive = idle;
+    while (idle.phase === 'fighting' && idle.tick < 50) idle = advanceRaid(idle, collection);
+    while (proactive.phase === 'fighting' && proactive.tick < 50) {
+      proactive = advanceRaid(proactive, collection);
+      if (proactive.tick === 29 && proactive.phase === 'fighting')
+        proactive = castRaidSkill(proactive, 1, collection);
+    }
+    expect(idle.phase).toBe('lost');
+    expect(proactive.phase).toBe('won');
+    expect(proactive.lastSkill?.role).toBe('repair');
   });
 
   it('uses different tactical skills for each profession, not generic damage', () => {
