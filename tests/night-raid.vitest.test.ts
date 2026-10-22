@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { SPIRITS, newCollection } from '../src/core/spirit-collection';
 import type { CollectionState, SpiritId } from '../src/core/spirit-collection';
-import { newGame } from '../src/core/engine';
-import { useGameStore } from '../src/store/game-store';
 import {
-  advanceRaid, beginRaid, castRaidSkill, deployToLane, prepareRaid,
+  advanceRaid, applyRaidReward, beginRaid, castRaidSkill, deployToLane, prepareRaid,
   raidReward, relocateRaid,
 } from '../src/core/night-raid';
 
@@ -86,19 +84,19 @@ describe('Real-time tactical defense', () => {
     expect(relocateRaid(switched, 0, 1)).toBe(switched);
   });
 
-  it('awards the actual collection only once each night, retaining save compatibility', () => {
+  it('awards an encounter only once each night and preserves older inventories', () => {
     const collection = newCollection();
-    useGameStore.setState({ state: newGame(), collection });
     const victory = { ...prepareRaid(collection), phase:'won' as const };
-    useGameStore.getState().claimRaidReward(victory);
-    expect(useGameStore.getState().collection.tickets).toBe(13);
-    expect(useGameStore.getState().collection.essence).toBe(10);
-    expect(useGameStore.getState().collection.claimedRaids).toEqual([1]);
-    useGameStore.getState().claimRaidReward(victory);
-    expect(useGameStore.getState().collection.tickets).toBe(13);
-    useGameStore.getState().reset();
-    expect(useGameStore.getState().collection.claimedRaids).toEqual([]);
-    useGameStore.setState({ state: newGame(), collection:newCollection() });
+    const paid = applyRaidReward(collection, victory, 1);
+    expect(paid.tickets).toBe(13);
+    expect(paid.essence).toBe(10);
+    expect(paid.claimedRaids).toEqual([1]);
+    expect(applyRaidReward(paid, victory, 1)).toBe(paid);
+    const secondNight = applyRaidReward(paid, victory, 2);
+    expect(secondNight.tickets).toBe(16);
+    expect(applyRaidReward(secondNight, victory, 6)).toBe(secondNight);
+    expect(applyRaidReward(collection, { ...victory, phase:'lost' }, 1)).toBe(collection);
+    expect(collection.tickets).toBe(10);
   });
 
   it('every spirit has valid stats for the action prototype', () => {
