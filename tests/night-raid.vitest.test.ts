@@ -99,6 +99,53 @@ describe('Real-time tactical defense', () => {
     expect(collection.tickets).toBe(10);
   });
 
+  it('telegraphs a boss pulse for three ticks and guards meaningfully reduce the hit', () => {
+    const collection = withSpirits('aurora-whale');
+    const enemy = { id: 99, lane: 1 as const, kind: 'boss' as const,
+      hp: 200, maxHp: 200, distance: 12, damage: 3 };
+    const empty = { ...beginRaid(prepareRaid(collection), collection),
+      tick: 28, baseHp: 12, nextId: 100, enemies: [enemy] };
+    const alert = advanceRaid(empty, collection);
+    expect(alert.bossWarning).toEqual({ lane:1, ticksLeft:3 });
+    const two = advanceRaid(alert, collection);
+    expect(two.bossWarning?.ticksLeft).toBe(2);
+    const one = advanceRaid(two, collection);
+    expect(one.bossWarning?.ticksLeft).toBe(1);
+    const blast = advanceRaid(one, collection);
+    expect(blast.bossWarning).toBeNull();
+    expect(blast.lastBossBlast).toEqual({lane:1, serial:32});
+    expect(blast.baseHp).toBe(8);
+
+    const guarded = { ...empty,
+      lineup:[null, 'aurora-whale', null] as (SpiritId | null)[] };
+    let defense = guarded;
+    for (let step=0; step<4; step++) defense = advanceRaid(defense, collection);
+    expect(defense.baseHp).toBe(11);
+    expect(defense.notice).toContain('守护灵核挡下');
+  });
+
+  it('uses different tactical skills for each profession, not generic damage', () => {
+    const collection = withSpirits('aurora-whale', 'mirror-koi', 'cinder-stag', 'eclipse-moth');
+    const scout = { id:23, lane:0 as const, kind:'brute' as const,
+      hp:45, maxHp:45, damage:1, distance:5 };
+    const castBy = (id: SpiritId) => {
+      const base = beginRaid(prepareRaid(collection), collection);
+      return castRaidSkill({ ...base, energy:5, baseHp:3,
+        lineup:[id,null,null], enemies:[scout] }, 0, collection);
+    };
+    const guard = castBy('aurora-whale');
+    const repair = castBy('mirror-koi');
+    const economy = castBy('cinder-stag');
+    const explorer = castBy('eclipse-moth');
+    expect(guard.baseHp).toBe(5);
+    expect(repair.baseHp).toBe(6);
+    expect(explorer.enemies[0].hp).toBeLessThan(guard.enemies[0].hp);
+    expect(economy.energy).toBe(3);
+    expect(guard.energy).toBe(2);
+    expect(guard.lastSkill?.role).toBe('guard');
+    expect(repair.lastSkill?.role).toBe('repair');
+  });
+
   it('every spirit has valid stats for the action prototype', () => {
     const collection = withSpirits(...SPIRITS.map(s => s.id));
     const raid = prepareRaid(collection);
