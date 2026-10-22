@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { placeStarter } from './helpers';
 
 test('mobile spirit residence has accessible controls and no overflow', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
