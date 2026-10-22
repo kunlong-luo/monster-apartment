@@ -118,7 +118,7 @@ describe('Real-time tactical defense', () => {
 
     const guarded = { ...empty,
       lineup:[null, 'aurora-whale', null] as (SpiritId | null)[] };
-    let defense = guarded;
+    let defense: ReturnType<typeof beginRaid> = guarded;
     for (let step=0; step<4; step++) defense = advanceRaid(defense, collection);
     expect(defense.baseHp).toBe(11);
     expect(defense.notice).toContain('守护灵核挡下');
