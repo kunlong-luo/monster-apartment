@@ -27,7 +27,7 @@ export function GameScreen() {
   const [mobilePanel, setMobilePanel] = useState<MobilePanel>('recruit');
   const [spiritOpen, setSpiritOpen] = useState(false);
   const {
-    state, selected, moveSource, error, help, locale, tutorialActive, tutorialStep, saveAvailable, hydrated,
+    state, collection, selected, moveSource, error, help, locale, tutorialActive, tutorialStep, saveAvailable, hydrated,
     pickRoom, beginMove, cancelMove, nextDay, reset, toggleHelp,
     setLocale, nextTutorial, skipTutorial, replayTutorial,
   } = useGameStore();
@@ -158,7 +158,7 @@ export function GameScreen() {
               )}
               <div className="game-board-frame">
                 <div className="game-board-inner">
-                  <ApartmentView state={state} selected={selected} moveSource={moveSource}
+                  <ApartmentView state={state} collection={collection} selected={selected} moveSource={moveSource}
                     locale={locale} onPick={(index) => {
                       pickRoom(index);
                       if (moveSource === null && !state.over) setMobilePanel('recruit');
