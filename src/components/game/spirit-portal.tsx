@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useGameStore } from '@/store/game-store';
 import { SPIRITS, SPIRIT_BY_ID, FACTION_LABELS, QUALITY_RATES } from '@/core/spirit-collection';
-import type { Quality, Spirit } from '@/core/spirit-collection';
+import type { Quality, Spirit, SpiritId } from '@/core/spirit-collection';
 import { Button } from '@/components/ui/button';
 import { SpiritPortrait } from './spirit-portrait';
 
@@ -23,7 +23,7 @@ function SpiritTile({ spirit, locale, children, evolution = 0 }: {
   return (
     <div className={'rounded-xl border bg-ink-800/80 px-3 py-2 min-w-0 ' + qualityColors[spirit.quality]}>
       <div className="flex items-center gap-2">
-        <SpiritPortrait id={spirit.id} evolution={evolution} size={56} />
+        <SpiritPortrait id={spirit.id as SpiritId} evolution={evolution} size={56} />
         <div className="min-w-0 flex-1">
           <strong className="block text-sm truncate">{locale === 'zh' ? spirit.zh : spirit.en}</strong>
           <small className="block text-mist-500 text-[10px]">{spirit.quality} · {FACTION_LABELS[spirit.faction][locale]} · {spirit.element}</small>
