@@ -6,6 +6,7 @@ import { useGameStore } from '@/store/game-store';
 import { SPIRITS, SPIRIT_BY_ID, FACTION_LABELS, QUALITY_RATES } from '@/core/spirit-collection';
 import type { Quality, Spirit } from '@/core/spirit-collection';
 import { Button } from '@/components/ui/button';
+import { SpiritPortrait } from './spirit-portrait';
 
 type Tab = 'summon' | 'codex' | 'formation';
 const qualityColors: Record<Quality, string> = {
@@ -16,13 +17,13 @@ const qualityColors: Record<Quality, string> = {
   UR: 'text-pink-300 border-pink-400/60',
 };
 
-function SpiritTile({ spirit, locale, children }: {
-  spirit: Spirit; locale: 'zh' | 'en'; children?: ReactNode;
+function SpiritTile({ spirit, locale, children, evolution = 0 }: {
+  spirit: Spirit; locale: 'zh' | 'en'; children?: ReactNode; evolution?: number;
 }) {
   return (
     <div className={'rounded-xl border bg-ink-800/80 px-3 py-2 min-w-0 ' + qualityColors[spirit.quality]}>
       <div className="flex items-center gap-2">
-        <span aria-hidden="true" className="text-2xl w-8 text-center">{spirit.icon}</span>
+        <SpiritPortrait id={spirit.id} evolution={evolution} size={56} />
         <div className="min-w-0 flex-1">
           <strong className="block text-sm truncate">{locale === 'zh' ? spirit.zh : spirit.en}</strong>
           <small className="block text-mist-500 text-[10px]">{spirit.quality} · {FACTION_LABELS[spirit.faction][locale]} · {spirit.element}</small>
@@ -128,7 +129,7 @@ export function SpiritPortal({ open, onClose }: { open: boolean; onClose: () => 
               {SPIRITS.map((spirit) => {
                 const progress = collection.owned[spirit.id];
                 return progress ? (
-                  <SpiritTile spirit={spirit} locale={locale} key={spirit.id}>
+                  <SpiritTile spirit={spirit} locale={locale} key={spirit.id} evolution={progress.evolution}>
                     <p className="text-mist-300 text-xs mt-1">
                       Lv.{progress.level} · XP {progress.xp}/{4 + progress.level * 2} ·
                       {zh ? ' 进化' : ' Evolution'} {progress.evolution}/2 ·
