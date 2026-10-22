@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Panel } from '@/components/ui/panel';
 import { TENANTS } from '@/core/engine';
 import type { TenantId } from '@/core/engine';
 import { t, tenantNames, tenantDescriptions } from '@/lib/i18n';
@@ -18,18 +17,18 @@ export function TenantCard({ tenant: id, locale, disabled, onRecruit }: TenantCa
   const colorHex = '#' + tenant.color.toString(16).padStart(6, '0');
 
   return (
-    <Panel className="p-3">
+    <div className="game-tenant" data-tenant={id}>
       <div className="flex items-start gap-3">
-        <div className="flex-shrink-0 grid place-items-center rounded-xl text-2xl w-10 h-10 bg-ink-700"
+        <div className="game-tenant-avatar"
           style={{ color: colorHex }} aria-hidden="true">
           {tenant.icon}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2">
-            <strong className="text-mist-300 truncate">{tenantNames[locale][id]}</strong>
+            <strong className="text-[#fff0e0] truncate font-bold">{tenantNames[locale][id]}</strong>
             <Badge tone="gold">-{tenant.price}</Badge>
           </div>
-          <p className="text-mist-500 text-xs mt-0.5 truncate">{tenantDescriptions[locale][id]}</p>
+          <p className="text-mist-400 text-xs mt-1 leading-snug">{tenantDescriptions[locale][id]}</p>
           <div className="flex items-center gap-2 mt-2">
             <Badge tone="mint">{t(locale, 'rent')} +{tenant.rent}</Badge>
           </div>
@@ -40,6 +39,6 @@ export function TenantCard({ tenant: id, locale, disabled, onRecruit }: TenantCa
         aria-label={tenantNames[locale][id] + ' -' + tenant.price + ' ' + t(locale, 'coins') + ', ' + t(locale, 'rent') + ' +' + tenant.rent}>
         {t(locale, 'recruit')}
       </Button>
-    </Panel>
+    </div>
   );
 }

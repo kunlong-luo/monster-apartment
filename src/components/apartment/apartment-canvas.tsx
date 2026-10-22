@@ -46,7 +46,7 @@ export function ApartmentCanvas({ state, selected, moveSource, locale, onPick }:
       parent: host,
       width: 628,
       height: 676,
-      backgroundColor: '#101b2d',
+      backgroundColor: '#15162e',
       scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
       scene: [ApartmentScene],
       render: { pixelArt: false, antialias: true },
@@ -71,7 +71,7 @@ export function ApartmentCanvas({ state, selected, moveSource, locale, onPick }:
       ref={hostRef}
       role="img"
       aria-label={locale === 'en' ? 'Six-room monster apartment floor plan. Use the room buttons to select rooms with a keyboard.' : '六间房的怪物公寓楼层示意图，可用左侧房间按钮键盘选择'}
-      className="apartment-canvas w-full overflow-hidden rounded-2xl border border-line-strong bg-ink-900 shadow-[0_15px_48px_#0005]"
+      className="apartment-canvas w-full overflow-hidden rounded-[18px] bg-[#15162e]"
     />
   );
 }

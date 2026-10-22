@@ -11,13 +11,12 @@ export function StatTile({ label, value, tone = 'default' }: StatTileProps) {
   return (
     <div
       className={cn(
-        'rounded-xl border p-4',
-        'bg-ink-700 border-line-strong',
-        tone === 'gold' && 'border-gold-300/30',
+        'game-stats-tile',
+        tone === 'gold' && 'border-gold-300/60',
       )}
     >
       <small className="block text-mist-400 text-xs">{label}</small>
-      <strong className={cn('block mt-1.5 text-2xl font-bold', tone === 'gold' && 'text-gold-200')}>
+      <strong className={cn('block mt-1 text-2xl font-extrabold tracking-tight tabular-nums', tone === 'gold' && 'text-gold-200')}>
         {value}
       </strong>
     </div>

@@ -10,7 +10,7 @@ export function StatusBar({ message }: StatusBarProps) {
     <Panel
       role="status"
       aria-live="polite"
-      className={cn('p-3', 'bg-ink-700/50 border-line/50')}
+      className={cn('p-3', 'game-status-line')}
     >
       <p className="text-sm text-mist-300 whitespace-pre-wrap">{message}</p>
     </Panel>

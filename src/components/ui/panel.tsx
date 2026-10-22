@@ -11,7 +11,7 @@ export function Panel({ children, className, as: Component = 'section', ...rest 
   return (
     <Component
       className={cn(
-        'rounded-panel bg-ink-800 border border-line shadow-[0_14px_42px_#0003]',
+        'game-panel',
         className,
       )}
       {...rest}

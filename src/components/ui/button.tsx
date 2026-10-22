@@ -13,15 +13,15 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-gradient-to-r from-mint-400 to-mint-500 text-mint-900 font-semibold shadow-[0_4px_14px_#66dbbc40] hover:from-mint-300 hover:to-mint-400 active:from-mint-500 active:to-mint-500 disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:from-mint-400 disabled:hover:to-mint-500',
+    'bg-gradient-to-b from-[#ffe2a5] to-[#e2a867] text-[#38263c] font-extrabold shadow-[inset_0_2px_0_#fff7db66,0_4px_0_#87596d] hover:from-[#fff1c6] hover:to-[#f0be83] active:brightness-90 disabled:opacity-45 disabled:shadow-none',
   secondary:
-    'bg-ink-700 text-mist-300 border border-line-strong hover:bg-ink-600 active:bg-ink-800 disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:bg-ink-700',
+    'bg-[#41354e] text-[#fff0e1] border border-[#aa857da0] hover:bg-[#56415d] active:bg-[#302942] disabled:opacity-45',
   ghost:
-    'bg-transparent text-mist-300 hover:bg-ink-700 active:bg-ink-800 disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:bg-transparent',
+    'bg-transparent text-[#efdad6] hover:bg-[#543e57] active:bg-[#302942] disabled:opacity-45',
   quiet:
-    'bg-ink-700 text-mist-300 border border-line-strong hover:bg-ink-600 active:bg-ink-800 disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:bg-ink-700',
+    'bg-[#332b46] text-[#cfc0d2] border border-[#8a70837a] hover:bg-[#453651] active:bg-[#282439] disabled:opacity-45',
   danger:
-    'bg-ink-700 text-danger-300 border border-line-strong hover:bg-ink-600 active:bg-ink-800 disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:bg-ink-700',
+    'bg-[#453044] text-[#ffc3bb] border border-[#ae6c73ad] hover:bg-[#62404f] active:bg-[#352a3b] disabled:opacity-45',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -50,8 +50,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         type={type}
         disabled={disabled}
         className={cn(
-          'inline-flex items-center justify-center font-sans font-medium rounded-xl transition-all duration-150',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint-400 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950',
+          'inline-flex items-center justify-center font-sans font-bold rounded-xl transition-[transform,background-color,box-shadow] duration-150 active:translate-y-px',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950',
           'disabled:opacity-45 disabled:cursor-not-allowed',
           variantStyles[variant],
           sizeStyles[size],

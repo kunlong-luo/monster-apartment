@@ -13,9 +13,9 @@ export function ProgressBar({ value, max, label }: ProgressBarProps) {
         <span>{label}</span>
         <span>{value} / {max}</span>
       </div>
-      <div className="h-2 bg-ink-700 rounded-full overflow-hidden">
+      <div className="h-2.5 bg-[#17162a] rounded-full overflow-hidden border border-[#6c5b6d]">
         <div
-          className="h-full bg-gradient-to-r from-mint-400 to-mint-500 transition-all duration-200"
+          className="h-full bg-gradient-to-r from-[#d2a5dd] via-[#eab48a] to-[#ffde9f] transition-all duration-200"
           style={{ width: `${clamped}%` }}
         />
       </div>
