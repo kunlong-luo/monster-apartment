@@ -1,8 +1,10 @@
 import * as Phaser from 'phaser';
-import { LAST_DAY, TENANTS, ROOM_TRAITS, synergyDetails } from '@/core/engine';
-import type { GameState, TenantId, RoomSlot } from '@/core/engine';
+import { LAST_DAY, ROOM_TRAITS, synergyDetails } from '@/core/engine';
+import { SPIRIT_BY_ID } from '@/core/spirit-collection';
+import type { SpiritId } from '@/core/spirit-collection';
+import type { GameState, RoomSlot } from '@/core/engine';
 import { roomMotionEvents } from './room-motion';
-import { t, tenantNames } from '@/lib/i18n';
+import { t } from '@/lib/i18n';
 import { traitLabel } from '@/lib/strategy-labels';
 import type { Locale } from '@/lib/i18n';
 import { apartmentEvents } from './events';
@@ -16,72 +18,58 @@ const COLOR = {
   lavender: 0xc9b4e6, mint: 0x8be1c0, coral: 0xf4a39a,
 } as const;
 
-function monster(g: Phaser.GameObjects.Graphics, id: TenantId, cx: number, cy: number): void {
-  // The static floor shadow is drawn separately, keeping only the monster in motion.
-  switch (id) {
-    case 'slime':
-      g.fillStyle(0x5dba9b);
-      g.fillEllipse(cx, cy + 12, 77, 59);
-      g.fillStyle(0xa0f0c8);
-      g.fillEllipse(cx - 10, cy + 3, 43, 29);
-      g.fillStyle(0xe8fff0);
-      g.fillCircle(cx - 15, cy + 7, 9);
-      g.fillCircle(cx + 16, cy + 7, 9);
-      g.fillStyle(0x28394a);
-      g.fillCircle(cx - 13, cy + 8, 4);
-      g.fillCircle(cx + 18, cy + 8, 4);
-      g.fillStyle(0xf2a6a2, .75);
-      g.fillEllipse(cx - 26, cy + 20, 10, 5);
-      g.fillEllipse(cx + 26, cy + 20, 10, 5);
-      break;
-    case 'ember':
-      g.fillStyle(0xe7736f, .25);
-      g.fillCircle(cx, cy + 2, 42);
-      g.fillStyle(0xee805c);
-      g.fillTriangle(cx - 32, cy + 20, cx + 29, cy + 20, cx + 13, cy - 45);
-      g.fillTriangle(cx - 27, cy + 21, cx + 25, cy + 21, cx - 18, cy - 26);
-      g.fillStyle(0xffc479);
-      g.fillTriangle(cx - 24, cy + 23, cx + 22, cy + 23, cx + 1, cy - 25);
-      g.fillStyle(0xffe5a8);
-      g.fillEllipse(cx, cy + 10, 41, 32);
-      g.fillStyle(0x563b52);
-      g.fillCircle(cx - 10, cy + 8, 4);
-      g.fillCircle(cx + 11, cy + 8, 4);
-      break;
-    case 'ghost':
-      g.fillStyle(0xbeb0f5, .22);
-      g.fillCircle(cx, cy - 3, 44);
-      g.fillStyle(0xb8a4e4);
-      g.fillEllipse(cx, cy + 1, 72, 74);
-      g.fillRect(cx - 35, cy + 8, 70, 24);
-      for (let i = 0; i < 4; i++) g.fillCircle(cx - 27 + i * 18, cy + 30, 10);
-      g.fillStyle(0xe6d8ff);
-      g.fillEllipse(cx - 9, cy - 9, 35, 38);
-      g.fillStyle(0x322c53);
-      g.fillEllipse(cx - 12, cy + 4, 9, 13);
-      g.fillEllipse(cx + 14, cy + 4, 9, 13);
-      g.fillStyle(0xf6bed1);
-      g.fillEllipse(cx, cy + 19, 11, 6);
-      break;
-    case 'golem':
-      g.fillStyle(0x756e86);
-      g.fillRoundedRect(cx - 34, cy - 15, 69, 53, 14);
-      g.fillStyle(0xb7a6a0);
-      g.fillRoundedRect(cx - 27, cy - 25, 55, 45, 12);
-      g.fillStyle(0xd9c2ac);
-      g.fillRoundedRect(cx - 19, cy - 24, 30, 14, 5);
-      g.fillStyle(0x6f6175);
-      g.fillRoundedRect(cx - 45, cy + 4, 19, 23, 7);
-      g.fillRoundedRect(cx + 25, cy + 4, 20, 23, 7);
-      g.fillRoundedRect(cx - 28, cy + 30, 20, 12, 3);
-      g.fillRoundedRect(cx + 9, cy + 30, 20, 12, 3);
-      g.fillStyle(0xf7e5be);
-      g.fillCircle(cx - 12, cy - 2, 5);
-      g.fillCircle(cx + 15, cy - 2, 5);
-      g.fillStyle(0x45374c);
-      g.fillCircle(cx - 12, cy - 1, 2.4);
-      g.fillCircle(cx + 15, cy - 1, 2.4);
-      break;
+const FACTION_COLORS = {
+  tide: { body: 0x65c9d4, light: 0xc4f8f4, shade: 0x28566b },
+  forge: { body: 0xf0b35e, light: 0xffe9ae, shade: 0x7d4855 },
+  veil: { body: 0xb49bea, light: 0xefdbff, shade: 0x4d3c77 },
+  grove: { body: 0x83cf96, light: 0xdcf9bb, shade: 0x36604a },
+} as const;
+
+function spiritPortrait(g: Phaser.GameObjects.Graphics, id: SpiritId, cx: number, cy: number) {
+  const creature = SPIRIT_BY_ID[id];
+  const color = FACTION_COLORS[creature.faction];
+  const variant = Array.from(id).reduce((sum, letter) => sum + letter.charCodeAt(0), 0) % 4;
+  const shine = creature.quality === 'UR' ? 0.32 : creature.quality === 'SSR' ? 0.24 : 0.14;
+  g.fillStyle(color.body, shine);
+  g.fillCircle(cx, cy - 2, 43);
+  g.fillStyle(color.shade, .85);
+  g.fillEllipse(cx, cy + 20, 77, 49);
+  g.fillStyle(color.body);
+  if (variant === 0) {
+    g.fillRoundedRect(cx - 33, cy - 18, 66, 59, 20);
+  } else if (variant === 1) {
+    g.fillEllipse(cx, cy + 5, 76, 73);
+  } else if (variant === 2) {
+    g.fillTriangle(cx - 36, cy + 30, cx + 36, cy + 30, cx, cy - 40);
+    g.fillEllipse(cx, cy + 14, 60, 45);
+  } else {
+    g.fillEllipse(cx, cy + 4, 63, 76);
+    g.fillTriangle(cx - 30, cy - 16, cx - 12, cy - 44, cx + 1, cy - 10);
+    g.fillTriangle(cx + 30, cy - 16, cx + 12, cy - 44, cx - 1, cy - 10);
+  }
+  g.fillStyle(color.light, .6);
+  g.fillEllipse(cx - 10, cy - 7, 31, 25);
+  g.fillStyle(color.shade);
+  g.fillEllipse(cx - 12, cy + 8, 6, 10);
+  g.fillEllipse(cx + 13, cy + 8, 6, 10);
+  g.lineStyle(2, color.light, .75);
+  g.strokeCircle(cx, cy - 31, creature.quality === 'UR' ? 8 : 4);
+  if (creature.element === 'wind' || creature.element === 'light') {
+    g.fillStyle(color.light, .62);
+    g.fillTriangle(cx - 25, cy + 8, cx - 51, cy - 16, cx - 40, cy + 26);
+    g.fillTriangle(cx + 25, cy + 8, cx + 51, cy - 16, cx + 40, cy + 26);
+  } else if (creature.element === 'water') {
+    g.fillStyle(color.light, .55);
+    g.fillEllipse(cx - 37, cy + 19, 21, 13);
+    g.fillEllipse(cx + 37, cy + 19, 21, 13);
+  } else if (creature.element === 'stone') {
+    g.fillStyle(color.light, .5);
+    g.fillRoundedRect(cx - 40, cy + 18, 14, 19, 3);
+    g.fillRoundedRect(cx + 26, cy + 18, 14, 19, 3);
+  } else {
+    g.fillStyle(color.light, .72);
+    g.fillCircle(cx - 35, cy - 20, 5);
+    g.fillCircle(cx + 35, cy - 20, 5);
   }
 }
 
@@ -162,7 +150,7 @@ export default class ApartmentScene extends Phaser.Scene {
       bg.lineBetween(23, yy, 605, yy);
     }
 
-    this.text(locale === 'zh' ? '✦ 午夜怪物公寓 ✦' : '✦ MIDNIGHT MONSTERS ✦', 28, 18, 17, '#ffe0ac', true);
+    this.text(locale === 'zh' ? '✦ 星域灵核公寓 ✦' : '✦ SPIRIT CORE RESIDENCE ✦', 28, 18, 17, '#ffe0ac', true);
     this.text('NIGHT ' + state.day + ' / ' + LAST_DAY, 588, 20, 13, '#f0c38f', true).setOrigin(1, 0);
 
     const synergy = synergyDetails(state.rooms);
@@ -185,7 +173,7 @@ export default class ApartmentScene extends Phaser.Scene {
       const moving = moveSource === i;
       const target = moveSource !== null && moveSource !== i;
       const id = state.rooms[i];
-      const tenant = id ? TENANTS[id] : null;
+      const spirit = id ? SPIRIT_BY_ID[id] : null;
       const scene = this.add.graphics();
 
       // Warm lit rooms, walls, wood floor, little picture and tall window.
@@ -233,15 +221,15 @@ export default class ApartmentScene extends Phaser.Scene {
       scene.fillStyle(0xf4cfa1);
       scene.fillEllipse(x + 216, y + 28, 24, 13);
 
-      if (tenant && id) {
+      if (spirit && id) {
         // The stationary shadow anchors the character while the separate Graphics bobs.
         scene.fillStyle(0x191321, .27);
         scene.fillEllipse(x + 180, y + 116, 76, 15);
         const actor = this.add.graphics();
-        monster(actor, id, x + 180, y + 79);
+        spiritPortrait(actor, id, x + 180, y + 79);
         if (!reducedMotion) {
-          const amplitude = id === 'ghost' ? 7 : id === 'ember' ? 5 : id === 'slime' ? 4 : 2;
-          const period = id === 'ghost' ? 1600 : id === 'ember' ? 950 : id === 'slime' ? 1150 : 2100;
+          const amplitude = spirit.faction === 'veil' ? 7 : spirit.faction === 'forge' ? 3 : 5;
+          const period = spirit.faction === 'veil' ? 1600 : spirit.faction === 'forge' ? 1100 : 1400;
           this.tweens.add({
             targets: actor, y: -amplitude, duration: period, yoyo: true, repeat: -1,
             ease: 'Sine.easeInOut', delay: i * 95,
@@ -277,15 +265,15 @@ export default class ApartmentScene extends Phaser.Scene {
       this.text(ROOM_TRAITS[i].icon + ' ' + traitLabel(locale, i), x + roomW - 13, y + 12,
         11, '#ffe2ac', true).setOrigin(1, 0);
 
-      if (id && tenant) {
+      if (id && spirit) {
         scene.fillStyle(0x211c34, .92);
         scene.fillRoundedRect(x + 113, y + 106, 150, 29, 9);
-        this.text(tenantNames[locale][id], x + 124, y + 109, 14, '#fff0dd', true);
-        this.text('+' + tenant.rent, x + 256, y + 112, 13, '#ffdb94', true).setOrigin(1, 0);
+        this.text(spirit[locale], x + 124, y + 109, 12, '#fff0dd', true);
+        this.text(spirit.quality, x + 256, y + 112, 12, '#ffdb94', true).setOrigin(1, 0);
       } else {
         scene.fillStyle(0x211c34, .83);
         scene.fillRoundedRect(x + 133, y + 106, 133, 26, 8);
-        this.text(locale === 'zh' ? '等待新租客' : 'VACANT', x + 200, y + 111, 13, '#edd1ba', true).setOrigin(.5, 0);
+        this.text(locale === 'zh' ? '等待灵核入住' : 'EMPTY', x + 200, y + 111, 13, '#edd1ba', true).setOrigin(.5, 0);
       }
 
       // Feedback appears only when an occupant changed, never for simple selection.
