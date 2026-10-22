@@ -542,3 +542,32 @@
   .game-policy-option strong { font-size: 10px; }
   .game-policy-option span { font-size: 8px; }
 }
+
+
+/* V0.4.0: optional nightly choices and lightweight, accessible settlement feedback. */
+.game-dilemma-panel .game-panel-heading { margin-bottom: 7px; }
+.game-dilemma-option { min-height: 51px; }
+.game-dilemma-option span { white-space: normal; }
+.game-settlement-reveal {
+  flex: 1;
+  min-width: 0;
+  animation: night-receipt-pop 440ms ease-out both;
+}
+.game-settlement-reveal .game-status-line {
+  border-color: #e7bc806e;
+  box-shadow: 0 0 0 1px #ebbb7930, 0 0 24px #ebbb7920;
+}
+@keyframes night-receipt-pop {
+  from { opacity: .65; transform: translateY(5px) scale(.993); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (max-width: 1199px) {
+  .game-dilemma-panel { order: 0; padding: 6px 8px !important; }
+  .game-dilemma-panel .game-panel-heading { margin-bottom: 4px; }
+  .game-dilemma-option { min-height: 40px; padding: 4px 2px; }
+  .game-dilemma-option strong { font-size: 10px; }
+  .game-dilemma-option span { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-settlement-reveal { animation: none; }
+}
