@@ -49,6 +49,16 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: google-chrome --version
       - run: pnpm e2e
+      - name: Upload desktop and mobile UI review screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v030-ui-review
+          path: |
+            test-results/v030-desktop.png
+            test-results/v030-mobile.png
+          if-no-files-found: warn
+          retention-days: 14
 
   static-export:
     runs-on: ubuntu-latest
