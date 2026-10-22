@@ -1,10 +1,13 @@
 import type { Locale } from './i18n';
-import type { PolicyId, RoomTraitId, TenantId } from '@/core/engine';
+import type { PolicyId, RoomTraitId, RoomSlot } from '@/core/engine';
 import { ROOM_TRAITS, POLICIES } from '@/core/engine';
+import { SPIRIT_BY_ID } from '@/core/spirit-collection';
 
 const traits: Record<Locale, Record<RoomTraitId, string>> = {
-  zh: { damp: '潮湿房', sunny: '向阳房', quiet: '安静房', stone: '石墙房' },
-  en: { damp: 'Damp', sunny: 'Sunny', quiet: 'Quiet', stone: 'Stonewall' },
+  zh: { tide: '潮息房', sun: '焰光房', night: '夜幕房', stone: '晶岩房',
+    breeze: '流风房', starlight: '星辉房' },
+  en: { tide: 'Tide', sun: 'Flame', night: 'Shadow', stone: 'Stone',
+    breeze: 'Wind', starlight: 'Starlight' },
 };
 const policies: Record<Locale, Record<PolicyId, { name: string; detail: string }>> = {
   zh: {
@@ -21,9 +24,10 @@ const policies: Record<Locale, Record<PolicyId, { name: string; detail: string }
 export function traitLabel(locale: Locale, index: number): string {
   return traits[locale][ROOM_TRAITS[index].id];
 }
-export function tenantPreference(locale: Locale, tenant: TenantId | null, index: number): string {
-  if (!tenant) return locale === 'zh' ? '空房：选择合适的住户' : 'Vacant: match a tenant';
-  return ROOM_TRAITS[index].preferred === tenant
+export function tenantPreference(locale: Locale, spirit: RoomSlot, index: number): string {
+  if (!spirit) return locale === 'zh' ? '空房：安排灵核入住' : 'Vacant: place a spirit';
+  const matched = ROOM_TRAITS[index].preferred === SPIRIT_BY_ID[spirit].element;
+  return matched
     ? (locale === 'zh' ? '契合 +3 金币 · +2 满意度/夜' : 'Matched +3 coins · +2 mood/night')
     : (locale === 'zh' ? '不适 -1 金币 · -1 满意度/夜' : 'Mismatched -1 coin · -1 mood/night');
 }
