@@ -1,0 +1,246 @@
+'use client';
+
+import dynamic from 'next/dynamic';
+import { useCallback, useEffect, useState } from 'react';
+import { SAVE_KEY, decodeSave } from '@/lib/save-game';
+import { newCollection, isSpiritId, SPIRIT_BY_ID } from '@/core/spirit-collection';
+import type { CollectionState, SpiritId } from '@/core/spirit-collection';
+import { createLivingGame, advanceLiving, startLiving, moveLivingWorker, livingRoster, livingTip, livingGrade, LIVING_DURATION, WORK_ROOMS } from '@/core/living-engine';
+import type { LivingState, WorkRoom } from '@/core/living-engine';
+import { SpiritPortrait } from './spirit-portrait';
+
+const LivingCanvas = dynamic(() => import('./living-canvas').then(mod => mod.LivingCanvas), {
+  ssr: false, loading: () => <div className="living-loading" aria-label="Loading the apartment" />,
+});
+const STORAGE='monster-apartment:living:v1';
+type Lang='zh'|'en';
+const info:Record<WorkRoom,{zh:string;en:string;subZh:string;subEn:string;icon:string;position:React.CSSProperties}>={
+  reactor:{zh:'核心炉',en:'Core furnace',subZh:'产电 / 炉温',subEn:'Power / Heat',icon:'⚡',
+    position:{left:'6.2%',top:'19.3%',width:'27.2%',height:'31.5%'}},
+  garden:{zh:'星光温室',en:'Starlit greenhouse',subZh:'耗电 / 食物',subEn:'Power / Food',icon:'❀',
+    position:{left:'36.3%',top:'19.3%',width:'28.6%',height:'31.5%'}},
+  gate:{zh:'哨戒台',en:'Watch gate',subZh:'耗电 / 防御',subEn:'Power / Defense',icon:'⛨',
+    position:{left:'6.4%',top:'56.5%',width:'58.6%',height:'30.5%'}},
+};
+const roles={
+  guard:{zh:'守护',en:'Guard'},repair:{zh:'修缮',en:'Repair'},
+  economy:{zh:'经营',en:'Engineer'},explore:{zh:'探索',en:'Scout'},
+};
+const fallbackEnglish=(state:LivingState)=>{
+  if(state.phase==='won')return 'Your sanctuary survived. Every relocation changed the outcome.';
+  if(state.phase==='lost')return 'The core failed. Try changing who guards, grows food, and repairs the reactor.';
+  if(state.heat>=7)return 'Reactor overheating! Send a repair spirit to the furnace before it damages the building.';
+  if(state.crisis==='spores')return 'Spores block food production. Repair spirits restore the greenhouse.';
+  if(state.crisis==='blackout')return 'Blackout! Only repair spirits can restore the damaged power line.';
+  if(state.integrity<=6)return 'Core integrity critical. Reinforce the gate before invaders breach!';
+  if(state.invaders.some(e=>e.distance<45))return 'Invaders approaching. A guard at the gate attacks more effectively.';
+  return 'Move spirits between rooms. Power runs the greenhouse and the gate; overheating and attacks demand tradeoffs.';
+};
+function isSavedState(data:unknown):data is LivingState{
+  if(!data||typeof data!=='object')return false;
+  const v=data as Partial<LivingState>;
+  return !!v.rooms && WORK_ROOMS.every(room=>{
+    const id=v.rooms?.[room];
+    return id===null||isSpiritId(id);
+  }) && ['ready','running','lost','won'].includes(v.phase??'') &&
+    Number.isInteger(v.tick)&&v.tick!>=0&&v.tick!<=LIVING_DURATION &&
+    [v.power,v.food,v.integrity,v.heat].every(n=>typeof n==='number'&&Number.isFinite(n)&&n>=0&&n<=16) &&
+    Array.isArray(v.invaders)&&v.invaders.length<=32 &&
+    typeof v.nextId==='number'&&Number.isInteger(v.nextId);
+}
+const statInfo=(zh:boolean)=>[
+  {id:'power',label:zh?'电力':'Power',icon:'⚡',max:12,color:'#ffd28c'},
+  {id:'food',label:zh?'食物':'Food',icon:'❀',max:12,color:'#a7e9b1'},
+  {id:'integrity',label:zh?'核心':'Core',icon:'◆',max:16,color:'#8edacb'},
+  {id:'heat',label:zh?'炉温':'Heat',icon:'♨',max:12,color:'#f5a38c'},
+] as const;
+export function LivingApartment(){
+  const [state,setState]=useState<LivingState|null>(null);
+  const [collection,setCollection]=useState<CollectionState>(()=>newCollection());
+  const [selected,setSelected]=useState<SpiritId|null>(null);
+  const [lang,setLang]=useState<Lang>('zh');
+  const [paused,setPaused]=useState(false);
+  const [ready,setReady]=useState(false);
+  const [saveOk,setSaveOk]=useState(true);
+  const zh=lang==='zh';
+  useEffect(()=>{
+    const starters=newCollection();
+    let roster=starters;
+    try{
+      const previous=decodeSave(localStorage.getItem(SAVE_KEY));
+      if(previous?.collection){
+        roster={...previous.collection,owned:{...starters.owned,...previous.collection.owned}};
+      }
+      const saved=JSON.parse(localStorage.getItem(STORAGE)??'null') as
+        {state?:unknown;lang?:Lang}|null;
+      const initial=saved&&isSavedState(saved.state)?saved.state:createLivingGame(roster);
+      // An old save must never overwrite or erase the original collectible inventory.
+      const inhabitants=Object.values(initial.rooms).filter((id):id is SpiritId=>!!id);
+      if(inhabitants.some(id=>!roster.owned[id]))setState(createLivingGame(roster));
+      else setState(initial);
+      setCollection(roster);
+      if(saved?.lang==='en')setLang('en');
+    }catch{
+      setState(createLivingGame(roster));
+      setCollection(roster);
+    }
+    setReady(true);
+  },[]);
+  useEffect(()=>{
+    if(!ready||!state)return;
+    try{localStorage.setItem(STORAGE,JSON.stringify({state,lang}));}
+    catch{setSaveOk(false);}
+  },[state,lang,ready]);
+  useEffect(()=>{
+    if(!ready||!state||state.phase!=='running'||paused)return;
+    const timer=window.setInterval(()=>setState(current=>current?advanceLiving(current):current),900);
+    return ()=>window.clearInterval(timer);
+  },[state?.phase,paused,ready]);
+  const move=useCallback((id:SpiritId,room:WorkRoom)=>{
+    setState(current=>current?moveLivingWorker(current,id,room,collection):current);
+    setSelected(id);
+  },[collection]);
+  useEffect(()=>{
+    const listener=(ev:KeyboardEvent)=>{
+      if(ev.key===' '&&!(ev.target instanceof HTMLButtonElement)){
+        ev.preventDefault();
+        setPaused(p=>!p);
+      }
+    };
+    window.addEventListener('keydown',listener);
+    return ()=>window.removeEventListener('keydown',listener);
+  },[]);
+  if(!state)return <div className="living-loading-screen">✧ {zh?'正在唤醒公寓…':'Waking up the sanctuary…'}</div>;
+  const residents=livingRoster(collection);
+  const won=state.phase==='won',lost=state.phase==='lost';
+  const crisis=state.crisis==='spores'?zh?'孢子侵袭':'Spore bloom':
+    state.crisis==='blackout'?zh?'电网故障':'Blackout':null;
+  const reset=()=>{
+    setState(createLivingGame(collection));setPaused(false);setSelected(null);
+  };
+  return <main className="living-shell" data-testid="living-apartment">
+    <header className="living-header">
+      <div className="living-title">
+        <span className="living-crest" aria-hidden="true">✧</span>
+        <div><p className="living-kicker">SPIRIT CORE · LIVING SANCTUARY</p>
+          <h1>{zh?'灵核公寓':'Spirit Sanctuary'} <span className="living-version">实验原型 0.7</span></h1>
+        </div>
+      </div>
+      <div className="living-header-right">
+        <div className="living-clock" data-testid="living-time">
+          <span className="living-daylight" aria-hidden="true">☾</span>
+          <strong>{Math.floor(state.tick/12)+1}</strong><span>/10 {zh?'阶段':'phases'}</span>
+          <div className="living-progress"><i style={{width:state.tick/LIVING_DURATION*100+'%'}} /></div>
+        </div>
+        <button type="button" className="living-minor" onClick={()=>setLang(zh?'en':'zh')} aria-label="Change language">
+          {zh?'EN':'中文'}
+        </button>
+        <button type="button" className="living-minor" onClick={reset}>
+          <span aria-hidden="true">↻ </span>{zh?'重开':'Restart'}
+        </button>
+      </div>
+    </header>
+    <div className="living-statbar" aria-label={zh?'建筑资源':'Building resources'}>
+      {statInfo(zh).map(stat=>{
+        const value=state[stat.id];
+        return <div key={stat.id} className="living-stat" data-testid={'living-stat-'+stat.id}>
+          <div className="living-stat-top"><span style={{color:stat.color}}>{stat.icon} {stat.label}</span>
+            <strong className={(stat.id==='heat'?value>=8:value<=3)?'living-danger':''}>{value}<small>/{stat.max}</small></strong>
+          </div>
+          <div className="living-bar"><i style={{width:(value/stat.max)*100+'%',background:stat.color}}/></div>
+        </div>;
+      })}
+    </div>
+    <section className="living-message" role="status">
+      <span className={'living-signal '+(crisis?'is-danger':'')} aria-hidden="true">◉</span>
+      <div className="living-hint"><span className="living-signal-text">{zh?livingTip(state):fallbackEnglish(state)}</span></div>
+      {crisis&&<span className="living-alert" data-testid="living-crisis">⚠ {crisis}</span>}
+      {state.phase==='running'&&<button className="living-minor" data-testid="living-pause"
+        onClick={()=>setPaused(p=>!p)} aria-pressed={paused}>
+        {paused?(zh?'▶ 继续':'▶ Resume'):(zh?'Ⅱ 暂停':'Ⅱ Pause')}
+      </button>}
+    </section>
+    <div className="living-main">
+      <div className="living-world" data-testid="living-world">
+        <LivingCanvas state={state}/>
+        <span className="living-world-label">{zh?'同一座公寓 · 生产与战斗同时进行':'One building · Work and defense happen together'}</span>
+        {WORK_ROOMS.map(room=>{
+          const meta=info[room],occupant=state.rooms[room],spirit=occupant?SPIRIT_BY_ID[occupant]:null;
+          const selectedOccupant=occupant===selected;
+          return <button key={room} type="button" data-testid={'living-room-'+room}
+            style={meta.position} className={'living-room '+(selectedOccupant?'is-selected':'')}
+            aria-label={(zh?meta.zh:meta.en)+(spirit?' '+spirit[lang]:'')}
+            onClick={()=>selected?move(selected,room):occupant&&setSelected(occupant)}
+            onDragOver={event=>event.preventDefault()}
+            onDrop={event=>{event.preventDefault();const id=event.dataTransfer.getData('text/plain');if(isSpiritId(id))move(id,room);}}>
+            <span className="living-room-name">{meta.icon} {zh?meta.zh:meta.en}
+              <small>{zh?meta.subZh:meta.subEn}</small>
+            </span>
+            {occupant&&<span className="living-room-spirit" aria-hidden="true">
+              <SpiritPortrait id={occupant} size={58} evolution={collection.owned[occupant]?.evolution??0}/>
+            </span>}
+            {occupant&&<span className="living-room-occupant">{spirit?.[lang]}</span>}
+            {room==='reactor'&&state.heat>=7&&<span className="living-room-warning">♨ {zh?'过热':'HOT'}</span>}
+            {room==='garden'&&state.crisis==='spores'&&<span className="living-room-warning">☁ {zh?'孢子':'SPORES'}</span>}
+            {room==='gate'&&state.invaders.length>0&&<span className="living-room-warning">
+              ⚔ {state.invaders.length} {zh?'敌人':'enemies'}</span>}
+          </button>;
+        })}
+        {state.phase==='ready'&&<div className="living-veil">
+          <div className="living-dialog">
+            <span className="living-emblem">✧</span>
+            <h2>{zh?'一座会呼吸的公寓':'A Sanctuary That Breathes'}</h2>
+            <p>{zh?'发电室为温室和守卫提供能量。过热、断粮和入侵会同时发生；把灵核移动到最需要它的地方。':
+              'The reactor powers your greenhouse and defenses. Heat, hunger, and invaders all compete for your crew.'}</p>
+            <p className="living-instruction">
+              {zh?'先点下方灵核，再点房间；电脑端也可拖动灵核。':'Select a spirit below, then a room. On desktop, drag and drop.'}
+            </p>
+            <button data-testid="living-start" onClick={()=>setState(startLiving(state))}>
+              {zh?'开始守护公寓 →':'Begin the night →'}
+            </button>
+          </div>
+        </div>}
+        {paused&&state.phase==='running'&&<div className="living-pause-shade" aria-hidden="true">{zh?'暂停中 · 可以调岗':'Paused · Reassign workers'}</div>}
+        {(won||lost)&&<div className="living-veil">
+          <div className="living-dialog" data-testid="living-result">
+            <span className="living-emblem">{won?'✦':'◈'}</span>
+            <h2>{won?zh?'公寓守住了！':'Sanctuary survived!':zh?'核心熄灭了':'The core went dark'}</h2>
+            <p>{zh?'存活':'Time'} {state.tick}/{LIVING_DURATION} ·
+              {zh?' 完整度 ':' Core '} {state.integrity}/16 ·
+              {zh?' 突破 ':' Breaches '} {state.breaches}</p>
+            {won&&<strong className="living-final-grade">
+              {zh?'评价':'Grade'} {livingGrade(state)}/100
+            </strong>}
+            <p>{zh?'下一局试着减少炉温过载，或把守护灵核留在入侵最密集的时刻。':
+              'Next time, avoid overheating the reactor and keep a guard near the gate when invaders surge.'}</p>
+            <button onClick={reset} data-testid="living-retry">{zh?'再来一局 ↻':'Play again ↻'}</button>
+          </div>
+        </div>}
+      </div>
+    </div>
+    <section className="living-dock" aria-label={zh?'灵核队伍':'Spirit crew'}>
+      <div className="living-dock-heading">
+        <strong>✦ {zh?'驻守灵核':'Your crew'}</strong>
+        <span>{selected?zh?'选择目标房间交换岗位':'Choose a room to move or swap':
+          zh?'选择灵核，再点击房间安排它':'Select a spirit, then choose a room'}</span>
+      </div>
+      <div className="living-crew">
+        {residents.map(id=>{
+          const spirit=SPIRIT_BY_ID[id],room=WORK_ROOMS.find(r=>state.rooms[r]===id);
+          return <button key={id} type="button" draggable={state.phase==='running'||state.phase==='ready'}
+            data-testid={'living-worker-'+id}
+            className={'living-worker '+(selected===id?'is-picked':'')}
+            aria-pressed={selected===id}
+            onDragStart={e=>{e.dataTransfer.setData('text/plain',id);setSelected(id);}}
+            onClick={()=>setSelected(selected===id?null:id)}>
+            <SpiritPortrait id={id} size={50} evolution={collection.owned[id]?.evolution??0}/>
+            <span className="living-worker-copy"><strong>{spirit[lang]}</strong><small>{roles[spirit.role][lang]}
+                {' · '}{room?info[room][lang]:(zh?'待命':'Reserve')}</small></span>
+          </button>;
+        })}
+      </div>
+      <p className="living-footer">{saveOk?(zh?'● 自动保存 · 原有收藏已导入，旧版存档不受影响':
+        '● Autosaved · Old collection imported safely'):(zh?'无法保存，请检查浏览器存储权限':'Cannot save — check browser storage')}</p>
+    </section>
+  </main>;
+}
