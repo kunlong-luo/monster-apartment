@@ -56,7 +56,7 @@ describe('The apartment is one interconnected playable system', () => {
     expect(fixed.crisis).toBe('blackout');
   });
   it('a defender can stop an imminent intruder, while an empty watch costs core', () => {
-    const intruder={id:99,kind:'wisp' as const,hp:4,maxHp:4,distance:6};
+    const intruder={id:99,kind:'wisp' as const,hp:4,maxHp:4,distance:5};
     const guard={...at(11),invaders:[intruder],nextId:100};
     const blocked=advanceLiving({...guard,rooms:{...guard.rooms,gate:'seedling'}});
     const breached=advanceLiving({...guard,rooms:{...guard.rooms,gate:null}});
