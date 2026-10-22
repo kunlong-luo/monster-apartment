@@ -163,5 +163,11 @@ export function localizeGameText(value: string, locale: Locale): string {
       ' coins, ' + strategyLog[3] + ' mood. ' + labels[strategyLog[4]] +
       ': ' + strategyLog[5] + ' coins, ' + strategyLog[6] + ' mood.';
   }
+  const decisionLog = value.match(/^第 (\d+) 天：夜间抉择 (care|profit)，金币 ([+-]?\d+)，满意度 ([+-]?\d+)。$/);
+  if (decisionLog) {
+    const label = decisionLog[2] === 'care' ? 'Care' : 'Profit';
+    return 'Day ' + decisionLog[1] + ': Night decision ' + label +
+      ', ' + decisionLog[3] + ' coins, ' + decisionLog[4] + ' mood.';
+  }
   return value;
 }
