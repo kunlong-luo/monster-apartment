@@ -590,3 +590,57 @@
 .game-balance-forecast strong { color: #ffdfaf; font-weight: 700; }
 .game-balance-forecast span { color: #eee3e1; font-variant-numeric: tabular-nums; }
 .game-balance-forecast small { grid-column: 1 / -1; color: #bbabc2; line-height: 1.35; }
+
+
+/* Original spirit summoning: short, collectible reveal without moving the page. */
+.game-summon-reveal {
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 50% 18%, #5b456e66 0, transparent 58%),
+    linear-gradient(160deg, #17142b 8%, #30213e 55%, #17142b 100%);
+}
+.game-summon-reveal.is-premium {
+  background:
+    radial-gradient(ellipse at 50% 23%, #ae8bba4b 0, transparent 60%),
+    linear-gradient(160deg, #17142b 8%, #463047 57%, #17142b 100%);
+}
+.game-summon-headline {
+  text-shadow: 0 0 18px #f5dca966;
+  animation: spirit-reveal-title 750ms ease-out both;
+}
+.game-summon-card {
+  isolation: isolate;
+  animation: spirit-reveal-card 520ms cubic-bezier(.2,.8,.2,1) both;
+  box-shadow: inset 0 1px 0 #ffffff16, 0 10px 24px #09071477;
+}
+.game-summon-halo {
+  position: absolute;
+  z-index: -1;
+  inset: -5px;
+  border-radius: 15px;
+  background: linear-gradient(110deg, #fce9bd33, #db9ff644, #fce9bd33);
+  filter: blur(10px);
+  animation: spirit-halo-pulse 1600ms ease-in-out infinite alternate;
+}
+.game-spirit-profile {
+  background: radial-gradient(ellipse at 18% 15%, #59466b66, transparent 65%), #28233b;
+}
+@keyframes spirit-reveal-title {
+  from { opacity: 0; transform: translateY(-10px) scale(.95); filter: blur(3px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes spirit-reveal-card {
+  0% { opacity: 0; transform: translateY(16px) scale(.78) rotate(-3deg); filter: brightness(2); }
+  72% { opacity: 1; transform: translateY(-3px) scale(1.035) rotate(0); filter: brightness(1.2); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: brightness(1); }
+}
+@keyframes spirit-halo-pulse {
+  from { opacity: .35; transform: scale(.97); }
+  to { opacity: .85; transform: scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-summon-headline, .game-summon-card, .game-summon-halo {
+    animation: none !important;
+    transition: none !important;
+  }
+}
