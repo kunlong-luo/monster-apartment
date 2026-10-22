@@ -55,48 +55,43 @@ const statInfo=(zh:boolean)=>[
   {id:'integrity',label:zh?'核心':'Core',icon:'◆',max:16,color:'#8edacb'},
   {id:'heat',label:zh?'炉温':'Heat',icon:'♨',max:12,color:'#f5a38c'},
 ] as const;
+type InitialRun={state:LivingState;collection:CollectionState;lang:Lang};
+function initialRun():InitialRun {
+  const starters=newCollection();
+  let roster=starters;
+  try {
+    const previous=decodeSave(localStorage.getItem(SAVE_KEY));
+    if(previous?.collection){
+      roster={...previous.collection,owned:{...starters.owned,...previous.collection.owned}};
+    }
+    const saved=JSON.parse(localStorage.getItem(STORAGE)??'null') as {state?:unknown;lang?:Lang}|null;
+    const initial=saved&&isSavedState(saved.state)?saved.state:createLivingGame(roster);
+    const inhabitants=Object.values(initial.rooms).filter((id):id is SpiritId=>!!id);
+    return { state: inhabitants.some(id=>!roster.owned[id])?createLivingGame(roster):initial,
+      collection:roster,lang:saved?.lang==='en'?'en':'zh'};
+  } catch {
+    return {state:createLivingGame(roster),collection:roster,lang:'zh'};
+  }
+}
 export function LivingApartment(){
-  const [state,setState]=useState<LivingState|null>(null);
-  const [collection,setCollection]=useState<CollectionState>(()=>newCollection());
+  // The entire component is client-only; lazy initialization safely restores before first paint.
+  const [boot]=useState(initialRun);
+  const [state,setState]=useState<LivingState>(boot.state);
+  const collection=boot.collection;
   const [selected,setSelected]=useState<SpiritId|null>(null);
-  const [lang,setLang]=useState<Lang>('zh');
+  const [lang,setLang]=useState<Lang>(boot.lang);
   const [paused,setPaused]=useState(false);
-  const [ready,setReady]=useState(false);
-  const [saveOk,setSaveOk]=useState(true);
   const zh=lang==='zh';
   useEffect(()=>{
-    const starters=newCollection();
-    let roster=starters;
-    try{
-      const previous=decodeSave(localStorage.getItem(SAVE_KEY));
-      if(previous?.collection){
-        roster={...previous.collection,owned:{...starters.owned,...previous.collection.owned}};
-      }
-      const saved=JSON.parse(localStorage.getItem(STORAGE)??'null') as
-        {state?:unknown;lang?:Lang}|null;
-      const initial=saved&&isSavedState(saved.state)?saved.state:createLivingGame(roster);
-      // An old save must never overwrite or erase the original collectible inventory.
-      const inhabitants=Object.values(initial.rooms).filter((id):id is SpiritId=>!!id);
-      if(inhabitants.some(id=>!roster.owned[id]))setState(createLivingGame(roster));
-      else setState(initial);
-      setCollection(roster);
-      if(saved?.lang==='en')setLang('en');
-    }catch{
-      setState(createLivingGame(roster));
-      setCollection(roster);
-    }
-    setReady(true);
-  },[]);
-  useEffect(()=>{
-    if(!ready||!state)return;
     try{localStorage.setItem(STORAGE,JSON.stringify({state,lang}));}
-    catch{setSaveOk(false);}
-  },[state,lang,ready]);
+    catch{/* Private mode can disable persistence; old save remains untouched. */}
+  },[state,lang]);
+  const phase=state.phase;
   useEffect(()=>{
-    if(!ready||!state||state.phase!=='running'||paused)return;
-    const timer=window.setInterval(()=>setState(current=>current?advanceLiving(current):current),900);
+    if(phase!=='running'||paused)return;
+    const timer=window.setInterval(()=>setState(current=>advanceLiving(current)),900);
     return ()=>window.clearInterval(timer);
-  },[state?.phase,paused,ready]);
+  },[phase,paused]);
   const move=useCallback((id:SpiritId,room:WorkRoom)=>{
     setState(current=>current?moveLivingWorker(current,id,room,collection):current);
     setSelected(id);
@@ -111,7 +106,6 @@ export function LivingApartment(){
     window.addEventListener('keydown',listener);
     return ()=>window.removeEventListener('keydown',listener);
   },[]);
-  if(!state)return <div className="living-loading-screen">✧ {zh?'正在唤醒公寓…':'Waking up the sanctuary…'}</div>;
   const residents=livingRoster(collection);
   const won=state.phase==='won',lost=state.phase==='lost';
   const crisis=state.crisis==='spores'?zh?'孢子侵袭':'Spore bloom':
@@ -240,8 +234,8 @@ export function LivingApartment(){
           </button>;
         })}
       </div>
-      <p className="living-footer">{saveOk?(zh?'● 自动保存 · 原有收藏已导入，旧版存档不受影响':
-        '● Autosaved · Old collection imported safely'):(zh?'无法保存，请检查浏览器存储权限':'Cannot save — check browser storage')}</p>
+      <p className="living-footer">{zh?'◈ 原有收藏已导入 · 新进度独立存储，不覆盖旧版存档':
+        '◈ Original collection imported · This run uses a separate save'}</p>
     </section>
   </main>;
 }
