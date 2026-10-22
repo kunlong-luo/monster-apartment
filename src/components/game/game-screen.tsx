@@ -227,7 +227,7 @@ export function GameScreen() {
         </nav>
         <SpiritPortal open={spiritOpen} onClose={() => setSpiritOpen(false)} />
         <footer className="game-footer game-container">
-          ✧ MONSTER APARTMENT · {t(locale, saveAvailable ? 'saveReady' : 'saveUnavailable')} ✧
+          ✧ SPIRIT CORE RESIDENCE · {t(locale, saveAvailable ? 'saveReady' : 'saveUnavailable')} ✧
         </footer>
       </div>
     </div>
