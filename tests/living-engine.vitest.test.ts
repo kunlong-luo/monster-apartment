@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { newCollection } from '../src/core/spirit-collection';
+import type { LivingState } from '../src/core/living-engine';
 import { createLivingGame, moveLivingWorker, advanceLiving, startLiving, livingTip, livingGrade, LIVING_DURATION, forecastLivingMove } from '../src/core/living-engine';
 
 const initial = () => createLivingGame(newCollection());
@@ -82,14 +83,14 @@ describe('The apartment is one interconnected playable system', () => {
     expect(managed.moves).toBe(2);
   });
   it('grower decisions accumulate real spore risk, while purification prevents it at the same tick', () => {
-    const ready={...at(11),food:11,power:10,heat:0,
+    const ready: LivingState={...at(11),food:11,power:10,heat:0,
       stress:{spores:4,grid:0},incidents:{spores:0,blackout:0},
-      rooms:{reactor:'lantern-beetle',garden:'lantern-beetle',gate:'seedling'}};
+      rooms:{reactor:'dewdrop',garden:'lantern-beetle',gate:'seedling'}};
     const overworked=advanceLiving(ready);
     expect(overworked.crisis).toBe('spores');
     expect(overworked.incidents?.spores).toBe(28);
     expect(overworked.eventTick).toBe(12);
-    const purified=advanceLiving({...ready,rooms:{...ready.rooms,garden:'dewdrop'}});
+    const purified=advanceLiving({...ready,rooms:{reactor:'lantern-beetle',garden:'dewdrop',gate:'seedling'}});
     expect(purified.crisis).toBeNull();
     expect(purified.stress?.spores).toBe(1);
     expect(purified.incidents?.spores).toBe(0);
