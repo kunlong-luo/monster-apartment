@@ -131,11 +131,20 @@ test('residents visibly visit nearby neighbors during the day',async({page})=>{
   await expect(page.getByTestId('cozy-room-4')).toContainText('芽核');
 });
 
-test('rooms use cohesive layered vector dioramas rather than emoji furniture or portrait cards',async({page},testInfo)=>{
+test('rooms use cohesive layered vector dioramas rather than emoji furniture or portrait cards',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   const pageErrors:string[]=[];
   page.on('pageerror',err=>pageErrors.push(err.message));
   await page.goto('/');
+  await expect.poll(()=>page.evaluate(()=>!!localStorage.getItem('monster-apartment:cozy:v1'))).toBe(true);
+  // This is an art-gallery fixture, not an altered player opening economy.
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.coins=220;
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
   await page.getByTestId('cozy-pause').click();
   const original=page.getByTestId('cozy-room-4');
   await expect(original.getByTestId('cozy-art-nest')).toBeVisible();
@@ -149,22 +158,18 @@ test('rooms use cohesive layered vector dioramas rather than emoji furniture or 
     await expect(page.getByTestId('cozy-room-'+index).getByTestId('cozy-art-'+kind)).toBeVisible();
   }
   await expect(page.locator('.cozy-roof-sign')).toBeVisible();
-  await testInfo.attach('cozy-art-direction-desktop',{
-    body:await page.screenshot(),contentType:'image/png',
-  });
+  await page.screenshot({path:'test-results/cozy-desktop.png'});
   expect(pageErrors).toEqual([]);
 });
 
-test('illustrated room architecture and characters stay visible on a narrow phone',async({page},testInfo)=>{
+test('illustrated room architecture and characters stay visible on a narrow phone',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.goto('/');
   await expect(page.getByTestId('cozy-room-4').getByTestId('cozy-art-nest')).toBeVisible();
   await expect(page.getByTestId('cozy-spirit-seedling')).toBeVisible();
   await expect(page.locator('.cozy-building')).toBeVisible();
-  await testInfo.attach('cozy-art-direction-mobile',{
-    body:await page.screenshot(),contentType:'image/png',
-  });
+  await page.screenshot({path:'test-results/cozy-mobile.png'});
   const overflows=await page.evaluate(()=>({
     horizontal:document.documentElement.scrollWidth-innerWidth,
     vertical:document.documentElement.scrollHeight-innerHeight,
