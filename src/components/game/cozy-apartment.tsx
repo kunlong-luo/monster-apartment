@@ -110,8 +110,8 @@ export function CozyApartment(){
 
     <section className="cozy-play" aria-label={zh?'公寓建造场景':'Apartment construction'}>
       <div className="cozy-scenery" aria-hidden="true">
-        <div className="cozy-moon">☾</div><div className="cozy-starfield">✧　·　 ✦　 ·　✧</div>
-        <div className="cozy-trees">♣　♧　　　　♣　♧</div>
+        <div className="cozy-moon">☾</div><div className="cozy-starfield">✧ ·  ✦  · ✧</div>
+        <div className="cozy-trees">♣ ♧    ♣ ♧</div>
       </div>
       <div className="cozy-building">
         <div className="cozy-roof"><span>✧</span><strong>MOONLIGHT APARTMENTS</strong><span>✧</span></div>
