@@ -191,9 +191,8 @@ export function LivingApartment(){
             <span className="living-room-name">{meta.icon} {zh?meta.zh:meta.en}
               <small>{zh?meta.subZh:meta.subEn}</small>
             </span>
-            {occupant&&<span className="living-room-spirit" aria-hidden="true">
-              <SpiritPortrait id={occupant} size={58} evolution={collection.owned[occupant]?.evolution??0}/>
-            </span>}
+            {/* Worker bodies are animated in the shared Phaser scene instead of
+                teleporting separate portraits whenever rooms change. */}
             {occupant&&<span className="living-room-occupant">{spirit?.[lang]}</span>}
             {impact && <span className="living-impact" data-testid={'living-impact-'+room}>
               <span className="living-impact-heading">{zh?'预计未来8刻':'Next 8 ticks'}</span>
@@ -204,7 +203,15 @@ export function LivingApartment(){
               <span className="living-impact-detail">{zh?impact.reasonZh:impact.reasonEn}</span>
             </span>}
             {room==='reactor'&&state.heat>=7&&<span className="living-room-warning">♨ {zh?'过热':'HOT'}</span>}
+            {room==='reactor'&&state.heat<7&&(state.stress?.grid??0)>=2&&
+              <span className="living-room-warning is-pressure" data-testid="living-pressure-grid">
+                ⚡ {zh?'电网压力':'Grid stress'} {state.stress?.grid}/6
+              </span>}
             {room==='garden'&&state.crisis==='spores'&&<span className="living-room-warning">☁ {zh?'孢子':'SPORES'}</span>}
+            {room==='garden'&&state.crisis!=='spores'&&(state.stress?.spores??0)>=2&&
+              <span className="living-room-warning is-pressure" data-testid="living-pressure-spores">
+                ☁ {zh?'孢子压力':'Spore stress'} {state.stress?.spores}/6
+              </span>}
             {room==='gate'&&state.invaders.length>0&&<span className="living-room-warning">
               ⚔ {state.invaders.length} {zh?'敌人':'enemies'}</span>}
           </button>;
