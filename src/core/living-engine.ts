@@ -169,6 +169,17 @@ export function advanceLiving(state:LivingState):LivingState {
     invaders.push({id:nextId++,kind:wave.kind,hp,maxHp:hp,distance:100});
     notice=wave.kind==='siege'?'巨型侵蚀体逼近大门！':'污染体正沿通道接近公寓。';
   }
+  // A player's neglected utilities can attract extra enemies on top of the
+  // baseline patrol. The outcome is deterministic and reflected in the scene.
+  if(invaders.length<6 && tick%9===0 && heat>=7){
+    invaders.push({id:nextId++,kind:'wisp',hp:7,maxHp:7,distance:100});
+    notice='核心炉高温泄漏，吸引了额外的污染体！';
+    history.push('第'+tick+'刻：过热引来污染体');
+  }else if(invaders.length<6 && tick%12===0 && sporesActive){
+    invaders.push({id:nextId++,kind:'wisp',hp:7,maxHp:7,distance:100});
+    notice='温室孢子云扩散，吸引了额外的污染体！';
+    history.push('第'+tick+'刻：孢子引来污染体');
+  }
   if(tick%4===0){
     // Work always has a visible opportunity cost: greenhouse and defense share energy.
     if(reactor&& (!blackoutActive||reactor==='repair')){
