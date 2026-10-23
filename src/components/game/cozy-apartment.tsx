@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { SpiritPortrait } from './spirit-portrait';
 import {
-  COZY_RESIDENTS, ROOM_DETAILS, FURNISHINGS, TICKS_PER_DAY, MAX_TICKS,
-  advanceCozy, adjacent, availableResidents, buildingHappiness, buildCozyRoom,
+  COZY_RESIDENTS, ROOM_DETAILS, FURNISHINGS, MAX_TICKS,
+  advanceCozy, availableResidents, buildCozyRoom,
   cozyDay, cozyGoal, dailyRent, decorateCozy, moveInCozy, newCozyGame,
   residentActivity, residentHappiness, validCozySave,
 } from '@/core/cozy-engine';
