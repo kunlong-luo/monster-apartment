@@ -76,6 +76,34 @@ export class LivingScene extends Phaser.Scene {
     g.fillRoundedRect(80,226,58,34,5);
     g.fillStyle(state.power>3?0x9de1b4:0xd99890,.9);
     for(let j=0;j<3;j++)g.fillRoundedRect(89+j*15,237,8,12,2);
+    // Visible power pipes: both rooms are physically connected to the same grid.
+    // The line dies when power is depleted, showing why other systems stop.
+    const energized=state.power>0;
+    const conduit=energized?0xf6d894:0x777d8b;
+    g.lineStyle(9,0x1b2435,.9);
+    g.lineBetween(246,261,472,261);
+    g.lineBetween(318,262,318,386);
+    g.lineStyle(4,conduit,energized?.65+pulse*.23:.27);
+    g.lineBetween(246,261,472,261);
+    g.lineBetween(318,262,318,386);
+    if(energized&&!reduced){
+      const motion=(t*.8)%1;
+      g.fillStyle(0xfff0b5,.85);
+      g.fillCircle(246+226*motion,261,3.5);
+      g.fillCircle(318,262+124*motion,3.5);
+    }
+    if(reactorHot){
+      for(let i=0;i<4;i++){
+        const drift=reduced?i*12:(t*13+i*23)%65;
+        g.fillStyle(0xf7a69e,.13+(1-drift/68)*.21);
+        g.fillCircle(161+i*19,162-drift,7+i%3*3);
+      }
+    }
+    if(state.crisis==='blackout'){
+      g.lineStyle(4,0xef727e,.8);
+      g.lineBetween(313,286,324,273);
+      g.lineBetween(324,273,315,267);
+    }
     // Greenhouse: greenhouse windows, growing leaves, water trough.
     for(let j=0;j<4;j++){
       g.fillStyle(0x63837d,.25);g.fillRoundedRect(366+j*60,131,48,73,5);
@@ -85,8 +113,11 @@ export class LivingScene extends Phaser.Scene {
     for(let j=0;j<6;j++){
       const x=384+j*37;
       g.lineStyle(3,0x91a17a,.98);g.lineBetween(x,251,x,222);
-      g.fillStyle(0x99cc87,.85);g.fillEllipse(x-9,222,18,8);
-      g.fillStyle(0xc1da8c,.9);g.fillEllipse(x+9,217,18,8);
+      const living=state.food>2&&energized;
+      g.fillStyle(living?0x99cc87:0x827d62,living?.85:.52);
+      g.fillEllipse(x-9,222,18,8);
+      g.fillStyle(living?0xc1da8c:0xa19478,living?.9:.55);
+      g.fillEllipse(x+9,217,18,8);
     }
     if(state.crisis==='spores'){
       for(let j=0;j<17;j++){
@@ -127,6 +158,23 @@ export class LivingScene extends Phaser.Scene {
       g.fillStyle(0xffeed7,1);g.fillCircle(x,y-4,huge?8:5);
       g.fillStyle(0x151829,.9);g.fillRect(x-rad,y-rad-13,rad*2,6);
       g.fillStyle(0xfaacb7,1);g.fillRect(x-rad+1,y-rad-12,(rad*2-2)*enemy.hp/enemy.maxHp,4);
+    }
+    // Beams from the real stationed defender toward the nearest attacker.
+    // A stalled grid has no projectile even when enemies are in range.
+    if(state.rooms.gate && state.power>0 && state.phase==='running'){
+      const closest=state.invaders.filter(e=>e.distance<=94)
+        .sort((a,b)=>a.distance-b.distance)[0];
+      if(closest){
+        const aimX=639+closest.distance*2.8;
+        const skill=state.rooms.gate;
+        const role=skill==='seedling'?'guard':skill==='dewdrop'?'repair':'other';
+        const beamColor=role==='guard'?0x99edbb:role==='repair'?0x92d9ee:0xffd88a;
+        g.lineStyle(2.5,beamColor,.28+.35*pulse);
+        g.lineBetween(545,423,aimX-16,426);
+        const flight=reduced?.65:(t*2.6)%1;
+        g.fillStyle(beamColor,.9);
+        g.fillCircle(545+(aimX-561)*flight,423+3*flight,5);
+      }
     }
     // Building floor and underground linkage.
     g.fillStyle(0x6c5872,1);g.fillRect(40,504,595,11);
