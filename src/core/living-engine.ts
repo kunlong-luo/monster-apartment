@@ -12,6 +12,8 @@ export type LivingState = {
   rooms:Record<WorkRoom,SpiritId|null>;
   invaders:Intruder[]; nextId:number; breaches:number; moves:number; cooldown:number;
   notice:string; history:string[];
+  /** Tick of the latest visible incident or actual reassignment. Optional for old saves. */
+  eventTick?:number;
 };
 
 const clamp = (n:number,min:number,max:number)=>Math.max(min,Math.min(max,n));
@@ -56,6 +58,7 @@ export function moveLivingWorker(state:LivingState, id:SpiritId, target:WorkRoom
   if(origin)rooms[origin]=displaced;
   rooms[target]=id;
   return {...state,rooms,moves:state.moves+1,cooldown:state.phase==='running'?2:0,
+    eventTick:state.tick,
     notice:(SPIRIT_BY_ID[id].zh)+' 已前往'+({reactor:'核心炉',garden:'温室',gate:'哨戒台'}[target])+
       (displaced?'，交换岗位。':'。')};
 }
@@ -195,7 +198,8 @@ export function advanceLiving(state:LivingState):LivingState {
   }
   if(history.length>20)history.splice(0,history.length-20);
   return {...state,tick,power,food,integrity,heat,hunger,crisis,invaders,breaches,nextId,
-    cooldown:Math.max(0,state.cooldown-1),phase,notice:notice||state.notice,history};
+    cooldown:Math.max(0,state.cooldown-1),phase,notice:notice||state.notice,
+    eventTick:notice?tick:state.eventTick,history};
 }
 export function livingGrade(state:LivingState):number {
   return Math.max(0,Math.round((state.integrity/16)*60+
