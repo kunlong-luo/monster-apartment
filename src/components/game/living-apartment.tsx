@@ -6,7 +6,7 @@ import type { CSSProperties } from 'react';
 import { SAVE_KEY, decodeSave } from '@/lib/save-game';
 import { newCollection, isSpiritId, SPIRIT_BY_ID } from '@/core/spirit-collection';
 import type { CollectionState, SpiritId } from '@/core/spirit-collection';
-import { createLivingGame, advanceLiving, startLiving, moveLivingWorker, livingRoster, livingTip, livingGrade, LIVING_DURATION, WORK_ROOMS } from '@/core/living-engine';
+import { createLivingGame, advanceLiving, startLiving, moveLivingWorker, livingRoster, livingTip, livingGrade, LIVING_DURATION, WORK_ROOMS, forecastLivingMove } from '@/core/living-engine';
 import type { LivingState, WorkRoom } from '@/core/living-engine';
 import { SpiritPortrait } from './spirit-portrait';
 
@@ -93,8 +93,8 @@ export function LivingApartment(){
     return ()=>window.clearInterval(timer);
   },[phase,paused]);
   const move=useCallback((id:SpiritId,room:WorkRoom)=>{
-    setState(current=>current?moveLivingWorker(current,id,room,collection):current);
-    setSelected(id);
+    setState(current=>moveLivingWorker(current,id,room,collection));
+    setSelected(null);
   },[collection]);
   useEffect(()=>{
     const listener=(ev:KeyboardEvent)=>{
@@ -162,8 +162,16 @@ export function LivingApartment(){
         {WORK_ROOMS.map(room=>{
           const meta=info[room],occupant=state.rooms[room],spirit=occupant?SPIRIT_BY_ID[occupant]:null;
           const selectedOccupant=occupant===selected;
+          const impact=selected?forecastLivingMove(state,selected,room,collection):null;
+          const changes=impact ? [
+            {icon:'⚡',label:zh?'电':'Power',value:impact.power,good:impact.power>0},
+            {icon:'❀',label:zh?'食':'Food',value:impact.food,good:impact.food>0},
+            {icon:'◆',label:zh?'防':'Core',value:impact.integrity,good:impact.integrity>0},
+            {icon:'♨',label:zh?'热':'Heat',value:impact.heat,good:impact.heat<0},
+          ].filter(change=>change.value!==0) : [];
           return <button key={room} type="button" data-testid={'living-room-'+room}
-            style={meta.position} className={'living-room '+(selectedOccupant?'is-selected':'')}
+            style={meta.position} className={'living-room '+(selectedOccupant?'is-selected':'')+
+              (impact?' is-preview':'')}
             aria-label={(zh?meta.zh:meta.en)+(spirit?' '+spirit[lang]:'')}
             onClick={()=>selected?move(selected,room):occupant&&setSelected(occupant)}
             onDragOver={event=>event.preventDefault()}
@@ -175,6 +183,14 @@ export function LivingApartment(){
               <SpiritPortrait id={occupant} size={58} evolution={collection.owned[occupant]?.evolution??0}/>
             </span>}
             {occupant&&<span className="living-room-occupant">{spirit?.[lang]}</span>}
+            {impact && <span className="living-impact" data-testid={'living-impact-'+room}>
+              <span className="living-impact-heading">{zh?'预计未来8刻':'Next 8 ticks'}</span>
+              {changes.length ? <span className="living-impact-values">
+                {changes.map(change=><span key={change.label}
+                  className={change.good?'positive':'negative'}>{change.icon}{change.value>0?'+':''}{change.value}</span>)}
+              </span>:<span className="living-impact-values">{zh?'短期资源持平':'No short-term difference'}</span>}
+              <span className="living-impact-detail">{zh?impact.reasonZh:impact.reasonEn}</span>
+            </span>}
             {room==='reactor'&&state.heat>=7&&<span className="living-room-warning">♨ {zh?'过热':'HOT'}</span>}
             {room==='garden'&&state.crisis==='spores'&&<span className="living-room-warning">☁ {zh?'孢子':'SPORES'}</span>}
             {room==='gate'&&state.invaders.length>0&&<span className="living-room-warning">
@@ -216,7 +232,8 @@ export function LivingApartment(){
     <section className="living-dock" aria-label={zh?'灵核队伍':'Spirit crew'}>
       <div className="living-dock-heading">
         <strong>✦ {zh?'驻守灵核':'Your crew'}</strong>
-        <span>{selected?zh?'选择目标房间交换岗位':'Choose a room to move or swap':
+        <span>{state.cooldown>0?(zh?'调岗中 · '+state.cooldown+' 刻后可再调整':'Relocating · '+state.cooldown+' ticks until next move'):
+          selected?(zh?'房间内显示调岗后的资源变化；点击确认':'Room previews show the tradeoffs · Tap to move'):
           zh?'选择灵核，再点击房间安排它':'Select a spirit, then choose a room'}</span>
       </div>
       <div className="living-crew">
