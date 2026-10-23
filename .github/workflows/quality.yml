@@ -54,12 +54,13 @@ jobs:
       - name: Use existing system font fallback
         run: fc-match "sans-serif"
       - run: pnpm e2e
-      - name: Upload desktop and mobile UI review screenshots
+      - name: Upload gameplay art review screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: v070-living-apartment-review
+          name: v082-cozy-apartment-art-review
           path: |
+            test-results/**/cozy-art-direction*.png
             test-results/spirit-desktop.png
             test-results/spirit-mobile.png
           if-no-files-found: warn
