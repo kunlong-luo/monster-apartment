@@ -108,6 +108,25 @@ describe('The apartment is one interconnected playable system', () => {
       stress:{spores:0,grid:0}});
     expect(recovered.crisis).toBeNull();
   });
+  it('an overheating reactor draws extra visible invaders, while cooling averts them', () => {
+    const base={...at(8),heat:8,power:12,
+      incidents:{spores:0,blackout:0},stress:{spores:0,grid:0},
+      invaders:[]};
+    const overheated=advanceLiving(base);
+    const cool=advanceLiving({...base,heat:2});
+    expect(overheated.invaders).toHaveLength(1);
+    expect(overheated.history.at(-1)).toContain('过热引来污染体');
+    expect(cool.invaders).toHaveLength(0);
+  });
+  it('spore clouds draw an extra invader only while the reactive event is active', () => {
+    const base={...at(11),food:7,heat:0,power:8,
+      incidents:{spores:25,blackout:0},stress:{spores:0,grid:0},invaders:[]};
+    const active=advanceLiving(base);
+    const clean=advanceLiving({...base,incidents:{spores:0,blackout:0}});
+    expect(active.invaders).toHaveLength(1);
+    expect(active.history.at(-1)).toContain('孢子引来污染体');
+    expect(clean.invaders).toHaveLength(0);
+  });
   it('past saves without new incident fields keep running with safe defaults', () => {
     const previous={...at(7),stress:undefined,incidents:undefined};
     const advanced=advanceLiving(previous);
