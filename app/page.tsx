@@ -1,5 +1,3 @@
-import { LivingClient } from '@/components/game/living-client';
+import { CozyClient } from '@/components/game/cozy-client';
 
-export default function HomePage() {
-  return <LivingClient />;
-}
+export default function HomePage(){ return <CozyClient/>; }
