@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { newCollection } from '../src/core/spirit-collection';
-import { createLivingGame, moveLivingWorker, advanceLiving, startLiving, livingTip, livingGrade, LIVING_DURATION } from '../src/core/living-engine';
+import { createLivingGame, moveLivingWorker, advanceLiving, startLiving, livingTip, livingGrade, LIVING_DURATION, forecastLivingMove } from '../src/core/living-engine';
 
 const initial = () => createLivingGame(newCollection());
 const at = (tick: number) => ({...startLiving(initial()),tick});
@@ -78,6 +78,46 @@ describe('The apartment is one interconnected playable system', () => {
     expect(managed.phase).toBe('won');
     expect(managed.integrity).toBeGreaterThan(idle.integrity);
     expect(managed.moves).toBe(2);
+  });
+  it('previews measurable room tradeoffs without advancing the real clock or spending resources', () => {
+    const collection=newCollection();
+    const current={...at(3), heat:8};
+    const before=structuredClone(current);
+    const reactor=forecastLivingMove(current,'dewdrop','reactor',collection);
+    expect(reactor).not.toBeNull();
+    expect(reactor!.heat).toBeLessThan(0);
+    expect(reactor!.integrity).toBeGreaterThan(0);
+    expect(reactor!.reasonZh).toContain('炉温');
+    expect(current).toEqual(before);
+    expect(forecastLivingMove(current,'lantern-beetle','reactor',collection)).toBeNull();
+    expect(forecastLivingMove({...current,cooldown:1},'dewdrop','reactor',collection)).toBeNull();
+    expect(forecastLivingMove(current,'aurora-whale','gate',collection)).toBeNull();
+  });
+  it('repairs spores by reassigning the same worker, at the cost of leaving the gate', () => {
+    const collection=newCollection();
+    const current={...at(39),food:2,power:10,crisis:'spores' as const,heat:0};
+    const change=forecastLivingMove(current,'dewdrop','garden',collection);
+    expect(change).not.toBeNull();
+    expect(change!.food).toBeGreaterThan(0);
+    expect(change!.reasonEn).toContain('spores');
+  });
+  it('scouts can engage distant enemies, while a repairer on watch heals shields', () => {
+    const collection={...newCollection(),owned:{
+      ...newCollection().owned,
+      'moon-scout':{level:1,xp:0,shards:0,evolution:0},
+    }};
+    const enemy={id:81,kind:'wisp' as const,hp:7,maxHp:7,distance:88};
+    const game={...at(13),power:12,invaders:[enemy]};
+    const guard=advanceLiving({...game,rooms:{...game.rooms,gate:'seedling'}});
+    const scout=advanceLiving({...game,rooms:{...game.rooms,gate:'moon-scout'}});
+    expect(guard.invaders[0].hp).toBe(7);
+    expect(scout.invaders[0].hp).toBeLessThan(7);
+    const broken={...at(11),power:12,integrity:8,invaders:[]};
+    const repair=advanceLiving({...broken,rooms:{...broken.rooms,gate:'dewdrop'}});
+    const empty=advanceLiving({...broken,rooms:{...broken.rooms,gate:'seedling'}});
+    expect(repair.integrity).toBeGreaterThan(empty.integrity);
+    expect(repair.power).toBeLessThan(empty.power);
+    expect(collection.owned['moon-scout']).toBeDefined();
   });
   it('the entire night ends without an end-day button and freezes on result', () => {
     let game=startLiving(initial());
