@@ -14,6 +14,10 @@ export type LivingState = {
   notice:string; history:string[];
   /** Tick of the latest visible incident or actual reassignment. Optional for old saves. */
   eventTick?:number;
+  /** Accumulating pressure drives incidents; optional for older independent saves. */
+  stress?:{spores:number;grid:number};
+  /** Incident expiry is measured in simulation ticks, never wall time. */
+  incidents?:{spores:number;blackout:number};
 };
 
 const clamp = (n:number,min:number,max:number)=>Math.max(min,Math.min(max,n));
@@ -26,7 +30,7 @@ const waves = [
 const CYCLE = 120;
 export const LIVING_DURATION = CYCLE;
 export const livingPhase = (tick:number):string =>
-  tick < 38 ? '平静生产' : tick < 68 ? '孢子蔓延' : tick < 94 ? '电路故障' : '最终围攻';
+  tick < 30 ? '建立生产' : tick < 65 ? '危险累积' : tick < 94 ? '调整岗位' : '最终围攻';
 
 function squad(collection:CollectionState):SpiritId[] {
   const owned=Object.keys(collection.owned).filter(isSpiritId);
@@ -40,7 +44,7 @@ export function createLivingGame(collection:CollectionState):LivingState {
     crisis:null,rooms:{reactor:units[0]??null,garden:units[1]??null,gate:units[2]??null},
     invaders:[],nextId:1,breaches:0,moves:0,cooldown:0,
     notice:'三间房相互依存：发电供能，温室供食，哨戒抵御来袭。将灵核拖到需要它的房间。',
-    history:[]};
+    history:[],stress:{spores:0,grid:0},incidents:{spores:0,blackout:0}};
 }
 export function startLiving(state:LivingState):LivingState {
   return state.phase!=='ready'?state:{...state,phase:'running',notice:'夜幕降临，公寓开始自动运转。'};
@@ -131,8 +135,31 @@ export function advanceLiving(state:LivingState):LivingState {
   const reactor=roleOf(state,'reactor');
   const gardener=roleOf(state,'garden');
   const guard=roleOf(state,'gate');
-  const crisis:Crisis = tick>=38&&tick<65?'spores':tick>=68&&tick<88?'blackout':null;
+  // Incidents arise from player decisions and material pressure, not a calendar.
+  // A heavily harvested greenhouse breeds spores; starvation or an unstaffed
+  // greenhouse does too. Excess heat and brownouts strain the shared grid.
+  const stress={...(state.stress ?? {spores:0,grid:0})};
+  const incidents={...(state.incidents ?? {spores:0,blackout:0})};
   let notice='';
+  if(tick%4===0){
+    const sporesRisk=!gardener || food<=4 || (gardener==='economy' && food>=9);
+    stress.spores=clamp(stress.spores+(gardener==='repair'?-3:sporesRisk?2:-1),0,12);
+    const gridRisk=heat>=7 || (power<=2 && reactor!=='repair');
+    stress.grid=clamp(stress.grid+(reactor==='repair'?-3:gridRisk?2:-1),0,12);
+    if(stress.spores>=6 && tick>=incidents.spores){
+      incidents.spores=tick+16;
+      stress.spores=0;
+      notice='温室养分失衡，孢子蔓延！让修缮灵核净化温室。';
+    }
+    if(stress.grid>=6 && tick>=incidents.blackout){
+      incidents.blackout=tick+12;
+      stress.grid=0;
+      notice='核心炉负荷失控，整栋楼的电网出现故障！';
+    }
+  }
+  const sporesActive=tick<incidents.spores;
+  const blackoutActive=tick<incidents.blackout;
+  const crisis:Crisis=blackoutActive?'blackout':sporesActive?'spores':null;
   const history=[...state.history];
   let invaders=state.invaders.map(enemy=>({...enemy}));
   for(const wave of waves)if(wave.tick===tick){
@@ -142,12 +169,12 @@ export function advanceLiving(state:LivingState):LivingState {
   }
   if(tick%4===0){
     // Work always has a visible opportunity cost: greenhouse and defense share energy.
-    if(reactor&& (crisis!=='blackout'||reactor==='repair')){
+    if(reactor&& (!blackoutActive||reactor==='repair')){
       power=clamp(power+(reactor==='economy'?4:reactor==='repair'?2:3),0,12);
     }
     if(gardener&&power>0){
       power-=1;
-      food=clamp(food+(crisis==='spores'&&gardener!=='repair'?1:
+      food=clamp(food+(sporesActive&&gardener!=='repair'?1:
         gardener==='repair'?3:gardener==='guard'?1:2),0,12);
     }
   }
@@ -187,9 +214,9 @@ export function advanceLiving(state:LivingState):LivingState {
     history.push('第'+tick+'刻：敌人突破');
   }
   invaders=invaders.filter(e=>e.distance>0);
-  if(tick===38)notice='孢子侵入温室！修缮型灵核能恢复满额产量。';
-  if(tick===68)notice='电网故障！只有修缮型灵核能在核心炉继续供能。';
-  if(tick===94)notice='最终围攻开始！为哨戒台保留足够的电。';
+  if(tick===94)notice='污染体开始集结，准备抵御最终围攻。';
+  if(state.crisis && !crisis && !notice)
+    notice='危机已解除！电力和食物生产逐步恢复正常。';
   integrity=clamp(integrity,0,16);
   const phase:LivingState['phase']=integrity<=0?'lost':tick>=CYCLE?'won':'running';
   if(phase!=='running'){
@@ -199,7 +226,7 @@ export function advanceLiving(state:LivingState):LivingState {
   if(history.length>20)history.splice(0,history.length-20);
   return {...state,tick,power,food,integrity,heat,hunger,crisis,invaders,breaches,nextId,
     cooldown:Math.max(0,state.cooldown-1),phase,notice:notice||state.notice,
-    eventTick:notice?tick:state.eventTick,history};
+    eventTick:notice?tick:state.eventTick,stress,incidents,history};
 }
 export function livingGrade(state:LivingState):number {
   return Math.max(0,Math.round((state.integrity/16)*60+
