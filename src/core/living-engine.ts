@@ -60,6 +60,52 @@ export function moveLivingWorker(state:LivingState, id:SpiritId, target:WorkRoom
       (displaced?'，交换岗位。':'。')};
 }
 
+/** A short deterministic projection, not a separate action or resource bonus.
+ * It shows what changes if this spirit moves to a room while the night keeps going. */
+export type LivingImpact = {
+  power:number; food:number; integrity:number; heat:number;
+  reasonZh:string; reasonEn:string;
+};
+const roomEffects:Record<WorkRoom,Record<string,[string,string]>>={
+  reactor:{
+    economy:['快速发电，但炉温会升高','Generates power faster, but raises heat'],
+    repair:['降低炉温，稳定电网','Cools the furnace and stabilizes power'],
+    guard:['供电较慢，防线将空缺','Slower energy; a different room loses its worker'],
+    explore:['常规发电，占用其它岗位','Standard generation at the cost of another post'],
+  },
+  garden:{
+    economy:['温室维持产出，但占用发电人手','Sustains crops, but pulls an engineer from elsewhere'],
+    repair:['净化孢子并加速粮食恢复','Purifies spores and restores food faster'],
+    guard:['温室产量较低，门口可能失守','Low food yield; the gate may lose its defender'],
+    explore:['温室维持基础产量','Provides basic greenhouse output'],
+  },
+  gate:{
+    economy:['耗电反击较弱，但能保护建筑','Weaker energy-consuming defense'],
+    repair:['修理岗离开生产区，支援防线','Takes a repairer away from utilities to reinforce the gate'],
+    guard:['快速击退入侵者，需持续供电','Strong defense against invaders, consuming power'],
+    explore:['远程侦察并提前攻击敌人','Scouts and attacks threats before they reach the door'],
+  },
+};
+/** Pure eight-tick lookahead comparing moved vs unmoved, including scheduled hazards. */
+export function forecastLivingMove(state:LivingState,id:SpiritId,target:WorkRoom,
+  collection:CollectionState,steps=8):LivingImpact|null {
+  if(!collection.owned[id] || !['running','ready'].includes(state.phase) ||
+    state.cooldown>0 || state.rooms[target]===id)return null;
+  const candidate=moveLivingWorker(state,id,target,collection);
+  if(candidate===state)return null;
+  let baseline=state.phase==='ready'?startLiving(state):state;
+  let assigned=candidate.phase==='ready'?startLiving(candidate):candidate;
+  for(let i=0;i<Math.max(1,Math.min(16,steps));i++){
+    baseline=advanceLiving(baseline);
+    assigned=advanceLiving(assigned);
+  }
+  const role=SPIRIT_BY_ID[id].role;
+  const [reasonZh,reasonEn]=roomEffects[target][role];
+  return { power:assigned.power-baseline.power, food:assigned.food-baseline.food,
+    integrity:assigned.integrity-baseline.integrity, heat:assigned.heat-baseline.heat,
+    reasonZh,reasonEn };
+}
+
 const roleOf=(state:LivingState,room:WorkRoom)=>{
   const id=state.rooms[room];
   return id ? SPIRIT_BY_ID[id].role : null;
@@ -109,11 +155,20 @@ export function advanceLiving(state:LivingState):LivingState {
       notice='核心炉爆发过热！建筑耐久 -2，电力泄漏。';
       history.push('第'+tick+'刻：过热损伤');
     }
-    const target=invaders.filter(e=>e.distance<=78).sort((a,b)=>a.distance-b.distance)[0];
+    // Scouts spot danger sooner; guards hit harder up close. Both draw from the shared grid.
+    const target=invaders.filter(e=>e.distance<=(guard==='explore'?95:78))
+      .sort((a,b)=>a.distance-b.distance)[0];
     if(target&&guard&&power>0){
       power-=1;
       target.hp-=guard==='guard'?5:guard==='explore'?4:guard==='economy'?2:3;
     }
+  }
+  // A repairer at the gate can recover damaged shields, at the cost of
+  // withdrawing their cooling and purification work elsewhere.
+  if(guard==='repair' && tick%12===0 && power>=2 && integrity<16){
+    power-=2;
+    integrity=Math.min(16,integrity+1);
+    notice='修缮灵核为哨戒台修复了护盾。';
   }
   if(tick%9===0){
     food=Math.max(0,food-2);
