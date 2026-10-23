@@ -93,9 +93,10 @@ export function LivingApartment(){
     return ()=>window.clearInterval(timer);
   },[phase,paused]);
   const move=useCallback((id:SpiritId,room:WorkRoom)=>{
+    if(state.cooldown>0)return;
     setState(current=>moveLivingWorker(current,id,room,collection));
     setSelected(null);
-  },[collection]);
+  },[collection,state.cooldown]);
   useEffect(()=>{
     const listener=(ev:KeyboardEvent)=>{
       if(ev.key===' '&&!(ev.target instanceof HTMLButtonElement)){
@@ -159,6 +160,17 @@ export function LivingApartment(){
       <div className="living-world" data-testid="living-world">
         <LivingCanvas state={state}/>
         <span className="living-world-label">{zh?'同一座公寓 · 生产与战斗同时进行':'One building · Work and defense happen together'}</span>
+        {state.eventTick !== undefined && state.phase === 'running' &&
+          state.tick - state.eventTick <= 3 && (
+            <p data-testid="living-event" role="status" className="living-event">
+              <span aria-hidden="true">✦</span> {zh ? state.notice :
+                state.crisis === 'spores' ? 'Spores are spreading in the greenhouse!' :
+                  state.crisis === 'blackout' ? 'The power grid has malfunctioned!' :
+                    state.heat >= 7 ? 'The furnace is running too hot!' :
+                      state.invaders.length ? 'Hostile creatures are approaching the gate!' :
+                        'Your crew has changed assignments.'}
+            </p>
+          )}
         {WORK_ROOMS.map(room=>{
           const meta=info[room],occupant=state.rooms[room],spirit=occupant?SPIRIT_BY_ID[occupant]:null;
           const selectedOccupant=occupant===selected;
