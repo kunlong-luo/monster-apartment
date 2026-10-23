@@ -69,3 +69,24 @@ test('crisis changes the scene inside the same apartment and progress is restora
   await page.getByTestId('living-room-garden').click();
   await expect(page.getByTestId('living-room-garden')).toContainText('露珠灵');
 });
+
+test('assignments show future consequences in the room before committing, not another menu',async({page})=>{
+  const errors:string[]=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  await page.setViewportSize({width:1360,height:830});
+  await page.goto('/');
+  await page.getByTestId('living-start').click();
+  await page.getByTestId('living-worker-dewdrop').click();
+  const preview=page.getByTestId('living-impact-reactor');
+  await expect(preview).toBeVisible();
+  await expect(preview).toContainText('预计未来8刻');
+  await expect(preview).toContainText('炉温');
+  await expect(page.getByTestId('living-impact-garden')).toBeVisible();
+  await expect(page.getByTestId('living-impact-gate')).toHaveCount(0);
+  await page.getByTestId('living-room-reactor').click();
+  await expect(page.getByTestId('living-room-reactor')).toContainText('露珠灵');
+  await expect(preview).toHaveCount(0);
+  await expect(page.getByTestId('living-event')).toContainText('露珠灵');
+  await expect(page.getByTestId('living-phaser').locator('canvas')).toBeVisible();
+  expect(errors).toEqual([]);
+});
