@@ -45,11 +45,13 @@ describe('The apartment is one interconnected playable system', () => {
     expect(livingTip(hot)).toContain('过热');
   });
   it('spore infestation and blackout visibly change production by worker role', () => {
-    const spores={...at(39),crisis:'spores' as const,power:9,food:3};
+    const spores={...at(39),crisis:'spores' as const,power:9,food:3,
+      incidents:{spores:56,blackout:0},stress:{spores:0,grid:0}};
     const noRepair=advanceLiving(spores);
     const repair=advanceLiving({...spores,rooms:{reactor:'lantern-beetle',garden:'dewdrop',gate:'seedling'}});
     expect(repair.food).toBeGreaterThan(noRepair.food);
-    const blackout={...at(71),power:1,food:5};
+    const blackout={...at(71),power:1,food:5,
+      incidents:{spores:0,blackout:85},stress:{spores:0,grid:0}};
     const stalled=advanceLiving(blackout);
     const fixed=advanceLiving({...blackout,rooms:{reactor:'dewdrop',garden:'seedling',gate:'lantern-beetle'}});
     expect(fixed.power).toBeGreaterThan(stalled.power);
@@ -78,6 +80,40 @@ describe('The apartment is one interconnected playable system', () => {
     expect(managed.phase).toBe('won');
     expect(managed.integrity).toBeGreaterThan(idle.integrity);
     expect(managed.moves).toBe(2);
+  });
+  it('grower decisions accumulate real spore risk, while purification prevents it at the same tick', () => {
+    const ready={...at(11),food:11,power:10,heat:0,
+      stress:{spores:4,grid:0},incidents:{spores:0,blackout:0},
+      rooms:{reactor:'lantern-beetle',garden:'lantern-beetle',gate:'seedling'}};
+    const overworked=advanceLiving(ready);
+    expect(overworked.crisis).toBe('spores');
+    expect(overworked.incidents?.spores).toBe(28);
+    expect(overworked.eventTick).toBe(12);
+    const purified=advanceLiving({...ready,rooms:{...ready.rooms,garden:'dewdrop'}});
+    expect(purified.crisis).toBeNull();
+    expect(purified.stress?.spores).toBe(1);
+    expect(purified.incidents?.spores).toBe(0);
+  });
+  it('overheated and depleted grids trigger blackouts, but an engineer can avert one', () => {
+    const atRisk={...at(11),power:2,heat:8,
+      stress:{spores:0,grid:4},incidents:{spores:0,blackout:0}};
+    const strained=advanceLiving(atRisk);
+    expect(strained.crisis).toBe('blackout');
+    expect(strained.incidents?.blackout).toBe(24);
+    const stabilized=advanceLiving({...atRisk,
+      rooms:{...atRisk.rooms,reactor:'dewdrop'}});
+    expect(stabilized.crisis).toBeNull();
+    expect(stabilized.stress?.grid).toBe(1);
+    const recovered=advanceLiving({...strained,tick:24,heat:0,power:10,
+      stress:{spores:0,grid:0}});
+    expect(recovered.crisis).toBeNull();
+  });
+  it('past saves without new incident fields keep running with safe defaults', () => {
+    const previous={...at(7),stress:undefined,incidents:undefined};
+    const advanced=advanceLiving(previous);
+    expect(advanced.tick).toBe(8);
+    expect(advanced.stress).toBeDefined();
+    expect(advanced.incidents).toBeDefined();
   });
   it('previews measurable room tradeoffs without advancing the real clock or spending resources', () => {
     const collection=newCollection();
