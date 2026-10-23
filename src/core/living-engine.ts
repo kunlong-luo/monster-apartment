@@ -122,6 +122,8 @@ export function livingTip(state:LivingState):string {
   if(state.heat>=7)return '核心炉过热！把修缮灵核派到核心炉可降温，同时守卫会短暂削弱。';
   if(state.crisis==='spores'&&roleOf(state,'garden')!=='repair')return '温室遭到孢子侵袭。调入修缮灵核可恢复食物生产。';
   if(state.crisis==='blackout'&&roleOf(state,'reactor')!=='repair')return '线路故障！只有修缮灵核能够继续为建筑充能。';
+  if((state.stress?.grid??0)>=4)return '电网压力持续升高！炉温过高或缺电会触发线路故障，调入修缮灵核可提前化解。';
+  if((state.stress?.spores??0)>=4)return '温室养分失衡，孢子压力不断累积！修缮灵核可以提前净化危机。';
   if(state.power<=2)return '电力将尽！哨戒台与温室争夺能源，优先调配核心炉员工。';
   if(state.food<=3)return '食物短缺！温室没有电或缺少工作人员时居民会挨饿。';
   if(state.invaders.some(e=>e.distance<45))return '入侵者逼近！守护灵核在哨戒台可以更快击退它们。';
