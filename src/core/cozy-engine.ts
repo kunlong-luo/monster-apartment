@@ -107,6 +107,34 @@ export function moveInCozy(state:CozyState,index:number,id:SpiritId):CozyState{
     p.zh+'拖着小行李搬进了'+ROOM_DETAILS[rooms[index]!.type].zh+'。'+p.bioZh,
     p.en+' moved into the '+ROOM_DETAILS[rooms[index]!.type].en+'. '+p.bioEn);
 }
+/** Move a resident into another built room, exchanging occupants if necessary.
+ * Room furnishings stay put, so comfort, rent and friendships change together. */
+export function relocateCozyResident(state:CozyState,from:number,to:number):CozyState {
+  if(state.phase!=='playing'||!Number.isInteger(from)||!Number.isInteger(to)
+    ||from<0||to<0||from>=state.rooms.length||to>=state.rooms.length
+    ||from===to||!state.rooms[from]?.resident||!state.rooms[to])return state;
+  const rooms=state.rooms.map(room=>room?{...room}:null);
+  const mover=rooms[from]!.resident!;
+  const displaced=rooms[to]!.resident;
+  rooms[from]!.resident=displaced;
+  rooms[to]!.resident=mover;
+  const moved=profile(mover);
+  const guest=displaced?profile(displaced):null;
+  return event({...state,rooms},'rehouse-'+state.tick+'-'+from+'-'+to,'move',
+    (moved?.zh??'住户')+'搬到了'+ROOM_DETAILS[rooms[to]!.type].zh+
+      (guest?'，和'+guest.zh+'交换了房间。':'，还在慢慢适应新家的味道。'),
+    (moved?.en??'A resident')+' moved to the '+ROOM_DETAILS[rooms[to]!.type].en+
+      (guest?', swapping homes with '+guest.en+'.':', settling into a new home.'));
+}
+export function previewCozyRelocation(state:CozyState,from:number,to:number){
+  const next=relocateCozyResident(state,from,to);
+  if(next===state)return null;
+  return { happiness:buildingHappiness(next)-buildingHappiness(state),
+    rent:dailyRent(next)-dailyRent(state),
+    moving:state.rooms[from]!.resident!,
+    displaced:state.rooms[to]!.resident };
+}
+
 export function decorateCozy(state:CozyState,index:number,decor:Furnishing):CozyState {
   const room=state.rooms[index];
   if(state.phase!=='playing'||!room||!FURNISHINGS[decor]
@@ -123,6 +151,27 @@ export const residentActivity=(tick:number,id:SpiritId):ResidentActivity=>{
   const hour=(tick+offset*3)%TICKS_PER_DAY;
   return hour<3?'sleep':hour<7?'work':hour<10?'wander':'visit';
 };
+/** A visit only happens when two actual occupants are close enough for a short trip.
+ * It is an observable part of their routines, not a separate player action. */
+export type CozyVisit={from:number;to:number;visitor:SpiritId;host:SpiritId};
+export function cozyVisits(state:CozyState,tick=state.tick):CozyVisit[]{
+  const visits:CozyVisit[]=[];
+  for(let from=0;from<state.rooms.length;from++){
+    const visitor=state.rooms[from]?.resident;
+    if(!visitor||residentActivity(tick,visitor)!=='visit')continue;
+    const traits=profile(visitor);
+    const neighbors=state.rooms.map((room,to)=>({room,to}))
+      .filter(({room,to})=>room?.resident&&to!==from&&adjacent(from,to))
+      .sort((a,b)=>{
+        const aLoved=Number(a.room?.resident===traits?.likes||profile(a.room!.resident!)?.likes===visitor);
+        const bLoved=Number(b.room?.resident===traits?.likes||profile(b.room!.resident!)?.likes===visitor);
+        return bLoved-aLoved||a.to-b.to;
+      });
+    const chosen=neighbors[0];
+    if(chosen?.room?.resident)visits.push({from,to:chosen.to,visitor,host:chosen.room.resident});
+  }
+  return visits;
+}
 const dailyStory=(state:CozyState):CozyState=>{
   let next=state;
   for(let i=0;i<6;i++){
@@ -139,6 +188,12 @@ const dailyStory=(state:CozyState):CozyState=>{
       const friend=next.rooms[j]?.resident;
       if(!friend||!adjacent(i,j))continue;
       if(p.likes!==friend && profile(friend)?.likes!==resident)continue;
+      // A bond grows only if the pair was able to visit during this day.
+      const met=Array.from({length:TICKS_PER_DAY},(_,offset)=>next.tick-TICKS_PER_DAY+offset)
+        .some(hour=>cozyVisits(next,hour).some(visit=>
+          (visit.visitor===resident && visit.host===friend)||
+          (visit.visitor===friend && visit.host===resident)));
+      if(!met)continue;
       const key=[resident,friend].sort().join(':');
       const bonds={...next.bonds,[key]:(next.bonds[key]??0)+1};
       next={...next,bonds};
