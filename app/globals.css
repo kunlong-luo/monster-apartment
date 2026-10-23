@@ -834,3 +834,16 @@
   .living-impact-values{font-size:8px;gap:2px}
   .living-impact-detail{display:none}
 }
+
+/* Incidents appear over the same building they affect, with no new UI action. */
+.living-event {
+  position:absolute;z-index:3;right:2%;bottom:3%;max-width:42%;
+  pointer-events:none;padding:8px 11px;border-radius:10px;
+  background:#322b44ef;border:1px solid #e6b797;
+  color:#ffedce;font-weight:750;font-size:clamp(9px,1.2vw,13px);
+  line-height:1.35;box-shadow:0 5px 20px #0c1025ac;
+}
+.living-event span{color:#f4c78a;margin-right:3px}
+@media(max-width:700px){
+  .living-event{max-width:48%;font-size:8px;padding:4px 6px;border-radius:5px}
+}
