@@ -1311,3 +1311,29 @@
 @media(prefers-reduced-motion:reduce){
   .cozy-shell.is-evening .cozy-room-art,.cozy-moon,.cozy-scenery{transition:none!important}
 }
+
+
+/* The resource display is a single understated in-game HUD, not four web cards. */
+.cozy-summary{
+  gap:0;max-width:1200px;
+  background:linear-gradient(90deg,#202a3e4d,#45516583,#202a3e4d);
+  border-top:1px solid #c7b69b68;border-bottom:1px solid #907f8070;
+  border-radius:0;padding:2px 0;
+}
+.cozy-stat{
+  background:none;border:0;box-shadow:none;border-radius:0;
+  border-right:1px solid #b9a6a23c;padding:5px clamp(8px,1.5vw,24px);
+  justify-content:center;gap:clamp(8px,1.4vw,20px);
+}
+.cozy-stat:last-child{border-right:0}
+.cozy-stat>span{font:600 11px/1.2 system-ui,sans-serif;letter-spacing:.05em;color:#c2cbd2}
+.cozy-stat strong{font:800 clamp(17px,1.5vw,21px)/1.1 Georgia,serif;color:#f2d4a2}
+.cozy-icon-button{background:#323c51;border:1px solid #8e8291;border-radius:5px;
+  box-shadow:inset 0 1px #f2d7ac22}
+.cozy-day{background:#2c374c;border:1px solid #a38b8a;border-radius:5px}
+@media(max-width:760px){
+  .cozy-summary{padding:0}
+  .cozy-stat{padding:3px 3px;gap:1px}
+  .cozy-stat>span{font-size:8px}
+  .cozy-stat strong{font-size:14px}
+}
