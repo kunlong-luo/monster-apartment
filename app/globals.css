@@ -1033,3 +1033,37 @@
   .cozy-actor{animation:none!important}
   .cozy-option,.cozy-room,.cozy-day-track i{transition:none!important}
 }
+
+
+/* V0.8.1 — neighbors are real layout decisions, not a detached social menu. */
+.cozy-room.can-rehouse{border-color:#9fe6cb;box-shadow:inset 0 0 0 2px #d0f9cf88,inset 0 0 35px #7bcf9e44}
+.cozy-room.can-rehouse:hover{border-color:#dcffd4;background-color:#91b5aa}
+.cozy-move-preview{
+  position:absolute;z-index:5;top:34px;left:6px;right:6px;
+  border:1px solid #d0eac6;background:#263e43e8;color:#dffbe1;
+  box-shadow:0 3px 8px #292b386e;border-radius:7px;
+  padding:4px 5px;text-align:center;font-size:clamp(9px,.96vw,12px);font-weight:850;
+  pointer-events:none;white-space:normal;line-height:1.3;
+}
+.cozy-option.is-relocate{border-color:#a3dfc0;background:#38655f;color:#f1ffdf}
+.cozy-option.is-relocate:hover:not(:disabled){background:#518675}
+.cozy-guest{
+  position:absolute;z-index:4;left:24%;bottom:12%;
+  display:flex;align-items:center;flex-direction:column;gap:1px;
+  animation:cozy-guest-arrival .65s cubic-bezier(.22,.82,.35,1) both;
+  filter:drop-shadow(0 4px 4px #181b2755);
+}
+.cozy-guest svg{width:clamp(29px,3.2vw,44px);height:auto;border-radius:9px}
+.cozy-guest small{font-size:9px;line-height:1;color:#523e56;background:#ffe6c5e8;
+  border-radius:5px;padding:2px 4px;font-weight:850;white-space:nowrap}
+.cozy-out-visiting{position:absolute;z-index:2;left:25%;top:52%;
+  color:#60445b;font-size:clamp(9px,1vw,12px);font-weight:850;
+  padding:5px 8px;border-radius:10px;background:#fff3dcba}
+@keyframes cozy-guest-arrival{from{opacity:.2;transform:translateX(-18px) scale(.85)}to{opacity:1;transform:translateX(0) scale(1)}}
+@media(max-width:760px){
+  .cozy-move-preview{top:24px;left:3px;right:3px;padding:2px 3px;font-size:8px;line-height:1.1}
+  .cozy-guest{bottom:12%;left:20%}
+  .cozy-guest svg{width:27px}.cozy-guest small{font-size:7px;padding:1px 2px}
+  .cozy-out-visiting{font-size:8px;padding:2px 4px;left:15%}
+}
+@media(prefers-reduced-motion:reduce){.cozy-guest{animation:none!important}}
