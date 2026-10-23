@@ -60,7 +60,8 @@ jobs:
         with:
           name: v082-cozy-apartment-art-review
           path: |
-            test-results/**/cozy-art-direction*.png
+            test-results/cozy-desktop.png
+            test-results/cozy-mobile.png
             test-results/spirit-desktop.png
             test-results/spirit-mobile.png
           if-no-files-found: warn
