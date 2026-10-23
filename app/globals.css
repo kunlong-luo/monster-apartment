@@ -847,3 +847,189 @@
 @media(max-width:700px){
   .living-event{max-width:48%;font-size:8px;padding:4px 6px;border-radius:5px}
 }
+
+
+/* V0.8 — Moonlight Street. The building, not a dashboard of feature buttons,
+   owns the main visual hierarchy. No scrolling on desktop or phones. */
+.cozy-shell{--cream:#fff1d7;--ink:#29253c;--rose:#ecbcb7;--gold:#f2cf92;
+  box-sizing:border-box;width:100%;height:100dvh;min-height:490px;
+  display:flex;flex-direction:column;gap:clamp(7px,1vh,11px);overflow:hidden;
+  color:var(--cream);font-family:system-ui,-apple-system,"Noto Sans CJK SC",sans-serif;
+  padding:clamp(8px,1.4vh,16px) clamp(10px,2.4vw,32px);
+  background:radial-gradient(ellipse at 45% -10%,#63536d 0,#37334c 49%,#222c41 100%);
+}
+.cozy-shell *{box-sizing:border-box}
+.cozy-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0;max-width:1300px;width:100%;margin:auto auto 0}
+.cozy-brand{display:flex;align-items:center;gap:12px;min-width:0}
+.cozy-seal{display:grid;place-items:center;flex-shrink:0;width:48px;height:48px;border-radius:15px;
+  color:#ffdf9e;font-size:34px;line-height:1;
+  background:linear-gradient(145deg,#7b5875,#42394e);box-shadow:inset 0 2px 0 #ffffff22,0 4px 12px #191b2a70;
+  border:1px solid #d3ae94}
+.cozy-eyebrow{font-size:9px;font-weight:800;letter-spacing:.19em;color:#eec8a9}
+.cozy-brand h1{font:800 clamp(21px,2.35vw,31px)/1.1 Georgia,"Noto Serif CJK SC",serif;color:#ffeed5;letter-spacing:.045em}
+.cozy-tagline{font-size:11px;color:#d7bfd2;margin-top:3px}
+.cozy-controls{display:flex;align-items:center;gap:7px}
+.cozy-icon-button{border:1px solid #99839a;border-radius:10px;cursor:pointer;min-width:35px;
+  padding:9px;background:#55455e;color:#fff0dd;font-size:12px;font-weight:850}
+.cozy-icon-button:hover,.cozy-icon-button:focus-visible{background:#7c5678;outline-offset:2px}
+.cozy-day{min-width:99px;background:#493b55;border:1px solid #a88c9b;border-radius:11px;
+  padding:7px 10px;font-size:12px;font-weight:750;color:#ffe4bf;text-align:center}
+.cozy-day-track{height:3px;border-radius:10px;background:#29283d;margin-top:5px;overflow:hidden}
+.cozy-day-track i{display:block;height:100%;background:#f4ca92;transition:width .35s}
+.cozy-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;max-width:1120px;
+  width:100%;flex-shrink:0;margin:0 auto}
+.cozy-stat{min-width:0;border:1px solid #927c90;background:#443a52d8;border-radius:12px;
+  padding:8px 13px;display:flex;justify-content:space-between;align-items:center;gap:7px}
+.cozy-stat>span{color:#e5d1cf;font-size:12px;font-weight:650;white-space:nowrap}
+.cozy-stat strong{font-size:20px;color:#ffe0a6;font-variant-numeric:tabular-nums}
+.cozy-stat small{font-size:11px;color:#cfc2d6}
+.cozy-play{display:flex;align-items:stretch;justify-content:center;gap:clamp(10px,2vw,30px);flex:1;min-height:0;
+  position:relative;width:100%;max-width:1250px;margin:0 auto}
+.cozy-scenery{position:absolute;inset:-8px -3% 0;pointer-events:none;overflow:hidden;
+  background:linear-gradient(180deg,#4a4668 0%,#5a5670 44%,#38485c 78%,#243748 100%);
+  border-radius:24px;border:1px solid #a69caa88;box-shadow:0 15px 35px #19152866}
+.cozy-moon{position:absolute;right:6%;top:6%;font-size:65px;color:#ffdbaf;opacity:.76;text-shadow:0 0 22px #e6c598}
+.cozy-starfield{position:absolute;left:6%;top:8%;color:#f9dda8;font-size:19px;letter-spacing:7px;opacity:.75}
+.cozy-trees{position:absolute;bottom:-16px;left:4%;right:3%;font-size:99px;color:#334b4e;opacity:.8;white-space:nowrap;letter-spacing:36px}
+.cozy-building{position:relative;z-index:1;align-self:stretch;min-height:0;width:min(73%,760px);
+  display:flex;flex-direction:column;margin:10px 0 5px;filter:drop-shadow(0 14px 8px #181c2a77)}
+.cozy-roof{height:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:16px;
+  margin:0 6px;clip-path:polygon(0% 100%,5% 25%,50% 0%,95% 25%,100% 100%);
+  background:linear-gradient(180deg,#9f7180,#795366 75%,#5d4359);border-bottom:5px solid #e7bba2;
+  color:#ffedca;text-shadow:0 2px 4px #3e304b;letter-spacing:.17em;font-size:clamp(9px,1.1vw,13px)}
+.cozy-roof span{font-size:23px;color:#ffd1a4}
+.cozy-floors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));
+  flex:1;min-height:0;gap:6px;padding:6px;background:#755b6c;border:6px solid #a07d83;
+  box-shadow:inset 0 0 0 3px #d1a28a,inset 0 3px 12px #30253a}
+.cozy-room{position:relative;min-height:0;overflow:hidden;border-radius:5px;border:2px solid #f9d5ae85;
+  text-align:left;cursor:pointer;color:#fff2dc;background:#74657a;
+  box-shadow:inset 0 -8px #342b423d,inset 0 0 0 4px #15132926;transition:border-color .2s,filter .2s}
+.cozy-room:hover{filter:brightness(1.12);border-color:#ffe9c2}
+.cozy-room:focus-visible,.cozy-option:focus-visible{outline:3px solid #fff3be;outline-offset:-3px}
+.cozy-room.is-active{border-color:#ffefa5;box-shadow:inset 0 0 0 3px #ffecac77,0 0 14px #ffe0a580}
+.cozy-room.is-nest{background:repeating-linear-gradient(90deg,#d5a4b5 0 30px,#d8aebd 30px 32px)}
+.cozy-room.is-bath{background:repeating-linear-gradient(90deg,#8cabb1 0 38px,#9ebcc2 38px 41px)}
+.cozy-room.is-workshop{background:repeating-linear-gradient(90deg,#9d856f 0 40px,#ad9478 40px 42px)}
+.cozy-room.is-greenhouse{background:repeating-linear-gradient(90deg,#9eb4a0 0 39px,#a8bcab 39px 43px)}
+.cozy-room.is-empty{border:2px dashed #f3e1ce88;background:#383d55bb}
+.cozy-floor-number{position:absolute;left:7px;top:7px;font-size:10px;font-weight:800;color:#f9f3ea;
+  background:#4b3e5880;padding:2px 6px;border-radius:5px}
+.cozy-room-name{position:absolute;left:36px;top:9px;z-index:2;font-size:clamp(10px,1vw,13px);font-weight:850;
+  color:#433449;text-shadow:0 1px #ffffff56}
+.cozy-room-window{position:absolute;right:12%;top:15%;border:5px solid #e7d0ad;
+  background:linear-gradient(125deg,#b9d5d5,#6889a3);width:21%;height:43%;border-radius:35px 35px 5px 5px;
+  display:grid;place-items:center;color:#fff0cc;box-shadow:0 0 0 3px #88718355,inset 0 0 8px #ffe5a266}
+.cozy-room-window:after{content:'';position:absolute;inset:50% 0 auto;border-top:3px solid #e7d0ad}
+.cozy-interior{position:absolute;inset:0}
+.cozy-furniture-main{position:absolute;left:11%;bottom:10%;font-size:clamp(25px,4vw,48px);filter:drop-shadow(0 5px 3px #31304644)}
+.cozy-furniture-extra{position:absolute;right:21%;bottom:9%;font-size:clamp(18px,2.7vw,33px);filter:drop-shadow(0 4px 3px #25253c66)}
+.cozy-actor{position:absolute;z-index:2;left:51%;bottom:10%;display:block;filter:drop-shadow(0 5px 3px #2a243b55)}
+.cozy-actor svg{width:clamp(41px,5.4vw,72px);height:auto;border-radius:23px}
+.cozy-actor.is-work,.cozy-actor.is-wander{animation:cozy-wander 4.5s ease-in-out infinite alternate}
+.cozy-actor.is-sleep{animation:cozy-sleep 2.2s ease-in-out infinite}
+.cozy-actor.is-visit{animation:cozy-bounce 2.6s ease-in-out infinite}
+.cozy-activity-bubble{position:absolute;right:-10px;top:-17px;background:#f9e7cd;border-radius:16px;
+  padding:3px 5px;font-size:13px;box-shadow:0 3px 5px #342b3c66}
+.cozy-resident-label{position:absolute;z-index:3;bottom:5px;left:8px;font-size:clamp(9px,.95vw,12px);
+  padding:3px 8px;border-radius:7px;background:#4b4259c9;color:#fff8e7;font-weight:800}
+.cozy-resident-label span{color:#ffcabd;margin-left:6px}
+.cozy-available{position:absolute;left:8px;bottom:8px;font-size:11px;border-radius:6px;
+  padding:4px 7px;background:#4f445da8;color:#fcebd8}
+.cozy-empty-invite{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;
+  gap:3px;color:#e5d9e5}
+.cozy-empty-invite>span{font-size:clamp(26px,3.8vw,43px);color:#f2d7af}
+.cozy-empty-invite strong{font-size:clamp(10px,1.2vw,14px)}
+.cozy-empty-invite small{font-size:10px;color:#b7b2c8}
+.cozy-room.can-move-in{border-color:#a8f0c5;box-shadow:inset 0 0 22px #6de4a955}
+.cozy-building-base{height:28px;flex-shrink:0;background:linear-gradient(#977184,#533f60);border:3px solid #bf99a1;
+  border-radius:0 0 10px 10px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;color:#ffe2b0;font-size:12px;font-weight:750;letter-spacing:.08em}
+.cozy-side-note{position:relative;z-index:1;align-self:flex-end;margin:0 11px 15px 0;width:min(23%,265px);
+  padding:19px;background:linear-gradient(135deg,#f9e4c6,#f1d2bc);
+  color:#56445b;border-radius:4px 18px 15px 15px;border:2px solid #fff3d5;
+  box-shadow:0 8px 22px #27253b8f;transform:rotate(1.5deg);min-height:170px}
+.cozy-note-eyebrow{font-size:10px;font-weight:900;letter-spacing:.22em;color:#ab7d81}
+.cozy-side-note p{font-size:clamp(12px,1vw,15px);font-weight:750;line-height:1.65;margin:11px 0;color:#60465b}
+.cozy-side-note small{display:block;font-size:10px;line-height:1.5;color:#988090}
+.cozy-dock{max-width:1250px;width:100%;margin:0 auto;flex-shrink:0;border:1px solid #a98d9b;
+  background:linear-gradient(135deg,#4d4057,#372f48);border-radius:16px;padding:10px 16px 8px;
+  box-shadow:0 5px 15px #17152170}
+.cozy-context-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
+.cozy-context-title strong{display:block;font-size:14px;color:#ffe6ba}
+.cozy-context-title span{font-size:11px;color:#d4c5d1}
+.cozy-dismiss{color:#fff0d7;background:#67536d;border:1px solid #ad8fa3;border-radius:8px;padding:4px 8px;cursor:pointer}
+.cozy-option-row{display:flex;align-items:stretch;gap:8px;overflow-x:auto;min-height:69px;scrollbar-width:thin;padding:1px 0 3px}
+.cozy-option{border:1px solid #ae8f99;border-radius:11px;background:#615269;
+  color:#fff0dd;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-width:115px;flex:0 1 180px;gap:2px;padding:6px 9px;cursor:pointer;text-align:center;
+  transition:background .15s,transform .15s}
+.cozy-option:hover:not(:disabled){background:#7d617d;transform:translateY(-2px)}
+.cozy-option:disabled{opacity:.42;cursor:not-allowed}
+.cozy-option>span:not(.cozy-worker){font-size:22px;line-height:1.1}
+.cozy-option strong{font-size:12px;white-space:nowrap}
+.cozy-option small{font-size:10px;color:#eac9ad}
+.cozy-option.is-tenant{flex-direction:row;justify-content:flex-start;min-width:147px;flex-wrap:wrap;column-gap:8px}
+.cozy-option.is-tenant svg{width:32px;height:32px;flex-shrink:0}
+.cozy-option.is-tenant small{flex-basis:100%}
+.cozy-option.is-picked{border-color:#d3ffcf;background:#6c6672}
+.cozy-dock-empty{font-size:13px;color:#dacddd;padding:14px 2px}
+.cozy-dock-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;font-size:10px;color:#dbbdc4}
+.cozy-outcome{display:flex;justify-content:space-between;align-items:center;min-height:74px;gap:15px}
+.cozy-outcome strong{font-size:18px;color:#ffe1af}.cozy-outcome p{font-size:12px;color:#f1d8d6;margin-top:5px}
+.cozy-action{background:#f4d49d;border:1px solid #fff1bf;color:#4b344a;
+  border-radius:9px;padding:10px 14px;font-weight:900;cursor:pointer;white-space:nowrap}
+.cozy-loading{display:grid;place-items:center;min-height:100vh;background:#37334c;color:#ffe6be}
+@keyframes cozy-wander{0%{transform:translateX(-19px) rotate(-3deg)}100%{transform:translateX(17px) rotate(4deg)}}
+@keyframes cozy-sleep{50%{transform:translateY(3px) scale(.96)}}
+@keyframes cozy-bounce{50%{transform:translateY(-8px)}}
+@media(max-width:760px){
+  .cozy-shell{padding:8px;gap:6px;min-height:490px}
+  .cozy-header{gap:5px}
+  .cozy-seal{width:33px;height:33px;font-size:24px;border-radius:10px}
+  .cozy-brand{gap:6px}.cozy-eyebrow{font-size:6px;letter-spacing:.07em}
+  .cozy-brand h1{font-size:18px}.cozy-tagline{font-size:9px}
+  .cozy-controls{gap:4px}.cozy-day{min-width:60px;font-size:9px;padding:5px 6px}
+  .cozy-icon-button{min-width:26px;border-radius:7px;padding:7px 6px;font-size:10px}
+  .cozy-summary{gap:4px}.cozy-stat{padding:5px;border-radius:8px;display:block;text-align:center}
+  .cozy-stat>span{display:block;font-size:9px}.cozy-stat strong{display:block;font-size:13px}.cozy-stat small{font-size:8px}
+  .cozy-play{display:flex;flex-direction:column;gap:0}
+  .cozy-scenery{inset:0;border-radius:11px}
+  .cozy-building{width:min(100%,560px);flex:1;margin:5px auto 0}
+  .cozy-roof{height:34px;font-size:8px;letter-spacing:.04em;gap:6px}
+  .cozy-roof span{font-size:14px}
+  .cozy-floors{gap:4px;padding:4px;border-width:4px}
+  .cozy-building-base{height:19px;font-size:9px;padding:0 7px;border-width:2px}
+  .cozy-room-name{font-size:9px;left:30px;top:6px}
+  .cozy-floor-number{font-size:8px;left:4px;top:5px;padding:1px 4px}
+  .cozy-room-window{border-width:3px}
+  .cozy-furniture-main{font-size:26px}
+  .cozy-furniture-extra{font-size:18px}
+  .cozy-actor{bottom:11%;left:49%}
+  .cozy-actor svg{width:44px}
+  .cozy-activity-bubble{font-size:10px;padding:2px}
+  .cozy-resident-label{font-size:9px;padding:2px 4px;bottom:3px;left:4px}
+  .cozy-available{font-size:8px}
+  .cozy-empty-invite>span{font-size:25px}
+  .cozy-empty-invite strong{font-size:10px}
+  .cozy-empty-invite small{display:none}
+  .cozy-side-note{width:min(96%,560px);align-self:center;min-height:0;margin:2px auto 5px;
+    padding:7px 12px;border-radius:8px;transform:none}
+  .cozy-note-eyebrow{font-size:8px}
+  .cozy-side-note p{font-size:10px;line-height:1.35;margin:2px 0}
+  .cozy-side-note small{display:none}
+  .cozy-dock{padding:7px 9px 5px;border-radius:10px}
+  .cozy-context-title{margin-bottom:4px}
+  .cozy-context-title strong{font-size:12px}
+  .cozy-context-title span{font-size:9px}
+  .cozy-option-row{min-height:57px;gap:5px}
+  .cozy-option{min-width:88px;padding:3px 5px;border-radius:8px}
+  .cozy-option>span:not(.cozy-worker){font-size:18px}
+  .cozy-option strong{font-size:10px}.cozy-option small{font-size:9px}
+  .cozy-option.is-tenant{min-width:115px;gap:4px}
+  .cozy-option.is-tenant svg{width:28px;height:28px}
+  .cozy-dock-footer{font-size:8px;gap:5px;margin-top:4px}
+}
+@media(prefers-reduced-motion:reduce){
+  .cozy-actor{animation:none!important}
+  .cozy-option,.cozy-room,.cozy-day-track i{transition:none!important}
+}
