@@ -1,6 +1,10 @@
 import * as Phaser from 'phaser';
 import type { LivingState } from '@/core/living-engine';
 import { SPIRIT_BY_ID } from '@/core/spirit-collection';
+import { SPIRIT_ART } from '@/core/spirit-art';
+import { WORK_ROOMS } from '@/core/living-engine';
+import type { WorkRoom } from '@/core/living-engine';
+import type { SpiritId } from '@/core/spirit-collection';
 
 export class LivingScene extends Phaser.Scene {
   static readonly KEY='living-building';
@@ -8,6 +12,11 @@ export class LivingScene extends Phaser.Scene {
   private brush?:Phaser.GameObjects.Graphics;
   private latest?:LivingState;
   private lastPaint=0;
+  private workers=new Map<SpiritId,Phaser.GameObjects.Container>();
+  private workerPosts=new Map<SpiritId,WorkRoom>();
+  private readonly stations:Record<WorkRoom,{x:number;y:number}>={
+    reactor:{x:283,y:211},garden:{x:564,y:210},gate:{x:504,y:426},
+  };
   constructor(){super({key:LivingScene.KEY});}
   create():void{
     this.cameras.main.setBackgroundColor('#151a30');
@@ -17,6 +26,80 @@ export class LivingScene extends Phaser.Scene {
   sync(state:LivingState):void{
     this.latest=state;
     this.paint();
+    if(this.sys.isActive())this.syncWorkers(state);
+  }
+  /** Original creature silhouettes live on the same Phaser floor as the crisis.
+   * Reassigning a worker moves its actual scene object instead of teleporting
+   * an icon or opening a separate staff-management panel. */
+  private createWorker(id:SpiritId):Phaser.GameObjects.Container {
+    const art=SPIRIT_ART[id];
+    const primary=Number.parseInt(art.primary.slice(1),16);
+    const light=Number.parseInt(art.highlight.slice(1),16);
+    const shadow=Number.parseInt(art.shadow.slice(1),16);
+    const silhouette=this.add.graphics();
+    silhouette.fillStyle(0x090d1e,.35);
+    silhouette.fillEllipse(0,32,62,12);
+    silhouette.fillStyle(primary,.2);
+    silhouette.fillCircle(0,-1,35);
+    silhouette.fillStyle(shadow,.9);
+    silhouette.fillTriangle(-19,-19,-15,-39,-2,-20);
+    silhouette.fillTriangle(19,-19,15,-39,2,-20);
+    silhouette.fillStyle(primary,1);
+    silhouette.fillEllipse(0,0,46,47);
+    silhouette.lineStyle(3,light,.88);
+    silhouette.strokeEllipse(0,0,46,47);
+    silhouette.fillStyle(light,.95);
+    silhouette.fillEllipse(0,9,29,17);
+    silhouette.fillStyle(0x1b2340,1);
+    silhouette.fillCircle(-9,-6,4);
+    silhouette.fillCircle(9,-6,4);
+    silhouette.fillStyle(0xffffff,1);
+    silhouette.fillCircle(-10,-8,1.5);
+    silhouette.fillCircle(8,-8,1.5);
+    const role=SPIRIT_BY_ID[id].role;
+    const badge=this.add.text(21,-30,
+      {guard:'◆',repair:'✚',economy:'⚡',explore:'✦'}[role],
+      {fontSize:'17px',fontFamily:'sans-serif',color:art.highlight,
+        stroke:'#14172b',strokeThickness:3}).setOrigin(.5);
+    const character=this.add.container(0,0,[silhouette,badge]);
+    const station=this.stations.reactor;
+    const actor=this.add.container(station.x,station.y,[character]);
+    actor.setDepth(5);
+    if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      this.tweens.add({targets:character,y:-4,yoyo:true,repeat:-1,
+        duration:1000+id.length*19,ease:'Sine.easeInOut'});
+    }
+    return actor;
+  }
+  private syncWorkers(state:LivingState):void {
+    const assigned=new Set<SpiritId>();
+    for(const room of WORK_ROOMS){
+      const id=state.rooms[room];
+      if(!id)continue;
+      assigned.add(id);
+      const station=this.stations[room];
+      let worker=this.workers.get(id);
+      if(!worker){
+        worker=this.createWorker(id);
+        this.workers.set(id,worker);
+        worker.setPosition(station.x,station.y);
+      }else if(this.workerPosts.get(id)!==room){
+        this.tweens.killTweensOf(worker);
+        if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+          worker.setPosition(station.x,station.y);
+        }else{
+          this.tweens.add({targets:worker,x:station.x,y:station.y,
+            duration:750,ease:'Sine.easeInOut'});
+        }
+      }
+      this.workerPosts.set(id,room);
+    }
+    for(const [id,worker] of this.workers){
+      if(assigned.has(id))continue;
+      worker.destroy();
+      this.workers.delete(id);
+      this.workerPosts.delete(id);
+    }
   }
   update():void{
     // Room geometry changes on simulation ticks; cap decorative frame work for mobile GPUs.
