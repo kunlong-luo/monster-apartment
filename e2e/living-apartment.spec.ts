@@ -60,6 +60,8 @@ test('crisis changes the scene inside the same apartment and progress is restora
     save.state.tick=37;
     save.state.power=8;
     save.state.food=5;
+    save.state.incidents={spores:54,blackout:0};
+    save.state.stress={spores:0,grid:0};
     localStorage.setItem(key,JSON.stringify(save));
   });
   await page.reload();
@@ -89,4 +91,50 @@ test('assignments show future consequences in the room before committing, not an
   await expect(page.getByTestId('living-event')).toContainText('露珠灵');
   await expect(page.getByTestId('living-phaser').locator('canvas')).toBeVisible();
   expect(errors).toEqual([]);
+});
+
+test('spores emerge from an overworked greenhouse and are visible on the same map', async ({ page }) => {
+  await page.goto('/');
+  await page.getByTestId('living-start').click();
+  await expect.poll(() => page.evaluate(() => !!localStorage.getItem('monster-apartment:living:v1'))).toBe(true);
+  await page.evaluate(() => {
+    const key='monster-apartment:living:v1';
+    const saved=JSON.parse(localStorage.getItem(key)!);
+    saved.state.tick=11;
+    saved.state.power=10;
+    saved.state.food=11;
+    saved.state.heat=0;
+    saved.state.stress={spores:4,grid:0};
+    saved.state.incidents={spores:0,blackout:0};
+    saved.state.rooms={reactor:'dewdrop',garden:'lantern-beetle',gate:'seedling'};
+    localStorage.setItem(key,JSON.stringify(saved));
+  });
+  await page.reload();
+  await expect(page.getByTestId('living-crisis')).toContainText('孢子侵袭', {timeout:5000});
+  await expect(page.getByTestId('living-event')).toContainText('孢子', {timeout:5000});
+  await expect(page.getByTestId('living-phaser').locator('canvas')).toBeVisible();
+  await page.getByTestId('living-worker-dewdrop').click();
+  await expect(page.getByTestId('living-impact-garden')).toBeVisible();
+  await page.getByTestId('living-room-garden').click();
+  await expect(page.getByTestId('living-room-garden')).toContainText('露珠灵');
+});
+
+test('spore and grid pressure appear as in-world warnings before a crisis', async ({page})=>{
+  await page.goto('/');
+  await page.getByTestId('living-start').click();
+  await expect.poll(()=>page.evaluate(()=>!!localStorage.getItem('monster-apartment:living:v1'))).toBe(true);
+  await page.evaluate(()=>{
+    const key='monster-apartment:living:v1';
+    const saved=JSON.parse(localStorage.getItem(key)!);
+    saved.state.tick=20;
+    saved.state.stress={spores:4,grid:4};
+    saved.state.incidents={spores:0,blackout:0};
+    saved.state.heat=4;
+    saved.state.power=8;
+    localStorage.setItem(key,JSON.stringify(saved));
+  });
+  await page.reload();
+  await expect(page.getByTestId('living-pressure-spores')).toContainText('4/6');
+  await expect(page.getByTestId('living-pressure-grid')).toContainText('4/6');
+  await expect(page.getByTestId('living-phaser').locator('canvas')).toBeVisible();
 });
