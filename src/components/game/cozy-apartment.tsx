@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { CozySpirit } from './cozy-spirit';
 import { CozyRoomArt, CozyRoomIcon, CozyDecorIcon } from './cozy-room-art';
 import {
-  COZY_RESIDENTS, ROOM_DETAILS, FURNISHINGS, MAX_TICKS,
+  COZY_RESIDENTS, ROOM_DETAILS, FURNISHINGS, MAX_TICKS, TICKS_PER_DAY,
   advanceCozy, availableResidents, buildCozyRoom,
   cozyDay, cozyGoal, dailyRent, decorateCozy, moveInCozy, newCozyGame,
   residentActivity, residentHappiness, validCozySave,
@@ -18,10 +18,10 @@ type Locale='zh'|'en';
 const roomTypes:HomeType[]=['nest','bath','workshop','greenhouse'];
 const furnishingTypes:Furnishing[]=['plant','lamp','books'];
 const adjectives:Record<string,{zh:string;en:string;emoji:string}>={
-  sleep:{zh:'正在做梦',en:'Dreaming',emoji:'💤'},
-  work:{zh:'忙自己的小事',en:'Keeping busy',emoji:'✨'},
-  wander:{zh:'在房间里闲逛',en:'Wandering',emoji:'🎵'},
-  visit:{zh:'想去串门',en:'Thinking of a visit',emoji:'💭'},
+  sleep:{zh:'正在做梦',en:'Dreaming',emoji:'z·z'},
+  work:{zh:'忙自己的小事',en:'Keeping busy',emoji:'✦'},
+  wander:{zh:'在房间里闲逛',en:'Wandering',emoji:'♪'},
+  visit:{zh:'想去串门',en:'Thinking of a visit',emoji:'♡'},
 };
 function hydrate():CozyState{
   try {
@@ -93,7 +93,8 @@ export function CozyApartment(){
     setState(current=>moveInCozy(current,selectedRoom,id));
     setPickedApplicant(null);
   };
-  return <main className="cozy-shell" data-testid="cozy-apartment">
+  return <main className={'cozy-shell '+(state.tick%TICKS_PER_DAY>=7?'is-evening':'is-morning')}
+    data-testid="cozy-apartment">
     <header className="cozy-header">
       <div className="cozy-brand">
         <span className="cozy-seal" aria-hidden="true">☾</span>
