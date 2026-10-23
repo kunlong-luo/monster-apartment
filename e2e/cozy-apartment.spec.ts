@@ -130,3 +130,45 @@ test('residents visibly visit nearby neighbors during the day',async({page})=>{
   await expect(page.getByTestId('cozy-room-2')).toContainText('露珠灵');
   await expect(page.getByTestId('cozy-room-4')).toContainText('芽核');
 });
+
+test('rooms use cohesive layered vector dioramas rather than emoji furniture or portrait cards',async({page},testInfo)=>{
+  await page.setViewportSize({width:1440,height:900});
+  const pageErrors:string[]=[];
+  page.on('pageerror',err=>pageErrors.push(err.message));
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  const original=page.getByTestId('cozy-room-4');
+  await expect(original.getByTestId('cozy-art-nest')).toBeVisible();
+  await expect(original.getByTestId('cozy-spirit-seedling')).toBeVisible();
+  await expect(original.locator('.cozy-furniture-main')).toHaveCount(0);
+  // No portrait background, rarity badge, or decorative emoji in the room.
+  await expect(original.locator('.cozy-character > rect')).toHaveCount(0);
+  for(const [index,kind] of [[0,'bath'],[1,'workshop'],[2,'greenhouse']] as const){
+    await page.getByTestId('cozy-room-'+index).click();
+    await page.getByTestId('cozy-build-'+kind).click();
+    await expect(page.getByTestId('cozy-room-'+index).getByTestId('cozy-art-'+kind)).toBeVisible();
+  }
+  await expect(page.locator('.cozy-roof-sign')).toBeVisible();
+  await testInfo.attach('cozy-art-direction-desktop',{
+    body:await page.screenshot(),contentType:'image/png',
+  });
+  expect(pageErrors).toEqual([]);
+});
+
+test('illustrated room architecture and characters stay visible on a narrow phone',async({page},testInfo)=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/');
+  await expect(page.getByTestId('cozy-room-4').getByTestId('cozy-art-nest')).toBeVisible();
+  await expect(page.getByTestId('cozy-spirit-seedling')).toBeVisible();
+  await expect(page.locator('.cozy-building')).toBeVisible();
+  await testInfo.attach('cozy-art-direction-mobile',{
+    body:await page.screenshot(),contentType:'image/png',
+  });
+  const overflows=await page.evaluate(()=>({
+    horizontal:document.documentElement.scrollWidth-innerWidth,
+    vertical:document.documentElement.scrollHeight-innerHeight,
+  }));
+  expect(overflows.horizontal).toBeLessThanOrEqual(1);
+  expect(overflows.vertical).toBeLessThanOrEqual(1);
+});
