@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 import type { LivingState } from '@/core/living-engine';
+import { SPIRIT_BY_ID } from '@/core/spirit-collection';
 
 export class LivingScene extends Phaser.Scene {
   static readonly KEY='living-building';
@@ -162,13 +163,15 @@ export class LivingScene extends Phaser.Scene {
     // Beams from the real stationed defender toward the nearest attacker.
     // A stalled grid has no projectile even when enemies are in range.
     if(state.rooms.gate && state.power>0 && state.phase==='running'){
-      const closest=state.invaders.filter(e=>e.distance<=94)
+      const defender=state.rooms.gate;
+      const role=SPIRIT_BY_ID[defender].role;
+      const range=role==='explore'?95:78;
+      const closest=state.invaders.filter(e=>e.distance<=range)
         .sort((a,b)=>a.distance-b.distance)[0];
       if(closest){
         const aimX=639+closest.distance*2.8;
-        const skill=state.rooms.gate;
-        const role=skill==='seedling'?'guard':skill==='dewdrop'?'repair':'other';
-        const beamColor=role==='guard'?0x99edbb:role==='repair'?0x92d9ee:0xffd88a;
+        const beamColor=role==='guard'?0x99edbb:role==='repair'?0x92d9ee:
+          role==='explore'?0xd7bbff:0xffd88a;
         g.lineStyle(2.5,beamColor,.28+.35*pulse);
         g.lineBetween(545,423,aimX-16,426);
         const flight=reduced?.65:(t*2.6)%1;
