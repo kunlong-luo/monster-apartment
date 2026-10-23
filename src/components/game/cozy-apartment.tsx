@@ -7,6 +7,7 @@ import {
   advanceCozy, availableResidents, buildCozyRoom,
   cozyDay, cozyGoal, dailyRent, decorateCozy, moveInCozy, newCozyGame,
   residentActivity, residentHappiness, validCozySave,
+  relocateCozyResident, previewCozyRelocation, cozyVisits,
 } from '@/core/cozy-engine';
 import type { CozyState, HomeType, Furnishing } from '@/core/cozy-engine';
 import type { SpiritId } from '@/core/spirit-collection';
@@ -36,6 +37,7 @@ export function CozyApartment(){
   const [state,setState]=useState<CozyState>(hydrate);
   const [selectedRoom,setSelectedRoom]=useState<number|null>(null);
   const [pickedApplicant,setPickedApplicant]=useState<SpiritId|null>(null);
+  const [movingFrom,setMovingFrom]=useState<number|null>(null);
   const [language,setLanguage]=useState<Locale>('zh');
   const [paused,setPaused]=useState(false);
   const zh=language==='zh';
@@ -44,6 +46,8 @@ export function CozyApartment(){
   const applicants=availableResidents(state);
   const goal=cozyGoal(state);
   const chosenRoom=selectedRoom===null?null:state.rooms[selectedRoom];
+  const visits=cozyVisits(state);
+  const liveVisit=visits[0];
 
   useEffect(()=>{
     if(state.phase!=='playing'||paused)return;
@@ -55,10 +59,20 @@ export function CozyApartment(){
     catch{/* local-only progress is optional in private windows */}
   },[state]);
   const reset=()=>{
-    setState(newCozyGame());setSelectedRoom(null);setPickedApplicant(null);setPaused(false);
+    setState(newCozyGame());setSelectedRoom(null);setPickedApplicant(null);
+    setMovingFrom(null);setPaused(false);
   };
   const clickRoom=(index:number)=>{
     const room=state.rooms[index];
+    if(movingFrom!==null){
+      if(index===movingFrom){setMovingFrom(null);return;}
+      if(room){
+        setState(current=>relocateCozyResident(current,movingFrom,index));
+        setMovingFrom(null);
+        setSelectedRoom(index);
+      }
+      return;
+    }
     if(pickedApplicant && room && room.resident===null){
       setState(current=>moveInCozy(current,index,pickedApplicant));
       setPickedApplicant(null);setSelectedRoom(index);
@@ -77,6 +91,7 @@ export function CozyApartment(){
   const moveIn=(id:SpiritId)=>{
     if(selectedRoom===null)return;
     setState(current=>moveInCozy(current,selectedRoom,id));
+    setPickedApplicant(null);
   };
   return <main className="cozy-shell" data-testid="cozy-apartment">
     <header className="cozy-header">
@@ -122,15 +137,33 @@ export function CozyApartment(){
             const action=person?residentActivity(state.tick,person.id):null;
             const floor=3-Math.floor(index/2);
             const want=pickedApplicant && !!room && room.resident===null;
+            const canRehouse=movingFrom!==null && movingFrom!==index && !!room;
+            const shift=movingFrom!==null?previewCozyRelocation(state,movingFrom,index):null;
+            const visitingAway=visits.some(visit=>visit.from===index);
+            const visitors=visits.filter(visit=>visit.to===index);
+            const signed=(n:number)=>n>0?'+'+n:String(n);
             return <button type="button" key={index} data-testid={'cozy-room-'+index}
               aria-pressed={active} aria-label={(zh?floor+'楼 ':'Floor '+floor+' ') +
                 (room? ROOM_DETAILS[room.type][language]:(zh?'待建造':'Empty lot'))+
                 (person?' · '+person[language]:'')}
-              className={'cozy-room '+(room?'is-'+room.type:'is-empty')+(active?' is-active':'')+(want?' can-move-in':'')}
+              className={'cozy-room '+(room?'is-'+room.type:'is-empty')+(active?' is-active':'')+
+                (want?' can-move-in':'')+(canRehouse?' can-rehouse':'')}
+              draggable={!!person&&!complete}
+              onDragStart={event=>{
+                if(!person)return;
+                event.dataTransfer.setData('application/x-cozy-room',String(index));
+                event.dataTransfer.effectAllowed='move';
+                setMovingFrom(index);setSelectedRoom(index);setPickedApplicant(null);
+              }}
               onClick={()=>clickRoom(index)}
               onDragOver={event=>event.preventDefault()}
               onDrop={event=>{
                 event.preventDefault();
+                const source=event.dataTransfer.getData('application/x-cozy-room');
+                if(source!=='' && room){
+                  setState(current=>relocateCozyResident(current,Number(source),index));
+                  setMovingFrom(null);setSelectedRoom(index);return;
+                }
                 const id=event.dataTransfer.getData('text/plain') as SpiritId;
                 if(COZY_RESIDENTS.some(r=>r.id===id) && room && !room.resident){
                   setState(current=>moveInCozy(current,index,id));setPickedApplicant(null);setSelectedRoom(index);
@@ -144,11 +177,24 @@ export function CozyApartment(){
                   <span className="cozy-furniture-main">{littleFurniture[room.type]}</span>
                   <span className="cozy-furniture-extra">{room.decor?FURNISHINGS[room.decor].icon:''}</span>
                 </span>
-                {person ? <span className={'cozy-actor is-'+action} data-testid={'cozy-actor-'+person.id}>
-                  <SpiritPortrait id={person.id} size={72}/>
-                  <span className="cozy-activity-bubble">{adjectives[action!].emoji}</span>
-                </span> : <span className="cozy-available">{zh?'待入住 · 选择住户':'Available · Welcome someone'}</span>}
+                {person ? visitingAway ?
+                  <span className="cozy-out-visiting" data-testid={'cozy-away-'+person.id}>
+                    {zh?'去邻居家串门 →':'Visiting a neighbor →'}
+                  </span> :
+                  <span className={'cozy-actor is-'+action} data-testid={'cozy-actor-'+person.id}>
+                    <SpiritPortrait id={person.id} size={72}/>
+                    <span className="cozy-activity-bubble">{adjectives[action!].emoji}</span>
+                  </span> :
+                  <span className="cozy-available">{zh?'待入住 · 选择住户':'Available · Welcome someone'}</span>}
+                {visitors.map(visit=><span key={visit.visitor}
+                  className="cozy-guest" data-testid={'cozy-visit-'+visit.visitor}>
+                  <SpiritPortrait id={visit.visitor} size={40}/>
+                  <small>{zh?'来串门':'Visiting'}</small>
+                </span>)}
                 {person&&<span className="cozy-resident-label">{person[language]} <span>♡ {residentHappiness(state,person.id)}</span></span>}
+                {shift&&<span className="cozy-move-preview" data-testid={'cozy-move-preview-'+index}>
+                  {zh?'搬迁后':'After move'} ♡ {signed(shift.happiness)} · ✦ {signed(shift.rent)}/{zh?'天':'day'}
+                </span>}
               </> : <span className="cozy-empty-invite"><span>＋</span><strong>{zh?'建造房间':'Build a room'}</strong><small>{zh?'让这里亮起灯光':'Light up this space'}</small></span>}
             </button>;
           })}
@@ -158,7 +204,11 @@ export function CozyApartment(){
       <div className="cozy-side-note">
         <span className="cozy-note-eyebrow">TODAY&apos;S NOTE</span>
         <p data-testid="cozy-story" role="status">{newest?.[language]}</p>
-        <small>{zh?'生活在这里慢慢发生 · 每天都会有新变化':'Little moments happen here · each day brings something new'}</small>
+        {liveVisit?<small data-testid="cozy-social-pulse">
+          ♡ {COZY_RESIDENTS.find(resident=>resident.id===liveVisit.visitor)?.[language]}
+          {zh?'正在探望':' is visiting '}
+          {COZY_RESIDENTS.find(resident=>resident.id===liveVisit.host)?.[language]}
+        </small>:<small>{zh?'生活在这里慢慢发生 · 每天都会有新变化':'Little moments happen here · each day brings something new'}</small>}
       </div>
     </section>
 
@@ -173,11 +223,12 @@ export function CozyApartment(){
           <div><strong>{state.rooms[selectedRoom] ?
             ROOM_DETAILS[state.rooms[selectedRoom]!.type][language] :
             (zh?'建造一个新房间':'Build a new room')}</strong>
-            <span>{!chosenRoom?(zh?'房型决定什么样的住户愿意长住':'The room type affects who feels at home'):
-              chosenRoom.resident?(zh?'为住户摆上喜欢的家具':'Decorate for your resident'):
+            <span>{movingFrom!==null?(zh?'点击发光的房间搬迁或交换，收益会即时变化':'Tap a highlighted room to move or swap. See the outcome first.'):
+              !chosenRoom?(zh?'房型决定什么样的住户愿意长住':'The room type affects who feels at home'):
+              chosenRoom.resident?(zh?'布置家具，或搬家结识新邻居':'Furnish the room or move to meet new neighbors'):
               (zh?'欢迎一位等待搬家的住户':'Welcome a waiting visitor')}</span>
           </div>
-          <button className="cozy-dismiss" onClick={()=>setSelectedRoom(null)} aria-label={zh?'收起':'Close'}>✕</button>
+          <button className="cozy-dismiss" onClick={()=>{setSelectedRoom(null);setMovingFrom(null);}} aria-label={zh?'收起':'Close'}>✕</button>
         </div>
         <div className="cozy-option-row">
           {!chosenRoom ? roomTypes.map(type=><button type="button" className="cozy-option" key={type}
@@ -192,12 +243,21 @@ export function CozyApartment(){
                 {zh?'喜欢':'Loves'} {ROOM_DETAILS[guest.favorite][language]}</small>
             </button>;
           }):<p className="cozy-dock-empty">{zh?'访客们都有家了！新邻居会在之后到访。':'All visitors have homes. More will arrive soon.'}</p>) :
-          furnishingTypes.map(decor=><button type="button" className="cozy-option" key={decor}
+          <>
+          <button type="button" className="cozy-option is-relocate" data-testid="cozy-relocate"
+            aria-pressed={movingFrom===selectedRoom}
+            onClick={()=>{setMovingFrom(current=>current===selectedRoom?null:selectedRoom);setPickedApplicant(null);}}>
+            <span>↔</span><strong>{movingFrom!==null?(zh?'取消搬迁':'Cancel move'):(zh?'搬迁 / 交换':'Move / Swap')}</strong>
+            <small>{zh?'试试新的邻居布局':'Change neighbors, not furniture'}</small>
+          </button>
+          {furnishingTypes.map(decor=><button type="button" className="cozy-option" key={decor}
             data-testid={'cozy-decor-'+decor}
             disabled={chosenRoom.decor===decor||state.coins<FURNISHINGS[decor].cost}
             onClick={()=>furnish(decor)}><span>{FURNISHINGS[decor].icon}</span><strong>{FURNISHINGS[decor][language]}</strong>
               <small>{chosenRoom.decor===decor?(zh?'已摆放':'Placed'):'✦ '+FURNISHINGS[decor].cost}</small>
           </button>)}
+          </>
+          }
         </div>
       </> : <>
         <div className="cozy-context-title"><div><strong>{zh?'门口的访客':'Visitors at the door'}</strong>
