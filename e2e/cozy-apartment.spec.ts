@@ -71,3 +71,62 @@ test('daily rent and a new resident offer are visible in the same building',asyn
   await expect(page.getByTestId('cozy-occupancy')).toContainText('2');
   await expect(page.getByTestId('cozy-actor-fern-hare')).toBeVisible();
 });
+
+test('residents can be rehomed with a visible happiness and rent forecast',async({page})=>{
+  const runtimeErrors:string[]=[];
+  page.on('pageerror',error=>runtimeErrors.push(error.message));
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  const rent=await page.getByTestId('cozy-rent').textContent();
+  await page.getByTestId('cozy-room-4').click();
+  await page.getByTestId('cozy-relocate').click();
+  await expect(page.getByTestId('cozy-relocate')).toHaveAttribute('aria-pressed','true');
+  const preview=page.getByTestId('cozy-move-preview-2');
+  await expect(preview).toBeVisible();
+  await expect(preview).toContainText('搬迁后');
+  await page.getByTestId('cozy-room-2').click();
+  await expect(page.getByTestId('cozy-room-2')).toContainText('芽核');
+  await expect(page.getByTestId('cozy-room-4')).toContainText('露珠灵');
+  expect(await page.getByTestId('cozy-rent').textContent()).not.toBe(rent);
+  await expect(page.getByTestId('cozy-story')).toContainText('交换');
+  await page.reload();
+  await expect(page.getByTestId('cozy-room-2')).toContainText('芽核');
+  await expect(page.getByTestId('cozy-room-4')).toContainText('露珠灵');
+  expect(runtimeErrors).toEqual([]);
+});
+
+test('dragging a resident changes homes and preserves their furniture',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  await page.getByTestId('cozy-room-5').click();
+  await page.getByTestId('cozy-build-nest').click();
+  await page.getByTestId('cozy-room-4').dragTo(page.getByTestId('cozy-room-5'));
+  await expect(page.getByTestId('cozy-room-5')).toContainText('芽核');
+  await expect(page.getByTestId('cozy-room-4')).not.toContainText('芽核');
+  await expect(page.getByTestId('cozy-occupancy')).toContainText('1');
+});
+
+test('residents visibly visit nearby neighbors during the day',async({page})=>{
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=7;
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await expect(page.getByTestId('cozy-visit-dewdrop')).toBeVisible({timeout:4000});
+  await expect(page.getByTestId('cozy-social-pulse')).toContainText('露珠灵');
+  await expect(page.getByTestId('cozy-away-dewdrop')).toContainText('串门');
+  await expect(page.getByTestId('cozy-room-2')).toContainText('露珠灵');
+  await expect(page.getByTestId('cozy-room-4')).toContainText('芽核');
+});
