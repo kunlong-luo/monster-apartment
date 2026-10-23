@@ -3,6 +3,7 @@ import {
   newCozyGame, buildCozyRoom, moveInCozy, decorateCozy, advanceCozy,
   residentHappiness, buildingHappiness, dailyRent, availableResidents,
   residentActivity, adjacent, cozyGoal, cozyDay, validCozySave, MAX_TICKS, TICKS_PER_DAY,
+  relocateCozyResident, previewCozyRelocation, cozyVisits,
 } from '../src/core/cozy-engine';
 import type { CozyState } from '../src/core/cozy-engine';
 
@@ -82,6 +83,49 @@ describe('A single cozy apartment building loop',()=>{
     expect(residentActivity(5,'seedling')).toBe('work');
     game=day(game,2);
     expect(availableResidents(game)).toContain('moon-scout');
+  });
+  it('relocates or swaps existing residents without cloning them or moving furniture',()=>{
+    const built=moveInCozy(buildCozyRoom(newCozyGame(),2,'bath'),2,'dewdrop');
+    const originalRent=dailyRent(built);
+    const forecast=previewCozyRelocation(built,4,2);
+    expect(forecast).not.toBeNull();
+    expect(forecast!.moving).toBe('seedling');
+    expect(forecast!.displaced).toBe('dewdrop');
+    expect(forecast!.rent).toBeLessThan(0);
+    const exchanged=relocateCozyResident(built,4,2);
+    expect(exchanged.rooms[2]).toEqual({type:'bath',resident:'seedling',decor:null});
+    expect(exchanged.rooms[4]).toEqual({type:'nest',resident:'dewdrop',decor:'plant'});
+    expect(exchanged.coins).toBe(built.coins);
+    expect(dailyRent(exchanged)).toBe(originalRent+forecast!.rent);
+    expect(exchanged.journal.at(-1)?.zh).toContain('交换');
+    expect(built.rooms[4]?.resident).toBe('seedling');
+    expect(relocateCozyResident(exchanged,2,4).rooms).toEqual(built.rooms);
+    expect(validCozySave(exchanged)).toBe(true);
+  });
+  it('can move a resident into an empty built room while furniture stays behind',()=>{
+    const base=buildCozyRoom(newCozyGame(),5,'nest');
+    const moved=relocateCozyResident(base,4,5);
+    expect(moved.rooms[4]).toMatchObject({type:'nest',decor:'plant',resident:null});
+    expect(moved.rooms[5]).toMatchObject({type:'nest',decor:null,resident:'seedling'});
+    expect(moved.known).toEqual(base.known);
+    expect(relocateCozyResident(base,4,4)).toBe(base);
+    expect(relocateCozyResident(base,4,1)).toBe(base);
+    expect(relocateCozyResident(base,0,5)).toBe(base);
+    expect(previewCozyRelocation(base,4,1)).toBeNull();
+  });
+  it('real visitors appear in neighboring rooms on their own schedules',()=>{
+    const neighbors=moveInCozy(buildCozyRoom(newCozyGame(),2,'bath'),2,'dewdrop');
+    expect(cozyVisits(neighbors,7)).toContainEqual({from:2,to:4,visitor:'dewdrop',host:'seedling'});
+    expect(cozyVisits(neighbors,5)).toEqual([]);
+    const relocated=relocateCozyResident(buildCozyRoom(neighbors,0,'bath'),2,0);
+    expect(cozyVisits(relocated,7)).not.toContainEqual({
+      from:2,to:4,visitor:'dewdrop',host:'seedling',
+    });
+    expect(cozyVisits(relocated,7)).toEqual([]);
+    const bonded=day(neighbors,2);
+    expect(bonded.journal.some(entry=>entry.key==='friends-dewdrop:seedling')).toBe(true);
+    const distant=day(relocated,2);
+    expect(distant.journal.some(entry=>entry.key==='friends-dewdrop:seedling')).toBe(false);
   });
   it('runs a first week, then freezes with a clear resident-based result',()=>{
     let game=newCozyGame();
