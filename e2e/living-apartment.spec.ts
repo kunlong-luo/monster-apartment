@@ -4,7 +4,7 @@ test('one living apartment replaces separated recruitment and battle dashboards'
   const errors:string[]=[];
   page.on('pageerror',e=>errors.push(e.message));
   await page.setViewportSize({width:1440,height:900});
-  await page.goto('/');
+  await page.goto('/survival');
   await expect(page.getByRole('heading',{name:/灵核公寓/})).toBeVisible();
   await expect(page.getByTestId('living-world')).toBeVisible();
   await expect(page.getByTestId('living-phaser').locator('canvas')).toBeVisible();
@@ -33,7 +33,7 @@ test('one living apartment replaces separated recruitment and battle dashboards'
 test('mobile sanctuary offers direct room assignments without page scrolling',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/survival');
   await expect(page.getByTestId('living-room-garden')).toBeVisible();
   await page.getByTestId('living-start').click();
   await page.getByTestId('living-worker-dewdrop').click();
@@ -51,7 +51,7 @@ test('mobile sanctuary offers direct room assignments without page scrolling',as
 });
 
 test('crisis changes the scene inside the same apartment and progress is restorable',async({page})=>{
-  await page.goto('/');
+  await page.goto('/survival');
   await page.getByTestId('living-start').click();
   await expect.poll(()=>page.evaluate(()=>Boolean(localStorage.getItem('monster-apartment:living:v1')))).toBe(true);
   await page.evaluate(()=>{
@@ -76,7 +76,7 @@ test('assignments show future consequences in the room before committing, not an
   const errors:string[]=[];
   page.on('pageerror',error=>errors.push(error.message));
   await page.setViewportSize({width:1360,height:830});
-  await page.goto('/');
+  await page.goto('/survival');
   await page.getByTestId('living-start').click();
   await page.getByTestId('living-worker-dewdrop').click();
   const preview=page.getByTestId('living-impact-reactor');
@@ -94,7 +94,7 @@ test('assignments show future consequences in the room before committing, not an
 });
 
 test('spores emerge from an overworked greenhouse and are visible on the same map', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/survival');
   await page.getByTestId('living-start').click();
   await expect.poll(() => page.evaluate(() => !!localStorage.getItem('monster-apartment:living:v1'))).toBe(true);
   await page.evaluate(() => {
@@ -120,7 +120,7 @@ test('spores emerge from an overworked greenhouse and are visible on the same ma
 });
 
 test('spore and grid pressure appear as in-world warnings before a crisis', async ({page})=>{
-  await page.goto('/');
+  await page.goto('/survival');
   await page.getByTestId('living-start').click();
   await expect.poll(()=>page.evaluate(()=>!!localStorage.getItem('monster-apartment:living:v1'))).toBe(true);
   await page.evaluate(()=>{
