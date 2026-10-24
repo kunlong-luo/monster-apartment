@@ -48,6 +48,6 @@
     ".next",
     "playwright-report",
     "test-results",
-    "v2/src/pixi-stage.ts"
+    "v2"
   ]
 }

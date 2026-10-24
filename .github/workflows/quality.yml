@@ -40,10 +40,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-      # V2 is intentionally isolated from the published Next.js/Pnpm app.
-      # Check actual PixiJS 8 APIs now, before commissioning sprite assets.
-      - run: npm --prefix v2 install --ignore-scripts --no-audit --no-fund
+      # V2 is separately installed, typechecked and bundled with PixiJS.
+      - run: npm --prefix v2 install --no-audit --no-fund
       - run: npm --prefix v2 run typecheck
+      - run: npm --prefix v2 run build
+      - run: test -s v2/dist/assets/workshop.js
 
   e2e:
     runs-on: ubuntu-latest
@@ -62,6 +63,7 @@ jobs:
           path: .next/cache
           key: nextjs-e2e-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
+      - run: npm --prefix v2 install --no-audit --no-fund
       - run: google-chrome --version
       - name: Use existing system font fallback
         run: fc-match "sans-serif"
@@ -76,6 +78,7 @@ jobs:
             test-results/cozy-mobile.png
             test-results/spirit-desktop.png
             test-results/spirit-mobile.png
+            test-results/workshop-v2-mobile.png
           if-no-files-found: warn
           retention-days: 14
 
@@ -93,4 +96,7 @@ jobs:
           version: 12.13.0
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - run: npm --prefix v2 install --no-audit --no-fund
+      - run: npm --prefix v2 run build
       - run: test -f out/index.html
+      - run: test -s v2/dist/assets/workshop.js

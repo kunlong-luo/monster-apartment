@@ -16,12 +16,21 @@ export default defineConfig({
     // CI uses the trusted preinstalled Chrome to avoid flaky CDN downloads.
     ...(process.env.PLAYWRIGHT_USE_SYSTEM_CHROME === '1' ? { channel: 'chrome' as const } : {}),
   } }],
-  webServer: {
-    command: 'pnpm dev',
-    url: baseURL,
-    cwd: import.meta.dirname,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-    env: { NEXT_TELEMETRY_DISABLED: '1' },
-  },
+  webServer: [
+    {
+      command: 'pnpm dev',
+      url: baseURL,
+      cwd: import.meta.dirname,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+      env: { NEXT_TELEMETRY_DISABLED: '1' },
+    },
+    {
+      command: 'npm --prefix v2 run dev',
+      url: 'http://127.0.0.1:3901/',
+      cwd: import.meta.dirname,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+    },
+  ],
 });

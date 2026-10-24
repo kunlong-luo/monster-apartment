@@ -1,13 +1,13 @@
 # 月光工坊 / Workshop V2 — technology reset
 
-**Status: isolated development foundation, NOT the released game.**
+**Status: playable GAMEPLAY LAB (greybox), not the final visual release.**\n\nOpen /workshop/ to try the isolated prototype after CI succeeds; original / still hosts frozen V1. The lab deliberately uses simple Pixi drawing primitives as TEMPORARY technical proxies. This is not the promised painted creature sprite art.
 
 The legacy **V0.10.0** game remains reachable and unchanged. V2 is a new project
 inside this repository, not an attempt to reskin the old six-room simulation.
 
 ## Technical decision
 
-- **PixiJS 8.21.0 / WebGL** owns the entire gameplay canvas, camera, actors,
+- **PixiJS 8.22.0 / WebGL** owns the entire gameplay canvas, camera, actors,
   scene graph, animation and hit areas. WebGPU is not the baseline because its
   browser support is less consistent.
 - **Texture atlases (PNG / WebP)** for all game objects. Each character requires
@@ -35,6 +35,27 @@ This is an intentionally narrow *test of whether the mechanics are fun*.
 The existing pet-raising/roommate happiness and commission loops will **not**
 be imported into V2. Fail early on the core loop before adding buildings.
 
+## Play the factory laboratory
+
+Run `cd v2 && npm install && npm run dev` to launch the standalone WebGL lab
+at http://127.0.0.1:3901/ . In the laboratory:
+
+1. Select the existing greenhouse (plot 08) and move it next to the pump (plot 06).
+2. Build a kiln in the newly emptied spot (plot 08).
+3. Assign Brook to the pump, Fern to the greenhouse, Cinder to the kiln.
+4. Press **Start shift**. Water flows to the greenhouse; two spores flow into
+   the kiln, producing two cores. Meet the timed contract and earn capital.
+5. Try a broken layout or the wrong worker to see the concrete bottleneck and
+   missed deadline. Reset to try again.
+
+The board itself is PixiJS/WebGL and pointer-interactive. The surrounding
+operation console uses semantic DOM controls for input accessibility. V2 uses
+its own `monster-apartment:workshop-v2-lab` localStorage key.
+
+The lab is a **playability experiment**, not an approved visual overhaul:
+the temporary shapes are clearly marked and must be replaced by approved
+painted sprites before any official V2 release.
+
 ## Asset quality gate
 
 The Pixi renderer requires all entries below before it can mount:
@@ -46,6 +67,4 @@ A consistent visual bible, size/proportion rules, readable silhouettes, proper
 sprite-sheet pose changes and composition on a real phone are prerequisites to
 publishing V2. No SVG-to-PNG conversion shortcut.
 
-The new folder can be typechecked separately after installing dependencies:
-`cd v2 && npm install && npm run check`.
-The existing CI is unchanged because the new visual art is not ready.
+V2 typecheck, static bundling and browser smoke tests are tracked separately\nfrom the frozen original game. The greybox preview can ship to its own\n/workshop/ path, but never replaces the original home page.

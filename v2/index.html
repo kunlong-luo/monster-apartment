@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#172233"/>
+<meta name="description" content="月光工坊 V2 · 连通设备、安排怪物，在期限内交付晶核。"/>
+<title>月光工坊 · V2 生产链试玩实验</title>
+<link rel="stylesheet" href="./assets/workshop.css"/>
+</head>
+<body>
+<main id="root" class="lab">
+  <header class="top">
+    <div class="logo"><span>✧</span><div><strong>月光工坊</strong><small>MONSTER WORKSHOP · GAMEPLAY LAB</small></div></div>
+    <div class="top-stats"><span>第 <b id="day" data-testid="v2-day">1</b> 天</span><span>✦ <b id="coins" data-testid="v2-coins">100</b></span>
+    <button type="button" id="reset" data-testid="v2-reset" aria-label="重新开始">↻</button></div>
+  </header>
+  <section class="middle">
+    <div class="world">
+      <div class="stage-label"><span>● 生产与建设区</span><small>玩法灰盒，角色美术尚未验收</small></div>
+      <div id="stage" data-testid="v2-stage" aria-label="PixiJS WebGL 工坊场景：点击设备或空地进行操作"></div>
+      <p id="selected" class="selection">点地块查看、建造或派工</p>
+    </div>
+    <aside class="sidebar">
+      <section class="panel">
+        <small class="eyebrow">TODAY'S CONTRACT</small><h2>晶核紧急订单</h2>
+        <div class="target"><b id="core" data-testid="v2-stock">0</b><span>/</span><b id="target">2</b><small>晶核</small></div>
+        <div class="meter"><div id="progress"></div></div>
+        <div class="contract-footer"><span>剩 <b id="deadline" data-testid="v2-deadline">5</b> 天</span><span>完成 <b id="completed" data-testid="v2-completed">0</b> · 逾期 <b id="failed" data-testid="v2-failed">0</b></span></div>
+      </section>
+      <section class="panel">
+        <small class="eyebrow">LAST SHIFT / 生产报告</small>
+        <div class="flow">
+          <div><b id="water" data-testid="v2-water">0</b><small>水汽</small></div><span>→</span>
+          <div><b id="fiber" data-testid="v2-fiber">0</b><small>孢子</small></div><span>→</span>
+          <div><b id="output" data-testid="v2-output">0</b><small>晶核</small></div>
+        </div>
+        <p id="diagnosis" data-testid="v2-diagnosis" role="status"></p>
+      </section>
+    </aside>
+  </section>
+  <section class="console">
+    <div class="console-panel">
+      <div class="panel-head"><b>工种分配</b><small>先选怪物，再点机器</small></div>
+      <div id="actions" class="options"></div>
+    </div>
+    <div class="console-panel">
+      <div class="panel-head"><b>建设设备</b><small>先选机器，再点空地</small></div>
+      <div id="catalog" class="options"></div>
+    </div>
+    <div class="main-actions">
+      <button type="button" id="move" data-testid="v2-move" disabled>移动机器 ↗</button>
+      <button type="button" id="shift" data-testid="v2-shift">开始一天生产 ▶</button>
+    </div>
+  </section>
+  <footer><p id="status" data-testid="v2-status" role="status"></p><small>V2 独立实验 · 非正式角色动画</small></footer>
+  <span id="summary" class="sr-only"></span>
+</main>
+<script type="module" src="./assets/workshop.js"></script>
+</body>
+</html>
