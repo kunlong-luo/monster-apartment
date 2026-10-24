@@ -50,6 +50,8 @@ export class CozyAtmosphereScene extends Phaser.Scene {
     const state=this.snapshot;
     if(!g||!state)return;
     g.clear();
+    // Phaser RESIZE tracks the real room-grid rectangle, including portrait phones.
+    g.setScale(this.scale.width/1200,this.scale.height/680);
     const t=this.reduced?0:time*.001;
     for(let i=0;i<state.rooms.length;i++){
       const room=state.rooms[i];
