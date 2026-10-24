@@ -1,7 +1,7 @@
 import { Application, AnimatedSprite, Container, Graphics, Sprite, Text } from 'pixi.js';
 import { makeRasterArt } from './raster-sprites';
-import { BOARD_SIZE, WIDTH, MACHINES, WORKERS, linked } from './workshop-engine';
-import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
+import { BOARD_SIZE, WIDTH, MACHINES, linked } from './workshop-engine';
+import type { WorkshopState, Craft } from './workshop-engine';
 
 export type LabSelect={plot:(index:number)=>void};
 export type LabView={sync:(state:WorkshopState,selected:number|null)=>void; destroy:()=>void};
