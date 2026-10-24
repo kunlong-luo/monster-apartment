@@ -158,6 +158,9 @@ test('rooms use cohesive layered vector dioramas rather than emoji furniture or 
     await expect(page.getByTestId('cozy-room-'+index).getByTestId('cozy-art-'+kind)).toBeVisible();
   }
   await expect(page.locator('.cozy-roof-sign')).toBeVisible();
+  await expect(page.locator('.cozy-street-backdrop')).toBeVisible();
+  await expect(page.locator('.cozy-street-backdrop .cozy-street-window').first()).toBeAttached();
+  await expect(page.locator('.cozy-bath-steam').first()).toBeVisible();
   await page.screenshot({path:'test-results/cozy-desktop.png'});
   expect(pageErrors).toEqual([]);
 });
@@ -169,6 +172,8 @@ test('illustrated room architecture and characters stay visible on a narrow phon
   await expect(page.getByTestId('cozy-room-4').getByTestId('cozy-art-nest')).toBeVisible();
   await expect(page.getByTestId('cozy-spirit-seedling')).toBeVisible();
   await expect(page.locator('.cozy-building')).toBeVisible();
+  await expect(page.locator('.cozy-street-backdrop')).toBeVisible();
+  await expect(page.locator('.cozy-street-cloud').first()).toHaveCSS('animation-name','none');
   await page.screenshot({path:'test-results/cozy-mobile.png'});
   const overflows=await page.evaluate(()=>({
     horizontal:document.documentElement.scrollWidth-innerWidth,
