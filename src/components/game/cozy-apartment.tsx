@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { CozySpirit } from './cozy-spirit';
 import { CozyStreetBackdrop } from './cozy-street-backdrop';
+import { CozyRoomForeground } from './cozy-room-foreground';
 import { CozyRoomArt, CozyRoomIcon, CozyDecorIcon } from './cozy-room-art';
 import {
   COZY_RESIDENTS, ROOM_DETAILS, FURNISHINGS, MAX_TICKS, TICKS_PER_DAY,
@@ -183,16 +184,17 @@ export function CozyApartment(){
                   <span className="cozy-out-visiting" data-testid={'cozy-away-'+person.id}>
                     {zh?'去邻居家串门 →':'Visiting a neighbor →'}
                   </span> :
-                  <span className={'cozy-actor is-'+action} data-testid={'cozy-actor-'+person.id}>
-                    <CozySpirit id={person.id} size={82}/>
-                    <span className="cozy-activity-bubble">{adjectives[action!].emoji}</span>
+                  <span className={'cozy-actor is-'+action} title={adjectives[action!][language]}
+                    data-testid={'cozy-actor-'+person.id}>
+                    <CozySpirit id={person.id} size={82} activity={action!}/>
                   </span> :
                   <span className="cozy-available">{zh?'待入住 · 选择住户':'Available · Welcome someone'}</span>}
                 {visitors.map(visit=><span key={visit.visitor}
                   className="cozy-guest" data-testid={'cozy-visit-'+visit.visitor}>
-                  <CozySpirit id={visit.visitor} size={52}/>
+                  <CozySpirit id={visit.visitor} size={52} activity="visit"/>
                   <small>{zh?'来串门':'Visiting'}</small>
                 </span>)}
+                <CozyRoomForeground type={room.type} activity={action}/>
                 {person&&<span className="cozy-resident-label">{person[language]} <span>♡ {residentHappiness(state,person.id)}</span></span>}
                 {shift&&<span className="cozy-move-preview" data-testid={'cozy-move-preview-'+index}>
                   {zh?'搬迁后':'After move'} ♡ {signed(shift.happiness)} · ✦ {signed(shift.rent)}/{zh?'天':'day'}
