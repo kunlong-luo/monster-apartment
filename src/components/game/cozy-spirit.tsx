@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import { SPIRIT_ART } from '@/core/spirit-art';
+import { CozySpiritSignature } from './cozy-spirit-signature';
 import type { HomeType, ResidentActivity } from '@/core/cozy-engine';
 import type { SpiritId } from '@/core/spirit-collection';
 
@@ -33,7 +34,7 @@ export function CozySpirit({id,size=80,activity,frame=0,roomType}:{
     :'M86 77 Q99 69 101 79 Q101 87 84 85Z';
   const poseRotation=sleeping?-5:activity==='work'?(alternate?3:-3):0;
   return <svg data-testid={'cozy-spirit-'+id} viewBox="0 0 120 120" width={size} height={size}
-    className={'cozy-character cozy-spirit-svg'+(activity?' is-'+activity:'')}
+    className={'cozy-character cozy-spirit-svg is-kind-'+id+(activity?' is-'+activity:'')}
     aria-hidden="true" focusable="false">
     <defs>
       <linearGradient id={body} x1="0" x2=".8" y1="0" y2="1">
@@ -55,7 +56,7 @@ export function CozySpirit({id,size=80,activity,frame=0,roomType}:{
       fill="#1c2332" opacity=".43"/>
     <ellipse cx="60" cy="60" rx="56" ry="54" fill={'url(#'+ambient+')'}
       opacity={activity?'1':'.66'}/>
-    <g className="cozy-spirit-puppet">
+    <g className="cozy-spirit-puppet" transform="translate(60 60) scale(1.14) translate(-60 -60)">
       <g className="cozy-spirit-pose" transform={'rotate('+poseRotation+' 60 90)'}>
       <g className="cozy-spirit-appendages">
         <path d={art.back} fill={art.highlight} fillOpacity=".79" stroke={art.shadow}
@@ -87,6 +88,7 @@ export function CozySpirit({id,size=80,activity,frame=0,roomType}:{
             <circle cx="47.9" cy={art.eyesY-2.2} r="1.8" fill="#fff"/>
             <circle cx="72" cy={art.eyesY-2.2} r="1.8" fill="#fff"/>
           </g>}
+      <CozySpiritSignature id={id}/>
       <ellipse cx="37" cy={art.eyesY+11} rx="7" ry="4" fill="#f5ac9a" opacity=".2"/>
       <ellipse cx="84" cy={art.eyesY+11} rx="7" ry="4" fill="#f5ac9a" opacity=".2"/>
       <g className="cozy-spirit-arms" fill={art.primary}

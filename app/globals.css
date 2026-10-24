@@ -2050,3 +2050,46 @@
 @media(prefers-reduced-motion:reduce){
   .cozy-commission-track i{transition:none!important}
 }
+
+/* V0.9.9 pivot: monsters, not UI panels, carry the personality.
+ * Enlarged costumes and face details remain inside original room staging. */
+.cozy-room .cozy-actor.is-staged .cozy-character{
+  width:clamp(92px,8.1vw,118px);height:auto;
+  filter:drop-shadow(0 9px 4px #10203188) drop-shadow(0 0 5px #f9dab954);
+}
+.cozy-room .cozy-guest.is-staged .cozy-character{
+  width:clamp(53px,4.4vw,66px);height:auto;
+}
+.cozy-room .cozy-actor.is-staged{
+  z-index:5;filter:saturate(1.12) contrast(1.09);
+}
+.cozy-room .cozy-actor.is-staged::before{
+  content:'';position:absolute;left:-6%;bottom:9%;
+  width:96%;height:52%;border-radius:50%;
+  background:radial-gradient(ellipse,#ffe4a445,transparent 68%);
+  opacity:.6;pointer-events:none;
+}
+.cozy-room .cozy-actor.is-staged.is-sleep::before{opacity:.24}
+.cozy-resident-label.is-cared{
+  border-color:#e9d396;
+  background:linear-gradient(110deg,#554955f2,#806758ef);
+  box-shadow:0 0 12px #ffd68b5e;
+}
+.cozy-care-mark{
+  color:#fff0b1!important;font-size:11px;margin-left:4px;
+  font-style:normal;text-shadow:0 0 5px #ffe7af;
+}
+.cozy-room .cozy-actor.is-staged.is-work .cozy-character{
+  filter:drop-shadow(0 7px 4px #171a2a9b) drop-shadow(0 0 4px #ffe7bd72);
+}
+@media(max-width:760px){
+  .cozy-room .cozy-actor.is-staged .cozy-character{
+    width:clamp(55px,16vw,70px);height:auto;
+  }
+  .cozy-room .cozy-guest.is-staged .cozy-character{
+    width:clamp(32px,9vw,45px);height:auto;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .cozy-room .cozy-actor.is-staged,.cozy-care-mark{animation:none!important}
+}

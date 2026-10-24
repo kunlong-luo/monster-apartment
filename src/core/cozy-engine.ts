@@ -199,6 +199,50 @@ export function cozyCommission(state:CozyState,chapter=Math.floor(state.tick/MAX
     ready:completed===steps.length,earned,award:earned?10:24};
 }
 
+/** An actual direct player action, once per in-game day across the entire
+ * building. The player chooses whom to spend their time helping. This uses
+ * V1 seen keys (bounded) rather than adding another counter to save data. */
+export const cozyCareKey=(tick:number,id:SpiritId)=>
+  'care-'+cozyDay(tick)+'-'+id;
+export const cozyCareUsedToday=(state:CozyState):boolean=>
+  state.seen.some(key=>key.startsWith('care-'+cozyDay(state.tick)+'-'));
+export const cozyCareBoost=(state:CozyState,id:SpiritId):number=>
+  state.seen.includes(cozyCareKey(state.tick,id))?11:0;
+const COZY_CARE_SCENES:Partial<Record<SpiritId,{zh:string;en:string}>>={
+  seedling:{zh:'你帮芽核扶正长歪的枝叶。它开心地递给你一粒会发光的种子。',
+    en:'You straighten Seedcore’s crooked leaves. It offers you a glowing seed.'},
+  dewdrop:{zh:'你帮露珠灵调好了浴室的水温。它咕噜一声，吹出一串彩色泡泡。',
+    en:'You warm Dewdrop’s bath to just the right temperature. It blows rainbow bubbles.'},
+  'lantern-beetle':{zh:'你和灯甲虫一起装好坏掉的小灯。窗边亮起一颗温暖的星星。',
+    en:'You help Lanternbeetle repair its tiny lamp. A warm star lights up the window.'},
+  'fern-hare':{zh:'你替蕨尾兔抱稳一篮种子。它用耳朵轻轻碰了碰你的手。',
+    en:'You hold Fernhare’s seed basket. Its soft ear brushes your hand in thanks.'},
+  'moon-scout':{zh:'你帮月影雀把散落的故事页按顺序排好，它在扉页为你画了一颗月亮。',
+    en:'You sort Moonscout’s loose story pages. It draws a little moon on the first page.'},
+  'pebble-crab':{zh:'你替卵石蟹找回了掉进地板缝的小石子。它举起两只钳子庆祝。',
+    en:'You retrieve Pebblecrab’s favorite pebble. It waves both claws in celebration.'},
+  'whisper-cat':{zh:'你在窗台放了软垫，谧语猫终于安心地蜷起尾巴。',
+    en:'You put a cushion on the sill. Whispercat curls its tail contentedly.'},
+  'moss-keeper':{zh:'你帮苔光园主浇了最难够到的那盆苔藓，叶片泛起微光。',
+    en:'You water Mosskeeper’s highest planter. The moss glows with gratitude.'},
+  'prism-mole':{zh:'你递上工具，晶脊鼹修好一块碎掉的水晶窗玻璃。',
+    en:'You pass Prismmole a tool. It repairs a glittering crystal windowpane.'},
+};
+export function careForCozyResident(state:CozyState,id:SpiritId):CozyState {
+  const room=state.rooms.find(room=>room?.resident===id);
+  if(state.phase!=='playing'||!room||cozyCareUsedToday(state))return state;
+  const goodFit=profile(id)?.favorite===room.type;
+  const reward=goodFit?3:1;
+  const scene=COZY_CARE_SCENES[id]??{
+    zh:'你陪住户做完了今天的小事，它朝你轻轻点头。',
+    en:'You share a small daily chore with your resident.'};
+  const key=cozyCareKey(state.tick,id);
+  const result={...state,coins:state.coins+reward};
+  return event(result,key,'story',
+    scene.zh+' ♡ +11（今天） · ✦ +'+reward+'。',
+    scene.en+' ♡ +11 (today) · ✦ +'+reward+'.');
+}
+
 export function residentHappiness(state:CozyState,id:SpiritId):number {
   const roomIndex=state.rooms.findIndex(room=>room?.resident===id);
   if(roomIndex===-1)return 0;
@@ -212,6 +256,7 @@ export function residentHappiness(state:CozyState,id:SpiritId):number {
   }
   value+=cozyNeighborhood(state,id).total;
   value+=cozyResidentWish(state,id)?.effect??0;
+  value+=cozyCareBoost(state,id);
   return Math.max(10,Math.min(100,value));
 }
 export const buildingHappiness=(state:CozyState):number=>{

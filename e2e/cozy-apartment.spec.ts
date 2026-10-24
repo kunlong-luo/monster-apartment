@@ -660,3 +660,59 @@ test('chapter commissions present legible progress on a 390px phone without extr
   await page.getByTestId('cozy-room-2').click();
   await expect(page.getByTestId('cozy-build-bath')).toBeVisible();
 });
+
+
+test('helping a resident is an immediate once-a-day scene action, not another control button',async({page})=>{
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  const coinsBefore=Number(await page.getByTestId('cozy-coins').textContent());
+  const before=Number((await page.getByTestId('cozy-happiness').textContent())!.split('/')[0]);
+  await page.getByTestId('cozy-room-4').click();
+  await expect(page.getByTestId('cozy-actions')).toContainText('再点一下这间房');
+  await page.getByTestId('cozy-room-4').click();
+  await expect(page.getByTestId('cozy-story')).toContainText('帮芽核扶正长歪的枝叶');
+  await expect(page.getByTestId('cozy-cared-seedling')).toBeVisible();
+  const after=Number((await page.getByTestId('cozy-happiness').textContent())!.split('/')[0]);
+  expect(after).toBeGreaterThan(before);
+  expect(Number(await page.getByTestId('cozy-coins').textContent())).toBe(coinsBefore+3);
+  await expect(page.getByTestId('cozy-actions')).toContainText('今天已经陪一位住户');
+  await page.getByTestId('cozy-room-4').click();
+  await page.getByTestId('cozy-room-4').click();
+  await expect(page.getByTestId('cozy-coins')).toHaveText(String(coinsBefore+3));
+  await page.reload();
+  await expect(page.getByTestId('cozy-cared-seedling')).toBeVisible();
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=12;
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-cared-seedling')).toHaveCount(0);
+  await page.getByTestId('cozy-room-4').click();
+  await expect(page.getByTestId('cozy-actions')).toContainText('再点一下这间房');
+});
+
+test('species-specific costumes are visible on stage and in the visitor lineup',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-room-4').locator('.cozy-signature.is-seedling')).toBeAttached();
+  await expect(page.getByTestId('cozy-applicant-dewdrop').locator('.cozy-signature.is-dewdrop')).toBeAttached();
+  await expect(page.getByTestId('cozy-applicant-lantern-beetle').locator('.cozy-signature.is-lantern-beetle')).toBeAttached();
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await expect(page.getByTestId('cozy-room-2').locator('.cozy-signature.is-dewdrop')).toBeAttached();
+  const size=await page.getByTestId('cozy-actor-seedling').locator('.cozy-character')
+    .evaluate(el=>el.getBoundingClientRect().width);
+  expect(size).toBeGreaterThanOrEqual(55);
+  const overflow=await page.evaluate(()=>({
+    x:document.documentElement.scrollWidth-innerWidth,
+    y:document.documentElement.scrollHeight-innerHeight,
+  }));
+  expect(overflow.x).toBeLessThanOrEqual(1);
+  expect(overflow.y).toBeLessThanOrEqual(1);
+});

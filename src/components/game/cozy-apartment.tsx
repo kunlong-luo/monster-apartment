@@ -18,6 +18,7 @@ import {
   cozyDay, cozyGoal, cozyDailyIncome, cozyNeighborhood, decorateCozy, moveInCozy, newCozyGame,
   residentHappiness, validCozySave, resumeCozySave, cozyResidentWish,
   relocateCozyResident, previewCozyRelocation, cozyVisits, cozyCommission, cozyReputation,
+  careForCozyResident, cozyCareUsedToday, cozyCareBoost,
 } from '@/core/cozy-engine';
 import type { CozyState, HomeType, Furnishing } from '@/core/cozy-engine';
 import type { SpiritId } from '@/core/spirit-collection';
@@ -59,6 +60,7 @@ export function CozyApartment(){
   const newest=state.journal[state.journal.length-1];
   const applicants=availableResidents(state);
   const goal=cozyGoal(state);
+  const careUsed=cozyCareUsedToday(state);
   const income=cozyDailyIncome(state);
   const commission=cozyCommission(state);
   const reputation=cozyReputation(state);
@@ -105,6 +107,10 @@ export function CozyApartment(){
     if(pickedApplicant && room && room.resident===null){
       commitRoomAction(moveInCozy(state,index,pickedApplicant),'welcome',[index]);
       setPickedApplicant(null);setSelectedRoom(index);
+      return;
+    }
+    if(selectedRoom===index && room?.resident && !careUsed){
+      commitRoomAction(careForCozyResident(state,room.resident),'furnish',[index]);
       return;
     }
     setSelectedRoom(current=>current===index?null:index);
@@ -242,10 +248,12 @@ export function CozyApartment(){
                 <CozyRoomForeground type={room.type} activity={action}/>
                 {roomMoments[index]&&<CozyRoomMoment key={roomMoments[index].sequence}
                   kind={roomMoments[index].kind}/>}
-                {person&&<span className={'cozy-resident-label'+(cozyNeighborhood(state,person.id).friendship>0?' has-bond':'')}
+                {person&&<span className={'cozy-resident-label'+(cozyNeighborhood(state,person.id).friendship>0?' has-bond':'')+
+                  (cozyCareBoost(state,person.id)>0?' is-cared':'')}
                   title={zh?'邻里照料 +'+cozyNeighborhood(state,person.id).care+' · 羁绊 +'+cozyNeighborhood(state,person.id).friendship
                     :'Neighbor care +'+cozyNeighborhood(state,person.id).care+' · friendship +'+cozyNeighborhood(state,person.id).friendship}>
                   {person[language]} <span>♡ {residentHappiness(state,person.id)}</span>
+                  {cozyCareBoost(state,person.id)>0&&<em className="cozy-care-mark" data-testid={'cozy-cared-'+person.id}>✿</em>}
                   {cozyResidentWish(state,person.id)&&<em data-testid={'cozy-wish-'+person.id}
                     title={(zh?cozyResidentWish(state,person.id)!.zh:cozyResidentWish(state,person.id)!.en)+
                       ' · '+(zh?cozyResidentWish(state,person.id)!.hintZh:cozyResidentWish(state,person.id)!.hintEn)}
@@ -319,10 +327,10 @@ export function CozyApartment(){
             (zh?'建造一个新房间':'Build a new room')}</strong>
             <span>{movingFrom!==null?(zh?'点击发光的房间搬迁或交换，收益会即时变化':'Tap a highlighted room to move or swap. See the outcome first.'):
               !chosenRoom?(zh?'房型决定什么样的住户愿意长住':'The room type affects who feels at home'):
-              chosenRoom.resident?(zh?'邻里照料 +'+(neighborCare?.care??0)+' · 真实羁绊 +'+(neighborCare?.friendship??0)+
-                  (selectedWish?' · 心愿：'+selectedWish.zh+(selectedWish.met?' 已满足 +'+selectedWish.effect:' 未满足 -4'):'')
-                :'Neighbor care +'+(neighborCare?.care??0)+' · friendship +'+(neighborCare?.friendship??0)+
-                  (selectedWish?' · Wish: '+selectedWish.en+(selectedWish.met?' met +'+selectedWish.effect:' unmet -4'):''))
+              chosenRoom.resident?(zh?(careUsed?'今天已经陪一位住户完成小事。':'再点一下这间房，陪住户做一件小事：♡ +11、✦ +1～3。')+
+                  (selectedWish?' 心愿：'+selectedWish.zh+(selectedWish.met?' 已满足':' 未满足'):'')
+                :(careUsed?'You have helped a resident today.':'Tap this room again to share a daily chore: ♡ +11, ✦ +1–3.')+
+                  (selectedWish?' Wish: '+selectedWish.en+(selectedWish.met?' met':' unmet'):''))
                 :
               (zh?'欢迎一位等待搬家的住户':'Welcome a waiting visitor')}</span>
             {selectedWish&&<small className="cozy-wish-help" data-testid="cozy-wish-help">

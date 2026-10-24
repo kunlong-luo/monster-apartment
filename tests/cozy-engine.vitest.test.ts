@@ -5,6 +5,7 @@ import {
   residentActivity, adjacent, cozyGoal, cozyDay, validCozySave, MAX_TICKS, TICKS_PER_DAY,
   relocateCozyResident, previewCozyRelocation, cozyVisits, cozyNeighborhood, cozyDailyIncome,
   cozyResidentWish, resumeCozySave, cozyCommission, cozyReputation,
+  careForCozyResident, cozyCareUsedToday, cozyCareBoost,
 } from '../src/core/cozy-engine';
 import type { CozyState } from '../src/core/cozy-engine';
 
@@ -338,6 +339,40 @@ describe('A single cozy apartment building loop',()=>{
     expect(state.seen.length).toBeLessThanOrEqual(100);
     expect(cozyReputation(state)).toBe(1);
     expect(validCozySave(state)).toBe(true);
+  });
+
+  it('direct care is a real once-a-day choice with instant character comfort',()=>{
+    const original=newCozyGame();
+    expect(cozyCareUsedToday(original)).toBe(false);
+    expect(cozyCareBoost(original,'seedling')).toBe(0);
+    const happy=residentHappiness(original,'seedling');
+    const helped=careForCozyResident(original,'seedling');
+    expect(helped).not.toBe(original);
+    expect(helped.coins).toBe(original.coins+3);
+    expect(helped.rooms).toEqual(original.rooms);
+    expect(cozyCareBoost(helped,'seedling')).toBe(11);
+    expect(residentHappiness(helped,'seedling')).toBe(Math.min(100,happy+11));
+    expect(cozyCareUsedToday(helped)).toBe(true);
+    expect(helped.journal.at(-1)?.zh).toContain('帮芽核扶正长歪的枝叶');
+    expect(careForCozyResident(helped,'seedling')).toBe(helped);
+    expect(careForCozyResident(helped,'dewdrop')).toBe(helped);
+    const tomorrow=day(helped);
+    expect(cozyCareBoost(tomorrow,'seedling')).toBe(0);
+    expect(cozyCareUsedToday(tomorrow)).toBe(false);
+    expect(careForCozyResident(tomorrow,'seedling')).not.toBe(tomorrow);
+    expect(validCozySave(tomorrow)).toBe(true);
+  });
+  it('daily character interaction rewards personality-fit rooms rather than idle tapping',()=>{
+    let game=moveInCozy(buildCozyRoom(newCozyGame(),2,'bath'),2,'dewdrop');
+    const helped=careForCozyResident(game,'dewdrop');
+    expect(helped.coins).toBe(game.coins+3);
+    expect(helped.journal.at(-1)?.zh).toContain('水温');
+    game=relocateCozyResident(game,2,4);
+    const mismatched=careForCozyResident(game,'dewdrop');
+    expect(mismatched.coins).toBe(game.coins+1);
+    expect(cozyCareBoost(mismatched,'dewdrop')).toBe(11);
+    expect(validCozySave(mismatched)).toBe(true);
+    expect(careForCozyResident(newCozyGame(),'moon-scout')).toEqual(newCozyGame());
   });
   it('rejects tampered saves and keeps old prototype saves separate',()=>{
     const game=newCozyGame();
