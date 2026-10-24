@@ -65,7 +65,6 @@ export function CozyApartment(){
   const commission=cozyCommission(state);
   const reputation=cozyReputation(state);
   const chosenRoom=selectedRoom===null?null:state.rooms[selectedRoom];
-  const neighborCare=chosenRoom?.resident?cozyNeighborhood(state,chosenRoom.resident):null;
   const selectedWish=chosenRoom?.resident?cozyResidentWish(state,chosenRoom.resident):null;
   const visits=cozyVisits(state);
   const liveVisit=visits[0];
