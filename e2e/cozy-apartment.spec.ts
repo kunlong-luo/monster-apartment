@@ -223,3 +223,39 @@ test('new staged animation obeys reduced-motion on mobile',async({page})=>{
   expect(overflow.x).toBeLessThanOrEqual(1);
   expect(overflow.y).toBeLessThanOrEqual(1);
 });
+
+test('construction, resident arrival and furnishing animate only real room changes',async({page})=>{
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  const room=page.getByTestId('cozy-room-2');
+  await expect(page.locator('.cozy-room-moment')).toHaveCount(0);
+  await room.click();
+  await page.getByTestId('cozy-build-bath').click();
+  await expect(room.getByTestId('cozy-moment-build')).toBeAttached();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await expect(room.getByTestId('cozy-moment-welcome')).toBeAttached();
+  await page.getByTestId('cozy-decor-books').click();
+  await expect(room.getByTestId('cozy-moment-furnish')).toBeAttached();
+  await page.getByRole('button',{name:'重新开始'}).click();
+  await expect(page.locator('.cozy-room-moment')).toHaveCount(0);
+  await expect(page.getByTestId('cozy-coins')).toHaveText('105');
+});
+
+test('weather and clock art direction is save-compatible and accessible',async({page})=>{
+  await page.goto('/');
+  await expect.poll(()=>page.evaluate(()=>
+    localStorage.getItem('monster-apartment:cozy:v1')!==null)).toBe(true);
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const state=JSON.parse(localStorage.getItem(key)!);
+    state.tick=24; // day 3: rain, dawn
+    localStorage.setItem(key,JSON.stringify(state));
+  });
+  await page.reload();
+  const stage=page.getByTestId('cozy-apartment');
+  await expect(stage).toHaveAttribute('data-world-weather','rain');
+  await expect(stage).toHaveAttribute('data-world-light','dawn');
+  await expect(page.locator('.cozy-weather')).toBeAttached();
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect(page.locator('.cozy-weather')).toHaveCSS('animation-name','none');
+});

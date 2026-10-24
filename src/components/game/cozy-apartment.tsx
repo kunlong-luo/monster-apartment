@@ -1,10 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { CozySpirit } from './cozy-spirit';
 import { CozyStreetBackdrop } from './cozy-street-backdrop';
 import { CozyRoomForeground } from './cozy-room-foreground';
+import { CozyRoomMoment } from './cozy-room-moment';
+import type { CozyMoment, CozyMomentKind } from './cozy-room-moment';
+import { cozyWorldLight, cozyWorldWeather } from '@/game/cozy-world-direction';
 import { CozyRoomArt, CozyRoomIcon, CozyDecorIcon } from './cozy-room-art';
 import {
   COZY_RESIDENTS, ROOM_DETAILS, FURNISHINGS, MAX_TICKS, TICKS_PER_DAY,
@@ -46,6 +49,8 @@ export function CozyApartment(){
   const [movingFrom,setMovingFrom]=useState<number|null>(null);
   const [language,setLanguage]=useState<Locale>('zh');
   const [paused,setPaused]=useState(false);
+  const [roomMoments,setRoomMoments]=useState<Record<number,CozyMoment>>({});
+  const momentId=useRef(0);
   const zh=language==='zh';
   const complete=state.phase==='complete';
   const newest=state.journal[state.journal.length-1];
@@ -54,6 +59,8 @@ export function CozyApartment(){
   const chosenRoom=selectedRoom===null?null:state.rooms[selectedRoom];
   const visits=cozyVisits(state);
   const liveVisit=visits[0];
+  const worldLight=cozyWorldLight(state.tick);
+  const worldWeather=cozyWorldWeather(state.tick);
 
   useEffect(()=>{
     if(state.phase!=='playing'||paused)return;
@@ -64,23 +71,31 @@ export function CozyApartment(){
     try{window.localStorage.setItem(SAVE_KEY,JSON.stringify(state));}
     catch{/* local-only progress is optional in private windows */}
   },[state]);
+  const commitRoomAction=(next:CozyState,kind:CozyMomentKind,indices:number[])=>{
+    if(next===state)return false;
+    setState(next);
+    const sequence=++momentId.current;
+    const changes=Object.fromEntries(indices.map(index=>[index,{kind,sequence}])) as Record<number,CozyMoment>;
+    setRoomMoments(previous=>({...previous,...changes}));
+    return true;
+  };
   const reset=()=>{
     setState(newCozyGame());setSelectedRoom(null);setPickedApplicant(null);
-    setMovingFrom(null);setPaused(false);
+    setMovingFrom(null);setPaused(false);setRoomMoments({});
   };
   const clickRoom=(index:number)=>{
     const room=state.rooms[index];
     if(movingFrom!==null){
       if(index===movingFrom){setMovingFrom(null);return;}
       if(room){
-        setState(current=>relocateCozyResident(current,movingFrom,index));
+        commitRoomAction(relocateCozyResident(state,movingFrom,index),'welcome',[movingFrom,index]);
         setMovingFrom(null);
         setSelectedRoom(index);
       }
       return;
     }
     if(pickedApplicant && room && room.resident===null){
-      setState(current=>moveInCozy(current,index,pickedApplicant));
+      commitRoomAction(moveInCozy(state,index,pickedApplicant),'welcome',[index]);
       setPickedApplicant(null);setSelectedRoom(index);
       return;
     }
@@ -88,18 +103,20 @@ export function CozyApartment(){
   };
   const build=(type:HomeType)=>{
     if(selectedRoom===null)return;
-    setState(current=>buildCozyRoom(current,selectedRoom,type));
+    commitRoomAction(buildCozyRoom(state,selectedRoom,type),'build',[selectedRoom]);
   };
   const furnish=(decor:Furnishing)=>{
     if(selectedRoom===null)return;
-    setState(current=>decorateCozy(current,selectedRoom,decor));
+    commitRoomAction(decorateCozy(state,selectedRoom,decor),'furnish',[selectedRoom]);
   };
   const moveIn=(id:SpiritId)=>{
     if(selectedRoom===null)return;
-    setState(current=>moveInCozy(current,selectedRoom,id));
+    commitRoomAction(moveInCozy(state,selectedRoom,id),'welcome',[selectedRoom]);
     setPickedApplicant(null);
   };
-  return <main className={'cozy-shell '+(state.tick%TICKS_PER_DAY>=7?'is-evening':'is-morning')}
+  return <main className={'cozy-shell '+(state.tick%TICKS_PER_DAY>=7?'is-evening':'is-morning')+
+    (paused?' is-paused':'')}
+    data-world-light={worldLight} data-world-weather={worldWeather}
     data-testid="cozy-apartment">
     <header className="cozy-header">
       <div className="cozy-brand">
@@ -133,6 +150,7 @@ export function CozyApartment(){
     <section className="cozy-play" aria-label={zh?'公寓建造场景':'Apartment construction'}>
       <div className="cozy-scenery" aria-hidden="true">
         <CozyStreetBackdrop/>
+        <div className="cozy-weather" aria-hidden="true"/>
       </div>
       <div className="cozy-building">
         <div className="cozy-roof">
@@ -172,12 +190,14 @@ export function CozyApartment(){
                 event.preventDefault();
                 const source=event.dataTransfer.getData('application/x-cozy-room');
                 if(source!=='' && room){
-                  setState(current=>relocateCozyResident(current,Number(source),index));
+                  const from=Number(source);
+                  commitRoomAction(relocateCozyResident(state,from,index),'welcome',[from,index]);
                   setMovingFrom(null);setSelectedRoom(index);return;
                 }
                 const id=event.dataTransfer.getData('text/plain') as SpiritId;
                 if(COZY_RESIDENTS.some(r=>r.id===id) && room && !room.resident){
-                  setState(current=>moveInCozy(current,index,id));setPickedApplicant(null);setSelectedRoom(index);
+                  commitRoomAction(moveInCozy(state,index,id),'welcome',[index]);
+                  setPickedApplicant(null);setSelectedRoom(index);
                 }
               }}>
               <span className="cozy-floor-number">{floor}F</span>
@@ -199,6 +219,8 @@ export function CozyApartment(){
                   <small>{zh?'来串门':'Visiting'}</small>
                 </span>)}
                 <CozyRoomForeground type={room.type} activity={action}/>
+                {roomMoments[index]&&<CozyRoomMoment key={roomMoments[index].sequence}
+                  kind={roomMoments[index].kind}/>}
                 {person&&<span className="cozy-resident-label">{person[language]} <span>♡ {residentHappiness(state,person.id)}</span></span>}
                 {shift&&<span className="cozy-move-preview" data-testid={'cozy-move-preview-'+index}>
                   {zh?'搬迁后':'After move'} ♡ {signed(shift.happiness)} · ✦ {signed(shift.rent)}/{zh?'天':'day'}
