@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { CozySpirit } from './cozy-spirit';
+import { CozyStreetBackdrop } from './cozy-street-backdrop';
 import { CozyRoomArt, CozyRoomIcon, CozyDecorIcon } from './cozy-room-art';
 import {
   COZY_RESIDENTS, ROOM_DETAILS, FURNISHINGS, MAX_TICKS, TICKS_PER_DAY,
@@ -126,10 +127,7 @@ export function CozyApartment(){
 
     <section className="cozy-play" aria-label={zh?'公寓建造场景':'Apartment construction'}>
       <div className="cozy-scenery" aria-hidden="true">
-        <div className="cozy-moon" aria-hidden="true"/>
-        <div className="cozy-horizon" aria-hidden="true"/>
-        <div className="cozy-starfield" aria-hidden="true"/>
-        <div className="cozy-trees" aria-hidden="true"/>
+        <CozyStreetBackdrop/>
       </div>
       <div className="cozy-building">
         <div className="cozy-roof">
