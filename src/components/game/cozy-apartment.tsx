@@ -293,9 +293,9 @@ export function CozyApartment(){
             <span>{movingFrom!==null?(zh?'点击发光的房间搬迁或交换，收益会即时变化':'Tap a highlighted room to move or swap. See the outcome first.'):
               !chosenRoom?(zh?'房型决定什么样的住户愿意长住':'The room type affects who feels at home'):
               chosenRoom.resident?(zh?'邻里照料 +'+(neighborCare?.care??0)+' · 真实羁绊 +'+(neighborCare?.friendship??0)+
-                  (selectedWish?' · 心愿：'+selectedWish.zh+(selectedWish.met?' 已满足 +6':' 未满足 -4'):'')
+                  (selectedWish?' · 心愿：'+selectedWish.zh+(selectedWish.met?' 已满足 +'+selectedWish.effect:' 未满足 -4'):'')
                 :'Neighbor care +'+(neighborCare?.care??0)+' · friendship +'+(neighborCare?.friendship??0)+
-                  (selectedWish?' · Wish: '+selectedWish.en+(selectedWish.met?' met +6':' unmet -4'):''))
+                  (selectedWish?' · Wish: '+selectedWish.en+(selectedWish.met?' met +'+selectedWish.effect:' unmet -4'):''))
                 :
               (zh?'欢迎一位等待搬家的住户':'Welcome a waiting visitor')}</span>
             {selectedWish&&<small className="cozy-wish-help" data-testid="cozy-wish-help">

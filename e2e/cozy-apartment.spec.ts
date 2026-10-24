@@ -541,7 +541,7 @@ test('after opening week, a room wish responds to real furnishing choices',async
   const before=Number((await page.getByTestId('cozy-happiness').textContent())!.split('/')[0]);
   await page.getByTestId('cozy-decor-lamp').click();
   await expect(wish).toHaveClass(/is-met/);
-  await expect(page.getByTestId('cozy-actions')).toContainText('心愿：想有灵感 已满足 +6');
+  await expect(page.getByTestId('cozy-actions')).toContainText('心愿：想有灵感 已满足 +12');
   const after=Number((await page.getByTestId('cozy-happiness').textContent())!.split('/')[0]);
   expect(after).toBeGreaterThan(before);
   await page.reload();

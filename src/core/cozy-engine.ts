@@ -135,7 +135,7 @@ export function cozyResidentWish(state:CozyState,id:SpiritId):CozyResidentWish|n
     company:{zh:'想见好朋友',en:'A familiar friend',
       hintZh:'和有羁绊的喜欢的邻居住近些',hintEn:'Live beside a loved neighbor after a real visit'},
   };
-  return {kind,met,effect:met?6:-4,...descriptions[kind]};
+  return {kind,met,effect:met?12:-4,...descriptions[kind]};
 }
 
 export function residentHappiness(state:CozyState,id:SpiritId):number {

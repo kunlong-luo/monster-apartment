@@ -219,20 +219,21 @@ describe('A single cozy apartment building loop',()=>{
   it('rotates meaningful room, decor and friend needs every three days',()=>{
     let game=moveInCozy(buildCozyRoom(newCozyGame(),2,'bath'),2,'dewdrop');
     game={...game,tick:MAX_TICKS+1};
-    expect(cozyResidentWish(game,'seedling')).toMatchObject({kind:'rest',met:true,effect:6});
+    expect(cozyResidentWish(game,'seedling')).toMatchObject({kind:'rest',met:true,effect:12});
     expect(cozyResidentWish(game,'dewdrop')).toMatchObject({kind:'inspiration',met:false,effect:-4});
     const baseJoy=residentHappiness(game,'dewdrop');
     const helped=decorateCozy(game,2,'lamp');
-    expect(cozyResidentWish(helped,'dewdrop')).toMatchObject({met:true,effect:6});
+    expect(cozyResidentWish(helped,'dewdrop')).toMatchObject({met:true,effect:12});
     expect(residentHappiness(helped,'dewdrop')).toBeGreaterThan(baseJoy);
     game={...game,tick:MAX_TICKS+3*TICKS_PER_DAY+1};
     expect(cozyResidentWish(game,'seedling')).toMatchObject({kind:'inspiration',met:false,effect:-4});
     const newHome=decorateCozy(game,4,'lamp');
-    expect(cozyResidentWish(newHome,'seedling')).toMatchObject({met:true,effect:6});
+    expect(cozyResidentWish(newHome,'seedling')).toMatchObject({met:true,effect:12});
+    expect(residentHappiness(newHome,'seedling')).toBeGreaterThan(residentHappiness(game,'seedling'));
     game={...game,tick:MAX_TICKS+6*TICKS_PER_DAY+1};
     expect(cozyResidentWish(game,'seedling')).toMatchObject({kind:'company',met:false});
     const bonded={...game,bonds:{'dewdrop:seedling':1}};
-    expect(cozyResidentWish(bonded,'seedling')).toMatchObject({kind:'company',met:true,effect:6});
+    expect(cozyResidentWish(bonded,'seedling')).toMatchObject({kind:'company',met:true,effect:12});
     expect(cozyResidentWish(relocateCozyResident(buildCozyRoom(bonded,0,'bath'),2,0),'seedling'))
       .toMatchObject({kind:'company',met:false,effect:-4});
   });
