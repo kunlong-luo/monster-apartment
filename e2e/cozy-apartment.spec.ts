@@ -307,3 +307,49 @@ test('stairwell retains room buttons and single-screen layout on a 390px phone',
   expect(metrics.x).toBeLessThanOrEqual(1);
   expect(metrics.y).toBeLessThanOrEqual(1);
 });
+
+test('vacant rooms are six distinct restorative cutaways, not repeated placeholder buttons',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  const errors:string[]=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  for(const index of [0,1,2,3,5]){
+    const room=page.getByTestId('cozy-room-'+index);
+    await expect(room.getByTestId('cozy-vacant-art-'+index)).toBeVisible();
+    await expect(room.locator('.cozy-vacant-relic')).toBeVisible();
+    await expect(room.locator('.cozy-empty-structure')).toHaveCount(0);
+    await expect(room.getByText('修缮房间')).toBeVisible();
+  }
+  await expect(page.getByTestId('cozy-room-4').getByTestId('cozy-art-nest')).toBeVisible();
+  await expect(page.getByTestId('cozy-room-4').locator('.cozy-room-patina.is-nest')).toBeAttached();
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-workshop').click();
+  await expect(page.getByTestId('cozy-room-2').getByTestId('cozy-vacant-art-2')).toHaveCount(0);
+  await expect(page.getByTestId('cozy-room-2').locator('.cozy-room-patina.is-workshop')).toBeAttached();
+  await page.reload();
+  await expect(page.getByTestId('cozy-room-2').locator('.cozy-room-patina.is-workshop')).toBeAttached();
+  expect(errors).toEqual([]);
+});
+
+test('the larger resident and restored room are visible on mobile without extra scroll',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/');
+  const scene=page.getByTestId('cozy-room-4');
+  await expect(scene.locator('.cozy-room-patina.is-nest')).toBeAttached();
+  await expect(page.getByTestId('cozy-room-0').getByTestId('cozy-vacant-art-0')).toBeVisible();
+  const character=scene.locator('.cozy-actor .cozy-character');
+  await expect(character).toBeVisible();
+  const width=await character.evaluate(node=>node.getBoundingClientRect().width);
+  expect(width).toBeGreaterThanOrEqual(42);
+  await expect(page.locator('.cozy-patina-pollen').first()).toHaveCount(0);
+  await page.getByTestId('cozy-room-5').click();
+  await expect(page.getByTestId('cozy-build-greenhouse')).toBeVisible();
+  const metrics=await page.evaluate(()=>({
+    x:document.documentElement.scrollWidth-innerWidth,
+    y:document.documentElement.scrollHeight-innerHeight,
+  }));
+  expect(metrics.x).toBeLessThanOrEqual(1);
+  expect(metrics.y).toBeLessThanOrEqual(1);
+});

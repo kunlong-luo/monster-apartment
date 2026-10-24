@@ -7,6 +7,7 @@ import { CozyStreetBackdrop } from './cozy-street-backdrop';
 import { CozyRoomForeground } from './cozy-room-foreground';
 import { CozyRoomMoment } from './cozy-room-moment';
 import { CozyStairwell } from './cozy-stairwell';
+import { CozyVacantRoom } from './cozy-vacant-room';
 import type { CozyMoment, CozyMomentKind } from './cozy-room-moment';
 import { cozyWorldLight, cozyWorldWeather } from '@/game/cozy-world-direction';
 import { CozyRoomArt, CozyRoomIcon, CozyDecorIcon } from './cozy-room-art';
@@ -229,12 +230,10 @@ export function CozyApartment(){
                 {shift&&<span className="cozy-move-preview" data-testid={'cozy-move-preview-'+index}>
                   {zh?'搬迁后':'After move'} ♡ {signed(shift.happiness)} · ✦ {signed(shift.rent)}/{zh?'天':'day'}
                 </span>}
-              </> : <><span className="cozy-empty-structure" aria-hidden="true">
-                  <i className="beam-left"/><i className="beam-right"/><i className="foundation"/>
-                  <i className="outline-window"/>
-                </span>
-                <span className="cozy-empty-invite"><span>＋</span><strong>{zh?'建造房间':'Build a room'}</strong><small>{zh?'让这里亮起灯光':'Light up this space'}</small></span>
-              </>}
+              </> : <>
+                <CozyVacantRoom slot={index}/>
+                <span className="cozy-empty-invite"><strong>{zh?'修缮房间':'Restore room'}</strong><small>{zh?'点击改造这间旧屋':'Turn this space into a home'}</small></span>
+              </>
             </button>;
           })}
         </div>

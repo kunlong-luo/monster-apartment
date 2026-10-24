@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { CozyRoomPatina } from './cozy-room-patina';
 import type { Furnishing, HomeType } from '@/core/cozy-engine';
 
 type RoomPalette={wall:string;wallBright:string;wallDark:string;floor:string;trim:string;accent:string;glow:string};
@@ -162,6 +163,7 @@ export function CozyRoomArt({type,decor}:{type:HomeType;decor:Furnishing|null}){
       <rect x="20" y="206" width="275" height="10" rx="4" fill="#d4b98d"/>
       <ellipse cx="145" cy="225" rx="145" ry="12" fill="#425444" opacity=".35"/>
     </g>}
+    <CozyRoomPatina type={type}/>
     {/* Always-on localized pools of light and rich shadowing */}
     <rect width="480" height="250" fill={'url(#'+shadow+')'} pointerEvents="none"/>
     <ellipse cx="386" cy="185" rx="110" ry="90" fill={'url(#'+lamp+')'} opacity=".6"/>
