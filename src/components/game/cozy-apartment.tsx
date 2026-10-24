@@ -233,7 +233,7 @@ export function CozyApartment(){
               </> : <>
                 <CozyVacantRoom slot={index}/>
                 <span className="cozy-empty-invite"><strong>{zh?'修缮房间':'Restore room'}</strong><small>{zh?'点击改造这间旧屋':'Turn this space into a home'}</small></span>
-              </>
+              </>}
             </button>;
           })}
         </div>
