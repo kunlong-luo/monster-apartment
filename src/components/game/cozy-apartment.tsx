@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { CozySpirit } from './cozy-spirit';
 import { CozyStreetBackdrop } from './cozy-street-backdrop';
 import { CozyRoomForeground } from './cozy-room-foreground';
@@ -14,6 +15,9 @@ import {
 } from '@/core/cozy-engine';
 import type { CozyState, HomeType, Furnishing } from '@/core/cozy-engine';
 import type { SpiritId } from '@/core/spirit-collection';
+
+const CozyWorldEffects=dynamic(()=>import('./cozy-world-effects').then(m=>m.CozyWorldEffects),
+  {ssr:false});
 
 const SAVE_KEY = 'monster-apartment:cozy:v1';
 type Locale='zh'|'en';
@@ -208,6 +212,7 @@ export function CozyApartment(){
             </button>;
           })}
         </div>
+        <CozyWorldEffects state={state} paused={paused}/>
         <div className="cozy-building-base"><span>◆</span><span>{zh?'月光街 8 号':'8 Moonlight Street'}</span><span>◆</span></div>
       </div>
       <div className="cozy-side-note">
