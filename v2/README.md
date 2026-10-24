@@ -43,8 +43,7 @@ textured floor, an illustrated dusk backdrop, and **eight independently
 defined frames for each of three creature workers**, with species-specific
 silhouettes (water courier, leafy gardener, horned ember smith). PixiJS now
 hosts AnimatedSprite workers and Sprite machines. Connected staffed machines
-visibly exchange moving colored resource motes. The mobile game board no longer
-floats in an oversized blank flex panel.
+visibly exchange moving colored resource motes. Mobile renders a taller portrait composition with larger plots and three\nanimated worker portraits so the board no longer floats in oversized blank\nspace. Mobile plots remain the same logical 5-column production grid; material\nadjacency never changes between devices.
 
 This is an **intermediate raster art pass**. The frames are programmatically
 painted with gradients, line work and procedural texture; they are not the

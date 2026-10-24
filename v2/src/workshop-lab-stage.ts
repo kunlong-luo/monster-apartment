@@ -9,7 +9,10 @@ export type LabView={sync:(state:WorkshopState,selected:number|null)=>void; dest
 /** A deliberately temporary, playable *greybox*, not the game's art direction.
  * Everything interactive lives in PixiJS/WebGL, including the plot hit areas.
  * Real painted bitmap frames are handled by pixi-stage.ts after art approval. */
-const W=1050, H=645, CELL=146, GAP=14, LEFT=131, TOP=104;
+const MOBILE=typeof window!=='undefined'&&
+  window.matchMedia('(max-width:610px)').matches;
+const W=MOBILE?830:1050,H=MOBILE?820:645;
+const CELL=146,GAP=14,LEFT=MOBILE?15:131,TOP=MOBILE?225:104;
 const COLORS:Record<Craft,number>={well:0x73d4eb,garden:0x95d5a0,kiln:0xffbe79};
 const glabel=(s:string,size=13,color=0xe9dbc5,bold=false)=>
   new Text({text:s,style:{fontFamily:'Arial, sans-serif',fontSize:size,
@@ -83,7 +86,29 @@ export async function mountWorkshopLab(
     actors.length=0;machineArt.length=0;flowPaths=[];
     stage.removeChildren().forEach(child=>child.destroy({children:true}));
     const text=glabel('月光工坊 · 生产区',19,0xebd3b0,true);
-    text.position.set(LEFT,48);stage.addChild(text);
+    text.position.set(LEFT,MOBILE?22:48);stage.addChild(text);
+    if(MOBILE){
+      const portraitPanel=new Graphics().roundRect(15,54,800,135,15)
+        .fill({color:0x17293b,alpha:.84})
+        .stroke({color:0xc7ac85,alpha:.37,width:2});
+      stage.addChild(portraitPanel);
+      const caption=glabel('今天的三位工匠 · 派他们到擅长的机器上',17,0xe9d3ae,true);
+      caption.position.set(32,65);stage.addChild(caption);
+      for(const [n,id] of (['brook','fern','cinder'] as const).entries()){
+        const x=220+n*220;
+        const sprite=new AnimatedSprite(art.workers[id]);
+        sprite.anchor.set(.5,1);sprite.position.set(x,169);
+        sprite.width=94;sprite.height=94;
+        sprite.animationSpeed=.11+n*.015;
+        sprite.loop=true;sprite.gotoAndPlay(n*2);
+        stage.addChild(sprite);actors.push(sprite);
+        const isWorking=current.tiles.some(tile=>tile?.worker===id);
+        const name=glabel((id==='brook'?'泉泡':id==='fern'?'青枝':'炽角')+
+          (isWorking?' · 工作中':' · 等派工'),14,
+          isWorking?0xc6f3ca:0xc5b8a3,true);
+        name.position.set(x+47,125);stage.addChild(name);
+      }
+    }
     for(let i=0;i<BOARD_SIZE;i++){
       const {x,y}=plotXY(i);
       const machine=current.tiles[i];

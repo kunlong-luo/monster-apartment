@@ -73,6 +73,17 @@ test('mobile keeps the same PixiJS game stage visible with no page-length scroll
   await expect(page.getByTestId('v2-build-well')).toBeVisible();
   await expect(page.getByTestId('v2-worker-fern')).toBeVisible();
   await expect(page.getByTestId('v2-shift')).toBeVisible();
+  const canvas=page.getByTestId('v2-stage').locator('canvas');
+  const box=await canvas.boundingBox();
+  expect(box).toBeTruthy();
+  expect(box!.height).toBeGreaterThan(340); // no more postage-stamp landscape stage
+  // A real Pixi pointer action on the portrait stage must still select plots.
+  await page.getByTestId('v2-build-kiln').click();
+  await canvas.click({position:{
+    x:(15+3*160+73)/830*box!.width,
+    y:(225+1*160+73)/820*box!.height,
+  }});
+  await expect(page.getByTestId('v2-coins')).toHaveText('62');
   const dims=await page.evaluate(()=>({
     x:document.documentElement.scrollWidth-innerWidth,
     y:document.documentElement.scrollHeight-innerHeight,

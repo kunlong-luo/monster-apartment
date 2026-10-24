@@ -71,7 +71,7 @@ footer small{font-size:10px;color:#8c9da6}.sr-only{position:absolute;clip-path:i
 /* 0.2: mobile board gets a deliberate aspect-ratio panel rather than
  * floating in a half-screen tall empty flex box. */
 @media(max-width:610px){
-  #stage{flex:0 0 auto;aspect-ratio:1050/645;width:100%;min-height:0;height:auto;
+  #stage{flex:0 0 auto;aspect-ratio:830/820;width:100%;min-height:0;height:auto;
     background:radial-gradient(ellipse at 50% 64%,#486077a9,#202e43 67%,#17273a);}
   .world{background:#19293b}
   .lab{justify-content:flex-start}
