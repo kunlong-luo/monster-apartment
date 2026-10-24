@@ -3,7 +3,7 @@ import {
   newCozyGame, buildCozyRoom, moveInCozy, decorateCozy, advanceCozy,
   residentHappiness, buildingHappiness, dailyRent, availableResidents,
   residentActivity, adjacent, cozyGoal, cozyDay, validCozySave, MAX_TICKS, TICKS_PER_DAY,
-  relocateCozyResident, previewCozyRelocation, cozyVisits,
+  relocateCozyResident, previewCozyRelocation, cozyVisits, cozyNeighborhood, cozyDailyIncome,
 } from '../src/core/cozy-engine';
 import type { CozyState } from '../src/core/cozy-engine';
 
@@ -126,6 +126,65 @@ describe('A single cozy apartment building loop',()=>{
     expect(bonded.journal.some(entry=>entry.key==='friends-dewdrop:seedling')).toBe(true);
     const distant=day(relocated,2);
     expect(distant.journal.some(entry=>entry.key==='friends-dewdrop:seedling')).toBe(false);
+  });
+
+  it('inhabited workspaces earn modest craft income on the same morning as rent',()=>{
+    const alone=newCozyGame();
+    expect(cozyDailyIncome(alone)).toEqual({rent:dailyRent(alone),craft:0,gifts:0,total:dailyRent(alone)});
+    let studio=buildCozyRoom(alone,2,'workshop');
+    expect(cozyDailyIncome(studio).craft).toBe(0); // vacant rooms never produce
+    studio=moveInCozy(studio,2,'lantern-beetle');
+    expect(cozyDailyIncome(studio).craft).toBe(3);
+    const furnished=decorateCozy(studio,2,'lamp');
+    expect(cozyDailyIncome(furnished).craft).toBe(5);
+    const rent=dailyRent(furnished);
+    const forecast=cozyDailyIncome(furnished);
+    expect(forecast.total).toBe(rent+5);
+    const payday=day(furnished);
+    expect(payday.coins).toBe(furnished.coins+forecast.total);
+    expect(payday.lastIncome).toBe(forecast.total);
+    expect(payday.journal.findLast(item=>item.kind==='rent')?.zh).toContain('制作 5');
+    expect(validCozySave(payday)).toBe(true);
+  });
+  it('a planted neighbor helps nearby tenants, and moving away removes the effect',()=>{
+    let home=day(newCozyGame()); // day two makes fern-hare available
+    home=buildCozyRoom(home,5,'greenhouse');
+    home=moveInCozy(home,5,'fern-hare');
+    const before=cozyNeighborhood(home,'seedling');
+    expect(before.care).toBe(1);
+    expect(cozyDailyIncome(home).craft).toBe(1);
+    const planted=decorateCozy(home,5,'plant');
+    expect(cozyNeighborhood(planted,'seedling').care).toBe(4);
+    expect(residentHappiness(planted,'seedling')).toBeGreaterThan(residentHappiness(home,'seedling'));
+    expect(cozyDailyIncome(planted).craft).toBe(3);
+    const separate=buildCozyRoom(planted,0,'nest');
+    const moved=relocateCozyResident(separate,5,0);
+    expect(cozyNeighborhood(moved,'seedling').care).toBe(0);
+    expect(cozyDailyIncome(moved).craft).toBe(0);
+  });
+  it('real visits earn friendship comfort and later gifts, not passive adjacency alone',()=>{
+    const base=moveInCozy(buildCozyRoom(newCozyGame(),2,'bath'),2,'dewdrop');
+    expect(cozyNeighborhood(base,'seedling').friendship).toBe(0);
+    expect(cozyDailyIncome(base).gifts).toBe(0);
+    const first=day(base);
+    expect(first.bonds['dewdrop:seedling']).toBe(1);
+    expect(cozyNeighborhood(first,'seedling').friendship).toBe(2);
+    expect(cozyDailyIncome(first).gifts).toBe(0);
+    const second=day(first);
+    expect(second.bonds['dewdrop:seedling']).toBe(2);
+    expect(cozyNeighborhood(second,'seedling').friendship).toBe(4);
+    expect(cozyDailyIncome(second).gifts).toBe(2);
+    const third=day(second);
+    expect(cozyNeighborhood(third,'seedling').friendship).toBe(6);
+    expect(cozyDailyIncome(third).gifts).toBe(2);
+    const fourth=day(third);
+    expect(cozyNeighborhood(fourth,'seedling').friendship).toBe(6);
+    const moved=relocateCozyResident(buildCozyRoom(fourth,0,'nest'),2,0);
+    expect(cozyNeighborhood(moved,'seedling').friendship).toBe(0);
+    expect(cozyDailyIncome(moved).gifts).toBe(0);
+    // The stored relationship survives: restore proximity and the bond matters again.
+    const reunited=relocateCozyResident(moved,0,2);
+    expect(cozyNeighborhood(reunited,'seedling').friendship).toBe(6);
   });
   it('runs a first week, then freezes with a clear resident-based result',()=>{
     let game=newCozyGame();

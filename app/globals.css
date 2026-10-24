@@ -1956,3 +1956,13 @@
     animation:none!important;
   }
 }
+
+
+/* V0.9.6 — an earned friendship quietly changes the room's lived-in feel.
+ * Existing room labels stay the only markers; no extra HUD button or overlay. */
+.cozy-resident-label.has-bond{
+  background:linear-gradient(95deg,#303348ec,#594453e8);
+  border-color:#e5b28b99;
+  box-shadow:inset 0 1px #f6d9b23d,0 2px 7px #21192c6e;
+}
+.cozy-resident-label.has-bond span{color:#ffe0a1}

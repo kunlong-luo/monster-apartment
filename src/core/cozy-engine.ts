@@ -70,6 +70,31 @@ export function newCozyGame():CozyState {
       en:'Welcome to Moonlight Street! Seedcore has moved in with a little plant. Build a home for your next visitor.'}],
   };
 }
+/** Residents form a household, not six isolated rent-generating tiles.
+ * Baths share quiet reading time; planted greenhouses refresh their neighbors.
+ * Friendship comfort must be earned through real visits (dailyStory) and still
+ * requires proximity. All values are derived from existing V1 saved fields. */
+export function cozyNeighborhood(state:CozyState,id:SpiritId){
+  const home=state.rooms.findIndex(room=>room?.resident===id);
+  if(home===-1)return {care:0,friendship:0,total:0};
+  const me=profile(id);
+  let care=0,friendship=0;
+  for(let i=0;i<state.rooms.length;i++){
+    const neighbor=state.rooms[i];
+    if(i===home||!neighbor?.resident||!adjacent(home,i))continue;
+    if(neighbor.type==='greenhouse')care+=neighbor.decor==='plant'?4:1;
+    if(neighbor.type==='bath')care+=neighbor.decor==='books'?4:1;
+    const liked=me?.likes===neighbor.resident
+      ||profile(neighbor.resident)?.likes===id;
+    if(liked){
+      const key=[id,neighbor.resident].sort().join(':');
+      const level=state.bonds[key]??0;
+      if(Number.isFinite(level)&&level>0)friendship+=2*Math.min(3,Math.floor(level));
+    }
+  }
+  return {care,friendship,total:care+friendship};
+}
+
 export function residentHappiness(state:CozyState,id:SpiritId):number {
   const roomIndex=state.rooms.findIndex(room=>room?.resident===id);
   if(roomIndex===-1)return 0;
@@ -81,6 +106,7 @@ export function residentHappiness(state:CozyState,id:SpiritId):number {
     const neighbor=state.rooms[i]?.resident;
     if(neighbor && adjacent(roomIndex,i) && (p.likes===neighbor||profile(neighbor)?.likes===id))value+=8;
   }
+  value+=cozyNeighborhood(state,id).total;
   return Math.max(10,Math.min(100,value));
 }
 export const buildingHappiness=(state:CozyState):number=>{
@@ -89,6 +115,34 @@ export const buildingHappiness=(state:CozyState):number=>{
 };
 export const dailyRent=(state:CozyState):number =>
   state.rooms.reduce((sum,room)=>room?.resident?sum+4+Math.floor(residentHappiness(state,room.resident)/12):sum,0);
+/** The daily economy makes the type and furnishing of an OCCUPIED room
+ * matter after move-in, while rent still depends on resident happiness.
+ * Workshop crafts, garden harvests and friendship gifts are distinct, capped
+ * integer flows that use no new currency or save fields. */
+export function cozyDailyIncome(state:CozyState){
+  const rent=dailyRent(state);
+  let craft=0;
+  for(const room of state.rooms){
+    if(!room?.resident)continue;
+    if(room.type==='workshop')craft+=3+(room.decor==='lamp'?2:0);
+    if(room.type==='greenhouse')craft+=1+(room.decor==='plant'?2:0);
+  }
+  let gifts=0;
+  for(let i=0;i<state.rooms.length;i++){
+    const left=state.rooms[i]?.resident;
+    if(!left)continue;
+    for(let j=i+1;j<state.rooms.length;j++){
+      const right=state.rooms[j]?.resident;
+      if(!right||!adjacent(i,j))continue;
+      const key=[left,right].sort().join(':');
+      const level=state.bonds[key]??0;
+      const liked=profile(left)?.likes===right||profile(right)?.likes===left;
+      if(liked&&Number.isFinite(level)&&level>=2)gifts+=2;
+    }
+  }
+  return {rent,craft,gifts,total:rent+craft+gifts};
+}
+
 export function buildCozyRoom(state:CozyState,index:number,type:HomeType):CozyState{
   if(state.phase!=='playing'||!Number.isInteger(index)||index<0||index>=6
     ||state.rooms[index]!==null||!ROOM_DETAILS[type]||state.coins<ROOM_DETAILS[type].cost)return state;
@@ -130,7 +184,7 @@ export function previewCozyRelocation(state:CozyState,from:number,to:number){
   const next=relocateCozyResident(state,from,to);
   if(next===state)return null;
   return { happiness:buildingHappiness(next)-buildingHappiness(state),
-    rent:dailyRent(next)-dailyRent(state),
+    rent:cozyDailyIncome(next).total-cozyDailyIncome(state).total,
     moving:state.rooms[from]!.resident!,
     displaced:state.rooms[to]!.resident };
 }
@@ -212,11 +266,15 @@ export function advanceCozy(state:CozyState):CozyState {
   const tick=state.tick+1;
   let next={...state,tick};
   if(tick%TICKS_PER_DAY===0){
-    const income=dailyRent(next);
-    next={...next,coins:next.coins+income,lastIncome:income};
+    const income=cozyDailyIncome(next);
+    next={...next,coins:next.coins+income.total,lastIncome:income.total};
+    const breakdownZh=income.craft||income.gifts
+      ?'（房租 '+income.rent+' · 日常制作 '+income.craft+' · 邻里赠礼 '+income.gifts+'）':'';
+    const breakdownEn=income.craft||income.gifts
+      ?' (rent '+income.rent+' · daily craft '+income.craft+' · neighbor gifts '+income.gifts+')':'';
     next=event(next,'rent-'+tick,'rent',
-      '清晨的房租到了：+'+income+' 星币。住户越开心，公寓越热闹！',
-      'Morning rent: +'+income+' coins. Happy residents help the building thrive!');
+      '清晨的公寓收入：+'+income.total+' 星币'+breakdownZh+'。',
+      'Morning apartment income: +'+income.total+' coins'+breakdownEn+'.');
     next=dailyStory(next);
     if(tick===TICKS_PER_DAY){
       next={...next,known:[...next.known,'fern-hare']};

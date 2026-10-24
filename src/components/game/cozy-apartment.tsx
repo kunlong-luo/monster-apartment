@@ -15,7 +15,7 @@ import { CozyRoomArt, CozyRoomIcon, CozyDecorIcon } from './cozy-room-art';
 import {
   COZY_RESIDENTS, ROOM_DETAILS, FURNISHINGS, MAX_TICKS, TICKS_PER_DAY,
   advanceCozy, availableResidents, buildCozyRoom,
-  cozyDay, cozyGoal, dailyRent, decorateCozy, moveInCozy, newCozyGame,
+  cozyDay, cozyGoal, cozyDailyIncome, cozyNeighborhood, decorateCozy, moveInCozy, newCozyGame,
   residentHappiness, validCozySave,
   relocateCozyResident, previewCozyRelocation, cozyVisits,
 } from '@/core/cozy-engine';
@@ -59,7 +59,9 @@ export function CozyApartment(){
   const newest=state.journal[state.journal.length-1];
   const applicants=availableResidents(state);
   const goal=cozyGoal(state);
+  const income=cozyDailyIncome(state);
   const chosenRoom=selectedRoom===null?null:state.rooms[selectedRoom];
+  const neighborCare=chosenRoom?.resident?cozyNeighborhood(state,chosenRoom.resident):null;
   const visits=cozyVisits(state);
   const liveVisit=visits[0];
   const worldLight=cozyWorldLight(state.tick);
@@ -147,7 +149,7 @@ export function CozyApartment(){
       <div className="cozy-stat"><span>✦ {zh?'星币':'Coins'}</span><strong data-testid="cozy-coins">{state.coins}</strong></div>
       <div className="cozy-stat"><span>♡ {zh?'平均幸福度':'Happiness'}</span><strong data-testid="cozy-happiness">{goal.happiness}<small>/100</small></strong></div>
       <div className="cozy-stat"><span>⌂ {zh?'已入住':'Moved in'}</span><strong data-testid="cozy-occupancy">{goal.guests}<small>/6</small></strong></div>
-      <div className="cozy-stat"><span>☀ {zh?'每日租金':'Daily rent'}</span><strong data-testid="cozy-rent">+{dailyRent(state)}</strong></div>
+      <div className="cozy-stat"><span>☀ {zh?'预计日进账':'Daily income'}</span><strong data-testid="cozy-rent" title={zh?'含房租、制作与赠礼':'Rent, craft and gifts'}>+{income.total}</strong></div>
     </div>
 
     <section className="cozy-play" aria-label={zh?'公寓建造场景':'Apartment construction'}>
@@ -237,7 +239,10 @@ export function CozyApartment(){
                 <CozyRoomForeground type={room.type} activity={action}/>
                 {roomMoments[index]&&<CozyRoomMoment key={roomMoments[index].sequence}
                   kind={roomMoments[index].kind}/>}
-                {person&&<span className="cozy-resident-label">{person[language]} <span>♡ {residentHappiness(state,person.id)}</span></span>}
+                {person&&<span className={'cozy-resident-label'+(cozyNeighborhood(state,person.id).friendship>0?' has-bond':'')}
+                  title={zh?'邻里照料 +'+cozyNeighborhood(state,person.id).care+' · 羁绊 +'+cozyNeighborhood(state,person.id).friendship
+                    :'Neighbor care +'+cozyNeighborhood(state,person.id).care+' · friendship +'+cozyNeighborhood(state,person.id).friendship}>
+                  {person[language]} <span>♡ {residentHappiness(state,person.id)}</span></span>}
                 {shift&&<span className="cozy-move-preview" data-testid={'cozy-move-preview-'+index}>
                   {zh?'搬迁后':'After move'} ♡ {signed(shift.happiness)} · ✦ {signed(shift.rent)}/{zh?'天':'day'}
                 </span>}
@@ -258,7 +263,12 @@ export function CozyApartment(){
           ♡ {COZY_RESIDENTS.find(resident=>resident.id===liveVisit.visitor)?.[language]}
           {zh?'正在探望':' is visiting '}
           {COZY_RESIDENTS.find(resident=>resident.id===liveVisit.host)?.[language]}
-        </small>:<small>{zh?'生活在这里慢慢发生 · 每天都会有新变化':'Little moments happen here · each day brings something new'}</small>}
+        </small>:<small data-testid="cozy-daily-life">
+          {income.craft||income.gifts
+            ?(zh?'每日：房租 +'+income.rent+' · 制作 +'+income.craft+' · 赠礼 +'+income.gifts
+              :'Daily: rent +'+income.rent+' · craft +'+income.craft+' · gifts +'+income.gifts)
+            :(zh?'生活在这里慢慢发生 · 每天都会有新变化':'Little moments happen here · each day brings something new')}
+        </small>}
       </div>
     </section>
 
@@ -275,7 +285,8 @@ export function CozyApartment(){
             (zh?'建造一个新房间':'Build a new room')}</strong>
             <span>{movingFrom!==null?(zh?'点击发光的房间搬迁或交换，收益会即时变化':'Tap a highlighted room to move or swap. See the outcome first.'):
               !chosenRoom?(zh?'房型决定什么样的住户愿意长住':'The room type affects who feels at home'):
-              chosenRoom.resident?(zh?'布置家具，或搬家结识新邻居':'Furnish the room or move to meet new neighbors'):
+              chosenRoom.resident?(zh?'邻里照料 +'+(neighborCare?.care??0)+' · 真实羁绊 +'+(neighborCare?.friendship??0)+' · 家具与房型影响每日收益'
+                :'Neighbor care +'+(neighborCare?.care??0)+' · friendship +'+(neighborCare?.friendship??0)+' · layout affects income'):
               (zh?'欢迎一位等待搬家的住户':'Welcome a waiting visitor')}</span>
           </div>
           <button className="cozy-dismiss" onClick={()=>{setSelectedRoom(null);setMovingFrom(null);}} aria-label={zh?'收起':'Close'}>✕</button>

@@ -429,3 +429,66 @@ test('neighbor visits stage the visitor separately without extra buttons',async(
   await expect(page.getByTestId('cozy-stair-route-dewdrop')).toBeVisible();
   await expect(page.getByTestId('cozy-away-dewdrop')).toBeVisible();
 });
+
+
+test('an occupied workshop creates daily craft revenue without extra player buttons',async({page})=>{
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  const original=Number((await page.getByTestId('cozy-rent').textContent())!.replace('+',''));
+  await page.getByTestId('cozy-room-0').click();
+  await page.getByTestId('cozy-build-workshop').click();
+  await page.getByTestId('cozy-welcome-lantern-beetle').click();
+  const daily=page.getByTestId('cozy-daily-life');
+  await expect(daily).toContainText('制作 +3');
+  const total=Number((await page.getByTestId('cozy-rent').textContent())!.replace('+',''));
+  expect(total).toBeGreaterThan(original);
+  await page.getByTestId('cozy-decor-lamp').click();
+  await expect(daily).toContainText('制作 +5');
+  await page.reload();
+  await expect(page.getByTestId('cozy-daily-life')).toContainText('制作 +5');
+  await expect(page.getByTestId('cozy-room-0')).toContainText('灯甲虫');
+});
+
+test('neighbors physically affect comfort; furnishings change the displayed result',async({page})=>{
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await page.getByTestId('cozy-room-4').click();
+  await expect(page.getByTestId('cozy-actions')).toContainText('邻里照料 +1');
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-decor-books').click();
+  await page.getByTestId('cozy-room-4').click();
+  await expect(page.getByTestId('cozy-actions')).toContainText('邻里照料 +4');
+  await expect(page.getByTestId('cozy-room-4').locator('.cozy-resident-label')).toHaveAttribute('title',/邻里照料 \+4/);
+  await page.reload();
+  await page.getByTestId('cozy-pause').click();
+  await page.getByTestId('cozy-room-4').click();
+  await expect(page.getByTestId('cozy-actions')).toContainText('邻里照料 +4');
+});
+
+test('saved genuine friendship produces a readable bonus and honest relocation preview',async({page})=>{
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=24;
+    save.bonds={'dewdrop:seedling':2}; // fixture simulates two previous days of real visits
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-daily-life')).toContainText('赠礼 +2');
+  await page.getByTestId('cozy-room-4').click();
+  await expect(page.getByTestId('cozy-actions')).toContainText('真实羁绊 +4');
+  await page.getByTestId('cozy-relocate').click();
+  await page.getByTestId('cozy-room-2').click();
+  await expect(page.getByTestId('cozy-occupancy')).toContainText('2');
+  await expect(page.getByTestId('cozy-daily-life')).toContainText('赠礼 +2');
+});
+
