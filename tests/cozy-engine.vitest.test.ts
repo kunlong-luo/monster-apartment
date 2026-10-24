@@ -143,7 +143,7 @@ describe('A single cozy apartment building loop',()=>{
     const payday=day(furnished);
     expect(payday.coins).toBe(furnished.coins+forecast.total);
     expect(payday.lastIncome).toBe(forecast.total);
-    expect(payday.journal.findLast(item=>item.kind==='rent')?.zh).toContain('制作 5');
+    expect(payday.journal.filter(item=>item.kind==='rent').at(-1)?.zh).toContain('制作 5');
     expect(validCozySave(payday)).toBe(true);
   });
   it('a planted neighbor helps nearby tenants, and moving away removes the effect',()=>{
