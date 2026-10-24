@@ -3,7 +3,7 @@ import type { ApartmentRoom, CozyState } from '@/core/cozy-engine';
 import { cozyVisits, residentActivity } from '@/core/cozy-engine';
 import { SPIRIT_ART } from '@/core/spirit-art';
 
-type WorldSnapshot = Pick<CozyState,'rooms'|'tick'|'phase'>;
+type WorldSnapshot = CozyState;
 const TONES: Record<NonNullable<ApartmentRoom>['type'],number>={
   nest:0xffcd99,
   bath:0xb7f0e5,
