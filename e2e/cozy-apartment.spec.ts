@@ -492,3 +492,85 @@ test('saved genuine friendship produces a readable bonus and honest relocation p
   await expect(page.getByTestId('cozy-daily-life')).toContainText('赠礼 +2');
 });
 
+
+test('a legacy finished save reopens as a living building with the same rooms',async({page})=>{
+  await page.goto('/');
+  await expect.poll(()=>page.evaluate(()=>!!localStorage.getItem('monster-apartment:cozy:v1'))).toBe(true);
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const state=JSON.parse(localStorage.getItem(key)!);
+    state.tick=96;
+    state.phase='complete';
+    state.coins=180;
+    state.journal.push({key:'finish',tick:96,kind:'story',zh:'第一周结束',en:'The first week ended'});
+    state.seen.push('finish');
+    localStorage.setItem(key,JSON.stringify(state));
+  });
+  await page.reload();
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-day')).toContainText('9');
+  await expect(page.getByTestId('cozy-result')).toHaveCount(0);
+  await expect(page.getByTestId('cozy-room-4')).toContainText('芽核');
+  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')!));
+  expect(saved.phase).toBe('playing');
+  expect(saved.coins).toBeGreaterThanOrEqual(180);
+  await page.getByTestId('cozy-room-0').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await expect(page.getByTestId('cozy-room-0').getByTestId('cozy-art-bath')).toBeVisible();
+  await page.reload();
+  await expect(page.getByTestId('cozy-room-0').getByTestId('cozy-art-bath')).toBeVisible();
+});
+
+test('after opening week, a room wish responds to real furnishing choices',async({page})=>{
+  await page.goto('/');
+  await expect.poll(()=>page.evaluate(()=>!!localStorage.getItem('monster-apartment:cozy:v1'))).toBe(true);
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const state=JSON.parse(localStorage.getItem(key)!);
+    state.tick=133; // chapter two: Seedcore wishes for inspiration
+    localStorage.setItem(key,JSON.stringify(state));
+  });
+  await page.reload();
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-chapter-progress')).toContainText('每三天轮换住户心愿');
+  const wish=page.getByTestId('cozy-wish-seedling');
+  await expect(wish).toHaveClass(/is-unmet/);
+  await expect(wish).toHaveAttribute('title',/想有灵感/);
+  await page.getByTestId('cozy-room-4').click();
+  await expect(page.getByTestId('cozy-actions')).toContainText('心愿：想有灵感 未满足 -4');
+  const before=Number((await page.getByTestId('cozy-happiness').textContent())!.split('/')[0]);
+  await page.getByTestId('cozy-decor-lamp').click();
+  await expect(wish).toHaveClass(/is-met/);
+  await expect(page.getByTestId('cozy-actions')).toContainText('心愿：想有灵感 已满足 +6');
+  const after=Number((await page.getByTestId('cozy-happiness').textContent())!.split('/')[0]);
+  expect(after).toBeGreaterThan(before);
+  await page.reload();
+  await expect(page.getByTestId('cozy-wish-seedling')).toHaveClass(/is-met/);
+});
+
+test('first chapter milestone rewards coins, but the game continues and keeps its single-screen mobile stage',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/');
+  await expect.poll(()=>page.evaluate(()=>!!localStorage.getItem('monster-apartment:cozy:v1'))).toBe(true);
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const state=JSON.parse(localStorage.getItem(key)!);
+    state.tick=95;
+    localStorage.setItem(key,JSON.stringify(state));
+  });
+  await page.reload();
+  await expect(page.getByTestId('cozy-story')).toContainText('第 1 期生活纪念',{timeout:6500});
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-result')).toHaveCount(0);
+  await expect(page.getByTestId('cozy-chapter-progress')).toContainText('第 2 期');
+  await expect(page.getByTestId('cozy-room-5')).toBeVisible();
+  await page.getByTestId('cozy-room-5').click();
+  await expect(page.getByTestId('cozy-build-greenhouse')).toBeVisible();
+  const dimensions=await page.evaluate(()=>({
+    x:document.documentElement.scrollWidth-innerWidth,
+    y:document.documentElement.scrollHeight-innerHeight,
+  }));
+  expect(dimensions.x).toBeLessThanOrEqual(1);
+  expect(dimensions.y).toBeLessThanOrEqual(1);
+});

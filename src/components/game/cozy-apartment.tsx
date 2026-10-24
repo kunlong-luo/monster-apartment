@@ -16,7 +16,7 @@ import {
   COZY_RESIDENTS, ROOM_DETAILS, FURNISHINGS, MAX_TICKS, TICKS_PER_DAY,
   advanceCozy, availableResidents, buildCozyRoom,
   cozyDay, cozyGoal, cozyDailyIncome, cozyNeighborhood, decorateCozy, moveInCozy, newCozyGame,
-  residentHappiness, validCozySave,
+  residentHappiness, validCozySave, resumeCozySave, cozyResidentWish,
   relocateCozyResident, previewCozyRelocation, cozyVisits,
 } from '@/core/cozy-engine';
 import type { CozyState, HomeType, Furnishing } from '@/core/cozy-engine';
@@ -40,7 +40,7 @@ function hydrate():CozyState{
     const raw=window.localStorage.getItem(SAVE_KEY);
     if(raw){
       const data:unknown=JSON.parse(raw);
-      if(validCozySave(data))return data;
+      if(validCozySave(data))return resumeCozySave(data);
     }
   } catch { /* invalid or unavailable browser storage starts a fresh game */ }
   return newCozyGame();
@@ -62,6 +62,7 @@ export function CozyApartment(){
   const income=cozyDailyIncome(state);
   const chosenRoom=selectedRoom===null?null:state.rooms[selectedRoom];
   const neighborCare=chosenRoom?.resident?cozyNeighborhood(state,chosenRoom.resident):null;
+  const selectedWish=chosenRoom?.resident?cozyResidentWish(state,chosenRoom.resident):null;
   const visits=cozyVisits(state);
   const liveVisit=visits[0];
   const worldLight=cozyWorldLight(state.tick);
@@ -134,8 +135,8 @@ export function CozyApartment(){
       </div>
       <div className="cozy-controls">
         <div className="cozy-day" data-testid="cozy-day">
-          <span>{zh?'第':'Day'} {cozyDay(state.tick)}{zh?'天':' / 8'}</span>
-          <div className="cozy-day-track"><i style={{width:(state.tick/MAX_TICKS)*100+'%'}}/></div>
+          <span>{zh?'第':'Day'} {cozyDay(state.tick)}{zh?'天':''}</span>
+          <div className="cozy-day-track"><i style={{width:((state.tick%MAX_TICKS)/MAX_TICKS)*100+'%'}}/></div>
         </div>
         <button type="button" className="cozy-icon-button" aria-label="Change language" onClick={()=>setLanguage(zh?'en':'zh')}>{zh?'EN':'中'}</button>
         <button type="button" className="cozy-icon-button" aria-label={zh?'重新开始':'Restart'} onClick={reset}>↻</button>
@@ -242,7 +243,13 @@ export function CozyApartment(){
                 {person&&<span className={'cozy-resident-label'+(cozyNeighborhood(state,person.id).friendship>0?' has-bond':'')}
                   title={zh?'邻里照料 +'+cozyNeighborhood(state,person.id).care+' · 羁绊 +'+cozyNeighborhood(state,person.id).friendship
                     :'Neighbor care +'+cozyNeighborhood(state,person.id).care+' · friendship +'+cozyNeighborhood(state,person.id).friendship}>
-                  {person[language]} <span>♡ {residentHappiness(state,person.id)}</span></span>}
+                  {person[language]} <span>♡ {residentHappiness(state,person.id)}</span>
+                  {cozyResidentWish(state,person.id)&&<em data-testid={'cozy-wish-'+person.id}
+                    title={(zh?cozyResidentWish(state,person.id)!.zh:cozyResidentWish(state,person.id)!.en)+
+                      ' · '+(zh?cozyResidentWish(state,person.id)!.hintZh:cozyResidentWish(state,person.id)!.hintEn)}
+                    className={'cozy-wish-marker'+(cozyResidentWish(state,person.id)!.met?' is-met':' is-unmet')}>
+                    {cozyResidentWish(state,person.id)!.met?'✧':'◇'}</em>}
+                </span>}
                 {shift&&<span className="cozy-move-preview" data-testid={'cozy-move-preview-'+index}>
                   {zh?'搬迁后':'After move'} ♡ {signed(shift.happiness)} · ✦ {signed(shift.rent)}/{zh?'天':'day'}
                 </span>}
@@ -285,9 +292,15 @@ export function CozyApartment(){
             (zh?'建造一个新房间':'Build a new room')}</strong>
             <span>{movingFrom!==null?(zh?'点击发光的房间搬迁或交换，收益会即时变化':'Tap a highlighted room to move or swap. See the outcome first.'):
               !chosenRoom?(zh?'房型决定什么样的住户愿意长住':'The room type affects who feels at home'):
-              chosenRoom.resident?(zh?'邻里照料 +'+(neighborCare?.care??0)+' · 真实羁绊 +'+(neighborCare?.friendship??0)+' · 家具与房型影响每日收益'
-                :'Neighbor care +'+(neighborCare?.care??0)+' · friendship +'+(neighborCare?.friendship??0)+' · layout affects income'):
+              chosenRoom.resident?(zh?'邻里照料 +'+(neighborCare?.care??0)+' · 真实羁绊 +'+(neighborCare?.friendship??0)+
+                  (selectedWish?' · 心愿：'+selectedWish.zh+(selectedWish.met?' 已满足 +6':' 未满足 -4'):'')
+                :'Neighbor care +'+(neighborCare?.care??0)+' · friendship +'+(neighborCare?.friendship??0)+
+                  (selectedWish?' · Wish: '+selectedWish.en+(selectedWish.met?' met +6':' unmet -4'):''))
+                :
               (zh?'欢迎一位等待搬家的住户':'Welcome a waiting visitor')}</span>
+            {selectedWish&&<small className="cozy-wish-help" data-testid="cozy-wish-help">
+              ✧ {zh?selectedWish.hintZh:selectedWish.hintEn}
+            </small>}
           </div>
           <button className="cozy-dismiss" onClick={()=>{setSelectedRoom(null);setMovingFrom(null);}} aria-label={zh?'收起':'Close'}>✕</button>
         </div>
@@ -340,7 +353,10 @@ export function CozyApartment(){
         </div>
       </>}
       <div className="cozy-dock-footer">
-        <span>✧ {zh?'目标：迎接至少 3 位住户，平均幸福度达到 70':'Goal: 3 residents, 70 happiness'}</span>
+        <span data-testid="cozy-chapter-progress">✧ {state.tick<MAX_TICKS
+          ?(zh?'首期目标：至少 3 位住户，幸福度达到 70':'Opening goal: 3 residents, 70 happiness')
+          :(zh?'第 '+(Math.floor(state.tick/MAX_TICKS)+1)+' 期 · 每三天轮换住户心愿 · 满足可提升幸福度'
+            :'Chapter '+(Math.floor(state.tick/MAX_TICKS)+1)+' · wishes rotate every three days')}</span>
         <span>{paused?(zh?'已暂停':'Paused'):(zh?'自动保存 · 生活正在继续':'Autosaved · Life goes on')}</span>
       </div>
     </section>

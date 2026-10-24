@@ -4,6 +4,7 @@ import {
   residentHappiness, buildingHappiness, dailyRent, availableResidents,
   residentActivity, adjacent, cozyGoal, cozyDay, validCozySave, MAX_TICKS, TICKS_PER_DAY,
   relocateCozyResident, previewCozyRelocation, cozyVisits, cozyNeighborhood, cozyDailyIncome,
+  cozyResidentWish, resumeCozySave,
 } from '../src/core/cozy-engine';
 import type { CozyState } from '../src/core/cozy-engine';
 
@@ -186,20 +187,73 @@ describe('A single cozy apartment building loop',()=>{
     const reunited=relocateCozyResident(moved,0,2);
     expect(cozyNeighborhood(reunited,'seedling').friendship).toBe(6);
   });
-  it('runs a first week, then freezes with a clear resident-based result',()=>{
+  it('treats the first eight-day chapter as a milestone rather than an ending',()=>{
     let game=newCozyGame();
-    for(let n=0;n<MAX_TICKS;n++)game=advanceCozy(game);
-    expect(game.phase).toBe('complete');
+    for(let n=0;n<MAX_TICKS-1;n++)game=advanceCozy(game);
+    expect(cozyResidentWish(game,'seedling')).toBeNull();
+    const coinsBefore=game.coins;
+    game=advanceCozy(game);
     expect(game.tick).toBe(MAX_TICKS);
-    expect(advanceCozy(game)).toBe(game);
-    expect(buildCozyRoom(game,0,'bath')).toBe(game);
-    expect(game.journal.at(-1)?.key).toBe('finish');
+    expect(cozyDay(game.tick)).toBe(9);
+    expect(game.phase).toBe('playing');
+    expect(game.coins).toBeGreaterThan(coinsBefore);
+    expect(game.journal.at(-1)?.key).toBe('chapter-1');
+    expect(game.journal.at(-1)?.zh).toContain('奖励 +6');
+    expect(cozyResidentWish(game,'seedling')).toBeNull(); // first-week score unchanged
+    game=advanceCozy(game);
+    expect(game.tick).toBe(MAX_TICKS+1);
+    expect(cozyResidentWish(game,'seedling')?.kind).toBe('rest');
+    expect(buildCozyRoom(game,0,'bath').rooms[0]?.type).toBe('bath');
     expect(validCozySave(game)).toBe(true);
+  });
+  it('resumes an old completed V1 save with its homes, income and history intact',()=>{
+    const original={...newCozyGame(),tick:MAX_TICKS,phase:'complete' as const,coins:147};
+    expect(validCozySave(original)).toBe(true);
+    const resumed=resumeCozySave(original);
+    expect(resumed.phase).toBe('playing');
+    expect(resumed.coins).toBe(147);
+    expect(resumed.rooms).toEqual(original.rooms);
+    expect(advanceCozy(resumed).tick).toBe(MAX_TICKS+1);
+    expect(resumeCozySave(resumed)).toBe(resumed);
+  });
+  it('rotates meaningful room, decor and friend needs every three days',()=>{
+    let game=moveInCozy(buildCozyRoom(newCozyGame(),2,'bath'),2,'dewdrop');
+    game={...game,tick:MAX_TICKS+1};
+    expect(cozyResidentWish(game,'seedling')).toMatchObject({kind:'rest',met:true,effect:6});
+    expect(cozyResidentWish(game,'dewdrop')).toMatchObject({kind:'inspiration',met:false,effect:-4});
+    const baseJoy=residentHappiness(game,'dewdrop');
+    const helped=decorateCozy(game,2,'lamp');
+    expect(cozyResidentWish(helped,'dewdrop')).toMatchObject({met:true,effect:6});
+    expect(residentHappiness(helped,'dewdrop')).toBeGreaterThan(baseJoy);
+    game={...game,tick:MAX_TICKS+3*TICKS_PER_DAY+1};
+    expect(cozyResidentWish(game,'seedling')).toMatchObject({kind:'inspiration',met:false,effect:-4});
+    const newHome=decorateCozy(game,4,'lamp');
+    expect(cozyResidentWish(newHome,'seedling')).toMatchObject({met:true,effect:6});
+    game={...game,tick:MAX_TICKS+6*TICKS_PER_DAY+1};
+    expect(cozyResidentWish(game,'seedling')).toMatchObject({kind:'company',met:false});
+    const bonded={...game,bonds:{'dewdrop:seedling':1}};
+    expect(cozyResidentWish(bonded,'seedling')).toMatchObject({kind:'company',met:true,effect:6});
+    expect(cozyResidentWish(relocateCozyResident(buildCozyRoom(bonded,0,'bath'),2,0),'seedling'))
+      .toMatchObject({kind:'company',met:false,effect:-4});
+  });
+  it('can remain playable and save safely beyond the old terminal day',()=>{
+    let game=newCozyGame();
+    for(let n=0;n<MAX_TICKS*13;n++)game=advanceCozy(game);
+    expect(game.phase).toBe('playing');
+    expect(cozyDay(game.tick)).toBe(105);
+    expect(game.journal.some(e=>e.key==='chapter-13')).toBe(true);
+    expect(game.seen.length).toBeLessThanOrEqual(100);
+    expect(game.journal.length).toBeLessThanOrEqual(18);
+    expect(validCozySave(game)).toBe(true);
+    expect(cozyResidentWish(game,'seedling')).not.toBeNull();
+    expect(cozyResidentWish(advanceCozy(game),'seedling')).not.toBeNull();
   });
   it('rejects tampered saves and keeps old prototype saves separate',()=>{
     const game=newCozyGame();
     expect(validCozySave({...game,coins:-1})).toBe(false);
-    expect(validCozySave({...game,tick:500})).toBe(false);
+    expect(validCozySave({...game,tick:500})).toBe(true);
+    expect(validCozySave({...game,tick:500.5})).toBe(false);
+    expect(validCozySave({...game,tick:-1})).toBe(false);
     expect(validCozySave({...game,rooms:[]})).toBe(false);
     const duplicate={...game,rooms:game.rooms.map(room=>room?{...room}:null)};
     duplicate.rooms[0]={type:'nest',resident:'seedling',decor:null};

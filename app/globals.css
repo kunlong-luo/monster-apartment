@@ -1966,3 +1966,31 @@
   box-shadow:inset 0 1px #f6d9b23d,0 2px 7px #21192c6e;
 }
 .cozy-resident-label.has-bond span{color:#ffe0a1}
+
+
+/* V0.9.7 — wishes are a small affordance on the existing resident nameplate,
+ * not another room button or free-floating UI badge. */
+.cozy-resident-label .cozy-wish-marker{
+  display:inline-flex;align-items:center;justify-content:center;
+  font:normal 700 11px/1 system-ui,sans-serif;
+  margin-left:3px;min-width:10px;
+  vertical-align:baseline;
+  color:#f0b09f;
+}
+.cozy-resident-label .cozy-wish-marker.is-met{color:#ead595}
+.cozy-resident-label .cozy-wish-marker.is-unmet{color:#f5aeaa}
+.cozy-day-track i{transition:width .3s ease-out}
+.cozy-dock-footer span:first-child{
+  flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.cozy-dock-footer span:last-child{flex-shrink:0}
+@media(prefers-reduced-motion:reduce){
+  .cozy-day-track i{transition:none!important}
+}
+
+.cozy-context-title .cozy-wish-help{
+ display:block;margin-top:2px;max-width:100%;
+ font-size:clamp(9px,.72vw,11px);line-height:1.25;
+ color:#e8c6ac;white-space:normal;
+}

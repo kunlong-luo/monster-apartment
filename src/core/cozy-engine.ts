@@ -34,7 +34,7 @@ export const FURNISHINGS:Record<Furnishing,{zh:string;en:string;icon:string;cost
 };
 export const DAYS_TO_OPEN = 8;
 export const TICKS_PER_DAY = 12;
-export const MAX_TICKS = DAYS_TO_OPEN * TICKS_PER_DAY;
+export const MAX_TICKS = DAYS_TO_OPEN * TICKS_PER_DAY; // opening chapter, not a hard game-over
 export type CozyEvent = {
   key:string; tick:number; zh:string; en:string; kind:'arrival'|'story'|'rent'|'move'|'decor';
 };
@@ -47,10 +47,16 @@ export type CozyState = {
 const profile = (id:SpiritId):CozyResident|undefined => COZY_RESIDENTS.find(r=>r.id===id);
 const event = (state:CozyState,key:string,kind:CozyEvent['kind'],zh:string,en:string):CozyState => {
   if(state.seen.includes(key))return state;
-  return {...state,seen:[...state.seen,key],
+  return {...state,seen:[...state.seen,key].slice(-100),
     journal:[...state.journal,{key,tick:state.tick,kind,zh,en}].slice(-18)};
 };
-export const cozyDay = (tick:number):number=>Math.min(DAYS_TO_OPEN,Math.floor(tick/TICKS_PER_DAY)+1);
+export const cozyDay = (tick:number):number=>Math.floor(tick/TICKS_PER_DAY)+1;
+
+/** A terminal V1 save ended after eight days. Preserve its rooms, currency,
+ * neighbors and journal, while allowing its owner to keep playing. */
+export const resumeCozySave=(state:CozyState):CozyState=>
+  state.phase==='complete'?{...state,phase:'playing'}:state;
+
 export const occupied = (state:CozyState):number => state.rooms.filter(room=>room?.resident).length;
 export const availableResidents = (state:CozyState):SpiritId[] =>
   state.known.filter(id=>!state.rooms.some(room=>room?.resident===id));
@@ -95,6 +101,43 @@ export function cozyNeighborhood(state:CozyState,id:SpiritId){
   return {care,friendship,total:care+friendship};
 }
 
+export type CozyWishKind='rest'|'inspiration'|'company';
+export type CozyResidentWish={
+  kind:CozyWishKind;met:boolean;effect:number;
+  zh:string;en:string;hintZh:string;hintEn:string;
+};
+/** After the opening chapter, a resident develops one wish for each
+ * three-day season. Wishes are deterministic per resident and day.
+ * No timers, randomness, or new fields are written to the V1 save. */
+export function cozyResidentWish(state:CozyState,id:SpiritId):CozyResidentWish|null {
+  if(state.tick<=MAX_TICKS)return null;
+  const index=COZY_RESIDENTS.findIndex(r=>r.id===id);
+  const home=state.rooms.findIndex(room=>room?.resident===id);
+  if(index<0||home<0)return null;
+  const room=state.rooms[home]!;
+  const season=Math.floor((state.tick-MAX_TICKS)/(3*TICKS_PER_DAY));
+  const kind=(['rest','inspiration','company'] as const)[(season+index)%3];
+  let met=false;
+  if(kind==='rest')met=room.type==='nest'||room.type==='bath'||room.decor==='books';
+  if(kind==='inspiration')met=room.type==='workshop'||room.type==='greenhouse'||room.decor==='lamp';
+  if(kind==='company')met=state.rooms.some((neighbor,i)=>{
+    if(!neighbor?.resident||!adjacent(home,i))return false;
+    const other=neighbor.resident;
+    const likes=profile(id)?.likes===other||profile(other)?.likes===id;
+    const key=[id,other].sort().join(':');
+    return likes&&(state.bonds[key]??0)>=1;
+  });
+  const descriptions:Record<CozyWishKind,{zh:string;en:string;hintZh:string;hintEn:string}>={
+    rest:{zh:'想安静休息',en:'A little quiet',
+      hintZh:'住卧室或浴室，或摆放故事书',hintEn:'Live in a bedroom or bath, or add storybooks'},
+    inspiration:{zh:'想有灵感',en:'A spark of inspiration',
+      hintZh:'住工坊或花房，或摆放萤灯',hintEn:'Live in a workshop or garden, or add a lamp'},
+    company:{zh:'想见好朋友',en:'A familiar friend',
+      hintZh:'和有羁绊的喜欢的邻居住近些',hintEn:'Live beside a loved neighbor after a real visit'},
+  };
+  return {kind,met,effect:met?6:-4,...descriptions[kind]};
+}
+
 export function residentHappiness(state:CozyState,id:SpiritId):number {
   const roomIndex=state.rooms.findIndex(room=>room?.resident===id);
   if(roomIndex===-1)return 0;
@@ -107,6 +150,7 @@ export function residentHappiness(state:CozyState,id:SpiritId):number {
     if(neighbor && adjacent(roomIndex,i) && (p.likes===neighbor||profile(neighbor)?.likes===id))value+=8;
   }
   value+=cozyNeighborhood(state,id).total;
+  value+=cozyResidentWish(state,id)?.effect??0;
   return Math.max(10,Math.min(100,value));
 }
 export const buildingHappiness=(state:CozyState):number=>{
@@ -249,7 +293,7 @@ const dailyStory=(state:CozyState):CozyState=>{
           (visit.visitor===friend && visit.host===resident)));
       if(!met)continue;
       const key=[resident,friend].sort().join(':');
-      const bonds={...next.bonds,[key]:(next.bonds[key]??0)+1};
+      const bonds={...next.bonds,[key]:Math.min(3,(next.bonds[key]??0)+1)};
       next={...next,bonds};
       if(bonds[key]>=2){
         const other=profile(friend)!;
@@ -262,7 +306,7 @@ const dailyStory=(state:CozyState):CozyState=>{
   return next;
 };
 export function advanceCozy(state:CozyState):CozyState {
-  if(state.phase!=='playing')return state;
+  if(state.phase!=='playing'||state.tick>=Number.MAX_SAFE_INTEGER-2)return state;
   const tick=state.tick+1;
   let next={...state,tick};
   if(tick%TICKS_PER_DAY===0){
@@ -289,11 +333,16 @@ export function advanceCozy(state:CozyState):CozyState {
         'Moonscout arrives. "I heard your windows glow. I want to write down their stories."');
     }
   }
-  if(tick>=MAX_TICKS){
-    next={...next,phase:'complete'};
-    next=event(next,'finish','story',
-      '月光街的第一周结束了。你亲手布置的小楼，已经有了属于自己的故事。',
-      'Your first week ends. The little building you decorated has a story of its own.');
+  if(tick>=MAX_TICKS && tick%MAX_TICKS===0){
+    const chapter=Math.floor(tick/MAX_TICKS);
+    const goal=cozyGoal(next);
+    const prize=goal.success?18:6;
+    next={...next,coins:next.coins+prize};
+    next=event(next,'chapter-'+chapter,'story',
+      '月光街第 '+chapter+' 期生活纪念：'+(goal.success?'住户们一起庆祝了温暖的小楼！':'公寓有了新的开始，继续照顾住户的心愿吧。')+
+        ' 奖励 +'+prize+' 星币，下一期生活继续。',
+      'Moonlight Street chapter '+chapter+': '+(goal.success?'The neighbors celebrate their cozy home!':'A new chapter begins. Keep caring for the neighbors.')+
+        ' +'+prize+' coins. Life continues.');
   }
   return next;
 }
@@ -307,8 +356,8 @@ export function validCozySave(value:unknown):value is CozyState {
   if(!value||typeof value!=='object')return false;
   const s=value as Partial<CozyState>;
   if(s.version!==1 || !['playing','complete'].includes(s.phase??'')
-    || !Number.isInteger(s.tick)||typeof s.tick!=='number'||s.tick<0||s.tick>MAX_TICKS
-    || !Number.isInteger(s.coins)||typeof s.coins!=='number'||s.coins<0||s.coins>1000000
+    || !Number.isSafeInteger(s.tick)||typeof s.tick!=='number'||s.tick<0
+    || !Number.isSafeInteger(s.coins)||typeof s.coins!=='number'||s.coins<0
     || !Array.isArray(s.rooms)||s.rooms.length!==6
     || !Array.isArray(s.known)||!s.known.every(id=>COZY_RESIDENTS.some(r=>r.id===id))
     || !Array.isArray(s.journal)||s.journal.length>18
