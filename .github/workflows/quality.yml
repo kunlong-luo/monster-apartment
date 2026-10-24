@@ -33,6 +33,18 @@ jobs:
       - run: pnpm test
       - run: pnpm build
 
+  pixi-v2-scaffold:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      # V2 is intentionally isolated from the published Next.js/Pnpm app.
+      # Check actual PixiJS 8 APIs now, before commissioning sprite assets.
+      - run: npm --prefix v2 install --ignore-scripts --no-audit --no-fund
+      - run: npm --prefix v2 run typecheck
+
   e2e:
     runs-on: ubuntu-latest
     env:

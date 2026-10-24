@@ -1,6 +1,6 @@
 import { Application, Assets, AnimatedSprite, Container, Sprite, Texture } from 'pixi.js';
 import type { WorkerId, WorkshopState, Craft } from './workshop-engine';
-import { BOARD_SIZE, HEIGHT, WIDTH, WORKERS } from './workshop-engine';
+import { BOARD_SIZE, WIDTH, WORKERS } from './workshop-engine';
 
 /** V2 image-only scene. Explicitly rejects placeholder vector or SVG assets.
  * Character art must be a coherent, painted pixel/texture atlas, not a
@@ -56,10 +56,11 @@ export async function mountWorkshopStage(
     preference:'webgl',
   });
   const sheets=await loadSheets(assetsBase);
-  host.appendChild(app.canvas);
-  app.canvas.style.width='100%';
-  app.canvas.style.height='100%';
-  app.canvas.style.objectFit='contain';
+  const canvas=app.canvas as HTMLCanvasElement;
+  host.appendChild(canvas);
+  canvas.style.width='100%';
+  canvas.style.height='100%';
+  canvas.style.objectFit='contain';
   const background=new Sprite(sheets.backdrop);
   background.width=VIEW_W;background.height=VIEW_H;app.stage.addChild(background);
   const plots=new Container();app.stage.addChild(plots);
