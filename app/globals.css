@@ -1337,3 +1337,158 @@
   .cozy-stat>span{font-size:8px}
   .cozy-stat strong{font-size:14px}
 }
+
+/* V0.9 world pass: a continuous street and architectural cutaway, not dashboard tiles. */
+.cozy-street-backdrop{
+  position:absolute;inset:0;display:block;width:100%;height:100%;
+  pointer-events:none;z-index:0;opacity:.95;
+  transition:filter 1.4s ease,opacity 1.4s ease;
+}
+.cozy-shell.is-morning .cozy-street-backdrop{
+  filter:brightness(1.22) saturate(.78) hue-rotate(-7deg);opacity:.91;
+}
+.cozy-shell.is-evening .cozy-street-backdrop{
+  filter:brightness(.84) saturate(.96);opacity:1;
+}
+.cozy-scenery{isolation:isolate;background:#2b3b52}
+.cozy-scenery::before{
+  content:'';position:absolute;z-index:1;inset:0;pointer-events:none;
+  opacity:1;clip-path:none;
+  background:linear-gradient(90deg,#1019299c 0%,#10192913 24%,transparent 47%,#111b2a25 76%,#101929ab 100%),
+    linear-gradient(0deg,#121c2b8c 0%,transparent 28%,#101c3050 100%);
+}
+.cozy-scenery::after{
+  content:'';position:absolute;z-index:2;inset:0;clip-path:none;
+  background-image:radial-gradient(#f5d8b8 .6px,transparent 1.2px);
+  background-size:37px 43px;opacity:.16;pointer-events:none;
+}
+.cozy-street-cloud{transform-origin:center;animation:cozy-street-drift 48s ease-in-out infinite alternate}
+.cozy-street-star{animation:cozy-street-twinkle 5s ease-in-out infinite alternate}
+.cozy-street-window{animation:cozy-window-flicker 9s ease-in-out infinite alternate}
+.cozy-street-lamplight{animation:cozy-lantern-breathe 4.4s ease-in-out infinite alternate}
+.cozy-street-firefly{animation:cozy-firefly 6s ease-in-out infinite}
+.cozy-street-firefly:nth-last-child(2n){animation-duration:7.4s}
+.cozy-building{
+  filter:drop-shadow(0 19px 11px #111b29b8) drop-shadow(-7px 3px 6px #11182770);
+}
+.cozy-building::before,.cozy-building::after{
+  width:15px;border-color:#493d4a;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 33px,#3e3541a0 33px 37px),
+    linear-gradient(90deg,#463846,#ac8d81 45%,#806266 75%,#493b4a);
+  box-shadow:inset 3px 0 #ebc3a455,5px 2px 9px #131a28a6;
+}
+.cozy-building::after{box-shadow:inset -4px 0 #dfbaa365,-5px 2px 9px #131a28a6}
+.cozy-roof{
+  background:
+    repeating-linear-gradient(165deg,#eed9bb0d 0 2px,#1c283322 3px 7px,transparent 8px 15px),
+    linear-gradient(170deg,#6e6168 0%,#444254 56%,#302f45 100%);
+  filter:drop-shadow(0 4px 3px #111c2aa1);
+}
+.cozy-floors{
+  gap:12px 10px;padding:10px 9px 14px;
+  border-color:#826862;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 36px,#44344181 36px 40px),
+    repeating-linear-gradient(90deg,#81645f 0 42px,#6e5557 42px 45px);
+  box-shadow:inset 0 0 0 3px #d6ad8b,inset 0 5px 13px #231e2bbf,
+    inset 0 -9px 12px #231f31a6,0 7px #51424c,0 10px #ad8a79;
+}
+.cozy-room{
+  isolation:isolate;transition:border-color .2s ease,filter .2s ease,box-shadow .2s ease;
+}
+.cozy-room:not(.is-empty)::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:radial-gradient(ellipse at 80% 44%,#f7cd8d42,transparent 53%),
+    linear-gradient(95deg,#11182b39,transparent 36%,transparent 67%,#10172926);
+  mix-blend-mode:screen;opacity:.48;transition:opacity .9s ease;
+}
+.cozy-shell.is-evening .cozy-room:not(.is-empty)::before{
+  background:radial-gradient(ellipse at 82% 42%,#f5bf7375,transparent 61%),
+    radial-gradient(ellipse at 15% 43%,#f8c58432,transparent 42%);
+  opacity:.7;
+}
+.cozy-room.is-active{
+  outline:1px solid #efce9f;outline-offset:-5px;
+  box-shadow:inset 0 0 0 2px #f6d5a5,0 0 19px #ffd2917d;
+}
+.cozy-room-art{
+  image-rendering:auto;filter:contrast(1.05) saturate(.92);
+}
+.cozy-shell.is-evening .cozy-room-art{
+  filter:brightness(.83) contrast(1.1) saturate(.88);
+}
+.cozy-room .cozy-actor::before{
+  content:'';position:absolute;bottom:9px;left:10%;
+  width:76%;height:15%;border-radius:50%;z-index:-1;
+  background:#1d2331b0;filter:blur(5px);transform:scaleX(1.1);
+}
+.cozy-room.is-nest .cozy-actor.is-sleep{left:28%;bottom:4%;animation:cozy-nest-rest 3s ease-in-out infinite}
+.cozy-room.is-bath .cozy-actor.is-sleep{left:33%;bottom:4%}
+.cozy-room.is-workshop .cozy-actor.is-work{left:43%;bottom:3%;animation:cozy-work-focus 2.5s ease-in-out infinite}
+.cozy-room.is-greenhouse .cozy-actor.is-work{left:34%;bottom:3%;animation:cozy-garden-tend 3.8s ease-in-out infinite}
+.cozy-room .cozy-actor.is-wander{animation:cozy-resident-stroll 7.4s ease-in-out infinite alternate}
+.cozy-sconce-light{animation:cozy-lantern-breathe 4s ease-in-out infinite alternate}
+.cozy-bath-steam{
+  transform-box:fill-box;transform-origin:center;
+  animation:cozy-steam-rise 3s ease-out infinite;
+}
+.cozy-workshop-flame,.cozy-workshop-sparks{
+  transform-box:fill-box;transform-origin:center;
+  animation:cozy-lantern-breathe 2.6s ease-in-out infinite alternate;
+}
+.cozy-greenhouse-bloom{animation:cozy-lantern-breathe 3s ease-in-out infinite alternate}
+.cozy-decor-glow{animation:cozy-lantern-breathe 3.7s ease-in-out infinite alternate}
+.cozy-room-name,.cozy-floor-number,.cozy-resident-label{
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+}
+.cozy-room.is-empty{background:#2f3a4c;border-style:solid}
+.cozy-empty-structure{filter:brightness(.83) saturate(.68)}
+.cozy-side-note{z-index:2}
+@keyframes cozy-street-drift{to{transform:translateX(36px)}}
+@keyframes cozy-street-twinkle{to{opacity:.3}}
+@keyframes cozy-window-flicker{25%,62%{opacity:.43}75%,100%{opacity:.82}}
+@keyframes cozy-lantern-breathe{to{opacity:.62}}
+@keyframes cozy-firefly{
+  0%,100%{opacity:.15;transform:translateY(6px)}
+  50%{opacity:.8;transform:translateY(-8px)}
+}
+@keyframes cozy-steam-rise{
+  0%{opacity:0;transform:translateY(8px) scale(.8)}
+  25%{opacity:.36}
+  100%{opacity:0;transform:translateY(-19px) scale(1.17)}
+}
+@keyframes cozy-nest-rest{
+  0%,100%{transform:translateY(7px) rotate(-13deg) scale(.94)}
+  50%{transform:translateY(9px) rotate(-12deg) scale(.96)}
+}
+@keyframes cozy-work-focus{
+  0%,100%{transform:translateX(-3px) rotate(3deg)}
+  50%{transform:translateX(2px) rotate(-4deg)}
+}
+@keyframes cozy-garden-tend{
+  0%,100%{transform:translateX(-9px) rotate(-6deg)}
+  50%{transform:translateX(7px) rotate(6deg)}
+}
+@keyframes cozy-resident-stroll{
+  0%{transform:translateX(-24px) scaleX(1)}
+  46%{transform:translateX(14px) scaleX(1)}
+  52%{transform:translateX(14px) scaleX(-1)}
+  100%{transform:translateX(-24px) scaleX(-1)}
+}
+@media(max-width:760px){
+  .cozy-floors{gap:6px 5px;padding:5px;border-width:5px}
+  .cozy-building::before,.cozy-building::after{width:6px}
+  .cozy-street-backdrop{opacity:.88}
+  .cozy-room.is-nest .cozy-actor.is-sleep{left:28%}
+}
+@media(prefers-reduced-motion:reduce){
+  .cozy-street-backdrop,.cozy-room:not(.is-empty)::before{transition:none!important}
+  .cozy-street-cloud,.cozy-street-star,.cozy-street-window,.cozy-street-lamplight,
+  .cozy-street-firefly,.cozy-sconce-light,.cozy-bath-steam,.cozy-workshop-flame,
+  .cozy-workshop-sparks,.cozy-greenhouse-bloom,.cozy-decor-glow,
+  .cozy-room.is-nest .cozy-actor.is-sleep,.cozy-room.is-workshop .cozy-actor.is-work,
+  .cozy-room.is-greenhouse .cozy-actor.is-work,.cozy-room .cozy-actor.is-wander{
+    animation:none!important;
+  }
+}
