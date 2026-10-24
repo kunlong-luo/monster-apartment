@@ -182,3 +182,44 @@ test('illustrated room architecture and characters stay visible on a narrow phon
   expect(overflows.horizontal).toBeLessThanOrEqual(1);
   expect(overflows.vertical).toBeLessThanOrEqual(1);
 });
+
+test('Phaser light pass and room foreground preserve real room interaction',async({page})=>{
+  const errors:string[]=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/');
+  const home=page.getByTestId('cozy-room-4');
+  await expect(home.getByTestId('cozy-foreground-nest')).toBeVisible();
+  await expect(home.getByTestId('cozy-spirit-seedling')).toBeVisible();
+  await expect(home.locator('.cozy-spirit-feet')).toHaveCount(1);
+  await expect(home.locator('.cozy-sleep-eyes')).toBeVisible();
+  const atmosphere=page.getByTestId('cozy-phaser-atmosphere');
+  await expect(atmosphere).toBeVisible();
+  await expect(atmosphere.locator('canvas')).toBeVisible({timeout:15000});
+  await expect(atmosphere).toHaveCSS('pointer-events','none');
+  await expect(home.getByTestId('cozy-foreground-nest')).toHaveCSS('pointer-events','none');
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await expect(page.getByTestId('cozy-room-2').getByTestId('cozy-foreground-bath')).toBeVisible();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await expect(page.getByTestId('cozy-actor-dewdrop')).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('new staged animation obeys reduced-motion on mobile',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/');
+  const bedroom=page.getByTestId('cozy-room-4');
+  await expect(bedroom.locator('.cozy-spirit-appendages')).toHaveCSS('animation-name','none');
+  await expect(bedroom.getByTestId('cozy-foreground-nest')).toBeVisible();
+  await expect(page.getByTestId('cozy-phaser-atmosphere').locator('canvas')).toBeVisible({timeout:15000});
+  await page.getByTestId('cozy-room-5').click();
+  await expect(page.getByTestId('cozy-build-nest')).toBeVisible();
+  const overflow=await page.evaluate(()=>({
+    x:document.documentElement.scrollWidth-innerWidth,
+    y:document.documentElement.scrollHeight-innerHeight,
+  }));
+  expect(overflow.x).toBeLessThanOrEqual(1);
+  expect(overflow.y).toBeLessThanOrEqual(1);
+});
