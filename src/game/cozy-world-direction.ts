@@ -1,4 +1,4 @@
-import { DAYS_TO_OPEN, TICKS_PER_DAY } from '@/core/cozy-engine';
+import { DAYS_TO_OPEN, TICKS_PER_DAY } from '../core/cozy-engine';
 
 export type CozyWorldLight = 'dawn'|'day'|'dusk'|'night';
 export type CozyWorldWeather = 'clear'|'rain';
