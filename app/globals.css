@@ -1592,3 +1592,24 @@
     animation:none!important;transition:none!important;
   }
 }
+
+/* Live Phaser light pass shares the building coordinate system, while the
+   accessible rooms and furniture remain independent, semantic click targets. */
+.cozy-world-effects{
+  position:absolute;z-index:5;
+  top:67px;bottom:28px;left:12px;right:12px;
+  pointer-events:none;overflow:hidden;opacity:.86;
+  mix-blend-mode:screen;
+}
+.cozy-world-effects canvas{
+  display:block!important;width:100%!important;height:100%!important;
+  pointer-events:none!important;
+}
+.cozy-shell.is-morning .cozy-world-effects{opacity:.55}
+.cozy-shell.is-evening .cozy-world-effects{opacity:1}
+@media(max-width:760px){
+  .cozy-world-effects{top:41px;bottom:19px;left:8px;right:8px;opacity:.69}
+}
+@media(prefers-reduced-motion:reduce){
+  .cozy-world-effects{transition:none!important}
+}
