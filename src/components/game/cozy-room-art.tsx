@@ -16,6 +16,7 @@ export function CozyRoomArt({type,decor}:{type:HomeType;decor:Furnishing|null}){
   const theme=PALETTE[type];
   const wall='wall'+token, floor='floor'+token,sky='sky'+token;
   const lamp='lamp'+token,shadow='shadow'+token;
+  const plaster='plaster'+token,lightshaft='lightshaft'+token;
   return <svg data-testid={'cozy-art-'+type} className="cozy-room-art"
     viewBox="0 0 480 250" preserveAspectRatio="xMidYMid slice" focusable="false" aria-hidden="true">
     <defs>
@@ -37,10 +38,24 @@ export function CozyRoomArt({type,decor}:{type:HomeType;decor:Furnishing|null}){
         <stop offset="55%" stopColor="#1c2334" stopOpacity="0"/>
         <stop offset="100%" stopColor="#191e30" stopOpacity=".25"/>
       </linearGradient>
+      <pattern id={plaster} width="35" height="27" patternUnits="userSpaceOnUse">
+        <path d="M0 27 H35 M17 0 V13 M0 13 H35" stroke="#ffead2" strokeOpacity=".075" strokeWidth="1"/>
+        <circle cx="7" cy="8" r=".8" fill="#291e35" opacity=".16"/>
+      </pattern>
+      <linearGradient id={lightshaft} x1="1" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor={theme.glow} stopOpacity=".38"/>
+        <stop offset="100%" stopColor={theme.glow} stopOpacity="0"/>
+      </linearGradient>
       <clipPath id={'window'+token}><rect x="321" y="31" width="103" height="106" rx="42"/></clipPath>
     </defs>
     {/* Painted wall: masonry texture instead of equal-colored box */}
     <rect width="480" height="204" fill={'url(#'+wall+')'}/>
+    <rect width="480" height="204" fill={'url(#'+plaster+')'}/>
+    <path d="M0 0 H480 L452 25 H27Z" fill="#f7e1c1" opacity=".19"/>
+    <path d="M0 0 L27 24 V192 L0 205Z" fill="#2d2638" opacity=".31"/>
+    <path d="M480 0 L451 25 V191 L480 208Z" fill="#252438" opacity=".39"/>
+    <path d="M27 24 H452 M27 24 V190 M452 25 V190" fill="none"
+      stroke={theme.trim} strokeOpacity=".29" strokeWidth="3"/>
     <path d="M0 20 H480 M0 72 H480 M0 137 H480" stroke="#fff5cf" strokeOpacity=".07" strokeWidth="3"/>
     <path d="M31 0 V197 M151 0 V197 M276 0 V197 M456 0 V197" stroke="#3c2d3f" strokeOpacity=".11" strokeWidth="7"/>
     <path d="M6 4 V194 M473 4 V194" stroke={theme.trim} strokeWidth="8" strokeOpacity=".55"/>
@@ -48,6 +63,10 @@ export function CozyRoomArt({type,decor}:{type:HomeType;decor:Furnishing|null}){
     {/* The same warm floor perspective across all room types */}
     <path d="M0 188 H480 V250 H0Z" fill={'url(#'+floor+')'}/>
     <path d="M0 190 H480" stroke={theme.trim} strokeWidth="8"/>
+    <path d="M0 191 L53 220 H430 L480 191" stroke="#211d30" strokeOpacity=".2"
+      strokeWidth="5" fill="none"/>
+    <path d="M14 247 L59 203 M467 247 L420 203" fill="none" stroke="#fff0d0"
+      strokeOpacity=".14" strokeWidth="2"/>
     <path d="M0 204 H480" stroke="#281f31" strokeOpacity=".4" strokeWidth="2"/>
     {Array.from({length:9},(_,i)=><path key={'boards'+i} d={'M'+(i*60)+' 250 L'+(i*60+22)+' 202'}
       stroke="#e7c49d" strokeOpacity=".16" strokeWidth="2"/>)}
@@ -66,6 +85,13 @@ export function CozyRoomArt({type,decor}:{type:HomeType;decor:Furnishing|null}){
     <path d="M304 139 H443 V150 H304Z" fill="#3e3242"/>
     <path d="M300 137 H447 V143 H300Z" fill={theme.trim}/>
     <ellipse cx="355" cy="152" rx="109" ry="50" fill={'url(#'+lamp+')'} opacity=".6"/>
+    <path d="M322 137 L425 137 L477 246 H188Z" fill={'url(#'+lightshaft+')'} opacity=".36"/>
+    <ellipse cx="381" cy="224" rx="104" ry="19" fill={theme.glow} opacity=".1"/>
+    <g className="cozy-sconce">
+      <path d="M74 70 V88 M61 72 H88" stroke="#423548" strokeWidth="7" strokeLinecap="round"/>
+      <path d="M62 74 L69 54 H81 L89 74Z" fill={theme.glow} stroke="#614956" strokeWidth="3"/>
+      <circle className="cozy-sconce-light" cx="75" cy="69" r="40" fill={'url(#'+lamp+')'}/>
+    </g>
     {/* Room-specific silhouette and recognizable material culture */}
     {type==='nest'&&<g>
       <ellipse cx="154" cy="224" rx="146" ry="15" fill="#3f2b3c" opacity=".38"/>
@@ -93,7 +119,9 @@ export function CozyRoomArt({type,decor}:{type:HomeType;decor:Furnishing|null}){
       <path d="M65 159 Q93 150 110 160 M170 164 Q211 156 233 164" fill="none" stroke="#e8ffef" strokeWidth="4" opacity=".7"/>
       <path d="M100 138 V103 Q100 89 111 89 H151 Q161 89 161 101 V135" fill="none" stroke="#d6dfca" strokeWidth="8" strokeLinecap="round"/>
       <path d="M152 118 Q154 135 140 138" fill="none" stroke="#b4e9ec" strokeWidth="4"/>
-      {[92,122,156,197].map((x,i)=><circle key={i} cx={x} cy={118-i%2*24} r={6+i%2*4} fill="#e5ffff" opacity=".38"/>)}
+      {[92,122,156,197].map((x,i)=><circle className="cozy-bath-steam" key={i}
+        cx={x} cy={118-i%2*24} r={6+i%2*4} fill="#e5ffff" opacity=".38"
+        style={{animationDelay:(i*.6)+'s'}}/> )}
       <rect x="280" y="169" width="25" height="45" rx="4" fill="#3d6272" stroke="#bcd9cd" strokeWidth="3"/>
       <path d="M285 176 H301" stroke="#e1fff0" strokeWidth="4"/>
     </g>}
@@ -111,7 +139,7 @@ export function CozyRoomArt({type,decor}:{type:HomeType;decor:Furnishing|null}){
       <circle cx="198" cy="129" r="4" fill="#74584c"/>
       <path d="M267 169 L289 121 L312 169Z" fill="#604354" stroke="#d8ab8e" strokeWidth="4"/>
       <path d="M289 121 V101" stroke="#e8c99f" strokeWidth="5"/>
-      <circle cx="289" cy="98" r="10" fill="#ffe1a0"/>
+      <circle className="cozy-workshop-flame" cx="289" cy="98" r="10" fill="#ffe1a0"/>
       <ellipse cx="291" cy="101" rx="63" ry="70" fill={'url(#'+lamp+')'}/>
     </g>}
     {type==='greenhouse'&&<g>
@@ -127,7 +155,8 @@ export function CozyRoomArt({type,decor}:{type:HomeType;decor:Furnishing|null}){
             fill="none" stroke="#486e59" strokeWidth="5"/>
           <ellipse cx={x-11} cy={182-high*.6} rx="19" ry="9" transform={'rotate(-26 '+(x-11)+' '+(182-high*.6)+')'} fill="#8bb18a"/>
           <ellipse cx={x+10} cy={176-high*.8} rx="20" ry="10" transform={'rotate(25 '+(x+10)+' '+(176-high*.8)+')'} fill="#b4d3a1"/>
-          <circle cx={x} cy={184-high} r="6" fill="#edd29b"/>
+          <circle className="cozy-greenhouse-bloom" cx={x} cy={184-high} r="6"
+            fill="#edd29b" style={{animationDelay:(i*.39)+'s'}}/>
         </g>;
       })}
       <rect x="20" y="206" width="275" height="10" rx="4" fill="#d4b98d"/>
@@ -136,6 +165,18 @@ export function CozyRoomArt({type,decor}:{type:HomeType;decor:Furnishing|null}){
     {/* Always-on localized pools of light and rich shadowing */}
     <rect width="480" height="250" fill={'url(#'+shadow+')'} pointerEvents="none"/>
     <ellipse cx="386" cy="185" rx="110" ry="90" fill={'url(#'+lamp+')'} opacity=".6"/>
+    {type==='greenhouse'&&<g opacity=".75">
+      <path d="M320 247 Q302 210 315 172 M342 246 Q362 222 348 187 M470 228 Q463 193 470 162"
+        stroke="#3c6557" strokeWidth="6" fill="none"/>
+      <ellipse cx="312" cy="193" rx="20" ry="9" fill="#9ec19a" transform="rotate(-24 312 193)"/>
+      <ellipse cx="349" cy="208" rx="18" ry="9" fill="#8db58c" transform="rotate(31 349 208)"/>
+    </g>}
+    {type==='workshop'&&<g className="cozy-workshop-sparks">
+      <path d="M287 77 V70 M271 89 L264 82 M304 86 L311 78" stroke="#ffe2a0"
+        strokeWidth="3" strokeLinecap="round"/>
+    </g>}
+    {type==='nest'&&<path d="M22 78 Q52 48 91 70" stroke="#fff0cd" strokeWidth="2"
+      fill="none" strokeOpacity=".28"/>}
     {/* Furnishings sit in the same perspective, not as disconnected icons */}
     {decor==='plant'&&<g>
       <ellipse cx="436" cy="228" rx="25" ry="7" fill="#182f2f" opacity=".35"/>
@@ -148,7 +189,7 @@ export function CozyRoomArt({type,decor}:{type:HomeType;decor:Furnishing|null}){
     </g>}
     {decor==='lamp'&&<g>
       <ellipse cx="428" cy="228" rx="27" ry="8" fill="#151e2d" opacity=".28"/>
-      <ellipse cx="425" cy="163" rx="75" ry="90" fill={'url(#'+lamp+')'}/>
+      <ellipse className="cozy-decor-glow" cx="425" cy="163" rx="75" ry="90" fill={'url(#'+lamp+')'}/>
       <path d="M428 158 V222" stroke="#6e5860" strokeWidth="6"/>
       <ellipse cx="429" cy="221" rx="22" ry="5" fill="#584452" stroke="#e8c59c" strokeWidth="3"/>
       <path d="M408 153 Q406 125 429 124 Q453 126 451 153Z" fill="#f7d89d" stroke="#886168" strokeWidth="4"/>
