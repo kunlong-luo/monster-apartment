@@ -1722,7 +1722,9 @@
 .cozy-shell.is-paused .cozy-spirit-eye-blink,
 .cozy-shell.is-paused .cozy-spirit-puppet,
 .cozy-shell.is-paused .cozy-spirit-appendages,
-.cozy-shell.is-paused .cozy-spirit-arms,
+.cozy-shell.is-paused .cozy-spirit-arms{
+  animation-play-state:paused!important;
+}
 @media(prefers-reduced-motion:reduce){
   .cozy-weather,.cozy-room-moment,.cozy-room-moment *{
     animation:none!important;transition:none!important;
