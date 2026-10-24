@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { CozySpirit } from './cozy-spirit';
+import { CozyIncidentArt } from './cozy-incident-art';
 import { CozyStreetBackdrop } from './cozy-street-backdrop';
 import { CozyRoomForeground } from './cozy-room-foreground';
 import { CozyRoomMoment } from './cozy-room-moment';
@@ -19,6 +20,7 @@ import {
   residentHappiness, validCozySave, resumeCozySave, cozyResidentWish,
   relocateCozyResident, previewCozyRelocation, cozyVisits, cozyCommission, cozyReputation,
   careForCozyResident, cozyCareUsedToday, cozyCareBoost,
+  COZY_INCIDENTS, cozyRescuePreview, resolveCozyIncident,
 } from '@/core/cozy-engine';
 import type { CozyState, HomeType, Furnishing } from '@/core/cozy-engine';
 import type { SpiritId } from '@/core/spirit-collection';
@@ -53,6 +55,7 @@ export function CozyApartment(){
   const [movingFrom,setMovingFrom]=useState<number|null>(null);
   const [language,setLanguage]=useState<Locale>('zh');
   const [paused,setPaused]=useState(false);
+  const [responding,setResponding]=useState(false);
   const [roomMoments,setRoomMoments]=useState<Record<number,CozyMoment>>({});
   const momentId=useRef(0);
   const zh=language==='zh';
@@ -61,6 +64,8 @@ export function CozyApartment(){
   const applicants=availableResidents(state);
   const goal=cozyGoal(state);
   const careUsed=cozyCareUsedToday(state);
+  const incident=state.incident??null;
+  const trouble=incident?COZY_INCIDENTS[incident.kind]:null;
   const income=cozyDailyIncome(state);
   const commission=cozyCommission(state);
   const reputation=cozyReputation(state);
@@ -69,14 +74,15 @@ export function CozyApartment(){
   const selectedWish=chosenRoom?.resident?cozyResidentWish(state,chosenRoom.resident):null;
   const visits=cozyVisits(state);
   const liveVisit=visits[0];
+  const troubledResident=incident?state.rooms[incident.room]?.resident:null;
   const worldLight=cozyWorldLight(state.tick);
   const worldWeather=cozyWorldWeather(state.tick);
 
   useEffect(()=>{
-    if(state.phase!=='playing'||paused)return;
+    if(state.phase!=='playing'||paused||responding)return;
     const timer=window.setInterval(()=>setState(previous=>advanceCozy(previous)),1150);
     return ()=>window.clearInterval(timer);
-  },[state.phase,paused]);
+  },[state.phase,paused,responding]);
   useEffect(()=>{
     try{window.localStorage.setItem(SAVE_KEY,JSON.stringify(state));}
     catch{/* local-only progress is optional in private windows */}
@@ -91,10 +97,25 @@ export function CozyApartment(){
   };
   const reset=()=>{
     setState(newCozyGame());setSelectedRoom(null);setPickedApplicant(null);
-    setMovingFrom(null);setPaused(false);setRoomMoments({});
+    setMovingFrom(null);setPaused(false);setResponding(false);setRoomMoments({});
   };
   const clickRoom=(index:number)=>{
     const room=state.rooms[index];
+    if(incident && responding){
+      if(room?.resident){
+        const repaired=resolveCozyIncident(state,room.resident);
+        commitRoomAction(repaired,'furnish',[incident.room,index]);
+        setResponding(false);setSelectedRoom(index);
+        return;
+      }
+      if(index===incident.room)return;
+      setResponding(false);
+    }
+    if(incident && index===incident.room && !responding){
+      setResponding(true);setSelectedRoom(index);
+      setMovingFrom(null);setPickedApplicant(null);
+      return;
+    }
     if(movingFrom!==null){
       if(index===movingFrom){setMovingFrom(null);return;}
       if(room){
@@ -178,6 +199,7 @@ export function CozyApartment(){
           {state.rooms.map((room,index)=>{
             const active=selectedRoom===index;
             const person=room?.resident?COZY_RESIDENTS.find(r=>r.id===room.resident):undefined;
+            const rescue=person&&incident?cozyRescuePreview(state,person.id):null;
             const stage=person&&room?cozyResidentPose(state.tick,person.id,room.type):null;
             const action=stage?.activity??null;
             const floor=3-Math.floor(index/2);
@@ -190,9 +212,13 @@ export function CozyApartment(){
             return <button type="button" key={index} data-testid={'cozy-room-'+index}
               aria-pressed={active} aria-label={(zh?floor+'楼 ':'Floor '+floor+' ') +
                 (room? ROOM_DETAILS[room.type][language]:(zh?'待建造':'Empty lot'))+
-                (person?' · '+person[language]:'')}
+                (person?' · '+person[language]:'')+
+                (incident?.room===index&&trouble?' · '+trouble[language]:'')}
               className={'cozy-room '+(room?'is-'+room.type:'is-empty')+(active?' is-active':'')+
-                (want?' can-move-in':'')+(canRehouse?' can-rehouse':'')}
+                (want?' can-move-in':'')+(canRehouse?' can-rehouse':'')+
+                (incident?.room===index?' has-mishap':'')+
+                (responding&&room?.resident?' can-help':'')+
+                (responding&&rescue?.expert?' is-expert':'')}
               style={{gridColumn:index%2===0?1:3,gridRow:Math.floor(index/2)+1}}
               draggable={!!person&&!complete}
               onDragStart={event=>{
@@ -208,6 +234,12 @@ export function CozyApartment(){
                 const source=event.dataTransfer.getData('application/x-cozy-room');
                 if(source!=='' && room){
                   const from=Number(source);
+                  if(incident?.room===index && state.rooms[from]?.resident){
+                    commitRoomAction(resolveCozyIncident(state,state.rooms[from]!.resident!),
+                      'furnish',[index,from]);
+                    setResponding(false);setMovingFrom(null);setSelectedRoom(index);
+                    return;
+                  }
                   commitRoomAction(relocateCozyResident(state,from,index),'welcome',[from,index]);
                   setMovingFrom(null);setSelectedRoom(index);return;
                 }
@@ -221,6 +253,10 @@ export function CozyApartment(){
               {room&&<span className="cozy-room-door" aria-hidden="true"/>}
               {room ? <>
                 <CozyRoomArt type={room.type} decor={room.decor}/>
+                {incident?.room===index&&<CozyIncidentArt kind={incident.kind}/>}
+                {incident?.room===index&&<span className="cozy-mishap-name"
+                  data-testid="cozy-trouble-room" aria-hidden="true">
+                  {zh?'出事了！':'Needs help!'}</span>}
                 <span className="cozy-room-name">{ROOM_DETAILS[room.type][language]}</span>
                 {person ? visitingAway ?
                   <span className="cozy-out-visiting" data-testid={'cozy-away-'+person.id}>
@@ -248,6 +284,12 @@ export function CozyApartment(){
                 <CozyRoomForeground type={room.type} activity={action}/>
                 {roomMoments[index]&&<CozyRoomMoment key={roomMoments[index].sequence}
                   kind={roomMoments[index].kind}/>}
+                {responding&&rescue&&<span className={'cozy-rescue-prospect'+
+                  (rescue.expert?' is-skill-match':' is-skill-gap')}
+                  data-testid={'cozy-helper-'+person!.id}>
+                  {rescue.expert?(zh?'熟练 ✦ +12':'Skilled ✦ +12')
+                    :(zh?'费工具 ✦ -6':'Supplies ✦ -6')}
+                </span>}
                 {person&&<span className={'cozy-resident-label'+(cozyNeighborhood(state,person.id).friendship>0?' has-bond':'')+
                   (cozyCareBoost(state,person.id)>0?' is-cared':'')}
                   title={zh?'邻里照料 +'+cozyNeighborhood(state,person.id).care+' · 羁绊 +'+cozyNeighborhood(state,person.id).friendship
@@ -276,6 +318,19 @@ export function CozyApartment(){
       <div className="cozy-side-note">
         <span className="cozy-note-eyebrow">TODAY&apos;S NOTE</span>
         <p data-testid="cozy-story" role="status">{newest?.[language]}</p>
+        {incident&&trouble?<div className="cozy-mishap-note" data-testid="cozy-incident"
+            data-kind={incident.kind}>
+          <div className="cozy-mishap-portrait">
+            <CozySpirit id={troubledResident??'seedling'} size={86}/>
+          </div>
+          <div className="cozy-mishap-message">
+            <strong>{trouble[language]}</strong>
+            <span>{responding
+              ?(zh?'选一位住户来帮忙，或点其他空房取消。':'Choose a resident to help, or tap another space to cancel.')
+              :(zh?'点闪烁的房间，再点一位住户来帮忙。':'Tap the glowing room, then tap a resident to help.')}</span>
+            <small>{trouble[zh?'hintZh':'hintEn']} · {zh?'故障期间每日损失 4 星币':'Loses 4 coins per day until fixed'}</small>
+          </div>
+        </div>:<>
         {liveVisit?<small data-testid="cozy-social-pulse">
           ♡ {COZY_RESIDENTS.find(resident=>resident.id===liveVisit.visitor)?.[language]}
           {zh?'正在探望':' is visiting '}
@@ -311,11 +366,23 @@ export function CozyApartment(){
             {zh?'街区口碑':'Neighborhood reputation'} {reputation}/4 · +{reputation}/{zh?'天':'day'}
           </div>
         </div>}
+        </>}
       </div>
     </section>
 
     <section className="cozy-dock" data-testid="cozy-actions" aria-label={zh?'公寓操作':'Apartment interaction'}>
-      {complete? <div className="cozy-outcome" data-testid="cozy-result">
+      {responding&&incident&&trouble?
+        <div className="cozy-mishap-choice" data-testid="cozy-help-choice">
+          <div><strong>{zh?'选一个住户出手':'Choose a helper'}</strong>
+            <small>{zh?'看住户擅长的房型。直接点击它所在的房间，或拖进故障房间。'
+              :'Consider their favorite room. Tap their room or drag them to the problem.'}</small>
+          </div>
+          <span>{zh?'擅长 '+ROOM_DETAILS[trouble.need].zh:'Best: '+ROOM_DETAILS[trouble.need].en}</span>
+          <button type="button" className="cozy-dismiss" data-testid="cozy-cancel-help"
+            onClick={()=>{setResponding(false);setSelectedRoom(null);}}>
+            {zh?'取消':'Cancel'}</button>
+        </div>
+      :complete? <div className="cozy-outcome" data-testid="cozy-result">
         <div><strong>{zh?'第一周的公寓日记':'The First Week'}</strong>
           <p>{zh?'入住':'Residents'} {goal.guests}/6 · ♡ {goal.happiness}/100 · {zh?goal.grade:goal.success?'A cozy success!':'A new beginning'}</p></div>
         <button className="cozy-action" onClick={reset}>{zh?'再开一栋小楼 ↻':'Start another building ↻'}</button>

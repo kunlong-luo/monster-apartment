@@ -6,6 +6,7 @@ import {
   relocateCozyResident, previewCozyRelocation, cozyVisits, cozyNeighborhood, cozyDailyIncome,
   cozyResidentWish, resumeCozySave, cozyCommission, cozyReputation,
   careForCozyResident, cozyCareUsedToday, cozyCareBoost,
+  COZY_INCIDENTS, cozyRescuePreview, cozyRescueBoost, resolveCozyIncident,
 } from '../src/core/cozy-engine';
 import type { CozyState } from '../src/core/cozy-engine';
 
@@ -132,7 +133,7 @@ describe('A single cozy apartment building loop',()=>{
 
   it('inhabited workspaces earn modest craft income on the same morning as rent',()=>{
     const alone=newCozyGame();
-    expect(cozyDailyIncome(alone)).toEqual({rent:dailyRent(alone),craft:0,gifts:0,patrons:0,total:dailyRent(alone)});
+    expect(cozyDailyIncome(alone)).toEqual({rent:dailyRent(alone),craft:0,gifts:0,patrons:0,loss:0,total:dailyRent(alone)});
     let studio=buildCozyRoom(alone,2,'workshop');
     expect(cozyDailyIncome(studio).craft).toBe(0); // vacant rooms never produce
     studio=moveInCozy(studio,2,'lantern-beetle');
@@ -373,6 +374,68 @@ describe('A single cozy apartment building loop',()=>{
     expect(cozyCareBoost(mismatched,'dewdrop')).toBe(11);
     expect(validCozySave(mismatched)).toBe(true);
     expect(careForCozyResident(newCozyGame(),'moon-scout')).toEqual(newCozyGame());
+  });
+
+  it('a physical mishap appears in the cutaway when neighbors settle together',()=>{
+    let game=moveInCozy(buildCozyRoom(newCozyGame(),2,'bath'),2,'dewdrop');
+    expect(game.incident).toBeNull();
+    game=day(game,2);
+    expect(game.tick).toBe(24);
+    expect(game.incident).toEqual({kind:'drips',room:4,since:24});
+    expect(COZY_INCIDENTS[game.incident!.kind].need).toBe('bath');
+    expect(game.journal.at(-1)?.key).toBe('mishap-start-24');
+    const income=cozyDailyIncome(game);
+    expect(income.loss).toBe(4);
+    expect(income.total).toBe(income.rent+income.craft+income.gifts+income.patrons-4);
+    expect(validCozySave(game)).toBe(true);
+    const nextDay=day(game);
+    expect(nextDay.incident).toEqual(game.incident);
+    expect(nextDay.coins-game.coins).toBe(cozyDailyIncome(game).total);
+  });
+  it('matching specialist converts a genuine room incident into a bonus',()=>{
+    let state=day(moveInCozy(buildCozyRoom(newCozyGame(),2,'bath'),2,'dewdrop'),2);
+    const correct=cozyRescuePreview(state,'dewdrop')!;
+    expect(correct).toEqual({expert:true,coins:12,joy:9});
+    const before=residentHappiness(state,'dewdrop');
+    const helped=resolveCozyIncident(state,'dewdrop');
+    expect(helped.incident).toBeNull();
+    expect(helped.coins).toBe(state.coins+12);
+    expect(helped.rooms).toEqual(state.rooms);
+    expect(cozyRescueBoost(helped,'dewdrop')).toBe(9);
+    expect(residentHappiness(helped,'dewdrop')).toBe(Math.min(100,before+9));
+    expect(helped.journal.at(-1)?.zh).toContain('一眼看出了门道');
+    expect(cozyDailyIncome(helped).loss).toBe(0);
+    expect(resolveCozyIncident(helped,'dewdrop')).toBe(helped);
+    expect(validCozySave(helped)).toBe(true);
+    expect(cozyRescueBoost(day(helped),'dewdrop')).toBe(0);
+  });
+  it('a nonspecialist can still help, at a visible price, but an outsider cannot',()=>{
+    const base=day(moveInCozy(buildCozyRoom(newCozyGame(),2,'bath'),2,'dewdrop'),2);
+    expect(cozyRescuePreview(base,'moon-scout')).toBeNull();
+    expect(resolveCozyIncident(base,'moon-scout')).toBe(base);
+    expect(cozyRescuePreview(base,'seedling')).toMatchObject({expert:false,coins:-6,joy:3});
+    const helped=resolveCozyIncident(base,'seedling');
+    expect(helped.coins).toBe(base.coins-6);
+    expect(cozyRescueBoost(helped,'seedling')).toBe(3);
+    expect(helped.journal.at(-1)?.zh).toContain('花了一点修缮费');
+    expect(helped.incident).toBeNull();
+    expect(resolveCozyIncident(base,'seedling').incident).toBeNull();
+  });
+  it('unanswered troubles settle naturally; no forced game-over or infinite incidents',()=>{
+    let state=day(moveInCozy(buildCozyRoom(newCozyGame(),2,'bath'),2,'dewdrop'),2);
+    state=day(state,2);
+    expect(state.incident).toBeNull();
+    expect(state.journal.some(item=>item.key==='mishap-settled-24')).toBe(true);
+    expect(state.tick).toBe(48);
+    state=day(state);
+    expect(state.incident?.kind).toBe('shadows'); // new story, not the old rain cloud
+    const v1=newCozyGame() as CozyState;
+    const oldSave={...v1};
+    delete oldSave.incident;
+    expect(validCozySave(oldSave)).toBe(true);
+    expect(validCozySave({...v1,incident:{kind:'bogus',room:2,since:24}})).toBe(false);
+    expect(validCozySave({...v1,incident:{kind:'drips',room:99,since:0}})).toBe(false);
+    expect(validCozySave({...v1,incident:{kind:'drips',room:4,since:12}})).toBe(false);
   });
   it('rejects tampered saves and keeps old prototype saves separate',()=>{
     const game=newCozyGame();

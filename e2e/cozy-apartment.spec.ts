@@ -716,3 +716,97 @@ test('species-specific costumes are visible on stage and in the visitor lineup',
   expect(overflow.x).toBeLessThanOrEqual(1);
   expect(overflow.y).toBeLessThanOrEqual(1);
 });
+
+
+test('real rain-cloud incident turns room-to-room help into a decision with consequences',async({page})=>{
+  const errors:string[]=[];
+  page.on('pageerror',err=>errors.push(err.message));
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=23;
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await expect(page.getByTestId('cozy-incident')).toHaveAttribute('data-kind','drips',{timeout:6000});
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-room-4').getByTestId('cozy-incident-art-drips')).toBeVisible();
+  await expect(page.getByTestId('cozy-trouble-room')).toContainText('出事了');
+  const before=Number(await page.getByTestId('cozy-coins').textContent());
+  await page.getByTestId('cozy-room-4').click();
+  await expect(page.getByTestId('cozy-help-choice')).toContainText('选一个住户出手');
+  await expect(page.getByTestId('cozy-helper-dewdrop')).toContainText('熟练 ✦ +12');
+  await expect(page.getByTestId('cozy-helper-seedling')).toContainText('费工具 ✦ -6');
+  await page.getByTestId('cozy-room-2').click();
+  await expect(page.getByTestId('cozy-incident')).toHaveCount(0);
+  await expect(page.getByTestId('cozy-story')).toContainText('一眼看出了门道');
+  await expect(page.getByTestId('cozy-coins')).toHaveText(String(before+12));
+  await expect(page.getByTestId('cozy-room-4').getByTestId('cozy-incident-art-drips')).toHaveCount(0);
+  await page.reload();
+  const save=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')!));
+  expect(save.incident).toBeNull();
+  expect(save.seen.some((x:string)=>x.startsWith('rescue-bright-'))).toBe(true);
+  expect(save.rooms[2].resident).toBe('dewdrop');
+  expect(save.rooms[4].resident).toBe('seedling');
+  expect(errors).toEqual([]);
+});
+
+test('dragging a specialist onto a troubled room resolves it without moving furniture',async({page})=>{
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=24;
+    save.incident={kind:'drips',room:4,since:24};
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByTestId('cozy-pause').click();
+  await page.getByTestId('cozy-room-2').dragTo(page.getByTestId('cozy-room-4'));
+  await expect(page.getByTestId('cozy-incident')).toHaveCount(0);
+  await expect(page.getByTestId('cozy-room-2')).toContainText('露珠灵');
+  await expect(page.getByTestId('cozy-room-4')).toContainText('芽核');
+  await expect(page.getByTestId('cozy-story')).toContainText('小魔法');
+});
+
+test('phone shows a distinctive room mishap and resolves it by two taps',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=60;
+    save.incident={kind:'sprouts',room:2,since:60};
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-incident')).toHaveAttribute('data-kind','sprouts');
+  await expect(page.getByTestId('cozy-incident-art-sprouts')).toBeVisible();
+  await page.getByTestId('cozy-room-2').click();
+  await expect(page.getByTestId('cozy-help-choice')).toBeVisible();
+  await expect(page.getByTestId('cozy-pause')).toHaveAttribute('aria-pressed','true');
+  await page.getByTestId('cozy-room-4').click();
+  await expect(page.getByTestId('cozy-story')).toContainText('也鼓起勇气帮了忙');
+  await expect(page.getByTestId('cozy-incident')).toHaveCount(0);
+  const overflow=await page.evaluate(()=>({
+    x:document.documentElement.scrollWidth-innerWidth,
+    y:document.documentElement.scrollHeight-innerHeight,
+  }));
+  expect(overflow.x).toBeLessThanOrEqual(1);
+  expect(overflow.y).toBeLessThanOrEqual(1);
+});

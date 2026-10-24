@@ -4,6 +4,24 @@ export type HomeType = 'nest' | 'bath' | 'workshop' | 'greenhouse';
 export type Furnishing = 'plant' | 'lamp' | 'books';
 export type ApartmentRoom = { type: HomeType; resident: SpiritId | null; decor: Furnishing | null };
 export type CozyPhase = 'playing' | 'complete';
+export type CozyIncidentKind='drips'|'shadows'|'sprouts';
+export type CozyIncident={kind:CozyIncidentKind;room:number;since:number};
+export const COZY_INCIDENTS:Record<CozyIncidentKind,{
+  zh:string;en:string;storyZh:string;storyEn:string;need:HomeType;hintZh:string;hintEn:string;
+}>={
+  drips:{zh:'水管里的小雨云',en:'A Cloud in the Pipes',need:'bath',
+    storyZh:'咕噜！一团顽皮的雨云钻进了水管，整栋楼的窗边都在滴水。',
+    storyEn:'A mischievous rain cloud has slipped into the pipes. The windows are dripping.',
+    hintZh:'最适合帮忙：喜欢浴室的住户',hintEn:'Best helper: someone who loves the bath'},
+  shadows:{zh:'走失的星光',en:'The Runaway Starlight',need:'workshop',
+    storyZh:'啪！一颗星光卡在旧电路里，走廊的灯忽明忽暗。',
+    storyEn:'A stray star is caught in the old wiring. The hallway lights flicker.',
+    hintZh:'最适合帮忙：喜欢工坊的住户',hintEn:'Best helper: someone who loves the workshop'},
+  sprouts:{zh:'不听话的夜藤',en:'The Midnight Vines',need:'greenhouse',
+    storyZh:'沙沙！夜里长出的藤蔓把门把手缠住了，住户正探头张望。',
+    storyEn:'Night vines have tangled around the doorknobs. Neighbors peek out in surprise.',
+    hintZh:'最适合帮忙：喜欢花房的住户',hintEn:'Best helper: someone who loves the greenhouse'},
+};
 export type CozyResident = {
   id: SpiritId; favorite: HomeType; decor: Furnishing; likes: SpiritId | null;
   zh: string; en: string; bioZh: string; bioEn: string;
@@ -41,6 +59,8 @@ export type CozyEvent = {
 export type CozyState = {
   version:1; phase:CozyPhase; tick:number; coins:number;
   rooms:(ApartmentRoom|null)[]; known:SpiritId[];
+  /** Optional for legacy saves. Only one observable surprise at a time. */
+  incident?:CozyIncident|null;
   bonds:Record<string,number>; seen:string[]; journal:CozyEvent[];
   lastIncome:number;
 };
@@ -72,6 +92,7 @@ export function newCozyGame():CozyState {
   return {
     version:1,phase:'playing',tick:0,coins:105,
     rooms:[null,null,null,null,{type:'nest',resident:'seedling',decor:'plant'},null],
+    incident:null,
     known:['seedling','dewdrop','lantern-beetle'],
     bonds:{},seen:[],lastIncome:0,
     journal:[{key:'welcome',tick:0,kind:'story',
@@ -243,6 +264,37 @@ export function careForCozyResident(state:CozyState,id:SpiritId):CozyState {
     scene.en+' ♡ +11 (today) · ✦ +'+reward+'.');
 }
 
+/** One tangible mishap on stage, rather than random debuffs. A player can
+ * drag an occupied room onto it, or tap the glowing room then a helper.
+ * Any real neighbor can solve it; matching their favorite room skill is
+ * rewarding, choosing an unskilled helper consumes resources. */
+export function cozyRescuePreview(state:CozyState,helper:SpiritId){
+  if(!state.incident||!state.rooms.some(room=>room?.resident===helper))return null;
+  const expert=profile(helper)?.favorite===COZY_INCIDENTS[state.incident.kind].need;
+  return {expert,coins:expert?12:-6,joy:expert?9:3};
+}
+export function cozyRescueBoost(state:CozyState,id:SpiritId):number {
+  const day=cozyDay(state.tick);
+  return state.seen.includes('rescue-bright-'+day+'-'+id)?9:
+    state.seen.includes('rescue-soft-'+day+'-'+id)?3:0;
+}
+export function resolveCozyIncident(state:CozyState,helper:SpiritId):CozyState {
+  if(state.phase!=='playing'||!state.incident)return state;
+  const preview=cozyRescuePreview(state,helper);
+  if(!preview)return state;
+  const speaker=profile(helper)!;
+  const issue=COZY_INCIDENTS[state.incident.kind];
+  const scene=preview.expert
+    ?{zh:speaker.zh+'一眼看出了门道，熟练地把'+issue.zh+'变成了一场小魔法！',
+      en:speaker.en+' knows exactly what to do and turns '+issue.en.toLowerCase()+' into a little magic!'}
+    :{zh:speaker.zh+'也鼓起勇气帮了忙，虽然弄乱了工具，还花了一点修缮费。',
+      en:speaker.en+' helps bravely, though the repairs take some extra supplies.'};
+  const key='rescue-'+(preview.expert?'bright-':'soft-')+cozyDay(state.tick)+'-'+helper;
+  return event({...state,incident:null,coins:Math.max(0,state.coins+preview.coins)},key,'story',
+    scene.zh+' ♡ +'+preview.joy+' · 星币 '+(preview.coins>0?'+':'')+preview.coins+'。',
+    scene.en+' ♡ +'+preview.joy+' · coins '+(preview.coins>0?'+':'')+preview.coins+'.');
+}
+
 export function residentHappiness(state:CozyState,id:SpiritId):number {
   const roomIndex=state.rooms.findIndex(room=>room?.resident===id);
   if(roomIndex===-1)return 0;
@@ -257,6 +309,7 @@ export function residentHappiness(state:CozyState,id:SpiritId):number {
   value+=cozyNeighborhood(state,id).total;
   value+=cozyResidentWish(state,id)?.effect??0;
   value+=cozyCareBoost(state,id);
+  value+=cozyRescueBoost(state,id);
   return Math.max(10,Math.min(100,value));
 }
 export const buildingHappiness=(state:CozyState):number=>{
@@ -291,7 +344,8 @@ export function cozyDailyIncome(state:CozyState){
     }
   }
   const patrons=cozyReputation(state);
-  return {rent,craft,gifts,patrons,total:rent+craft+gifts+patrons};
+  const loss=state.incident?Math.min(4,rent+craft+gifts+patrons):0;
+  return {rent,craft,gifts,patrons,loss,total:rent+craft+gifts+patrons-loss};
 }
 
 export function buildCozyRoom(state:CozyState,index:number,type:HomeType):CozyState{
@@ -419,10 +473,10 @@ export function advanceCozy(state:CozyState):CozyState {
   if(tick%TICKS_PER_DAY===0){
     const income=cozyDailyIncome(next);
     next={...next,coins:next.coins+income.total,lastIncome:income.total};
-    const breakdownZh=income.craft||income.gifts||income.patrons
-      ?'（房租 '+income.rent+' · 日常制作 '+income.craft+' · 邻里赠礼 '+income.gifts+' · 街区口碑 '+income.patrons+'）':'';
-    const breakdownEn=income.craft||income.gifts||income.patrons
-      ?' (rent '+income.rent+' · daily craft '+income.craft+' · neighbor gifts '+income.gifts+' · patrons '+income.patrons+')':'';
+    const breakdownZh=income.craft||income.gifts||income.patrons||income.loss
+      ?'（房租 '+income.rent+' · 日常制作 '+income.craft+' · 邻里赠礼 '+income.gifts+' · 街区口碑 '+income.patrons+' · 意外损耗 -'+income.loss+'）':'';
+    const breakdownEn=income.craft||income.gifts||income.patrons||income.loss
+      ?' (rent '+income.rent+' · daily craft '+income.craft+' · neighbor gifts '+income.gifts+' · patrons '+income.patrons+' · mishap -'+income.loss+')':'';
     next=event(next,'rent-'+tick,'rent',
       '清晨的公寓收入：+'+income.total+' 星币'+breakdownZh+'。',
       'Morning apartment income: +'+income.total+' coins'+breakdownEn+'.');
@@ -438,6 +492,30 @@ export function advanceCozy(state:CozyState):CozyState {
       next=event(next,'visitor-moon','arrival',
         '月影雀来访了：「听说这里有会发光的窗户，我想把故事写下来。」',
         'Moonscout arrives. "I heard your windows glow. I want to write down their stories."');
+    }
+  }
+  // Story surprises arise in actual built rooms once life has begun.
+  // Unanswered mishaps cost a little daily income, then resolve naturally
+  // after three days: players are never trapped or forced into a popup.
+  const incidentWindow=TICKS_PER_DAY*3;
+  if(state.incident && tick-state.incident.since>=TICKS_PER_DAY*2
+      && tick%TICKS_PER_DAY===0){
+    const kind=state.incident.kind;
+    next={...next,incident:null};
+    next=event(next,'mishap-settled-'+state.incident.since,'story',
+      COZY_INCIDENTS[kind].zh+'终于被住户们一起修好了；生活继续。',
+      'The neighbors finally mend '+COZY_INCIDENTS[kind].en.toLowerCase()+'. Life goes on.');
+  }else if(!state.incident && tick>=TICKS_PER_DAY*2
+      && (tick-TICKS_PER_DAY*2)%incidentWindow===0){
+    const built=next.rooms.flatMap((room,i)=>room?[i]:[]);
+    if(built.length>=2&&occupied(next)>=2){
+      const season=Math.floor((tick-TICKS_PER_DAY*2)/incidentWindow);
+      const kind=(['drips','shadows','sprouts'] as const)[season%3];
+      const target=built[(season+1)%built.length];
+      next={...next,incident:{kind,room:target,since:tick}};
+      next=event(next,'mishap-start-'+tick,'story',
+        COZY_INCIDENTS[kind].storyZh+' 找到发光的故障房间，请一位住户来帮忙！',
+        COZY_INCIDENTS[kind].storyEn+' Find the glowing room and ask a neighbor to help!');
     }
   }
   if(tick>=MAX_TICKS && tick%MAX_TICKS===0){
@@ -490,6 +568,13 @@ export function validCozySave(value:unknown):value is CozyState {
     || !Array.isArray(s.journal)||s.journal.length>18
     || !Array.isArray(s.seen)||s.seen.length>100
     || typeof s.bonds!=='object'||s.bonds===null)return false;
+  if(s.incident!==undefined&&s.incident!==null){
+    const issue=s.incident as CozyIncident;
+    if(typeof issue!=='object'||!Object.hasOwn(COZY_INCIDENTS,issue.kind)
+      ||!Number.isSafeInteger(issue.room)||issue.room<0||issue.room>=s.rooms.length
+      ||s.rooms[issue.room]===null||!Number.isSafeInteger(issue.since)
+      ||issue.since<0||issue.since>s.tick)return false;
+  }
   const housed=new Set<string>();
   for(const room of s.rooms){
     if(room===null)continue;
