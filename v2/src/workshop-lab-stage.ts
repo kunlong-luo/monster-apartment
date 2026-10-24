@@ -10,7 +10,6 @@ export type LabView={sync:(state:WorkshopState,selected:number|null)=>void; dest
  * Real painted bitmap frames are handled by pixi-stage.ts after art approval. */
 const W=1050, H=645, CELL=146, GAP=14, LEFT=131, TOP=104;
 const COLORS:Record<Craft,number>={well:0x73d4eb,garden:0x95d5a0,kiln:0xffbe79};
-const COLORS_DARK:Record<Craft,number>={well:0x225c75,garden:0x315f4b,kiln:0x7d493a};
 const glabel=(s:string,size=13,color=0xe9dbc5,bold=false)=>
   new Text({text:s,style:{fontFamily:'Arial, sans-serif',fontSize:size,
     fill:color,fontWeight:bold?'700':'400'}});
