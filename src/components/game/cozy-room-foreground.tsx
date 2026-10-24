@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import type { HomeType, ResidentActivity } from '@/core/cozy-engine';
 
 /** Foreground occlusion layer is drawn AFTER the resident. The tub, bed cover,
@@ -7,11 +8,12 @@ import type { HomeType, ResidentActivity } from '@/core/cozy-engine';
 export function CozyRoomForeground({type,activity}:{
   type:HomeType;activity:ResidentActivity|null;
 }){
+  const lightId='cozy-foreground-'+useId().replace(/:/g,'');
   return <svg className={'cozy-room-foreground is-'+type}
     data-testid={'cozy-foreground-'+type} viewBox="0 0 480 250"
     preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
     <defs>
-      <linearGradient id={'cozy-foreground-'+type} x1="0" y1="0" x2="0" y2="1">
+      <linearGradient id={lightId} x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stopColor="#fff5d6" stopOpacity=".25"/>
         <stop offset=".35" stopColor="#fff0da" stopOpacity=".08"/>
         <stop offset="1" stopColor="#151b2c" stopOpacity=".28"/>
@@ -86,6 +88,6 @@ export function CozyRoomForeground({type,activity}:{
     <path d="M0 249 H480" stroke="#1b2331" strokeWidth="5"
       opacity=".73"/>
     <rect x="0" y="238" width="480" height="12"
-      fill={'url(#cozy-foreground-'+type+')'}/>
+      fill={'url(#'+lightId+')'}/>
   </svg>;
 }
