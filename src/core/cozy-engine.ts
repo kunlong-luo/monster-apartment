@@ -47,7 +47,10 @@ export type CozyState = {
 const profile = (id:SpiritId):CozyResident|undefined => COZY_RESIDENTS.find(r=>r.id===id);
 const event = (state:CozyState,key:string,kind:CozyEvent['kind'],zh:string,en:string):CozyState => {
   if(state.seen.includes(key))return state;
-  return {...state,seen:[...state.seen,key].slice(-100),
+  const keys=[...state.seen,key];
+  const permanent=keys.filter(item=>item.startsWith('commission-award-'));
+  const recent=keys.filter(item=>!item.startsWith('commission-award-')).slice(-(100-permanent.length));
+  return {...state,seen:[...permanent,...recent],
     journal:[...state.journal,{key,tick:state.tick,kind,zh,en}].slice(-18)};
 };
 export const cozyDay = (tick:number):number=>Math.floor(tick/TICKS_PER_DAY)+1;
@@ -138,6 +141,64 @@ export function cozyResidentWish(state:CozyState,id:SpiritId):CozyResidentWish|n
   return {kind,met,effect:met?12:-4,...descriptions[kind]};
 }
 
+/** The opening chapter teaches housing. Later chapters carry one authored
+ * resident's request. All steps are recomputed from real rooms and earned bonds;
+ * no phantom progress meter or new V1 save field is needed. */
+export type CozyCommissionId='teatime'|'lanterns'|'garden'|'stories';
+export type CozyCommissionStep={id:'home'|'decor'|'friend';zh:string;en:string;done:boolean};
+export type CozyCommission={
+  chapter:number;id:CozyCommissionId;resident:SpiritId;
+  zh:string;en:string;storyZh:string;storyEn:string;
+  steps:CozyCommissionStep[];completed:number;required:number;ready:boolean;
+  earned:boolean;award:number;
+};
+const COMMISSION_SERIES:readonly {
+  id:CozyCommissionId;resident:SpiritId;home:HomeType;decor:Furnishing;friend:SpiritId;
+  zh:string;en:string;storyZh:string;storyEn:string;
+}[]=[
+  {id:'teatime',resident:'dewdrop',home:'bath',decor:'books',friend:'seedling',
+    zh:'露珠灵的睡前读书会',en:"Dewdrop's Story Hour",
+    storyZh:'露珠灵想在暖暖的浴室里和芽核交换故事。',storyEn:'Dewdrop wants to share stories with Seedcore in the warm bath.'},
+  {id:'lanterns',resident:'lantern-beetle',home:'workshop',decor:'lamp',friend:'dewdrop',
+    zh:'灯甲虫的夜光修理铺',en:"Lanternbeetle's Night Workshop",
+    storyZh:'灯甲虫想修好整条街的灯，也希望露珠灵来看看。',storyEn:'Lanternbeetle wants to mend street lamps with a friendly visit from Dewdrop.'},
+  {id:'garden',resident:'fern-hare',home:'greenhouse',decor:'plant',friend:'seedling',
+    zh:'蕨尾兔的窗边种子会',en:"Fernhare's Window Garden",
+    storyZh:'蕨尾兔想让芽核看到第一批开花的种子。',storyEn:'Fernhare hopes Seedcore will see the first seeds bloom.'},
+  {id:'stories',resident:'moon-scout',home:'workshop',decor:'books',friend:'lantern-beetle',
+    zh:'月影雀的月下故事集',en:"Moonscout's Moonlit Stories",
+    storyZh:'月影雀要在工作室记下灯甲虫的夜班故事。',storyEn:'Moonscout wants to record Lanternbeetle’s night-shift tales.'},
+];
+const commissionAwardKey=(id:CozyCommissionId)=>'commission-award-'+id;
+export function cozyReputation(state:CozyState):number {
+  return COMMISSION_SERIES.reduce((sum,item)=>
+    sum+Number(state.seen.includes(commissionAwardKey(item.id))),0);
+}
+export function cozyCommission(state:CozyState,chapter=Math.floor(state.tick/MAX_TICKS)+1):CozyCommission|null {
+  if(!Number.isSafeInteger(chapter)||chapter<2)return null;
+  const entry=COMMISSION_SERIES[(chapter-2)%COMMISSION_SERIES.length];
+  const i=state.rooms.findIndex(room=>room?.resident===entry.resident);
+  const room=i>=0?state.rooms[i]:null;
+  const friendIndex=state.rooms.findIndex(room=>room?.resident===entry.friend);
+  const key=[entry.resident,entry.friend].sort().join(':');
+  const bond=state.bonds[key]??0;
+  const together=i>=0&&friendIndex>=0&&adjacent(i,friendIndex)
+    &&Number.isFinite(bond)&&bond>=1;
+  const steps:CozyCommissionStep[]=[
+    {id:'home',zh:'住在'+ROOM_DETAILS[entry.home].zh,
+      en:'Live in '+ROOM_DETAILS[entry.home].en,done:room?.type===entry.home},
+    {id:'decor',zh:'房间摆上'+FURNISHINGS[entry.decor].zh,
+      en:'Place '+FURNISHINGS[entry.decor].en,done:room?.decor===entry.decor},
+    {id:'friend',zh:'与'+(profile(entry.friend)?.zh??'朋友')+'相邻并建立羁绊',
+      en:'Visit and bond with '+(profile(entry.friend)?.en??'a friend')+' next door',
+      done:together},
+  ];
+  const completed=steps.filter(step=>step.done).length;
+  const earned=state.seen.includes(commissionAwardKey(entry.id));
+  return {...entry,chapter,steps,completed,required:steps.length,
+    ready:completed===steps.length,earned,award:earned?10:24};
+}
+
 export function residentHappiness(state:CozyState,id:SpiritId):number {
   const roomIndex=state.rooms.findIndex(room=>room?.resident===id);
   if(roomIndex===-1)return 0;
@@ -184,7 +245,8 @@ export function cozyDailyIncome(state:CozyState){
       if(liked&&Number.isFinite(level)&&level>=2)gifts+=2;
     }
   }
-  return {rent,craft,gifts,total:rent+craft+gifts};
+  const patrons=cozyReputation(state);
+  return {rent,craft,gifts,patrons,total:rent+craft+gifts+patrons};
 }
 
 export function buildCozyRoom(state:CozyState,index:number,type:HomeType):CozyState{
@@ -312,10 +374,10 @@ export function advanceCozy(state:CozyState):CozyState {
   if(tick%TICKS_PER_DAY===0){
     const income=cozyDailyIncome(next);
     next={...next,coins:next.coins+income.total,lastIncome:income.total};
-    const breakdownZh=income.craft||income.gifts
-      ?'（房租 '+income.rent+' · 日常制作 '+income.craft+' · 邻里赠礼 '+income.gifts+'）':'';
-    const breakdownEn=income.craft||income.gifts
-      ?' (rent '+income.rent+' · daily craft '+income.craft+' · neighbor gifts '+income.gifts+')':'';
+    const breakdownZh=income.craft||income.gifts||income.patrons
+      ?'（房租 '+income.rent+' · 日常制作 '+income.craft+' · 邻里赠礼 '+income.gifts+' · 街区口碑 '+income.patrons+'）':'';
+    const breakdownEn=income.craft||income.gifts||income.patrons
+      ?' (rent '+income.rent+' · daily craft '+income.craft+' · neighbor gifts '+income.gifts+' · patrons '+income.patrons+')':'';
     next=event(next,'rent-'+tick,'rent',
       '清晨的公寓收入：+'+income.total+' 星币'+breakdownZh+'。',
       'Morning apartment income: +'+income.total+' coins'+breakdownEn+'.');
@@ -343,6 +405,26 @@ export function advanceCozy(state:CozyState):CozyState {
         ' 奖励 +'+prize+' 星币，下一期生活继续。',
       'Moonlight Street chapter '+chapter+': '+(goal.success?'The neighbors celebrate their cozy home!':'A new chapter begins. Keep caring for the neighbors.')+
         ' +'+prize+' coins. Life continues.');
+    if(chapter>=2){
+      const mission=cozyCommission(next,chapter);
+      if(mission){
+        if(mission.ready){
+          next={...next,coins:next.coins+mission.award,
+            seen:mission.earned?next.seen:[...next.seen,commissionAwardKey(mission.id)]};
+          next=event(next,'commission-close-'+chapter,'story',
+            mission.zh+'圆满完成！+'+mission.award+' 星币。'+
+              (mission.earned?'邻居们再次欢聚。':'街区口碑提升，日常赞助永久 +1 星币！'),
+            mission.en+' completed! +'+mission.award+' coins. '+
+              (mission.earned?'The neighbors gather again.':'Neighborhood patrons now contribute +1 coin per day!'));
+        }else{
+          const missing=mission.steps.filter(step=>!step.done).map(step=>step.zh).join('、');
+          const missingEn=mission.steps.filter(step=>!step.done).map(step=>step.en).join(', ');
+          next=event(next,'commission-close-'+chapter,'story',
+            mission.zh+'这一期没能完成（还缺：'+missing+'）。下次还可以再试。',
+            mission.en+' was not finished (still needed: '+missingEn+'). A new chance will come.');
+        }
+      }
+    }
   }
   return next;
 }

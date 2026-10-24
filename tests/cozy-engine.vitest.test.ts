@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
-  newCozyGame, buildCozyRoom, moveInCozy, decorateCozy, advanceCozy,
+  newCozyGame, COZY_RESIDENTS, buildCozyRoom, moveInCozy, decorateCozy, advanceCozy,
   residentHappiness, buildingHappiness, dailyRent, availableResidents,
   residentActivity, adjacent, cozyGoal, cozyDay, validCozySave, MAX_TICKS, TICKS_PER_DAY,
   relocateCozyResident, previewCozyRelocation, cozyVisits, cozyNeighborhood, cozyDailyIncome,
-  cozyResidentWish, resumeCozySave,
+  cozyResidentWish, resumeCozySave, cozyCommission, cozyReputation,
 } from '../src/core/cozy-engine';
 import type { CozyState } from '../src/core/cozy-engine';
 
@@ -131,7 +131,7 @@ describe('A single cozy apartment building loop',()=>{
 
   it('inhabited workspaces earn modest craft income on the same morning as rent',()=>{
     const alone=newCozyGame();
-    expect(cozyDailyIncome(alone)).toEqual({rent:dailyRent(alone),craft:0,gifts:0,total:dailyRent(alone)});
+    expect(cozyDailyIncome(alone)).toEqual({rent:dailyRent(alone),craft:0,gifts:0,patrons:0,total:dailyRent(alone)});
     let studio=buildCozyRoom(alone,2,'workshop');
     expect(cozyDailyIncome(studio).craft).toBe(0); // vacant rooms never produce
     studio=moveInCozy(studio,2,'lantern-beetle');
@@ -248,6 +248,96 @@ describe('A single cozy apartment building loop',()=>{
     expect(validCozySave(game)).toBe(true);
     expect(cozyResidentWish(game,'seedling')).not.toBeNull();
     expect(cozyResidentWish(advanceCozy(game),'seedling')).not.toBeNull();
+  });
+
+  it('puts a named resident commission in each chapter after the opening week',()=>{
+    const opening=newCozyGame();
+    expect(cozyCommission(opening)).toBeNull();
+    const week={...opening,tick:MAX_TICKS};
+    const first=cozyCommission(week);
+    expect(first).toMatchObject({chapter:2,id:'teatime',resident:'dewdrop',completed:0,ready:false,award:24});
+    expect(first?.steps.map(step=>step.id)).toEqual(['home','decor','friend']);
+    expect(cozyCommission(week,3)?.id).toBe('lanterns');
+    expect(cozyCommission(week,4)?.id).toBe('garden');
+    expect(cozyCommission(week,5)?.id).toBe('stories');
+    expect(cozyCommission(week,6)?.id).toBe('teatime');
+    expect(cozyReputation(week)).toBe(0);
+  });
+  it('completes story hour only through a real room, books and earned neighboring visits',()=>{
+    let game=day(newCozyGame(),8);
+    game=moveInCozy(buildCozyRoom(game,2,'bath'),2,'dewdrop');
+    expect(cozyCommission(game)?.completed).toBe(1);
+    game=decorateCozy(game,2,'books');
+    expect(cozyCommission(game)?.completed).toBe(2);
+    expect(cozyCommission(game)?.steps[2].done).toBe(false);
+    game=day(game);
+    expect(game.bonds['dewdrop:seedling']).toBeGreaterThanOrEqual(1);
+    expect(cozyCommission(game)?.ready).toBe(true);
+    const before=cozyDailyIncome(game);
+    expect(before.patrons).toBe(0);
+    while(game.tick<MAX_TICKS*2-1)game=advanceCozy(game);
+    const previous=game.coins;
+    game=advanceCozy(game);
+    expect(game.tick).toBe(MAX_TICKS*2);
+    expect(game.journal.at(-1)?.key).toBe('commission-close-2');
+    expect(game.journal.at(-1)?.zh).toContain('露珠灵的睡前读书会圆满完成');
+    expect(game.coins).toBeGreaterThan(previous+24);
+    expect(cozyReputation(game)).toBe(1);
+    expect(cozyDailyIncome(game).patrons).toBe(1);
+    expect(cozyCommission(game,2)?.award).toBe(10);
+    expect(validCozySave(game)).toBe(true);
+    const later=day(game);
+    expect(later.lastIncome).toBeGreaterThan(0);
+    expect(later.coins).toBeGreaterThan(game.coins);
+  });
+  it('does not award reputation for an unfulfilled commission or passive adjacency',()=>{
+    let game=day(newCozyGame(),8);
+    game=moveInCozy(buildCozyRoom(game,2,'bath'),2,'dewdrop');
+    game=decorateCozy(game,2,'books');
+    expect(cozyCommission(game)?.completed).toBe(2);
+    // Move Dewdrop away before a visit; room and decor stay valid but the
+    // relationship condition never matures.
+    game=relocateCozyResident(buildCozyRoom(game,0,'bath'),2,0);
+    while(game.tick<MAX_TICKS*2)game=advanceCozy(game);
+    expect(game.journal.at(-1)?.key).toBe('commission-close-2');
+    expect(game.journal.at(-1)?.zh).toContain('没能完成');
+    expect(cozyReputation(game)).toBe(0);
+    expect(cozyDailyIncome(game).patrons).toBe(0);
+  });
+  it('supports all four commission stories and caps permanent patronage',()=>{
+    const state:CozyState={...newCozyGame(),tick:MAX_TICKS,known:COZY_RESIDENTS.map(r=>r.id),
+      rooms:[
+        {type:'workshop' as const,resident:'lantern-beetle' as const,decor:'lamp' as const},
+        {type:'workshop' as const,resident:'moon-scout' as const,decor:'books' as const},
+        {type:'bath' as const,resident:'dewdrop' as const,decor:'books' as const},
+        null,
+        {type:'nest' as const,resident:'seedling' as const,decor:'plant' as const},
+        {type:'greenhouse' as const,resident:'fern-hare' as const,decor:'plant' as const},
+      ],
+      bonds:{'dewdrop:seedling':1,'dewdrop:lantern-beetle':1,
+        'fern-hare:seedling':1,'lantern-beetle:moon-scout':1}};
+    for(const chapter of [2,3,4,5]){
+      const mission=cozyCommission(state,chapter)!;
+      expect(mission.ready).toBe(true);
+      expect(mission.completed).toBe(3);
+      expect(mission.steps.every(step=>step.done)).toBe(true);
+    }
+    const prestigious={...state,seen:[
+      'commission-award-teatime','commission-award-lanterns',
+      'commission-award-garden','commission-award-stories']};
+    expect(cozyReputation(prestigious)).toBe(4);
+    expect(cozyDailyIncome(prestigious).patrons).toBe(4);
+    expect(cozyCommission(prestigious,6)?.award).toBe(10);
+    expect(validCozySave(prestigious)).toBe(true);
+  });
+  it('keeps past commission achievements when routine stories cycle beyond 100 entries',()=>{
+    let state={...newCozyGame(),tick:MAX_TICKS*2,
+      seen:['commission-award-teatime',...Array.from({length:99},(_,i)=>'old-'+i)]};
+    for(let i=0;i<120;i++)state=advanceCozy(state);
+    expect(state.seen).toContain('commission-award-teatime');
+    expect(state.seen.length).toBeLessThanOrEqual(100);
+    expect(cozyReputation(state)).toBe(1);
+    expect(validCozySave(state)).toBe(true);
   });
   it('rejects tampered saves and keeps old prototype saves separate',()=>{
     const game=newCozyGame();

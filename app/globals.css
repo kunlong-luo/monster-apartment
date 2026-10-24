@@ -1994,3 +1994,59 @@
  font-size:clamp(9px,.72vw,11px);line-height:1.25;
  color:#e8c6ac;white-space:normal;
 }
+
+/* V0.9.8 — a resident's actual chapter commission written on the existing
+ * street note. It conveys plans, not a new row of buttons or a popup. */
+.cozy-commission{
+  border-top:1px solid #9b7b6b85;
+  margin-top:12px;padding-top:9px;
+  font-family:system-ui,"Noto Sans CJK SC",sans-serif;
+  color:#5a4854;min-width:0;
+}
+.cozy-commission-heading{
+  display:flex;align-items:baseline;justify-content:space-between;gap:5px;
+}
+.cozy-commission-heading strong{
+  color:#5a4353;font-size:clamp(10px,.91vw,13px);
+  line-height:1.35;flex:1;min-width:0;
+}
+.cozy-commission-heading>span{
+  flex-shrink:0;font-size:clamp(9px,.76vw,11px);font-weight:800;color:#93694f;
+}
+.cozy-commission-track{
+  margin:6px 0;height:4px;background:#987c7761;border-radius:2px;overflow:hidden;
+}
+.cozy-commission-track i{
+  display:block;height:100%;background:linear-gradient(90deg,#af8869,#e2ba7b);
+  transition:width .22s ease-out;
+}
+.cozy-commission[data-ready="true"] .cozy-commission-track i{background:#698f79}
+.cozy-commission-steps{display:flex;flex-wrap:wrap;gap:4px 8px}
+.cozy-commission-steps span{
+  font-size:clamp(9px,.72vw,11px);line-height:1.45;
+  white-space:normal;
+}
+.cozy-commission-steps .is-done{color:#4d7a65;font-weight:750}
+.cozy-commission-steps .is-pending{color:#745c5e}
+.cozy-commission-repute{
+  margin-top:7px;font-size:10px;font-weight:700;color:#8f6750;
+}
+@media(max-width:760px){
+  .cozy-commission{
+    display:grid;grid-template-columns:1fr auto;column-gap:6px;
+    margin-top:3px;padding-top:3px;align-items:center;
+  }
+  .cozy-commission-heading{grid-column:1}
+  .cozy-commission-heading strong{font-size:9px;line-height:1.2}
+  .cozy-commission-heading>span{font-size:8px}
+  .cozy-commission-track{grid-column:2;grid-row:1;width:36px;height:4px;margin:0}
+  .cozy-commission-steps{grid-column:1/-1;gap:1px 7px;margin-top:2px}
+  .cozy-commission-steps span{font-size:8px;line-height:1.25}
+  .cozy-commission-repute{display:none}
+}
+@media(max-width:400px){
+  .cozy-commission-steps span{font-size:7px}
+}
+@media(prefers-reduced-motion:reduce){
+  .cozy-commission-track i{transition:none!important}
+}

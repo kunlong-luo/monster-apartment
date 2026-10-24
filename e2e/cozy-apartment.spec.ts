@@ -574,3 +574,89 @@ test('first chapter milestone rewards coins, but the game continues and keeps it
   expect(dimensions.x).toBeLessThanOrEqual(1);
   expect(dimensions.y).toBeLessThanOrEqual(1);
 });
+
+
+test('a real neighbor visit completes Dewdrop commission and unlocks permanent patronage',async({page})=>{
+  const errors:string[]=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await page.getByTestId('cozy-decor-books').click();
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=96;
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByTestId('cozy-pause').click();
+  const mission=page.getByTestId('cozy-commission');
+  await expect(mission).toBeVisible();
+  await expect(mission).toContainText('露珠灵的睡前读书会');
+  await expect(page.getByTestId('cozy-commission-progress')).toContainText('2/3');
+  await expect(page.getByTestId('cozy-commission-step-home')).toHaveClass(/is-done/);
+  await expect(page.getByTestId('cozy-commission-step-decor')).toHaveClass(/is-done/);
+  await expect(page.getByTestId('cozy-commission-step-friend')).toHaveClass(/is-pending/);
+  // The last condition is earned on a REAL morning with the neighbor visit
+  // algorithm, rather than forged through a new "finish task" button.
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=107;
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await expect(page.getByTestId('cozy-commission')).toHaveAttribute('data-ready','true',{timeout:6500});
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-commission-progress')).toContainText('3/3');
+  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')!));
+  expect(saved.bonds['dewdrop:seedling']).toBeGreaterThanOrEqual(1);
+  expect(saved.seen).not.toContain('commission-award-teatime');
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=191;
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await expect(page.getByTestId('cozy-story')).toContainText('露珠灵的睡前读书会圆满完成',{timeout:6500});
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-reputation')).toContainText('1/4');
+  await expect(page.getByTestId('cozy-daily-life')).toContainText('口碑 +1');
+  const rewarded=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')!));
+  expect(rewarded.seen).toContain('commission-award-teatime');
+  await page.reload();
+  await expect(page.getByTestId('cozy-reputation')).toContainText('1/4');
+  expect(errors).toEqual([]);
+});
+
+test('chapter commissions present legible progress on a 390px phone without extra scrolling',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/');
+  await expect.poll(()=>page.evaluate(()=>
+    localStorage.getItem('monster-apartment:cozy:v1')!==null)).toBe(true);
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const state=JSON.parse(localStorage.getItem(key)!);
+    state.tick=96;
+    localStorage.setItem(key,JSON.stringify(state));
+  });
+  await page.reload();
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-commission')).toBeVisible();
+  await expect(page.getByTestId('cozy-commission-progress')).toContainText('0/3');
+  await expect(page.getByTestId('cozy-commission-step-friend')).toBeVisible();
+  await expect(page.getByTestId('cozy-commission').getByRole('progressbar')).toHaveAttribute('aria-valuenow','0');
+  const overflow=await page.evaluate(()=>({
+    x:document.documentElement.scrollWidth-innerWidth,
+    y:document.documentElement.scrollHeight-innerHeight,
+  }));
+  expect(overflow.x).toBeLessThanOrEqual(1);
+  expect(overflow.y).toBeLessThanOrEqual(1);
+  await page.getByTestId('cozy-room-2').click();
+  await expect(page.getByTestId('cozy-build-bath')).toBeVisible();
+});

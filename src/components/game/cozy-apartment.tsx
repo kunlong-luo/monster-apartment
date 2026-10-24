@@ -17,7 +17,7 @@ import {
   advanceCozy, availableResidents, buildCozyRoom,
   cozyDay, cozyGoal, cozyDailyIncome, cozyNeighborhood, decorateCozy, moveInCozy, newCozyGame,
   residentHappiness, validCozySave, resumeCozySave, cozyResidentWish,
-  relocateCozyResident, previewCozyRelocation, cozyVisits,
+  relocateCozyResident, previewCozyRelocation, cozyVisits, cozyCommission, cozyReputation,
 } from '@/core/cozy-engine';
 import type { CozyState, HomeType, Furnishing } from '@/core/cozy-engine';
 import type { SpiritId } from '@/core/spirit-collection';
@@ -60,6 +60,8 @@ export function CozyApartment(){
   const applicants=availableResidents(state);
   const goal=cozyGoal(state);
   const income=cozyDailyIncome(state);
+  const commission=cozyCommission(state);
+  const reputation=cozyReputation(state);
   const chosenRoom=selectedRoom===null?null:state.rooms[selectedRoom];
   const neighborCare=chosenRoom?.resident?cozyNeighborhood(state,chosenRoom.resident):null;
   const selectedWish=chosenRoom?.resident?cozyResidentWish(state,chosenRoom.resident):null;
@@ -150,7 +152,7 @@ export function CozyApartment(){
       <div className="cozy-stat"><span>✦ {zh?'星币':'Coins'}</span><strong data-testid="cozy-coins">{state.coins}</strong></div>
       <div className="cozy-stat"><span>♡ {zh?'平均幸福度':'Happiness'}</span><strong data-testid="cozy-happiness">{goal.happiness}<small>/100</small></strong></div>
       <div className="cozy-stat"><span>⌂ {zh?'已入住':'Moved in'}</span><strong data-testid="cozy-occupancy">{goal.guests}<small>/6</small></strong></div>
-      <div className="cozy-stat"><span>☀ {zh?'预计日进账':'Daily income'}</span><strong data-testid="cozy-rent" title={zh?'含房租、制作与赠礼':'Rent, craft and gifts'}>+{income.total}</strong></div>
+      <div className="cozy-stat"><span>☀ {zh?'预计日进账':'Daily income'}</span><strong data-testid="cozy-rent" title={zh?'房租、制作、赠礼与街区赞助':'Rent, craft, gifts and neighborhood patrons'}>+{income.total}</strong></div>
     </div>
 
     <section className="cozy-play" aria-label={zh?'公寓建造场景':'Apartment construction'}>
@@ -271,11 +273,36 @@ export function CozyApartment(){
           {zh?'正在探望':' is visiting '}
           {COZY_RESIDENTS.find(resident=>resident.id===liveVisit.host)?.[language]}
         </small>:<small data-testid="cozy-daily-life">
-          {income.craft||income.gifts
-            ?(zh?'每日：房租 +'+income.rent+' · 制作 +'+income.craft+' · 赠礼 +'+income.gifts
-              :'Daily: rent +'+income.rent+' · craft +'+income.craft+' · gifts +'+income.gifts)
+          {income.craft||income.gifts||income.patrons
+            ?(zh?'每日：房租 +'+income.rent+' · 制作 +'+income.craft+' · 赠礼 +'+income.gifts+' · 口碑 +'+income.patrons
+              :'Daily: rent +'+income.rent+' · craft +'+income.craft+' · gifts +'+income.gifts+' · patrons +'+income.patrons)
             :(zh?'生活在这里慢慢发生 · 每天都会有新变化':'Little moments happen here · each day brings something new')}
         </small>}
+        {commission&&<div className="cozy-commission" data-testid="cozy-commission"
+          data-ready={commission.ready?'true':'false'}>
+          <div className="cozy-commission-heading">
+            <strong>{zh?commission.zh:commission.en}</strong>
+            <span data-testid="cozy-commission-progress">
+              {commission.completed}/{commission.required} · ✦ {commission.award}
+            </span>
+          </div>
+          <div className="cozy-commission-track" role="progressbar"
+            aria-label={zh?'委托完成度':'Commission progress'}
+            aria-valuenow={commission.completed} aria-valuemin={0}
+            aria-valuemax={commission.required}>
+            <i style={{width:commission.completed/commission.required*100+'%'}}/>
+          </div>
+          <div className="cozy-commission-steps">
+            {commission.steps.map(step=><span key={step.id}
+              data-testid={'cozy-commission-step-'+step.id}
+              className={step.done?'is-done':'is-pending'}>
+              {step.done?'✓':'○'} {zh?step.zh:step.en}
+            </span>)}
+          </div>
+          <div className="cozy-commission-repute" data-testid="cozy-reputation">
+            {zh?'街区口碑':'Neighborhood reputation'} {reputation}/4 · +{reputation}/{zh?'天':'day'}
+          </div>
+        </div>}
       </div>
     </section>
 
@@ -355,8 +382,11 @@ export function CozyApartment(){
       <div className="cozy-dock-footer">
         <span data-testid="cozy-chapter-progress">✧ {state.tick<MAX_TICKS
           ?(zh?'首期目标：至少 3 位住户，幸福度达到 70':'Opening goal: 3 residents, 70 happiness')
-          :(zh?'第 '+(Math.floor(state.tick/MAX_TICKS)+1)+' 期 · 每三天轮换住户心愿 · 满足可提升幸福度'
-            :'Chapter '+(Math.floor(state.tick/MAX_TICKS)+1)+' · wishes rotate every three days')}</span>
+          :(commission
+            ?(zh?'第 '+commission.chapter+' 期 · '+commission.zh+' '+commission.completed+'/'+commission.required+
+              ' · 每三天轮换住户心愿'
+              :'Chapter '+commission.chapter+' · '+commission.en+' '+commission.completed+'/'+commission.required)
+            :(zh?'每三天轮换住户心愿 · 满足可提升幸福度':'Wishes rotate every three days'))}</span>
         <span>{paused?(zh?'已暂停':'Paused'):(zh?'自动保存 · 生活正在继续':'Autosaved · Life goes on')}</span>
       </div>
     </section>
