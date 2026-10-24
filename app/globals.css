@@ -1901,3 +1901,58 @@
 .cozy-shell.is-paused .cozy-patina-pollen{
   animation-play-state:paused!important;
 }
+
+
+/* V0.9.5: state-directed choreography, not one looping wobble for all residents.
+ * Every 1150ms engine tick reblocks each puppet at its bed, work station,
+ * wandering waypoint, or neighbor visit. DOM hit targets remain full rooms. */
+.cozy-room .cozy-actor.is-staged,
+.cozy-room .cozy-guest.is-staged{
+  animation:none!important;
+  transition:left .83s cubic-bezier(.28,.1,.24,1),
+    bottom .55s ease-out;
+  pointer-events:none;
+}
+.cozy-room .cozy-actor.is-staged .cozy-character,
+.cozy-room .cozy-guest.is-staged .cozy-character{
+  transform-origin:50% 80%;
+  transition:transform .28s ease-out;
+}
+.cozy-room .cozy-actor.is-staged[data-facing="left"] .cozy-character,
+.cozy-room .cozy-guest.is-staged[data-facing="left"] .cozy-character{
+  transform:scaleX(-1);
+}
+.cozy-room .cozy-actor.is-staged[data-facing="right"] .cozy-character,
+.cozy-room .cozy-guest.is-staged[data-facing="right"] .cozy-character{
+  transform:scaleX(1);
+}
+.cozy-spirit-pose{transform-box:view-box}
+.cozy-spirit-left-foot,.cozy-spirit-right-foot{
+  transition:cx .24s ease,cy .24s ease;
+}
+.cozy-spirit-left-arm,.cozy-spirit-right-arm{
+  transition:fill .22s ease;
+}
+.cozy-room .cozy-actor.is-staged.is-sleep .cozy-character{
+  filter:brightness(.93) drop-shadow(1px 5px 3px #111a2c99);
+}
+.cozy-room .cozy-actor.is-staged.is-work .cozy-character{
+  filter:drop-shadow(0 3px 4px #161826a0);
+}
+.cozy-spirit-visit-gift{filter:drop-shadow(0 3px 2px #191e2a80)}
+.cozy-spirit-tool.is-workshop{filter:drop-shadow(0 1px 2px #e5b37166)}
+.cozy-room .cozy-guest.is-staged{
+  z-index:4;
+  text-shadow:0 2px 3px #14203594;
+}
+@media(prefers-reduced-motion:reduce){
+  .cozy-room .cozy-actor.is-staged,
+  .cozy-room .cozy-guest.is-staged,
+  .cozy-room .cozy-actor.is-staged .cozy-character,
+  .cozy-room .cozy-guest.is-staged .cozy-character,
+  .cozy-spirit-left-foot,.cozy-spirit-right-foot,
+  .cozy-spirit-left-arm,.cozy-spirit-right-arm{
+    transition:none!important;
+    animation:none!important;
+  }
+}

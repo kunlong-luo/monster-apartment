@@ -353,3 +353,79 @@ test('the larger resident and restored room are visible on mobile without extra 
   expect(metrics.x).toBeLessThanOrEqual(1);
   expect(metrics.y).toBeLessThanOrEqual(1);
 });
+
+
+test('residents walk between real room positions with authored four-frame poses',async({page})=>{
+  await page.goto('/');
+  await expect.poll(()=>page.evaluate(()=>
+    localStorage.getItem('monster-apartment:cozy:v1')!==null)).toBe(true);
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=7;
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByTestId('cozy-pause').click();
+  const actor=page.getByTestId('cozy-actor-seedling');
+  await expect(actor).toHaveAttribute('data-pose-frame','3');
+  await expect(actor).toHaveAttribute('data-facing','left');
+  await expect(actor).toHaveCSS('animation-name','none');
+  const before=await actor.evaluate(node=>(node as HTMLElement).style.left);
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=8;
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-actor-seedling')).toHaveAttribute('data-facing','right');
+  const after=await page.getByTestId('cozy-actor-seedling')
+    .evaluate(node=>(node as HTMLElement).style.left);
+  expect(after).not.toBe(before);
+  await expect(page.getByTestId('cozy-room-4').locator('.cozy-spirit-left-foot')).toHaveCount(1);
+  await expect(page.getByTestId('cozy-room-4').locator('.cozy-spirit-left-arm')).toHaveCount(1);
+});
+
+test('work poses carry location-specific hand tools while keeping gameplay clickable',async({page})=>{
+  await page.goto('/');
+  await expect.poll(()=>page.evaluate(()=>
+    localStorage.getItem('monster-apartment:cozy:v1')!==null)).toBe(true);
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=4;
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByTestId('cozy-pause').click();
+  await expect(page.getByTestId('cozy-actor-seedling')
+    .locator('.cozy-spirit-tool.is-nest')).toBeAttached();
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await expect(page.getByTestId('cozy-room-2').locator('.cozy-spirit-pose')).toBeVisible();
+  await expect(page.getByTestId('cozy-actor-seedling')).toBeVisible();
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect(page.getByTestId('cozy-actor-seedling')).toHaveCSS('transition-duration','0s');
+});
+
+test('neighbor visits stage the visitor separately without extra buttons',async({page})=>{
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await page.evaluate(()=>{
+    const key='monster-apartment:cozy:v1';
+    const save=JSON.parse(localStorage.getItem(key)!);
+    save.tick=7;
+    localStorage.setItem(key,JSON.stringify(save));
+  });
+  await page.reload();
+  await expect(page.getByTestId('cozy-visit-dewdrop')).toHaveAttribute('data-facing',/left|right/);
+  await expect(page.getByTestId('cozy-visit-dewdrop').locator('.cozy-spirit-visit-gift')).toBeAttached();
+  await expect(page.getByTestId('cozy-stair-route-dewdrop')).toBeVisible();
+  await expect(page.getByTestId('cozy-away-dewdrop')).toBeVisible();
+});

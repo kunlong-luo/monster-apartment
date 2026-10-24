@@ -10,12 +10,13 @@ import { CozyStairwell } from './cozy-stairwell';
 import { CozyVacantRoom } from './cozy-vacant-room';
 import type { CozyMoment, CozyMomentKind } from './cozy-room-moment';
 import { cozyWorldLight, cozyWorldWeather } from '@/game/cozy-world-direction';
+import { cozyGuestPose, cozyResidentPose } from '@/game/cozy-resident-performance';
 import { CozyRoomArt, CozyRoomIcon, CozyDecorIcon } from './cozy-room-art';
 import {
   COZY_RESIDENTS, ROOM_DETAILS, FURNISHINGS, MAX_TICKS, TICKS_PER_DAY,
   advanceCozy, availableResidents, buildCozyRoom,
   cozyDay, cozyGoal, dailyRent, decorateCozy, moveInCozy, newCozyGame,
-  residentActivity, residentHappiness, validCozySave,
+  residentHappiness, validCozySave,
   relocateCozyResident, previewCozyRelocation, cozyVisits,
 } from '@/core/cozy-engine';
 import type { CozyState, HomeType, Furnishing } from '@/core/cozy-engine';
@@ -166,7 +167,8 @@ export function CozyApartment(){
           {state.rooms.map((room,index)=>{
             const active=selectedRoom===index;
             const person=room?.resident?COZY_RESIDENTS.find(r=>r.id===room.resident):undefined;
-            const action=person?residentActivity(state.tick,person.id):null;
+            const stage=person&&room?cozyResidentPose(state.tick,person.id,room.type):null;
+            const action=stage?.activity??null;
             const floor=3-Math.floor(index/2);
             const want=pickedApplicant && !!room && room.resident===null;
             const canRehouse=movingFrom!==null && movingFrom!==index && !!room;
@@ -213,16 +215,25 @@ export function CozyApartment(){
                   <span className="cozy-out-visiting" data-testid={'cozy-away-'+person.id}>
                     {zh?'去邻居家串门 →':'Visiting a neighbor →'}
                   </span> :
-                  <span className={'cozy-actor is-'+action} title={adjectives[action!][language]}
-                    data-testid={'cozy-actor-'+person.id}>
-                    <CozySpirit id={person.id} size={82} activity={action!}/>
+                  <span className={'cozy-actor is-'+action+' is-staged'} title={adjectives[action!][language]}
+                    data-testid={'cozy-actor-'+person.id}
+                    data-pose-frame={stage?.frame} data-facing={stage?.face}
+                    style={{left:(stage?.left??30)+'%',bottom:(stage?.bottom??2)+'%'}}>
+                    <CozySpirit id={person.id} size={82} activity={action!}
+                      frame={stage?.frame} roomType={room.type}/>
                   </span> :
                   <span className="cozy-available">{zh?'待入住 · 选择住户':'Available · Welcome someone'}</span>}
-                {visitors.map(visit=><span key={visit.visitor}
-                  className="cozy-guest" data-testid={'cozy-visit-'+visit.visitor}>
-                  <CozySpirit id={visit.visitor} size={52} activity="visit"/>
-                  <small>{zh?'来串门':'Visiting'}</small>
-                </span>)}
+                {visitors.map(visit=>{
+                  const guestStage=cozyGuestPose(state.tick,visit.visitor,visit.host);
+                  return <span key={visit.visitor} className="cozy-guest is-staged"
+                    data-testid={'cozy-visit-'+visit.visitor}
+                    data-pose-frame={guestStage.frame} data-facing={guestStage.face}
+                    style={{left:guestStage.left+'%',bottom:guestStage.bottom+'%'}}>
+                    <CozySpirit id={visit.visitor} size={52} activity="visit"
+                      frame={guestStage.frame} roomType={room.type}/>
+                    <small>{zh?'来串门':'Visiting'}</small>
+                  </span>;
+                })}
                 <CozyRoomForeground type={room.type} activity={action}/>
                 {roomMoments[index]&&<CozyRoomMoment key={roomMoments[index].sequence}
                   kind={roomMoments[index].kind}/>}
