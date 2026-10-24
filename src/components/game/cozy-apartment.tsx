@@ -65,6 +65,7 @@ export function CozyApartment(){
   const commission=cozyCommission(state);
   const reputation=cozyReputation(state);
   const chosenRoom=selectedRoom===null?null:state.rooms[selectedRoom];
+  const neighborCare=chosenRoom?.resident?cozyNeighborhood(state,chosenRoom.resident):null;
   const selectedWish=chosenRoom?.resident?cozyResidentWish(state,chosenRoom.resident):null;
   const visits=cozyVisits(state);
   const liveVisit=visits[0];
@@ -326,10 +327,12 @@ export function CozyApartment(){
             (zh?'建造一个新房间':'Build a new room')}</strong>
             <span>{movingFrom!==null?(zh?'点击发光的房间搬迁或交换，收益会即时变化':'Tap a highlighted room to move or swap. See the outcome first.'):
               !chosenRoom?(zh?'房型决定什么样的住户愿意长住':'The room type affects who feels at home'):
-              chosenRoom.resident?(zh?(careUsed?'今天已经陪一位住户完成小事。':'再点一下这间房，陪住户做一件小事：♡ +11、✦ +1～3。')+
-                  (selectedWish?' 心愿：'+selectedWish.zh+(selectedWish.met?' 已满足':' 未满足'):'')
-                :(careUsed?'You have helped a resident today.':'Tap this room again to share a daily chore: ♡ +11, ✦ +1–3.')+
-                  (selectedWish?' Wish: '+selectedWish.en+(selectedWish.met?' met':' unmet'):''))
+              chosenRoom.resident?(zh?'邻里照料 +'+(neighborCare?.care??0)+' · 真实羁绊 +'+(neighborCare?.friendship??0)+
+                  (selectedWish?' · 心愿：'+selectedWish.zh+(selectedWish.met?' 已满足 +'+selectedWish.effect:' 未满足 -4'):'')+
+                  ' · '+(careUsed?'今天已经陪一位住户完成小事。':'再点一下这间房，陪住户做一件小事：♡ +11、✦ +1～3。')
+                :'Neighbor care +'+(neighborCare?.care??0)+' · friendship +'+(neighborCare?.friendship??0)+
+                  (selectedWish?' · Wish: '+selectedWish.en+(selectedWish.met?' met +'+selectedWish.effect:' unmet -4'):'')+
+                  ' · '+(careUsed?'You have helped a resident today.':'Tap this room again to share a daily chore: ♡ +11, ✦ +1–3.'))
                 :
               (zh?'欢迎一位等待搬家的住户':'Welcome a waiting visitor')}</span>
             {selectedWish&&<small className="cozy-wish-help" data-testid="cozy-wish-help">
