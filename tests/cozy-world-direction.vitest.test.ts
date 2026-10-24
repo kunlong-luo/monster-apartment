@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {cozyWorldLight,cozyWorldWeather} from '@/game/cozy-world-direction';
+import {cozyWorldLight,cozyWorldWeather} from '../src/game/cozy-world-direction';
 
 describe('cozy world art direction is deterministic and never edits the save',()=>{
   it('turns clock ticks into a four-part visual day',()=>{
