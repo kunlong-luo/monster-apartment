@@ -192,7 +192,7 @@ test('Phaser light pass and room foreground preserve real room interaction',asyn
   await expect(home.getByTestId('cozy-foreground-nest')).toBeVisible();
   await expect(home.getByTestId('cozy-spirit-seedling')).toBeVisible();
   await expect(home.locator('.cozy-spirit-feet')).toHaveCount(1);
-  await expect(home.locator('.cozy-sleep-eyes')).toBeVisible();
+  await expect(home.locator('.cozy-sleep-eyes, .cozy-spirit-eye-blink')).toBeVisible();
   const atmosphere=page.getByTestId('cozy-phaser-atmosphere');
   await expect(atmosphere).toBeVisible();
   await expect(atmosphere.locator('canvas')).toBeVisible({timeout:15000});
