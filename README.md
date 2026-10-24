@@ -1,5 +1,9 @@
 # 《灵核公寓》V0.10.0 · 月光街魔法小事故：怪物能真的帮上忙
 
+> **开发方向已调整（V2 重启）**：基于试玩反馈，当前 V0.10.0 公寓版不再扩展。新版转向 PixiJS 8.21 + 位图精灵动画的**怪物工坊建造/生产链模拟**，不再是宠物好感度养成。独立新代码位于 [v2/](v2/)；美术资源还未就绪，因此旧版网站暂时保留以供对照，**不要误以为技术栈已在线切换**。详细范围与验收标准见 [V2 说明](v2/README.md)。
+
+以下内容只描述已经冻结的旧版 V0.10.0。
+
 这是**模拟经营 / 建造 / 住户生活**小游戏，而不是塔防或资源危机游戏。
 
 [**进入游戏**](https://kunlong-luo.github.io/monster-apartment/) · [前代生存原型 /survival](https://kunlong-luo.github.io/monster-apartment/survival/) · [最早六房经营版 /legacy](https://kunlong-luo.github.io/monster-apartment/legacy/)

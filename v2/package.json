@@ -1,0 +1,16 @@
+{
+  "name": "@monster-apartment/workshop-v2",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck"
+  },
+  "dependencies": {
+    "pixi.js": "8.21.0"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3"
+  }
+}
