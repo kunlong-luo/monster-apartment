@@ -35,6 +35,28 @@ This is an intentionally narrow *test of whether the mechanics are fun*.
 The existing pet-raising/roommate happiness and commission loops will **not**
 be imported into V2. Fail early on the core loop before adding buildings.
 
+## V2 visual iteration 0.2 — authored raster sprites and motion
+
+The original technical greybox has been upgraded to **GPU texture-backed raster
+sprites**. A reusable Canvas2D bitmap painter prepares each machine, a
+textured floor, an illustrated dusk backdrop, and **eight independently
+defined frames for each of three creature workers**, with species-specific
+silhouettes (water courier, leafy gardener, horned ember smith). PixiJS now
+hosts AnimatedSprite workers and Sprite machines. Connected staffed machines
+visibly exchange moving colored resource motes. The mobile game board no longer
+floats in an oversized blank flex panel.
+
+This is an **intermediate raster art pass**. The frames are programmatically
+painted with gradients, line work and procedural texture; they are not the
+commissioned, fully art-directed sprite sheets from the concept art, nor
+high-end animation. The separate `src/pixi-stage.ts` still documents the
+external asset atlas contract for a final artist-produced replacement.
+
+Verification includes strict PixiJS typecheck/build, browser click-to-produce
+end-to-end tests, and desktop/mobile visual screenshots. Gameplay rules and
+the saved V2 state have not changed. The original V1 apartment remains
+untouched.
+
 ## Play the factory laboratory
 
 Run `cd v2 && npm install && npm run dev` to launch the standalone WebGL lab

@@ -12,6 +12,8 @@ test('PixiJS factory produces cores only after the player connects the chain and
   await page.goto(LAB);
   const canvas=page.getByTestId('v2-stage').locator('canvas');
   await expect(canvas).toBeVisible({timeout:12000});
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-renderer','pixi-webgl-bitmap');
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-worker-frames','8');
   await expect(page.getByTestId('v2-coins')).toHaveText('100');
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-output')).toHaveText('0');
@@ -35,6 +37,7 @@ test('PixiJS factory produces cores only after the player connects the chain and
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-output')).toHaveText('2');
   await expect(page.getByTestId('v2-stock')).toHaveText('2');
+  await page.screenshot({path:'test-results/workshop-v2-sprites-desktop.png',fullPage:true});
   for(let i=0;i<3;i++)await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-completed')).toHaveText('1');
   await expect(page.getByTestId('v2-failed')).toHaveText('0');
@@ -66,6 +69,7 @@ test('mobile keeps the same PixiJS game stage visible with no page-length scroll
   await page.setViewportSize({width:390,height:844});
   await page.goto(LAB);
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:12000});
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-worker-frames','8');
   await expect(page.getByTestId('v2-build-well')).toBeVisible();
   await expect(page.getByTestId('v2-worker-fern')).toBeVisible();
   await expect(page.getByTestId('v2-shift')).toBeVisible();

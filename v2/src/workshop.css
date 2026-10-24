@@ -11,7 +11,7 @@ button:focus-visible{outline:2px solid #f7cb84;outline-offset:3px}
 .top-stats b{font-size:18px;color:#ffdbad;font-variant-numeric:tabular-nums}
 #reset{border:1px solid #596b78;background:#273b4e;color:#ffdcab;border-radius:8px;font-size:23px;padding:4px 11px}
 .middle{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,275px);gap:10px;min-height:0}
-.world{display:flex;flex-direction:column;min-height:0;min-width:0;border:1px solid #5b6d7d;border-radius:11px;overflow:hidden;background:linear-gradient(145deg,#263f4f,#142637)}
+.world{display:flex;flex-direction:column;min-height:0;min-width:0;border:1px solid #5b6d7d;border-radius:11px;overflow:hidden;background:linear-gradient(145deg,#263f4f,#142637);box-shadow:0 9px 34px #0c172e7d,inset 0 1px #f5d9a635}
 .stage-label{flex-shrink:0;display:flex;justify-content:space-between;gap:8px;align-items:center;padding:10px 14px;color:#e2cfac;font-size:12px}
 .stage-label small{font-size:10px;color:#bca586}
 #stage{flex:1;min-height:0;display:flex;justify-content:center;align-items:center;overflow:hidden}
@@ -52,7 +52,7 @@ footer small{font-size:10px;color:#8c9da6}.sr-only{position:absolute;clip-path:i
 @media(max-width:610px){
  .lab{padding:5px;gap:5px}.top{height:42px}.logo{gap:5px}.logo>span{font-size:25px}.logo strong{font-size:18px}.logo small{font-size:7px;letter-spacing:.02em}
  .top-stats{gap:4px}.top-stats>span{font-size:9px;padding:5px 6px}.top-stats b{font-size:15px}#reset{font-size:17px;padding:4px 7px}
- .middle{display:flex;flex-direction:column;gap:5px}.world{flex:1}.stage-label{font-size:10px;padding:5px 8px}.stage-label small{font-size:8px}
+ .middle{display:flex;flex-direction:column;gap:5px;flex:0 0 auto}.world{flex:0 0 auto}.stage-label{font-size:10px;padding:5px 8px}.stage-label small{font-size:8px}
  .selection{font-size:10px;padding:4px 8px;min-height:22px}.sidebar{display:grid;grid-template-columns:1fr 1fr;gap:5px;flex-shrink:0}
  .panel{padding:6px 8px}.eyebrow{font-size:8px}.panel h2{font-size:13px;margin:5px 0}
  .target{margin:3px 0}.target b{font-size:20px}.target small{font-size:9px}.meter{height:5px;margin-bottom:4px}.contract-footer{font-size:8px}
@@ -67,3 +67,19 @@ footer small{font-size:10px;color:#8c9da6}.sr-only{position:absolute;clip-path:i
  footer{min-height:19px}footer p{font-size:9px;max-width:75%}footer small{font-size:7px;text-align:right}
 }
 @media(max-width:610px) and (max-height:720px){footer{display:none}.panel{padding:4px}.console-panel{padding:4px}}
+
+/* 0.2: mobile board gets a deliberate aspect-ratio panel rather than
+ * floating in a half-screen tall empty flex box. */
+@media(max-width:610px){
+  #stage{flex:0 0 auto;aspect-ratio:1050/645;width:100%;min-height:0;height:auto;
+    background:radial-gradient(ellipse at 50% 64%,#486077a9,#202e43 67%,#17273a);}
+  .world{background:#19293b}
+  .lab{justify-content:flex-start}
+  .sidebar{align-items:stretch}
+}
+@media(min-width:611px){
+  #stage{background:radial-gradient(ellipse at 50% 40%,#4c5a6a,#192c42)}
+}
+@media(prefers-reduced-motion:reduce){
+  .meter div{transition:none!important}
+}
