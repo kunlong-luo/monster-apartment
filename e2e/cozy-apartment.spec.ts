@@ -125,6 +125,8 @@ test('residents visibly visit nearby neighbors during the day',async({page})=>{
   });
   await page.reload();
   await expect(page.getByTestId('cozy-visit-dewdrop')).toBeVisible({timeout:4000});
+  await expect(page.getByTestId('cozy-stair-route-dewdrop')).toBeVisible();
+  await expect(page.getByTestId('cozy-stairwell')).toHaveAttribute('data-active-visits','1');
   await expect(page.getByTestId('cozy-social-pulse')).toContainText('露珠灵');
   await expect(page.getByTestId('cozy-away-dewdrop')).toContainText('串门');
   await expect(page.getByTestId('cozy-room-2')).toContainText('露珠灵');
@@ -258,4 +260,50 @@ test('weather and clock art direction is save-compatible and accessible',async({
   await expect(page.locator('.cozy-weather')).toBeAttached();
   await page.emulateMedia({reducedMotion:'reduce'});
   await expect(page.locator('.cozy-weather')).toHaveCSS('animation-name','none');
+});
+
+test('the three floors share a central stairwell and become lived-in as tenants arrive',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/');
+  await page.getByTestId('cozy-pause').click();
+  const spine=page.getByTestId('cozy-stairwell');
+  await expect(spine).toBeVisible();
+  await expect(spine.locator('.cozy-stair-landing')).toHaveCount(3);
+  await expect(spine.locator('.cozy-stair-landing.is-lit')).toHaveCount(1);
+  await expect(page.locator('.cozy-room-door')).toHaveCount(1);
+  const before=await spine.boundingBox();
+  expect(before).not.toBeNull();
+  expect(before!.height).toBeGreaterThan(200);
+  expect(before!.width).toBeGreaterThan(25);
+  await page.getByTestId('cozy-room-2').click();
+  await page.getByTestId('cozy-build-bath').click();
+  await expect(page.locator('.cozy-room-door')).toHaveCount(2);
+  await page.getByTestId('cozy-welcome-dewdrop').click();
+  await expect(spine.locator('.cozy-stair-landing.is-lit')).toHaveCount(2);
+  await page.reload();
+  await expect(page.getByTestId('cozy-stairwell')
+    .locator('.cozy-stair-landing.is-lit')).toHaveCount(2);
+});
+
+test('stairwell retains room buttons and single-screen layout on a 390px phone',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/');
+  const spine=page.getByTestId('cozy-stairwell');
+  await expect(spine).toBeVisible();
+  await expect(spine).toHaveCSS('grid-column-start','2');
+  for(let index=0;index<6;index++){
+    const room=page.getByTestId('cozy-room-'+index);
+    await expect(room).toBeVisible();
+    await expect(room).toHaveAttribute('aria-label',/.+/);
+  }
+  await expect(spine).toHaveCSS('pointer-events','none');
+  await page.getByTestId('cozy-room-5').click();
+  await expect(page.getByTestId('cozy-build-greenhouse')).toBeVisible();
+  const metrics=await page.evaluate(()=>({
+    x:document.documentElement.scrollWidth-innerWidth,
+    y:document.documentElement.scrollHeight-innerHeight,
+  }));
+  expect(metrics.x).toBeLessThanOrEqual(1);
+  expect(metrics.y).toBeLessThanOrEqual(1);
 });

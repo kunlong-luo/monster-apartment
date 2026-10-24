@@ -6,6 +6,7 @@ import { CozySpirit } from './cozy-spirit';
 import { CozyStreetBackdrop } from './cozy-street-backdrop';
 import { CozyRoomForeground } from './cozy-room-foreground';
 import { CozyRoomMoment } from './cozy-room-moment';
+import { CozyStairwell } from './cozy-stairwell';
 import type { CozyMoment, CozyMomentKind } from './cozy-room-moment';
 import { cozyWorldLight, cozyWorldWeather } from '@/game/cozy-world-direction';
 import { CozyRoomArt, CozyRoomIcon, CozyDecorIcon } from './cozy-room-art';
@@ -160,6 +161,7 @@ export function CozyApartment(){
           <div className="cozy-roof-chimney" aria-hidden="true"/>
         </div>
         <div className="cozy-floors">
+          <CozyStairwell rooms={state.rooms} visits={visits}/>
           {state.rooms.map((room,index)=>{
             const active=selectedRoom===index;
             const person=room?.resident?COZY_RESIDENTS.find(r=>r.id===room.resident):undefined;
@@ -177,6 +179,7 @@ export function CozyApartment(){
                 (person?' · '+person[language]:'')}
               className={'cozy-room '+(room?'is-'+room.type:'is-empty')+(active?' is-active':'')+
                 (want?' can-move-in':'')+(canRehouse?' can-rehouse':'')}
+              style={{gridColumn:index%2===0?1:3,gridRow:Math.floor(index/2)+1}}
               draggable={!!person&&!complete}
               onDragStart={event=>{
                 if(!person)return;
@@ -201,6 +204,7 @@ export function CozyApartment(){
                 }
               }}>
               <span className="cozy-floor-number">{floor}F</span>
+              {room&&<span className="cozy-room-door" aria-hidden="true"/>}
               {room ? <>
                 <CozyRoomArt type={room.type} decor={room.decor}/>
                 <span className="cozy-room-name">{ROOM_DETAILS[room.type][language]}</span>

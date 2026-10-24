@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import type { ApartmentRoom, CozyState } from '@/core/cozy-engine';
-import { residentActivity } from '@/core/cozy-engine';
+import { cozyVisits, residentActivity } from '@/core/cozy-engine';
+import { SPIRIT_ART } from '@/core/spirit-art';
 
 type WorldSnapshot = Pick<CozyState,'rooms'|'tick'|'phase'>;
 const TONES: Record<NonNullable<ApartmentRoom>['type'],number>={
@@ -57,7 +58,8 @@ export class CozyAtmosphereScene extends Phaser.Scene {
       const room=state.rooms[i];
       if(!room)continue;
       const col=i%2,row=Math.floor(i/2);
-      const ox=col*600,oy=row*(680/3);
+      // The central stairwell takes ~100 of the 1200 scene units.
+      const ox=col*650,oy=row*(680/3);
       const tint=TONES[room.type];
       const resident=room.resident;
       const activity=resident?residentActivity(state.tick,resident):null;
@@ -95,6 +97,22 @@ export class CozyAtmosphereScene extends Phaser.Scene {
         g.lineStyle(1.8,0xffd7ae,this.reduced?.15:.14+.08*Math.sin(t*2+i));
         g.strokeCircle(ox+302,oy+140,24);
       }
+    }
+    // A real simulation visit lights a route through the shared stairwell.
+    // A traveler glow moves along it; no unrelated random particles are added.
+    for(const visit of cozyVisits(state)){
+      const from=(Math.floor(visit.from/2)+.5)*(680/3);
+      const to=(Math.floor(visit.to/2)+.5)*(680/3);
+      const duration=2.1;
+      const progress=this.reduced?1:(Math.sin(t*Math.PI/duration)+1)/2;
+      const travelerY=from+(to-from)*progress;
+      const shade=Number.parseInt(SPIRIT_ART[visit.visitor].primary.slice(1),16);
+      g.lineStyle(5,0xf2cd9b,.22);
+      g.lineBetween(600,from,600,to);
+      g.fillStyle(shade,.18);
+      g.fillCircle(600,travelerY,21);
+      g.fillStyle(0xffedc0,.33);
+      g.fillCircle(600,travelerY,5);
     }
   }
 }
