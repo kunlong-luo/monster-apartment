@@ -25,8 +25,10 @@ test('orders and warehouse transact the same real localStorage save',async({page
     completed:1,failed:0,
     patron:{status:'offered',due:8,cores:15,reward:135}
   };
-  await page.addInitScript(world=>localStorage.setItem(
-    'monster-apartment:workshop-v2-lab',JSON.stringify(world)),sample);
+  await page.addInitScript(world=>{
+    const key='monster-apartment:workshop-v2-lab';
+    if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify(world));
+  },sample);
   await page.goto('/orders/');
   await expect(page.getByTestId('world-coins')).toHaveText('132');
   await page.getByRole('button',{name:'接受月纱委托'}).click();
