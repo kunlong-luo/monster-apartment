@@ -78,3 +78,49 @@ test('premium contract really changes the Pixi workshop requirement and survives
   await page.reload();
   await expect(page.getByText('高额订单已接受')).toBeVisible();
 });
+
+
+test('moonlit town works as a real one-purchase-per-day supplier for the same workshop',async({page})=>{
+  test.setTimeout(90_000);
+  const seeded={
+    version:2,day:6,coins:132,
+    tiles:Array.from({length:15},(_,i)=>
+      i===5?{craft:'well',worker:'brook',stored:5}:
+      i===6?{craft:'garden',worker:'fern',stored:0}:
+      i===7?{craft:'kiln',worker:'cinder',stored:0}:null),
+    warehouse:{core:8},order:{due:9,cores:3,reward:95},last:null,
+    completed:1,failed:0,
+    patron:{status:'offered',due:8,cores:15,reward:135}
+  };
+  await page.addInitScript(state=>{
+    const key='monster-apartment:workshop-v2-lab';
+    if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify(state));
+  },seeded);
+  await page.goto('/town/');
+  await expect(page.getByTestId('moonlit-town-scene')).toBeVisible();
+  await expect(page.getByRole('link',{name:/晶核工坊/})).toBeVisible();
+  await expect(page.getByTestId('moonlit-market')).toBeVisible();
+  await expect(page.getByTestId('market-status')).toContainText('可采购一批');
+  await page.getByTestId('town-offer-fiber').getByRole('button',{name:'购买本日货箱'}).click();
+  await expect(page.getByTestId('market-status')).toContainText('今日交易已完成');
+  await expect(page.getByTestId('world-coins')).toHaveText('108');
+  await expect(page.getByTestId('town-offer-core').getByRole('button')).toBeDisabled();
+  const saved=await page.evaluate(()=>{
+    const raw=localStorage.getItem('monster-apartment:workshop-v2-lab');
+    return raw?JSON.parse(raw):null;
+  });
+  expect(saved.tiles[6].stored).toBe(3);
+  expect(saved.market).toEqual({day:6,kind:'fiber'});
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'工坊'}).click();
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25000});
+  await expect(page.getByTestId('v2-coins')).toHaveText('108');
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-day')).toHaveText('7');
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'月光街'}).click();
+  await expect(page.getByTestId('market-status')).toContainText('第 7 天');
+  await expect(page.getByTestId('town-offer-water').getByRole('button',{name:'购买本日货箱'})).toBeEnabled();
+  await page.getByTestId('town-offer-water').getByRole('button').click();
+  await expect(page.getByTestId('market-status')).toContainText('今日交易已完成');
+  await page.reload();
+  await expect(page.getByTestId('market-status')).toContainText('今日交易已完成');
+});

@@ -67,4 +67,23 @@ describe('Next world routes share the V2 deterministic save contract',()=>{
     expect(commitWorldAction(storage,'import')).toBe('applied');
     expect(parseSavedWorld(storage.getItem(SAVE_KEY))!.order.premium).toBe(true);
   });
+
+  it('town purchases are shared with the PixiJS factory and do not repeat on refresh',()=>{
+    const {storage}=save();
+    const original=visitingWorld();
+    storage.setItem(SAVE_KEY,JSON.stringify(original));
+    expect(commitWorldAction(storage,'marketFiber')).toBe('applied');
+    const purchased=parseSavedWorld(storage.getItem(SAVE_KEY))!;
+    expect(purchased.tiles[6]?.stored).toBe(original.tiles[6]!.stored+3);
+    expect(purchased.coins).toBe(original.coins-24);
+    expect(purchased.market).toEqual({day:6,kind:'fiber'});
+    expect(commitWorldAction(storage,'marketCore')).toBe('unavailable');
+    expect(storage.getItem(SAVE_KEY)).toBe(JSON.stringify(purchased));
+    const after=runShift(purchased);
+    storage.setItem(SAVE_KEY,JSON.stringify(after));
+    expect(commitWorldAction(storage,'marketWater')).toBe('applied');
+    const nextDay=parseSavedWorld(storage.getItem(SAVE_KEY))!;
+    expect(nextDay.market).toEqual({day:7,kind:'water'});
+    expect(nextDay.tiles[5]!.stored).toBe(after.tiles[5]!.stored+3);
+  });
 });

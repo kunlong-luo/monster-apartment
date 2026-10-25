@@ -7,6 +7,7 @@ import {
   importPatronCore, PATRON_IMPORT_PRICE,
   acceptPremiumOrder,forecastOrderChoice,PREMIUM_EXTRA_CORES,
   PREMIUM_EXTRA_REWARD,PREMIUM_ORDER_PENALTY,
+  buyTownSupply,townMarketAvailable,TOWN_MARKET,
 } from '../v2/src/workshop-engine';
 
 const connect=()=>{
@@ -335,5 +336,44 @@ describe('V2 workshop: positioning and staffing are the gameplay',()=>{
     expect(missed.order.premium).toBeUndefined();
     expect(validWorkshop(missed)).toBe(true);
     expect(validWorkshop({...s,order:{...s.order,premium:false}})).toBe(false);
+  });
+
+  it('town market physically delivers one shipment per game day with real coins',()=>{
+    const start=connect();
+    expect(start.market).toBeUndefined(); // old saves load with no migration
+    expect(townMarketAvailable(start,'fiber')).toBe(true);
+    expect(TOWN_MARKET.fiber.amount).toBe(3);
+    const shipped=buyTownSupply(start,'fiber');
+    expect(shipped.coins).toBe(start.coins-24);
+    expect(shipped.tiles[6]?.stored).toBe(3);
+    expect(shipped.tiles[5]).toEqual(start.tiles[5]);
+    expect(shipped.market).toEqual({day:1,kind:'fiber'});
+    expect(start.tiles[6]?.stored).toBe(0); // pure, unmodified save
+    expect(townMarketAvailable(shipped,'core')).toBe(false);
+    expect(buyTownSupply(shipped,'core')).toBe(shipped);
+    const after=runShift(shipped);
+    expect(after.last?.cores).toBeGreaterThan(0);
+    expect(after.day).toBe(2);
+    expect(townMarketAvailable(after,'core')).toBe(false); // insufficient coins
+    const replenished={...after,coins:52};
+    const bought=buyTownSupply(replenished,'core');
+    expect(bought.coins).toBe(15);
+    expect(bought.warehouse.core).toBe(after.warehouse.core+1);
+    expect(bought.market).toEqual({day:2,kind:'core'});
+    expect(validWorkshop(bought)).toBe(true);
+  });
+  it('town cannot manufacture resources without infrastructure or cash',()=>{
+    const base=newWorkshop();
+    const noPump={...base,tiles:base.tiles.map((x,i)=>i===5?null:x)};
+    expect(buyTownSupply(noPump,'water')).toBe(noPump);
+    const noGarden={...base,tiles:base.tiles.map((x,i)=>i===7?null:x)};
+    expect(buyTownSupply(noGarden,'fiber')).toBe(noGarden);
+    expect(buyTownSupply({...base,coins:11},'water')).toBeDefined();
+    expect(buyTownSupply({...base,coins:11},'water').coins).toBe(11);
+    expect(buyTownSupply(base,'something' as 'core')).toBe(base);
+    const bought=buyTownSupply(base,'water');
+    expect(validWorkshop(bought)).toBe(true);
+    expect(validWorkshop({...bought,market:{day:9999,kind:'water'}})).toBe(false);
+    expect(validWorkshop({...bought,market:{day:1,kind:'fake'}})).toBe(false);
   });
 });
