@@ -43,6 +43,12 @@ Chinese fonts or a third-party CDN. PixiJS waits for the font before drawing
 Chinese stage text. This fixes missing-glyph boxes on Linux and in automated
 screenshots. The font is a runtime asset, not a user download artifact.
 
+## 成年女性角色阵容与造型规范（新增）
+
+已确定的美术方向：**年轻、优雅、性感的原创奇幻成人女性**。将以三位 **21—24 岁**的年轻成年角色为主，保留 **28 岁月纱**为成熟型代表。设计突出露肩、露背、露腰、开衩剪裁、精致配饰及不同职业的辨识度，不直接照搬成人影像或真实人物。幼态/宠物化怪物保持非性化。
+
+完整四人资料、逐帧精灵规格、服装边界、经营互动和验收门槛见 **[成年女性角色美术规范](docs/adult-character-art-direction.md)**。当前实际代码仅完成月纱的过渡版立绘与高级订单，其余三位是明确标注的待开发目标，尚未假称已经上线。
+
 ## V2 iteration 0.3 — adult visitor with meaningful orders
 
 **月纱 / Moonveil**, an explicitly adult **28-year-old** witch merchant, visits
