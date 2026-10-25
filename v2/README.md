@@ -42,6 +42,23 @@ assets or falsely marked ready art, but **does not fail** solely because
 the final artwork remains pending. Formal visual acceptance still requires
 real desktop/mobile screenshots and frame-by-frame review.
 
+## V2.8 — replacing UI placeholders with existing painted artwork
+
+The town now presents its building gateways in front of a real AVIF painterly
+scene imported from `v2/art/moon-workshop.avif` through Next image bundling.
+Clickable links remain accessible; the background is art, not an image-map
+replacement for interactions. The guide is presented with the existing real
+`v2/art/moonveil-portrait.avif` painting rather than a glowing glyph.
+Her label explicitly distinguishes **月纱, the messenger**, from the
+rotating resident asking for material. The town scene and messenger appear
+in a single desktop view, and stack on mobile.
+
+These assets are **reused workshop art**, not newly illustrated town buildings
+or dedicated portraits for each resident. A newly approved exterior town
+painting and individual resident portraits are still needed for a full match
+to the reference illustration. Static Next image imports keep local dev and
+GitHub Pages basePath working without manual external image URLs.
+
 ## V2.7 — real rotating resident requests
 
 Three adult town residents appear on rotating game days with material-specific

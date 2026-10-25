@@ -1,5 +1,8 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
+import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
+import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import {useMemo,useState,useSyncExternalStore} from 'react';
 import type {ReactNode} from 'react';
 import {WORKERS,MACHINES,workshopRank,forecastPatronCommission,forecastOrderChoice,
@@ -62,39 +65,42 @@ function Town({s}:{s:WorkshopState}){
   const [localVisit,setLocalVisit]=useState<string>('');
   const visitComplete=s.market?.day===s.day&&s.market.kind===residentKind;
   return <>
+    <div className="mw-town-focus">
     <section className="mw-town-scene" aria-label="月光街的炼金商区" data-testid="moonlit-town-scene">
-      <div className="mw-town-sky" aria-hidden="true"><span className="mw-town-orb">☾</span><span className="mw-town-stars">✦ · · ✧</span></div>
+      <Image src={moonWorkshopPainting} alt="月光工坊内的魔法灯与建筑绘景"
+        fill unoptimized sizes="(max-width: 760px) 100vw, 800px"
+        className="mw-town-painting" data-testid="town-painting"/>
+      <div className="mw-town-scrim" aria-hidden="true"/>
       <div className="mw-town-banner">
-        <p className="mw-eyebrow">MOONLIT DISTRICT · YOUR LIVING TOWN</p>
+        <p className="mw-eyebrow">MOONLIT DISTRICT · AFTER DARK</p>
         <h2>月光街 · 夜间商区</h2>
-        <p>小镇的交易会改变工坊明天的产量。选择补充哪种资源，再回到生产线验证结果。</p>
+        <p>选一家店进入，所有交易与工坊生产都使用同一份真实库存。</p>
       </div>
-      <div className="mw-town-buildings">
-        <Link href="/workshop/" className="mw-town-building mw-town-forge">
-          <span className="mw-building-glyph" aria-hidden="true">⚒</span>
-          <span className="mw-building-name">晶核工坊</span>
-          <small>调整机器 · 开始生产</small>
+      <nav className="mw-town-portals" aria-label="月光街建筑入口">
+        <Link href="/workshop/" aria-label="晶核工坊" className="mw-town-portal">
+          <span className="mw-portal-glyph" aria-hidden="true">⚒</span>
+          <span><strong>晶核工坊</strong><small>派工 · 生产</small></span>
         </Link>
-        <Link href="/orders/" className="mw-town-building mw-town-guild">
-          <span className="mw-building-glyph" aria-hidden="true">◇</span>
-          <span className="mw-building-name">月夜委托所</span>
-          <small>交期 · 商人契约</small>
+        <Link href="/orders/" aria-label="月夜委托所" className="mw-town-portal">
+          <span className="mw-portal-glyph" aria-hidden="true">◇</span>
+          <span><strong>月夜委托所</strong><small>委托 · 交付</small></span>
         </Link>
-        <Link href="/warehouse/" className="mw-town-building mw-town-store">
-          <span className="mw-building-glyph" aria-hidden="true">⬡</span>
-          <span className="mw-building-name">物资仓库</span>
-          <small>当前星币 · 物资结存</small>
+        <Link href="/warehouse/" aria-label="物资仓库" className="mw-town-portal">
+          <span className="mw-portal-glyph" aria-hidden="true">⬡</span>
+          <span><strong>物资仓库</strong><small>材料 · 采购</small></span>
         </Link>
-      </div>
-      <div className="mw-town-ground" aria-hidden="true"><span>✧ · · · ✧</span></div>
+      </nav>
+      <div className="mw-town-scene-credit">✦ 月光工坊 · 绘制场景预览</div>
     </section>
     <section className="mw-town-resident" data-testid="town-resident" aria-label="今日街头居民">
-      <div className="mw-resident-character" aria-hidden="true">
-        <span className="mw-character-glow"/>
-        <span className="mw-character-figure">✧</span>
+      <div className="mw-resident-character" aria-label="月纱为你带来街头居民消息">
+        <Image src={moonveilPortrait} alt="月纱，来自工坊的魔法商人"
+          fill unoptimized sizes="(max-width: 760px) 140px, 220px"
+          className="mw-guide-painting" data-testid="town-guide-painting"/>
+        <span className="mw-resident-guide-label">月纱 · 街区向导</span>
       </div>
       <div className="mw-resident-dialogue">
-        <p className="mw-eyebrow">STREET ENCOUNTER · DAY {s.day}</p>
+        <p className="mw-eyebrow">月纱带来的消息 · DAY {s.day}</p>
         <h2>{resident.name} <small>{resident.age} 岁 · {resident.job}</small></h2>
         <p className="mw-resident-quote">“{resident.story}”</p>
         <div className="mw-resident-deal">
@@ -116,6 +122,7 @@ function Town({s}:{s:WorkshopState}){
         <p className="mw-resident-reputation">累计帮助街区居民 {s.residentsHelped??0} 次</p>
       </div>
     </section>
+    </div>
     <div className="mw-stat-grid">
       <Panel title="当前工坊"><strong>{rank.zh}</strong></Panel>
       <Panel title="已建设设备"><strong>{s.tiles.filter(Boolean).length} / 15</strong></Panel>

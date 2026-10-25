@@ -98,6 +98,9 @@ test('moonlit town works as a real one-purchase-per-day supplier for the same wo
   },seeded);
   await page.goto('/town/');
   await expect(page.getByTestId('moonlit-town-scene')).toBeVisible();
+  await expect(page.getByTestId('town-painting')).toHaveJSProperty('naturalWidth',210);
+  await expect(page.getByTestId('town-guide-painting')).toHaveJSProperty('naturalWidth',210);
+  await expect(page.getByRole('navigation',{name:'月光街建筑入口'}).getByRole('link')).toHaveCount(3);
   await expect(page.getByRole('link',{name:/晶核工坊/})).toBeVisible();
   await expect(page.getByTestId('moonlit-market')).toBeVisible();
   await expect(page.getByTestId('market-status')).toContainText('可采购一批');
