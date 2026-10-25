@@ -46,6 +46,7 @@ jobs:
       - run: test -s out/workshop/assets/workshop.js
       - run: test -s out/workshop/assets/moon-workshop.avif
       - run: test -s out/workshop/assets/moonveil-portrait.avif
+      - run: test -s out/workshop/assets/moonstone-floor.avif
       - run: touch out/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

@@ -48,13 +48,19 @@ export async function mountWorkshopLab(
   // The painterly architecture is independent from machines, workers and hit areas.
   // AVIF is an enhancement: unsupported codecs fall back to the legacy scene.
   let painted:Texture|null=null;
+  let paintedFloor:Texture|null=null;
   try{
     const image=new Image();
     image.src=new URL('./assets/moon-workshop.avif',document.baseURI).href;
     await image.decode();
     painted=Texture.from(image);
-  }catch{/* keep gameplay available even if the asset cannot decode */}
+    const floorImage=new Image();
+    floorImage.src=new URL('./assets/moonstone-floor.avif',document.baseURI).href;
+    await floorImage.decode();
+    paintedFloor=Texture.from(floorImage);
+  }catch{/* keep gameplay available even if an asset cannot decode */}
   element.dataset.visualTheme=painted?'painted-moonwork':'procedural-fallback';
+  element.dataset.floorArt=paintedFloor?'painted-moonstone':'procedural-floor';
   const backdrop=new Sprite(painted??art.backdrop);
   if(painted){
     const cover=Math.max(W/painted.width,H/painted.height);
@@ -177,9 +183,14 @@ export async function mountWorkshopLab(
       const machine=current.tiles[i];
       const active=selected===i;
       const border=active?0xffdea2:machine?COLORS[machine.craft]:0x4c606e;
-      const tile=new Sprite(art.floor);
-      tile.position.set(x,y);tile.width=CELL;tile.height=CELL;
-      tile.tint=machine?0xffffff:0xb8c7d0;
+      const tile=new Sprite(paintedFloor??art.floor);
+      tile.width=CELL;tile.height=CELL;
+      if(paintedFloor){
+        tile.anchor.set(.5);
+        tile.position.set(x+CELL/2,y+CELL/2);
+        tile.rotation=((i%4)*Math.PI)/2; // rotate only the visual texture
+      }else tile.position.set(x,y);
+      tile.tint=machine?0xffffff:0xc9d6e0;
       if(painted)tile.alpha=machine?.87:.76; // keep the architectural layers visible
       tile.eventMode='static';tile.cursor='pointer';
       tile.on('pointertap',()=>callbacks.plot(i));

@@ -49,6 +49,15 @@ screenshots. The font is a runtime asset, not a user download artifact.
 
 完整四人资料、逐帧精灵规格、服装边界、经营互动和验收门槛见 **[成年女性角色美术规范](docs/adult-character-art-direction.md)**。当前实际代码仅完成月纱的过渡版立绘与高级订单，其余三位是明确标注的待开发目标，尚未假称已经上线。
 
+## V2.1 textured interactive workshop masonry
+
+Plot textures now use an independent painted moonstone floor sample
+(`art/moonstone-floor.avif`) rather than uniform hand-programmed gray squares.
+Each plot still remains its own PixiJS hit target; floor textures are rotated
+per plot for less obvious repetition, with the previous floor retained as a
+codec fallback. The painterly floor is an intermediate material swatch, not
+the final seamless structural environment atlas.
+
 ## V2.1 first independent character portrait
 
 The witch commission card uses a dedicated original-painted portrait
