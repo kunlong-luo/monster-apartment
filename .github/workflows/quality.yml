@@ -109,6 +109,7 @@ jobs:
       - run: npm --prefix v2 install --no-audit --no-fund
       - run: npm --prefix v2 run build
       - run: test -f out/index.html
+      - run: test -s out/town/index.html && test -s out/orders/index.html && test -s out/characters/index.html && test -s out/warehouse/index.html
       - run: test -s v2/dist/assets/workshop.js
       - run: test -s v2/dist/assets/noto-sans-sc.woff2
       - run: test -s v2/dist/assets/moon-workshop.avif

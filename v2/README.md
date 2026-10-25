@@ -42,6 +42,22 @@ assets or falsely marked ready art, but **does not fail** solely because
 the final artwork remains pending. Formal visual acceptance still requires
 real desktop/mobile screenshots and frame-by-frame review.
 
+## V2.2 first multi-route world
+
+- Next.js App Router routes: `/town/`, `/orders/`, `/characters/`,
+  `/warehouse/`; all read the **unchanged V2 localStorage save**.
+- `/workshop/` keeps the real PixiJS 15-plot production stage for now.
+  A visible link in its header opens the new town hub.
+- Orders can accept a real moon witch commission; warehouse can buy a real
+  core. Both invoke `v2/src/workshop-engine.ts` rather than duplicated
+  economic calculations. V1 data is untouched.
+- These are four useful destinations and one live workshop, not yet a freely
+  explorable town. Full PixiJS-to-Next component migration is a later phase.
+- GitHub Pages is same-origin for all routes and V2 localStorage. Development
+  servers on ports 3000 and 3901 are **different origins**; only the
+  deployment or a unified-origin preview exercises seamless navigation.
+- [Full routing contract](docs/ROUTING-V2.2.md).
+
 ## Technical decision
 
 - **PixiJS 8.22.0 / WebGL** owns the entire gameplay canvas, camera, actors,
