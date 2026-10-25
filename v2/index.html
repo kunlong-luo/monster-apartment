@@ -12,6 +12,15 @@
 <main id="root" class="lab">
   <header class="top">
     <div class="logo"><span>✧</span><div><strong>月光工坊</strong><small><a class="world-gate" href="../town/" data-testid="v2-world-gate" aria-label="返回月光街，进入其他游戏场景">月光街 · 世界地图 ↗</a></small></div></div>
+    <details class="workshop-portal" data-testid="v2-scene-menu">
+      <summary aria-label="打开游戏场景导航">场景 <span aria-hidden="true">⌄</span></summary>
+      <nav class="workshop-portal-links" aria-label="工坊快捷导航">
+        <a href="../town/" data-world-route="town">✦ 月光街</a>
+        <a href="../orders/" data-world-route="orders">◇ 委托大厅</a>
+        <a href="../characters/" data-world-route="characters">♟ 角色图鉴</a>
+        <a href="../warehouse/" data-world-route="warehouse">⬡ 魔法仓库</a>
+      </nav>
+    </details>
     <div class="top-stats"><span>第 <b id="day" data-testid="v2-day">1</b> 天</span><span>✦ <b id="coins" data-testid="v2-coins">100</b></span>
     <button type="button" id="reset" data-testid="v2-reset" aria-label="重新开始">↻</button></div>
   </header>

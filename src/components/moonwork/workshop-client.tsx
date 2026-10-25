@@ -52,7 +52,13 @@ export function WorkshopClient({markup}:{markup:string}){
     const onGate=(event:MouseEvent)=>{
       const target=event.target;
       if(!(target instanceof Element))return;
-      if(target.closest('.world-gate')){
+      const area=target.closest<HTMLAnchorElement>('[data-world-route]');
+      const name=area?.dataset.worldRoute;
+      if(name&&['town','orders','characters','warehouse'].includes(name)){
+        event.preventDefault();
+        root.querySelector<HTMLDetailsElement>('.workshop-portal')?.removeAttribute('open');
+        router.push('/'+name+'/');
+      }else if(target.closest('.world-gate')){
         event.preventDefault();
         router.push('/town/');
       }

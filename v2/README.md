@@ -42,6 +42,16 @@ assets or falsely marked ready art, but **does not fail** solely because
 the final artwork remains pending. Formal visual acceptance still requires
 real desktop/mobile screenshots and frame-by-frame review.
 
+## V2.3 — quick real-world scene navigation
+
+An accessible collapsible in-game **场景** portal is now present in the
+workshop header, leading to town, orders, worker roster and warehouse.
+It navigates through the Next router on the main workshop page and
+falls back to ordinary relative links in the standalone safety route.
+Unlike a permanent toolbar it leaves the one-screen stage height
+unchanged. These are functional pages using the same real validated
+save; browser tests cover direct portal navigation and return.
+
 ## V2.3 — Next owns the interactive workshop URL
 
 `/workshop/` is now a real Next.js App Router destination. Its client

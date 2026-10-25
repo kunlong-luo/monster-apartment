@@ -9,6 +9,10 @@ test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',asy
   await expect(stage.locator('canvas')).toBeVisible({timeout:25_000});
   await expect(stage).toHaveAttribute('data-renderer','pixi-webgl-bitmap');
   await expect(page.getByTestId('v2-day')).toHaveText('1');
+  await expect(page.getByTestId('v2-scene-menu')).toBeVisible();
+  await page.getByTestId('v2-scene-menu').locator('summary').click();
+  await expect(page.getByRole('navigation',{name:'工坊快捷导航'}).getByRole('link')).toHaveCount(4);
+  await page.getByTestId('v2-scene-menu').locator('summary').click();
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-day')).toHaveText('2');
   await page.getByTestId('v2-world-gate').click();
@@ -35,5 +39,24 @@ test('Next workshop remains playable on a 390px phone viewport',async({page})=>{
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-day')).toHaveText('2');
   await page.getByTestId('v2-world-gate').click();
+  await expect(page.getByTestId('world-day')).toHaveText('2');
+});
+
+
+test('workshop portal switches to actual contract and stock pages without losing progress',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+  await page.getByTestId('v2-scene-menu').locator('summary').click();
+  await page.getByRole('navigation',{name:'工坊快捷导航'}).getByRole('link',{name:'委托大厅'}).click();
+  await expect(page).toHaveURL(/\/orders\/?$/);
+  await expect(page.getByTestId('world-day')).toHaveText('2');
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'工坊实景'}).click();
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+  await page.getByTestId('v2-scene-menu').locator('summary').click();
+  await page.getByRole('navigation',{name:'工坊快捷导航'}).getByRole('link',{name:'魔法仓库'}).click();
+  await expect(page).toHaveURL(/\/warehouse\/?$/);
   await expect(page.getByTestId('world-day')).toHaveText('2');
 });
