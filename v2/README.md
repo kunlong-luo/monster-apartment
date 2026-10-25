@@ -42,6 +42,14 @@ assets or falsely marked ready art, but **does not fail** solely because
 the final artwork remains pending. Formal visual acceptance still requires
 real desktop/mobile screenshots and frame-by-frame review.
 
+## V2.5 — presentation language cleanup
+
+The front-end no longer exposes obsolete V2.2 labels or "lab/demo" labels to
+players in the game HUD. World pages now use a consistent brass-trim frame,
+cool moonlight backdrop, and warm timber-inspired materials. The original
+premium art targets are still not fully complete; these are UI improvements,
+not a claim that every placeholder asset has been replaced.
+
 ## V2.5 — coherent game navigation and real contextual flows
 
 Removed the temporary details/dropdown scene switcher. The Next world hub and

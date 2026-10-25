@@ -74,3 +74,24 @@
   .mw-nav>a{flex-direction:column;gap:0;padding:6px 1px;font-size:10px}
   .mw-nav .world-nav-glyph{font-size:19px}
 }
+
+/* V2.5 shared painted-fantasy material language for non-canvas spaces. */
+.mw{background:
+  radial-gradient(ellipse at 50% -5%,#4c5369a8,transparent 51%),
+  radial-gradient(ellipse at 14% 65%,#31544a44,transparent 38%),
+  linear-gradient(135deg,#182b3e,#111b2b 75%)}
+.mw-header{background:linear-gradient(#18283b,#162638ad);
+  border-bottom:1px solid #d0a87377}
+.mw-logo{text-shadow:0 1px 14px #deba7a44}
+.mw-hero{border:2px solid #be9c75;
+  box-shadow:0 28px 55px #080d1899,inset 0 0 0 5px #1a2a35,
+    inset 0 0 0 6px #a9875150;
+  background:radial-gradient(ellipse at 86% 34%,#788ba15a,transparent 44%),
+    repeating-linear-gradient(95deg,#372c3329 0px,#372c3329 4px,#23384b2a 6px,#23384b2a 16px),
+    linear-gradient(120deg,#30465b,#26374f 65%,#17293c)}
+.mw-panel,.mw-tile{border-color:#a78e6fbb;
+  box-shadow:inset 0 0 0 1px #e8ce9b23,0 8px 28px #0b142437}
+.mw-panel h2{border-bottom:1px solid #af907654;padding-bottom:13px}
+.mw-tile{border-left:3px solid #caa272}
+.mw-tile:hover{border-color:#ebc990}
+@media(prefers-reduced-motion:reduce){.mw-tile{transition:none}}

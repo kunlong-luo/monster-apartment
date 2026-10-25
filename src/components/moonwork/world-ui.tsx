@@ -146,7 +146,7 @@ export function MoonworkWorld({area}:{area:WorldArea}){
   const title={town:'月光街',orders:'委托大厅',characters:'角色图鉴',warehouse:'魔法仓库'}[area];
   return <main className="mw" data-testid="moonwork-world" data-area={area}>
     <header className="mw-header">
-      <Link href="/town/" className="mw-logo">☽ 月光工坊 <small>V2.2</small></Link>
+      <Link href="/town/" className="mw-logo">☽ 月光工坊 <small>MOONLIT DISTRICT</small></Link>
       <div className="mw-stats">
         <span>第 <b data-testid="world-day">{s?.day??'—'}</b> 天</span>
         <span>✦ <b data-testid="world-coins">{s?.coins??'—'}</b></span>
@@ -162,10 +162,10 @@ export function MoonworkWorld({area}:{area:WorldArea}){
       <p className="mw-eyebrow">MOONLIGHT WORKSHOP / {title}</p>
       <h1>{title}</h1>
       {!s?<Panel title="尚无可用的 V2 工坊存档">
-        <p>这里不会虚构星币与库存。请先进入真实工坊开始建造或生产，四个场景便能读取相同存档。</p>
+        <p>月光街还没有记录你的生产旅程。进入工坊，摆放设备、安排工匠并完成第一张委托；这些场景会自动呈现你的经营成果。</p>
         <WorkshopLink className="mw-button">进入工坊开始经营</WorkshopLink>
       </Panel>:area==='town'?<Town s={s}/>:area==='orders'?<Orders s={s}/>:area==='characters'?<Characters s={s}/>:<Warehouse s={s}/>}
     </div>
-    <footer className="mw-footer">同一份 V2 存档 · 无服务器静态运行 · 保留现有 PixiJS 工坊</footer>
+    <footer className="mw-footer">✦ 月光街 · 你的每一次生产与交付，都在改变这座工坊</footer>
   </main>;
 }
