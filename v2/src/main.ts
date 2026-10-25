@@ -6,7 +6,11 @@ import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
 import { mountWorkshopLab } from './workshop-lab-stage';
 
 const STORAGE='monster-apartment:workshop-v2-lab';
-const $=(id:string)=>document.getElementById(id)!;
+/** Mount the real deterministic game inside a Next-owned or standalone DOM root.
+ * The returned cleanup owns all listeners and WebGL lifecycle resources. */
+export async function mountWorkshopGame(root:HTMLElement,
+  assetBase:string=document.baseURI):Promise<()=>void>{
+const $=(id:string)=>root.querySelector<HTMLElement>('#'+id)!;
 let world:WorkshopState=newWorkshop();
 try {
   const parsed:unknown=JSON.parse(localStorage.getItem(STORAGE)??'null');
@@ -22,7 +26,8 @@ let effect:'good'|'bad'|'normal'='normal';
 function apply(next:WorkshopState,feedback:string,tone:typeof effect='normal'){
   if(next===world){message='无法这样操作：请检查格子、机器或星币。';effect='bad';return;}
   world=next;message=feedback;effect=tone;
-  try{localStorage.setItem(STORAGE,JSON.stringify(world));}catch{/* local save optional */}
+  try{localStorage.setItem(STORAGE,JSON.stringify(world));
+    window.dispatchEvent(new Event('moonwork:v2-update'));}catch{/* local save optional */}
 }
 function clearChoice(){chosenWorker=null;chosenMachine=null;movingFrom=null;}
 function plot(index:number){
@@ -72,7 +77,7 @@ function buyPatronCore(){
     ' 星币，货物已入共享仓库。','good');
   render();
 }
-const stage=await mountWorkshopLab($('stage'),world,{plot,patronTap:acceptPatron});
+const stage=await mountWorkshopLab($('stage'),world,{plot,patronTap:acceptPatron},assetBase);
 function render(){
   stage.sync(world,selectedPlot);
   $('day').textContent=String(world.day);
@@ -190,7 +195,7 @@ function render(){
   const board=world.tiles.map((m,i)=>m?(''+(i+1)+':'+MACHINES[m.craft].zh+' '+(m.worker?WORKERS[m.worker].zh:'')):'').filter(Boolean);
   $('summary').textContent=board.join(' · ');
 }
-$('root').addEventListener('click',event=>{
+const onRootClick=(event:MouseEvent)=>{
   const origin=event.target;
   if(!(origin instanceof Element))return;
   const worker=origin.closest<HTMLButtonElement>('[data-worker]');
@@ -246,8 +251,15 @@ $('root').addEventListener('click',event=>{
     if(!window.confirm('重新开工？当前 V2 实验存档会被覆盖。'))return;
     world=newWorkshop();clearChoice();selectedPlot=null;
     message='新工坊已开始。先连接温室和水泵。';effect='normal';
-    try{localStorage.setItem(STORAGE,JSON.stringify(world));}catch{/* optional */}
+    try{localStorage.setItem(STORAGE,JSON.stringify(world));
+      window.dispatchEvent(new Event('moonwork:v2-update'));}catch{/* optional */}
     render();
   }
-});
+};
+root.addEventListener('click',onRootClick);
 render();
+return ()=>{
+  root.removeEventListener('click',onRootClick);
+  stage.destroy();
+};
+}

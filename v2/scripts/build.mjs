@@ -5,10 +5,17 @@ import {dirname,resolve} from 'node:path';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 await mkdir(resolve(root,'dist/assets'),{recursive:true});
 await build({
-  entryPoints:[resolve(root,'src/main.ts')],
+  entryPoints:[resolve(root,'src/standalone.ts')],
   outfile:resolve(root,'dist/assets/workshop.js'),
   bundle:true,minify:true,format:'esm',target:'es2022',
   sourcemap:false,logLevel:'info',
+});
+// Next.js owns /workshop/ route; the sidecar IIFE only mounts on request.
+await build({
+  entryPoints:[resolve(root,'src/runtime.ts')],
+  outfile:resolve(root,'dist/assets/workshop-runtime.js'),
+  bundle:true,minify:true,format:'iife',globalName:'MoonworkRuntime',
+  target:'es2022',logLevel:'info',
 });
 await copyFile(resolve(root,'src/workshop.css'),resolve(root,'dist/assets/workshop.css'));
 await copyFile(

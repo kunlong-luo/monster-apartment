@@ -4,7 +4,7 @@ import {resolve,dirname,extname,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'../dist');
 const port=Number(process.env.PORT||3901);
-const mime={'.js':'text/javascript','.css':'text/css','.html':'text/html','.png':'image/png','.webp':'image/webp'};
+const mime={'.js':'text/javascript','.css':'text/css','.html':'text/html','.png':'image/png','.webp':'image/webp','.avif':'image/avif','.woff2':'font/woff2'};
 createServer(async(req,res)=>{
   const uri=decodeURI((req.url||'/').split('?')[0]);
   const target=resolve(root,'.'+(uri==='/'?'/index.html':uri));
@@ -14,7 +14,7 @@ createServer(async(req,res)=>{
   try {
     const data=await readFile(target);
     res.writeHead(200,{'Content-Type':mime[extname(target)]||'application/octet-stream',
-      'Cache-Control':'no-cache'});
+      'Cache-Control':'no-cache','Access-Control-Allow-Origin':'*'});
     res.end(data);
   }catch {res.writeHead(404);res.end('Not found');}
 }).listen(port,'127.0.0.1',()=>console.info('V2 gameplay lab at http://127.0.0.1:'+port));

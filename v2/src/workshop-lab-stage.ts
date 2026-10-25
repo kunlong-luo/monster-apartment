@@ -25,7 +25,8 @@ function frame(x:number,y:number,w:number,h:number,fill:number,border:number){
     .stroke({width:2,color:border,alpha:.9});
 }
 export async function mountWorkshopLab(
-  element:HTMLElement,state:WorkshopState,callbacks:LabSelect
+  element:HTMLElement,state:WorkshopState,callbacks:LabSelect,
+  assetBase:string=document.baseURI
 ):Promise<LabView>{
   const app=new Application();
   await app.init({width:W,height:H,background:'#172233',preference:'webgl',
@@ -53,11 +54,11 @@ export async function mountWorkshopLab(
   const paintedDetail:Partial<Record<'well'|'garden',Texture>>={};
   try{
     const image=new Image();
-    image.src=new URL('./assets/moon-workshop.avif',document.baseURI).href;
+    image.src=new URL('./assets/moon-workshop.avif',assetBase).href;
     await image.decode();
     painted=Texture.from(image);
     const floorImage=new Image();
-    floorImage.src=new URL('./assets/moonstone-floor.avif',document.baseURI).href;
+    floorImage.src=new URL('./assets/moonstone-floor.avif',assetBase).href;
     await floorImage.decode();
     paintedFloor=Texture.from(floorImage);
   }catch{/* keep gameplay available even if an asset cannot decode */}
@@ -65,7 +66,7 @@ export async function mountWorkshopLab(
   // Never replace all machine art from a flattened screenshot.
   try {
     const kilnImage=new Image();
-    kilnImage.src=new URL('./assets/kiln-art-review.avif',document.baseURI).href;
+    kilnImage.src=new URL('./assets/kiln-art-review.avif',assetBase).href;
     await kilnImage.decode();
     kilnArtReview=Texture.from(kilnImage);
   } catch {/* retain interactive fallback sprite when codec or file is absent */}
@@ -74,7 +75,7 @@ export async function mountWorkshopLab(
   for(const kind of ['well','garden'] as const){
     try{
       const image=new Image();
-      image.src=new URL('./assets/'+kind+'-art-review.avif',document.baseURI).href;
+      image.src=new URL('./assets/'+kind+'-art-review.avif',assetBase).href;
       await image.decode();
       paintedDetail[kind]=Texture.from(image);
     }catch{/* independent codec/image failure does not block production */}

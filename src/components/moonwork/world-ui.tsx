@@ -28,7 +28,7 @@ function useSave(){
   return useMemo(()=>parseSavedWorld(raw),[raw]);
 }
 const WorkshopLink=({children,className='mw-link'}:{children:ReactNode;className?:string})=>
-  <a href="../workshop/" className={className}>{children}</a>;
+  <Link href="/workshop/" className={className}>{children}</Link>;
 function Panel({title,children}:{title:string;children:ReactNode}){
   return <section className="mw-panel"><h2>{title}</h2>{children}</section>;
 }
