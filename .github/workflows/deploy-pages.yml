@@ -48,6 +48,8 @@ jobs:
       - run: test -s out/workshop/assets/moonveil-portrait.avif
       - run: test -s out/workshop/assets/moonstone-floor.avif
       - run: test -s out/workshop/assets/kiln-art-review.avif
+      - run: test -s out/workshop/assets/well-art-review.avif
+      - run: test -s out/workshop/assets/garden-art-review.avif
       - run: touch out/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

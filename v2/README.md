@@ -5,6 +5,16 @@
 The legacy **V0.10.0** game remains reachable and unchanged. V2 is a new project
 inside this repository, not an attempt to reskin the old six-room simulation.
 
+## V2.1 water pump and greenhouse detail review
+
+The mist pump and spore greenhouse now have independent original-painted
+alpha detail overlays, composited above their original functional base sprites.
+The overlays fade before reaching the workers, preventing baked-in characters
+from duplicating active staff on the game board. They carry no hit areas,
+cannot alter construction/production logic and retain a codec-safe fallback.
+All three machine images remain review-grade and none count as approved
+Lv1-Lv3 art or hand-animated working sprites.
+
 ## V2.1 crystal kiln original painted review
 
 A standalone alpha-channel AVIF reference cutout (`art/kiln-art-review.avif`)

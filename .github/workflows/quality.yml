@@ -51,6 +51,8 @@ jobs:
       - run: test -s v2/dist/assets/moonveil-portrait.avif
       - run: test -s v2/dist/assets/moonstone-floor.avif
       - run: test -s v2/dist/assets/kiln-art-review.avif
+      - run: test -s v2/dist/assets/well-art-review.avif
+      - run: test -s v2/dist/assets/garden-art-review.avif
 
   e2e:
     runs-on: ubuntu-latest
@@ -113,3 +115,5 @@ jobs:
       - run: test -s v2/dist/assets/moonveil-portrait.avif
       - run: test -s v2/dist/assets/moonstone-floor.avif
       - run: test -s v2/dist/assets/kiln-art-review.avif
+      - run: test -s v2/dist/assets/well-art-review.avif
+      - run: test -s v2/dist/assets/garden-art-review.avif

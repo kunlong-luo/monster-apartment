@@ -61,6 +61,20 @@
       "status": "prototype",
       "replacement": "art/production/machines/kiln/lv1.webp",
       "notes": "Masked paint cutout from a generated concept illustration. Visual review only: not the final silhouette, no independent animation."
+    },
+    {
+      "id": "machine.well.preview",
+      "path": "art/well-art-review.avif",
+      "status": "prototype",
+      "replacement": "art/production/machines/well/lv1.webp",
+      "notes": "Masked painted top detail overlay over procedural base. Review only."
+    },
+    {
+      "id": "machine.garden.preview",
+      "path": "art/garden-art-review.avif",
+      "status": "prototype",
+      "replacement": "art/production/machines/garden/lv1.webp",
+      "notes": "Masked painted greenhouse detail overlay over procedural base. Review only."
     }
   ],
   "productionAssets": [

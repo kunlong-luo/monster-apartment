@@ -50,6 +50,7 @@ export async function mountWorkshopLab(
   let painted:Texture|null=null;
   let paintedFloor:Texture|null=null;
   let kilnArtReview:Texture|null=null;
+  const paintedDetail:Partial<Record<'well'|'garden',Texture>>={};
   try{
     const image=new Image();
     image.src=new URL('./assets/moon-workshop.avif',document.baseURI).href;
@@ -68,7 +69,18 @@ export async function mountWorkshopLab(
     await kilnImage.decode();
     kilnArtReview=Texture.from(kilnImage);
   } catch {/* retain interactive fallback sprite when codec or file is absent */}
-  element.dataset.machineArt=kilnArtReview?'kiln-painted-review':'procedural-machines';
+  // Painterly detail overlays keep the procedural lower machines as a
+  // temporary physical base; characters from the concept art are masked out.
+  for(const kind of ['well','garden'] as const){
+    try{
+      const image=new Image();
+      image.src=new URL('./assets/'+kind+'-art-review.avif',document.baseURI).href;
+      await image.decode();
+      paintedDetail[kind]=Texture.from(image);
+    }catch{/* independent codec/image failure does not block production */}
+  }
+  element.dataset.machineArt=kilnArtReview&&paintedDetail.well&&paintedDetail.garden
+    ?'all-painted-machine-reviews':'mixed-machine-art';
   element.dataset.visualTheme=painted?'painted-moonwork':'procedural-fallback';
   element.dataset.floorArt=paintedFloor?'painted-moonstone':'procedural-floor';
   const backdrop=new Sprite(painted??art.backdrop);
@@ -251,6 +263,17 @@ export async function mountWorkshopLab(
       fixture.eventMode='static';fixture.cursor='pointer';
       fixture.on('pointertap',()=>callbacks.plot(i));
       stage.addChild(fixture);machineArt.push(fixture);
+      const detail=machine.craft==='well'?paintedDetail.well:
+        machine.craft==='garden'?paintedDetail.garden:null;
+      if(detail){
+        const overlay=new Sprite(detail);
+        overlay.anchor.set(.5,1);
+        overlay.position.copyFrom(fixture.position);
+        overlay.width=fixture.width;
+        overlay.height=fixture.height;
+        overlay.eventMode='none'; // never intercept plot/fixture interaction
+        stage.addChild(overlay);
+      }
       if(machine.worker){
         const actor=new AnimatedSprite(art.workers[machine.worker]);
         actor.anchor.set(.5,1);
