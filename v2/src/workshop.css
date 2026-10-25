@@ -157,3 +157,11 @@ footer small{font-size:10px;color:#8c9da6}.sr-only{position:absolute;clip-path:i
  margin:1px 0 4px 7px;box-shadow:0 4px 15px #150f26a8}
 .patron-card:after{content:'';display:block;clear:both}
 @media(max-width:610px){.patron-portrait{display:none}}
+
+/* V2.2: one compact gateway to the App Router hub, without compressing
+   the 15-plot playable field or introducing fake nav controls. */
+.world-gate{display:inline-block;font-size:11px;line-height:1.2;color:#ffe0ac;
+  text-decoration:underline;text-underline-offset:3px}
+.world-gate:hover{color:#f8be7a}
+.world-gate:focus-visible{outline:2px solid #ffe0aa;outline-offset:3px}
+@media(max-width:610px){.world-gate{font-size:10px}}
