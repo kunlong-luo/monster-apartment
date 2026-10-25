@@ -239,7 +239,10 @@ export function runShift(s:WorkshopState):WorkshopState {
       failed++;coins=Math.max(0,coins-(order.premium?
         PREMIUM_ORDER_PENALTY:STANDARD_ORDER_PENALTY));report.lost=true;
     }
-    order={due:s.day+4,cores:order.cores+1,reward:order.reward+25};
+    // Premium only changes this delivery, not the permanent baseline.
+    order={due:s.day+4,
+      cores:order.cores+1-(order.premium?PREMIUM_EXTRA_CORES:0),
+      reward:order.reward+25-(order.premium?PREMIUM_EXTRA_REWARD:0)};
   }
   // The first successful standard order unlocks the adult visiting
   // merchant. Her request exceeds the starter line's three-day output,

@@ -312,8 +312,8 @@ describe('V2 workshop: positioning and staffing are the gameplay',()=>{
     expect(played.last?.premium).toBe(true);
     expect(played.coins).toBe(starter.coins+215);
     expect(played.order.premium).toBeUndefined();
-    expect(played.order.cores).toBe(9); // premium requirement grew by 5 in this cycle
-    expect(played.order.reward).toBe(240);
+    expect(played.order.cores).toBe(4); // premium surcharge does NOT persist
+    expect(played.order.reward).toBe(120);
   });
   it('normal delivery can succeed when premium goes into a real loss',()=>{
     let s=connect();
