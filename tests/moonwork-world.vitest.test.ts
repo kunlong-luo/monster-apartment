@@ -54,4 +54,17 @@ describe('Next world routes share the V2 deterministic save contract',()=>{
     expect(commitWorldAction(storage,'accept')).toBe('applied');
     expect(storage.getItem('monster-apartment:cozy:v1')).toBe('legacy');
   });
+  it('writes one-way premium order into the real shared V2 save',()=>{
+    const {storage}=save();
+    const initial=visitingWorld();
+    storage.setItem(SAVE_KEY,JSON.stringify(initial));
+    expect(commitWorldAction(storage,'premium')).toBe('applied');
+    const upgraded=parseSavedWorld(storage.getItem(SAVE_KEY))!;
+    expect(upgraded.order).toMatchObject({premium:true,cores:8,reward:215,due:9});
+    expect(initial.order.premium).toBeUndefined();
+    expect(commitWorldAction(storage,'premium')).toBe('unavailable');
+    expect(upgraded.coins).toBe(initial.coins);
+    expect(commitWorldAction(storage,'import')).toBe('applied');
+    expect(parseSavedWorld(storage.getItem(SAVE_KEY))!.order.premium).toBe(true);
+  });
 });

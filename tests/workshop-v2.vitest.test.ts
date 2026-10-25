@@ -5,6 +5,8 @@ import {
   machineLevel,machineUpgradeQuote,upgradeMachine,workshopRank,
   forecastPatronCommission, PATRON_EXTRA_CORES,
   importPatronCore, PATRON_IMPORT_PRICE,
+  acceptPremiumOrder,forecastOrderChoice,PREMIUM_EXTRA_CORES,
+  PREMIUM_EXTRA_REWARD,PREMIUM_ORDER_PENALTY,
 } from '../v2/src/workshop-engine';
 
 const connect=()=>{
@@ -283,5 +285,55 @@ describe('V2 workshop: positioning and staffing are the gameplay',()=>{
       i===5?{...tile!,stored:-1}:tile)})).toBe(false);
     expect(validWorkshop({...state,day:-1})).toBe(false);
     expect(validWorkshop({...state,warehouse:{core:-1}})).toBe(false);
+  });
+
+  it('premium orders add real inventory exposure and cannot be accepted twice',()=>{
+    let starter=connect();
+    expect(acceptPremiumOrder(starter)).toBe(starter); // unlocked by first delivery
+    for(let i=0;i<5;i++)starter=runShift(starter);
+    expect(starter.day).toBe(6);
+    expect(starter.order).toEqual({due:9,cores:3,reward:95});
+    expect(PREMIUM_EXTRA_CORES).toBe(5);
+    expect(PREMIUM_EXTRA_REWARD).toBe(120);
+    const accepted=acceptPremiumOrder(starter);
+    expect(accepted.order).toEqual({due:9,cores:8,reward:215,premium:true});
+    expect(accepted.coins).toBe(starter.coins);
+    expect(accepted.warehouse.core).toBe(starter.warehouse.core);
+    expect(starter.order.premium).toBeUndefined(); // immutable
+    expect(acceptPremiumOrder(accepted)).toBe(accepted);
+    expect(validWorkshop(accepted)).toBe(true);
+    expect(forecastOrderChoice(accepted)).toBeNull();
+    const comparison=forecastOrderChoice(starter);
+    expect(comparison?.standard).toBe('fulfilled');
+    expect(comparison?.premium).toBe('fulfilled');
+    let played=accepted;
+    for(let i=0;i<4;i++)played=runShift(played);
+    expect(played.last?.fulfilled).toBe(true);
+    expect(played.last?.premium).toBe(true);
+    expect(played.coins).toBe(starter.coins+215);
+    expect(played.order.premium).toBeUndefined();
+    expect(played.order.cores).toBe(9); // premium requirement grew by 5 in this cycle
+    expect(played.order.reward).toBe(240);
+  });
+  it('normal delivery can succeed when premium goes into a real loss',()=>{
+    let s=connect();
+    for(let i=0;i<5;i++)s=runShift(s);
+    s=unassignWorker(s,'cinder');
+    s={...s,day:9,coins:130,warehouse:{core:3}};
+    const comparison=forecastOrderChoice(s);
+    expect(comparison).toMatchObject({standard:'fulfilled',premium:'missed'});
+    const normal=runShift(s);
+    expect(normal.completed).toBe(2);
+    expect(normal.coins).toBe(225);
+    const premium=acceptPremiumOrder(s);
+    const missed=runShift(premium);
+    expect(missed.last).toMatchObject({lost:true,premium:true});
+    expect(missed.completed).toBe(1);
+    expect(missed.failed).toBe(1);
+    expect(missed.coins).toBe(130-PREMIUM_ORDER_PENALTY);
+    expect(missed.warehouse.core).toBe(3); // no magical goods minted
+    expect(missed.order.premium).toBeUndefined();
+    expect(validWorkshop(missed)).toBe(true);
+    expect(validWorkshop({...s,order:{...s.order,premium:false}})).toBe(false);
   });
 });

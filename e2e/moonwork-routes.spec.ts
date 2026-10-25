@@ -43,3 +43,39 @@ test('orders and warehouse transact the same real localStorage save',async({page
   await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'角色图鉴'}).click();
   await expect(page.getByText(/正在 06 号工位/)).toBeVisible();
 });
+
+
+test('premium contract really changes the Pixi workshop requirement and survives a round trip',async({page})=>{
+  test.setTimeout(90_000);
+  const sample={
+    version:2,day:6,coins:132,
+    tiles:Array.from({length:15},(_,i)=>
+      i===5?{craft:'well',worker:'brook',stored:5}:
+      i===6?{craft:'garden',worker:'fern',stored:0}:
+      i===7?{craft:'kiln',worker:'cinder',stored:0}:null),
+    warehouse:{core:8},order:{due:9,cores:3,reward:95},last:null,
+    completed:1,failed:0,
+    patron:{status:'offered',due:8,cores:15,reward:135}
+  };
+  await page.addInitScript(state=>{
+    const key='monster-apartment:workshop-v2-lab';
+    if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify(state));
+  },sample);
+  await page.goto('/orders/');
+  await expect(page.getByTestId('world-premium-offer')).toBeVisible();
+  await expect(page.getByTestId('world-premium-forecast')).toContainText('大宗可交付');
+  await page.getByRole('button',{name:'接受高额大宗订单'}).click();
+  await expect(page.getByTestId('world-premium-offer')).toBeHidden();
+  await expect(page.getByText('高额订单已接受')).toBeVisible();
+  await page.getByRole('navigation',{name:'月光工坊世界'})
+    .getByRole('link',{name:'工坊实景'}).click();
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25000});
+  await expect(page.locator('#target')).toHaveText('8');
+  await expect(page.locator('#contract-title')).toHaveText('高额大宗订单');
+  await page.getByTestId('v2-scene-menu').locator('summary').click();
+  await page.getByRole('navigation',{name:'工坊快捷导航'})
+    .getByRole('link',{name:'委托大厅'}).click();
+  await expect(page.getByText('高额订单已接受')).toBeVisible();
+  await page.reload();
+  await expect(page.getByText('高额订单已接受')).toBeVisible();
+});
