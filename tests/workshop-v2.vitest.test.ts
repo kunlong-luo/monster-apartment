@@ -354,7 +354,7 @@ describe('V2 workshop: positioning and staffing are the gameplay',()=>{
     const after=runShift(shipped);
     expect(after.last?.cores).toBeGreaterThan(0);
     expect(after.day).toBe(2);
-    expect(townMarketAvailable(after,'core')).toBe(false); // insufficient coins
+    expect(townMarketAvailable(after,'core')).toBe(true); // next day market resets
     const replenished={...after,coins:52};
     const bought=buyTownSupply(replenished,'core');
     expect(bought.coins).toBe(15);
