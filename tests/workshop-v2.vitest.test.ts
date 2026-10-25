@@ -3,6 +3,7 @@ import {
   newWorkshop,placeMachine,moveMachine,assignWorker,runShift,
   linked,validWorkshop,unassignWorker,acceptPatronCommission, PATRON_ADULT_AGE,
   machineLevel,machineUpgradeQuote,upgradeMachine,workshopRank,
+  forecastPatronCommission, PATRON_EXTRA_CORES,
 } from '../v2/src/workshop-engine';
 
 const connect=()=>{
@@ -87,7 +88,8 @@ describe('V2 workshop: positioning and staffing are the gameplay',()=>{
     expect(PATRON_ADULT_AGE).toBe(28);
     expect(s.completed).toBe(1);
     expect(s.day).toBe(6);
-    expect(s.patron).toEqual({status:'offered',due:8,cores:13,reward:135});
+    expect(PATRON_EXTRA_CORES).toBe(7);
+    expect(s.patron).toEqual({status:'offered',due:8,cores:15,reward:135});
     expect(s.warehouse.core).toBe(8);
     expect(validWorkshop(s)).toBe(true);
     const accepted=acceptPatronCommission(s);
@@ -96,23 +98,40 @@ describe('V2 workshop: positioning and staffing are the gameplay',()=>{
     expect(acceptPatronCommission(accepted)).toBe(accepted);
     expect(acceptPatronCommission(newWorkshop())).toEqual(newWorkshop());
   });
-  it('pays the optional guest contract only using actually produced shared cores',()=>{
-    let state=connect();
-    for(let i=0;i<5;i++)state=runShift(state);
-    state=acceptPatronCommission(state);
-    for(let i=0;i<3;i++)state=runShift(state);
-    expect(state.day).toBe(9);
-    expect(state.patron?.status).toBe('completed');
-    expect(state.coins).toBe(267);
-    expect(state.warehouse.core).toBe(1);
-    expect(validWorkshop(state)).toBe(true);
-    // Spending 13 shared cores leaves exactly enough for the next regular
-    // order ONLY if the line stays productive on day nine.
-    state=runShift(state);
-    expect(state.completed).toBe(2);
-    expect(state.failed).toBe(0);
-    expect(state.warehouse.core).toBe(0);
-    expect(state.coins).toBe(362);
+  it('makes guest commission a consequential investment versus penalty choice',()=>{
+    let s=connect();
+    for(let i=0;i<5;i++)s=runShift(s);
+    const save=JSON.stringify(s);
+    expect(forecastPatronCommission(s)).toEqual({
+      available:14,required:15,deficit:1,completes:false,
+      nextNormalOrder:'fulfilled',
+    });
+    expect(JSON.stringify(s)).toBe(save); // forecasting never edits inventory
+    let risky=acceptPatronCommission(s);
+    for(let i=0;i<3;i++)risky=runShift(risky);
+    expect(risky.patron?.status).toBe('missed');
+    expect(risky.coins).toBe(112);
+    expect(risky.warehouse.core).toBe(14);
+    // Buying real capacity costs 60 now, but can earn 135 later.
+    s=upgradeMachine(s,7);
+    expect(s.coins).toBe(72);
+    expect(forecastPatronCommission(s)).toEqual({
+      available:17,required:15,deficit:0,completes:true,
+      nextNormalOrder:'fulfilled',
+    });
+    s=acceptPatronCommission(s);
+    for(let i=0;i<3;i++)s=runShift(s);
+    expect(s.day).toBe(9);
+    expect(s.patron?.status).toBe('completed');
+    expect(s.coins).toBe(207);
+    expect(s.warehouse.core).toBe(2);
+    expect(forecastPatronCommission(s)).toBeNull();
+    expect(validWorkshop(s)).toBe(true);
+    s=runShift(s);
+    expect(s.completed).toBe(2);
+    expect(s.failed).toBe(0);
+    expect(s.warehouse.core).toBe(2);
+    expect(s.coins).toBe(302);
   });
   it('does not award the guest on failure, and ignoring an offer has no penalty',()=>{
     let state=connect();

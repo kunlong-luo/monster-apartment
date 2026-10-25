@@ -20,6 +20,7 @@ export type PatronCommission={
 export const PATRON_NAME='月纱';
 export const PATRON_ADULT_AGE=28;
 export const PATRON_FAILURE_COST=20;
+export const PATRON_EXTRA_CORES=7;
 export type DailyProduction={
   water:number;fiber:number;cores:number;blocked:string[];
   fulfilled:boolean;lost:boolean;
@@ -179,10 +180,10 @@ export function runShift(s:WorkshopState):WorkshopState {
     order={due:s.day+4,cores:order.cores+1,reward:order.reward+25};
   }
   // The first successful standard order unlocks the adult visiting
-  // merchant. Her optional request needs five MORE cores than currently
-  // stored, so a player must really operate their production line.
+  // merchant. Her request exceeds the starter line's three-day output,
+  // requiring a paid upgrade, a productive redesign, or accepted risk.
   if(!patron&&report.fulfilled){
-    patron={status:'offered',due:s.day+3,cores:warehouse+5,reward:135};
+    patron={status:'offered',due:s.day+3,cores:warehouse+PATRON_EXTRA_CORES,reward:135};
   }
   if(patron&&s.day>=patron.due){
     if(patron.status==='active'){
@@ -200,6 +201,38 @@ export function runShift(s:WorkshopState):WorkshopState {
   }
   return {...s,day:s.day+1,coins,tiles,warehouse:{core:warehouse},
     order,completed,failed,last:report,patron};
+}
+/** A side-effect-free what-if forecast; uses the very same shift engine.
+ * Results assume today's staffing, layout and equipment stay unchanged. */
+export type PatronForecast={
+  available:number;required:number;deficit:number;completes:boolean;
+  nextNormalOrder:'fulfilled'|'missed'|'pending';
+};
+export function forecastPatronCommission(s:WorkshopState):PatronForecast|null {
+  const contract=s.patron;
+  if(!contract||(contract.status!=='offered'&&contract.status!=='active')
+    ||s.day>contract.due)return null;
+  let future=contract.status==='offered'?acceptPatronCommission(s):s;
+  let available=future.warehouse.core;
+  let nextNormalOrder:PatronForecast['nextNormalOrder']='pending';
+  const normalDue=s.order.due;
+  const horizon=Math.max(contract.due,normalDue);
+  // Old, hand-edited local saves must not cause enormous forecast loops.
+  for(let i=0;i<16&&future.day<=horizon;i++){
+    const day=future.day;
+    const after=runShift(future);
+    if(day===normalDue){
+      nextNormalOrder=after.last?.fulfilled?'fulfilled':'missed';
+    }
+    if(day===contract.due){
+      available=after.warehouse.core+
+        (after.patron?.status==='completed'?contract.cores:0);
+    }
+    future=after;
+  }
+  return {available,required:contract.cores,
+    deficit:Math.max(0,contract.cores-available),
+    completes:future.patron?.status==='completed',nextNormalOrder};
 }
 export function validWorkshop(value:unknown):value is WorkshopState {
   if(!value||typeof value!=='object')return false;
