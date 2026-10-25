@@ -49,6 +49,20 @@ screenshots. The font is a runtime asset, not a user download artifact.
 
 完整四人资料、逐帧精灵规格、服装边界、经营互动和验收门槛见 **[成年女性角色美术规范](docs/adult-character-art-direction.md)**。当前实际代码仅完成月纱的过渡版立绘与高级订单，其余三位是明确标注的待开发目标，尚未假称已经上线。
 
+## V2.1 first painted architecture asset
+
+An **original real bitmap** (`art/moon-workshop.avif`) now supplies the
+moonlit window, workshop timber and lamp-lit distant architecture.
+Unlike a flattened game screenshot it contains no UI or fake control labels.
+It is loaded independently of the physically clickable tiles, machines,
+characters and resource animation. The build copies the binary AVIF to the
+served assets directory and browsers lacking support use the old skyline.
+
+This is a first painterly scenery integration, *not finished game artwork*.
+Machine, floor and worker sprites are still programmatic placeholders. The
+small proof-of-concept AVIF should eventually be replaced by a high-resolution
+environment atlas with separate foreground occlusion and lighting layers.
+
 ## V2.1 in-world production responses
 
 Each real production shift now emits short-lived PixiJS feedback above the

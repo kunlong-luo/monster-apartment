@@ -1,4 +1,4 @@
-import { Application, AnimatedSprite, Container, Graphics, Sprite, Text } from 'pixi.js';
+import { Application, AnimatedSprite, Container, Graphics, Sprite, Text, Texture } from 'pixi.js';
 import { makeRasterArt } from './raster-sprites';
 import { patronFrames } from './patron-art';
 import { BOARD_SIZE, WIDTH, MACHINES, linked, machineLevel } from './workshop-engine';
@@ -45,8 +45,27 @@ export async function mountWorkshopLab(
   const observer=new ResizeObserver(resize);
   observer.observe(element);resize();
   const art=makeRasterArt();
-  const backdrop=new Sprite(art.backdrop);
-  backdrop.width=W;backdrop.height=H;app.stage.addChild(backdrop);
+  // The painterly architecture is independent from machines, workers and hit areas.
+  // AVIF is an enhancement: unsupported codecs fall back to the legacy scene.
+  let painted:Texture|null=null;
+  try{
+    const image=new Image();
+    image.src=new URL('./assets/moon-workshop.avif',document.baseURI).href;
+    await image.decode();
+    painted=Texture.from(image);
+  }catch{/* keep gameplay available even if the asset cannot decode */}
+  element.dataset.visualTheme=painted?'painted-moonwork':'procedural-fallback';
+  const backdrop=new Sprite(painted??art.backdrop);
+  if(painted){
+    const cover=Math.max(W/painted.width,H/painted.height);
+    backdrop.width=painted.width*cover;backdrop.height=painted.height*cover;
+    backdrop.position.set((W-backdrop.width)/2,(H-backdrop.height)/2);
+  }else{
+    backdrop.width=W;backdrop.height=H;
+  }
+  app.stage.addChild(backdrop);
+  app.stage.addChild(new Graphics().rect(0,0,W,H)
+    .fill({color:0x101e2c,alpha:painted?.17:0}));
   // 8 different bitmap pose frames per creature, assembled once and reused.
   element.dataset.renderer='pixi-webgl-bitmap';
   element.dataset.workerFrames='8';
@@ -161,6 +180,7 @@ export async function mountWorkshopLab(
       const tile=new Sprite(art.floor);
       tile.position.set(x,y);tile.width=CELL;tile.height=CELL;
       tile.tint=machine?0xffffff:0xb8c7d0;
+      if(painted)tile.alpha=machine?.87:.76; // keep the architectural layers visible
       tile.eventMode='static';tile.cursor='pointer';
       tile.on('pointertap',()=>callbacks.plot(i));
       stage.addChild(tile);

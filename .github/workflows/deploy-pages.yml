@@ -44,6 +44,7 @@ jobs:
       - run: npm --prefix v2 run build
       - run: mkdir -p out/workshop && cp -a v2/dist/. out/workshop/
       - run: test -s out/workshop/assets/workshop.js
+      - run: test -s out/workshop/assets/moon-workshop.avif
       - run: touch out/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
