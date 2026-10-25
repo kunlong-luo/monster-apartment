@@ -49,6 +49,19 @@ screenshots. The font is a runtime asset, not a user download artifact.
 
 完整四人资料、逐帧精灵规格、服装边界、经营互动和验收门槛见 **[成年女性角色美术规范](docs/adult-character-art-direction.md)**。当前实际代码仅完成月纱的过渡版立绘与高级订单，其余三位是明确标注的待开发目标，尚未假称已经上线。
 
+## V2.1 first gameplay pass — consequential risk and honest forecasts
+
+The optional witch commission now requires seven extra cores beyond the
+post-delivery warehouse stock. The starter line makes only six before the
+deadline, so accepting without improving production loses 20 coins. A Lv.2
+kiln costs 60 coins and can produce enough for the 135-coin guest reward.
+
+The contract panel forecasts delivered inventory and possible shortage using
+the **same deterministic rules as actual shifts**. These are what-if estimates,
+not guaranteed payouts: changing equipment and workers updates the forecast.
+Ignoring the optional commission remains penalty-free. Existing V2 saves remain
+separate from V1; formal hand-painted art is still a separate milestone.
+
 ## V2 iteration 0.4 — machines that improve and a finishable goal
 
 The full product development plan is tracked in

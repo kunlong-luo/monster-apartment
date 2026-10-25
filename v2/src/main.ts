@@ -1,6 +1,7 @@
 import { WORKERS, MACHINES, newWorkshop, validWorkshop,
   placeMachine, moveMachine, assignWorker, runShift, acceptPatronCommission,
-  upgradeMachine, machineUpgradeQuote, machineLevel, workshopRank } from './workshop-engine';
+  upgradeMachine, machineUpgradeQuote, machineLevel, workshopRank,
+  forecastPatronCommission } from './workshop-engine';
 import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
 import { mountWorkshopLab } from './workshop-lab-stage';
 
@@ -54,7 +55,11 @@ function acceptPatron(){
   if(next===world){
     message='月纱的邀请目前不可接取。';effect='bad';render();return;
   }
-  apply(next,'月纱微笑着收起契约：月落之前，请完成特别的晶核订单。','good');
+  const outlook=forecastPatronCommission(next);
+  apply(next,outlook?.deficit
+    ?'月纱已确认接单。按当前产线还缺 '+outlook.deficit+' 枚晶核，务必升级或重新安排生产。'
+    :'月纱已确认接单。保持当前生产节奏，有望如期交付。',
+    outlook?.deficit?'bad':'good');
   render();
 }
 const stage=await mountWorkshopLab($('stage'),world,{plot,patronTap:acceptPatron});
@@ -90,6 +95,19 @@ function render(){
     const button=$('patron-accept') as HTMLButtonElement;
     button.hidden=status!=='offered';
     card.setAttribute('data-status',status);
+    const forecast=forecastPatronCommission(world);
+    const forecastLabel=$('patron-forecast');
+    forecastLabel.hidden=!forecast;
+    if(forecast){
+      forecastLabel.setAttribute('data-risk',forecast.deficit?'high':'low');
+      forecastLabel.textContent=forecast.deficit
+        ?'当前排班预测 '+forecast.available+'/'+forecast.required+
+          ' · 还缺 '+forecast.deficit+' 枚，接单可能损失 ✦20。升级熔炉或调整产线可改变结果。'
+        :'当前排班预测 '+forecast.available+'/'+forecast.required+
+          ' · 特单有望完成，普通订单'+
+          (forecast.nextNormalOrder==='fulfilled'?'也有望完成。':
+          forecast.nextNormalOrder==='missed'?'可能逾期。':'仍需关注。');
+    }
   }
   const report=world.last;
   $('water').textContent=String(report?.water??0);
