@@ -16,4 +16,5 @@ await copyFile(
   resolve(root,'dist/assets/noto-sans-sc.woff2'),
 );
 await copyFile(resolve(root,'art/moon-workshop.avif'),resolve(root,'dist/assets/moon-workshop.avif'));
+await copyFile(resolve(root,'art/moonveil-portrait.avif'),resolve(root,'dist/assets/moonveil-portrait.avif'));
 await copyFile(resolve(root,'index.html'),resolve(root,'dist/index.html'));

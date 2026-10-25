@@ -122,6 +122,7 @@ test('adult moon witch is earned through regular production and offers a real co
   for(let i=0;i<5;i++)await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-completed')).toHaveText('1');
   await expect(page.getByTestId('v2-patron-card')).toBeVisible();
+  await expect(page.getByTestId('v2-patron-portrait')).toHaveJSProperty('naturalWidth',210);
   await expect(page.getByTestId('v2-patron-card')).toHaveAttribute('data-status','offered');
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-patron-frames','8');
   await expect(page.getByTestId('v2-patron-dialogue')).toContainText('你的工坊真有本事');

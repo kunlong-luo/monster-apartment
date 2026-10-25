@@ -49,6 +49,15 @@ screenshots. The font is a runtime asset, not a user download artifact.
 
 完整四人资料、逐帧精灵规格、服装边界、经营互动和验收门槛见 **[成年女性角色美术规范](docs/adult-character-art-direction.md)**。当前实际代码仅完成月纱的过渡版立绘与高级订单，其余三位是明确标注的待开发目标，尚未假称已经上线。
 
+## V2.1 first independent character portrait
+
+The witch commission card uses a dedicated original-painted portrait
+(`art/moonveil-portrait.avif`) rather than an enlarged canvas drawing.
+Its image is a real responsive HTML asset, independent of the animated
+scene actor and the contract mechanics. Compact mobile layouts omit the
+thumbnail to protect the single-screen controls. This is a painted cameo,
+not a finished fully animated witch sprite sheet.
+
 ## V2.1 first painted architecture asset
 
 An **original real bitmap** (`art/moon-workshop.avif`) now supplies the
