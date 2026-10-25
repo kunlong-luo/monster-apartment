@@ -355,7 +355,7 @@ export function validWorkshop(value:unknown):value is WorkshopState {
       ||!Number.isSafeInteger(s.failed)||s.failed! < 0)return false;
   if(s.market!==undefined){
     if(!s.market||!Number.isSafeInteger(s.market.day)
-      ||s.market.day<1||s.market.day>s.day
+      ||s.market.day<1||s.market.day>s.day!
       ||!Object.hasOwn(TOWN_MARKET,s.market.kind))return false;
   }
   if(s.patron!==undefined&&s.patron!==null){
