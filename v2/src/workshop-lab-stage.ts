@@ -1,9 +1,10 @@
 import { Application, AnimatedSprite, Container, Graphics, Sprite, Text } from 'pixi.js';
 import { makeRasterArt } from './raster-sprites';
+import { patronFrames } from './patron-art';
 import { BOARD_SIZE, WIDTH, MACHINES, linked } from './workshop-engine';
 import type { WorkshopState, Craft } from './workshop-engine';
 
-export type LabSelect={plot:(index:number)=>void};
+export type LabSelect={plot:(index:number)=>void; patronTap?:()=>void};
 export type LabView={sync:(state:WorkshopState,selected:number|null)=>void; destroy:()=>void};
 
 /** A deliberately temporary, playable *greybox*, not the game's art direction.
@@ -193,7 +194,33 @@ export async function mountWorkshopLab(
           flowPaths.push({from:{x:a.x+CELL/2,y:a.y+CELL/2},
             to:{x:b.x+CELL/2,y:b.y+CELL/2},tint:water?0x73d6ef:0xc7f1a9});
         }
+
       }
+    }
+    // A mature, distinct guest silhouette. This portrait uses bitmap frames
+    // with independently animated hair, eye blink, and sleeve movement.
+    // Keep her away from machine hit areas in both stage compositions.
+    element.dataset.patronVisible=current.patron?'true':'false';
+    element.dataset.patronFrames=current.patron?'8':'0';
+    if(current.patron){
+      const isMobile=MOBILE;
+      const x=isMobile?94:988,y=isMobile?198:610;
+      const halo=new Graphics().ellipse(x,y-16,isMobile?57:79,isMobile?17:21)
+        .fill({color:0xf6d29d,alpha:.24});
+      stage.addChild(halo);
+      const visitor=new AnimatedSprite(patronFrames());
+      visitor.anchor.set(.5,1);visitor.position.set(x,y);
+      visitor.width=isMobile?126:165;visitor.height=isMobile?161:235;
+      visitor.animationSpeed=.11;visitor.loop=true;
+      visitor.gotoAndPlay(current.day%8);
+      visitor.eventMode=current.patron.status==='offered'?'static':'none';
+      visitor.cursor=current.patron.status==='offered'?'pointer':'default';
+      visitor.on('pointertap',()=>callbacks.patronTap?.());
+      stage.addChild(visitor);actors.push(visitor);
+      const tag=glabel('月纱 · 成年魔女',isMobile?14:13,0xf6d2bc,true);
+      tag.anchor.set(.5,0);
+      tag.position.set(x,isMobile?191:608);
+      stage.addChild(tag);
     }
   };
   render(state,null);

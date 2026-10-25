@@ -80,6 +80,7 @@ jobs:
             test-results/spirit-mobile.png
             test-results/workshop-v2-mobile.png
             test-results/workshop-v2-sprites-desktop.png
+            test-results/workshop-v2-patron-mobile.png
           if-no-files-found: warn
           retention-days: 14
 

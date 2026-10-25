@@ -35,6 +35,32 @@ This is an intentionally narrow *test of whether the mechanics are fun*.
 The existing pet-raising/roommate happiness and commission loops will **not**
 be imported into V2. Fail early on the core loop before adding buildings.
 
+## V2 iteration 0.3 — adult visitor with meaningful orders
+
+**月纱 / Moonveil**, an explicitly adult **28-year-old** witch merchant, visits
+only when the player successfully fulfills the first normal factory order.
+Her moonlit costume is deliberately more mature (off-shoulder dress,
+exposed waist, slit skirt, jewellery, gloves), with elegant, non-explicit
+fantasy styling. The small, petlike original workshop workers remain
+completely non-sexualized.
+
+The visitor is not a cosmetic overlay: her **optional time-sensitive premium
+order** demands five more cores than the warehouse holds at the time she
+appears. Accepting it competes with the normal order for the exact same
+inventory. Finish by the deadline and earn 135 coins; miss it and lose
+20 coins. Ignore the offer and it simply expires. No romance-click currency
+or meaningless gift buttons.
+
+Her own 8-frame Canvas2D raster portrait is an original *transitional*
+character asset, integrated as a PixiJS AnimatedSprite on both desktop
+and mobile stages. A compact order section appears on the existing
+contract panel. Game state keeps the optional `patron` value in V2 saves;
+previous V2 saves lacking it remain valid. V1 saves are completely separate.
+
+This is a **character-and-gameplay integration pass**, not the full
+hand-painted final art. Next visual milestone is commissioned cohesive
+sprite sheets with mature character expressions and real hand-drawn actions.
+
 ## V2 visual iteration 0.2 — authored raster sprites and motion
 
 The original technical greybox has been upgraded to **GPU texture-backed raster

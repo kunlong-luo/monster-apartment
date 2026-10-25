@@ -7,6 +7,15 @@ export type Supply='water'|'fiber'|'core';
 export type WorkerId='brook'|'fern'|'cinder';
 export type Machine={craft:Craft;worker:WorkerId|null;stored:number};
 export type WorkshopOrder={due:number;cores:number;reward:number};
+/** Yuesha is an adult witch merchant; her optional request draws from the
+ * same real stock as ordinary contracts. Legacy V2 saves omit this field. */
+export type PatronStatus='offered'|'active'|'completed'|'missed'|'expired';
+export type PatronCommission={
+  status:PatronStatus;due:number;cores:number;reward:number;
+};
+export const PATRON_NAME='月纱';
+export const PATRON_ADULT_AGE=28;
+export const PATRON_FAILURE_COST=20;
 export type DailyProduction={
   water:number;fiber:number;cores:number;blocked:string[];
   fulfilled:boolean;lost:boolean;
@@ -18,6 +27,7 @@ export type WorkshopState={
   order:WorkshopOrder;
   last:DailyProduction|null;
   completed:number;failed:number;
+  patron?:PatronCommission|null;
 };
 export const WIDTH=5;
 export const HEIGHT=3;
@@ -42,7 +52,7 @@ export function newWorkshop():WorkshopState {
   tiles[5]={craft:'well',worker:null,stored:0};
   tiles[7]={craft:'garden',worker:null,stored:0};
   return {version:2,day:1,coins:100,tiles,warehouse:{core:0},
-    order:{due:5,cores:2,reward:70},last:null,completed:0,failed:0};
+    order:{due:5,cores:2,reward:70},last:null,completed:0,failed:0,patron:null};
 }
 export function placeMachine(s:WorkshopState,index:number,craft:Craft):WorkshopState {
   const item=MACHINES[craft];
@@ -73,6 +83,14 @@ const expert=(craft:Craft,id:WorkerId|null)=>
 /** Strict local flow. Material cannot teleport between rooms.
  * A worker's specialty alters throughput, rather than generic happiness.
  * Bottlenecks are inspectable in blocked[] after each shift. */
+/** Accept a genuine time-sensitive second contract. Its cores are not minted
+ * automatically: both customers require the very same warehouse inventory.
+ * There is no paid upgrade, romance click farming, or manufactured bonus.
+ */
+export function acceptPatronCommission(s:WorkshopState):WorkshopState {
+  if(s.patron?.status!=='offered'||s.day>s.patron.due)return s;
+  return {...s,patron:{...s.patron,status:'active'}};
+}
 export function runShift(s:WorkshopState):WorkshopState {
   const tiles=s.tiles.map(t=>t?{...t}:null);
   const report:DailyProduction={water:0,fiber:0,cores:0,blocked:[],fulfilled:false,lost:false};
@@ -108,6 +126,7 @@ export function runShift(s:WorkshopState):WorkshopState {
   let coins=s.coins;
   let completed=s.completed,failed=s.failed;
   let order=s.order;
+  let patron=s.patron??null;
   if(s.day>=order.due){
     if(warehouse>=order.cores){
       warehouse-=order.cores;coins+=order.reward;
@@ -117,8 +136,28 @@ export function runShift(s:WorkshopState):WorkshopState {
     }
     order={due:s.day+4,cores:order.cores+1,reward:order.reward+25};
   }
+  // The first successful standard order unlocks the adult visiting
+  // merchant. Her optional request needs five MORE cores than currently
+  // stored, so a player must really operate their production line.
+  if(!patron&&report.fulfilled){
+    patron={status:'offered',due:s.day+3,cores:warehouse+5,reward:135};
+  }
+  if(patron&&s.day>=patron.due){
+    if(patron.status==='active'){
+      if(warehouse>=patron.cores){
+        warehouse-=patron.cores;
+        coins+=patron.reward;
+        patron={...patron,status:'completed'};
+      }else{
+        coins=Math.max(0,coins-PATRON_FAILURE_COST);
+        patron={...patron,status:'missed'};
+      }
+    }else if(patron.status==='offered'){
+      patron={...patron,status:'expired'};
+    }
+  }
   return {...s,day:s.day+1,coins,tiles,warehouse:{core:warehouse},
-    order,completed,failed,last:report};
+    order,completed,failed,last:report,patron};
 }
 export function validWorkshop(value:unknown):value is WorkshopState {
   if(!value||typeof value!=='object')return false;
@@ -131,6 +170,13 @@ export function validWorkshop(value:unknown):value is WorkshopState {
       ||!Number.isSafeInteger(s.order?.reward)||s.order!.cores<1
       ||!Number.isSafeInteger(s.completed)||s.completed! < 0
       ||!Number.isSafeInteger(s.failed)||s.failed! < 0)return false;
+  if(s.patron!==undefined&&s.patron!==null){
+    const p=s.patron;
+    if(!p||!['offered','active','completed','missed','expired'].includes(p.status)
+      ||!Number.isSafeInteger(p.due)||p.due<5||p.due>=s.day+20
+      ||!Number.isSafeInteger(p.cores)||p.cores<5
+      ||!Number.isSafeInteger(p.reward)||p.reward<=0)return false;
+  }
   const staffed=new Set<string>();
   for(const t of s.tiles){
     if(t===null)continue;

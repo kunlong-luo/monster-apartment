@@ -83,3 +83,37 @@ footer small{font-size:10px;color:#8c9da6}.sr-only{position:absolute;clip-path:i
 @media(prefers-reduced-motion:reduce){
   .meter div{transition:none!important}
 }
+/* Visiting adult witch: a compact secondary contract on the existing order
+ * board, not a separate page of decorative buttons. */
+[hidden]{display:none!important}
+.patron-card{
+  margin-top:12px;padding:12px 10px 10px;border-top:1px solid #cba77b76;
+  border-radius:3px;background:linear-gradient(125deg,#47354b99,#26273f7d);
+  box-shadow:inset 2px 0 #a993cb68;
+}
+.patron-eyebrow{display:block;font-size:8px;letter-spacing:.12em;color:#ebbcad;font-weight:800}
+.patron-card>strong{display:block;margin:4px 0;font-family:Georgia,serif;font-size:16px;color:#f4d9bd}
+.patron-card>strong small{font-family:system-ui,sans-serif;font-size:9px;color:#e7c9b6;font-weight:500}
+.patron-card p{font-size:11px;line-height:1.5;color:#e1c9d0;margin:7px 0}
+.patron-progress{display:flex;justify-content:space-between;gap:4px;font-size:10px;color:#e9dbd0;margin-bottom:6px}
+.patron-progress b{color:#ddf0c8}
+#patron-accept{
+  width:100%;border:1px solid #dfb6ae;background:linear-gradient(#a97d89,#6e526c);
+  color:#fff3e5;font-size:11px;font-weight:800;padding:7px 6px;border-radius:7px;
+  box-shadow:0 3px 11px #17132499;
+}
+#patron-accept:hover{background:linear-gradient(#bd9199,#86637b)}
+.patron-card[data-status="completed"]{border-color:#c6e8b8;background:#2d4f4b88}
+.patron-card[data-status="missed"]{border-color:#b87b72;background:#53313788}
+@media(max-width:610px){
+  .patron-card{margin-top:5px;padding:5px;border-top-width:1px}
+  .patron-eyebrow{display:none}
+  .patron-card>strong{font-size:11px;margin:2px 0}
+  .patron-card>strong small{font-size:7px}
+  .patron-card p{font-size:8px;line-height:1.25;margin:3px 0;max-height:30px;overflow:hidden}
+  .patron-progress{font-size:8px;margin:2px 0}
+  #patron-accept{font-size:9px;padding:5px 3px}
+}
+@media(max-height:700px) and (max-width:610px){
+  .patron-card p{display:none}
+}

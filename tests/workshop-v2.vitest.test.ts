@@ -1,7 +1,7 @@
 import {describe,expect,it} from 'vitest';
 import {
   newWorkshop,placeMachine,moveMachine,assignWorker,runShift,
-  linked,validWorkshop,unassignWorker,
+  linked,validWorkshop,unassignWorker,acceptPatronCommission, PATRON_ADULT_AGE,
 } from '../v2/src/workshop-engine';
 
 const connect=()=>{
@@ -79,6 +79,70 @@ describe('V2 workshop: positioning and staffing are the gameplay',()=>{
     expect(lose.last?.lost).toBe(true);
     expect(validWorkshop(win)).toBe(true);
     expect(validWorkshop(lose)).toBe(true);
+  });
+  it('introduces the clearly adult witch after a real first delivery',()=>{
+    let s=connect();
+    for(let i=0;i<5;i++)s=runShift(s);
+    expect(PATRON_ADULT_AGE).toBe(28);
+    expect(s.completed).toBe(1);
+    expect(s.day).toBe(6);
+    expect(s.patron).toEqual({status:'offered',due:8,cores:13,reward:135});
+    expect(s.warehouse.core).toBe(8);
+    expect(validWorkshop(s)).toBe(true);
+    const accepted=acceptPatronCommission(s);
+    expect(accepted.patron?.status).toBe('active');
+    expect(accepted.coins).toBe(s.coins);
+    expect(acceptPatronCommission(accepted)).toBe(accepted);
+    expect(acceptPatronCommission(newWorkshop())).toEqual(newWorkshop());
+  });
+  it('pays the optional guest contract only using actually produced shared cores',()=>{
+    let state=connect();
+    for(let i=0;i<5;i++)state=runShift(state);
+    state=acceptPatronCommission(state);
+    for(let i=0;i<3;i++)state=runShift(state);
+    expect(state.day).toBe(9);
+    expect(state.patron?.status).toBe('completed');
+    expect(state.coins).toBe(267);
+    expect(state.warehouse.core).toBe(1);
+    expect(validWorkshop(state)).toBe(true);
+    // Spending 13 shared cores leaves exactly enough for the next regular
+    // order ONLY if the line stays productive on day nine.
+    state=runShift(state);
+    expect(state.completed).toBe(2);
+    expect(state.failed).toBe(0);
+    expect(state.warehouse.core).toBe(0);
+    expect(state.coins).toBe(362);
+  });
+  it('does not award the guest on failure, and ignoring an offer has no penalty',()=>{
+    let state=connect();
+    for(let i=0;i<5;i++)state=runShift(state);
+    let accepted=acceptPatronCommission(state);
+    accepted=unassignWorker(accepted,'cinder');
+    const coinsBefore=accepted.coins;
+    for(let i=0;i<3;i++)accepted=runShift(accepted);
+    expect(accepted.patron?.status).toBe('missed');
+    expect(accepted.coins).toBe(coinsBefore-20);
+    expect(acceptPatronCommission(accepted)).toBe(accepted);
+    let ignored=state;
+    for(let i=0;i<3;i++)ignored=runShift(ignored);
+    expect(ignored.patron?.status).toBe('expired');
+    expect(ignored.coins).toBe(state.coins);
+    expect(validWorkshop(ignored)).toBe(true);
+  });
+  it('accepts old V2 saves with no guest but rejects fabricated contracts',()=>{
+    const initial=newWorkshop();
+    const legacy={...initial};
+    delete legacy.patron;
+    expect(validWorkshop(legacy)).toBe(true);
+    expect(validWorkshop({...initial,patron:{
+      status:'awarded',due:8,cores:13,reward:135,
+    }})).toBe(false);
+    expect(validWorkshop({...initial,patron:{
+      status:'active',due:-1,cores:13,reward:135,
+    }})).toBe(false);
+    expect(validWorkshop({...initial,patron:{
+      status:'active',due:8,cores:0,reward:135,
+    }})).toBe(false);
   });
   it('rejects invalid V2 progress without conflating legacy V1 saves',()=>{
     const state=newWorkshop();

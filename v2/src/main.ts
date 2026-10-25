@@ -1,5 +1,5 @@
 import { WORKERS, MACHINES, newWorkshop, validWorkshop,
-  placeMachine, moveMachine, assignWorker, runShift } from './workshop-engine';
+  placeMachine, moveMachine, assignWorker, runShift, acceptPatronCommission } from './workshop-engine';
 import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
 import { mountWorkshopLab } from './workshop-lab-stage';
 
@@ -48,7 +48,15 @@ function plot(index:number){
   }
   render();
 }
-const stage=await mountWorkshopLab($('stage'),world,{plot});
+function acceptPatron(){
+  const next=acceptPatronCommission(world);
+  if(next===world){
+    message='月纱的邀请目前不可接取。';effect='bad';render();return;
+  }
+  apply(next,'月纱微笑着收起契约：月落之前，请完成特别的晶核订单。','good');
+  render();
+}
+const stage=await mountWorkshopLab($('stage'),world,{plot,patronTap:acceptPatron});
 function render(){
   stage.sync(world,selectedPlot);
   $('day').textContent=String(world.day);
@@ -59,6 +67,26 @@ function render(){
   $('completed').textContent=String(world.completed);
   $('failed').textContent=String(world.failed);
   $('progress').style.width=Math.min(100,100*world.warehouse.core/world.order.cores)+'%';
+  const patron=world.patron??null;
+  const card=$('patron');
+  card.hidden=!patron;
+  if(patron){
+    const status=patron.status;
+    const lines={
+      offered:'「你的工坊真有本事。月光落下之前，能为我准备这些晶核吗？」',
+      active:'「今晚的星光很美。希望我们能如约交货。」',
+      completed:'「守约的工匠总让我刮目相看。下次月夜再见。」',
+      missed:'「月亮不会等待任何人。可惜，这次我们错过了。」',
+      expired:'「你没有接受邀请。那就留待下一次月夜吧。」',
+    };
+    $('patron-dialogue').textContent=lines[status];
+    $('patron-progress').textContent=world.warehouse.core+'/'+patron.cores;
+    $('patron-days').textContent=status==='offered'||status==='active'
+      ?'剩 '+Math.max(0,patron.due-world.day+1)+' 天':'已结算';
+    const button=$('patron-accept') as HTMLButtonElement;
+    button.hidden=status!=='offered';
+    card.setAttribute('data-status',status);
+  }
   const report=world.last;
   $('water').textContent=String(report?.water??0);
   $('fiber').textContent=String(report?.fiber??0);
@@ -116,7 +144,9 @@ $('root').addEventListener('click',event=>{
   if(!(origin instanceof Element))return;
   const worker=origin.closest<HTMLButtonElement>('[data-worker]');
   const build=origin.closest<HTMLButtonElement>('[data-build]');
-  if(worker){
+  if(origin.closest('#patron-accept')){
+    acceptPatron();
+  }else if(worker){
     const id=worker.dataset.worker as WorkerId;
     const selected=chosenWorker===id;clearChoice();
     chosenWorker=selected?null:id;
@@ -138,10 +168,17 @@ $('root').addEventListener('click',event=>{
     clearChoice();
     const next=runShift(world);
     const report=next.last!;
-    apply(next,report.fulfilled?'订单交付成功！获得 '+(next.coins-world.coins)+' 星币。':
+    const changed=world.patron?.status!==next.patron?.status;
+    const patronEvent=changed&&next.patron
+      ?next.patron.status==='offered'?'月纱来访了：一份限时高价委托正在等你。'
+      :next.patron.status==='completed'?'月纱的特别订单交付成功！获得 ✦'+next.patron.reward+'。'
+      :next.patron.status==='missed'?'月纱的订单逾期，损失修约费。':''
+      :'';
+    apply(next,patronEvent||(report.fulfilled?'订单交付成功！':
       report.lost?'订单过期，扣除了 15 星币。':
-      '本日生产：'+report.water+' 水、'+report.fiber+' 孢子、'+report.cores+' 晶核。',
-    report.fulfilled?'good':report.lost?'bad':'normal');
+      '本日生产：'+report.water+' 水、'+report.fiber+' 孢子、'+report.cores+' 晶核。'),
+    next.patron?.status==='completed'&&changed||report.fulfilled?'good':
+      next.patron?.status==='missed'&&changed||report.lost?'bad':'normal');
     selectedPlot=null;render();
   }else if(origin.closest('#reset')){
     if(!window.confirm('重新开工？当前 V2 实验存档会被覆盖。'))return;
