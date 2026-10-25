@@ -1,7 +1,7 @@
 import { WORKERS, MACHINES, newWorkshop, validWorkshop,
   placeMachine, moveMachine, assignWorker, runShift, acceptPatronCommission,
   upgradeMachine, machineUpgradeQuote, machineLevel, workshopRank,
-  forecastPatronCommission } from './workshop-engine';
+  forecastPatronCommission, importPatronCore, PATRON_IMPORT_PRICE } from './workshop-engine';
 import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
 import { mountWorkshopLab } from './workshop-lab-stage';
 
@@ -62,6 +62,16 @@ function acceptPatron(){
     outlook?.deficit?'bad':'good');
   render();
 }
+function buyPatronCore(){
+  const next=importPatronCore(world);
+  if(next===world){
+    message='采购失败：检查委托是否仍有效及星币是否充足。';
+    effect='bad';render();return;
+  }
+  apply(next,'向月纱采购一枚晶核：支付 '+PATRON_IMPORT_PRICE+
+    ' 星币，货物已入共享仓库。','good');
+  render();
+}
 const stage=await mountWorkshopLab($('stage'),world,{plot,patronTap:acceptPatron});
 function render(){
   stage.sync(world,selectedPlot);
@@ -96,6 +106,11 @@ function render(){
     button.hidden=status!=='offered';
     card.setAttribute('data-status',status);
     const forecast=forecastPatronCommission(world);
+    const importButton=$('patron-import') as HTMLButtonElement;
+    importButton.hidden=!forecast||!(forecast.deficit>0||
+      forecast.nextNormalOrder==='missed');
+    importButton.disabled=world.coins<PATRON_IMPORT_PRICE;
+    importButton.textContent='临时采购 +1 晶核 · ✦'+PATRON_IMPORT_PRICE;
     const forecastLabel=$('patron-forecast');
     forecastLabel.hidden=!forecast;
     if(forecast){
@@ -191,6 +206,8 @@ $('root').addEventListener('click',event=>{
     }
   }else if(origin.closest('#patron-accept')){
     acceptPatron();
+  }else if(origin.closest('#patron-import')){
+    buyPatronCore();
   }else if(worker){
     const id=worker.dataset.worker as WorkerId;
     const selected=chosenWorker===id;clearChoice();

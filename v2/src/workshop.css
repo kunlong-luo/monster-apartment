@@ -143,3 +143,10 @@ footer small{font-size:10px;color:#8c9da6}.sr-only{position:absolute;clip-path:i
   .patron-forecast{padding:2px 4px;margin:3px 0!important;
     font-size:8px!important;line-height:1.15!important;max-height:29px;overflow:hidden}
 }
+/* Optional procurement appears only when the production forecast shows a shortfall.
+   Real coins are consumed; this is an alternative to a permanent upgrade. */
+#patron-import{width:100%;margin-top:5px;border:1px solid #7bb5ae;
+  background:linear-gradient(135deg,#274c54,#284052);color:#e3f9e8;
+  padding:6px 5px;border-radius:6px;font-size:10px;font-weight:750}
+#patron-import:hover:not(:disabled){background:#37616a}
+@media(max-width:610px){#patron-import{font-size:8px;padding:3px;margin-top:2px}}

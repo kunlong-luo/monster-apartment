@@ -4,6 +4,7 @@ import {
   linked,validWorkshop,unassignWorker,acceptPatronCommission, PATRON_ADULT_AGE,
   machineLevel,machineUpgradeQuote,upgradeMachine,workshopRank,
   forecastPatronCommission, PATRON_EXTRA_CORES,
+  importPatronCore, PATRON_IMPORT_PRICE,
 } from '../v2/src/workshop-engine';
 
 const connect=()=>{
@@ -132,6 +133,39 @@ describe('V2 workshop: positioning and staffing are the gameplay',()=>{
     expect(s.failed).toBe(0);
     expect(s.warehouse.core).toBe(2);
     expect(s.coins).toBe(302);
+  });
+  it('offers paid inventory imports as a short-run alternative to durable upgrades',()=>{
+    let s=connect();
+    for(let i=0;i<5;i++)s=runShift(s);
+    expect(PATRON_IMPORT_PRICE).toBe(42);
+    expect(importPatronCore(newWorkshop())).toEqual(newWorkshop());
+    const once=importPatronCore(s);
+    expect(once.coins).toBe(90);
+    expect(once.warehouse.core).toBe(9);
+    expect(s.coins).toBe(132); // immutable state
+    expect(s.warehouse.core).toBe(8);
+    expect(forecastPatronCommission(once)).toEqual({
+      available:15,required:15,deficit:0,completes:true,
+      nextNormalOrder:'missed',
+    });
+    const twice=importPatronCore(once);
+    expect(twice.coins).toBe(48);
+    expect(twice.warehouse.core).toBe(10);
+    expect(forecastPatronCommission(twice)).toEqual({
+      available:16,required:15,deficit:0,completes:true,
+      nextNormalOrder:'fulfilled',
+    });
+    let played=acceptPatronCommission(twice);
+    for(let i=0;i<4;i++)played=runShift(played);
+    expect(played.patron?.status).toBe('completed');
+    expect(played.completed).toBe(2);
+    expect(played.failed).toBe(0);
+    expect(played.coins).toBe(278);
+    expect(importPatronCore(played)).toBe(played);
+    expect(validWorkshop(played)).toBe(true);
+    let insufficient=once;
+    insufficient={...insufficient,coins:41};
+    expect(importPatronCore(insufficient)).toBe(insufficient);
   });
   it('does not award the guest on failure, and ignoring an offer has no penalty',()=>{
     let state=connect();

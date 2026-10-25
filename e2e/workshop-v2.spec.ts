@@ -160,6 +160,17 @@ test('adult guest invitation remains readable on portrait phone and is optional'
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-patron-visible','true');
   await expect(page.getByTestId('v2-patron-dialogue')).toContainText('月光落下之前');
   await expect(page.getByTestId('v2-patron-accept')).toBeVisible();
+  await expect(page.getByTestId('v2-patron-import')).toBeVisible();
+  await expect(page.getByTestId('v2-patron-forecast')).toContainText('还缺 1 枚');
+  await page.getByTestId('v2-patron-import').click();
+  await expect(page.getByTestId('v2-coins')).toHaveText('90');
+  await expect(page.getByTestId('v2-stock')).toHaveText('9');
+  await expect(page.getByTestId('v2-patron-forecast')).toContainText('可能逾期');
+  await page.getByTestId('v2-patron-import').click();
+  await expect(page.getByTestId('v2-coins')).toHaveText('48');
+  await expect(page.getByTestId('v2-stock')).toHaveText('10');
+  await expect(page.getByTestId('v2-patron-forecast')).toContainText('也有望完成');
+  await expect(page.getByTestId('v2-patron-import')).toBeHidden();
   const dimensions=await page.evaluate(()=>({
     x:document.documentElement.scrollWidth-innerWidth,
     y:document.documentElement.scrollHeight-innerHeight,

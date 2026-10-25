@@ -21,6 +21,8 @@ export const PATRON_NAME='月纱';
 export const PATRON_ADULT_AGE=28;
 export const PATRON_FAILURE_COST=20;
 export const PATRON_EXTRA_CORES=7;
+/** Short-term wholesale cores compete with permanent equipment upgrades. */
+export const PATRON_IMPORT_PRICE=42;
 export type DailyProduction={
   water:number;fiber:number;cores:number;blocked:string[];
   fulfilled:boolean;lost:boolean;
@@ -128,6 +130,16 @@ const expert=(craft:Craft,id:WorkerId|null)=>
 export function acceptPatronCommission(s:WorkshopState):WorkshopState {
   if(s.patron?.status!=='offered'||s.day>s.patron.due)return s;
   return {...s,patron:{...s.patron,status:'active'}};
+}
+/** Buy one physically stocked core from the visiting merchant.
+ * Currency and warehouse change together, and only during the offer.
+ * Existing saves need no migration: neither field is new. */
+export function importPatronCore(s:WorkshopState):WorkshopState {
+  if(!s.patron||!['offered','active'].includes(s.patron.status)
+    ||s.day>s.patron.due||s.coins<PATRON_IMPORT_PRICE
+    ||s.warehouse.core>=Number.MAX_SAFE_INTEGER)return s;
+  return {...s,coins:s.coins-PATRON_IMPORT_PRICE,
+    warehouse:{core:s.warehouse.core+1}};
 }
 export function runShift(s:WorkshopState):WorkshopState {
   const tiles=s.tiles.map(t=>t?{...t}:null);

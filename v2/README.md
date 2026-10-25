@@ -56,6 +56,14 @@ post-delivery warehouse stock. The starter line makes only six before the
 deadline, so accepting without improving production loses 20 coins. A Lv.2
 kiln costs 60 coins and can produce enough for the 135-coin guest reward.
 
+A second strategic response is available in the patron card: buy a
+single *physical* core from a wholesale visitor for 42 coins. Procurement
+reduces cash and increases the very same inventory as production; it does
+not mint free rewards. One import covers the guest order but risks the next
+regular order, while two imports or a permanent kiln upgrade protect both.
+The contextual import option disappears when the forecast shows both
+contracts are safe, so it adds no unrelated permanent button.
+
 The contract panel forecasts delivered inventory and possible shortage using
 the **same deterministic rules as actual shifts**. These are what-if estimates,
 not guaranteed payouts: changing equipment and workers updates the forecast.
