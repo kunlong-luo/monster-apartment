@@ -5,7 +5,8 @@ import type {ReactNode} from 'react';
 import {WORKERS,MACHINES,workshopRank,forecastPatronCommission,forecastOrderChoice,
   PATRON_IMPORT_PRICE,PREMIUM_EXTRA_CORES,PREMIUM_EXTRA_REWARD,
   PREMIUM_ORDER_PENALTY,STANDARD_ORDER_PENALTY,
-  TOWN_MARKET,townMarketAvailable} from '../../../v2/src/workshop-engine';
+  TOWN_MARKET,townMarketAvailable,TOWN_RESIDENTS,residentForDay,
+  residentRequestStock,residentRequestAvailable} from '../../../v2/src/workshop-engine';
 import type {WorkshopState,WorkerId} from '../../../v2/src/workshop-engine';
 import {SAVE_KEY,CHANGE_EVENT,parseSavedWorld,commitWorldAction} from '@/lib/moonwork/world-store';
 
@@ -36,7 +37,7 @@ const WorkshopLink=({children,className='mw-link'}:{children:ReactNode;className
 function Panel({title,children}:{title:string;children:ReactNode}){
   return <section className="mw-panel"><h2>{title}</h2>{children}</section>;
 }
-function Action({type,children}:{type:'accept'|'import'|'premium'|'marketWater'|'marketFiber'|'marketCore';children:ReactNode}){
+function Action({type,children}:{type:'accept'|'import'|'premium'|'marketWater'|'marketFiber'|'marketCore'|'resident';children:ReactNode}){
   const [message,setMessage]=useState('');
   return <div><button type="button" className="mw-action-button" onClick={()=>{
     const outcome=commitWorldAction(window.localStorage,type);
@@ -54,6 +55,12 @@ function Town({s}:{s:WorkshopState}){
     {kind:'core' as const,action:'marketCore' as const,icon:'✦',place:'晶核商行'},
   ];
   const marketUsed=s.market?.day===s.day;
+  const residentKind=residentForDay(s.day);
+  const resident=TOWN_RESIDENTS[residentKind];
+  const availableStock=residentRequestStock(s);
+  const canHelp=residentRequestAvailable(s);
+  const [localVisit,setLocalVisit]=useState<string>('');
+  const visitComplete=s.market?.day===s.day&&s.market.kind===residentKind;
   return <>
     <section className="mw-town-scene" aria-label="月光街的炼金商区" data-testid="moonlit-town-scene">
       <div className="mw-town-sky" aria-hidden="true"><span className="mw-town-orb">☾</span><span className="mw-town-stars">✦ · · ✧</span></div>
@@ -81,6 +88,34 @@ function Town({s}:{s:WorkshopState}){
       </div>
       <div className="mw-town-ground" aria-hidden="true"><span>✧ · · · ✧</span></div>
     </section>
+    <section className="mw-town-resident" data-testid="town-resident" aria-label="今日街头居民">
+      <div className="mw-resident-character" aria-hidden="true">
+        <span className="mw-character-glow"/>
+        <span className="mw-character-figure">✧</span>
+      </div>
+      <div className="mw-resident-dialogue">
+        <p className="mw-eyebrow">STREET ENCOUNTER · DAY {s.day}</p>
+        <h2>{resident.name} <small>{resident.age} 岁 · {resident.job}</small></h2>
+        <p className="mw-resident-quote">“{resident.story}”</p>
+        <div className="mw-resident-deal">
+          <span>需要 {resident.amount} {resident.resource==='water'?'水汽':resident.resource==='fiber'?'孢子':'晶核'}
+          （现有可用 {availableStock}）</span><strong>获得 ✦{resident.reward} 星币</strong>
+        </div>
+        <p className="mw-resident-explanation">交出的材料将从真实设备或仓库扣除。
+          与市集采购共享每日交易次数，无法两边都领。</p>
+        <button type="button" className="mw-action-button" data-testid="resident-deliver"
+          disabled={!canHelp} onClick={()=>{
+            const status=commitWorldAction(window.localStorage,'resident');
+            if(status==='applied'){
+              setLocalVisit(resident.after);
+              window.dispatchEvent(new Event(CHANGE_EVENT));
+            }else setLocalVisit(status==='error'?'存档写入失败':'当前库存或交易机会不足');
+          }}>{visitComplete?'已帮助居民':marketUsed?'今天已在市集交易':canHelp?'交付材料 · 完成街头委托':'材料不足 · 去工坊生产'}</button>
+        {visitComplete&&<p className="mw-visit-result" role="status">{localVisit||resident.after}</p>}
+        {!visitComplete&&localVisit&&<p className="mw-visit-result" role="status">{localVisit}</p>}
+        <p className="mw-resident-reputation">累计帮助街区居民 {s.residentsHelped??0} 次</p>
+      </div>
+    </section>
     <div className="mw-stat-grid">
       <Panel title="当前工坊"><strong>{rank.zh}</strong></Panel>
       <Panel title="已建设设备"><strong>{s.tiles.filter(Boolean).length} / 15</strong></Panel>
@@ -91,10 +126,10 @@ function Town({s}:{s:WorkshopState}){
         <div>
           <p className="mw-eyebrow">ONCE PER DAY · TRUE INVENTORY</p>
           <h2>月夜市集</h2>
-          <p>每天只能选择一批货。生产日推进后才有下一次机会；水汽和孢子直接送入现有设备，晶核直接入仓。</p>
+          <p>每天只能在市集购买一批货，或者帮助一位居民。生产日推进后才有下一次机会；水汽和孢子进入现有设备，晶核进入共享仓库。</p>
         </div>
         <span className="mw-market-ticket" data-testid="market-status">
-          {marketUsed?'今日交易已完成 · 明日再来':'第 '+s.day+' 天 · 可采购一批'}
+          {marketUsed?'今日交易已完成 · 明日再来':'第 '+s.day+' 天 · 市集与居民二选一'}
         </span>
       </div>
       <div className="mw-market-offers">

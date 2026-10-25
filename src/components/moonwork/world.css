@@ -185,3 +185,47 @@
   .mw-market-header h2{font-size:22px}
 }
 @media(prefers-reduced-motion:reduce){.mw-town-building{transition:none}}
+
+/* V2.7 residents: the rotating character appears within the existing
+   street scene with a material trade, not as a disconnected quest button. */
+.mw-town-resident{display:grid;grid-template-columns:minmax(95px,.27fr) 1fr;
+  gap:22px;align-items:center;margin-top:17px;border:1px solid #c3a277;
+  border-radius:17px;padding:22px;background:
+   radial-gradient(ellipse at 5% 40%,#5b647777,transparent 42%),
+   linear-gradient(105deg,#233f4c,#253449 70%,#212b41);
+  box-shadow:inset 0 0 0 4px #17293d,0 15px 28px #0b1526aa}
+.mw-resident-character{min-height:205px;position:relative;overflow:hidden;
+  border:1px solid #c2a175;border-radius:11px;background:
+  radial-gradient(ellipse at 50% 90%,#9b7a547e,transparent 40%),
+  linear-gradient(150deg,#35475c,#17253b)}
+.mw-character-glow{position:absolute;left:28%;right:28%;bottom:15px;height:17px;
+  background:#f3d3a3;border-radius:50%;filter:blur(14px);opacity:.7}
+.mw-character-figure{position:absolute;left:22%;bottom:18px;width:56%;height:79%;
+  display:grid;place-items:center;color:#f8d8b0;text-shadow:0 0 32px #eece92;
+  font:normal 82px Georgia,serif;animation:moon-resident-breathe 3s ease-in-out infinite alternate}
+@keyframes moon-resident-breathe{from{transform:translateY(2px);opacity:.74}
+  to{transform:translateY(-5px);opacity:1}}
+.mw-resident-dialogue h2{font:700 25px Georgia,serif;color:#f9dcb1;margin:5px 0}
+.mw-resident-dialogue h2 small{display:inline;font:500 12px system-ui,sans-serif;
+  color:#b8c9d1;margin-left:7px}
+.mw-resident-quote{font-size:15px;line-height:1.8;color:#eff0e7}
+.mw-resident-deal{display:flex;justify-content:space-between;gap:12px;
+  flex-wrap:wrap;border-block:1px solid #b8a28671;padding:11px 0;font-size:13px;
+  color:#e6d5bd}
+.mw-resident-deal strong{color:#ffdea6}
+.mw-resident-explanation{font-size:12px;line-height:1.6;color:#b9c9cc}
+.mw-resident-reputation{font-size:12px;color:#e0c69b}
+.mw-visit-result{border-left:3px solid #b3d2aa;padding:7px 9px;
+  color:#dcf4df;font-size:12px;line-height:1.7;background:#233e36}
+.mw-town-resident .mw-action-button:disabled{opacity:.62;cursor:not-allowed}
+@media(max-width:610px){.mw-town-resident{grid-template-columns:76px 1fr;
+  gap:11px;padding:12px;margin-top:10px}
+  .mw-resident-character{min-height:190px}
+  .mw-character-figure{font-size:46px}
+  .mw-resident-dialogue h2{font-size:20px}
+  .mw-resident-dialogue h2 small{font-size:10px;margin-left:2px}
+  .mw-resident-quote{font-size:12px;line-height:1.5}
+  .mw-resident-deal{font-size:11px}
+  .mw-resident-explanation{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.mw-character-figure{animation:none}}

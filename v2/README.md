@@ -42,6 +42,24 @@ assets or falsely marked ready art, but **does not fail** solely because
 the final artwork remains pending. Formal visual acceptance still requires
 real desktop/mobile screenshots and frame-by-frame review.
 
+## V2.7 — real rotating resident requests
+
+Three adult town residents appear on rotating game days with material-specific
+requests. The player can trade 2 stored pump water for 26 coins, 2 greenhouse
+fiber for 39 coins, or 1 shared core for 51 coins. Each request directly
+removes units from a real machine or shared warehouse and pays real coins.
+Helping a resident occupies the **same daily opportunity** as buying town
+supplies: players must choose income or a production input. The optional
+`market.kind` value records `residentWater`, `residentFiber` or
+`residentCore`; old V2 saves work unchanged. `residentsHelped` is an
+optional nonnegative integer showing the town's fulfilled encounters.
+
+The rotating visitor, dialogue, actual stock count and fulfillment feedback
+are now visible in town, with reduced-motion support. Character graphics
+still need finished painted sprite assets; the placeholder silhouette is
+not an approved character illustration. The goal of this stage is real
+NPC-driven material decisions rather than ornamental dialogue buttons.
+
 ## V2.6 — town as a real trading district
 
 The town now has a navigable moonlit street scene with 3 functional buildings

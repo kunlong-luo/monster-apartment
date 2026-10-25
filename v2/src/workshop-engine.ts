@@ -47,14 +47,40 @@ export type WorkshopState={
   completed:number;failed:number;
   patron?:PatronCommission|null;
   /** Legacy V2 saves omit the daily town market record. */
-  market?:{day:number;kind:TownSupply};
+  market?:{day:number;kind:TownExchange};
+  /** Number of fulfilled resident requests; optional for older saves. */
+  residentsHelped?:number;
 };
 export type TownSupply='water'|'fiber'|'core';
+export type ResidentSupply='residentWater'|'residentFiber'|'residentCore';
+export type TownExchange=TownSupply|ResidentSupply;
 export const TOWN_MARKET={
   water:{cost:12,amount:3,zh:'水汽补给',hint:'注入一台水汽泵'},
   fiber:{cost:24,amount:3,zh:'孢子货箱',hint:'存入一座温室'},
   core:{cost:37,amount:1,zh:'晶核采购',hint:'直接入共享仓库'},
 } as const;
+/** The visitor never consumes anonymous player rewards: the quoted units
+ * leave the actual machine tank / shared warehouse on acceptance. */
+export const TOWN_RESIDENTS={
+  residentWater:{
+    name:'阿洛',age:31,job:'蒸汽钟楼守护人',resource:'water',
+    amount:2,reward:26,story:'钟楼的老蒸汽阀开裂了。能让给我两份水汽吗？我愿意付修理费。',
+    after:'钟楼重新敲响；下一次温室生产少了这两份备用水汽。'
+  },
+  residentFiber:{
+    name:'菲娅',age:27,job:'月光花艺师',resource:'fiber',
+    amount:2,reward:39,story:'舞会还缺一束会发光的孢子花。能从温室匀两份给我吗？',
+    after:'花艺师带走了孢子；熔炉需要重新积攒足够纤维。'
+  },
+  residentCore:{
+    name:'伊索',age:36,job:'街区照明匠',resource:'core',
+    amount:1,reward:51,story:'东街的月灯快熄灭了。能卖我一枚晶核吗？委托的库存也会少一枚。',
+    after:'东街重新亮起月灯；普通和特别委托的共享库存减少了一枚。'
+  }
+} as const;
+export function residentForDay(day:number):ResidentSupply{
+  return (['residentWater','residentFiber','residentCore'] as const)[(day-1)%3];
+}
 export const WIDTH=5;
 export const HEIGHT=3;
 export const BOARD_SIZE=WIDTH*HEIGHT;
@@ -231,6 +257,45 @@ export function townMarketAvailable(s:WorkshopState,kind:TownSupply):boolean {
     Number.isSafeInteger(t.stored+TOWN_MARKET[kind].amount));
 }
 
+/** Same daily slot as buying town supplies: help a resident OR import goods.
+ * A resident only pays if the required material is truly in stock. */
+export function deliverResidentRequest(s:WorkshopState):WorkshopState {
+  if(s.market?.day===s.day||!Number.isSafeInteger(s.residentsHelped??0)
+    ||(s.residentsHelped??0)>=Number.MAX_SAFE_INTEGER)return s;
+  const kind=residentForDay(s.day);
+  const request=TOWN_RESIDENTS[kind];
+  if(!Number.isSafeInteger(s.coins+request.reward))return s;
+  if(kind==='residentCore'){
+    if(s.warehouse.core<request.amount)return s;
+    return {...s,coins:s.coins+request.reward,
+      warehouse:{core:s.warehouse.core-request.amount},
+      market:{day:s.day,kind},residentsHelped:(s.residentsHelped??0)+1};
+  }
+  const craft=kind==='residentWater'?'well':'garden';
+  const index=s.tiles.reduce((best,t,i)=>{
+    if(t?.craft!==craft||t.stored<request.amount)return best;
+    return best===-1||t.stored>s.tiles[best]!.stored?i:best;
+  },-1);
+  if(index===-1)return s;
+  const tiles=s.tiles.slice();
+  tiles[index]={...tiles[index]!,stored:tiles[index]!.stored-request.amount};
+  return {...s,coins:s.coins+request.reward,tiles,
+    market:{day:s.day,kind},residentsHelped:(s.residentsHelped??0)+1};
+}
+/** Shows the actual resource constraint behind the visitor choice. */
+export function residentRequestStock(s:WorkshopState):number {
+  const kind=residentForDay(s.day);
+  if(kind==='residentCore')return s.warehouse.core;
+  const craft=kind==='residentWater'?'well':'garden';
+  return Math.max(0,...s.tiles.filter(t=>t?.craft===craft).map(t=>t!.stored));
+}
+export function residentRequestAvailable(s:WorkshopState):boolean {
+  const request=TOWN_RESIDENTS[residentForDay(s.day)];
+  return s.market?.day!==s.day&&residentRequestStock(s)>=request.amount
+    &&(s.residentsHelped??0)<Number.MAX_SAFE_INTEGER
+    &&Number.isSafeInteger(s.coins+request.reward);
+}
+
 export function runShift(s:WorkshopState):WorkshopState {
   const tiles=s.tiles.map(t=>t?{...t}:null);
   const report:DailyProduction={water:0,fiber:0,cores:0,blocked:[],fulfilled:false,lost:false};
@@ -356,7 +421,11 @@ export function validWorkshop(value:unknown):value is WorkshopState {
   if(s.market!==undefined){
     if(!s.market||!Number.isSafeInteger(s.market.day)
       ||s.market.day<1||s.market.day>s.day!
-      ||!Object.hasOwn(TOWN_MARKET,s.market.kind))return false;
+      ||(!Object.hasOwn(TOWN_MARKET,s.market.kind)
+        &&!Object.hasOwn(TOWN_RESIDENTS,s.market.kind)))return false;
+  }
+  if(s.residentsHelped!==undefined&&(!Number.isSafeInteger(s.residentsHelped)
+    ||s.residentsHelped<0||s.residentsHelped>s.day))return false;
   }
   if(s.patron!==undefined&&s.patron!==null){
     const p=s.patron;

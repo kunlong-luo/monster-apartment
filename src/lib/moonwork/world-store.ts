@@ -1,4 +1,4 @@
-import {acceptPatronCommission,importPatronCore,acceptPremiumOrder,buyTownSupply,validWorkshop} from '../../../v2/src/workshop-engine';
+import {acceptPatronCommission,importPatronCore,acceptPremiumOrder,buyTownSupply,deliverResidentRequest,validWorkshop} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
 
 export const SAVE_KEY='monster-apartment:workshop-v2-lab';
@@ -10,7 +10,7 @@ export function parseSavedWorld(raw:string|null):WorkshopState|null {
   catch{return null;}
 }
 type SaveStorage=Pick<Storage,'getItem'|'setItem'>;
-export type WorldAction='accept'|'import'|'premium'|'marketWater'|'marketFiber'|'marketCore';
+export type WorldAction='accept'|'import'|'premium'|'marketWater'|'marketFiber'|'marketCore'|'resident';
 export type ActionStatus='applied'|'missing'|'unavailable'|'error';
 export function commitWorldAction(store:SaveStorage,action:WorldAction):ActionStatus {
   let raw:string|null;
@@ -22,6 +22,7 @@ export function commitWorldAction(store:SaveStorage,action:WorldAction):ActionSt
     action==='marketWater'?buyTownSupply(world,'water'):
     action==='marketFiber'?buyTownSupply(world,'fiber'):
     action==='marketCore'?buyTownSupply(world,'core'):
+    action==='resident'?deliverResidentRequest(world):
     importPatronCore(world);
   if(next===world)return 'unavailable';
   try{store.setItem(SAVE_KEY,JSON.stringify(next));return 'applied';}
