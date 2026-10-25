@@ -59,6 +59,7 @@ export async function mountWorkshopLab(
     await image.decode();
     painted=Texture.from(image);
     const floorImage=new Image();
+    floorImage.crossOrigin='anonymous';
     floorImage.src=new URL('./assets/moonstone-floor.avif',assetBase).href;
     await floorImage.decode();
     paintedFloor=Texture.from(floorImage);
