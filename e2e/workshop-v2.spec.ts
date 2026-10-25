@@ -203,7 +203,11 @@ test('portrait mobile equipment upgrade fits inside existing canvas information 
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:12000});
   await page.evaluate(()=>{
     const key='monster-apartment:workshop-v2-lab';
-    const s=JSON.parse(localStorage.getItem(key)!);
+    const s=JSON.parse(localStorage.getItem(key)??'null')??{
+      version:2,day:1,coins:100,tiles:Array(15).fill(null),
+      warehouse:{core:0},order:{due:5,cores:2,reward:70},
+      last:null,completed:0,failed:0,patron:null,
+    };
     s.day=6;s.coins=132;s.completed=1;
     s.tiles[7]={craft:'kiln',worker:'cinder',stored:0};
     localStorage.setItem(key,JSON.stringify(s));
