@@ -56,7 +56,6 @@ export function WorkshopClient({markup}:{markup:string}){
       const name=area?.dataset.worldRoute;
       if(name&&['town','orders','characters','warehouse'].includes(name)){
         event.preventDefault();
-        root.querySelector<HTMLDetailsElement>('.workshop-portal')?.removeAttribute('open');
         router.push('/'+name+'/');
       }else if(target.closest('.world-gate')){
         event.preventDefault();

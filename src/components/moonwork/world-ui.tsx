@@ -10,10 +10,11 @@ import {SAVE_KEY,CHANGE_EVENT,parseSavedWorld,commitWorldAction} from '@/lib/moo
 
 export type WorldArea='town'|'orders'|'characters'|'warehouse';
 const nav=[
-  {id:'town',label:'月光街',href:'/town/'},
-  {id:'orders',label:'委托大厅',href:'/orders/'},
-  {id:'characters',label:'角色图鉴',href:'/characters/'},
-  {id:'warehouse',label:'魔法仓库',href:'/warehouse/'},
+  {id:'town',label:'月光街',glyph:'✦',href:'/town/'},
+  {id:'workshop',label:'工坊',glyph:'⚒',href:'/workshop/'},
+  {id:'orders',label:'委托',glyph:'◇',href:'/orders/'},
+  {id:'characters',label:'角色',glyph:'♟',href:'/characters/'},
+  {id:'warehouse',label:'仓库',glyph:'⬡',href:'/warehouse/'},
 ] as const;
 const ids=['brook','fern','cinder'] as const;
 function subscribe(cb:()=>void){
@@ -89,7 +90,8 @@ function Orders({s}:{s:WorkshopState}){
         </p>
         <Action type="premium">接受高额大宗订单</Action>
       </div>}
-      <WorkshopLink>前往工坊生产</WorkshopLink>
+      <div className="mw-context-links"><WorkshopLink>前往工坊调整产线</WorkshopLink>
+        <Link className="mw-link" href="/warehouse/">去仓库查看材料 ↗</Link></div>
     </Panel>
     <Panel title="☽ 月纱的特别委托">
       {!p?<p>首次交付普通订单之后，28 岁的魔女商人月纱才会到访。她的订单与普通订单共享真实库存。</p>:
@@ -111,6 +113,7 @@ function Characters({s}:{s:WorkshopState}){
           <p className="mw-character-icon" aria-hidden="true">{id==='brook'?'◈':id==='fern'?'❀':'✷'}</p>
           <p>专长：{w.skill==='water'?'水汽制造':w.skill==='plant'?'孢子种植':'晶核锻造'}。</p>
           <p>{plot<0?'目前待派工':'正在 '+String(plot+1).padStart(2,'0')+' 号工位 · '+MACHINES[s.tiles[plot]!.craft].zh}</p>
+          <WorkshopLink>去工坊安排岗位 ↗</WorkshopLink>
         </Panel>;
       })}
     </div>
@@ -133,7 +136,8 @@ function Warehouse({s}:{s:WorkshopState}){
     <Panel title="☽ 月夜商人采购">
       <p>采购一枚晶核需要 ✦{PATRON_IMPORT_PRICE}，直接扣除真实星币并增加共享仓库库存。仅在月纱委托有效期内可购买。</p>
       {canBuy?<Action type="import">付费采购 +1 晶核</Action>:<p>当前无法采购：尚未解锁访客、委托结束或余额不足。</p>}
-      <WorkshopLink>返回工坊</WorkshopLink>
+      <div className="mw-context-links"><WorkshopLink>回工坊继续生产</WorkshopLink>
+        <Link className="mw-link" href="/orders/">查看订单需求 ↗</Link></div>
     </Panel>
   </div>;
 }
@@ -150,8 +154,9 @@ export function MoonworkWorld({area}:{area:WorldArea}){
       </div>
     </header>
     <nav className="mw-nav" aria-label="月光工坊世界">
-      {nav.map(n=><Link href={n.href} key={n.id} aria-current={n.id===area?'page':undefined} className={n.id===area?'selected':''}>{n.label}</Link>)}
-      <WorkshopLink>工坊实景</WorkshopLink>
+      {nav.map(n=><Link href={n.href} key={n.id} aria-current={n.id===area?'page':undefined} className={n.id===area?'selected':''}>
+        <span aria-hidden="true" className="world-nav-glyph">{n.glyph}</span><span>{n.label}</span>
+      </Link>)}
     </nav>
     <div className="mw-main">
       <p className="mw-eyebrow">MOONLIGHT WORKSHOP / {title}</p>

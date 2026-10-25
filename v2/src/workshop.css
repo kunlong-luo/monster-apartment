@@ -166,26 +166,48 @@ footer small{font-size:10px;color:#8c9da6}.sr-only{position:absolute;clip-path:i
 .world-gate:focus-visible{outline:2px solid #ffe0aa;outline-offset:3px}
 @media(max-width:610px){.world-gate{font-size:10px}}
 
-/* V2.3: functional compact world portal inside existing 55px/42px header. */
-.workshop-portal{position:relative;flex:0 0 auto;z-index:70}
-.workshop-portal summary{list-style:none;cursor:pointer;color:#ffe6b4;
-  border:1px solid #a38c74;border-radius:8px;background:#223649;
-  padding:8px 12px;font-size:12px;font-weight:750;white-space:nowrap;
-  user-select:none;touch-action:manipulation}
-.workshop-portal summary::-webkit-details-marker{display:none}
-.workshop-portal[open] summary{background:#435166;border-color:#f1c98e}
-.workshop-portal summary:focus-visible,.workshop-portal a:focus-visible{
-  outline:2px solid #ffe0a8;outline-offset:2px}
-.workshop-portal-links{position:absolute;top:calc(100% + 6px);left:0;
-  width:165px;padding:7px;display:flex;flex-direction:column;gap:4px;
-  background:#192a3d;border:1px solid #bca17e;border-radius:10px;
-  box-shadow:0 12px 36px #040916c9}
-.workshop-portal-links a{display:block;padding:10px 11px;
-  border:1px solid transparent;border-radius:7px;text-decoration:none;
-  color:#f5e3c1;font-weight:700;font-size:12px;line-height:1.25}
-.workshop-portal-links a:hover{background:#344c63;border-color:#bba17c}
+
+/* V2.5 — permanently visible world HUD. No dropdowns or nested game tabs.
+   Controls remain clickable in the static fallback and the Next SPA. */
+.lab{position:relative}
+.top{gap:clamp(5px,.9vw,14px)}
+.logo{flex:0 0 auto}
+.game-world-nav{flex:1 1 auto;min-width:0;display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;
+  padding:4px;background:linear-gradient(135deg,#27384a,#1a283d 65%,#27384a);
+  border:1px solid #a68b5f;border-radius:10px;
+  box-shadow:0 3px 20px #0b101d99,inset 0 1px #f0d7a42e}
+.game-world-nav a{min-width:0;display:flex;align-items:center;
+  justify-content:center;gap:5px;padding:7px 2px;border-radius:7px;
+  text-decoration:none;color:#d7c8ac;font-size:12px;font-weight:800;
+  border:1px solid transparent;white-space:nowrap}
+.game-world-nav a:hover{color:#ffeac2;background:#43546a}
+.game-world-nav a.active{color:#fff0c9;background:linear-gradient(#69533d,#3e3b45);
+  border-color:#d3a76e;box-shadow:inset 0 1px #ffe3a461}
+.game-world-nav .world-nav-glyph{font:normal 18px Georgia,serif;color:#e5ba80}
+.game-world-nav a:focus-visible{outline:2px solid #ffe3af;outline-offset:2px}
+.top-stats{flex-shrink:0}
+.panel-heading{display:flex;justify-content:space-between;align-items:center;gap:4px}
+.panel-route-link{color:#f3d4a5;font-size:10px;font-weight:750;text-decoration:none;
+  border-bottom:1px solid #dcb882a6;white-space:nowrap}
+.panel-route-link:hover{color:#fff0d2}
+.panel-route-link:focus-visible{outline:2px solid #fbd3a2;outline-offset:2px}
+@media(min-width:611px) and (max-width:1080px){
+  .game-world-nav a{font-size:10px;gap:3px}
+  .game-world-nav .world-nav-glyph{font-size:15px}
+  .logo strong{font-size:19px}
+}
 @media(max-width:610px){
-  .workshop-portal summary{font-size:10px;padding:5px 6px}
-  .workshop-portal-links{width:145px;left:auto;right:-25px}
-  .workshop-portal-links a{font-size:12px;padding:12px 9px}
+  /* Floats over decorative sky, above the first interactive board plot.
+     Does not add height to the one-screen portrait production stage. */
+  .top{position:relative}
+  .top .game-world-nav{position:absolute;z-index:65;
+    top:calc(100% + 25px);left:5px;right:5px;
+    padding:2px;gap:2px;min-width:0;
+    border-radius:8px;box-shadow:0 6px 20px #06101bd0}
+  .game-world-nav a{display:flex;flex-direction:column;gap:0;
+    padding:4px 0 3px;font-size:9px;line-height:1.05}
+  .game-world-nav .world-nav-glyph{font-size:17px;line-height:1.1}
+  .panel-route-link{font-size:9px}
+  .logo strong{font-size:17px}
 }

@@ -42,6 +42,21 @@ assets or falsely marked ready art, but **does not fail** solely because
 the final artwork remains pending. Formal visual acceptance still requires
 real desktop/mobile screenshots and frame-by-frame review.
 
+## V2.5 — coherent game navigation and real contextual flows
+
+Removed the temporary details/dropdown scene switcher. The Next world hub and
+Pixi workshop now show the same five always-visible destinations: town,
+workshop, contracts, workers, and warehouse. The current destination is
+visibly active, including keyboard focus and mobile compact icon tabs.
+Standalone Pixi routes retain ordinary relative anchor navigation; the
+Next client intercepts links to enable client-side transitions.
+
+Contract HUD now opens the real contract hall; worker management opens
+character assignments; machine construction leads to real resource inventory.
+World pages include reciprocal contextual navigation back to the factory,
+orders and warehouse. No decorative inert buttons or invented currencies.
+Artwork in the stage remains review-grade, not a final match to the reference.
+
 ## V2.4 — optional high-stakes contract as an actual economic choice
 
 Once at least one standard order is completed, the *orders* route can

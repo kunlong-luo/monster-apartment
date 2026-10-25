@@ -12,15 +12,13 @@
 <main id="root" class="lab">
   <header class="top">
     <div class="logo"><span>✧</span><div><strong>月光工坊</strong><small><a class="world-gate" href="../town/" data-testid="v2-world-gate" aria-label="返回月光街，进入其他游戏场景">月光街 · 世界地图 ↗</a></small></div></div>
-    <details class="workshop-portal" data-testid="v2-scene-menu">
-      <summary aria-label="打开游戏场景导航">场景 <span aria-hidden="true">⌄</span></summary>
-      <nav class="workshop-portal-links" aria-label="工坊快捷导航">
-        <a href="../town/" data-world-route="town">✦ 月光街</a>
-        <a href="../orders/" data-world-route="orders">◇ 委托大厅</a>
-        <a href="../characters/" data-world-route="characters">♟ 角色图鉴</a>
-        <a href="../warehouse/" data-world-route="warehouse">⬡ 魔法仓库</a>
-      </nav>
-    </details>
+    <nav class="game-world-nav" aria-label="月光工坊世界" data-testid="v2-world-nav">
+      <a href="../town/" data-world-route="town"><span aria-hidden="true" class="world-nav-glyph">✦</span><span>月光街</span></a>
+      <a href="../workshop/" class="active" aria-current="page" data-world-route="workshop"><span aria-hidden="true" class="world-nav-glyph">⚒</span><span>工坊</span></a>
+      <a href="../orders/" data-world-route="orders"><span aria-hidden="true" class="world-nav-glyph">◇</span><span>委托</span></a>
+      <a href="../characters/" data-world-route="characters"><span aria-hidden="true" class="world-nav-glyph">♟</span><span>角色</span></a>
+      <a href="../warehouse/" data-world-route="warehouse"><span aria-hidden="true" class="world-nav-glyph">⬡</span><span>仓库</span></a>
+    </nav>
     <div class="top-stats"><span>第 <b id="day" data-testid="v2-day">1</b> 天</span><span>✦ <b id="coins" data-testid="v2-coins">100</b></span>
     <button type="button" id="reset" data-testid="v2-reset" aria-label="重新开始">↻</button></div>
   </header>
@@ -34,7 +32,7 @@
     </div>
     <aside class="sidebar">
       <section class="panel">
-        <small class="eyebrow">TODAY'S CONTRACT</small><h2 id="contract-title">晶核紧急订单</h2>
+        <div class="panel-heading"><small class="eyebrow">TODAY'S CONTRACT</small><a class="panel-route-link" href="../orders/" data-world-route="orders">查看委托大厅 ↗</a></div><h2 id="contract-title">晶核紧急订单</h2>
         <div class="target"><b id="core" data-testid="v2-stock">0</b><span>/</span><b id="target">2</b><small>晶核</small></div>
         <div class="meter"><div id="progress"></div></div>
         <div class="contract-footer"><span>剩 <b id="deadline" data-testid="v2-deadline">5</b> 天</span><span>完成 <b id="completed" data-testid="v2-completed">0</b> · 逾期 <b id="failed" data-testid="v2-failed">0</b></span></div>
@@ -63,11 +61,11 @@
   </section>
   <section class="console">
     <div class="console-panel">
-      <div class="panel-head"><b>工种分配</b><small>先选怪物，再点机器</small></div>
+      <div class="panel-head"><b>工种分配</b><a class="panel-route-link" href="../characters/" data-world-route="characters">角色档案 ↗</a></div>
       <div id="actions" class="options"></div>
     </div>
     <div class="console-panel">
-      <div class="panel-head"><b>建设设备</b><small>先选机器，再点空地</small></div>
+      <div class="panel-head"><b>建设设备</b><a class="panel-route-link" href="../warehouse/" data-world-route="warehouse">库存与采购 ↗</a></div>
       <div id="catalog" class="options"></div>
     </div>
     <div class="main-actions">

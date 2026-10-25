@@ -68,12 +68,11 @@ test('premium contract really changes the Pixi workshop requirement and survives
   await expect(page.getByTestId('world-premium-offer')).toBeHidden();
   await expect(page.getByText('高额订单已接受')).toBeVisible();
   await page.getByRole('navigation',{name:'月光工坊世界'})
-    .getByRole('link',{name:'工坊实景'}).click();
+    .getByRole('link',{name:'工坊'}).click();
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25000});
   await expect(page.locator('#target')).toHaveText('8');
   await expect(page.locator('#contract-title')).toHaveText('高额大宗订单');
-  await page.getByTestId('v2-scene-menu').locator('summary').click();
-  await page.getByRole('navigation',{name:'工坊快捷导航'})
+  await page.getByRole('navigation',{name:'月光工坊世界'})
     .getByRole('link',{name:'委托大厅'}).click();
   await expect(page.getByText('高额订单已接受')).toBeVisible();
   await page.reload();

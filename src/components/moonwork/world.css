@@ -56,3 +56,21 @@
   background:#4d333b;padding:7px;color:#ffe0ca}
 .mw-risk-choice .mw-risk-safe{border-left:3px solid #9dd9ba;
   background:#263f40;padding:7px;color:#d4f0df}
+
+/* Same navigation geometry/palette as the PixiJS workshop header. */
+.mw-nav{max-width:1220px;display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:9px 20px}
+.mw-nav>a{min-width:0;display:flex;align-items:center;justify-content:center;
+  gap:9px;background:linear-gradient(135deg,#27384a,#1a283d 65%,#27384a);
+  border:1px solid #947c61;border-radius:9px;box-shadow:inset 0 1px #f1d5a52b;
+  color:#e1d0b6;text-align:center;padding:10px 6px;font-weight:750}
+.mw-nav>a:hover,.mw-nav>a.selected{background:linear-gradient(#68523e,#353747);
+  border-color:#d3a86c;color:#ffebc6}
+.mw-nav .world-nav-glyph{font:normal 19px Georgia,serif;color:#e6ba83}
+.mw-context-links{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mw-context-links .mw-link{margin-top:10px}
+@media(max-width:610px){
+  .mw-nav{padding:8px 10px;gap:3px}
+  .mw-nav>a{flex-direction:column;gap:0;padding:6px 1px;font-size:10px}
+  .mw-nav .world-nav-glyph{font-size:19px}
+}
