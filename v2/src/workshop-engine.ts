@@ -425,8 +425,7 @@ export function validWorkshop(value:unknown):value is WorkshopState {
         &&!Object.hasOwn(TOWN_RESIDENTS,s.market.kind)))return false;
   }
   if(s.residentsHelped!==undefined&&(!Number.isSafeInteger(s.residentsHelped)
-    ||s.residentsHelped<0||s.residentsHelped>s.day))return false;
-  }
+    ||s.residentsHelped<0||s.residentsHelped>s.day!))return false;
   if(s.patron!==undefined&&s.patron!==null){
     const p=s.patron;
     if(!p||!['offered','active','completed','missed','expired'].includes(p.status)

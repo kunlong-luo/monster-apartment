@@ -156,7 +156,7 @@ test('street visitor consumes a real core and blocks buying until the next produ
   await page.getByRole('navigation',{name:'月光工坊世界'})
     .getByRole('link',{name:'工坊'}).click();
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25000});
-  await expect(page.locator('#stock')).toHaveText('2');
+  await expect(page.getByTestId('v2-stock')).toHaveText('2');
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-day')).toHaveText('4');
   await page.getByRole('navigation',{name:'月光工坊世界'})
