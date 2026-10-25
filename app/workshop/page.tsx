@@ -11,8 +11,12 @@ export const metadata:Metadata={
 // The tracked standalone HTML is the single source of truth for controls.
 // The Next page owns its lifecycle; the legacy app still uses the same DOM.
 const document=readFileSync(join(process.cwd(),'v2/index.html'),'utf8');
-const gameMarkup=document.match(/<main id="root"[\s\S]*?<\/main>/)?.[0];
-if(!gameMarkup)throw Error('V2 gameplay markup was not found.');
+function readGameMarkup():string{
+  const html=document.match(/<main id="root"[\s\S]*?<\/main>/)?.[0];
+  if(!html)throw Error('V2 gameplay markup was not found.');
+  return html;
+}
+const gameMarkup=readGameMarkup();
 export default function WorkshopPage(){
   return <WorkshopClient markup={gameMarkup}/>;
 }
