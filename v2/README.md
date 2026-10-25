@@ -35,6 +35,14 @@ This is an intentionally narrow *test of whether the mechanics are fun*.
 The existing pet-raising/roommate happiness and commission loops will **not**
 be imported into V2. Fail early on the core loop before adding buildings.
 
+## Readable Chinese game text
+
+The V2 standalone bundle self-hosts the SIL OFL-licensed Noto Sans SC 400
+Chinese subset via Fontsource rather than depending on operating-system
+Chinese fonts or a third-party CDN. PixiJS waits for the font before drawing
+Chinese stage text. This fixes missing-glyph boxes on Linux and in automated
+screenshots. The font is a runtime asset, not a user download artifact.
+
 ## V2 iteration 0.3 — adult visitor with meaningful orders
 
 **月纱 / Moonveil**, an explicitly adult **28-year-old** witch merchant, visits

@@ -16,7 +16,7 @@ const W=MOBILE?830:1050,H=MOBILE?820:645;
 const CELL=146,GAP=14,LEFT=MOBILE?15:131,TOP=MOBILE?225:104;
 const COLORS:Record<Craft,number>={well:0x73d4eb,garden:0x95d5a0,kiln:0xffbe79};
 const glabel=(s:string,size=13,color=0xe9dbc5,bold=false)=>
-  new Text({text:s,style:{fontFamily:'Arial, sans-serif',fontSize:size,
+  new Text({text:s,style:{fontFamily:'Moonwork CJK, Arial, sans-serif',fontSize:size,
     fill:color,fontWeight:bold?'700':'400'}});
 const plotXY=(index:number)=>({x:LEFT+index%WIDTH*(CELL+GAP),
   y:TOP+Math.floor(index/WIDTH)*(CELL+GAP)});
@@ -30,6 +30,8 @@ export async function mountWorkshopLab(
   const app=new Application();
   await app.init({width:W,height:H,background:'#172233',preference:'webgl',
     antialias:true,resolution:Math.min(window.devicePixelRatio||1,2)});
+  await document.fonts.load('16px "Moonwork CJK"',
+    '月光工坊水汽泵孢子温室晶核熔炉青枝炽角月纱成年魔女');
   const canvas=app.canvas as HTMLCanvasElement;
   canvas.style.display='block';
   canvas.style.touchAction='manipulation';

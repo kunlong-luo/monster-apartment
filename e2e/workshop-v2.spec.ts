@@ -144,6 +144,10 @@ test('adult guest invitation remains readable on portrait phone and is optional'
     save.day=6;save.completed=1;save.coins=132;save.warehouse.core=8;
     save.order={due:9,cores:3,reward:95};
     save.patron={status:'offered',due:8,cores:13,reward:135};
+    save.tiles=Array.from({length:15},()=>null);
+    save.tiles[5]={craft:'well',worker:'brook',stored:0};
+    save.tiles[6]={craft:'garden',worker:'fern',stored:0};
+    save.tiles[7]={craft:'kiln',worker:'cinder',stored:0};
     localStorage.setItem(key,JSON.stringify(save));
   });
   await page.reload();

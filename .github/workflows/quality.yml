@@ -45,6 +45,7 @@ jobs:
       - run: npm --prefix v2 run typecheck
       - run: npm --prefix v2 run build
       - run: test -s v2/dist/assets/workshop.js
+      - run: test -s v2/dist/assets/noto-sans-sc.woff2
 
   e2e:
     runs-on: ubuntu-latest
@@ -102,3 +103,4 @@ jobs:
       - run: npm --prefix v2 run build
       - run: test -f out/index.html
       - run: test -s v2/dist/assets/workshop.js
+      - run: test -s v2/dist/assets/noto-sans-sc.woff2

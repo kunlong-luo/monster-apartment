@@ -11,4 +11,8 @@ await build({
   sourcemap:false,logLevel:'info',
 });
 await copyFile(resolve(root,'src/workshop.css'),resolve(root,'dist/assets/workshop.css'));
+await copyFile(
+  resolve(root,'node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-400-normal.woff2'),
+  resolve(root,'dist/assets/noto-sans-sc.woff2'),
+);
 await copyFile(resolve(root,'index.html'),resolve(root,'dist/index.html'));
