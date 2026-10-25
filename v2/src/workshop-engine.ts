@@ -171,7 +171,9 @@ export function forecastOrderChoice(s:WorkshopState):OrderChoiceForecast|null {
   if(s.completed<1||s.order.premium||s.day>s.order.due)return null;
   const premium=acceptPremiumOrder(s);
   if(premium===s)return null;
-  const project=(initial:WorkshopState)=>{
+  const project=(initial:WorkshopState):{
+    fulfillment:'fulfilled'|'missed';guest:'completed'|'missed'|'other'
+  }=>{
     let current=initial;
     for(let i=0;i<16&&current.day<=initial.order.due;i++)
       current=runShift(current);
