@@ -42,6 +42,7 @@ jobs:
           node-version-file: .node-version
       # V2 is separately installed, typechecked and bundled with PixiJS.
       - run: npm --prefix v2 install --no-audit --no-fund
+      - run: npm --prefix v2 run audit:art
       - run: npm --prefix v2 run typecheck
       - run: npm --prefix v2 run build
       - run: test -s v2/dist/assets/workshop.js

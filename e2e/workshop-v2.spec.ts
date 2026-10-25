@@ -7,6 +7,9 @@ const CLICK=(canvas:{click:(options:{position:{x:number;y:number}})=>Promise<voi
     y:(104+Math.floor(index/5)*160+73)/645*box.height}});
 
 test('PixiJS factory produces cores only after the player connects the chain and staffs it',async({page})=>{
+  // This end-to-end tutorial includes WebGL startup and many real pointer taps.
+  // The default 30s limit was too short under the shared two-worker CI load.
+  test.setTimeout(90_000);
   const errors:string[]=[];
   page.on('pageerror',err=>errors.push(err.message));
   await page.goto(LAB);

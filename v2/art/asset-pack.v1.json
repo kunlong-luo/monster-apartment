@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 1,
+  "title": "月光工坊 V2.1 正式美术资产包 v1",
+  "artDirection": {
+    "camera": "fixed elevated three-quarter",
+    "style": "hand-painted fantasy miniature workshop",
+    "palette": {
+      "moon": "#24334F",
+      "cobalt": "#465E87",
+      "brass": "#CB9C61",
+      "ember": "#F0A85D",
+      "glass": "#8BCFC6",
+      "leaf": "#81AD83",
+      "ivory": "#F4E6C9",
+      "shadow": "#172333"
+    },
+    "daylight": "warm lanterns vs cool moonlight",
+    "allTextOutsideArt": true,
+    "transparentSpriteBackground": true
+  },
+  "geometry": {
+    "desktop": {
+      "width": 1050,
+      "height": 645,
+      "cell": 146,
+      "pitch": 160,
+      "left": 131,
+      "top": 104
+    },
+    "portrait": {
+      "width": 830,
+      "height": 820,
+      "cell": 146,
+      "pitch": 160,
+      "left": 15,
+      "top": 225
+    }
+  },
+  "runtimePrototypes": [
+    {
+      "id": "world.backdrop",
+      "path": "art/moon-workshop.avif",
+      "status": "prototype",
+      "replacement": "art/production/world/moon-workshop.webp"
+    },
+    {
+      "id": "world.floor",
+      "path": "art/moonstone-floor.avif",
+      "status": "prototype",
+      "replacement": "art/production/world/floor.webp"
+    },
+    {
+      "id": "npc.yuesha.card",
+      "path": "art/moonveil-portrait.avif",
+      "status": "prototype",
+      "replacement": "art/production/npc/yuesha/bust.png"
+    }
+  ],
+  "productionAssets": [
+    {
+      "id": "machine.well.lv1",
+      "role": "machine",
+      "craft": "well",
+      "level": 1,
+      "status": "pending",
+      "path": "art/production/machines/well/lv1.webp",
+      "canvas": {
+        "width": 512,
+        "height": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "minBytes": 16000
+    },
+    {
+      "id": "machine.well.lv2",
+      "role": "machine",
+      "craft": "well",
+      "level": 2,
+      "status": "pending",
+      "path": "art/production/machines/well/lv2.webp",
+      "canvas": {
+        "width": 512,
+        "height": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "minBytes": 16000
+    },
+    {
+      "id": "machine.well.lv3",
+      "role": "machine",
+      "craft": "well",
+      "level": 3,
+      "status": "pending",
+      "path": "art/production/machines/well/lv3.webp",
+      "canvas": {
+        "width": 512,
+        "height": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "minBytes": 16000
+    },
+    {
+      "id": "machine.well.working",
+      "role": "machine-animation",
+      "craft": "well",
+      "status": "pending",
+      "path": "art/production/machines/well/working.webp",
+      "canvas": {
+        "width": 2048,
+        "height": 512
+      },
+      "frame": {
+        "width": 512,
+        "height": 512,
+        "columns": 4,
+        "rows": 1,
+        "count": 4
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "minBytes": 24000
+    },
+    {
+      "id": "machine.garden.lv1",
+      "role": "machine",
+      "craft": "garden",
+      "level": 1,
+      "status": "pending",
+      "path": "art/production/machines/garden/lv1.webp",
+      "canvas": {
+        "width": 512,
+        "height": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "minBytes": 16000
+    },
+    {
+      "id": "machine.garden.lv2",
+      "role": "machine",
+      "craft": "garden",
+      "level": 2,
+      "status": "pending",
+      "path": "art/production/machines/garden/lv2.webp",
+      "canvas": {
+        "width": 512,
+        "height": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "minBytes": 16000
+    },
+    {
+      "id": "machine.garden.lv3",
+      "role": "machine",
+      "craft": "garden",
+      "level": 3,
+      "status": "pending",
+      "path": "art/production/machines/garden/lv3.webp",
+      "canvas": {
+        "width": 512,
+        "height": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "minBytes": 16000
+    },
+    {
+      "id": "machine.garden.working",
+      "role": "machine-animation",
+      "craft": "garden",
+      "status": "pending",
+      "path": "art/production/machines/garden/working.webp",
+      "canvas": {
+        "width": 2048,
+        "height": 512
+      },
+      "frame": {
+        "width": 512,
+        "height": 512,
+        "columns": 4,
+        "rows": 1,
+        "count": 4
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "minBytes": 24000
+    },
+    {
+      "id": "machine.kiln.lv1",
+      "role": "machine",
+      "craft": "kiln",
+      "level": 1,
+      "status": "pending",
+      "path": "art/production/machines/kiln/lv1.webp",
+      "canvas": {
+        "width": 512,
+        "height": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "minBytes": 16000
+    },
+    {
+      "id": "machine.kiln.lv2",
+      "role": "machine",
+      "craft": "kiln",
+      "level": 2,
+      "status": "pending",
+      "path": "art/production/machines/kiln/lv2.webp",
+      "canvas": {
+        "width": 512,
+        "height": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "minBytes": 16000
+    },
+    {
+      "id": "machine.kiln.lv3",
+      "role": "machine",
+      "craft": "kiln",
+      "level": 3,
+      "status": "pending",
+      "path": "art/production/machines/kiln/lv3.webp",
+      "canvas": {
+        "width": 512,
+        "height": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "minBytes": 16000
+    },
+    {
+      "id": "machine.kiln.working",
+      "role": "machine-animation",
+      "craft": "kiln",
+      "status": "pending",
+      "path": "art/production/machines/kiln/working.webp",
+      "canvas": {
+        "width": 2048,
+        "height": 512
+      },
+      "frame": {
+        "width": 512,
+        "height": 512,
+        "columns": 4,
+        "rows": 1,
+        "count": 4
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "minBytes": 24000
+    },
+    {
+      "id": "npc.yuesha.full",
+      "role": "character-presentation",
+      "age": 28,
+      "status": "pending",
+      "path": "art/production/npc/yuesha/full.png",
+      "canvas": {
+        "width": 1024,
+        "height": 1536
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "minBytes": 32000
+    },
+    {
+      "id": "npc.yuesha.bust",
+      "role": "character-presentation",
+      "age": 28,
+      "status": "pending",
+      "path": "art/production/npc/yuesha/bust.png",
+      "canvas": {
+        "width": 1024,
+        "height": 1024
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "minBytes": 24000
+    },
+    {
+      "id": "npc.yuesha.idle",
+      "role": "character-animation",
+      "age": 28,
+      "status": "pending",
+      "path": "art/production/npc/yuesha/idle.webp",
+      "canvas": {
+        "width": 2048,
+        "height": 1536
+      },
+      "frame": {
+        "width": 512,
+        "height": 768,
+        "columns": 4,
+        "rows": 2,
+        "count": 8
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "minBytes": 48000
+    },
+    {
+      "id": "npc.yuesha.talk",
+      "role": "character-animation",
+      "age": 28,
+      "status": "pending",
+      "path": "art/production/npc/yuesha/talk.webp",
+      "canvas": {
+        "width": 2048,
+        "height": 1536
+      },
+      "frame": {
+        "width": 512,
+        "height": 768,
+        "columns": 4,
+        "rows": 2,
+        "count": 8
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "minBytes": 48000
+    },
+    {
+      "id": "npc.yuesha.trade",
+      "role": "character-animation",
+      "age": 28,
+      "status": "pending",
+      "path": "art/production/npc/yuesha/trade.webp",
+      "canvas": {
+        "width": 2048,
+        "height": 1536
+      },
+      "frame": {
+        "width": 512,
+        "height": 768,
+        "columns": 4,
+        "rows": 2,
+        "count": 8
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "minBytes": 48000
+    }
+  ],
+  "approval": {
+    "stage": "design-spec-only",
+    "paintingDelivered": false,
+    "browserVisualReviewPassed": false,
+    "releaseReady": false
+  },
+  "licensePolicy": "Original/licensed graphics only; do not include screenshot UI or watermark in sprites."
+}

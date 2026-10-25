@@ -5,6 +5,21 @@
 The legacy **V0.10.0** game remains reachable and unchanged. V2 is a new project
 inside this repository, not an attempt to reskin the old six-room simulation.
 
+## V2.1 formal art production pack (specification, not shipped art)
+
+The next production target is documented in
+[正式美术资产包 v1](docs/ART-ASSET-PACK-V1.md). The machine tiers for
+water pump, greenhouse and kiln, plus Moonveil's full and half portraits and
+idle/talk/trade motion atlases, have exact filenames, frame sizes, anchors,
+acceptance criteria, and intended rendering layers in
+[`art/asset-pack.v1.json`](art/asset-pack.v1.json).
+
+Run `npm --prefix v2 run audit:art` to distinguish shipped low-resolution
+prototypes from missing production art. The audit fails on missing runtime
+assets or falsely marked ready art, but **does not fail** solely because
+the final artwork remains pending. Formal visual acceptance still requires
+real desktop/mobile screenshots and frame-by-frame review.
+
 ## Technical decision
 
 - **PixiJS 8.22.0 / WebGL** owns the entire gameplay canvas, camera, actors,
