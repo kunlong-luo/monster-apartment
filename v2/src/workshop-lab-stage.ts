@@ -58,6 +58,25 @@ export async function mountWorkshopLab(
   let flowPaths:{from:{x:number;y:number};to:{x:number;y:number};tint:number}[]=[];
   const flowLayer=new Graphics();
   app.stage.addChild(flowLayer);
+  // Feedback overlays are independent of the rebuildable board scene.
+  // A completed shift cannot silently change inventory without visual cues.
+  const feedbackLayer=new Container();
+  app.stage.addChild(feedbackLayer);
+  const feedback:{sprite:Text;age:number;originY:number}[]=[];
+  const showFeedback=(message:string,x:number,y:number,color:number)=>{
+    if(feedback.length>=6){
+      const stale=feedback.shift()!;
+      feedbackLayer.removeChild(stale.sprite);
+      stale.sprite.destroy();
+    }
+    const sprite=glabel(message,18,color,true);
+    sprite.anchor.set(.5);
+    sprite.position.set(x,y);
+    sprite.eventMode='none';
+    feedbackLayer.addChild(sprite);
+    feedback.push({sprite,age:0,originY:y});
+  };
+  let lastShiftDay=state.day;
   let elapsed=0;
   for(let i=0;i<20;i++){
     const mote=new Graphics().circle(0,0,1+i%3).fill({color:0xefcf9b,alpha:.24});
@@ -71,6 +90,17 @@ export async function mountWorkshopLab(
       m.y-=dt*(.11+i%4*.055);
       if(m.y<0)m.y=H;
     });
+    for(let i=feedback.length-1;i>=0;i--){
+      const effect=feedback[i];
+      effect.age+=dt/60;
+      effect.sprite.y=effect.originY-Math.min(42,effect.age*34);
+      effect.sprite.alpha=Math.max(0,1-effect.age/1.5);
+      if(effect.age>=1.5){
+        feedbackLayer.removeChild(effect.sprite);
+        effect.sprite.destroy();
+        feedback.splice(i,1);
+      }
+    }
     for(const [index,machine] of machineArt.entries()){
       // Small working rhythm; not a CSS wobble applied to the entire scene.
       machine.y+=(Math.sin(elapsed*3+index*.8)-Math.sin((elapsed-dt/60)*3+index*.8))*.5;
@@ -91,6 +121,9 @@ export async function mountWorkshopLab(
   let sceneRefreshes=0;
   const render=(current:WorkshopState,selected:number|null)=>{
     if(lastSnapshot===current&&lastSelection===selected)return;
+    const previousPatronStatus=lastSnapshot?.patron?.status;
+    const completedShift=current.day>lastShiftDay&&!!current.last;
+    lastShiftDay=current.day;
     lastSnapshot=current;lastSelection=selected;
     element.dataset.sceneRefreshes=String(++sceneRefreshes);
     for(const actor of actors)actor.stop();
@@ -224,6 +257,30 @@ export async function mountWorkshopLab(
     // A mature, distinct guest silhouette. This portrait uses bitmap frames
     // with independently animated hair, eye blink, and sleeve movement.
     // Keep her away from machine hit areas in both stage compositions.
+    // Only real advanced shifts generate floating result feedback.
+    // Do not replay effects on save reload or toolbar-only interactions.
+    if(completedShift&&current.last){
+      if(current.last.cores>0){
+        const firstKiln=current.tiles.findIndex(tile=>tile?.craft==='kiln'
+          &&tile.worker);
+        const pos=firstKiln<0?{x:W/2,y:H/2}:plotXY(firstKiln);
+        showFeedback('✦ +'+current.last.cores+' 晶核',
+          firstKiln<0?pos.x:pos.x+CELL/2,
+          firstKiln<0?pos.y:pos.y+CELL/2,0xffdfaa);
+        element.dataset.lastShiftEffect='cores:'+current.last.cores;
+      }else{
+        element.dataset.lastShiftEffect='cores:0';
+      }
+      if(current.last.fulfilled)showFeedback('订单交付成功',W/2,
+        MOBILE?215:82,0xc6f2b2);
+      else if(current.last.lost)showFeedback('订单逾期',W/2,
+        MOBILE?215:82,0xffb7ac);
+      if(current.patron?.status==='completed'
+        &&previousPatronStatus!=='completed'){
+        showFeedback('月纱契约 +'+current.patron.reward,
+          MOBILE?165:860,MOBILE?197:190,0xf6dfb4);
+      }
+    }
     element.dataset.patronVisible=current.patron?'true':'false';
     element.dataset.patronFrames=current.patron?'8':'0';
     if(current.patron){

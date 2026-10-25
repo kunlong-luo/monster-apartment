@@ -43,6 +43,7 @@ test('PixiJS factory produces cores only after the player connects the chain and
   await tap(7);
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-output')).toHaveText('2');
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-last-shift-effect','cores:2');
   await expect(page.getByTestId('v2-stock')).toHaveText('2');
   await page.screenshot({path:'test-results/workshop-v2-sprites-desktop.png',fullPage:true});
   for(let i=0;i<3;i++)await page.getByTestId('v2-shift').click();

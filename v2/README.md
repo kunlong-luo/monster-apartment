@@ -49,6 +49,16 @@ screenshots. The font is a runtime asset, not a user download artifact.
 
 完整四人资料、逐帧精灵规格、服装边界、经营互动和验收门槛见 **[成年女性角色美术规范](docs/adult-character-art-direction.md)**。当前实际代码仅完成月纱的过渡版立绘与高级订单，其余三位是明确标注的待开发目标，尚未假称已经上线。
 
+## V2.1 in-world production responses
+
+Each real production shift now emits short-lived PixiJS feedback above the
+producing kiln, and contract delivery or failure surfaces directly inside the
+same stage. Guest commission completion has a distinct reward response.
+These visual effects live on a separate layer, are capped to six simultaneous
+items, fade after 1.5 seconds and never alter the deterministic game state.
+Reloading a save or choosing a toolbar action does not replay rewards.
+This is interaction polish, not a substitute for final authored character art.
+
 ## V2.1 stage continuity
 
 PixiJS stage sync now skips scene rebuilds when the immutable world snapshot
