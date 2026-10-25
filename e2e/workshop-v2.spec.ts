@@ -94,6 +94,9 @@ test('mobile keeps the same PixiJS game stage visible with no page-length scroll
 });
 
 test('adult moon witch is earned through regular production and offers a real competing contract',async({page})=>{
+  // A nine-shift WebGL integration is substantially longer than one scene test.
+  // Keep the actual gameplay steps instead of skipping the order lifecycle.
+  test.setTimeout(90_000);
   const errors:string[]=[];page.on('pageerror',err=>errors.push(err.message));
   await page.goto(LAB);
   const canvas=page.getByTestId('v2-stage').locator('canvas');
