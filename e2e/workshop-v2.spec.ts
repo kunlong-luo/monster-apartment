@@ -15,6 +15,13 @@ test('PixiJS factory produces cores only after the player connects the chain and
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-renderer','pixi-webgl-bitmap');
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-worker-frames','8');
   await expect(page.getByTestId('v2-coins')).toHaveText('100');
+  const refreshBefore=await page.getByTestId('v2-stage').getAttribute('data-scene-refreshes');
+  // Choosing a toolbar item changes the DOM only; Pixi scene animation
+  // must not reset until the player actually selects/changes a plot.
+  await page.getByTestId('v2-build-kiln').click();
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-scene-refreshes',refreshBefore!);
+  await page.getByTestId('v2-build-kiln').click(); // undo toolbar choice
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-scene-refreshes',refreshBefore!);
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-output')).toHaveText('0');
   await expect(page.getByTestId('v2-diagnosis')).toContainText('还没炼出晶核');

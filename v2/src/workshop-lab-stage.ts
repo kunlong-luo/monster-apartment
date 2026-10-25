@@ -84,7 +84,15 @@ export async function mountWorkshopLab(
       flowLayer.circle(x,y,12).fill({color:flow.tint,alpha:.13});
     }
   });
+  // Pure DOM-control changes must never dispose and restart animated sprites.
+  // The engine returns immutable world snapshots for all material changes.
+  let lastSnapshot:WorkshopState|null=null;
+  let lastSelection:number|null=null;
+  let sceneRefreshes=0;
   const render=(current:WorkshopState,selected:number|null)=>{
+    if(lastSnapshot===current&&lastSelection===selected)return;
+    lastSnapshot=current;lastSelection=selected;
+    element.dataset.sceneRefreshes=String(++sceneRefreshes);
     for(const actor of actors)actor.stop();
     actors.length=0;machineArt.length=0;flowPaths=[];
     stage.removeChildren().forEach(child=>child.destroy({children:true}));

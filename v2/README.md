@@ -49,6 +49,15 @@ screenshots. The font is a runtime asset, not a user download artifact.
 
 完整四人资料、逐帧精灵规格、服装边界、经营互动和验收门槛见 **[成年女性角色美术规范](docs/adult-character-art-direction.md)**。当前实际代码仅完成月纱的过渡版立绘与高级订单，其余三位是明确标注的待开发目标，尚未假称已经上线。
 
+## V2.1 stage continuity
+
+PixiJS stage sync now skips scene rebuilds when the immutable world snapshot
+and selected plot have not changed. Choosing/cancelling worker and machine
+toolbar options only updates accessible DOM controls; it no longer destroys
+all GPU sprites, restarts animated characters and resets the scene each click.
+Actual construction, shift outcomes and plot-selection changes still redraw.
+A browser regression checks this behavior without changing game saves.
+
 ## V2.1 first gameplay pass — consequential risk and honest forecasts
 
 The optional witch commission now requires seven extra cores beyond the
