@@ -54,6 +54,7 @@ export async function mountWorkshopLab(
   const paintedDetail:Partial<Record<'well'|'garden',Texture>>={};
   try{
     const image=new Image();
+    image.crossOrigin='anonymous';
     image.src=new URL('./assets/moon-workshop.avif',assetBase).href;
     await image.decode();
     painted=Texture.from(image);
@@ -66,6 +67,7 @@ export async function mountWorkshopLab(
   // Never replace all machine art from a flattened screenshot.
   try {
     const kilnImage=new Image();
+    kilnImage.crossOrigin='anonymous';
     kilnImage.src=new URL('./assets/kiln-art-review.avif',assetBase).href;
     await kilnImage.decode();
     kilnArtReview=Texture.from(kilnImage);
@@ -75,6 +77,7 @@ export async function mountWorkshopLab(
   for(const kind of ['well','garden'] as const){
     try{
       const image=new Image();
+    image.crossOrigin='anonymous';
       image.src=new URL('./assets/'+kind+'-art-review.avif',assetBase).href;
       await image.decode();
       paintedDetail[kind]=Texture.from(image);

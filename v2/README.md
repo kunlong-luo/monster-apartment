@@ -42,6 +42,24 @@ assets or falsely marked ready art, but **does not fail** solely because
 the final artwork remains pending. Formal visual acceptance still requires
 real desktop/mobile screenshots and frame-by-frame review.
 
+## V2.3 — Next owns the interactive workshop URL
+
+`/workshop/` is now a real Next.js App Router destination. Its client
+component mounts the **existing PixiJS renderer and V2 deterministic game**
+as a separately bundled browser runtime, destroys WebGL and listeners on
+client route navigation, and keeps the same V2 storage key.
+
+The tracked `v2/index.html` remains the source of game control markup.
+At build time the Next Server Component extracts its `<main>` element;
+the client lifecycle loads `workshop-runtime.js` and styles beside the
+Next route. In local development the existing V2 asset server on port 3901
+serves runtime/assets to Next on port 3000 with CORS. Pages is same-origin.
+
+`/workshop-lab/` keeps the independent old entry during transition.
+This is a **runtime bridge**, not a fully unified NPM package yet.
+Pages deployment must preserve Next `out/workshop/index.html` and copy
+only V2 assets there. Both modes use identical rules and the V2 save.
+
 ## V2.2 first multi-route world
 
 - Next.js App Router routes: `/town/`, `/orders/`, `/characters/`,

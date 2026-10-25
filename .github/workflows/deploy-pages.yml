@@ -40,11 +40,14 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: test -f out/index.html
-      - run: test -s out/town/index.html && test -s out/orders/index.html && test -s out/characters/index.html && test -s out/warehouse/index.html
+      - run: test -s out/town/index.html && test -s out/orders/index.html && test -s out/characters/index.html && test -s out/warehouse/index.html && test -s out/workshop/index.html
       - run: npm --prefix v2 install --no-audit --no-fund
       - run: npm --prefix v2 run build
-      - run: mkdir -p out/workshop && cp -a v2/dist/. out/workshop/
+      # Preserve Next's page HTML; only copy Pixi assets into its route.
+      - run: mkdir -p out/workshop/assets out/workshop-lab && cp -a v2/dist/assets/. out/workshop/assets/ && cp -a v2/dist/. out/workshop-lab/
       - run: test -s out/workshop/assets/workshop.js
+      - run: test -s out/workshop/assets/workshop-runtime.js
+      - run: test -s out/workshop-lab/index.html
       - run: test -s out/workshop/assets/moon-workshop.avif
       - run: test -s out/workshop/assets/moonveil-portrait.avif
       - run: test -s out/workshop/assets/moonstone-floor.avif

@@ -36,3 +36,9 @@ localStorage Origin。本地 E2E 各自测试，生产 GitHub Pages 同源，
 客户端路由，届时必须验证 WebGL 挂载/卸载、资源 URL、状态恢复、
 生产效率与热更新，才能删除独立静态工坊。
 主城自由走动与 NPC 剧情**不是当前已实现功能**。
+
+## V2.3 — Next/PixiJS 客户端生命周期升级
+
+`/workshop/` 现在由 `app/workshop/page.tsx` 负责 HTML 与 Next 路由，`WorkshopClient` 异步加载独立编译的 PixiJS 运行时并调用 `mountWorkshopGame(root,assetBase)`。旧入口通过 `standalone.ts` 继续支持 `/workshop-lab/`，以便回退和独立测试。所有操作仍用同一 V2 存档和原引擎。
+
+返回其他 Next 路由时移除 CSS、取消根容器事件、销毁 PixiJS Application 与 WebGL 资源、取消 ResizeObserver；Strict Mode 的过期挂载会在完成后主动销毁。开发模式的 3000/3901 端口由 V2 静态资源服务的 CORS 支持，GitHub Pages 使用同源路径。发布作业禁止覆盖 Next 构建的 `out/workshop/index.html`，只复制 V2 资产。

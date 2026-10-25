@@ -42,3 +42,6 @@
 .mw :focus-visible{outline:3px solid #ffe1ae;outline-offset:3px}
 @media(max-width:800px){.mw-grid,.mw-stat-grid{grid-template-columns:1fr}.mw-grid.mw-columns{grid-template-columns:1fr}.mw-hero{padding:24px}.mw-moon{opacity:.17}.mw-header{flex-wrap:wrap;padding:16px}.mw-stats{width:100%;justify-content:space-between}.mw-stats>span{flex:1;text-align:center}.mw-nav{padding:9px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}.mw-nav>a{font-size:10px;text-align:center;padding:8px 1px}.mw-main{padding:14px}.mw-panel,.mw-tile{padding:18px}.mw-logo{font-size:25px}}
 @media(prefers-reduced-motion:reduce){.mw-tile{transition:none}}
+
+/* Report a recoverable client-only Pixi loading problem inside Next. */
+.mw-runtime-error{position:fixed;bottom:18px;left:5%;max-width:90%;z-index:1000;padding:16px 22px;border:1px solid #db9c9c;border-radius:12px;background:#412734;color:#fff0ec}
