@@ -124,3 +124,46 @@ test('moonlit town works as a real one-purchase-per-day supplier for the same wo
   await page.reload();
   await expect(page.getByTestId('market-status')).toContainText('今日交易已完成');
 });
+
+
+test('street visitor consumes a real core and blocks buying until the next production day',async({page})=>{
+  test.setTimeout(90_000);
+  const seed={
+    version:2,day:3,coins:132,
+    tiles:Array.from({length:15},(_,i)=>
+      i===5?{craft:'well',worker:'brook',stored:5}:
+      i===6?{craft:'garden',worker:'fern',stored:3}:
+      i===7?{craft:'kiln',worker:'cinder',stored:0}:null),
+    warehouse:{core:3},order:{due:9,cores:3,reward:95},last:null,
+    completed:1,failed:0,patron:null
+  };
+  await page.addInitScript(world=>{
+    const key='monster-apartment:workshop-v2-lab';
+    if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify(world));
+  },seed);
+  await page.goto('/town/');
+  const visitor=page.getByTestId('town-resident');
+  await expect(visitor).toContainText('伊索');
+  await expect(visitor).toContainText('现有可用 3');
+  await page.getByTestId('resident-deliver').click();
+  await expect(page.getByTestId('world-coins')).toHaveText('183');
+  await expect(visitor).toContainText('累计帮助街区居民 1 次');
+  await expect(page.getByTestId('resident-deliver')).toBeDisabled();
+  await expect(page.getByTestId('market-status')).toContainText('今日交易已完成');
+  await page.getByRole('navigation',{name:'月光工坊世界'})
+    .getByRole('link',{name:'魔法仓库'}).click();
+  await expect(page.getByTestId('world-cores')).toHaveText('2');
+  await page.getByRole('navigation',{name:'月光工坊世界'})
+    .getByRole('link',{name:'工坊'}).click();
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25000});
+  await expect(page.locator('#stock')).toHaveText('2');
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-day')).toHaveText('4');
+  await page.getByRole('navigation',{name:'月光工坊世界'})
+    .getByRole('link',{name:'月光街'}).click();
+  await expect(page.getByTestId('town-resident')).toContainText('阿洛');
+  await expect(page.getByTestId('market-status')).toContainText('第 4 天');
+  await page.reload();
+  await expect(page.getByTestId('town-resident')).toContainText('阿洛');
+  await expect(page.getByTestId('town-resident')).toContainText('累计帮助街区居民 1 次');
+});

@@ -86,4 +86,20 @@ describe('Next world routes share the V2 deterministic save contract',()=>{
     expect(nextDay.market).toEqual({day:7,kind:'water'});
     expect(nextDay.tiles[5]!.stored).toBe(after.tiles[5]!.stored+3);
   });
+
+  it('citizen order uses the same daily market opportunity and original save',()=>{
+    const {storage}=save();
+    let state=visitingWorld();
+    state={...state,day:3,warehouse:{core:5},market:undefined};
+    storage.setItem(SAVE_KEY,JSON.stringify(state));
+    expect(commitWorldAction(storage,'resident')).toBe('applied');
+    const traded=parseSavedWorld(storage.getItem(SAVE_KEY))!;
+    expect(traded.warehouse.core).toBe(4);
+    expect(traded.coins).toBe(state.coins+51);
+    expect(traded.residentsHelped).toBe(1);
+    expect(traded.market).toEqual({day:3,kind:'residentCore'});
+    expect(commitWorldAction(storage,'resident')).toBe('unavailable');
+    expect(commitWorldAction(storage,'marketFiber')).toBe('unavailable');
+    expect(parseSavedWorld(storage.getItem(SAVE_KEY))!.residentsHelped).toBe(1);
+  });
 });

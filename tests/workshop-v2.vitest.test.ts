@@ -8,6 +8,8 @@ import {
   acceptPremiumOrder,forecastOrderChoice,PREMIUM_EXTRA_CORES,
   PREMIUM_EXTRA_REWARD,PREMIUM_ORDER_PENALTY,
   buyTownSupply,townMarketAvailable,TOWN_MARKET,
+  deliverResidentRequest,residentForDay,residentRequestAvailable,
+  residentRequestStock,TOWN_RESIDENTS,
 } from '../v2/src/workshop-engine';
 
 const connect=()=>{
@@ -375,5 +377,57 @@ describe('V2 workshop: positioning and staffing are the gameplay',()=>{
     expect(validWorkshop(bought)).toBe(true);
     expect(validWorkshop({...bought,market:{day:9999,kind:'water'}})).toBe(false);
     expect(validWorkshop({...bought,market:{day:1,kind:'fake'}})).toBe(false);
+  });
+
+  it('visiting townspeople trade actual machine stock for coins, not a mood click',()=>{
+    const s=newWorkshop();
+    expect(residentForDay(1)).toBe('residentWater');
+    expect(residentForDay(2)).toBe('residentFiber');
+    expect(residentForDay(3)).toBe('residentCore');
+    expect(residentRequestAvailable(s)).toBe(false);
+    expect(deliverResidentRequest(s)).toBe(s);
+    const loaded={...s,tiles:s.tiles.map((m,i)=>i===5?{...m!,stored:2}:m)};
+    expect(residentRequestStock(loaded)).toBe(2);
+    expect(TOWN_RESIDENTS.residentWater.reward).toBe(26);
+    const traded=deliverResidentRequest(loaded);
+    expect(traded.coins).toBe(126);
+    expect(traded.tiles[5]?.stored).toBe(0);
+    expect(traded.market).toEqual({day:1,kind:'residentWater'});
+    expect(traded.residentsHelped).toBe(1);
+    expect(loaded.tiles[5]?.stored).toBe(2); // immutable
+    expect(deliverResidentRequest(traded)).toBe(traded);
+    expect(buyTownSupply(traded,'core')).toBe(traded);
+    expect(townMarketAvailable(traded,'water')).toBe(false);
+    expect(validWorkshop(traded)).toBe(true);
+  });
+  it('fiber and shared-core visitors rotate by game day, removing actual goods',()=>{
+    const s=newWorkshop();
+    const fiber={...s,day:2,tiles:s.tiles.map((m,i)=>i===7?{...m!,stored:4}:m)};
+    const fiberSale=deliverResidentRequest(fiber);
+    expect(fiberSale.tiles[7]?.stored).toBe(2);
+    expect(fiberSale.coins).toBe(139);
+    expect(fiberSale.market).toEqual({day:2,kind:'residentFiber'});
+    const core={...fiberSale,day:3,warehouse:{core:2}};
+    const coreSale=deliverResidentRequest(core);
+    expect(coreSale.warehouse.core).toBe(1);
+    expect(coreSale.coins).toBe(190);
+    expect(coreSale.residentsHelped).toBe(2);
+    expect(coreSale.market).toEqual({day:3,kind:'residentCore'});
+    expect(validWorkshop(coreSale)).toBe(true);
+    expect(validWorkshop({...coreSale,residentsHelped:-1})).toBe(false);
+    expect(validWorkshop({...coreSale,residentsHelped:4})).toBe(false);
+    expect(validWorkshop({...coreSale,market:{day:3,kind:'residentWrong'}})).toBe(false);
+  });
+  it('resident opportunities are exclusive with purchasing, including across older saves',()=>{
+    const s=newWorkshop();
+    const purchased=buyTownSupply(s,'water');
+    expect(deliverResidentRequest(purchased)).toBe(purchased);
+    expect(s.market).toBeUndefined();
+    expect(validWorkshop({...s,market:{day:1,kind:'residentWater'}})).toBe(true);
+    const unavailable={...s,day:3,warehouse:{core:0}};
+    expect(deliverResidentRequest(unavailable)).toBe(unavailable);
+    expect(residentRequestAvailable(unavailable)).toBe(false);
+    const noPump={...s,tiles:s.tiles.map(()=>null)};
+    expect(deliverResidentRequest(noPump)).toBe(noPump);
   });
 });
