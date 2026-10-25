@@ -173,7 +173,7 @@ export function validWorkshop(value:unknown):value is WorkshopState {
   if(s.patron!==undefined&&s.patron!==null){
     const p=s.patron;
     if(!p||!['offered','active','completed','missed','expired'].includes(p.status)
-      ||!Number.isSafeInteger(p.due)||p.due<5||p.due>=s.day+20
+      ||!Number.isSafeInteger(p.due)||p.due<5||p.due>=(s.day??0)+20
       ||!Number.isSafeInteger(p.cores)||p.cores<5
       ||!Number.isSafeInteger(p.reward)||p.reward<=0)return false;
   }
