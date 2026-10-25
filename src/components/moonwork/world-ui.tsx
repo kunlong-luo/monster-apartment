@@ -2,7 +2,9 @@
 import Link from 'next/link';
 import {useMemo,useState,useSyncExternalStore} from 'react';
 import type {ReactNode} from 'react';
-import {WORKERS,MACHINES,workshopRank,forecastPatronCommission,PATRON_IMPORT_PRICE} from '../../../v2/src/workshop-engine';
+import {WORKERS,MACHINES,workshopRank,forecastPatronCommission,forecastOrderChoice,
+  PATRON_IMPORT_PRICE,PREMIUM_EXTRA_CORES,PREMIUM_EXTRA_REWARD,
+  PREMIUM_ORDER_PENALTY,STANDARD_ORDER_PENALTY} from '../../../v2/src/workshop-engine';
 import type {WorkshopState,WorkerId} from '../../../v2/src/workshop-engine';
 import {SAVE_KEY,CHANGE_EVENT,parseSavedWorld,commitWorldAction} from '@/lib/moonwork/world-store';
 
@@ -32,7 +34,7 @@ const WorkshopLink=({children,className='mw-link'}:{children:ReactNode;className
 function Panel({title,children}:{title:string;children:ReactNode}){
   return <section className="mw-panel"><h2>{title}</h2>{children}</section>;
 }
-function Action({type,children}:{type:'accept'|'import';children:ReactNode}){
+function Action({type,children}:{type:'accept'|'import'|'premium';children:ReactNode}){
   const [message,setMessage]=useState('');
   return <div><button type="button" className="mw-action-button" onClick={()=>{
     const outcome=commitWorldAction(window.localStorage,type);
@@ -67,6 +69,7 @@ function Town({s}:{s:WorkshopState}){
 function Orders({s}:{s:WorkshopState}){
   const p=s.patron;
   const forecast=forecastPatronCommission(s);
+  const choice=forecastOrderChoice(s);
   return <div className="mw-grid mw-columns">
     <Panel title="◇ 正式委托">
       <p className="mw-eyebrow">CURRENT ORDER</p>
@@ -74,6 +77,18 @@ function Orders({s}:{s:WorkshopState}){
       <div className="mw-meter"><i style={{width:Math.min(100,100*s.warehouse.core/s.order.cores)+'%'}}/></div>
       <p>第 {s.order.due} 天交付 · 剩余 {Math.max(0,s.order.due-s.day+1)} 个生产日</p>
       <p>奖励 ✦{s.order.reward} · {s.warehouse.core>=s.order.cores?'当前库存已足够':'还缺 '+(s.order.cores-s.warehouse.core)+' 枚晶核'}</p>
+      <p>未交付违约损失 ✦{s.order.premium?PREMIUM_ORDER_PENALTY:STANDARD_ORDER_PENALTY} · {s.order.premium?'高额订单已接受':'普通交付'}</p>
+      {choice&&<div className="mw-risk-choice" data-testid="world-premium-offer">
+        <strong>高额大宗订单 · 可选</strong>
+        <p>本期追加 {PREMIUM_EXTRA_CORES} 枚晶核、成功多赚 ✦{PREMIUM_EXTRA_REWARD}；
+        原交期不变，违约损失增至 ✦{PREMIUM_ORDER_PENALTY}。一经接受不可撤回。</p>
+        <p data-testid="world-premium-forecast" className={choice.premium==='missed'?'mw-risk-high':'mw-risk-safe'}>
+          当前排班推演：普通{choice.standard==='fulfilled'?'可交付':'可能违约'}；
+          大宗{choice.premium==='fulfilled'?'可交付':'可能违约'}。
+          {s.patron?.status==='active'&&choice.patronIfPremium==='missed'?'同时可能导致月纱委托失败。':''}
+        </p>
+        <Action type="premium">接受高额大宗订单</Action>
+      </div>}
       <WorkshopLink>前往工坊生产</WorkshopLink>
     </Panel>
     <Panel title="☽ 月纱的特别委托">

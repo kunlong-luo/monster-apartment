@@ -45,3 +45,14 @@
 
 /* Report a recoverable client-only Pixi loading problem inside Next. */
 .mw-runtime-error{position:fixed;bottom:18px;left:5%;max-width:90%;z-index:1000;padding:16px 22px;border:1px solid #db9c9c;border-radius:12px;background:#412734;color:#fff0ec}
+
+/* Optional high-stakes client proposal appears inside actual contracts,
+   not as a permanent world-nav toy button. */
+.mw-risk-choice{margin:18px 0 5px;padding:15px;border:1px solid #c1a16c;
+  background:linear-gradient(120deg,#3c3844,#243e4c);border-radius:10px}
+.mw-risk-choice>strong{font-size:16px;color:#ffe5ab}
+.mw-risk-choice p{font-size:12px;line-height:1.65}
+.mw-risk-choice .mw-risk-high{border-left:3px solid #f0a187;
+  background:#4d333b;padding:7px;color:#ffe0ca}
+.mw-risk-choice .mw-risk-safe{border-left:3px solid #9dd9ba;
+  background:#263f40;padding:7px;color:#d4f0df}

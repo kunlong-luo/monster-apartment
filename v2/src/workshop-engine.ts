@@ -10,7 +10,14 @@ export type Machine={craft:Craft;worker:WorkerId|null;stored:number;
   /** Optional so pre-upgrade V2 saves and initial machines keep the same shape. */
   level?:2|3;
 };
-export type WorkshopOrder={due:number;cores:number;reward:number};
+export type WorkshopOrder={due:number;cores:number;reward:number;
+  /** Optional. Absent from existing V2 saves and normal contracts. */
+  premium?:true;
+};
+export const PREMIUM_EXTRA_CORES=5;
+export const PREMIUM_EXTRA_REWARD=120;
+export const STANDARD_ORDER_PENALTY=15;
+export const PREMIUM_ORDER_PENALTY=40;
 /** Yuesha is an adult witch merchant; her optional request draws from the
  * same real stock as ordinary contracts. Legacy V2 saves omit this field. */
 export type PatronStatus='offered'|'active'|'completed'|'missed'|'expired';
@@ -28,6 +35,8 @@ export type DailyProduction={
   fulfilled:boolean;lost:boolean;
   /** Anniversary rewards are earned through shipped orders, not idle clicks. */
   milestone?:3|5;
+  /** Persists premium delivery feedback after the order has rolled over. */
+  premium?:boolean;
 };
 export type WorkshopState={
   version:2;day:number;coins:number;
@@ -141,6 +150,45 @@ export function importPatronCore(s:WorkshopState):WorkshopState {
   return {...s,coins:s.coins-PATRON_IMPORT_PRICE,
     warehouse:{core:s.warehouse.core+1}};
 }
+/** One-way contract choice: five more cores, 120 higher reward,
+ * and a higher failure penalty; standard delivery remains unchanged. */
+export function acceptPremiumOrder(s:WorkshopState):WorkshopState {
+  if(s.completed<1||s.order.premium||s.day>s.order.due
+    ||!Number.isSafeInteger(s.order.cores+PREMIUM_EXTRA_CORES)
+    ||!Number.isSafeInteger(s.order.reward+PREMIUM_EXTRA_REWARD))return s;
+  return {...s,order:{...s.order,premium:true,
+    cores:s.order.cores+PREMIUM_EXTRA_CORES,
+    reward:s.order.reward+PREMIUM_EXTRA_REWARD}};
+}
+
+export type OrderChoiceForecast={
+  standard:'fulfilled'|'missed';premium:'fulfilled'|'missed';
+  patronIfPremium:'completed'|'missed'|'other';
+};
+/** Compare both contracts by running the real shift engine, without
+ * touching the current state. Future staffing and placement are fixed. */
+export function forecastOrderChoice(s:WorkshopState):OrderChoiceForecast|null {
+  if(s.completed<1||s.order.premium||s.day>s.order.due)return null;
+  const premium=acceptPremiumOrder(s);
+  if(premium===s)return null;
+  const project=(initial:WorkshopState)=>{
+    let current=initial;
+    for(let i=0;i<16&&current.day<=initial.order.due;i++)
+      current=runShift(current);
+    return {
+      fulfillment:current.last?.fulfilled?'fulfilled':'missed',
+      guest:current.patron?.status==='completed'?'completed':
+        current.patron?.status==='missed'?'missed':'other',
+    };
+  };
+  const normal=project(s),challenging=project(premium);
+  return {
+    standard:normal.fulfillment,
+    premium:challenging.fulfillment,
+    patronIfPremium:challenging.guest,
+  };
+}
+
 export function runShift(s:WorkshopState):WorkshopState {
   const tiles=s.tiles.map(t=>t?{...t}:null);
   const report:DailyProduction={water:0,fiber:0,cores:0,blocked:[],fulfilled:false,lost:false};
@@ -178,6 +226,7 @@ export function runShift(s:WorkshopState):WorkshopState {
   let order=s.order;
   let patron=s.patron??null;
   if(s.day>=order.due){
+    report.premium=order.premium===true;
     if(warehouse>=order.cores){
       warehouse-=order.cores;coins+=order.reward;
       completed++;report.fulfilled=true;
@@ -187,7 +236,8 @@ export function runShift(s:WorkshopState):WorkshopState {
         coins+=completed===3?70:160;
       }
     }else{
-      failed++;coins=Math.max(0,coins-15);report.lost=true;
+      failed++;coins=Math.max(0,coins-(order.premium?
+        PREMIUM_ORDER_PENALTY:STANDARD_ORDER_PENALTY));report.lost=true;
     }
     order={due:s.day+4,cores:order.cores+1,reward:order.reward+25};
   }
@@ -255,6 +305,7 @@ export function validWorkshop(value:unknown):value is WorkshopState {
       ||!Number.isSafeInteger(s.warehouse?.core)||s.warehouse!.core<0
       ||!Number.isSafeInteger(s.order?.due)||!Number.isSafeInteger(s.order?.cores)
       ||!Number.isSafeInteger(s.order?.reward)||s.order!.cores<1
+      ||(s.order?.premium!==undefined&&s.order.premium!==true)
       ||!Number.isSafeInteger(s.completed)||s.completed! < 0
       ||!Number.isSafeInteger(s.failed)||s.failed! < 0)return false;
   if(s.patron!==undefined&&s.patron!==null){

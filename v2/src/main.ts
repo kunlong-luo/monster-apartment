@@ -1,7 +1,8 @@
 import { WORKERS, MACHINES, newWorkshop, validWorkshop,
   placeMachine, moveMachine, assignWorker, runShift, acceptPatronCommission,
   upgradeMachine, machineUpgradeQuote, machineLevel, workshopRank,
-  forecastPatronCommission, importPatronCore, PATRON_IMPORT_PRICE } from './workshop-engine';
+  forecastPatronCommission, importPatronCore, PATRON_IMPORT_PRICE,
+  PREMIUM_ORDER_PENALTY, STANDARD_ORDER_PENALTY } from './workshop-engine';
 import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
 import { mountWorkshopLab } from './workshop-lab-stage';
 
@@ -84,6 +85,7 @@ function render(){
   $('coins').textContent=String(world.coins);
   $('core').textContent=String(world.warehouse.core);
   $('target').textContent=String(world.order.cores);
+  $('contract-title').textContent=world.order.premium?'高额大宗订单':'晶核紧急订单';
   $('deadline').textContent=String(Math.max(0,world.order.due-world.day+1));
   $('completed').textContent=String(world.completed);
   $('failed').textContent=String(world.failed);
@@ -182,7 +184,8 @@ function render(){
       ?'⭐ 3 单达成！升级权限提升至 Lv.3，并获得 70 星币的工坊发展资金。'
       :'🌙 5 单达成！月光大师工坊目标完成，获得 160 星币，可继续自由经营。';
   }else if(report?.fulfilled) $('diagnosis').textContent='订单完成！交付晶核，获得星币。下一批需求提高了。';
-  else if(report?.lost) $('diagnosis').textContent='交付失败：晶核不足，损失 15 星币。新订单已开始。';
+  else if(report?.lost) $('diagnosis').textContent='交付失败：晶核不足，损失 '+
+    (report.premium?PREMIUM_ORDER_PENALTY:STANDARD_ORDER_PENALTY)+' 星币。新订单已开始。';
   else if(stall.length){
     $('diagnosis').textContent=stall.some(s=>s.includes(':water'))?
       '温室缺水：让它与水汽泵紧挨，并确保水泵有人操作。':
@@ -242,7 +245,8 @@ const onRootClick=(event:MouseEvent)=>{
       :next.patron.status==='missed'?'月纱的订单逾期，损失修约费。':''
       :'';
     apply(next,patronEvent||(report.fulfilled?'订单交付成功！':
-      report.lost?'订单过期，扣除了 15 星币。':
+      report.lost?'订单过期，扣除了 '+
+        (report.premium?PREMIUM_ORDER_PENALTY:STANDARD_ORDER_PENALTY)+' 星币。':
       '本日生产：'+report.water+' 水、'+report.fiber+' 孢子、'+report.cores+' 晶核。'),
     next.patron?.status==='completed'&&changed||report.fulfilled?'good':
       next.patron?.status==='missed'&&changed||report.lost?'bad':'normal');

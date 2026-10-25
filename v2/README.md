@@ -42,6 +42,23 @@ assets or falsely marked ready art, but **does not fail** solely because
 the final artwork remains pending. Formal visual acceptance still requires
 real desktop/mobile screenshots and frame-by-frame review.
 
+## V2.4 — optional high-stakes contract as an actual economic choice
+
+Once at least one standard order is completed, the *orders* route can
+optionally convert the current order into a one-way premium contract:
+**+5 required cores, +120 coins on delivery, 40-coin penalty instead of 15**,
+and unchanged deadline. The offer cannot be clicked twice or reversed;
+the next order goes back to normal. Current inventory and the visiting
+merchant's contract still compete for the same cores.
+
+Before committing, the orders page runs both alternatives through the
+existing deterministic shift engine and labels the outcome if workers,
+placement and upgrades remain fixed. No invented success probability,
+new fake resources, or permanent toolbar are introduced. Existing V2 saves
+do not have to change because `order.premium` is optional. Next and Pixi
+read the same key, so a premium choice is reflected in the factory order.
+This adds a meaningful replayable economy choice without additional pages.
+
 ## V2.3 — quick real-world scene navigation
 
 An accessible collapsible in-game **场景** portal is now present in the

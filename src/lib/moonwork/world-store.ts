@@ -1,4 +1,4 @@
-import {acceptPatronCommission,importPatronCore,validWorkshop} from '../../../v2/src/workshop-engine';
+import {acceptPatronCommission,importPatronCore,acceptPremiumOrder,validWorkshop} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
 
 export const SAVE_KEY='monster-apartment:workshop-v2-lab';
@@ -10,14 +10,15 @@ export function parseSavedWorld(raw:string|null):WorkshopState|null {
   catch{return null;}
 }
 type SaveStorage=Pick<Storage,'getItem'|'setItem'>;
-export type WorldAction='accept'|'import';
+export type WorldAction='accept'|'import'|'premium';
 export type ActionStatus='applied'|'missing'|'unavailable'|'error';
 export function commitWorldAction(store:SaveStorage,action:WorldAction):ActionStatus {
   let raw:string|null;
   try{raw=store.getItem(SAVE_KEY);}catch{return 'error';}
   const world=parseSavedWorld(raw);
   if(!world)return 'missing';
-  const next=action==='accept'?acceptPatronCommission(world):importPatronCore(world);
+  const next=action==='accept'?acceptPatronCommission(world):
+    action==='premium'?acceptPremiumOrder(world):importPatronCore(world);
   if(next===world)return 'unavailable';
   try{store.setItem(SAVE_KEY,JSON.stringify(next));return 'applied';}
   catch{return 'error';}
