@@ -5,7 +5,7 @@ test('V2.2 world has five reachable destinations without inventing a save',async
   await expect(page.getByTestId('moonwork-world')).toHaveAttribute('data-area','town');
   await expect(page.getByText('尚无可用的 V2 工坊存档')).toBeVisible();
   await expect(page.getByRole('link',{name:'进入工坊开始经营'}))
-    .toHaveAttribute('href',/\\/workshop\\/?$/);
+    .toHaveAttribute('href','/workshop');
   await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'委托大厅'}).click();
   await expect(page).toHaveURL(/\/orders\/?$/);
   await expect(page.getByTestId('moonwork-world')).toHaveAttribute('data-area','orders');
