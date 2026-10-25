@@ -129,7 +129,7 @@ function Town({s}:{s:WorkshopState}){
           <p>每天只能在市集购买一批货，或者帮助一位居民。生产日推进后才有下一次机会；水汽和孢子进入现有设备，晶核进入共享仓库。</p>
         </div>
         <span className="mw-market-ticket" data-testid="market-status">
-          {marketUsed?'今日交易已完成 · 明日再来':'第 '+s.day+' 天 · 市集与居民二选一'}
+          {marketUsed?'今日交易已完成 · 明日再来':'第 '+s.day+' 天 · 可采购一批（市集与居民二选一）'}
         </span>
       </div>
       <div className="mw-market-offers">
