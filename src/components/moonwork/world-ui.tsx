@@ -4,7 +4,8 @@ import {useMemo,useState,useSyncExternalStore} from 'react';
 import type {ReactNode} from 'react';
 import {WORKERS,MACHINES,workshopRank,forecastPatronCommission,forecastOrderChoice,
   PATRON_IMPORT_PRICE,PREMIUM_EXTRA_CORES,PREMIUM_EXTRA_REWARD,
-  PREMIUM_ORDER_PENALTY,STANDARD_ORDER_PENALTY} from '../../../v2/src/workshop-engine';
+  PREMIUM_ORDER_PENALTY,STANDARD_ORDER_PENALTY,
+  TOWN_MARKET,townMarketAvailable} from '../../../v2/src/workshop-engine';
 import type {WorkshopState,WorkerId} from '../../../v2/src/workshop-engine';
 import {SAVE_KEY,CHANGE_EVENT,parseSavedWorld,commitWorldAction} from '@/lib/moonwork/world-store';
 
@@ -35,7 +36,7 @@ const WorkshopLink=({children,className='mw-link'}:{children:ReactNode;className
 function Panel({title,children}:{title:string;children:ReactNode}){
   return <section className="mw-panel"><h2>{title}</h2>{children}</section>;
 }
-function Action({type,children}:{type:'accept'|'import'|'premium';children:ReactNode}){
+function Action({type,children}:{type:'accept'|'import'|'premium'|'marketWater'|'marketFiber'|'marketCore';children:ReactNode}){
   const [message,setMessage]=useState('');
   return <div><button type="button" className="mw-action-button" onClick={()=>{
     const outcome=commitWorldAction(window.localStorage,type);
@@ -47,23 +48,85 @@ function Action({type,children}:{type:'accept'|'import'|'premium';children:React
 }
 function Town({s}:{s:WorkshopState}){
   const rank=workshopRank(s.completed);
+  const offers=[
+    {kind:'water' as const,action:'marketWater' as const,icon:'◈',place:'泉眼补给站'},
+    {kind:'fiber' as const,action:'marketFiber' as const,icon:'❀',place:'孢子植物摊'},
+    {kind:'core' as const,action:'marketCore' as const,icon:'✦',place:'晶核商行'},
+  ];
+  const marketUsed=s.market?.day===s.day;
   return <>
-    <section className="mw-hero">
-      <span className="mw-eyebrow">MOONLIT DISTRICT · 月光街</span>
-      <h2>从一座工坊，点亮整条月光街。</h2>
-      <p>真正的世界从你的每次生产和交付开始。月光街展示实时进度，所有星币与资源都来自同一份工坊存档。</p>
-      <WorkshopLink className="mw-button">进入工坊 · 继续生产</WorkshopLink>
-      <span className="mw-moon" aria-hidden="true">☽</span>
+    <section className="mw-town-scene" aria-label="月光街的炼金商区" data-testid="moonlit-town-scene">
+      <div className="mw-town-sky" aria-hidden="true"><span className="mw-town-orb">☾</span><span className="mw-town-stars">✦ · · ✧</span></div>
+      <div className="mw-town-banner">
+        <p className="mw-eyebrow">MOONLIT DISTRICT · YOUR LIVING TOWN</p>
+        <h2>月光街 · 夜间商区</h2>
+        <p>小镇的交易会改变工坊明天的产量。选择补充哪种资源，再回到生产线验证结果。</p>
+      </div>
+      <div className="mw-town-buildings">
+        <Link href="/workshop/" className="mw-town-building mw-town-forge">
+          <span className="mw-building-glyph" aria-hidden="true">⚒</span>
+          <span className="mw-building-name">晶核工坊</span>
+          <small>调整机器 · 开始生产</small>
+        </Link>
+        <Link href="/orders/" className="mw-town-building mw-town-guild">
+          <span className="mw-building-glyph" aria-hidden="true">◇</span>
+          <span className="mw-building-name">月夜委托所</span>
+          <small>交期 · 商人契约</small>
+        </Link>
+        <Link href="/warehouse/" className="mw-town-building mw-town-store">
+          <span className="mw-building-glyph" aria-hidden="true">⬡</span>
+          <span className="mw-building-name">物资仓库</span>
+          <small>当前星币 · 物资结存</small>
+        </Link>
+      </div>
+      <div className="mw-town-ground" aria-hidden="true"><span>✧ · · · ✧</span></div>
     </section>
     <div className="mw-stat-grid">
       <Panel title="当前工坊"><strong>{rank.zh}</strong></Panel>
       <Panel title="已建设设备"><strong>{s.tiles.filter(Boolean).length} / 15</strong></Panel>
       <Panel title="已交付订单"><strong>{s.completed} 单</strong></Panel>
     </div>
-    <div className="mw-grid">
-      <Link className="mw-tile" href="/orders/"><b>◇ 委托大厅</b><span>期限、库存需求与月纱的特别委托</span></Link>
-      <Link className="mw-tile" href="/characters/"><b>♟ 角色图鉴</b><span>查看工匠技能、岗位和访客状态</span></Link>
-      <Link className="mw-tile" href="/warehouse/"><b>⬡ 魔法仓库</b><span>查看产线原料和共享晶核</span></Link>
+    <section className="mw-market" aria-label="月夜市集" data-testid="moonlit-market">
+      <div className="mw-market-header">
+        <div>
+          <p className="mw-eyebrow">ONCE PER DAY · TRUE INVENTORY</p>
+          <h2>月夜市集</h2>
+          <p>每天只能选择一批货。生产日推进后才有下一次机会；水汽和孢子直接送入现有设备，晶核直接入仓。</p>
+        </div>
+        <span className="mw-market-ticket" data-testid="market-status">
+          {marketUsed?'今日交易已完成 · 明日再来':'第 '+s.day+' 天 · 可采购一批'}
+        </span>
+      </div>
+      <div className="mw-market-offers">
+        {offers.map(offer=>{
+          const deal=TOWN_MARKET[offer.kind];
+          const available=townMarketAvailable(s,offer.kind);
+          const missing=offer.kind!=='core'&&
+            !s.tiles.some(tile=>tile?.craft===(offer.kind==='water'?'well':'garden'));
+          return <article key={offer.kind} className={'mw-market-offer mw-offer-'+offer.kind}
+            data-testid={'town-offer-'+offer.kind}>
+            <span className="mw-market-icon" aria-hidden="true">{offer.icon}</span>
+            <div className="mw-market-detail">
+              <small>{offer.place}</small>
+              <h3>{deal.zh}</h3>
+              <p>+{deal.amount} {offer.kind==='water'?'水汽':offer.kind==='fiber'?'孢子':'晶核'} · {deal.hint}</p>
+              <p className="mw-market-price">花费 ✦{deal.cost} 星币</p>
+              {missing&&<p className="mw-market-warning">先在工坊建设对应设备</p>}
+              <button type="button" className="mw-action-button"
+                disabled={!available}
+                onClick={()=>{
+                  const result=commitWorldAction(window.localStorage,offer.action);
+                  if(result==='applied')window.dispatchEvent(new Event(CHANGE_EVENT));
+                }}>{marketUsed?'今日已采购':available?'购买本日货箱':'当前无法采购'}</button>
+            </div>
+          </article>;
+        })}
+      </div>
+    </section>
+    <div className="mw-town-next">
+      <Link href="/characters/" className="mw-link">查看工匠配置 ↗</Link>
+      <Link href="/orders/" className="mw-link">确认订单缺口 ↗</Link>
+      <WorkshopLink>返回工坊投产 ↗</WorkshopLink>
     </div>
   </>;
 }

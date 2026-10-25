@@ -46,7 +46,15 @@ export type WorkshopState={
   last:DailyProduction|null;
   completed:number;failed:number;
   patron?:PatronCommission|null;
+  /** Legacy V2 saves omit the daily town market record. */
+  market?:{day:number;kind:TownSupply};
 };
+export type TownSupply='water'|'fiber'|'core';
+export const TOWN_MARKET={
+  water:{cost:12,amount:3,zh:'水汽补给',hint:'注入一台水汽泵'},
+  fiber:{cost:24,amount:3,zh:'孢子货箱',hint:'存入一座温室'},
+  core:{cost:37,amount:1,zh:'晶核采购',hint:'直接入共享仓库'},
+} as const;
 export const WIDTH=5;
 export const HEIGHT=3;
 export const BOARD_SIZE=WIDTH*HEIGHT;
@@ -191,6 +199,38 @@ export function forecastOrderChoice(s:WorkshopState):OrderChoiceForecast|null {
   };
 }
 
+/** A town decision with a tangible economic effect, one choice per game day.
+ * Inputs must exist: no machine means no place to unload water or fiber.
+ * These are stocked goods, not free daily rewards or an abstract bonus.
+ * The least-stocked eligible device receives the shipment. */
+export function buyTownSupply(s:WorkshopState,kind:TownSupply):WorkshopState {
+  if(!Object.hasOwn(TOWN_MARKET,kind))return s;
+  const offer=TOWN_MARKET[kind];
+  if(s.market?.day===s.day||s.coins<offer.cost)return s;
+  if(kind==='core'){
+    if(!Number.isSafeInteger(s.warehouse.core+offer.amount))return s;
+    return {...s,coins:s.coins-offer.cost,market:{day:s.day,kind},
+      warehouse:{core:s.warehouse.core+offer.amount}};
+  }
+  const craft=kind==='water'?'well':'garden';
+  const index=s.tiles.reduce((best,i,j)=>{
+    if(i?.craft!==craft||!Number.isSafeInteger(i.stored+offer.amount))return best;
+    return best===-1||i.stored<s.tiles[best]!.stored?j:best;
+  },-1);
+  if(index<0)return s;
+  const tiles=s.tiles.slice();
+  tiles[index]={...tiles[index]!,stored:tiles[index]!.stored+offer.amount};
+  return {...s,coins:s.coins-offer.cost,market:{day:s.day,kind},tiles};
+}
+export function townMarketAvailable(s:WorkshopState,kind:TownSupply):boolean {
+  if(!Object.hasOwn(TOWN_MARKET,kind)||s.market?.day===s.day
+    ||s.coins<TOWN_MARKET[kind].cost)return false;
+  if(kind==='core')return Number.isSafeInteger(s.warehouse.core+TOWN_MARKET.core.amount);
+  const craft=kind==='water'?'well':'garden';
+  return s.tiles.some(t=>t?.craft===craft&&
+    Number.isSafeInteger(t.stored+TOWN_MARKET[kind].amount));
+}
+
 export function runShift(s:WorkshopState):WorkshopState {
   const tiles=s.tiles.map(t=>t?{...t}:null);
   const report:DailyProduction={water:0,fiber:0,cores:0,blocked:[],fulfilled:false,lost:false};
@@ -313,6 +353,11 @@ export function validWorkshop(value:unknown):value is WorkshopState {
       ||(s.order?.premium!==undefined&&s.order.premium!==true)
       ||!Number.isSafeInteger(s.completed)||s.completed! < 0
       ||!Number.isSafeInteger(s.failed)||s.failed! < 0)return false;
+  if(s.market!==undefined){
+    if(!s.market||!Number.isSafeInteger(s.market.day)
+      ||s.market.day<1||s.market.day>s.day
+      ||!Object.hasOwn(TOWN_MARKET,s.market.kind))return false;
+  }
   if(s.patron!==undefined&&s.patron!==null){
     const p=s.patron;
     if(!p||!['offered','active','completed','missed','expired'].includes(p.status)

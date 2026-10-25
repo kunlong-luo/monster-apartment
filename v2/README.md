@@ -42,6 +42,24 @@ assets or falsely marked ready art, but **does not fail** solely because
 the final artwork remains pending. Formal visual acceptance still requires
 real desktop/mobile screenshots and frame-by-frame review.
 
+## V2.6 — town as a real trading district
+
+The town now has a navigable moonlit street scene with 3 functional buildings
+(workshop, commission guild, warehouse) rather than a static headline and
+dead-end cards. Its nightly market offers exactly **one** real economic
+choice per in-game day: pay 12 coins for +3 water in the lowest-stocked pump;
+24 for +3 fiber in the lowest-stocked greenhouse; or 37 for +1 shared core.
+If the machine is absent, there is nowhere to unload the shipment, so the
+choice is disabled. Invalid purchases spend nothing. The market action
+writes the existing V2 save using pure `buyTownSupply` logic, and the new
+`market` ledger is optional for backward compatibility. Other scene
+switches, patron jobs, equipment and premium orders remain intact.
+
+This is the first playable part of the town, not an open-world district with
+free roaming NPCs or an approved illustration matching the target concept.
+The CSS stage replaces KPI-only presentation but remains interim environment
+art until dedicated production backgrounds arrive.
+
 ## V2.5 — presentation language cleanup
 
 The front-end no longer exposes obsolete V2.2 labels or "lab/demo" labels to

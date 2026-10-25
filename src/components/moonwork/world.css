@@ -95,3 +95,93 @@
 .mw-tile{border-left:3px solid #caa272}
 .mw-tile:hover{border-color:#ebc990}
 @media(prefers-reduced-motion:reduce){.mw-tile{transition:none}}
+
+/* V2.6: the town is a navigable diegetic district rather than a KPI hero.
+   Building faces are pure CSS, no procedural SVG character "art". */
+.mw-town-scene{position:relative;isolation:isolate;overflow:hidden;
+  min-height:345px;border:2px solid #b8986a;border-radius:18px;
+  box-shadow:inset 0 0 0 5px #162437,0 25px 55px #070d19a8;
+  background:
+   radial-gradient(ellipse at 73% 8%,#ded0b14a,transparent 25%),
+   linear-gradient(#24334f 0%,#273956 47%,#2e3c48 70%,#152537 100%)}
+.mw-town-sky{position:absolute;inset:0;pointer-events:none}
+.mw-town-orb{position:absolute;right:10%;top:-38px;font:normal 150px Georgia,serif;
+  color:#ffe3b1;text-shadow:0 0 48px #e8daaeab}
+.mw-town-stars{position:absolute;right:20%;top:95px;letter-spacing:34px;color:#f9e4ba}
+.mw-town-banner{position:relative;z-index:1;padding:22px 30px 0;max-width:710px}
+.mw-town-banner h2{font:700 clamp(24px,3vw,36px) Georgia,serif;
+  color:#fce0ad;text-shadow:0 4px 14px #0a1422;margin:5px 0}
+.mw-town-banner p:not(.mw-eyebrow){font-size:13px;color:#dae2e5;max-width:570px;line-height:1.7}
+.mw-town-buildings{position:relative;z-index:2;display:grid;
+  grid-template-columns:1.1fr 1fr 1fr;align-items:end;gap:clamp(8px,2vw,30px);
+  margin:8px clamp(12px,5vw,65px) 24px}
+.mw-town-building{position:relative;display:flex;flex-direction:column;
+  justify-content:flex-end;align-items:center;gap:5px;min-height:124px;padding:23px 8px 14px;
+  color:#ffe6bc;text-decoration:none;
+  border:2px solid #967e68;border-bottom:4px solid #c29b66;
+  background:linear-gradient(92deg,#263448 0%,#394859 52%,#263446 100%);
+  box-shadow:0 12px 14px #07101a77,inset 0 0 18px #d7aa5a25;
+  border-radius:6px 6px 2px 2px;transition:transform .15s,border-color .15s}
+.mw-town-building:before{content:'';position:absolute;
+  top:-22px;left:-6px;right:-6px;height:27px;
+  border:2px solid #ab8a69;clip-path:polygon(0 100%,14% 0,86% 0,100% 100%);
+  background:repeating-linear-gradient(85deg,#58475a 0 19px,#473b4c 19px 24px)}
+.mw-town-building:after{content:'';position:absolute;top:12px;right:10px;
+  width:16px;height:29px;border:2px solid #c2a379;border-radius:12px 12px 1px 1px;
+  box-shadow:inset 0 0 16px #f7ca72;opacity:.75}
+.mw-town-building:hover,.mw-town-building:focus-visible{transform:translateY(-4px);
+  border-color:#f6d69b;outline:none}
+.mw-town-forge{min-height:145px;background:linear-gradient(100deg,#344656,#614642,#30485b)}
+.mw-town-guild{background:linear-gradient(100deg,#324658,#4e3c59,#303a50)}
+.mw-town-store{background:linear-gradient(100deg,#324856,#3b534d,#243b50)}
+.mw-building-glyph{font:normal 33px Georgia,serif;color:#f5ce8e;
+  text-shadow:0 2px 17px #fac776a8}
+.mw-building-name{font-size:17px;font-weight:800;text-shadow:0 2px 8px #000}
+.mw-town-building small{font-size:11px;color:#e1d5bc}
+.mw-town-ground{position:absolute;z-index:0;left:-10%;right:-10%;bottom:-52px;height:120px;
+  transform:perspective(200px) rotateX(29deg);background:repeating-linear-gradient(
+    95deg,#283d48,#283d48 18px,#374857 19px,#263948 28px);
+  border-top:4px solid #8c7a66}
+.mw-town-ground span{display:block;text-align:center;padding:12px;letter-spacing:30px;color:#b4a688}
+.mw-market{margin-top:22px;padding:22px;border:1px solid #a98e6b;
+  background:linear-gradient(125deg,#243848,#182b3c 70%);
+  border-radius:16px;box-shadow:0 8px 28px #0004}
+.mw-market-header{display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:10px}
+.mw-market-header h2{font:700 26px Georgia,serif;color:#ffdfab;margin:4px 0}
+.mw-market-header p:not(.mw-eyebrow){font-size:13px;color:#d1d7d7;line-height:1.65;max-width:730px}
+.mw-market-ticket{border:1px solid #bf9e73;border-radius:30px;
+  padding:9px 14px;color:#ffe3b9;font-size:12px;background:#332c34}
+.mw-market-offers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:13px;margin-top:12px}
+.mw-market-offer{min-width:0;display:flex;gap:12px;padding:17px;
+  border:1px solid #9c866b;background:linear-gradient(160deg,#303e50,#243448);
+  border-radius:12px}
+.mw-market-icon{flex:0 0 48px;height:48px;display:grid;place-items:center;
+  color:#ffdb9c;background:#253348;border:1px solid #a59072;
+  font:normal 32px Georgia,serif;border-radius:12px}
+.mw-market-detail{min-width:0;display:flex;flex-direction:column}
+.mw-market-detail small{color:#b6c5c7;font-size:11px}
+.mw-market-detail h3{margin:4px 0;font:700 18px Georgia,serif;color:#ffe3b9}
+.mw-market-detail p{font-size:12px;color:#d0d6d4;line-height:1.5;margin:5px 0}
+.mw-market-detail .mw-market-price{font-weight:800;color:#fbe0af}
+.mw-market-detail .mw-market-warning{color:#ffc2a6}
+.mw-market-offer .mw-action-button{margin-top:auto;font-size:12px;padding:10px 12px}
+.mw-market-offer .mw-action-button:disabled{opacity:.45;cursor:not-allowed}
+.mw-town-next{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+@media(max-width:900px){.mw-market-offers{grid-template-columns:1fr}
+  .mw-market-offer{align-items:center}.mw-market-detail{flex:1}}
+@media(max-width:610px){
+  .mw-town-scene{min-height:340px}
+  .mw-town-banner{padding:15px 16px 0}.mw-town-banner p:not(.mw-eyebrow){font-size:11px}
+  .mw-town-buildings{gap:6px;margin:24px 9px 15px}
+  .mw-town-building{min-height:106px;padding:19px 2px 8px}
+  .mw-town-forge{min-height:124px}
+  .mw-building-name{font-size:12px}.mw-town-building small{font-size:9px;text-align:center}
+  .mw-building-glyph{font-size:25px}
+  .mw-town-orb{font-size:125px;right:1%}
+  .mw-market{padding:13px}
+  .mw-market-offer{padding:12px}
+  .mw-market-header h2{font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){.mw-town-building{transition:none}}
