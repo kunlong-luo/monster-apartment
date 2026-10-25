@@ -10,6 +10,7 @@ test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',asy
   await expect(stage).toHaveAttribute('data-renderer','pixi-webgl-bitmap');
   await expect(page.getByTestId('v2-day')).toHaveText('1');
   await expect(page.getByTestId('v2-world-nav')).toBeVisible();
+  await expect(page.getByTestId('v2-scene-menu')).toHaveCount(0);
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(5);
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'工坊'})).toHaveAttribute('aria-current','page');
   await page.getByTestId('v2-shift').click();
@@ -32,6 +33,8 @@ test('Next workshop remains playable on a 390px phone viewport',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto('/workshop/');
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+  await expect(page.getByTestId('v2-world-nav')).toBeVisible();
+  await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(5);
   await expect(page.getByTestId('v2-build-well')).toBeVisible();
   await expect(page.getByTestId('v2-worker-fern')).toBeVisible();
   await expect(page.getByTestId('v2-shift')).toBeVisible();

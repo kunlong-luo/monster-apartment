@@ -10,11 +10,11 @@ import {SAVE_KEY,CHANGE_EVENT,parseSavedWorld,commitWorldAction} from '@/lib/moo
 
 export type WorldArea='town'|'orders'|'characters'|'warehouse';
 const nav=[
-  {id:'town',label:'月光街',glyph:'✦',href:'/town/'},
-  {id:'workshop',label:'工坊',glyph:'⚒',href:'/workshop/'},
-  {id:'orders',label:'委托',glyph:'◇',href:'/orders/'},
-  {id:'characters',label:'角色',glyph:'♟',href:'/characters/'},
-  {id:'warehouse',label:'仓库',glyph:'⬡',href:'/warehouse/'},
+  {id:'town',label:'月光街',full:'月光街',glyph:'✦',href:'/town/'},
+  {id:'workshop',label:'工坊',full:'工坊',glyph:'⚒',href:'/workshop/'},
+  {id:'orders',label:'委托',full:'委托大厅',glyph:'◇',href:'/orders/'},
+  {id:'characters',label:'角色',full:'角色图鉴',glyph:'♟',href:'/characters/'},
+  {id:'warehouse',label:'仓库',full:'魔法仓库',glyph:'⬡',href:'/warehouse/'},
 ] as const;
 const ids=['brook','fern','cinder'] as const;
 function subscribe(cb:()=>void){
@@ -154,7 +154,7 @@ export function MoonworkWorld({area}:{area:WorldArea}){
       </div>
     </header>
     <nav className="mw-nav" aria-label="月光工坊世界">
-      {nav.map(n=><Link href={n.href} key={n.id} aria-current={n.id===area?'page':undefined} className={n.id===area?'selected':''}>
+      {nav.map(n=><Link href={n.href} key={n.id} aria-label={n.full} aria-current={n.id===area?'page':undefined} className={n.id===area?'selected':''}>
         <span aria-hidden="true" className="world-nav-glyph">{n.glyph}</span><span>{n.label}</span>
       </Link>)}
     </nav>
