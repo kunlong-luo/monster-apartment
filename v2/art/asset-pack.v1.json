@@ -54,6 +54,13 @@
       "path": "art/moonveil-portrait.avif",
       "status": "prototype",
       "replacement": "art/production/npc/yuesha/bust.png"
+    },
+    {
+      "id": "machine.kiln.preview",
+      "path": "art/kiln-art-review.avif",
+      "status": "prototype",
+      "replacement": "art/production/machines/kiln/lv1.webp",
+      "notes": "Masked paint cutout from a generated concept illustration. Visual review only: not the final silhouette, no independent animation."
     }
   ],
   "productionAssets": [

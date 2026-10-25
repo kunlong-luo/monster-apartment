@@ -5,6 +5,18 @@
 The legacy **V0.10.0** game remains reachable and unchanged. V2 is a new project
 inside this repository, not an attempt to reskin the old six-room simulation.
 
+## V2.1 crystal kiln original painted review
+
+A standalone alpha-channel AVIF reference cutout (`art/kiln-art-review.avif`)
+now replaces the kiln-only procedural bitmap when AVIF is supported. This is
+**a review prototype, not an approved production asset**: it was extracted
+from a generated concept image, retains some ambient lighting, and has no
+true independently authored flame/forge working frames. The game keeps kiln
+collision geometry, worker assignments, upgrading and shared inventory
+completely separate from its visual texture. The old bitmap safely loads if
+AVIF is unsupported. The manifest explicitly marks this as a prototype, not
+any of the 17 final machine/character sprites.
+
 ## V2.1 formal art production pack (specification, not shipped art)
 
 The next production target is documented in

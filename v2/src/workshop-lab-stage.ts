@@ -49,6 +49,7 @@ export async function mountWorkshopLab(
   // AVIF is an enhancement: unsupported codecs fall back to the legacy scene.
   let painted:Texture|null=null;
   let paintedFloor:Texture|null=null;
+  let kilnArtReview:Texture|null=null;
   try{
     const image=new Image();
     image.src=new URL('./assets/moon-workshop.avif',document.baseURI).href;
@@ -59,6 +60,15 @@ export async function mountWorkshopLab(
     await floorImage.decode();
     paintedFloor=Texture.from(floorImage);
   }catch{/* keep gameplay available even if an asset cannot decode */}
+  // One actual painted, alpha-backed machine crop for visual review only.
+  // Never replace all machine art from a flattened screenshot.
+  try {
+    const kilnImage=new Image();
+    kilnImage.src=new URL('./assets/kiln-art-review.avif',document.baseURI).href;
+    await kilnImage.decode();
+    kilnArtReview=Texture.from(kilnImage);
+  } catch {/* retain interactive fallback sprite when codec or file is absent */}
+  element.dataset.machineArt=kilnArtReview?'kiln-painted-review':'procedural-machines';
   element.dataset.visualTheme=painted?'painted-moonwork':'procedural-fallback';
   element.dataset.floorArt=paintedFloor?'painted-moonstone':'procedural-floor';
   const backdrop=new Sprite(painted??art.backdrop);
@@ -232,7 +242,8 @@ export async function mountWorkshopLab(
           .stroke({width:2,color:0xffdea5,alpha:level===3?.82:.43});
         glow.eventMode='none';stage.addChild(glow);
       }
-      const fixture=new Sprite(art.machines[machine.craft]);
+      const fixture=new Sprite(machine.craft==='kiln'&&kilnArtReview
+        ?kilnArtReview:art.machines[machine.craft]);
       fixture.anchor.set(.5,1);
       fixture.position.set(x+CELL*.49,y+CELL*.92);
       fixture.width=CELL*(.89+(level-1)*.03);

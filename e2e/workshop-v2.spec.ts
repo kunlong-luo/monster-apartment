@@ -18,6 +18,7 @@ test('PixiJS factory produces cores only after the player connects the chain and
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-renderer','pixi-webgl-bitmap');
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-visual-theme','painted-moonwork');
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-floor-art','painted-moonstone');
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-machine-art','kiln-painted-review');
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-worker-frames','8');
   await expect(page.getByTestId('v2-coins')).toHaveText('100');
   const refreshBefore=await page.getByTestId('v2-stage').getAttribute('data-scene-refreshes');
