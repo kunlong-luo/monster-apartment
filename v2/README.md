@@ -49,6 +49,29 @@ screenshots. The font is a runtime asset, not a user download artifact.
 
 完整四人资料、逐帧精灵规格、服装边界、经营互动和验收门槛见 **[成年女性角色美术规范](docs/adult-character-art-direction.md)**。当前实际代码仅完成月纱的过渡版立绘与高级订单，其余三位是明确标注的待开发目标，尚未假称已经上线。
 
+## V2 iteration 0.4 — machines that improve and a finishable goal
+
+The full product development plan is tracked in
+[GAME-ROADMAP.md](docs/GAME-ROADMAP.md). Current V2 has a first real
+progression loop instead of infinitely adding wait/earn buttons:
+
+- Deliver one real order to earn **Lv.2 machine upgrade access**. Choose a
+  physical machine on the stage; its upgrade appears contextually in the
+  existing selection strip, with its exact coin price and unlock reason.
+- Deliver three orders to unlock **Lv.3**, earn 70 development coins and
+  reach the Star Artisan workshop rank. Five orders complete the finite
+  **Moonlight Master Workshop** target and grant another 160 coins.
+- Upgraded pumps and greenhouses gain +1 material per level/shift; upgraded
+  furnaces gain +1 core per level/shift but must still have adjacent spores.
+  The improved machinery visibly glows and grows and retains its level when
+  relocated. Existing V2 saves with no machine level remain Lv.1.
+- After the campaign target is met, free-play keeps working and milestones
+  never pay out twice; incomplete/deadlocked lines can be rebuilt.
+
+This is gameplay progression, **not** the final art pipeline. More industry
+routes, seamless scene animations, sound and fully artist-made sprites remain
+in the milestone backlog.
+
 ## V2 iteration 0.3 — adult visitor with meaningful orders
 
 **月纱 / Moonveil**, an explicitly adult **28-year-old** witch merchant, visits

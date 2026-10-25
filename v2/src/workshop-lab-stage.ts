@@ -1,7 +1,7 @@
 import { Application, AnimatedSprite, Container, Graphics, Sprite, Text } from 'pixi.js';
 import { makeRasterArt } from './raster-sprites';
 import { patronFrames } from './patron-art';
-import { BOARD_SIZE, WIDTH, MACHINES, linked } from './workshop-engine';
+import { BOARD_SIZE, WIDTH, MACHINES, linked, machineLevel } from './workshop-engine';
 import type { WorkshopState, Craft } from './workshop-engine';
 
 export type LabSelect={plot:(index:number)=>void; patronTap?:()=>void};
@@ -152,10 +152,19 @@ export async function mountWorkshopLab(
           marker.position.set(x+54,y+9);stage.addChild(marker);
         }
       }
+      const level=machineLevel(machine);
+      if(level>1){
+        const glow=new Graphics().ellipse(x+CELL*.49,y+CELL*.79,
+          CELL*.34+(level-2)*12,CELL*.21+(level-2)*5)
+          .fill({color:level===3?0xffd7a5:COLORS[machine.craft],alpha:.22})
+          .stroke({width:2,color:0xffdea5,alpha:level===3?.82:.43});
+        glow.eventMode='none';stage.addChild(glow);
+      }
       const fixture=new Sprite(art.machines[machine.craft]);
       fixture.anchor.set(.5,1);
       fixture.position.set(x+CELL*.49,y+CELL*.92);
-      fixture.width=CELL*.89;fixture.height=CELL*.88;
+      fixture.width=CELL*(.89+(level-1)*.03);
+      fixture.height=CELL*(.88+(level-1)*.035);
       fixture.eventMode='static';fixture.cursor='pointer';
       fixture.on('pointertap',()=>callbacks.plot(i));
       stage.addChild(fixture);machineArt.push(fixture);
@@ -169,6 +178,11 @@ export async function mountWorkshopLab(
         actor.eventMode='static';actor.cursor='pointer';
         actor.on('pointertap',()=>callbacks.plot(i));
         stage.addChild(actor);actors.push(actor);
+      }
+      if(level>1){
+        const star=glabel(level===3?'✦ Lv.3':'✦ Lv.2',12,0xffdaa1,true);
+        star.position.set(x+CELL-62,y+11);
+        stage.addChild(star);
       }
       const label=glabel(MACHINES[machine.craft].zh+' · '+machine.stored,
         12,COLORS[machine.craft],true);

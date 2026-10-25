@@ -163,3 +163,60 @@ test('adult guest invitation remains readable on portrait phone and is optional'
   expect(dimensions.y).toBeLessThanOrEqual(1);
   await page.screenshot({path:'test-results/workshop-v2-patron-mobile.png',fullPage:true});
 });
+
+test('first delivery unlocks contextual equipment upgrades and visibly raises real output',async({page})=>{
+  test.setTimeout(75_000);
+  await page.goto(LAB);
+  const canvas=page.getByTestId('v2-stage').locator('canvas');
+  await expect(canvas).toBeVisible({timeout:12000});
+  const b=await canvas.boundingBox();expect(b).toBeTruthy();
+  const tap=(i:number)=>CLICK(canvas,b!,i);
+  await tap(7);
+  await page.getByTestId('v2-move').click();await tap(6);
+  await page.getByTestId('v2-build-kiln').click();await tap(7);
+  await page.getByTestId('v2-worker-brook').click();await tap(5);
+  await page.getByTestId('v2-worker-fern').click();await tap(6);
+  await page.getByTestId('v2-worker-cinder').click();await tap(7);
+  await tap(7);
+  await expect(page.getByTestId('v2-upgrade')).toContainText('完成 1 单解锁');
+  await expect(page.getByTestId('v2-upgrade')).toBeDisabled();
+  for(let i=0;i<5;i++)await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-completed')).toHaveText('1');
+  await tap(7);
+  await expect(page.getByTestId('v2-upgrade')).toBeEnabled();
+  await expect(page.getByTestId('v2-upgrade')).toContainText('✦ 60');
+  const before=Number(await page.getByTestId('v2-coins').textContent());
+  await page.getByTestId('v2-upgrade').click();
+  await expect(page.getByTestId('v2-coins')).toHaveText(String(before-60));
+  await expect(page.getByTestId('v2-upgrade')).toContainText('完成 3 单解锁');
+  await expect(page.getByTestId('v2-upgrade')).toBeDisabled();
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-output')).toHaveText('3');
+  await page.reload();
+  const save=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')!));
+  expect(save.tiles[7].level).toBe(2);
+  expect(save.tiles[7].worker).toBe('cinder');
+});
+test('portrait mobile equipment upgrade fits inside existing canvas information strip',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(LAB);
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:12000});
+  await page.evaluate(()=>{
+    const key='monster-apartment:workshop-v2-lab';
+    const s=JSON.parse(localStorage.getItem(key)!);
+    s.day=6;s.coins=132;s.completed=1;
+    s.tiles[7]={craft:'kiln',worker:'cinder',stored:0};
+    localStorage.setItem(key,JSON.stringify(s));
+  });
+  await page.reload();
+  const canvas=page.getByTestId('v2-stage').locator('canvas');
+  const box=await canvas.boundingBox();expect(box).toBeTruthy();
+  await canvas.click({position:{x:(15+2*160+73)/830*box!.width,y:(225+1*160+73)/820*box!.height}});
+  await expect(page.getByTestId('v2-upgrade')).toBeVisible();
+  await page.getByTestId('v2-upgrade').click();
+  await expect(page.getByTestId('v2-coins')).toHaveText('72');
+  const dims=await page.evaluate(()=>({x:document.documentElement.scrollWidth-innerWidth,
+    y:document.documentElement.scrollHeight-innerHeight}));
+  expect(dims.x).toBeLessThanOrEqual(1);
+  expect(dims.y).toBeLessThanOrEqual(1);
+});

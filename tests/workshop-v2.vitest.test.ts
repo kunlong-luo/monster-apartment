@@ -2,6 +2,7 @@ import {describe,expect,it} from 'vitest';
 import {
   newWorkshop,placeMachine,moveMachine,assignWorker,runShift,
   linked,validWorkshop,unassignWorker,acceptPatronCommission, PATRON_ADULT_AGE,
+  machineLevel,machineUpgradeQuote,upgradeMachine,workshopRank,
 } from '../v2/src/workshop-engine';
 
 const connect=()=>{
@@ -143,6 +144,81 @@ describe('V2 workshop: positioning and staffing are the gameplay',()=>{
     expect(validWorkshop({...initial,patron:{
       status:'active',due:8,cores:0,reward:135,
     }})).toBe(false);
+  });
+  it('unlocks Lv2 only after real delivery and buys improvements from earned coins',()=>{
+    let s=connect();
+    const quote=machineUpgradeQuote(s,7);
+    expect(quote).toMatchObject({next:2,cost:60,requiresCompleted:1,canUpgrade:false});
+    expect(upgradeMachine(s,7)).toBe(s);
+    for(let i=0;i<5;i++)s=runShift(s);
+    expect(s.completed).toBe(1);
+    expect(machineUpgradeQuote(s,7)?.canUpgrade).toBe(true);
+    const purchased=upgradeMachine(s,7);
+    expect(purchased.coins).toBe(s.coins-60);
+    expect(machineLevel(purchased.tiles[7]!)).toBe(2);
+    expect(purchased.tiles[7]?.worker).toBe('cinder');
+    expect(purchased.tiles[7]?.stored).toBe(0);
+    expect(upgradeMachine(purchased,7)).toBe(purchased); // LV3 locked
+    const compared=runShift(s);
+    const improved=runShift(purchased);
+    expect(compared.last?.cores).toBe(2);
+    expect(improved.last?.cores).toBe(3);
+    expect(validWorkshop(improved)).toBe(true);
+    expect(machineLevel(improved.tiles[7]!)).toBe(2);
+  });
+  it('physical machine upgrade follows equipment when players move it',()=>{
+    let s=connect();
+    for(let i=0;i<5;i++)s=runShift(s);
+    s=upgradeMachine(s,7);
+    s=moveMachine(s,7,8);
+    expect(s.tiles[7]).toBeNull();
+    expect(s.tiles[8]?.level).toBe(2);
+    expect(s.tiles[8]?.worker).toBe('cinder');
+    expect(machineUpgradeQuote(s,7)).toBeNull();
+    expect(upgradeMachine(s,7)).toBe(s);
+  });
+  it('advances a finite five-order campaign and unlocks level three',()=>{
+    let s=connect();
+    for(let i=0;i<13;i++)s=runShift(s);
+    expect(s.completed).toBe(3);
+    expect(s.last?.milestone).toBe(3);
+    expect(s.coins).toBe(417);
+    expect(workshopRank(s.completed)).toEqual({level:2,zh:'星匠工坊',nextGoal:5});
+    s=upgradeMachine(s,7);
+    const quote=machineUpgradeQuote(s,7);
+    expect(quote).toMatchObject({next:3,cost:124,requiresCompleted:3,canUpgrade:true});
+    const levelThree=upgradeMachine(s,7);
+    expect(levelThree.tiles[7]?.level).toBe(3);
+    expect(machineUpgradeQuote(levelThree,7)).toBeNull();
+    const result=runShift(levelThree);
+    expect(result.last?.cores).toBe(4);
+    expect(upgradeMachine(result,7)).toBe(result);
+    // The five-order goal is finite; its reputation and reward do not
+    // repeat during subsequent free-play deliveries.
+    let campaign=connect();
+    for(let i=0;i<21;i++)campaign=runShift(campaign);
+    expect(campaign.completed).toBe(5);
+    expect(campaign.last?.milestone).toBe(5);
+    expect(campaign.coins).toBe(892);
+    expect(workshopRank(campaign.completed)).toEqual({
+      level:3,zh:'月光大师工坊',nextGoal:null,
+    });
+    for(let i=0;i<4;i++)campaign=runShift(campaign);
+    expect(campaign.completed).toBe(6);
+    expect(campaign.last?.milestone).toBeUndefined();
+    expect(validWorkshop(campaign)).toBe(true);
+  });
+  it('supports old machines with no level, but rejects forged upgrade data',()=>{
+    const initial=newWorkshop();
+    expect(machineLevel(initial.tiles[5]!)).toBe(1);
+    expect(validWorkshop(initial)).toBe(true);
+    const upgraded={...initial,tiles:initial.tiles.map((x,i)=>
+      i===5?{...x!,level:3}:x)};
+    expect(validWorkshop(upgraded)).toBe(true);
+    expect(validWorkshop({...initial,tiles:initial.tiles.map((x,i)=>
+      i===5?{...x!,level:4}:x)})).toBe(false);
+    expect(validWorkshop({...initial,tiles:initial.tiles.map((x,i)=>
+      i===5?{...x!,level:1.2}:x)})).toBe(false);
   });
   it('rejects invalid V2 progress without conflating legacy V1 saves',()=>{
     const state=newWorkshop();

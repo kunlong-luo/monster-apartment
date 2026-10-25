@@ -1,5 +1,6 @@
 import { WORKERS, MACHINES, newWorkshop, validWorkshop,
-  placeMachine, moveMachine, assignWorker, runShift, acceptPatronCommission } from './workshop-engine';
+  placeMachine, moveMachine, assignWorker, runShift, acceptPatronCommission,
+  upgradeMachine, machineUpgradeQuote, machineLevel, workshopRank } from './workshop-engine';
 import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
 import { mountWorkshopLab } from './workshop-lab-stage';
 
@@ -66,6 +67,9 @@ function render(){
   $('deadline').textContent=String(Math.max(0,world.order.due-world.day+1));
   $('completed').textContent=String(world.completed);
   $('failed').textContent=String(world.failed);
+  const rank=workshopRank(world.completed);
+  $('rank').textContent=rank.zh+(rank.nextGoal===null
+    ?' · 主线达成，自由经营':' · 下一目标 '+rank.nextGoal+' 单');
   $('progress').style.width=Math.min(100,100*world.warehouse.core/world.order.cores)+'%';
   const patron=world.patron??null;
   const card=$('patron');
@@ -122,10 +126,24 @@ function render(){
     catalog.appendChild(button);
   }
   const chosen=selectedPlot!==null?world.tiles[selectedPlot]:null;
+  const quote=selectedPlot!==null?machineUpgradeQuote(world,selectedPlot):null;
+  const upgrade=$('upgrade') as HTMLButtonElement;
+  upgrade.hidden=!chosen||!quote;
+  if(chosen&&quote){
+    upgrade.disabled=!quote.canUpgrade;
+    upgrade.textContent=world.completed<quote.requiresCompleted
+      ?'Lv.'+quote.next+' · 完成 '+quote.requiresCompleted+' 单解锁'
+      :'升级 Lv.'+machineLevel(chosen)+' → '+quote.next+' · ✦ '+quote.cost;
+    upgrade.title='等级越高，每班水汽、孢子或晶核产量越多';
+  }
   $('move').toggleAttribute('disabled',!chosen);
   $('move').classList.toggle('active',movingFrom!==null);
   const stall=report?.blocked??[];
-  if(report?.fulfilled) $('diagnosis').textContent='订单完成！交付晶核，获得星币。下一批需求提高了。';
+  if(report?.milestone){
+    $('diagnosis').textContent=report.milestone===3
+      ?'⭐ 3 单达成！升级权限提升至 Lv.3，并获得 70 星币的工坊发展资金。'
+      :'🌙 5 单达成！月光大师工坊目标完成，获得 160 星币，可继续自由经营。';
+  }else if(report?.fulfilled) $('diagnosis').textContent='订单完成！交付晶核，获得星币。下一批需求提高了。';
   else if(report?.lost) $('diagnosis').textContent='交付失败：晶核不足，损失 15 星币。新订单已开始。';
   else if(stall.length){
     $('diagnosis').textContent=stall.some(s=>s.includes(':water'))?
@@ -144,7 +162,16 @@ $('root').addEventListener('click',event=>{
   if(!(origin instanceof Element))return;
   const worker=origin.closest<HTMLButtonElement>('[data-worker]');
   const build=origin.closest<HTMLButtonElement>('[data-build]');
-  if(origin.closest('#patron-accept')){
+  if(origin.closest('#upgrade')){
+    if(selectedPlot!==null){
+      const index=selectedPlot;
+      const before=world.tiles[index];
+      const next=upgradeMachine(world,index);
+      apply(next,before?'已改造 '+MACHINES[before.craft].zh+'：每班产量提升，机器也会焕发新光。':
+        '无法升级此位置。','good');
+      render();
+    }
+  }else if(origin.closest('#patron-accept')){
     acceptPatron();
   }else if(worker){
     const id=worker.dataset.worker as WorkerId;

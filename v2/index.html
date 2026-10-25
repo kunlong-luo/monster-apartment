@@ -17,9 +17,11 @@
   </header>
   <section class="middle">
     <div class="world">
-      <div class="stage-label"><span>● 生产与建设区</span><small>玩法灰盒，角色美术尚未验收</small></div>
+      <div class="stage-label"><span>● 生产与建设区</span><small id="rank" data-testid="v2-rank">见习工坊 · 目标：完成 3 单</small></div>
       <div id="stage" data-testid="v2-stage" aria-label="PixiJS WebGL 工坊场景：点击设备或空地进行操作"></div>
-      <p id="selected" class="selection">点地块查看、建造或派工</p>
+      <div class="selection"><span id="selected">点地块查看、建造或派工</span>
+        <button type="button" id="upgrade" data-testid="v2-upgrade" hidden>设备升级</button>
+      </div>
     </div>
     <aside class="sidebar">
       <section class="panel">

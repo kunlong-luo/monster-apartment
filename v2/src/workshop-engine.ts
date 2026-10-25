@@ -5,7 +5,11 @@ export type Craft='well'|'garden'|'kiln';
 export type Element='water'|'plant'|'fire';
 export type Supply='water'|'fiber'|'core';
 export type WorkerId='brook'|'fern'|'cinder';
-export type Machine={craft:Craft;worker:WorkerId|null;stored:number};
+export type MachineLevel=1|2|3;
+export type Machine={craft:Craft;worker:WorkerId|null;stored:number;
+  /** Optional so pre-upgrade V2 saves and initial machines keep the same shape. */
+  level?:2|3;
+};
 export type WorkshopOrder={due:number;cores:number;reward:number};
 /** Yuesha is an adult witch merchant; her optional request draws from the
  * same real stock as ordinary contracts. Legacy V2 saves omit this field. */
@@ -19,6 +23,8 @@ export const PATRON_FAILURE_COST=20;
 export type DailyProduction={
   water:number;fiber:number;cores:number;blocked:string[];
   fulfilled:boolean;lost:boolean;
+  /** Anniversary rewards are earned through shipped orders, not idle clicks. */
+  milestone?:3|5;
 };
 export type WorkshopState={
   version:2;day:number;coins:number;
@@ -42,6 +48,37 @@ export const WORKERS:Record<WorkerId,{skill:Element;zh:string;en:string}>={
   fern:{skill:'plant',zh:'青枝',en:'Fern'},
   cinder:{skill:'fire',zh:'炽角',en:'Cinder'},
 };
+const PRICE:Record<Craft,readonly [number,number]>={
+  well:[40,88],garden:[48,98],kiln:[60,124],
+};
+export function machineLevel(machine:Machine|null):MachineLevel {
+  return machine?.level??1;
+}
+export type UpgradeQuote={cost:number;next:2|3;requiresCompleted:number;canUpgrade:boolean};
+/** Every upgrade is earned and bought; no automatic stat increases. */
+export function machineUpgradeQuote(s:WorkshopState,index:number):UpgradeQuote|null {
+  const machine=s.tiles[index];
+  if(!machine)return null;
+  const level=machineLevel(machine);
+  if(level===3)return null;
+  const next=(level+1) as 2|3;
+  const cost=PRICE[machine.craft][next-2];
+  const requiresCompleted=next===2?1:3;
+  return {cost,next,requiresCompleted,canUpgrade:s.coins>=cost&&s.completed>=requiresCompleted};
+}
+export function upgradeMachine(s:WorkshopState,index:number):WorkshopState {
+  if(!validIndex(index))return s;
+  const quote=machineUpgradeQuote(s,index);
+  if(!quote?.canUpgrade)return s;
+  const tiles=s.tiles.slice();
+  tiles[index]={...tiles[index]!,level:quote.next};
+  return {...s,tiles,coins:s.coins-quote.cost};
+}
+export function workshopRank(completed:number):{level:1|2|3;zh:string;nextGoal:number|null}{
+  if(completed>=5)return {level:3,zh:'月光大师工坊',nextGoal:null};
+  if(completed>=3)return {level:2,zh:'星匠工坊',nextGoal:5};
+  return {level:1,zh:'见习工坊',nextGoal:3};
+}
 const validIndex=(n:number)=>Number.isInteger(n)&&n>=0&&n<BOARD_SIZE;
 export const linked=(from:number,to:number):boolean=>
   validIndex(from)&&validIndex(to)&&
@@ -98,7 +135,7 @@ export function runShift(s:WorkshopState):WorkshopState {
   for(let i=0;i<BOARD_SIZE;i++){
     const machine=tiles[i];
     if(machine?.craft!=='well'||!machine.worker)continue;
-    const amount=expert('well',machine.worker)?2:1;
+    const amount=(expert('well',machine.worker)?2:1)+machineLevel(machine)-1;
     machine.stored+=amount;report.water+=amount;
   }
   // Stage 2: greenhouses must touch pumps, and employ a worker.
@@ -109,7 +146,7 @@ export function runShift(s:WorkshopState):WorkshopState {
       linked(i,j)&&other.stored>=1);
     if(source<0){report.blocked.push('garden:'+i+':water');continue;}
     tiles[source]!.stored-=1;
-    const amount=expert('garden',machine.worker)?2:1;
+    const amount=(expert('garden',machine.worker)?2:1)+machineLevel(machine)-1;
     machine.stored+=amount;report.fiber+=amount;
   }
   // Stage 3: kilns need two fibers from an adjacent greenhouse.
@@ -120,7 +157,7 @@ export function runShift(s:WorkshopState):WorkshopState {
       linked(i,j)&&other.stored>=2);
     if(source<0){report.blocked.push('kiln:'+i+':fiber');continue;}
     tiles[source]!.stored-=2;
-    report.cores+=expert('kiln',machine.worker)?2:1;
+    report.cores+=(expert('kiln',machine.worker)?2:1)+machineLevel(machine)-1;
   }
   let warehouse=s.warehouse.core+report.cores;
   let coins=s.coins;
@@ -131,6 +168,11 @@ export function runShift(s:WorkshopState):WorkshopState {
     if(warehouse>=order.cores){
       warehouse-=order.cores;coins+=order.reward;
       completed++;report.fulfilled=true;
+      if(completed===3||completed===5){
+        // Finite campaign milestones, not a repeatable daily currency faucet.
+        report.milestone=completed;
+        coins+=completed===3?70:160;
+      }
     }else{
       failed++;coins=Math.max(0,coins-15);report.lost=true;
     }
@@ -181,7 +223,8 @@ export function validWorkshop(value:unknown):value is WorkshopState {
   for(const t of s.tiles){
     if(t===null)continue;
     if(!t||!Object.hasOwn(MACHINES,t.craft)||!Number.isSafeInteger(t.stored)
-        ||t.stored<0||t.worker!==null&&!Object.hasOwn(WORKERS,t.worker))return false;
+        ||t.stored<0||t.worker!==null&&!Object.hasOwn(WORKERS,t.worker)
+        ||t.level!==undefined&&t.level!==2&&t.level!==3)return false;
     if(t.worker){if(staffed.has(t.worker))return false;staffed.add(t.worker);}
   }
   return true;
