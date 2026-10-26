@@ -45,10 +45,15 @@ export function GothicApartment(){
     try{localStorage.setItem(KEY,JSON.stringify(world));}catch{/* Optional local save. */}
   },[ready,world]);
   useEffect(()=>{
-    if(!ready||paused||world.phase!=='playing')return;
-    const clock=window.setInterval(()=>setWorld(current=>advanceCozy(current)),2000);
+    // Do not let the day clock penalize players who are reading dialogue,
+    // inspecting room actions, or switching away from the browser tab.
+    if(!ready||paused||witchOpen||notices||selected!==null||world.phase!=='playing')return;
+    const clock=window.setInterval(()=>{
+      if(document.visibilityState==='visible')
+        setWorld(current=>advanceCozy(current));
+    },2000);
     return ()=>window.clearInterval(clock);
-  },[ready,paused,world.phase]);
+  },[ready,paused,witchOpen,notices,selected,world.phase]);
   useEffect(()=>{
     if(!feedback)return;
     const timer=window.setTimeout(()=>setFeedback(current=>
