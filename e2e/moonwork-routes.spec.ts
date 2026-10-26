@@ -203,8 +203,7 @@ test('choosing an illustrated guild worker preselects their real Pixi factory as
   await page.getByRole('navigation',{name:'月光工坊世界'})
     .getByRole('link',{name:'角色图鉴'}).click();
   await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
-  await page.getByTestId('worker-card-fern').getByRole('link',{name:'安排'+
-    '菲娅'+'到工坊'}).click();
+  await page.getByTestId('worker-card-fern').getByRole('link',{name:'安排青枝到工坊'}).click();
   await expect(page).toHaveURL(/\/workshop\/\?worker=fern/);
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
   await expect(page.getByTestId('v2-worker-fern')).toHaveClass(/active/);
