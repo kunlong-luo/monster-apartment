@@ -61,14 +61,15 @@ export function GothicResourcePill({
 }
 
 export function GothicDock({
-  items,label,className='',activeHref
+  items,label,className='',activeHref,testId
 }:{
   items:readonly GothicDestination[];
   label:string;
   className?:string;
   activeHref?:string;
+  testId?:string;
 }){
-  return <nav aria-label={label} className={
+  return <nav data-testid={testId} aria-label={label} className={
     'absolute bottom-[max(8px,env(safe-area-inset-bottom))] left-1/2 z-[5] '+
     'flex w-max max-w-[98vw] -translate-x-1/2 items-end justify-center gap-1.5 '+
     'sm:gap-3 lg:gap-5 '+className

@@ -17,22 +17,6 @@
 .gothic-workshop-shell #root.lab.gothic-workshop .logo>span{font-size:22px}
 .gothic-workshop-shell #root.lab.gothic-workshop .logo strong{font-size:16px;letter-spacing:.06em}
 .gothic-workshop-shell #root.lab.gothic-workshop .logo small{font-size:9px}
-.gothic-workshop-shell #root.lab.gothic-workshop .game-world-nav{
-  position:fixed;z-index:20;left:50%;bottom:max(10px,env(safe-area-inset-bottom));
-  transform:translateX(-50%);display:flex;align-items:center;justify-content:center;
-  gap:clamp(4px,.8vw,15px);padding:0;width:auto;max-width:94vw;
-  border:0;background:transparent;box-shadow:none}
-.gothic-workshop-shell #root.lab.gothic-workshop .game-world-nav a{
-  display:flex;flex-direction:column;justify-content:center;align-items:center;
-  min-width:clamp(66px,7.7vw,105px);height:61px;gap:3px;
-  border:1px solid #bb966ab5;border-radius:10px;
-  background:linear-gradient(150deg,#48302fe9,#1b1018ed);
-  box-shadow:0 6px 18px #0008,inset 0 1px #f1d7a930;
-  color:#f4d8b0;font-size:12px;font-weight:500;backdrop-filter:blur(9px)}
-.gothic-workshop-shell #root.lab.gothic-workshop .game-world-nav a.active{
-  border-color:#f8d6a0;background:linear-gradient(145deg,#75513bdc,#311e2ae9)}
-.gothic-workshop-shell #root.lab.gothic-workshop .game-world-nav .world-nav-glyph{
-  color:#f4ce90;font-size:24px}
 .gothic-workshop-shell #root.lab.gothic-workshop .top-stats>span{
   border-color:#ae895f9d;border-radius:16px;background:#21151fca;
   padding:6px 10px;color:#e9d0af;backdrop-filter:blur(7px)}
@@ -105,9 +89,6 @@
   .gothic-workshop-shell #root.lab.gothic-workshop .main-actions{min-width:92px;flex-basis:92px}
   .gothic-workshop-shell #root.lab.gothic-workshop .worker strong,
   .gothic-workshop-shell #root.lab.gothic-workshop .machine-card strong{font-size:9px}
-  .gothic-workshop-shell #root.lab.gothic-workshop .game-world-nav{bottom:7px}
-  .gothic-workshop-shell #root.lab.gothic-workshop .game-world-nav a{
-    min-width:clamp(57px,18vw,85px);height:56px;font-size:10px}
 }
 @media(max-width:610px){
   .gothic-workshop-shell #root.lab.gothic-workshop .top-stats>span{padding:3px 6px}
@@ -127,5 +108,8 @@
   .gothic-workshop-shell #root.lab.gothic-workshop .worker-orb,
   .gothic-workshop-shell #root.lab.gothic-workshop .machine-symbol{display:none}
   .gothic-workshop-shell #root.lab.gothic-workshop .panel-route-link{display:none}
-  .gothic-workshop-shell #root.lab.gothic-workshop .game-world-nav a{height:49px}
 }
+
+/* V0.4.2: the embedded Pixi markup retains #day/#coins for DOM rendering;
+   only the Next.js visible resource display is React + Tailwind. */
+.gothic-workshop-shell #root.lab.gothic-workshop .top-stats > span{display:none}

@@ -10,6 +10,9 @@ test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',asy
   await expect(stage).toHaveAttribute('data-renderer','pixi-webgl-bitmap');
   await expect(page.getByTestId('v2-day')).toHaveText('1');
   await expect(page.getByTestId('v2-world-nav')).toBeVisible();
+  await expect(page.getByTestId('workshop-react-hud')).toBeVisible();
+  await expect(page.locator('#root .game-world-nav')).toHaveCount(0);
+  await expect(page.getByTestId('v2-coins')).toHaveText('100');
   await expect(page.getByTestId('v2-scene-menu')).toHaveCount(0);
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(5);
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'工坊'})).toHaveAttribute('aria-current','page');

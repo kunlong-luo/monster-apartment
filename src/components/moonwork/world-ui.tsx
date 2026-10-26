@@ -3,6 +3,7 @@ import Link from 'next/link';
 import {useEffect} from 'react';
 import {useWorkshopWorld} from './world-save-react';
 import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
+import {WORLD_NAV} from './world-navigation';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
 import {SAVE_KEY,CHANGE_EVENT} from '@/lib/moonwork/world-store';
 import {Panel,WorkshopLink} from './world-primitives';
@@ -12,13 +13,7 @@ import {Characters} from './world-characters';
 import {Warehouse} from './world-warehouse';
 
 export type WorldArea='town'|'orders'|'characters'|'warehouse';
-const nav=[
-  {id:'town',label:'月光街',full:'月光街',glyph:'✦',href:'/town/'},
-  {id:'workshop',label:'工坊',full:'工坊',glyph:'⚒',href:'/workshop/'},
-  {id:'orders',label:'委托',full:'委托大厅',glyph:'◇',href:'/orders/'},
-  {id:'characters',label:'角色',full:'角色图鉴',glyph:'♟',href:'/characters/'},
-  {id:'warehouse',label:'仓库',full:'魔法仓库',glyph:'⬡',href:'/warehouse/'},
-] as const;
+
 export function MoonworkWorld({area}:{area:WorldArea}){
   const s=useWorkshopWorld();
   useEffect(()=>{
@@ -51,7 +46,7 @@ export function MoonworkWorld({area}:{area:WorldArea}){
       </div>
     </header>
     <GothicDock label="月光工坊世界" activeHref={'/'+area+'/'}
-      items={nav.map(n=>({href:n.href,icon:n.glyph,label:n.label,ariaLabel:n.full}))}/>
+      items={WORLD_NAV.map(n=>({href:n.href,icon:n.glyph,label:n.label,ariaLabel:n.full}))}/>
 
     <div className="mw-main">
       <p className="mw-eyebrow">MOONLIGHT RESIDENCE / {title}</p>

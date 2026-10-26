@@ -2,6 +2,10 @@
 import {useEffect,useRef,useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
+import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
+import {WORLD_NAV} from './world-navigation';
+import {useWorkshopWorld} from './world-save-react';
+import {CHANGE_EVENT} from '@/lib/moonwork/world-store';
 
 declare global {
   interface Window {
@@ -36,6 +40,7 @@ function loadRuntime(base:string){
 export function WorkshopClient({markup}:{markup:string}){
   const host=useRef<HTMLDivElement>(null);
   const router=useRouter();
+  const game=useWorkshopWorld();
   const [error,setError]=useState('');
   useEffect(()=>{
     const root=host.current?.querySelector<HTMLElement>('#root');
@@ -75,7 +80,11 @@ export function WorkshopClient({markup}:{markup:string}){
       const runtime=window.MoonworkRuntime;
       if(!runtime)throw Error('PixiJS runtime is missing.');
       const cleanup=await runtime.mountWorkshopGame(root,base);
-      if(cancelled)cleanup();else dispose=cleanup;
+      if(cancelled)cleanup();else{
+        dispose=cleanup;
+        // The first factory initializes its save in Pixi; publish it to React.
+        window.dispatchEvent(new Event(CHANGE_EVENT));
+      }
     }).catch(e=>{if(!cancelled)setError(e instanceof Error?e.message:String(e));});
     return ()=>{
       cancelled=true;
@@ -84,8 +93,26 @@ export function WorkshopClient({markup}:{markup:string}){
       dispose?.();
     };
   },[router]);
-  return <div ref={host} data-testid="next-workshop-shell">
+  return <div ref={host} data-testid="next-workshop-shell"
+    className="gothic-workshop-shell relative isolate min-h-dvh overflow-hidden">
     <div dangerouslySetInnerHTML={{__html:markup}}/>
+    <div data-testid="workshop-react-hud"
+      className="pointer-events-none absolute right-14 top-2 z-[22] flex items-start gap-1.5 sm:right-[68px] sm:top-3 sm:gap-2"
+      aria-label="工坊当前资源">
+      <span className="pointer-events-auto hidden sm:inline-flex">
+        <GothicResourcePill symbol="☾" amount={game?.day??1} label="工坊天数" testId="v2-day"/>
+      </span>
+      <span className="pointer-events-auto">
+        <GothicResourcePill symbol="✦" amount={game?.coins??100} label="星币" testId="v2-coins"/>
+      </span>
+      <span className="pointer-events-auto">
+        <GothicResourcePill symbol="◆" amount={game?.warehouse.core??0} label="晶核"/>
+      </span>
+    </div>
+    <GothicDock label="月光工坊世界" activeHref="/workshop/"
+      testId="v2-world-nav"
+      items={WORLD_NAV.map(item=>({href:item.href,icon:item.glyph,
+        label:item.label,ariaLabel:item.full}))}/>
     {error&&<p role="alert" className="mw-runtime-error">
       工坊画面未能启动：{error}。请检查浏览器 WebGL 支持并刷新。</p>}
   </div>;
