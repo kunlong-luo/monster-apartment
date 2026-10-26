@@ -1,0 +1,7 @@
+{
+  "name": "灵核公寓 · Spirit Core Residence",
+  "description": "在月光街亲手建造三层小公寓，迎接奇幻灵核住户，布置家具，经营房租，发现邻居间的小故事。",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

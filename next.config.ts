@@ -5,7 +5,8 @@ import type { NextConfig } from 'next';
 const staticExport = process.env.NEXT_STATIC_EXPORT === '1';
 
 const nextConfig: NextConfig = {
-  ...(staticExport ? { output: 'export' as const, basePath: '/monster-apartment', trailingSlash: true } : {}),
+  output: staticExport ? ('export' as const) : ('standalone' as const),
+  ...(staticExport ? { basePath: '/monster-apartment', trailingSlash: true } : {}),
   // Turbopack is the default engine for dev and build in Next 16.
   reactStrictMode: true,
   poweredByHeader: false,
