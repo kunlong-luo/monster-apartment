@@ -6,7 +6,7 @@ import moonveil from '../../../v2/art/moonveil-portrait.avif';
 import {COZY_RESIDENTS,ROOM_DETAILS,FURNISHINGS,
   newCozyGame,validCozySave,resumeCozySave,advanceCozy,availableResidents,
   buildCozyRoom,moveInCozy,decorateCozy,relocateCozyResident,careForCozyResident,
-  cozyCareUsedToday,cozyDay,cozyGoal,cozyDailyIncome,resolveCozyIncident,COZY_INCIDENTS} from '@/core/cozy-engine';
+  cozyCareUsedToday,cozyDay,cozyGoal,cozyDailyIncome,cozyRescuePreview,resolveCozyIncident,COZY_INCIDENTS} from '@/core/cozy-engine';
 import type {CozyState,HomeType,Furnishing} from '@/core/cozy-engine';
 import './gothic-apartment.css';
 const KEY='monster-apartment:cozy:v1';
@@ -25,6 +25,8 @@ function readCozySave():CozyState{
 }
 const types:HomeType[]=['nest','bath','workshop','greenhouse'];
 const decors:Furnishing[]=['plant','lamp','books'];
+const roomRunes:Record<HomeType,string>={nest:'⌂',bath:'◈',workshop:'⚒',greenhouse:'❀'};
+const furnishingRunes:Record<Furnishing,string>={plant:'❀',lamp:'✧',books:'☷'};
 const nav=[{href:'/',icon:'♜',label:'大厅'},{href:'/town/',icon:'✧',label:'探索'},
   {href:'/workshop/',icon:'⚒',label:'工坊'},{href:'/orders/',icon:'❦',label:'委托'},
   {href:'/characters/',icon:'♟',label:'住客'}];
@@ -35,6 +37,8 @@ export function GothicApartment(){
   const [moving,setMoving]=useState<number|null>(null);
   const [paused,setPaused]=useState(false);
   const [notices,setNotices]=useState(false);
+  const [witchOpen,setWitchOpen]=useState(false);
+  const [feedback,setFeedback]=useState<{id:number;text:string}|null>(null);
   useEffect(()=>{
     if(!ready)return;
     try{localStorage.setItem(KEY,JSON.stringify(world));}catch{/* Optional local save. */}
@@ -49,7 +53,13 @@ export function GothicApartment(){
   const room=selected===null?null:world.rooms[selected];
   const incident=world.incident;
   const latest=world.journal[world.journal.length-1];
-  const change=(next:CozyState)=>{if(next!==world)setWorld(next);};
+  const change=(next:CozyState)=>{
+    if(next===world)return;
+    setWorld(next);
+    const story=next.journal[next.journal.length-1];
+    if(story?.key!==world.journal[world.journal.length-1]?.key)
+      setFeedback(previous=>({id:(previous?.id??0)+1,text:story.zh}));
+  };
   const guest=(id:typeof applicants[number])=>COZY_RESIDENTS.find(p=>p.id===id)!;
   const choose=(index:number)=>{
     if(moving!==null&&index!==moving){
@@ -59,7 +69,9 @@ export function GothicApartment(){
   };
   return <main className="ga" data-testid="gothic-apartment" aria-label="哥特公寓经营">
     <div className="ga-backdrop" style={{backgroundImage:'url('+'../lobby-hero.webp'+')'}} aria-hidden="true"/>
+    <div className="ga-light" aria-hidden="true"/>
     <div className="ga-shade" aria-hidden="true"/>
+    <div className="ga-dust" aria-hidden="true"/>
     <header className="ga-top">
       <Link className="ga-home" href="/" aria-label="返回大厅">⌂ <span>夜色公寓</span></Link>
       <div className="ga-resources" aria-label="公寓真实存档">
@@ -84,7 +96,7 @@ export function GothicApartment(){
             aria-label={String(index+1)+'号房 '+(place?ROOM_DETAILS[place.type].zh:'待建造')}
             aria-pressed={selected===index}
             className={'ga-door'+(selected===index?' is-active':'')+(resident?' is-occupied':'')}>
-            <span className="ga-door-icon">{place?ROOM_DETAILS[place.type].icon:'⌂'}</span>
+            <span className="ga-door-icon" aria-hidden="true">{place?roomRunes[place.type]:'✧'}</span>
             <span className="ga-door-copy"><strong>{String(index+1).padStart(2,'0')} · {place?ROOM_DETAILS[place.type].zh:'待建造'}</strong>
               <small>{resident?'住客 · '+resident.zh:place?'房间空置':'点击修建'}</small></span>
           </button>;
@@ -92,7 +104,7 @@ export function GothicApartment(){
       </div>
       {incident&&<span className="ga-incident">✧ {COZY_INCIDENTS[incident.kind].zh}</span>}
     </aside>
-    <button className="ga-witch" type="button" onClick={()=>{setSelected(null);setNotices(true);}}
+    <button className="ga-witch" type="button" onClick={()=>{setSelected(null);setWitchOpen(true);}}
       aria-label="与女主人月纱交流" title="月纱 · 女主人"/>
     <div className="ga-witch-title" aria-hidden="true">月纱 <small>暗夜公寓的女主人</small></div>
     <section className="ga-lower" aria-label="房间交互及经营动态">
@@ -110,7 +122,7 @@ export function GothicApartment(){
           {types.map(type=><button key={type} type="button" data-testid={'ga-build-'+type}
             disabled={world.coins<ROOM_DETAILS[type].cost}
             onClick={()=>change(buildCozyRoom(world,selected,type))}>
-            <b>{ROOM_DETAILS[type].icon}</b><span>{ROOM_DETAILS[type].zh}</span>
+            <b aria-hidden="true">{roomRunes[type]}</b><span>{ROOM_DETAILS[type].zh}</span>
             <small>✦ {ROOM_DETAILS[type].cost}</small></button>)}
         </div>:!room.resident?<div className="ga-picks">
           {applicants.map(id=><button key={id} type="button" data-testid={'ga-welcome-'+id}
@@ -128,16 +140,43 @@ export function GothicApartment(){
           {decors.map(item=><button type="button" key={item} data-testid={'ga-decor-'+item}
             disabled={world.coins<FURNISHINGS[item].cost||room.decor===item}
             onClick={()=>change(decorateCozy(world,selected,item))}>
-            <b>{FURNISHINGS[item].icon}</b><span>{FURNISHINGS[item].zh}</span>
+            <b aria-hidden="true">{furnishingRunes[item]}</b><span>{FURNISHINGS[item].zh}</span>
             <small>{room.decor===item?'已摆放':'✦ '+FURNISHINGS[item].cost}</small></button>)}
         </div>}
-        {incident&&<div className="ga-warning"><span>{COZY_INCIDENTS[incident.kind].zh}</span>
-          {world.rooms.some(r=>r?.resident)&&<button type="button" onClick={()=>{
-            const helper=world.rooms.find(r=>r?.resident)?.resident;
-            if(helper)change(resolveCozyIncident(world,helper));
-          }}>派住客帮忙处理</button>}</div>}
+        {incident&&<div className="ga-warning" aria-label="公寓突发事件">
+          <strong>✧ {COZY_INCIDENTS[incident.kind].zh}</strong>
+          <small>{COZY_INCIDENTS[incident.kind].hintZh} · 选择帮手会真实影响修缮收益</small>
+          <div className="ga-rescue-helpers">
+            {COZY_RESIDENTS.filter(person=>world.rooms.some(p=>p?.resident===person.id))
+              .map(person=>{
+                const forecast=cozyRescuePreview(world,person.id);
+                return <button type="button" key={person.id}
+                  onClick={()=>change(resolveCozyIncident(world,person.id))}>
+                  <span>{person.zh}</span><small>{forecast?.expert?'擅长 · +12 星币':'修缮 · -6 星币'}</small>
+                </button>;
+              })}
+          </div>
+        </div>}
       </div>}
     </section>
+    {feedback&&<div className="ga-feedback" role="status" key={feedback.id}>
+      <span aria-hidden="true">✦</span>{feedback.text}
+    </div>}
+    {witchOpen&&<div className="ga-conversation-scrim"
+      onMouseDown={event=>{if(event.target===event.currentTarget)setWitchOpen(false);}}>
+      <section className="ga-conversation" role="dialog" aria-modal="true" aria-label="与月纱交谈">
+        <button type="button" className="ga-conversation-close" aria-label="关闭月纱对话"
+          onClick={()=>setWitchOpen(false)}>×</button>
+        <div className="ga-conversation-art"><Image src={moonveil} alt="月纱的绘制肖像" fill sizes="130px"/></div>
+        <div className="ga-conversation-text">
+          <span className="ga-micro">THE MISTRESS OF THE MANOR · 月纱</span>
+          <h2>今夜的公寓，如何了？</h2>
+          <p>“已经住进 {goal.guests} 位邻居了。每扇门后都有属于自己的故事……要不要再去看看？”</p>
+          <p>幸福度 {goal.happiness} / 100 · 预计每日收入 +{cozyDailyIncome(world).total} ✦</p>
+          <Link href="/orders/" className="ga-conversation-link">查看月纱委托 ›</Link>
+        </div>
+      </section>
+    </div>}
     {notices&&<div className="ga-popover" role="dialog" aria-label="公寓日志">
       <button type="button" aria-label="关闭公寓日志" onClick={()=>setNotices(false)}>×</button>
       <Image src={moonveil} alt="月纱" width={64} height={75}/>
