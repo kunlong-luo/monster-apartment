@@ -194,3 +194,21 @@ test('painted worker roster and scene art load as real gameplay destinations',as
     .getByRole('link',{name:'魔法仓库'}).click();
   await expect(page.getByTestId('painted-warehouse-hero')).toBeVisible();
 });
+
+
+test('choosing an illustrated guild worker preselects their real Pixi factory assignment',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+  await page.getByRole('navigation',{name:'月光工坊世界'})
+    .getByRole('link',{name:'角色图鉴'}).click();
+  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
+  await page.getByTestId('worker-card-fern').getByRole('link',{name:'安排'+
+    '菲娅'+'到工坊'}).click();
+  await expect(page).toHaveURL(/\/workshop\/\?worker=fern/);
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+  await expect(page.getByTestId('v2-worker-fern')).toHaveClass(/active/);
+  await expect(page.locator('#selected')).toContainText('待派工');
+  const img=page.getByTestId('v2-worker-fern').getByRole('img');
+  await expect(img).toHaveCSS('background-image',/worker-triptych/);
+});

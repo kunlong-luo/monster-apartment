@@ -1,3 +1,17 @@
+## V2.9 — direct worker assignment handoff
+
+Selecting **安排岗位** on one of the three painted guild workers opens
+`/workshop/?worker=<id>`. The active Pixi runtime validates the ID against
+the real worker roster, preselects that worker and instructs the player
+to click a machine. There is no automatic fictional assignment or
+storage mutation until the player chooses a real plot.
+
+The workshop's own assignment toolbar now uses the same shared raster
+character atlas as the character roster; the standalone build copies
+that AVIF into the worker toolbar asset folder. The implementation keeps
+mobile rendering and saved V2 simulation unchanged. E2E now checks both
+art loading and actual selected-worker state.
+
 ## V2.9 — illustrated roster and painted guild destinations
 
 - Three actual illustrated creature workers (brook/fern/cinder) are now

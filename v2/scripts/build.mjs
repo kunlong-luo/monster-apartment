@@ -24,6 +24,7 @@ await copyFile(
 );
 await copyFile(resolve(root,'art/moon-workshop.avif'),resolve(root,'dist/assets/moon-workshop.avif'));
 await copyFile(resolve(root,'art/moonveil-portrait.avif'),resolve(root,'dist/assets/moonveil-portrait.avif'));
+await copyFile(resolve(root,'art/worker-triptych.avif'),resolve(root,'dist/assets/worker-triptych.avif'));
 await copyFile(resolve(root,'art/moonstone-floor.avif'),resolve(root,'dist/assets/moonstone-floor.avif'));
 await copyFile(resolve(root,'art/kiln-art-review.avif'),resolve(root,'dist/assets/kiln-art-review.avif'));
 await copyFile(resolve(root,'art/well-art-review.avif'),resolve(root,'dist/assets/well-art-review.avif'));

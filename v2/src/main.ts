@@ -79,6 +79,13 @@ function buyPatronCore(){
   render();
 }
 const stage=await mountWorkshopLab($('stage'),world,{plot,patronTap:acceptPatron},assetBase);
+// Contextual navigation from /characters/ selects a genuine worker; the
+// player still has to choose an actual compatible machine for the assignment.
+const requestedWorker=new URLSearchParams(window.location.search).get('worker');
+if(requestedWorker&&Object.hasOwn(WORKERS,requestedWorker)){
+  chosenWorker=requestedWorker as WorkerId;
+  message='已选中'+WORKERS[chosenWorker].zh+'。点击工坊设备完成派工。';
+}
 function render(){
   stage.sync(world,selectedPlot);
   $('day').textContent=String(world.day);
@@ -149,8 +156,7 @@ function render(){
     const button=document.createElement('button');
     button.type='button';button.className='worker'+(chosenWorker===id?' active':'');
     button.dataset.worker=id;button.dataset.testid='v2-worker-'+id;
-    button.innerHTML='<span class="worker-orb '+id+'">'+
-      (id==='brook'?'◈':id==='fern'?'✿':'✷')+'</span><strong>'+profile.zh+
+    button.innerHTML='<span class="worker-miniature '+id+'" role="img" aria-label="'+profile.zh+'的绘制头像"></span><strong>'+profile.zh+
       '</strong><small>'+(occupied>=0?'工位 '+String(occupied+1).padStart(2,'0'):'待分配')+'</small>';
     actions.appendChild(button);
   }
