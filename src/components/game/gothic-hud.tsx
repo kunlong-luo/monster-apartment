@@ -124,12 +124,13 @@ export function GothicActionButton({
  * separate CSS panel implementation.
  */
 export function GothicModal({
-  title,onClose,children,wide=false
+  title,onClose,children,wide=false,closeLabel="关闭面板"
 }:{
   title:string;
   onClose:()=>void;
   children:ReactNode;
   wide?:boolean;
+  closeLabel?:string;
 }){
   const dialog=useRef<HTMLElement>(null);
   useEffect(()=>{
@@ -149,7 +150,7 @@ export function GothicModal({
           ));
           if(nodes.length===0)return;
           const first=nodes[0],last=nodes[nodes.length-1];
-          if(event.shiftKey && document.activeElement===first){
+          if(event.shiftKey && (document.activeElement===first || document.activeElement===dialog.current)){
             event.preventDefault();last.focus();
           }else if(!event.shiftKey && document.activeElement===last){
             event.preventDefault();first.focus();
@@ -167,7 +168,7 @@ export function GothicModal({
         'absolute right-2.5 top-2.5 z-10 grid size-9 place-items-center rounded-full border '+
         'border-gothic-brass/50 bg-gothic-panel/80 text-2xl leading-none text-gothic-ivory '+
         'hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow'
-      } onClick={onClose} aria-label="关闭面板">×</button>
+      } onClick={onClose} aria-label={closeLabel}>×</button>
       {children}
     </section>
   </div>;
