@@ -47,6 +47,15 @@ test('PixiJS factory produces cores only after the player connects the chain and
   await tap(6);
   await page.getByTestId('v2-worker-cinder').click();
   await tap(7);
+  // Check the actual connected machine graph before advancing days.
+  // This reports missed pointer events where they happen, not after 5 shifts.
+  await expect.poll(()=>page.evaluate(()=>{
+    const s=JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')??'null');
+    return [5,6,7].map(i=>s?.tiles?.[i]
+      ?[s.tiles[i].craft,s.tiles[i].worker]:null);
+  }),{timeout:12000}).toEqual([
+    ['well','brook'],['garden','fern'],['kiln','cinder']
+  ]);
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-output')).toHaveText('2');
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-last-shift-effect','cores:2');
@@ -123,6 +132,15 @@ test('adult moon witch is earned through regular production and offers a real co
   await page.getByTestId('v2-worker-brook').click();await tap(5);
   await page.getByTestId('v2-worker-fern').click();await tap(6);
   await page.getByTestId('v2-worker-cinder').click();await tap(7);
+  // Check the actual connected machine graph before advancing days.
+  // This reports missed pointer events where they happen, not after 5 shifts.
+  await expect.poll(()=>page.evaluate(()=>{
+    const s=JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')??'null');
+    return [5,6,7].map(i=>s?.tiles?.[i]
+      ?[s.tiles[i].craft,s.tiles[i].worker]:null);
+  }),{timeout:12000}).toEqual([
+    ['well','brook'],['garden','fern'],['kiln','cinder']
+  ]);
   await expect(page.getByTestId('v2-patron-card')).toBeHidden();
   // Wait for each shift to finish before sending the next click; rapid
   // clicks can race the Pixi scene refresh on slower CI runners.
@@ -213,6 +231,15 @@ test('first delivery unlocks contextual equipment upgrades and visibly raises re
   await page.getByTestId('v2-worker-brook').click();await tap(5);
   await page.getByTestId('v2-worker-fern').click();await tap(6);
   await page.getByTestId('v2-worker-cinder').click();await tap(7);
+  // Check the actual connected machine graph before advancing days.
+  // This reports missed pointer events where they happen, not after 5 shifts.
+  await expect.poll(()=>page.evaluate(()=>{
+    const s=JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')??'null');
+    return [5,6,7].map(i=>s?.tiles?.[i]
+      ?[s.tiles[i].craft,s.tiles[i].worker]:null);
+  }),{timeout:12000}).toEqual([
+    ['well','brook'],['garden','fern'],['kiln','cinder']
+  ]);
   await tap(7);
   await expect(page.getByTestId('v2-upgrade')).toContainText('完成 1 单解锁');
   await expect(page.getByTestId('v2-upgrade')).toBeDisabled();
