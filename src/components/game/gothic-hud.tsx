@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import {useEffect,useRef} from 'react';
 import type {ReactNode} from 'react';
 
 /**
@@ -115,4 +116,72 @@ export function GothicActionButton({
     <strong className="text-xs font-medium leading-snug">{label}</strong>
     <small className="line-clamp-2 text-[10px] leading-snug text-gothic-muted">{detail}</small>
   </button>;
+}
+
+/**
+ * Accessible, reusable in-game modal. Focus starts inside the panel and
+ * returns to the invoking button on close. Uses Tailwind rather than a
+ * separate CSS panel implementation.
+ */
+export function GothicModal({
+  title,onClose,children,wide=false
+}:{
+  title:string;
+  onClose:()=>void;
+  children:ReactNode;
+  wide?:boolean;
+}){
+  const dialog=useRef<HTMLElement>(null);
+  useEffect(()=>{
+    const previous=document.activeElement;
+    dialog.current?.focus();
+    return ()=>{if(previous instanceof HTMLElement && previous.isConnected)previous.focus();};
+  },[]);
+  return <div
+    className="absolute inset-0 z-[30] grid place-items-center overflow-y-auto bg-gothic-night/80 p-3 backdrop-blur-[7px] sm:p-5"
+    onMouseDown={event=>{if(event.target===event.currentTarget)onClose();}}>
+    <section ref={dialog} tabIndex={-1} role="dialog" aria-modal="true" aria-label={title}
+      onKeyDown={event=>{
+        if(event.key==='Escape'){event.stopPropagation();onClose();}
+        if(event.key==='Tab'){
+          const nodes=Array.from(event.currentTarget.querySelectorAll<HTMLElement>(
+            'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])'
+          ));
+          if(nodes.length===0)return;
+          const first=nodes[0],last=nodes[nodes.length-1];
+          if(event.shiftKey && document.activeElement===first){
+            event.preventDefault();last.focus();
+          }else if(!event.shiftKey && document.activeElement===last){
+            event.preventDefault();first.focus();
+          }
+        }
+      }}
+      className={
+        'relative flex max-h-[88dvh] w-full gap-3 overflow-y-auto rounded-xl border border-gothic-brass/80 '+
+        'bg-[radial-gradient(ellipse_at_15%_0%,#69374647,transparent_55%),linear-gradient(140deg,#291b28,#100c15_85%)] '+
+        'p-5 text-gothic-ivory shadow-[0_26px_75px_#000e,inset_0_0_0_3px_#f1d09b14] '+
+        'outline-none motion-safe:animate-[v04-panel-in_.24s_ease_both] sm:gap-6 sm:p-9 '+
+        (wide?'max-w-[690px]':'max-w-[610px]')
+      }>
+      <button type="button" className={
+        'absolute right-2.5 top-2.5 z-10 grid size-9 place-items-center rounded-full border '+
+        'border-gothic-brass/50 bg-gothic-panel/80 text-2xl leading-none text-gothic-ivory '+
+        'hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow'
+      } onClick={onClose} aria-label="关闭面板">×</button>
+      {children}
+    </section>
+  </div>;
+}
+
+/** A shared text CTA for book, dialogue, and commission panels. */
+export function GothicPanelLink({href,children,onClick}:{
+  href:string;children:ReactNode;onClick?:()=>void;
+}){
+  return <Link href={href} onClick={onClick}
+    className="mt-3 inline-flex min-h-10 items-center rounded-md border border-gothic-brass/70
+      bg-gothic-panel/90 px-3 py-2 text-xs text-gothic-ivory
+      transition-colors hover:border-gothic-glow hover:bg-gothic-wine/80
+      focus-visible:outline-2 focus-visible:outline-gothic-glow">
+    {children}
+  </Link>;
 }
