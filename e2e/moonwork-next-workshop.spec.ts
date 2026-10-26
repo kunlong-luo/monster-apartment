@@ -81,3 +81,37 @@ test('untouched first factory is immediately accessible across all scenes',async
     .getByRole('link',{name:'魔法仓库'}).click();
   await expect(page.getByText('当前真实库存')).toBeVisible();
 });
+
+test('Next workshop uses React-owned worker and machine controls with the original Pixi engine',async({page})=>{
+  test.setTimeout(90000);
+  await page.goto('/workshop/');
+  const stage=page.getByTestId('v2-stage');
+  const canvas=stage.locator('canvas');
+  await expect(canvas).toBeVisible({timeout:25000});
+  await expect(page.locator('#root')).toHaveAttribute('data-react-controls','true');
+  const worker=page.getByTestId('v2-worker-brook');
+  await expect(worker).toBeVisible();
+  await worker.click();
+  await expect(worker).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByTestId('v2-status')).toContainText('选择一台机器');
+  const kiln=page.getByTestId('v2-build-kiln');
+  await kiln.click();
+  await expect(kiln).toHaveAttribute('aria-pressed','true');
+  await expect(worker).toHaveAttribute('aria-pressed','false');
+  const box=await canvas.boundingBox();
+  expect(box).not.toBeNull();
+  // Empty plot 07 (index 6) on the original 1050x645 Pixi stage.
+  await canvas.click({position:{
+    x:(131+160+73)/1050*box!.width,
+    y:(104+160+73)/645*box!.height
+  }});
+  await expect(page.getByTestId('v2-coins')).toHaveText('62');
+  await expect(kiln).toHaveAttribute('aria-pressed','false');
+  await expect.poll(()=>page.evaluate(()=>{
+    const raw=localStorage.getItem('monster-apartment:workshop-v2-lab');
+    return raw?JSON.parse(raw).tiles[6]?.craft:null;
+  })).toBe('kiln');
+  await page.getByRole('navigation',{name:'月光工坊世界'})
+    .getByRole('link',{name:'委托大厅'}).click();
+  await expect(page.getByTestId('world-coins')).toHaveText('62');
+});

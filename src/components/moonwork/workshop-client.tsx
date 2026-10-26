@@ -6,6 +6,7 @@ import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from './world-navigation';
 import {useWorkshopWorld} from './world-save-react';
 import {CHANGE_EVENT} from '@/lib/moonwork/world-store';
+import {WorkshopReactControls} from './workshop-react-controls';
 
 declare global {
   interface Window {
@@ -39,12 +40,14 @@ function loadRuntime(base:string){
 }
 export function WorkshopClient({markup}:{markup:string}){
   const host=useRef<HTMLDivElement>(null);
+  const [gameRoot,setGameRoot]=useState<HTMLElement|null>(null);
   const router=useRouter();
   const game=useWorkshopWorld();
   const [error,setError]=useState('');
   useEffect(()=>{
     const root=host.current?.querySelector<HTMLElement>('#root');
     if(!root)return;
+    root.dataset.reactControls='true';
     root.classList.add('gothic-workshop');
     root.style.backgroundImage='linear-gradient(110deg,#0c0712be,#0d0815d5),url('+'../lobby-hero.webp'+')';
     const base=assetRoot();
@@ -82,6 +85,9 @@ export function WorkshopClient({markup}:{markup:string}){
       const cleanup=await runtime.mountWorkshopGame(root,base);
       if(cancelled)cleanup();else{
         dispose=cleanup;
+        // Listen to ephemeral Pixi selection events only after the engine
+        // and its delegated native click listener are fully installed.
+        setGameRoot(root);
         // The first factory initializes its save in Pixi; publish it to React.
         window.dispatchEvent(new Event(CHANGE_EVENT));
       }
@@ -96,6 +102,7 @@ export function WorkshopClient({markup}:{markup:string}){
   return <div ref={host} data-testid="next-workshop-shell"
     className="gothic-workshop-shell relative isolate min-h-dvh overflow-hidden">
     <div dangerouslySetInnerHTML={{__html:markup}}/>
+    <WorkshopReactControls root={gameRoot} world={game}/>
     <div data-testid="workshop-react-hud"
       className="pointer-events-none absolute right-14 top-2 z-[22] flex items-start gap-1.5 sm:right-[68px] sm:top-3 sm:gap-2"
       aria-label="工坊当前资源">

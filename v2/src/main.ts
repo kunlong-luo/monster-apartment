@@ -156,6 +156,10 @@ function render(){
       :movingFrom!==null?'移动设备：再选一个空格'
         :selectedPlot!==null?'选中 '+String(selectedPlot+1).padStart(2,'0')+' 号地块'
           :'点地块查看、建造或派工';
+  // The standalone V2 page keeps its legacy DOM toolbar. In Next.js,
+  // React portals own the existing #actions/#catalog elements, so never
+  // clear or rebuild React-managed DOM nodes from the Pixi runtime.
+  if(root.dataset.reactControls!=='true'){
   const actions=$('actions');
   actions.innerHTML='';
   for(const [id,profile] of Object.entries(WORKERS) as [WorkerId,typeof WORKERS[WorkerId]][]){
@@ -177,6 +181,7 @@ function render(){
       (id==='well'?'◉':id==='garden'?'❀':'⬡')+
       '</span><strong>'+info.zh+'</strong><small>✦ '+info.cost+'</small>';
     catalog.appendChild(button);
+  }
   }
   const chosen=selectedPlot!==null?world.tiles[selectedPlot]:null;
   const quote=selectedPlot!==null?machineUpgradeQuote(world,selectedPlot):null;
@@ -210,6 +215,14 @@ function render(){
   }else $('diagnosis').textContent='水汽泵 → 孢子温室 → 晶核熔炉。设备必须上下左右相邻，专长匹配时产量更高。';
   const board=world.tiles.map((m,i)=>m?(''+(i+1)+':'+MACHINES[m.craft].zh+' '+(m.worker?WORKERS[m.worker].zh:'')):'').filter(Boolean);
   $('summary').textContent=board.join(' · ');
+  if(root.dataset.reactControls==='true'){
+    // React controls share this single gameplay command source. These are
+    // transient selections, not additional fields in the existing V2 save.
+    root.dataset.chosenWorker=chosenWorker??'';
+    root.dataset.chosenMachine=chosenMachine??'';
+    root.dataset.movingFrom=movingFrom===null?'':String(movingFrom);
+    root.dispatchEvent(new Event('moonwork:controls-change'));
+  }
 }
 const onRootClick=(event:MouseEvent)=>{
   const origin=event.target;
