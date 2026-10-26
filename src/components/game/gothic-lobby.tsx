@@ -53,13 +53,29 @@ export function GothicLobby(){
     }else setDialogue('现在还无法接受这份委托，请先完成普通订单。');
   };
   const close=()=>setPanel(null);
+  const moveLight=(event:React.PointerEvent<HTMLElement>)=>{
+    if(event.pointerType!=='mouse')return;
+    const bounds=event.currentTarget.getBoundingClientRect();
+    const dx=(event.clientX-bounds.left)/bounds.width-.5;
+    const dy=(event.clientY-bounds.top)/bounds.height-.5;
+    event.currentTarget.style.setProperty('--scene-x',Math.round(dx*14)+'px');
+    event.currentTarget.style.setProperty('--scene-y',Math.round(dy*10)+'px');
+  };
+  const resetLight=(event:React.PointerEvent<HTMLElement>)=>{
+    event.currentTarget.style.setProperty('--scene-x','0px');
+    event.currentTarget.style.setProperty('--scene-y','0px');
+  };
   return <main className={'gothic-lobby'+(reducedMotion?' gothic-lobby--still':'')}
-    data-testid="gothic-lobby" aria-label="怪物公寓主大厅">
+    data-testid="gothic-lobby" aria-label="怪物公寓主大厅"
+    onPointerMove={moveLight} onPointerLeave={resetLight}
+    onKeyDown={event=>{if(event.key==='Escape')close();}}>
     <div className="gothic-lobby__stage" aria-hidden="true">
       <div className="gothic-lobby__fallback" style={{backgroundImage:'url('+workshopPainting.src+')'}}/>
       <div className="gothic-lobby__painting" style={{backgroundImage:"url("+'./lobby-hero.webp'+")"}}/>
+      <div className="gothic-lobby__light" aria-hidden="true" data-testid="gothic-light-layer"/>
       <div className="gothic-lobby__vignette"/>
       <div className="gothic-lobby__embers"/>
+      <div className="gothic-lobby__mist" aria-hidden="true"/>
     </div>
 
     <header className="gothic-lobby__hud" aria-label="玩家与资源">
@@ -87,8 +103,8 @@ export function GothicLobby(){
     <aside className="gothic-lobby__feature" aria-label="剧情焦点">
       <span>MOONLIGHT APARTMENT</span>
       <strong>月纱 · 夜色邀约</strong>
-      <small>工坊经营 / 角色委托 / 公寓生活</small>
-      <button type="button" onClick={talk}>与月纱交谈 <span aria-hidden="true">›</span></button>
+      <small>夜幕降临，她在大厅等你。</small>
+      <button type="button" onClick={talk} aria-label="与月纱交谈">开启对话 <span aria-hidden="true">›</span></button>
     </aside>
 
     <nav className="gothic-lobby__side" aria-label="快捷功能">
