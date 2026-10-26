@@ -85,6 +85,7 @@ test('motion preference survives routes and suppresses Pixi particles',async({pa
   await page.getByRole('navigation',{name:'主要游戏功能'})
     .getByRole('link',{name:/公寓 ·/}).click();
   await expect(page.getByTestId('gothic-pixi-atmosphere').locator('canvas')).toHaveCount(0);
+  await expect(page.getByTestId('gothic-apartment')).toHaveClass(/ga--still/);
   await page.getByRole('navigation',{name:'公寓世界导航'}).getByRole('link',{name:'大厅'}).click();
   await expect(page.getByRole('button',{name:'切换动态特效'})).toHaveAttribute('aria-pressed','true');
 });
