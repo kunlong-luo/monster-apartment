@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import {useEffect,useRef} from 'react';
 import type {ReactNode} from 'react';
+import {motion,useReducedMotion} from 'motion/react';
+import {useGothicMotion} from '@/lib/game/gothic-motion';
 
 /**
  * Shared Tailwind CSS v4 primitives for the Gothic game HUD.
@@ -137,15 +139,25 @@ export function GothicModal({
   closeLabel?:string;
 }){
   const dialog=useRef<HTMLElement>(null);
+  const systemReduced=useReducedMotion();
+  const {reduced:gameReduced}=useGothicMotion();
+  const reduced=Boolean(systemReduced||gameReduced);
+  const fade={duration:reduced?.01:.2};
   useEffect(()=>{
     const previous=document.activeElement;
     dialog.current?.focus();
     return ()=>{if(previous instanceof HTMLElement && previous.isConnected)previous.focus();};
   },[]);
-  return <div
+  return <motion.div
+    initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
+    transition={fade}
     className="absolute inset-0 z-[30] grid place-items-center overflow-y-auto bg-gothic-night/80 p-3 backdrop-blur-[7px] sm:p-5"
     onMouseDown={event=>{if(event.target===event.currentTarget)onClose();}}>
-    <section ref={dialog} tabIndex={-1} role="dialog" aria-modal="true" aria-label={title}
+    <motion.section ref={dialog} tabIndex={-1} role="dialog" aria-modal="true" aria-label={title}
+      initial={reduced?false:{opacity:0,y:12,scale:.984}}
+      animate={{opacity:1,y:0,scale:1}}
+      exit={reduced?{opacity:0}:{opacity:0,y:7,scale:.987}}
+      transition={reduced?{duration:.01}:{type:'tween',duration:.24,ease:[.2,.78,.28,1]}}
       onKeyDown={event=>{
         if(event.key==='Escape'){event.stopPropagation();onClose();}
         if(event.key==='Tab'){
@@ -165,7 +177,7 @@ export function GothicModal({
         'relative flex max-h-[88dvh] w-full gap-3 overflow-y-auto rounded-xl border border-gothic-brass/80 '+
         'bg-[radial-gradient(ellipse_at_15%_0%,#69374647,transparent_55%),linear-gradient(140deg,#291b28,#100c15_85%)] '+
         'p-5 text-gothic-ivory shadow-[0_26px_75px_#000e,inset_0_0_0_3px_#f1d09b14] '+
-        'outline-none motion-safe:animate-[v04-panel-in_.24s_ease_both] sm:gap-6 sm:p-9 '+
+        'outline-none sm:gap-6 sm:p-9 '+
         (wide?'max-w-[690px]':'max-w-[610px]')
       }>
       <button type="button" className={
@@ -174,8 +186,8 @@ export function GothicModal({
         'hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow'
       } onClick={onClose} aria-label={closeLabel}>×</button>
       {children}
-    </section>
-  </div>;
+    </motion.section>
+  </motion.div>;
 }
 
 /** A shared text CTA for book, dialogue, and commission panels. */
