@@ -3,6 +3,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
+import workerTriptych from '../../../v2/art/worker-triptych.avif';
+import kilnPainted from '../../../v2/art/kiln-art-review.avif';
 import {useMemo,useState,useSyncExternalStore} from 'react';
 import type {ReactNode} from 'react';
 import {WORKERS,MACHINES,workshopRank,forecastPatronCommission,forecastOrderChoice,
@@ -176,7 +178,19 @@ function Orders({s}:{s:WorkshopState}){
   const p=s.patron;
   const forecast=forecastPatronCommission(s);
   const choice=forecastOrderChoice(s);
-  return <div className="mw-grid mw-columns">
+  return <>
+    <section className="mw-world-art-hero mw-order-hero" data-testid="painted-order-hero">
+      <Image src={moonWorkshopPainting} fill unoptimized sizes="(max-width: 760px) 100vw, 1200px"
+        className="mw-world-hero-painting" alt="月夜工坊绘制场景"/>
+      <div className="mw-world-hero-copy">
+        <span className="mw-eyebrow">MOONLIT COMMISSION GUILD</span>
+        <h2>月夜委托所</h2>
+        <p>你的订单和月纱契约使用同一份晶核库存。
+          高额订单可以多赚星币，也可能抢走本该留给居民的材料。</p>
+      </div>
+      <Link href="/workshop/" className="mw-hero-shortcut">返回工坊 ↗</Link>
+    </section>
+    <div className="mw-grid mw-columns">
     <Panel title="◇ 正式委托">
       <p className="mw-eyebrow">CURRENT ORDER</p>
       <p className="mw-big">{s.warehouse.core} <small>/ {s.order.cores} 晶核</small></p>
@@ -207,31 +221,72 @@ function Orders({s}:{s:WorkshopState}){
         {p.status==='offered'&&<Action type="accept">接受月纱委托</Action>}
       </>}
     </Panel>
-  </div>;
+    </div>
+  </>;
 }
 function Characters({s}:{s:WorkshopState}){
   return <>
-    <div className="mw-grid">
-      {ids.map((id:WorkerId)=>{
+    <section className="mw-art-gallery-intro" data-testid="character-gallery-header">
+      <span className="mw-eyebrow">WORKER ROSTER · THE PEOPLE OF MOONLIGHT WORKSHOP</span>
+      <h2>真正的工匠，在真正的岗位工作。</h2>
+      <p>每位工匠只对应一个岗位。查看当前派工，再进入工坊改变水汽、孢子和晶核的生产效率。</p>
+    </section>
+    <div className="mw-worker-grid" data-testid="painted-worker-gallery">
+      {ids.map((id:WorkerId,i)=>{
         const w=WORKERS[id];const plot=s.tiles.findIndex(t=>t?.worker===id);
-        return <Panel key={id} title={w.zh+' · '+w.en}>
-          <p className="mw-character-icon" aria-hidden="true">{id==='brook'?'◈':id==='fern'?'❀':'✷'}</p>
-          <p>专长：{w.skill==='water'?'水汽制造':w.skill==='plant'?'孢子种植':'晶核锻造'}。</p>
-          <p>{plot<0?'目前待派工':'正在 '+String(plot+1).padStart(2,'0')+' 号工位 · '+MACHINES[s.tiles[plot]!.craft].zh}</p>
-          <WorkshopLink>去工坊安排岗位 ↗</WorkshopLink>
-        </Panel>;
+        const working=plot>=0;
+        return <section key={id} className={'mw-worker-card '+(working?'on-duty':'off-duty')}
+          data-testid={'worker-card-'+id}>
+          <div className="mw-worker-portrait" role="img"
+            aria-label={w.zh+'的彩色奇幻角色绘景'}
+            style={{backgroundImage:'url('+workerTriptych.src+')',
+              backgroundPosition:i===0?'0% center':i===1?'50% center':'100% center'}}>
+            <span className="mw-worker-role">{w.skill==='water'?'水汽匠':w.skill==='plant'?'园艺师':'晶核锻造师'}</span>
+          </div>
+          <div className="mw-worker-details">
+            <p className="mw-eyebrow">GUILD PERSONNEL · {String(i+1).padStart(2,'0')}</p>
+            <h2>{w.zh} <small>{w.en}</small></h2>
+            <p className="mw-worker-job">{w.skill==='water'?'水汽制造':w.skill==='plant'?'孢子种植':'晶核锻造'}专长</p>
+            <p className="mw-worker-assignment">{working
+              ?'正在 '+String(plot+1).padStart(2,'0')+' 号工位 · '+MACHINES[s.tiles[plot]!.craft].zh
+              :'目前待派工'}</p>
+            <WorkshopLink className="mw-worker-action">前往工坊安排岗位 ↗</WorkshopLink>
+          </div>
+        </section>;
       })}
     </div>
-    <Panel title="☽ 月纱 · 28 岁成年月夜魔女">
-      <p>月纱是一位有真实商业委托的商人，不是仅供展示的角色。{s.patron?'当前委托状态：'+s.patron.status:'首张正式订单完成后解锁。'}</p>
-      <Link className="mw-link" href="/orders/">查看月纱的委托</Link>
-    </Panel>
+    <section className="mw-witch-banner">
+      <div className="mw-witch-painting">
+        <Image src={moonveilPortrait} fill unoptimized sizes="150px"
+          alt="成年魔女商人月纱的绘制立绘"/>
+      </div>
+      <div><p className="mw-eyebrow">MOONLIT COMMISSIONS · THE MERCHANT</p>
+        <h2>月纱 · 28 岁月夜魔女</h2>
+        <p>她的委托从真实库存扣除晶核，并与普通订单竞争交付资源。
+          {s.patron?'当前委托状态：'+s.patron.status:'首张正式订单完成后解锁。'}</p>
+        <Link className="mw-link" href="/orders/">进入委托大厅 ↗</Link>
+      </div>
+    </section>
   </>;
 }
 function Warehouse({s}:{s:WorkshopState}){
   const stored=(kind:'well'|'garden')=>s.tiles.filter(t=>t?.craft===kind).reduce((total,t)=>total+(t?.stored??0),0);
   const p=s.patron;const canBuy=!!p&&['offered','active'].includes(p.status)&&s.day<=p.due&&s.coins>=PATRON_IMPORT_PRICE;
-  return <div className="mw-grid mw-columns">
+  return <>
+    <section className="mw-world-art-hero mw-warehouse-hero" data-testid="painted-warehouse-hero">
+      <Image src={moonWorkshopPainting} fill unoptimized sizes="(max-width: 760px) 100vw, 1200px"
+        className="mw-world-hero-painting" alt="月光工坊仓储背景绘景"/>
+      <Image src={kilnPainted} width={180} height={180} unoptimized
+        className="mw-warehouse-art" alt="月光晶核熔炉绘景"/>
+      <div className="mw-world-hero-copy">
+        <span className="mw-eyebrow">SHARED MATERIALS · REAL ECONOMY</span>
+        <h2>魔法仓库</h2>
+        <p>水汽与孢子保存在各自设备内，晶核进入共享仓库；
+          工坊、居民、市集和委托全部从这里影响实际物资。</p>
+      </div>
+      <Link href="/town/" className="mw-hero-shortcut">去月光街补货 ↗</Link>
+    </section>
+    <div className="mw-grid mw-columns">
     <Panel title="⬡ 当前真实库存">
       <div className="mw-stock"><span>✦ 共享晶核</span><b>{s.warehouse.core}</b></div>
       <div className="mw-stock"><span>◈ 水汽泵储水</span><b>{stored('well')}</b></div>
@@ -244,7 +299,8 @@ function Warehouse({s}:{s:WorkshopState}){
       <div className="mw-context-links"><WorkshopLink>回工坊继续生产</WorkshopLink>
         <Link className="mw-link" href="/orders/">查看订单需求 ↗</Link></div>
     </Panel>
-  </div>;
+    </div>
+  </>;
 }
 export function MoonworkWorld({area}:{area:WorldArea}){
   const s=useSave();

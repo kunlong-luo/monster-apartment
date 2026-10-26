@@ -1,3 +1,17 @@
+## V2.9 — illustrated roster and painted guild destinations
+
+- Three actual illustrated creature workers (brook/fern/cinder) are now
+  shipped as one compact AVIF character atlas (`v2/art/worker-triptych.avif`).
+  Character roster cards show the real art; assignment text and actions still
+  read the live production save, so portraits are not empty decorative pages.
+- Orders and warehouse have their own cinematic moonlit headers using existing
+  workshop art, with contextual return routes and original transactional data.
+- The worker images are review-grade art from the same fantasy workshop
+  concept; they are static paintings, **not** an animated sprite-sheet or
+  approved final animation. The existing Pixi game remains playable and saved.
+- A new browser test verifies the imported worker atlas is actually loaded
+  and each of the three area destinations renders before deployment.
+
 # 月光工坊 / Workshop V2 — technology reset
 
 **Status: playable GAMEPLAY LAB (greybox), not the final visual release.**\n\nOpen /workshop/ to try the isolated prototype after CI succeeds; original / still hosts frozen V1. The lab deliberately uses simple Pixi drawing primitives as TEMPORARY technical proxies. This is not the promised painted creature sprite art.

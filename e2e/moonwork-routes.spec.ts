@@ -172,3 +172,25 @@ test('street visitor consumes a real core and blocks buying until the next produ
   await expect(page.getByTestId('town-resident')).toContainText('阿洛');
   await expect(page.getByTestId('town-resident')).toContainText('累计帮助街区居民 1 次');
 });
+
+
+test('painted worker roster and scene art load as real gameplay destinations',async({page})=>{
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25000});
+  await page.getByRole('navigation',{name:'月光工坊世界'})
+    .getByRole('link',{name:'角色图鉴'}).click();
+  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
+  for(const id of ['brook','fern','cinder']){
+    const art=page.getByTestId('worker-card-'+id).getByRole('img');
+    await expect(art).toBeVisible();
+    await expect(art).toHaveCSS('background-image',/worker-triptych/);
+    await expect(page.getByTestId('worker-card-'+id)
+      .getByRole('link',{name:/前往工坊安排岗位/})).toBeVisible();
+  }
+  await page.getByRole('navigation',{name:'月光工坊世界'})
+    .getByRole('link',{name:'委托大厅'}).click();
+  await expect(page.getByTestId('painted-order-hero')).toBeVisible();
+  await page.getByRole('navigation',{name:'月光工坊世界'})
+    .getByRole('link',{name:'魔法仓库'}).click();
+  await expect(page.getByTestId('painted-warehouse-hero')).toBeVisible();
+});

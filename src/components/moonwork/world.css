@@ -297,3 +297,75 @@
   .mw-town-focus .mw-resident-quote{font-size:12px}
   .mw-town-focus .mw-resident-explanation{font-size:10px}
 }
+
+/* V2.9 — Reuse approved painted character sprites as real cards, rather
+   than magic glyph placeholders. All screens use the same moonlit palette. */
+.mw-worker-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:18px 0}
+.mw-art-gallery-intro,.mw-witch-banner{border:1px solid #bba078;border-radius:14px;padding:23px;
+  background:linear-gradient(120deg,#2e4354,#1a2a42);box-shadow:0 13px 36px #0a1323a1}
+.mw-art-gallery-intro h2,.mw-witch-banner h2{font:700 25px Georgia,serif;color:#ffe1af;margin:9px 0}
+.mw-art-gallery-intro p,.mw-witch-banner p{font-size:13px;color:#d2d9d9;line-height:1.8;max-width:750px}
+.mw-worker-card{border:2px solid #a98b68;border-radius:13px;overflow:hidden;
+  background:linear-gradient(#304053,#192a41);box-shadow:0 13px 35px #08122499;
+  display:flex;flex-direction:column;min-width:0;transition:transform .18s,border-color .18s}
+.mw-worker-card:hover{transform:translateY(-4px);border-color:#f0c88d}
+.mw-worker-portrait{position:relative;min-height:245px;background-size:300% 100%;
+  background-repeat:no-repeat;background-color:#1a3049;
+  border-bottom:2px solid #ac8860;overflow:hidden}
+.mw-worker-portrait:after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent 50%,#172539ad 100%)}
+.mw-worker-role{position:absolute;right:9px;bottom:12px;z-index:1;
+  font-weight:700;color:#ffe2ab;border:1px solid #be9a6d;
+  border-radius:7px;padding:6px 10px;background:#172a3dd9;font-size:12px}
+.mw-worker-details{display:flex;flex-direction:column;flex:1;padding:19px;gap:8px}
+.mw-worker-details h2{font:700 27px Georgia,serif;color:#ffe1ac;margin:0}
+.mw-worker-details h2 small{font:normal 12px system-ui,sans-serif;color:#acbaca}
+.mw-worker-job{font-size:12px;color:#cfb790;margin:0}
+.mw-worker-assignment{padding:12px 0;color:#e2e7dd;font-size:13px;line-height:1.6;margin:0}
+.mw-worker-action{display:block;color:#fff0d6;border:1px solid #c39c6c;
+  background:linear-gradient(115deg,#5d4b40,#32445b);text-align:center;
+  border-radius:9px;padding:12px 8px;text-decoration:none;font-weight:750;font-size:12px;
+  margin-top:auto}
+.mw-worker-action:hover{background:#76634b}
+.mw-witch-banner{display:flex;gap:20px;align-items:center;margin-bottom:18px}
+.mw-witch-painting{position:relative;flex:0 0 140px;height:166px;
+  overflow:hidden;border:1px solid #bc9a74;border-radius:10px}
+.mw-witch-painting img{object-fit:cover;object-position:center 19%}
+.mw-world-art-hero{position:relative;isolation:isolate;min-height:238px;
+  display:flex;align-items:end;justify-content:space-between;gap:12px;
+  padding:32px;border:2px solid #bda078;border-radius:17px;overflow:hidden;
+  box-shadow:0 19px 40px #0c1324a6;background:#243249}
+.mw-world-hero-painting{object-fit:cover;object-position:center 47%;z-index:-2;
+  filter:saturate(1.2) contrast(1.04)}
+.mw-world-art-hero:after{content:'';position:absolute;z-index:-1;inset:0;
+  background:linear-gradient(95deg,#142038ed 0%,#1d2f3e9c 62%,#162942a3)}
+.mw-world-hero-copy{position:relative;max-width:700px}
+.mw-world-hero-copy h2{font:700 36px Georgia,serif;color:#ffe4b5;margin:7px 0;
+  text-shadow:0 4px 14px #10101a}
+.mw-world-hero-copy p{font-size:14px;line-height:1.75;color:#f3efe3;margin:0}
+.mw-hero-shortcut{flex:0 0 auto;color:#ffe5b6;text-decoration:none;
+  padding:11px 14px;background:#25354acb;border:1px solid #d4b48c;border-radius:9px;
+  font-size:12px;font-weight:800}
+.mw-hero-shortcut:hover{background:#67513a}
+.mw-warehouse-art{position:absolute;z-index:0;top:9px;right:23%;max-width:23%;
+  object-fit:contain;filter:drop-shadow(0 0 16px #fec98f80);opacity:.87;pointer-events:none}
+@media(max-width:850px){.mw-worker-grid{gap:9px}
+  .mw-worker-portrait{min-height:205px}.mw-worker-details{padding:12px}
+  .mw-worker-details h2{font-size:20px}}
+@media(max-width:620px){.mw-worker-grid{grid-template-columns:1fr;gap:14px}
+  .mw-worker-card{display:grid;grid-template-columns:42% 58%;min-height:225px}
+  .mw-worker-portrait{height:100%;min-height:225px;border-bottom:0;border-right:2px solid #a98b68}
+  .mw-worker-details{padding:12px;gap:5px}.mw-worker-details h2{font-size:19px}
+  .mw-worker-details h2 small{display:block;font-size:11px;margin-top:3px}
+  .mw-worker-assignment{font-size:12px;padding:6px 0}
+  .mw-worker-action{font-size:11px;padding:9px 5px}
+  .mw-witch-banner{padding:12px;gap:12px}
+  .mw-witch-painting{flex-basis:102px;height:150px}
+  .mw-witch-banner h2{font-size:20px}.mw-witch-banner p{font-size:11px}
+  .mw-world-art-hero{min-height:205px;padding:19px;display:flex;flex-direction:column;
+    align-items:flex-start;justify-content:end;gap:11px}
+  .mw-world-hero-copy h2{font-size:29px}
+  .mw-world-hero-copy p{font-size:12px}
+  .mw-warehouse-art{right:0;top:-20px;max-width:38%;opacity:.37}
+}
+@media(prefers-reduced-motion:reduce){.mw-worker-card{transition:none}}
