@@ -12,6 +12,7 @@ export type GothicDestination={
   icon:string;
   label:string;
   description?:string;
+  ariaLabel?:string;
 };
 
 const iconButtonStyle=[
@@ -58,11 +59,12 @@ export function GothicResourcePill({
 }
 
 export function GothicDock({
-  items,label,className=''
+  items,label,className='',activeHref
 }:{
   items:readonly GothicDestination[];
   label:string;
   className?:string;
+  activeHref?:string;
 }){
   return <nav aria-label={label} className={
     'absolute bottom-[max(8px,env(safe-area-inset-bottom))] left-1/2 z-[5] '+
@@ -70,7 +72,8 @@ export function GothicDock({
     'sm:gap-3 lg:gap-5 '+className
   }>
     {items.map(item=><Link key={item.href} href={item.href}
-      aria-label={item.description?item.label+' · '+item.description:item.label}
+      aria-label={item.ariaLabel??(item.description?item.label+' · '+item.description:item.label)}
+      aria-current={activeHref===item.href?'page':undefined}
       title={item.description}
       className={
         'group flex h-[61px] w-[57px] flex-col items-center justify-center gap-0.5 '+
@@ -79,7 +82,8 @@ export function GothicDock({
         'backdrop-blur-sm transition-transform duration-200 '+
         'hover:-translate-y-1 hover:border-gothic-glow '+
         'focus-visible:-translate-y-1 focus-visible:outline-2 focus-visible:outline-gothic-glow '+
-        'motion-reduce:transition-none sm:h-[68px] sm:w-[73px] md:w-[82px]'
+        'motion-reduce:transition-none sm:h-[68px] sm:w-[73px] md:w-[82px] '+
+        (activeHref===item.href?'border-gothic-glow bg-gothic-wine/85 text-gothic-glow -translate-y-1':'')
       }>
       <span aria-hidden="true"
         className="text-[25px] leading-none text-gothic-gold drop-shadow-[0_1px_5px_#000] group-hover:text-gothic-glow sm:text-[29px]">{item.icon}</span>
