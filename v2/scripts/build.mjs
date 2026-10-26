@@ -17,6 +17,13 @@ await build({
   bundle:true,minify:true,format:'iife',globalName:'MoonworkRuntime',
   target:'es2022',logLevel:'info',
 });
+// Independent Pixi overlay for the Gothic App Router scenes.
+await build({
+  entryPoints:[resolve(root,'src/gothic-atmosphere.ts')],
+  outfile:resolve(root,'dist/assets/gothic-atmosphere.js'),
+  bundle:true,minify:true,format:'iife',globalName:'GothicAtmosphereRuntime',
+  target:'es2022',logLevel:'info',
+});
 await copyFile(resolve(root,'src/workshop.css'),resolve(root,'dist/assets/workshop.css'));
 await copyFile(
   resolve(root,'node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-400-normal.woff2'),
