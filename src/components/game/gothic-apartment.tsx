@@ -48,6 +48,12 @@ export function GothicApartment(){
     const clock=window.setInterval(()=>setWorld(current=>advanceCozy(current)),2000);
     return ()=>window.clearInterval(clock);
   },[ready,paused,world.phase]);
+  useEffect(()=>{
+    if(!feedback)return;
+    const timer=window.setTimeout(()=>setFeedback(current=>
+      current?.id===feedback.id?null:current),4500);
+    return ()=>window.clearTimeout(timer);
+  },[feedback]);
   if(!ready)return <main className="ga ga-loading">☽ 公寓正在点亮烛火…</main>;
   const goal=cozyGoal(world),applicants=availableResidents(world);
   const room=selected===null?null:world.rooms[selected];
@@ -67,7 +73,8 @@ export function GothicApartment(){
       setMoving(null);setSelected(index);
     }else setSelected(value=>value===index?null:index);
   };
-  return <main className="ga" data-testid="gothic-apartment" aria-label="哥特公寓经营">
+  return <main className="ga" data-testid="gothic-apartment" aria-label="哥特公寓经营"
+    onKeyDown={event=>{if(event.key==='Escape'){setWitchOpen(false);setNotices(false);}}}>
     <div className="ga-backdrop" style={{backgroundImage:'url('+'../lobby-hero.webp'+')'}} aria-hidden="true"/>
     <div className="ga-light" aria-hidden="true"/>
     <div className="ga-shade" aria-hidden="true"/>
