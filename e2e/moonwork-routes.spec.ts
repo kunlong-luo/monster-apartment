@@ -213,4 +213,19 @@ test('choosing an illustrated guild worker preselects their real Pixi factory as
   await expect(page.locator('#selected')).toContainText('待派工');
   const img=page.getByTestId('v2-worker-fern').getByRole('img');
   await expect(img).toHaveCSS('background-image',/worker-triptych/);
+  // Complete the real interaction: choosing a machine assigns the selected
+  // worker and persists it for all other routes, not merely changing a label.
+  const canvas=page.getByTestId('v2-stage').locator('canvas');
+  const box=await canvas.boundingBox();
+  expect(box).toBeTruthy();
+  await canvas.click({position:{
+    x:(131+2*160+73)/1050*box!.width,
+    y:(104+1*160+73)/645*box!.height,
+  }});
+  await expect(page.getByTestId('v2-status')).toContainText('青枝已派往');
+  await expect.poll(()=>page.evaluate(()=>{
+    const raw=localStorage.getItem('monster-apartment:workshop-v2-lab');
+    const world=raw?JSON.parse(raw):null;
+    return world?.tiles?.[7]?.worker??null;
+  })).toBe('fern');
 });
