@@ -142,7 +142,7 @@ export function GothicModal({
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
   const reduced=Boolean(systemReduced||gameReduced);
-  const fade={duration:reduced?.01:.2};
+  const fade={duration:reduced ? 0.01 : 0.2};
   useEffect(()=>{
     const previous=document.activeElement;
     dialog.current?.focus();
