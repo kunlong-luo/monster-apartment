@@ -2,7 +2,7 @@
 import {useEffect,useRef,useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
-import {lobbyPreview} from '@/components/game/gothic-lobby-art';
+import gothicHero from '../../../public/lobby-hero.webp';
 
 declare global {
   interface Window {
@@ -42,7 +42,7 @@ export function WorkshopClient({markup}:{markup:string}){
     const root=host.current?.querySelector<HTMLElement>('#root');
     if(!root)return;
     root.classList.add('gothic-workshop');
-    root.style.backgroundImage='linear-gradient(110deg,#0c0712be,#0d0815d5),url('+lobbyPreview+')';
+    root.style.backgroundImage='linear-gradient(110deg,#0c0712be,#0d0815d5),url('+gothicHero.src+')';
     const base=assetRoot();
     const style=document.createElement('link');
     style.rel='stylesheet';style.href=new URL('assets/workshop.css',base).href;
