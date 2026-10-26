@@ -116,7 +116,7 @@ export function GothicLobby(){
       </button>
     </aside>
 
-    <nav className="absolute right-2 top-[28%] z-[3] grid justify-items-center gap-3 sm:right-5 sm:gap-5" aria-label="快捷功能">
+    <nav className="absolute right-2 top-[28%] z-[3] hidden justify-items-center gap-3 sm:right-5 sm:grid sm:gap-5" aria-label="快捷功能">
       {[
         {href:'/orders/',icon:'☷',label:'任务'},
         {href:'/workshop/',icon:'⚒',label:'工坊'},
