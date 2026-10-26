@@ -124,7 +124,12 @@ test('adult moon witch is earned through regular production and offers a real co
   await page.getByTestId('v2-worker-fern').click();await tap(6);
   await page.getByTestId('v2-worker-cinder').click();await tap(7);
   await expect(page.getByTestId('v2-patron-card')).toBeHidden();
-  for(let i=0;i<5;i++)await page.getByTestId('v2-shift').click();
+  // Wait for each shift to finish before sending the next click; rapid
+  // clicks can race the Pixi scene refresh on slower CI runners.
+  for(let i=0;i<5;i++){
+    await page.getByTestId('v2-shift').click();
+    await expect(page.getByTestId('v2-day')).toHaveText(String(i+2));
+  }
   await expect(page.getByTestId('v2-completed')).toHaveText('1');
   await expect(page.getByTestId('v2-patron-card')).toBeVisible();
   await expect(page.getByTestId('v2-patron-portrait')).toHaveJSProperty('naturalWidth',210);
@@ -211,7 +216,12 @@ test('first delivery unlocks contextual equipment upgrades and visibly raises re
   await tap(7);
   await expect(page.getByTestId('v2-upgrade')).toContainText('完成 1 单解锁');
   await expect(page.getByTestId('v2-upgrade')).toBeDisabled();
-  for(let i=0;i<5;i++)await page.getByTestId('v2-shift').click();
+  // Wait for each shift to finish before sending the next click; rapid
+  // clicks can race the Pixi scene refresh on slower CI runners.
+  for(let i=0;i<5;i++){
+    await page.getByTestId('v2-shift').click();
+    await expect(page.getByTestId('v2-day')).toHaveText(String(i+2));
+  }
   await expect(page.getByTestId('v2-completed')).toHaveText('1');
   await tap(7);
   await expect(page.getByTestId('v2-upgrade')).toBeEnabled();
