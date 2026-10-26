@@ -4,7 +4,7 @@ test('first-time player builds a bath, welcomes Dewdrop, and furnishes it',async
   const errors:string[]=[];
   page.on('pageerror',error=>errors.push(error.message));
   await page.setViewportSize({width:1440,height:900});
-  await page.goto('/');
+  await page.goto('/apartment/');
   await expect(page.getByRole('heading',{name:'灵核公寓'})).toBeVisible();
   for(let n=0;n<6;n++)await expect(page.getByTestId('cozy-room-'+n)).toBeVisible();
   await expect(page.getByTestId('cozy-actor-seedling')).toBeVisible();
@@ -34,7 +34,7 @@ test('first-time player builds a bath, welcomes Dewdrop, and furnishes it',async
 test('phone shows the whole three-story building without document scroll',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/apartment/');
   await expect(page.getByRole('heading',{name:'灵核公寓'})).toBeVisible();
   await expect(page.getByTestId('cozy-room-4')).toBeVisible();
   await page.getByTestId('cozy-room-5').click();
@@ -52,7 +52,7 @@ test('phone shows the whole three-story building without document scroll',async(
 });
 
 test('daily rent and a new resident offer are visible in the same building',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await expect.poll(()=>page.evaluate(()=>!!localStorage.getItem('monster-apartment:cozy:v1'))).toBe(true);
   await page.evaluate(()=>{
     const key='monster-apartment:cozy:v1';
@@ -76,7 +76,7 @@ test('residents can be rehomed with a visible happiness and rent forecast',async
   const runtimeErrors:string[]=[];
   page.on('pageerror',error=>runtimeErrors.push(error.message));
   await page.setViewportSize({width:1440,height:900});
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   await page.getByTestId('cozy-room-2').click();
   await page.getByTestId('cozy-build-bath').click();
@@ -101,7 +101,7 @@ test('residents can be rehomed with a visible happiness and rent forecast',async
 
 test('dragging a resident changes homes and preserves their furniture',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   await page.getByTestId('cozy-room-5').click();
   await page.getByTestId('cozy-build-nest').click();
@@ -112,7 +112,7 @@ test('dragging a resident changes homes and preserves their furniture',async({pa
 });
 
 test('residents visibly visit nearby neighbors during the day',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   await page.getByTestId('cozy-room-2').click();
   await page.getByTestId('cozy-build-bath').click();
@@ -137,7 +137,7 @@ test('rooms use cohesive layered vector dioramas rather than emoji furniture or 
   await page.setViewportSize({width:1440,height:900});
   const pageErrors:string[]=[];
   page.on('pageerror',err=>pageErrors.push(err.message));
-  await page.goto('/');
+  await page.goto('/apartment/');
   await expect.poll(()=>page.evaluate(()=>!!localStorage.getItem('monster-apartment:cozy:v1'))).toBe(true);
   // This is an art-gallery fixture, not an altered player opening economy.
   await page.evaluate(()=>{
@@ -170,7 +170,7 @@ test('rooms use cohesive layered vector dioramas rather than emoji furniture or 
 test('illustrated room architecture and characters stay visible on a narrow phone',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/apartment/');
   await expect(page.getByTestId('cozy-room-4').getByTestId('cozy-art-nest')).toBeVisible();
   await expect(page.getByTestId('cozy-spirit-seedling')).toBeVisible();
   await expect(page.locator('.cozy-building')).toBeVisible();
@@ -189,7 +189,7 @@ test('Phaser light pass and room foreground preserve real room interaction',asyn
   const errors:string[]=[];
   page.on('pageerror',error=>errors.push(error.message));
   await page.setViewportSize({width:1440,height:900});
-  await page.goto('/');
+  await page.goto('/apartment/');
   const home=page.getByTestId('cozy-room-4');
   await expect(home.getByTestId('cozy-foreground-nest')).toBeVisible();
   await expect(home.getByTestId('cozy-spirit-seedling')).toBeVisible();
@@ -211,7 +211,7 @@ test('Phaser light pass and room foreground preserve real room interaction',asyn
 test('new staged animation obeys reduced-motion on mobile',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/apartment/');
   const bedroom=page.getByTestId('cozy-room-4');
   await expect(bedroom.locator('.cozy-spirit-appendages')).toHaveCSS('animation-name','none');
   await expect(bedroom.getByTestId('cozy-foreground-nest')).toBeVisible();
@@ -227,7 +227,7 @@ test('new staged animation obeys reduced-motion on mobile',async({page})=>{
 });
 
 test('construction, resident arrival and furnishing animate only real room changes',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   const room=page.getByTestId('cozy-room-2');
   await expect(page.locator('.cozy-room-moment')).toHaveCount(0);
@@ -244,7 +244,7 @@ test('construction, resident arrival and furnishing animate only real room chang
 });
 
 test('weather and clock art direction is save-compatible and accessible',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await expect.poll(()=>page.evaluate(()=>
     localStorage.getItem('monster-apartment:cozy:v1')!==null)).toBe(true);
   await page.evaluate(()=>{
@@ -264,7 +264,7 @@ test('weather and clock art direction is save-compatible and accessible',async({
 
 test('the three floors share a central stairwell and become lived-in as tenants arrive',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   const spine=page.getByTestId('cozy-stairwell');
   await expect(spine).toBeVisible();
@@ -288,7 +288,7 @@ test('the three floors share a central stairwell and become lived-in as tenants 
 test('stairwell retains room buttons and single-screen layout on a 390px phone',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/apartment/');
   const spine=page.getByTestId('cozy-stairwell');
   await expect(spine).toBeVisible();
   await expect(spine).toHaveCSS('grid-column-start','2');
@@ -312,7 +312,7 @@ test('vacant rooms are six distinct restorative cutaways, not repeated placehold
   await page.setViewportSize({width:1440,height:900});
   const errors:string[]=[];
   page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   for(const index of [0,1,2,3,5]){
     const room=page.getByTestId('cozy-room-'+index);
@@ -335,7 +335,7 @@ test('vacant rooms are six distinct restorative cutaways, not repeated placehold
 test('the larger resident and restored room are visible on mobile without extra scroll',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/apartment/');
   const scene=page.getByTestId('cozy-room-4');
   await expect(scene.locator('.cozy-room-patina.is-nest')).toBeAttached();
   await expect(page.getByTestId('cozy-room-0').getByTestId('cozy-vacant-art-0')).toBeVisible();
@@ -356,7 +356,7 @@ test('the larger resident and restored room are visible on mobile without extra 
 
 
 test('residents walk between real room positions with authored four-frame poses',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await expect.poll(()=>page.evaluate(()=>
     localStorage.getItem('monster-apartment:cozy:v1')!==null)).toBe(true);
   await page.evaluate(()=>{
@@ -389,7 +389,7 @@ test('residents walk between real room positions with authored four-frame poses'
 });
 
 test('work poses carry location-specific hand tools while keeping gameplay clickable',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await expect.poll(()=>page.evaluate(()=>
     localStorage.getItem('monster-apartment:cozy:v1')!==null)).toBe(true);
   await page.evaluate(()=>{
@@ -412,7 +412,7 @@ test('work poses carry location-specific hand tools while keeping gameplay click
 });
 
 test('neighbor visits stage the visitor separately without extra buttons',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   await page.getByTestId('cozy-room-2').click();
   await page.getByTestId('cozy-build-bath').click();
@@ -432,7 +432,7 @@ test('neighbor visits stage the visitor separately without extra buttons',async(
 
 
 test('an occupied workshop creates daily craft revenue without extra player buttons',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   const original=Number((await page.getByTestId('cozy-rent').textContent())!.replace('+',''));
   await page.getByTestId('cozy-room-0').click();
@@ -450,7 +450,7 @@ test('an occupied workshop creates daily craft revenue without extra player butt
 });
 
 test('neighbors physically affect comfort; furnishings change the displayed result',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   await page.getByTestId('cozy-room-2').click();
   await page.getByTestId('cozy-build-bath').click();
@@ -469,7 +469,7 @@ test('neighbors physically affect comfort; furnishings change the displayed resu
 });
 
 test('saved genuine friendship produces a readable bonus and honest relocation preview',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   await page.getByTestId('cozy-room-2').click();
   await page.getByTestId('cozy-build-bath').click();
@@ -494,7 +494,7 @@ test('saved genuine friendship produces a readable bonus and honest relocation p
 
 
 test('a legacy finished save reopens as a living building with the same rooms',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await expect.poll(()=>page.evaluate(()=>!!localStorage.getItem('monster-apartment:cozy:v1'))).toBe(true);
   await page.evaluate(()=>{
     const key='monster-apartment:cozy:v1';
@@ -522,7 +522,7 @@ test('a legacy finished save reopens as a living building with the same rooms',a
 });
 
 test('after opening week, a room wish responds to real furnishing choices',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await expect.poll(()=>page.evaluate(()=>!!localStorage.getItem('monster-apartment:cozy:v1'))).toBe(true);
   await page.evaluate(()=>{
     const key='monster-apartment:cozy:v1';
@@ -551,7 +551,7 @@ test('after opening week, a room wish responds to real furnishing choices',async
 test('first chapter milestone rewards coins, but the game continues and keeps its single-screen mobile stage',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/apartment/');
   await expect.poll(()=>page.evaluate(()=>!!localStorage.getItem('monster-apartment:cozy:v1'))).toBe(true);
   await page.evaluate(()=>{
     const key='monster-apartment:cozy:v1';
@@ -579,7 +579,7 @@ test('first chapter milestone rewards coins, but the game continues and keeps it
 test('a real neighbor visit completes Dewdrop commission and unlocks permanent patronage',async({page})=>{
   const errors:string[]=[];
   page.on('pageerror',error=>errors.push(error.message));
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   await page.getByTestId('cozy-room-2').click();
   await page.getByTestId('cozy-build-bath').click();
@@ -636,7 +636,7 @@ test('a real neighbor visit completes Dewdrop commission and unlocks permanent p
 test('chapter commissions present legible progress on a 390px phone without extra scrolling',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/apartment/');
   await expect.poll(()=>page.evaluate(()=>
     localStorage.getItem('monster-apartment:cozy:v1')!==null)).toBe(true);
   await page.evaluate(()=>{
@@ -663,7 +663,7 @@ test('chapter commissions present legible progress on a 390px phone without extr
 
 
 test('helping a resident is an immediate once-a-day scene action, not another control button',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   const coinsBefore=Number(await page.getByTestId('cozy-coins').textContent());
   const before=Number((await page.getByTestId('cozy-happiness').textContent())!.split('/')[0]);
@@ -697,7 +697,7 @@ test('helping a resident is an immediate once-a-day scene action, not another co
 test('species-specific costumes are visible on stage and in the visitor lineup',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   await expect(page.getByTestId('cozy-room-4').locator('.cozy-signature.is-seedling')).toBeAttached();
   await expect(page.getByTestId('cozy-applicant-dewdrop').locator('.cozy-signature.is-dewdrop')).toBeAttached();
@@ -721,7 +721,7 @@ test('species-specific costumes are visible on stage and in the visitor lineup',
 test('real rain-cloud incident turns room-to-room help into a decision with consequences',async({page})=>{
   const errors:string[]=[];
   page.on('pageerror',err=>errors.push(err.message));
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   await page.getByTestId('cozy-room-2').click();
   await page.getByTestId('cozy-build-bath').click();
@@ -757,7 +757,7 @@ test('real rain-cloud incident turns room-to-room help into a decision with cons
 });
 
 test('dragging a specialist onto a troubled room resolves it without moving furniture',async({page})=>{
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   await page.getByTestId('cozy-room-2').click();
   await page.getByTestId('cozy-build-bath').click();
@@ -781,7 +781,7 @@ test('dragging a specialist onto a troubled room resolves it without moving furn
 test('phone shows a distinctive room mishap and resolves it by two taps',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/apartment/');
   await page.getByTestId('cozy-pause').click();
   await page.getByTestId('cozy-room-2').click();
   await page.getByTestId('cozy-build-bath').click();
