@@ -58,3 +58,19 @@ test('small screens fit the lobby without page scroll',async({page})=>{
   expect(overflow.x).toBeLessThanOrEqual(1);
   expect(overflow.y).toBeLessThanOrEqual(1);
 });
+
+test('Tailwind modal traps focus and returns focus when dismissed',async({page})=>{
+  await page.goto('/');
+  const menu=page.getByRole('button',{name:'全部功能'});
+  await menu.click();
+  const dialog=page.getByRole('dialog',{name:'所有功能'});
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(dialog.getByRole('link',{name:/委托大厅/})).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(dialog.getByRole('button',{name:'关闭面板'})).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(menu).toBeFocused();
+});
