@@ -156,8 +156,7 @@ export function GothicLobby(){
           <h2>公寓地图</h2>
           <div className="gothic-lobby__menu-grid">
             {[...links,{href:'/workshop/',symbol:'⚒',label:'晶核工坊',description:'生产与派工'},
-              {href:'/orders/',symbol:'◇',label:'委托大厅',description:'契约与交付'},
-              {href:'/legacy/',symbol:'♜',label:'经典公寓',description:'旧版玩法'}]
+              {href:'/orders/',symbol:'◇',label:'委托大厅',description:'契约与交付'}]
               .map(item=><Link href={item.href} key={item.href} onClick={close}>
                 <b>{item.symbol}</b><span>{item.label}</span><small>{item.description}</small>
               </Link>)}
