@@ -74,3 +74,17 @@ test('Tailwind modal traps focus and returns focus when dismissed',async({page})
   await expect(dialog).toHaveCount(0);
   await expect(menu).toBeFocused();
 });
+
+test('motion preference survives routes and suppresses Pixi particles',async({page})=>{
+  await page.goto('/');
+  const motion=page.getByRole('button',{name:'切换动态特效'});
+  await motion.click();
+  await expect(motion).toHaveAttribute('aria-pressed','true');
+  await expect.poll(()=>page.evaluate(()=>
+    localStorage.getItem('monster-apartment:gothic-motion-reduced'))).toBe('1');
+  await page.getByRole('navigation',{name:'主要游戏功能'})
+    .getByRole('link',{name:/公寓 ·/}).click();
+  await expect(page.getByTestId('gothic-pixi-atmosphere').locator('canvas')).toHaveCount(0);
+  await page.getByRole('navigation',{name:'公寓世界导航'}).getByRole('link',{name:'大厅'}).click();
+  await expect(page.getByRole('button',{name:'切换动态特效'})).toHaveAttribute('aria-pressed','true');
+});
