@@ -16,7 +16,7 @@ function readGameMarkup():string{
   if(!html)throw Error('V2 gameplay markup was not found.');
   // Standalone v2 keeps its own nav. Next.js renders a single React/Tailwind
   // navigation HUD instead, while preserving DOM IDs used by Pixi game code.
-  const markup=html.replace(/<nav class="game-world-nav"[\\s\\S]*?<\\/nav>/,'');
+  const markup=html.replace(/<nav class="game-world-nav"[\s\S]*?<\/nav>/,'');
   if(markup===html)throw Error('Legacy workshop navigation was not found.');
   return markup.replace('data-testid="v2-day"','data-testid="v2-internal-day"')
     .replace('data-testid="v2-coins"','data-testid="v2-internal-coins"');
