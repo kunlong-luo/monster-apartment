@@ -40,7 +40,7 @@
 .gothic-workshop-shell #root.lab.gothic-workshop #reset{border-color:#ba976c;
   border-radius:50%;background:#261924d4;color:#efd0a4;font-size:19px}
 .gothic-workshop-shell #root.lab.gothic-workshop .middle{position:absolute;
-  z-index:2;top:70px;right:clamp(12px,1.7vw,26px);bottom:101px;
+  z-index:2;top:70px;right:clamp(12px,1.7vw,26px);bottom:225px;
   left:clamp(12px,1.7vw,26px);display:grid;min-height:0;
   grid-template-columns:minmax(0,1fr) minmax(218px,24vw);gap:12px}
 .gothic-workshop-shell #root.lab.gothic-workshop .world{
