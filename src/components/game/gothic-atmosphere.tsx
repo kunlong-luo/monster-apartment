@@ -67,6 +67,6 @@ export function GothicAtmosphere({paused=false}:{paused?:boolean}){
     });
     return ()=>{disposed=true;cleanup?.();};
   },[paused]);
-  return <div data-testid="gothic-pixi-atmosphere" aria-hidden="true"
+  return <div ref={mount} data-testid="gothic-pixi-atmosphere" aria-hidden="true"
     className="pointer-events-none absolute inset-0 z-[0] overflow-hidden"/>;
 }
