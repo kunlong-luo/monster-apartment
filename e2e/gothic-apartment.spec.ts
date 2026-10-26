@@ -49,3 +49,20 @@ test('2D polish: architectural room controls, Moonveil dialogue, accessible game
   await expect(page.getByTestId('ga-coins')).toHaveText('75');
   await expect(page.locator('.ga-feedback')).toContainText('新房间建好了');
 });
+
+test('apartment clock pauses for room choices and resumes after closing the drawer',async({page})=>{
+  await page.goto('/apartment/');
+  await expect(page.getByTestId('gothic-apartment')).toBeVisible();
+  await page.getByTestId('ga-room-2').click();
+  await expect(page.getByTestId('ga-room-drawer')).toBeVisible();
+  const tick=()=>page.evaluate(()=>{
+    const data=localStorage.getItem('monster-apartment:cozy:v1');
+    return data?JSON.parse(data).tick:-1;
+  });
+  await expect.poll(tick).toBeGreaterThanOrEqual(0);
+  const before=await tick();
+  await page.waitForTimeout(2250);
+  expect(await tick()).toBe(before);
+  await page.getByRole('button',{name:'关闭房间操作'}).click();
+  await expect.poll(tick,{timeout:6000}).toBeGreaterThan(before);
+});
