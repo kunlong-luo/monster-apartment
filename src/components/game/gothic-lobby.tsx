@@ -5,6 +5,7 @@ import Image from 'next/image';
 import {useMemo,useState,useSyncExternalStore} from 'react';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import workshopPainting from '../../../v2/art/moon-workshop.avif';
+import {lobbyPreview} from './gothic-lobby-art';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
 import {SAVE_KEY,CHANGE_EVENT,parseSavedWorld,commitWorldAction} from '@/lib/moonwork/world-store';
 import './gothic-lobby.css';
@@ -57,7 +58,7 @@ export function GothicLobby(){
     data-testid="gothic-lobby" aria-label="怪物公寓主大厅">
     <div className="gothic-lobby__stage" aria-hidden="true">
       <div className="gothic-lobby__fallback" style={{backgroundImage:'url('+workshopPainting.src+')'}}/>
-      <div className="gothic-lobby__painting"/>
+      <div className="gothic-lobby__painting" style={{backgroundImage:"url("+lobbyPreview+")"}}/>
       <div className="gothic-lobby__vignette"/>
       <div className="gothic-lobby__embers"/>
     </div>
