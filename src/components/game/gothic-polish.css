@@ -10,7 +10,7 @@
   --v04-glass: rgba(24,14,22,.82);
 }
 .gothic-lobby__painting{
-  transform:translate3d(calc(var(--scene-x,0px) * -.8),calc(var(--scene-y,0px) * -.8),0) scale(1.028);
+  transform:translate3d(var(--scene-x,0px),var(--scene-y,0px),0) scale(1.028);
   transition:transform .65s cubic-bezier(.18,.8,.2,1);
   will-change:transform;
 }
