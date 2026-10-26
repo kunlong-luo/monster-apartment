@@ -41,10 +41,26 @@ test('actual PixiJS 8 Gothic motes mount and unmount when animation is toggled',
   await page.emulateMedia({reducedMotion:'no-preference'});
   await page.goto('/');
   const atmosphere=page.getByTestId('gothic-pixi-atmosphere');
-  await expect(atmosphere.locator('canvas')).toHaveCount(1,{timeout:30000});
-  await expect(atmosphere.locator('canvas')).toHaveAttribute('aria-hidden','true');
+  await expect(atmosphere).toHaveAttribute('data-renderer',/^(pixi|unsupported)$/,{timeout:30000});
+  const mode=await atmosphere.getAttribute('data-renderer');
+  if(mode==='unsupported'){
+    // CI browsers can disable GPU contexts; gracefully degrading is required.
+    const hasWebGL=await page.evaluate(()=>{
+      try{
+        const canvas=document.createElement('canvas');
+        return Boolean(canvas.getContext('webgl2')||canvas.getContext('webgl'));
+      }catch{return false;}
+    });
+    const message=await atmosphere.getAttribute('data-renderer-error');
+    expect(hasWebGL,'Pixi initialization failed despite WebGL support: '+message).toBe(false);
+  }else{
+    await expect(atmosphere.locator('canvas')).toHaveCount(1);
+    await expect(atmosphere.locator('canvas')).toHaveAttribute('aria-hidden','true');
+  }
   await page.getByRole('button',{name:'切换动态特效'}).click();
   await expect(atmosphere.locator('canvas')).toHaveCount(0);
+  await expect(atmosphere).toHaveAttribute('data-renderer','disabled');
   await page.getByRole('button',{name:'切换动态特效'}).click();
-  await expect(atmosphere.locator('canvas')).toHaveCount(1,{timeout:30000});
+  await expect(atmosphere).toHaveAttribute('data-renderer',/^(pixi|unsupported)$/,{timeout:30000});
+  if(mode==='pixi')await expect(atmosphere.locator('canvas')).toHaveCount(1);
 });
