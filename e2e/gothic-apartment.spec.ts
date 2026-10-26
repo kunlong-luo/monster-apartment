@@ -32,3 +32,20 @@ test('redesigned pages never restore the old scrolling web dashboard',async({pag
     expect(scroll.y,route+' vertical scroll').toBeLessThanOrEqual(1);
   }
 });
+
+test('2D polish: architectural room controls, Moonveil dialogue, accessible gameplay feedback',async({page})=>{
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/apartment/');
+  await expect(page.getByTestId('gothic-apartment')).toBeVisible();
+  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
+  await expect(page.getByRole('dialog',{name:'与月纱交谈'})).toBeVisible();
+  await expect(page.getByRole('dialog',{name:'与月纱交谈'})).toContainText('幸福度');
+  await page.getByRole('button',{name:'关闭月纱对话'}).click();
+  await expect(page.getByRole('dialog',{name:'与月纱交谈'})).toHaveCount(0);
+  await page.getByTestId('ga-room-0').click();
+  await expect(page.getByTestId('ga-build-nest')).toBeVisible();
+  await expect(page.getByTestId('ga-build-nest')).toContainText('软绵卧室');
+  await page.getByTestId('ga-build-nest').click();
+  await expect(page.getByTestId('ga-coins')).toHaveText('75');
+  await expect(page.locator('.ga-feedback')).toContainText('新房间建好了');
+});
