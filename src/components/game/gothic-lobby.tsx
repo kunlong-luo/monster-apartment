@@ -7,15 +7,16 @@ import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import workshopPainting from '../../../v2/art/moon-workshop.avif';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
 import {SAVE_KEY,CHANGE_EVENT,parseSavedWorld,commitWorldAction} from '@/lib/moonwork/world-store';
+import {GothicDock,GothicIconButton,GothicResourcePill} from './gothic-hud';
 import './gothic-lobby.css';
 
 type Panel='profile'|'bond'|'updates'|'menu'|null;
 const links=[
-  {href:'/apartment/',symbol:'♜',label:'公寓',description:'经营住客与房间'},
-  {href:'/characters/',symbol:'♟',label:'住客',description:'查看工匠与角色'},
-  {href:'/orders/',symbol:'❦',label:'羁绊',description:'月纱的特别委托'},
-  {href:'/town/',symbol:'✧',label:'探索',description:'月光街'},
-  {href:'/warehouse/',symbol:'♧',label:'商店',description:'兑换生产材料'},
+  {href:'/apartment/',icon:'♜',label:'公寓',description:'经营住客与房间'},
+  {href:'/characters/',icon:'♟',label:'住客',description:'查看工匠与角色'},
+  {href:'/orders/',icon:'❦',label:'羁绊',description:'月纱的特别委托'},
+  {href:'/town/',icon:'✧',label:'探索',description:'月光街'},
+  {href:'/warehouse/',icon:'♧',label:'商店',description:'兑换生产材料'},
 ];
 function subscribe(onChange:()=>void){
   const storage=(event:StorageEvent)=>{if(!event.key||event.key===SAVE_KEY)onChange();};
@@ -78,25 +79,24 @@ export function GothicLobby(){
       <div className="gothic-lobby__mist" aria-hidden="true"/>
     </div>
 
-    <header className="gothic-lobby__hud" aria-label="玩家与资源">
-      <button type="button" className="gothic-lobby__player" onClick={()=>setOpen('profile')}
-        aria-label="打开玩家资料" aria-expanded={panel==='profile'}>
+    <header className="absolute inset-x-0 top-0 z-[4] grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-x-2 px-3 pt-3 sm:px-5 max-[840px]:grid-cols-[minmax(0,1fr)_auto]" aria-label="玩家与资源">
+      <button type="button" className="flex min-h-12 w-max max-w-full items-center gap-2.5 bg-transparent text-left text-gothic-ivory focus-visible:outline-2 focus-visible:outline-gothic-glow"
+        onClick={()=>setOpen('profile')} aria-label="打开玩家资料" aria-expanded={panel==='profile'}>
         <span className="gothic-lobby__avatar"><Image src={moonveilPortrait} alt="" fill
           sizes="60px" className="gothic-lobby__avatar-image"/></span>
         <span className="gothic-lobby__player-copy"><strong>夜色蔷薇</strong><small>月光公寓 · 第 {world.day} 天</small></span>
       </button>
-      <div className="gothic-lobby__resources" aria-label="当前存档资源">
-        <span title="工坊真实星币余额"><b aria-hidden="true">✦</b><strong data-testid="lobby-coins">{world.coins}</strong><small>星币</small></span>
-        <span title="工坊真实晶核库存"><b aria-hidden="true">◆</b><strong data-testid="lobby-cores">{world.warehouse.core}</strong><small>晶核</small></span>
-        <span title="当前生产日"><b aria-hidden="true">☾</b><strong>{world.day}</strong><small>生产日</small></span>
+      <div className="flex items-center gap-1.5 pt-1 max-[840px]:col-span-2 max-[840px]:col-start-1 max-[840px]:row-start-2 max-[840px]:justify-center" aria-label="当前存档资源">
+        <GothicResourcePill symbol="✦" amount={world.coins} label="星币" testId="lobby-coins"/>
+        <GothicResourcePill symbol="◆" amount={world.warehouse.core} label="晶核" testId="lobby-cores"/>
+        <GothicResourcePill symbol="☾" amount={world.day} label="生产日"/>
       </div>
-      <div className="gothic-lobby__top-actions">
-        <button type="button" title="委托消息" aria-label="委托消息"
-          onClick={()=>setOpen('updates')}>✉</button>
-        <button type="button" title="收起或展开动作特效" aria-label="切换动态特效"
-          aria-pressed={reducedMotion} onClick={()=>setReducedMotion(value=>!value)}>✧</button>
-        <button type="button" title="全部功能" aria-label="全部功能"
-          aria-expanded={panel==='menu'} onClick={()=>setOpen('menu')}>☰</button>
+      <div className="flex justify-end gap-1.5 pt-1 max-[840px]:col-start-2 max-[840px]:row-start-1">
+        <GothicIconButton label="委托消息" title="委托消息" onClick={()=>setOpen('updates')}>✉</GothicIconButton>
+        <GothicIconButton label="切换动态特效" title="切换动态特效" pressed={reducedMotion}
+          onClick={()=>setReducedMotion(value=>!value)}>✧</GothicIconButton>
+        <GothicIconButton label="全部功能" title="全部功能" expanded={panel==='menu'}
+          onClick={()=>setOpen('menu')}>☰</GothicIconButton>
       </div>
     </header>
 
@@ -122,14 +122,7 @@ export function GothicLobby(){
       <strong aria-hidden="true">›</strong>
     </Link>
 
-    <nav className="gothic-lobby__bottom" aria-label="主要游戏功能">
-      {links.map(item=><Link key={item.href} href={item.href}
-        aria-label={item.label+' · '+item.description}
-        className="gothic-lobby__nav-entry" title={item.description}>
-        <span className="gothic-lobby__nav-glyph" aria-hidden="true">{item.symbol}</span>
-        <span>{item.label}</span>
-      </Link>)}
-    </nav>
+    <GothicDock items={links} label="主要游戏功能"/>
 
     {panel&&<div className="gothic-lobby__overlay" onMouseDown={event=>{
       if(event.target===event.currentTarget)close();
@@ -170,10 +163,10 @@ export function GothicLobby(){
           <span className="gothic-lobby__eyebrow">ALL DESTINATIONS</span>
           <h2>公寓地图</h2>
           <div className="gothic-lobby__menu-grid">
-            {[...links,{href:'/workshop/',symbol:'⚒',label:'晶核工坊',description:'生产与派工'},
-              {href:'/orders/',symbol:'◇',label:'委托大厅',description:'契约与交付'}]
+            {[...links,{href:'/workshop/',icon:'⚒',label:'晶核工坊',description:'生产与派工'},
+              {href:'/orders/',icon:'◇',label:'委托大厅',description:'契约与交付'}]
               .map(item=><Link href={item.href} key={item.href} onClick={close}>
-                <b>{item.symbol}</b><span>{item.label}</span><small>{item.description}</small>
+                <b>{item.icon}</b><span>{item.label}</span><small>{item.description}</small>
               </Link>)}
           </div>
         </div>}
