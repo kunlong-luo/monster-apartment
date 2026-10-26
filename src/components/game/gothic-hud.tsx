@@ -86,3 +86,33 @@ export function GothicDock({
     </Link>)}
   </nav>;
 }
+
+/** Compact contextual action used inside the room drawer, never a permanent tile. */
+export function GothicActionButton({
+  rune,label,detail,onClick,disabled,testId,pressed
+}:{
+  rune:string;
+  label:string;
+  detail:string;
+  onClick:()=>void;
+  disabled?:boolean;
+  testId?:string;
+  pressed?:boolean;
+}){
+  return <button type="button" data-testid={testId} disabled={disabled}
+    aria-pressed={pressed} onClick={onClick}
+    className={
+      'flex min-h-[60px] min-w-0 flex-col items-start gap-1 rounded-md border '+
+      'border-gothic-brass/70 bg-[linear-gradient(135deg,#432a31dc,#1a111cdd)] px-2.5 py-2 text-left '+
+      'text-gothic-ivory shadow-[inset_0_1px_#ffdbac32,0_3px_12px_#0004] '+
+      'transition-[border-color,background-color,transform] duration-150 '+
+      'hover:border-gothic-glow hover:bg-gothic-wine/80 active:scale-[.98] '+
+      'disabled:cursor-not-allowed disabled:opacity-45 disabled:active:scale-100 '+
+      'focus-visible:outline-2 focus-visible:outline-gothic-glow '+
+      'motion-reduce:transition-none sm:min-h-[68px] sm:px-3'
+    }>
+    <span aria-hidden="true" className="text-[22px] leading-none text-gothic-gold">{rune}</span>
+    <strong className="text-xs font-medium leading-snug">{label}</strong>
+    <small className="line-clamp-2 text-[10px] leading-snug text-gothic-muted">{detail}</small>
+  </button>;
+}
