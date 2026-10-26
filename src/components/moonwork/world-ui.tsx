@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
+import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
 import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import workerTriptych from '../../../v2/art/worker-triptych.avif';
@@ -320,21 +321,23 @@ export function MoonworkWorld({area}:{area:WorldArea}){
   return <main className="mw mw-gothic" data-testid="moonwork-world" data-area={area}>
     <div className="mw-gothic-scene" aria-hidden="true" style={{backgroundImage:'url('+'../lobby-hero.webp'+')'}}/>
     <div className="mw-gothic-shadow" aria-hidden="true"/>
-    <Link href="/" className="mw-gothic-home" aria-label="返回哥特公寓大厅">⌂ <span>返回大厅</span></Link>
-    <Link href="/orders/" className="mw-gothic-character" title="与月纱相见" aria-label="前往月纱委托"><span className="mw-gothic-character-label">月纱 · 特别委托</span></Link>
-    <header className="mw-header">
-      <Link href="/town/" className="mw-logo">☽ 月光工坊 <small>MOONLIT DISTRICT</small></Link>
-      <div className="mw-stats">
-        <span>第 <b data-testid="world-day">{s?.day??'—'}</b> 天</span>
-        <span>✦ <b data-testid="world-coins">{s?.coins??'—'}</b></span>
-        <span>晶核 <b data-testid="world-cores">{s?.warehouse.core??'—'}</b></span>
+    <Link href="/"
+      className="absolute left-3 top-3 z-[8] flex h-9 items-center gap-2 rounded-full border border-gothic-brass/70 bg-gothic-panel/85 px-3 text-xs text-gothic-ivory shadow-[0_6px_20px_#0007] backdrop-blur-md transition-colors hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow sm:left-5"
+      aria-label="返回哥特公寓大厅">⌂ <span className="hidden sm:inline">返回大厅</span>
+    </Link>
+    <Link href="/orders/" className="mw-gothic-character" title="与月纱相见"
+      aria-label="前往月纱委托"><span className="mw-gothic-character-label">月纱 · 特别委托</span>
+    </Link>
+    <header className="pointer-events-none absolute inset-x-0 top-0 z-[5] flex min-h-[70px] justify-end gap-2 bg-[linear-gradient(#110914cd,transparent)] px-3 py-3 sm:px-6">
+      <div className="pointer-events-auto flex flex-wrap items-start justify-end gap-1.5 sm:gap-2" aria-label="工坊真实资源">
+        <GothicResourcePill symbol="☾" amount={s?.day??'—'} label="天数" testId="world-day"/>
+        <GothicResourcePill symbol="✦" amount={s?.coins??'—'} label="星币" testId="world-coins"/>
+        <GothicResourcePill symbol="◆" amount={s?.warehouse.core??'—'} label="晶核" testId="world-cores"/>
       </div>
     </header>
-    <nav className="mw-nav" aria-label="月光工坊世界">
-      {nav.map(n=><Link href={n.href} key={n.id} aria-label={n.full} aria-current={n.id===area?'page':undefined} className={n.id===area?'selected':''}>
-        <span aria-hidden="true" className="world-nav-glyph">{n.glyph}</span><span>{n.label}</span>
-      </Link>)}
-    </nav>
+    <GothicDock label="月光工坊世界" activeHref={'/'+area+'/'}
+      items={nav.map(n=>({href:n.href,icon:n.glyph,label:n.label,ariaLabel:n.full}))}/>
+
     <div className="mw-main">
       <p className="mw-eyebrow">MOONLIGHT RESIDENCE / {title}</p>
       <h1>{title}</h1>
