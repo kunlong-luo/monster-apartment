@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
+import {AnimatePresence} from 'motion/react';
 import {useEffect,useState,useSyncExternalStore} from 'react';
 import moonveil from '../../../v2/art/moonveil-portrait.avif';
 import {COZY_RESIDENTS,ROOM_DETAILS,FURNISHINGS,
@@ -180,7 +181,8 @@ export function GothicApartment(){
     {feedback&&<div className="ga-feedback" role="status" key={feedback.id}>
       <span aria-hidden="true">✦</span>{feedback.text}
     </div>}
-    {witchOpen&&<GothicModal title="与月纱交谈" closeLabel="关闭月纱对话"
+    <AnimatePresence mode="wait">
+    {witchOpen&&<GothicModal key={"moonveil"} title="与月纱交谈" closeLabel="关闭月纱对话"
       onClose={()=>setWitchOpen(false)} wide>
       <div className="relative hidden min-h-[215px] w-[120px] shrink-0 overflow-hidden rounded-md border border-gothic-brass/60 bg-gothic-panel sm:block">
         <Image src={moonveil} alt="月纱的绘制肖像" fill sizes="130px" className="object-cover"/>
@@ -193,6 +195,7 @@ export function GothicApartment(){
         <GothicPanelLink href="/orders/">查看月纱委托 ›</GothicPanelLink>
       </div>
     </GothicModal>}
+    </AnimatePresence>
     {notices&&<div className="absolute right-3 top-[72px] z-20 w-[min(350px,92vw)] rounded-xl border border-gothic-brass/75 bg-gothic-panel/95 p-4 text-gothic-ivory shadow-[0_15px_44px_#000c] backdrop-blur-xl"
       role="dialog" aria-label="公寓日志" onKeyDown={event=>{if(event.key==='Escape')setNotices(false);}}>
       <button type="button" aria-label="关闭公寓日志" onClick={()=>setNotices(false)}
