@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import {useEffect,useState} from 'react';
-import {lobbyPreview} from './gothic-lobby-art';
+import gothicHero from '../../../public/lobby-hero.webp';
 import moonveil from '../../../v2/art/moonveil-portrait.avif';
 import {COZY_RESIDENTS,ROOM_DETAILS,FURNISHINGS,
   newCozyGame,validCozySave,resumeCozySave,advanceCozy,availableResidents,
@@ -54,7 +54,7 @@ export function GothicApartment(){
     }else setSelected(value=>value===index?null:index);
   };
   return <main className="ga" data-testid="gothic-apartment" aria-label="哥特公寓经营">
-    <div className="ga-backdrop" style={{backgroundImage:'url('+lobbyPreview+')'}} aria-hidden="true"/>
+    <div className="ga-backdrop" style={{backgroundImage:'url('+gothicHero.src+')'}} aria-hidden="true"/>
     <div className="ga-shade" aria-hidden="true"/>
     <header className="ga-top">
       <Link className="ga-home" href="/" aria-label="返回大厅">⌂ <span>夜色公寓</span></Link>
