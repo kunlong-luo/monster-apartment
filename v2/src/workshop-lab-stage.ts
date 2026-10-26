@@ -114,6 +114,20 @@ export async function mountWorkshopLab(
   // A completed shift cannot silently change inventory without visual cues.
   const feedbackLayer=new Container();
   app.stage.addChild(feedbackLayer);
+  // One stable full-tile hit target per plot: painted sprites, floating labels,
+  // sprite animations and production overlays must not steal input.
+  // Kept outside the re-rendered `stage` so every refresh retains its handlers.
+  const plotHits=new Container();
+  app.stage.addChild(plotHits);
+  for(let index=0;index<BOARD_SIZE;index++){
+    const {x,y}=plotXY(index);
+    const target=new Graphics().roundRect(x,y,CELL,CELL,13)
+      .fill({color:0xffffff,alpha:0.001});
+    target.eventMode='static';
+    target.cursor='pointer';
+    target.on('pointertap',()=>callbacks.plot(index));
+    plotHits.addChild(target);
+  }
   const feedback:{sprite:Text;age:number;originY:number}[]=[];
   const showFeedback=(message:string,x:number,y:number,color:number)=>{
     if(feedback.length>=6){
