@@ -20,7 +20,8 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   await page.getByRole('navigation',{name:'主要游戏功能'})
     .getByRole('link',{name:/公寓 ·/}).click();
   await expect(page).toHaveURL(/\/apartment\/?$/);
-  await expect(page.getByRole('heading',{name:'灵核公寓'})).toBeVisible();
+  await expect(page.getByTestId('gothic-apartment')).toBeVisible();
+  await expect(page.getByTestId('ga-room-2')).toBeVisible();
 });
 
 test('lobby reflects a real shared workshop save without inventing currency',async({page})=>{
