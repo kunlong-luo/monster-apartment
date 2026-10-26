@@ -8,6 +8,7 @@ import {COZY_RESIDENTS,ROOM_DETAILS,FURNISHINGS,
   buildCozyRoom,moveInCozy,decorateCozy,relocateCozyResident,careForCozyResident,
   cozyCareUsedToday,cozyDay,cozyGoal,cozyDailyIncome,cozyRescuePreview,resolveCozyIncident,COZY_INCIDENTS} from '@/core/cozy-engine';
 import type {CozyState,HomeType,Furnishing} from '@/core/cozy-engine';
+import {GothicActionButton,GothicDock,GothicIconButton,GothicResourcePill} from './gothic-hud';
 import './gothic-apartment.css';
 const KEY='monster-apartment:cozy:v1';
 const subscribeClient=()=>()=>{};
@@ -79,18 +80,19 @@ export function GothicApartment(){
     <div className="ga-light" aria-hidden="true"/>
     <div className="ga-shade" aria-hidden="true"/>
     <div className="ga-dust" aria-hidden="true"/>
-    <header className="ga-top">
-      <Link className="ga-home" href="/" aria-label="返回大厅">⌂ <span>夜色公寓</span></Link>
-      <div className="ga-resources" aria-label="公寓真实存档">
-        <span>☾ 第 <b>{cozyDay(world.tick)}</b> 天</span>
-        <span>✦ <b data-testid="ga-coins">{world.coins}</b></span>
-        <span>♡ <b>{goal.happiness}</b></span>
-        <span>♟ <b>{goal.guests}/6</b></span>
+    <header className="absolute inset-x-0 top-0 z-[5] flex min-h-[56px] items-start gap-1.5 bg-[linear-gradient(#08060ad3,transparent)] px-2 py-2.5 sm:gap-3 sm:px-6" aria-label="公寓资源与操作">
+      <Link className="flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border border-gothic-brass/70 bg-gothic-panel/80 px-2.5 text-gothic-ivory backdrop-blur-md transition-colors hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow sm:px-3"
+        href="/" aria-label="返回大厅">⌂ <span className="hidden text-sm sm:inline">夜色公寓</span></Link>
+      <div className="ml-auto flex items-start gap-1 sm:gap-2" aria-label="公寓真实存档">
+        <GothicResourcePill symbol="☾" amount={cozyDay(world.tick)} label="公寓天数"/>
+        <GothicResourcePill symbol="✦" amount={world.coins} label="星币" testId="ga-coins"/>
+        <GothicResourcePill symbol="♡" amount={goal.happiness} label="幸福度"/>
+        <GothicResourcePill symbol="♟" amount={goal.guests+'/6'} label="入住"/>
       </div>
-      <div className="ga-tools">
-        <button type="button" onClick={()=>setPaused(x=>!x)}
-          aria-label={paused?'继续公寓时间':'暂停公寓时间'} aria-pressed={paused}>{paused?'▶':'Ⅱ'}</button>
-        <button type="button" onClick={()=>setNotices(x=>!x)} aria-expanded={notices} aria-label="公寓日志">✉</button>
+      <div className="flex shrink-0 gap-1 sm:gap-2">
+        <GothicIconButton label={paused?'继续公寓时间':'暂停公寓时间'} pressed={paused}
+          onClick={()=>setPaused(x=>!x)}>{paused?'▶':'Ⅱ'}</GothicIconButton>
+        <GothicIconButton label="公寓日志" expanded={notices} onClick={()=>setNotices(x=>!x)}>✉</GothicIconButton>
       </div>
     </header>
     <aside className="ga-room-list" aria-label="可交互的公寓房间">
@@ -125,30 +127,35 @@ export function GothicApartment(){
           <h2>{room?ROOM_DETAILS[room.type].zh:'布置新房间'}</h2>
         </div><button type="button" className="ga-dismiss" aria-label="关闭房间操作"
           onClick={()=>{setSelected(null);setMoving(null);}}>×</button></div>
-        {!room?<div className="ga-picks">
-          {types.map(type=><button key={type} type="button" data-testid={'ga-build-'+type}
-            disabled={world.coins<ROOM_DETAILS[type].cost}
-            onClick={()=>change(buildCozyRoom(world,selected,type))}>
-            <b aria-hidden="true">{roomRunes[type]}</b><span>{ROOM_DETAILS[type].zh}</span>
-            <small>✦ {ROOM_DETAILS[type].cost}</small></button>)}
-        </div>:!room.resident?<div className="ga-picks">
-          {applicants.map(id=><button key={id} type="button" data-testid={'ga-welcome-'+id}
-            onClick={()=>change(moveInCozy(world,selected,id))}>
-            <b>♟</b><span>迎接 {guest(id).zh}</span><small>{guest(id).bioZh}</small></button>)}
-          {applicants.length===0&&<p className="ga-empty">住客已经入住其他房间，暂时没有新访客。</p>}
-        </div>:<div className="ga-picks">
-          <button type="button" onClick={()=>change(careForCozyResident(world,room.resident!))}
-            disabled={cozyCareUsedToday(world)} data-testid="ga-care">
-            <b>♡</b><span>照顾 {guest(room.resident).zh}</span>
-            <small>{cozyCareUsedToday(world)?'今日已照顾':'增进羁绊'}</small></button>
-          <button type="button" onClick={()=>setMoving(x=>x===selected?null:selected)}
-            aria-pressed={moving===selected}><b>↔</b><span>{moving===selected?'取消搬迁':'搬迁 / 交换'}</span>
-            <small>然后点击另一扇已建房门</small></button>
-          {decors.map(item=><button type="button" key={item} data-testid={'ga-decor-'+item}
+        {!room?<div className="grid grid-cols-2 gap-2 max-[600px]:gap-1.5">
+          {types.map(type=><GothicActionButton key={type}
+            testId={'ga-build-'+type} disabled={world.coins<ROOM_DETAILS[type].cost}
+            onClick={()=>change(buildCozyRoom(world,selected,type))}
+            rune={roomRunes[type]} label={ROOM_DETAILS[type].zh}
+            detail={'✦ '+ROOM_DETAILS[type].cost}/>)}
+        </div>:!room.resident?<div className="grid grid-cols-2 gap-2 max-[600px]:gap-1.5">
+          {applicants.map(id=><GothicActionButton key={id}
+            testId={'ga-welcome-'+id} onClick={()=>change(moveInCozy(world,selected,id))}
+            rune="♟" label={'迎接 '+guest(id).zh} detail={guest(id).bioZh}/>)}
+          {applicants.length===0&&<p className="col-span-2 text-xs leading-relaxed text-gothic-muted">
+            住客已经入住其他房间，暂时没有新访客。
+          </p>}
+        </div>:<div className="grid grid-cols-2 gap-2 max-[600px]:gap-1.5">
+          <GothicActionButton testId="ga-care" rune="♡"
+            label={'照顾 '+guest(room.resident).zh}
+            detail={cozyCareUsedToday(world)?'今日已照顾':'增进羁绊'}
+            disabled={cozyCareUsedToday(world)}
+            onClick={()=>change(careForCozyResident(world,room.resident!))}/>
+          <GothicActionButton rune="↔" pressed={moving===selected}
+            label={moving===selected?'取消搬迁':'搬迁 / 交换'}
+            detail="然后点击另一扇已建房门"
+            onClick={()=>setMoving(x=>x===selected?null:selected)}/>
+          {decors.map(item=><GothicActionButton key={item}
+            testId={'ga-decor-'+item}
             disabled={world.coins<FURNISHINGS[item].cost||room.decor===item}
-            onClick={()=>change(decorateCozy(world,selected,item))}>
-            <b aria-hidden="true">{furnishingRunes[item]}</b><span>{FURNISHINGS[item].zh}</span>
-            <small>{room.decor===item?'已摆放':'✦ '+FURNISHINGS[item].cost}</small></button>)}
+            onClick={()=>change(decorateCozy(world,selected,item))}
+            rune={furnishingRunes[item]} label={FURNISHINGS[item].zh}
+            detail={room.decor===item?'已摆放':'✦ '+FURNISHINGS[item].cost}/>)}
         </div>}
         {incident&&<div className="ga-warning" aria-label="公寓突发事件">
           <strong>✧ {COZY_INCIDENTS[incident.kind].zh}</strong>
@@ -191,8 +198,6 @@ export function GothicApartment(){
       <p>{latest?.zh??'今晚还没有新的故事。'}</p>
       <p>目前 {goal.guests} 位住客，平均幸福度 {goal.happiness}。</p>
     </div>}
-    <nav className="ga-dock" aria-label="公寓世界导航">
-      {nav.map(d=><Link href={d.href} key={d.href}><span>{d.icon}</span><small>{d.label}</small></Link>)}
-    </nav>
+    <GothicDock items={nav} label="公寓世界导航"/>
   </main>;
 }
