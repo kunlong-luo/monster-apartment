@@ -8,6 +8,7 @@ import {Application,Graphics} from 'pixi.js';
 export async function mountAtmosphere(host:HTMLElement):Promise<()=>void>{
   if(!host.isConnected||window.matchMedia('(prefers-reduced-motion: reduce)').matches)
     return ()=>{};
+  host.dataset.renderer='initializing';
   const app=new Application();
   let initialized=false;
   try{
@@ -22,8 +23,10 @@ export async function mountAtmosphere(host:HTMLElement):Promise<()=>void>{
     });
     initialized=true;
     if(!host.isConnected){app.destroy(true);return ()=>{};}
-  }catch{
+  }catch(error){
     // WebGL may be disabled. Painting and HUD remain fully playable.
+    host.dataset.renderer='unsupported';
+    host.dataset.rendererError=error instanceof Error?error.message:String(error);
     if(initialized)app.destroy(true);
     return ()=>{};
   }
@@ -31,6 +34,8 @@ export async function mountAtmosphere(host:HTMLElement):Promise<()=>void>{
   view.style.cssText='display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;';
   view.setAttribute('aria-hidden','true');
   host.appendChild(view);
+  host.dataset.renderer='pixi';
+  delete host.dataset.rendererError;
 
   type Mote={view:Graphics;x:number;y:number;speed:number;drift:number;phase:number;alpha:number};
   const motes:Mote[]=[];
@@ -83,5 +88,6 @@ export async function mountAtmosphere(host:HTMLElement):Promise<()=>void>{
     resize.disconnect();
     app.ticker.remove(onTick);
     app.destroy(true,{children:true});
+    host.dataset.renderer='stopped';
   };
 }
