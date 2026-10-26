@@ -58,8 +58,8 @@ export function GothicLobby(){
     const bounds=event.currentTarget.getBoundingClientRect();
     const dx=(event.clientX-bounds.left)/bounds.width-.5;
     const dy=(event.clientY-bounds.top)/bounds.height-.5;
-    event.currentTarget.style.setProperty('--scene-x',Math.round(dx*14)+'px');
-    event.currentTarget.style.setProperty('--scene-y',Math.round(dy*10)+'px');
+    event.currentTarget.style.setProperty('--scene-x',Math.round(-dx*11)+'px');
+    event.currentTarget.style.setProperty('--scene-y',Math.round(-dy*8)+'px');
   };
   const resetLight=(event:React.PointerEvent<HTMLElement>)=>{
     event.currentTarget.style.setProperty('--scene-x','0px');
