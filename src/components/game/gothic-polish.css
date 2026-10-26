@@ -1,0 +1,270 @@
+/* V0.4 — Gothic 2D polish.
+ * Painted scene stays in full control of the composition; all effects are CSS 2D.
+ * A single vocabulary of engraved bronze, smoked glass and candlelight.
+ */
+.gothic-lobby, .ga {
+  --v04-gold: #edc990;
+  --v04-warm: #fbe5bc;
+  --v04-ink: #100b13;
+  --v04-edge: rgba(229,181,113,.48);
+  --v04-glass: rgba(24,14,22,.82);
+}
+.gothic-lobby__painting{
+  transform:translate3d(calc(var(--scene-x,0px) * -.8),calc(var(--scene-y,0px) * -.8),0) scale(1.028);
+  transition:transform .65s cubic-bezier(.18,.8,.2,1);
+  will-change:transform;
+}
+.gothic-lobby__light,.gothic-lobby__mist,.ga-light,.ga-dust{
+  position:absolute;inset:0;pointer-events:none;
+}
+.gothic-lobby__light{
+  background:
+    radial-gradient(ellipse 23% 36% at 22% 38%,rgba(255,172,76,.17),transparent 82%),
+    radial-gradient(ellipse 26% 34% at 77% 35%,rgba(255,182,108,.18),transparent 86%),
+    radial-gradient(ellipse 36% 53% at 55% 9%,rgba(169,156,217,.15),transparent 83%);
+  mix-blend-mode:screen;opacity:.83;
+  animation:v04-candlelight 8s ease-in-out infinite alternate;
+}
+.gothic-lobby__mist{
+  background:
+    radial-gradient(ellipse 52% 14% at 40% 88%,rgba(182,144,187,.15),transparent 89%),
+    radial-gradient(ellipse 65% 16% at 68% 96%,rgba(202,141,135,.14),transparent 85%);
+  filter:blur(8px);
+  opacity:.62;
+  animation:v04-fog 15s ease-in-out infinite alternate;
+}
+.gothic-lobby__embers{
+  background-image:
+    radial-gradient(circle,#ffd4a0 1px,transparent 2px),
+    radial-gradient(circle,#e3a77b 1px,transparent 2px),
+    radial-gradient(circle,#fae1b9 .6px,transparent 1.6px);
+  background-size:193px 221px,317px 257px,137px 207px;
+  background-position:13% 15%,57% 47%,78% 19%;
+  opacity:.31;filter:drop-shadow(0 0 4px #f6a866);
+}
+.gothic-lobby__feature{
+  border-left:1px solid #e4bb7b91;
+  padding:12px 13px;
+  background:linear-gradient(90deg,#180c1bc0,#210e1977 58%,transparent);
+}
+.gothic-lobby__feature>span,.ga-list-title,.ga-micro{letter-spacing:.19em}
+.gothic-lobby__feature strong{letter-spacing:.025em;color:#fff0d1;
+  text-shadow:0 1px 7px #000,0 0 22px #de9d7561}
+.gothic-lobby__feature button{
+  background:linear-gradient(125deg,#684531bc,#241521ce);
+  border:1px solid #e0b8818c;
+  color:#f4dbb5;border-radius:4px;
+  box-shadow:inset 0 1px #fff2,0 3px 12px #0006;
+  transition:transform .2s,border-color .2s,background .2s;
+}
+.gothic-lobby__feature button:hover{border-color:#ffe0ae;
+  transform:translateX(3px);background:linear-gradient(125deg,#8d6044,#36202f)}
+.gothic-lobby__resources>span,.gothic-lobby__top-actions button,.ga-resources span,.ga-tools button{
+  border-color:var(--v04-edge);
+  box-shadow:inset 0 1px rgba(255,229,177,.12),0 5px 20px #0006;
+  background:linear-gradient(130deg,rgba(49,30,36,.88),rgba(17,10,19,.8));
+  backdrop-filter:blur(12px);
+}
+.gothic-lobby__resources strong,.ga-resources b{color:var(--v04-warm);font-variant-numeric:tabular-nums}
+.gothic-lobby__top-actions button,.ga-tools button{transition:transform .17s,background .17s}
+.gothic-lobby__top-actions button:active,.ga-tools button:active{transform:scale(.91)}
+.gothic-lobby__side span{
+  width:39px;height:39px;border-radius:11px;
+  background:radial-gradient(circle at 40% 22%,#74503a,#281922 63%,#140c14);
+  border-color:#ddaf79a1;
+  box-shadow:inset 0 1px rgba(255,233,180,.34),inset 0 -4px 10px #09040a91,0 7px 15px #0009;
+}
+.gothic-lobby__side a{transition:transform .2s,filter .2s}
+.gothic-lobby__side small{font-size:10px;letter-spacing:.13em}
+.gothic-lobby__bottom{gap:clamp(6px,1.7vw,27px);padding-bottom:3px}
+.gothic-lobby__nav-entry{
+  min-width:clamp(48px,5.4vw,77px);gap:4px;
+  font-size:clamp(11px,.96vw,14px);
+  font-weight:550;letter-spacing:.1em
+}
+.gothic-lobby__nav-glyph{
+  position:relative;isolation:isolate;
+  display:grid;place-items:center;
+  width:clamp(43px,4.5vw,65px);height:clamp(43px,4.5vw,65px);
+  transform:none;border:0;border-radius:0;box-shadow:none;background:transparent;
+  font-size:clamp(25px,2.6vw,36px);color:#ffe1b0;
+  filter:drop-shadow(0 3px 9px #09050c);
+  transition:filter .18s;
+}
+.gothic-lobby__nav-glyph::before{
+  content:"";position:absolute;inset:13%;z-index:-1;
+  border:1px solid #e9b77baf;border-radius:8px;transform:rotate(45deg);
+  background:linear-gradient(138deg,#6e4939e8,#170f18ea 68%,#422932ed);
+  box-shadow:inset 0 1px #ffe1ae66,inset -2px -4px 12px #07040a99,0 3px 13px #0009;
+  transition:border-color .18s,background .18s,transform .18s;
+}
+.gothic-lobby__nav-entry:hover .gothic-lobby__nav-glyph::before,
+.gothic-lobby__nav-entry:focus-visible .gothic-lobby__nav-glyph::before{
+  border-color:#ffe5b5;transform:rotate(45deg) scale(1.07);
+  background:linear-gradient(138deg,#926041,#31202c 68%,#644235);
+}
+.gothic-lobby__quest{
+  border-radius:7px;background:linear-gradient(90deg,#271723eb,#151018c5);
+  font-size:11px;letter-spacing:.02em;padding:7px 11px;
+  border-left:3px solid #d5a96f
+}
+.gothic-lobby__dialog,.ga-conversation{
+  border-color:#cda77f;
+  background:
+    radial-gradient(ellipse at 15% 0,rgba(115,65,71,.26),transparent 52%),
+    linear-gradient(143deg,#2b1a28f6,#100c15f8);
+  box-shadow:0 25px 70px #000d,inset 0 0 0 3px #edc88a17,
+    inset 0 0 55px #10091170;
+}
+.gothic-lobby__dialog:before,.ga-conversation:before{
+  content:"✦";position:absolute;top:9px;left:14px;color:#e2be877d;font-size:10px;pointer-events:none
+}
+.gothic-lobby__dialog{animation:v04-panel-in .24s ease both}
+.gothic-lobby__gold-action,.ga-conversation-link{
+  background:linear-gradient(125deg,#6e4934,#39212e);
+  border-color:#d8ad7a;color:#ffe9be;text-decoration:none
+}
+/* Residence — architectural door plaques, not emoji cards. */
+.ga-backdrop{transform:scale(1.017);transform-origin:center}
+.ga-light{
+  background:
+    radial-gradient(ellipse 26% 45% at 21% 27%,rgba(251,180,103,.11),transparent 83%),
+    radial-gradient(ellipse 32% 43% at 74% 41%,rgba(239,188,117,.17),transparent 80%);
+  mix-blend-mode:screen;animation:v04-candlelight 9s ease-in-out infinite alternate;
+}
+.ga-dust{
+  background-image:radial-gradient(circle,#f8ce96 .7px,transparent 1.5px);
+  background-size:173px 191px;background-position:23% 14%;
+  opacity:.2;animation:v04-fog 19s ease-in-out infinite alternate;
+}
+.ga-room-list{width:clamp(195px,19vw,278px);top:18%;gap:9px}
+.ga-doors{gap:7px;padding:4px 4px 4px 2px}
+.ga-door{
+  min-height:49px;position:relative;overflow:hidden;padding:7px 8px 7px 11px;
+  border-radius:4px 10px 10px 4px;
+  background:
+    linear-gradient(105deg,#3f2826e3,#1a1019dc 48%,#26141ce8);
+  border-color:#a8885b80;box-shadow:inset 2px 0 #c8a06c68,inset 0 1px #f8d8ae30,0 6px 14px #0503078a;
+  transition:transform .22s,border-color .22s,background .22s,box-shadow .22s
+}
+.ga-door::after{
+  content:"";position:absolute;top:11px;right:9px;width:5px;height:5px;border-radius:50%;
+  background:#90786e;box-shadow:0 0 0 2px #0c070f78
+}
+.ga-door.is-occupied::after{
+  background:#f6d095;box-shadow:0 0 8px #ffc77b,0 0 1px 2px #180f14
+}
+.ga-door:hover,.ga-door.is-active{transform:translateX(4px);
+  box-shadow:inset 2px 0 #ffd9a8,inset 0 1px #ffe2b652,0 7px 21px #050307b5}
+.ga-door-icon{color:#edbf80;font-size:24px;
+  text-shadow:0 1px 5px #000,0 0 9px #d7a0774d}
+.ga-door-copy strong{font-weight:550;letter-spacing:.025em;color:#fbe2c3}
+.ga-door-copy small{color:#caae92}
+.ga-lower{max-height:58%}
+.ga-room-drawer{animation:v04-panel-in .23s cubic-bezier(.17,.75,.31,1) both}
+.ga-story,.ga-room-drawer{border-color:#d2a46e7c;
+  box-shadow:0 14px 39px #050307a6,inset 0 1px #f9dfb43b}
+.ga-drawer-top h2{font-size:20px;color:#ffe3b7}
+.ga-picks{gap:6px}
+.ga-picks button{
+  border-radius:5px;padding:8px 10px;min-height:63px;
+  background:linear-gradient(125deg,#412b31d8,#1b121edb);
+  border-color:#b18b5d87;
+  box-shadow:inset 0 1px #ffddb630;
+  transition:background .17s,border-color .17s,transform .17s
+}
+.ga-picks button:active:not(:disabled){transform:scale(.98)}
+.ga-picks button b{color:#ebbb81;text-shadow:0 0 12px #f5bd7450;font-size:23px}
+.ga-picks button small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ga-warning{padding:9px;border:1px solid #ac785e82;
+  border-left:3px solid #d7a283;border-radius:6px;background:#321c29ba}
+.ga-warning strong{font-size:12px}
+.ga-warning>small{color:#e9baa2;font-size:10px;line-height:1.5}
+.ga-rescue-helpers{display:flex;gap:6px;flex-wrap:wrap}
+.ga-rescue-helpers button{display:grid;gap:3px;min-width:76px;background:#432836;border:1px solid #b18b5c;
+  font-size:11px;padding:7px 9px;border-radius:5px}
+.ga-rescue-helpers button small{font-size:9px;color:#e7c1a4}
+.ga-feedback{
+  position:absolute;z-index:9;bottom:94px;left:50%;transform:translateX(-50%);
+  width:max-content;max-width:min(86vw,480px);display:flex;gap:9px;align-items:center;
+  border:1px solid #c39c6f;background:#24141de7;border-radius:8px;
+  padding:11px 14px;font-size:12px;line-height:1.5;color:#ffe1b5;
+  pointer-events:none;box-shadow:0 10px 30px #0009;backdrop-filter:blur(10px);
+  animation:v04-toast 4.5s ease both
+}
+.ga-feedback span{color:#f7c681}
+.ga-conversation-scrim{position:absolute;inset:0;z-index:11;display:grid;place-items:center;
+  padding:18px;background:#09060bbb;backdrop-filter:blur(7px)}
+.ga-conversation{position:relative;display:flex;gap:20px;width:min(620px,96vw);
+  max-height:86dvh;overflow:auto;border:1px solid #cba47a;border-radius:11px;
+  padding:32px 30px;color:#f6dec2;animation:v04-panel-in .25s ease both}
+.ga-conversation-art{position:relative;min-width:115px;max-width:115px;min-height:218px;
+  border:1px solid #b18b6e8c;border-radius:5px;overflow:hidden;background:#291a29}
+.ga-conversation-art img{object-fit:cover}
+.ga-conversation-text h2{margin:10px 0 15px;color:#ffdfb3;font:600 24px Georgia,serif}
+.ga-conversation-text p{font-size:13px;line-height:1.8;color:#e3cbb4}
+.ga-conversation-link{display:inline-flex;border:1px solid #bc9871;border-radius:5px;
+  padding:9px 12px;font-size:12px}
+.ga-conversation-close{position:absolute;top:11px;right:14px;z-index:2;
+  border:0;background:none;font-size:26px!important}
+.ga-dock a{position:relative;width:clamp(53px,6.5vw,80px);height:60px;
+  border-radius:7px;background:linear-gradient(145deg,#593a36db,#170d17f4);
+  border-color:#d1a77b90;font-size:11px;letter-spacing:.07em;
+  transition:transform .2s,border-color .2s}
+.ga-dock a span{font-size:24px}
+.ga-dock a:active{transform:scale(.95)}
+@keyframes v04-candlelight{
+  0%{opacity:.53}34%{opacity:.74}63%{opacity:.6}100%{opacity:.85}
+}
+@keyframes v04-fog{
+  from{opacity:.26;transform:translateX(-1.2%)}
+  to{opacity:.54;transform:translateX(1.2%)}
+}
+@keyframes v04-panel-in{
+  from{opacity:0;transform:translateY(8px) scale(.988)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes v04-toast{
+  0%{opacity:0;transform:translate(-50%,9px)}
+  9%{opacity:1;transform:translate(-50%,0)}
+  75%{opacity:1;transform:translate(-50%,0)}
+  100%{opacity:0;transform:translate(-50%,-9px)}
+}
+@media(max-width:840px){
+  .gothic-lobby__bottom{gap:clamp(4px,1vw,13px)}
+  .ga-room-list{top:15%}
+}
+@media(max-width:600px){
+  .gothic-lobby__painting{background-position:50% center}
+  .gothic-lobby__feature{max-width:38vw;padding:8px 9px}
+  .gothic-lobby__feature>span{font-size:8px}
+  .gothic-lobby__feature strong{font-size:14px}
+  .gothic-lobby__feature small{display:none}
+  .gothic-lobby__nav-entry{font-size:10px;letter-spacing:.03em}
+  .gothic-lobby__nav-glyph{width:42px;height:42px;font-size:26px}
+  .gothic-lobby__quest{bottom:95px;max-width:250px}
+  .ga-room-list{left:7px;top:14%;width:46%;max-height:31%;gap:3px}
+  .ga-doors{gap:3px;padding:2px}
+  .ga-door{min-height:37px;padding:4px 6px;border-radius:3px 6px 6px 3px}
+  .ga-door-icon{font-size:17px;width:22px}
+  .ga-lower{max-height:none}
+  .ga-picks button{min-height:53px;padding:7px}
+  .ga-feedback{bottom:76px;font-size:10px;padding:8px 10px}
+  .ga-conversation{gap:12px;padding:28px 16px}
+  .ga-conversation-art{min-width:80px;max-width:80px;min-height:165px}
+  .ga-conversation-text h2{font-size:18px}
+  .ga-conversation-text p{font-size:11px}
+  .ga-dock a{height:55px;width:clamp(52px,17vw,68px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .gothic-lobby__painting{transition:none;transform:none;will-change:auto}
+  .gothic-lobby__light,.gothic-lobby__mist,.gothic-lobby__embers,.ga-light,.ga-dust{
+    animation:none!important}
+  .ga-room-drawer,.gothic-lobby__dialog,.ga-conversation,.ga-feedback{
+    animation:none!important}
+  .ga-feedback{opacity:1}
+  .ga-dock a,.ga-picks button,.ga-door{transition:none}
+}
+.gothic-lobby--still .gothic-lobby__painting{transform:none!important;transition:none!important}
+.gothic-lobby--still .gothic-lobby__light,
+.gothic-lobby--still .gothic-lobby__mist{animation:none!important}
