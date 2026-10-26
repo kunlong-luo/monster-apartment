@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import {lobbyPreview} from '@/components/game/gothic-lobby-art';
 import Image from 'next/image';
 import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
@@ -317,7 +318,11 @@ export function MoonworkWorld({area}:{area:WorldArea}){
     }catch{/* Storage may be unavailable; keep the no-save recovery screen. */}
   },[]);
   const title={town:'月光街',orders:'委托大厅',characters:'角色图鉴',warehouse:'魔法仓库'}[area];
-  return <main className="mw" data-testid="moonwork-world" data-area={area}>
+  return <main className="mw mw-gothic" data-testid="moonwork-world" data-area={area}>
+    <div className="mw-gothic-scene" aria-hidden="true" style={{backgroundImage:'url('+lobbyPreview+')'}}/>
+    <div className="mw-gothic-shadow" aria-hidden="true"/>
+    <Link href="/" className="mw-gothic-home" aria-label="返回哥特公寓大厅">⌂ <span>返回大厅</span></Link>
+    <Link href="/orders/" className="mw-gothic-character" title="与月纱相见" aria-label="前往月纱委托"><span className="mw-gothic-character-label">月纱 · 特别委托</span></Link>
     <header className="mw-header">
       <Link href="/town/" className="mw-logo">☽ 月光工坊 <small>MOONLIT DISTRICT</small></Link>
       <div className="mw-stats">
@@ -332,13 +337,13 @@ export function MoonworkWorld({area}:{area:WorldArea}){
       </Link>)}
     </nav>
     <div className="mw-main">
-      <p className="mw-eyebrow">MOONLIGHT WORKSHOP / {title}</p>
+      <p className="mw-eyebrow">MOONLIGHT RESIDENCE / {title}</p>
       <h1>{title}</h1>
       {!s?<Panel title="尚无可用的 V2 工坊存档">
         <p>月光街还没有记录你的生产旅程。进入工坊，摆放设备、安排工匠并完成第一张委托；这些场景会自动呈现你的经营成果。</p>
         <WorkshopLink className="mw-button">进入工坊开始经营</WorkshopLink>
       </Panel>:area==='town'?<Town s={s}/>:area==='orders'?<Orders s={s}/>:area==='characters'?<Characters s={s}/>:<Warehouse s={s}/>}
     </div>
-    <footer className="mw-footer">✦ 月光街 · 你的每一次生产与交付，都在改变这座工坊</footer>
+    <footer className="mw-footer">✦ 夜色公寓 · 你的选择影响每一位住客</footer>
   </main>;
 }
