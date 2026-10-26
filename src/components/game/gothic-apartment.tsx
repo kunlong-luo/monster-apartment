@@ -8,6 +8,7 @@ import {COZY_RESIDENTS,ROOM_DETAILS,FURNISHINGS,
   buildCozyRoom,moveInCozy,decorateCozy,relocateCozyResident,careForCozyResident,
   cozyCareUsedToday,cozyDay,cozyGoal,cozyDailyIncome,cozyRescuePreview,resolveCozyIncident,COZY_INCIDENTS} from '@/core/cozy-engine';
 import type {CozyState,HomeType,Furnishing} from '@/core/cozy-engine';
+import {GothicAtmosphere} from './gothic-atmosphere';
 import {GothicActionButton,GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
 import './gothic-apartment.css';
 const KEY='monster-apartment:cozy:v1';
@@ -80,6 +81,7 @@ export function GothicApartment(){
     <div className="ga-light" aria-hidden="true"/>
     <div className="ga-shade" aria-hidden="true"/>
     <div className="ga-dust" aria-hidden="true"/>
+    <GothicAtmosphere paused={paused}/>
     <header className="absolute inset-x-0 top-0 z-[5] flex min-h-[56px] items-start gap-1.5 bg-[linear-gradient(#08060ad3,transparent)] px-2 py-2.5 sm:gap-3 sm:px-6" aria-label="公寓资源与操作">
       <Link className="flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border border-gothic-brass/70 bg-gothic-panel/80 px-2.5 text-gothic-ivory backdrop-blur-md transition-colors hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow sm:px-3"
         href="/" aria-label="返回大厅">⌂ <span className="hidden text-sm sm:inline">夜色公寓</span></Link>
