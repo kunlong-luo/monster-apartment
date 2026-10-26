@@ -7,6 +7,7 @@ import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import workshopPainting from '../../../v2/art/moon-workshop.avif';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
 import {SAVE_KEY,CHANGE_EVENT,parseSavedWorld,commitWorldAction} from '@/lib/moonwork/world-store';
+import {GothicAtmosphere} from './gothic-atmosphere';
 import {GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
 import './gothic-lobby.css';
 
@@ -78,6 +79,8 @@ export function GothicLobby(){
       <div className="gothic-lobby__embers"/>
       <div className="gothic-lobby__mist" aria-hidden="true"/>
     </div>
+
+    <GothicAtmosphere paused={reducedMotion}/>
 
     <header className="absolute inset-x-0 top-0 z-[4] grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-x-2 px-3 pt-3 sm:px-5 max-[840px]:grid-cols-[minmax(0,1fr)_auto]" aria-label="玩家与资源">
       <button type="button" className="flex min-h-12 w-max max-w-full items-center gap-2.5 bg-transparent text-left text-gothic-ivory focus-visible:outline-2 focus-visible:outline-gothic-glow"
