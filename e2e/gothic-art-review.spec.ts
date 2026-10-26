@@ -34,3 +34,17 @@ test('Pixi 2D atmosphere is optional and respects reduced-motion preference',asy
   await expect(page.getByTestId('gothic-pixi-atmosphere').locator('canvas')).toHaveCount(0);
   await expect(page.getByTestId('ga-room-0')).toBeVisible();
 });
+
+test('actual PixiJS 8 Gothic motes mount and unmount when animation is toggled',async({page})=>{
+  test.setTimeout(90000);
+  await page.setViewportSize({width:1280,height:800});
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.goto('/');
+  const atmosphere=page.getByTestId('gothic-pixi-atmosphere');
+  await expect(atmosphere.locator('canvas')).toHaveCount(1,{timeout:30000});
+  await expect(atmosphere.locator('canvas')).toHaveAttribute('aria-hidden','true');
+  await page.getByRole('button',{name:'切换动态特效'}).click();
+  await expect(atmosphere.locator('canvas')).toHaveCount(0);
+  await page.getByRole('button',{name:'切换动态特效'}).click();
+  await expect(atmosphere.locator('canvas')).toHaveCount(1,{timeout:30000});
+});
