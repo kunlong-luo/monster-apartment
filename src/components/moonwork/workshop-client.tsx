@@ -1,6 +1,7 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
 import {useRouter} from 'next/navigation';
+import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 
 declare global {
   interface Window {
@@ -11,12 +12,7 @@ declare global {
   }
 }
 function assetRoot(){
-  // The old V2 dev server still serves assets on port 3901. In a deployed
-  // Next static export, both the runtime and all five routes are same-origin.
-  const u=new URL('./',window.location.href);
-  if((u.hostname==='127.0.0.1'||u.hostname==='localhost')&&u.port==='3000')
-    return 'http://127.0.0.1:3901/';
-  return u.href;
+  return workshopAssetRoot(window.location.href);
 }
 function loadRuntime(base:string){
   if(window.MoonworkRuntime)return Promise.resolve();

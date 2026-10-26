@@ -1,3 +1,18 @@
+## V2.9 — URLs and first entry on any scene
+
+Fixed a GitHub Pages-only asset bug: Next SPA navigation normalizes
+`/workshop/?worker=fern` into `/workshop?worker=fern`. The previous code
+used `new URL('./', location.href)`, incorrectly resolving the asset root to
+`/monster-apartment/` instead of `/monster-apartment/workshop/`.
+`workshopAssetRoot` normalizes the pathname and ignores search/hash before
+loading the Pixi script, style and portraits. Unit tests cover Pages
+subdirectories, query navigation and localhost's dedicated V2 server.
+
+The first-ever visit to `/town/`, `/orders/`, `/characters/` or
+`/warehouse/` now persists the same deterministic V2 initial save as a
+first visit to `/workshop/`. Existing valid or invalid save keys are not
+silently overwritten. Real world and market operations remain unchanged.
+
 ## V2.9 — first-run world continuity fix
 
 Entering the Pixi workshop now writes the initial world immediately on a

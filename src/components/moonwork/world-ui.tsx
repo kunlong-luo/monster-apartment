@@ -5,9 +5,9 @@ import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import workerTriptych from '../../../v2/art/worker-triptych.avif';
 import kilnPainted from '../../../v2/art/kiln-art-review.avif';
-import {useMemo,useState,useSyncExternalStore} from 'react';
+import {useEffect,useMemo,useState,useSyncExternalStore} from 'react';
 import type {ReactNode} from 'react';
-import {WORKERS,MACHINES,workshopRank,forecastPatronCommission,forecastOrderChoice,
+import {WORKERS,MACHINES,newWorkshop,workshopRank,forecastPatronCommission,forecastOrderChoice,
   PATRON_IMPORT_PRICE,PREMIUM_EXTRA_CORES,PREMIUM_EXTRA_REWARD,
   PREMIUM_ORDER_PENALTY,STANDARD_ORDER_PENALTY,
   TOWN_MARKET,townMarketAvailable,TOWN_RESIDENTS,residentForDay,
@@ -305,6 +305,17 @@ function Warehouse({s}:{s:WorkshopState}){
 }
 export function MoonworkWorld({area}:{area:WorldArea}){
   const s=useSave();
+  useEffect(()=>{
+    // The world must exist whether a new player enters via town or workshop.
+    // Missing is not the same as corrupted: never overwrite an existing key,
+    // even if its value is invalid, without the player's consent.
+    try{
+      if(window.localStorage.getItem(SAVE_KEY)===null){
+        window.localStorage.setItem(SAVE_KEY,JSON.stringify(newWorkshop()));
+        window.dispatchEvent(new Event(CHANGE_EVENT));
+      }
+    }catch{/* Storage may be unavailable; keep the no-save recovery screen. */}
+  },[]);
   const title={town:'月光街',orders:'委托大厅',characters:'角色图鉴',warehouse:'魔法仓库'}[area];
   return <main className="mw" data-testid="moonwork-world" data-area={area}>
     <header className="mw-header">

@@ -1,11 +1,14 @@
 import {test,expect} from '@playwright/test';
 
-test('V2.2 world has five reachable destinations without inventing a save',async({page})=>{
+test('a new player entering via town gets one real initialized save across all scenes',async({page})=>{
   await page.goto('/town/');
   await expect(page.getByTestId('moonwork-world')).toHaveAttribute('data-area','town');
-  await expect(page.getByText('尚无可用的 V2 工坊存档')).toBeVisible();
-  await expect(page.getByRole('link',{name:'进入工坊开始经营'}))
-    .toHaveAttribute('href','/workshop');
+  await expect(page.getByTestId('moonlit-town-scene')).toBeVisible();
+  await expect(page.getByTestId('world-day')).toHaveText('1');
+  await expect(page.getByTestId('world-coins')).toHaveText('100');
+  await expect.poll(()=>page.evaluate(()=>
+    JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')??'null')?.version))
+    .toBe(2);
   await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'委托大厅'}).click();
   await expect(page).toHaveURL(/\/orders\/?$/);
   await expect(page.getByTestId('moonwork-world')).toHaveAttribute('data-area','orders');
