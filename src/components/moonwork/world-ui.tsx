@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import {lobbyPreview} from '@/components/game/gothic-lobby-art';
+import gothicHero from '../../../public/lobby-hero.webp';
 import Image from 'next/image';
 import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
@@ -319,7 +319,7 @@ export function MoonworkWorld({area}:{area:WorldArea}){
   },[]);
   const title={town:'月光街',orders:'委托大厅',characters:'角色图鉴',warehouse:'魔法仓库'}[area];
   return <main className="mw mw-gothic" data-testid="moonwork-world" data-area={area}>
-    <div className="mw-gothic-scene" aria-hidden="true" style={{backgroundImage:'url('+lobbyPreview+')'}}/>
+    <div className="mw-gothic-scene" aria-hidden="true" style={{backgroundImage:'url('+gothicHero.src+')'}}/>
     <div className="mw-gothic-shadow" aria-hidden="true"/>
     <Link href="/" className="mw-gothic-home" aria-label="返回哥特公寓大厅">⌂ <span>返回大厅</span></Link>
     <Link href="/orders/" className="mw-gothic-character" title="与月纱相见" aria-label="前往月纱委托"><span className="mw-gothic-character-label">月纱 · 特别委托</span></Link>
