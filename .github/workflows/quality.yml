@@ -83,6 +83,10 @@ jobs:
         with:
           name: v082-cozy-apartment-art-review
           path: |
+            test-results/gothic-lobby-desktop.png
+            test-results/gothic-lobby-mobile.png
+            test-results/gothic-apartment-desktop.png
+            test-results/gothic-apartment-mobile.png
             test-results/cozy-desktop.png
             test-results/cozy-mobile.png
             test-results/spirit-desktop.png
