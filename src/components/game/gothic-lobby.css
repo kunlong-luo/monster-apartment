@@ -6,7 +6,7 @@
   -webkit-font-smoothing:antialiased}
 .gothic-lobby *{box-sizing:border-box}
 .gothic-lobby a{color:inherit;text-decoration:none}
-.gothic-lobby button{font:inherit;cursor:pointer;color:inherit}
+.gothic-lobby button{font-family:inherit;cursor:pointer;color:inherit}
 .gothic-lobby__stage,.gothic-lobby__fallback,.gothic-lobby__painting,
 .gothic-lobby__vignette,.gothic-lobby__embers{position:absolute;inset:0;pointer-events:none}
 .gothic-lobby__stage{z-index:-1}
