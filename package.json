@@ -20,6 +20,7 @@
     "check:stable-deps": "node scripts/check-stable-dependencies.mjs"
   },
   "dependencies": {
+    "motion": "14.6.0",
     "next": "16.4.2",
     "phaser": "4.2.1",
     "react": "19.3.1",
