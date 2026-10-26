@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import {useEffect,useState} from 'react';
+import {useEffect,useState,useSyncExternalStore} from 'react';
 import moonveil from '../../../v2/art/moonveil-portrait.avif';
 import {COZY_RESIDENTS,ROOM_DETAILS,FURNISHINGS,
   newCozyGame,validCozySave,resumeCozySave,advanceCozy,availableResidents,
@@ -10,36 +10,41 @@ import {COZY_RESIDENTS,ROOM_DETAILS,FURNISHINGS,
 import type {CozyState,HomeType,Furnishing} from '@/core/cozy-engine';
 import './gothic-apartment.css';
 const KEY='monster-apartment:cozy:v1';
+const subscribeClient=()=>()=>{};
+const clientSnapshot=()=>true;
+const serverSnapshot=()=>false;
+function readCozySave():CozyState{
+  let saved=newCozyGame();
+  if(typeof window==='undefined')return saved;
+  try{
+    const raw=window.localStorage.getItem(KEY);
+    if(raw){const parsed:unknown=JSON.parse(raw);
+      if(validCozySave(parsed))saved=resumeCozySave(parsed);}
+  }catch{/* Invalid saves cannot crash the game. */}
+  return saved;
+}
 const types:HomeType[]=['nest','bath','workshop','greenhouse'];
 const decors:Furnishing[]=['plant','lamp','books'];
 const nav=[{href:'/',icon:'♜',label:'大厅'},{href:'/town/',icon:'✧',label:'探索'},
   {href:'/workshop/',icon:'⚒',label:'工坊'},{href:'/orders/',icon:'❦',label:'委托'},
   {href:'/characters/',icon:'♟',label:'住客'}];
 export function GothicApartment(){
-  const [world,setWorld]=useState<CozyState|null>(null);
+  const ready=useSyncExternalStore(subscribeClient,clientSnapshot,serverSnapshot);
+  const [world,setWorld]=useState<CozyState>(readCozySave);
   const [selected,setSelected]=useState<number|null>(null);
   const [moving,setMoving]=useState<number|null>(null);
   const [paused,setPaused]=useState(false);
   const [notices,setNotices]=useState(false);
   useEffect(()=>{
-    let saved:CozyState=newCozyGame();
-    try{
-      const raw=localStorage.getItem(KEY);
-      if(raw){const parsed:unknown=JSON.parse(raw);
-        if(validCozySave(parsed))saved=resumeCozySave(parsed);}
-    }catch{/* Invalid saves cannot crash the game. */}
-    setWorld(saved);
-  },[]);
-  useEffect(()=>{
-    if(!world)return;
+    if(!ready)return;
     try{localStorage.setItem(KEY,JSON.stringify(world));}catch{/* Optional local save. */}
-  },[world]);
+  },[ready,world]);
   useEffect(()=>{
-    if(!world||paused||world.phase!=='playing')return;
-    const clock=window.setInterval(()=>setWorld(current=>current?advanceCozy(current):current),2000);
+    if(!ready||paused||world.phase!=='playing')return;
+    const clock=window.setInterval(()=>setWorld(current=>advanceCozy(current)),2000);
     return ()=>window.clearInterval(clock);
-  },[world?.phase,paused,world===null]);
-  if(!world)return <main className="ga ga-loading">☽ 公寓正在点亮烛火…</main>;
+  },[ready,paused,world.phase]);
+  if(!ready)return <main className="ga ga-loading">☽ 公寓正在点亮烛火…</main>;
   const goal=cozyGoal(world),applicants=availableResidents(world);
   const room=selected===null?null:world.rooms[selected];
   const incident=world.incident;
