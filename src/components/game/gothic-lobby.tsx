@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import {AnimatePresence} from 'motion/react';
 import {useMemo,useState,useSyncExternalStore} from 'react';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import workshopPainting from '../../../v2/art/moon-workshop.avif';
@@ -140,7 +141,8 @@ export function GothicLobby(){
 
     <GothicDock items={links} label="主要游戏功能"/>
 
-    {panel&&<GothicModal title={panel==='bond'?'与月纱交谈':panel==='menu'?'所有功能':panel==='profile'?'玩家资料':'委托消息'}
+    <AnimatePresence mode="wait">
+    {panel&&<GothicModal key={panel} title={panel==='bond'?'与月纱交谈':panel==='menu'?'所有功能':panel==='profile'?'玩家资料':'委托消息'}
       onClose={close} wide={panel==='bond'}>
       {panel==='bond'&&<>
         <div className="relative hidden min-h-[210px] w-[125px] shrink-0 overflow-hidden rounded-md border border-gothic-brass/50 bg-gothic-panel sm:block">
@@ -186,6 +188,7 @@ export function GothicLobby(){
         </div>
       </div>}
     </GothicModal>}
+    </AnimatePresence>
 
   </main>;
 }
