@@ -1,3 +1,11 @@
+## V2.9 — first-run world continuity fix
+
+Entering the Pixi workshop now writes the initial world immediately on a
+first visit. Before this fix, switching to the other pages before making a
+move showed an erroneous "no save" screen. Existing valid V2 saves are
+preserved as-is; localStorage failures remain guarded. A browser test covers
+untouched factory → worker roster → contracts → warehouse.
+
 ## V2.9 — direct worker assignment handoff
 
 Selecting **安排岗位** on one of the three painted guild workers opens

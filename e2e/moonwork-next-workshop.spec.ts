@@ -60,3 +60,21 @@ test('workshop portal switches to actual contract and stock pages without losing
   await expect(page).toHaveURL(/\/warehouse\/?$/);
   await expect(page.getByTestId('world-day')).toHaveText('2');
 });
+
+
+test('untouched first factory is immediately accessible across all scenes',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+  await expect.poll(()=>page.evaluate(()=>Boolean(localStorage.getItem(
+    'monster-apartment:workshop-v2-lab')))).toBe(true);
+  await page.getByRole('navigation',{name:'月光工坊世界'})
+    .getByRole('link',{name:'角色图鉴'}).click();
+  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
+  await page.getByRole('navigation',{name:'月光工坊世界'})
+    .getByRole('link',{name:'委托大厅'}).click();
+  await expect(page.getByText('正式委托')).toBeVisible();
+  await page.getByRole('navigation',{name:'月光工坊世界'})
+    .getByRole('link',{name:'魔法仓库'}).click();
+  await expect(page.getByText('当前真实库存')).toBeVisible();
+});

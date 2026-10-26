@@ -13,10 +13,17 @@ export async function mountWorkshopGame(root:HTMLElement,
   assetBase:string=document.baseURI):Promise<()=>void>{
 const $=(id:string)=>root.querySelector<HTMLElement>('#'+id)!;
 let world:WorkshopState=newWorkshop();
+let savedAtMount=false;
 try {
   const parsed:unknown=JSON.parse(localStorage.getItem(STORAGE)??'null');
-  if(validWorkshop(parsed))world=parsed;
+  if(validWorkshop(parsed)){world=parsed;savedAtMount=true;}
 }catch {/* private browsing and invalid saves both start clean */}
+if(!savedAtMount){
+  // A player's untouched first factory must exist for all linked pages.
+  // Valid old saves are never silently rewritten on mount.
+  try{localStorage.setItem(STORAGE,JSON.stringify(world));}
+  catch{/* storage unavailable in private browsing */}
+}
 let selectedPlot:number|null=null;
 let chosenWorker:WorkerId|null=null;
 let chosenMachine:Craft|null=null;
