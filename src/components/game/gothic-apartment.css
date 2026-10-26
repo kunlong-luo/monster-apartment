@@ -3,7 +3,7 @@
   background:#0d080f;color:#f8ddbd;font-family:Georgia,"Noto Serif SC","Songti SC",serif}
 .ga *{box-sizing:border-box}
 .ga a{text-decoration:none;color:inherit}
-.ga button{font:inherit;color:inherit;cursor:pointer}
+.ga button{font-family:inherit;color:inherit;cursor:pointer}
 .ga-backdrop,.ga-shade{position:absolute;inset:0;pointer-events:none}
 .ga-backdrop{z-index:-2;background-size:cover;background-position:center}
 .ga-shade{z-index:-1;background:linear-gradient(180deg,#07050bd8,transparent 25%,transparent 70%,#09040be9),
