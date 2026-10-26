@@ -8,6 +8,7 @@ import workshopPainting from '../../../v2/art/moon-workshop.avif';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
 import {SAVE_KEY,CHANGE_EVENT,parseSavedWorld,commitWorldAction} from '@/lib/moonwork/world-store';
 import {GothicAtmosphere} from './gothic-atmosphere';
+import {useGothicMotion} from '@/lib/game/gothic-motion';
 import {GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
 import './gothic-lobby.css';
 
@@ -39,7 +40,7 @@ export function GothicLobby(){
   const world=useMemo(()=>parseSavedWorld(raw)??newWorkshop(),[raw]);
   const [panel,setPanel]=useState<Panel>(null);
   const [dialogue,setDialogue]=useState('');
-  const [reducedMotion,setReducedMotion]=useState(false);
+  const {reduced:reducedMotion,toggle:toggleMotion}=useGothicMotion();
   const setOpen=(name:Panel)=>setPanel(existing=>existing===name?null:name);
   const talk=()=>{
     setPanel('bond');
@@ -97,7 +98,7 @@ export function GothicLobby(){
       <div className="flex justify-end gap-1.5 pt-1 max-[840px]:col-start-2 max-[840px]:row-start-1">
         <GothicIconButton label="委托消息" title="委托消息" onClick={()=>setOpen('updates')}>✉</GothicIconButton>
         <GothicIconButton label="切换动态特效" title="切换动态特效" pressed={reducedMotion}
-          onClick={()=>setReducedMotion(value=>!value)}>✧</GothicIconButton>
+          onClick={toggleMotion}>✧</GothicIconButton>
         <GothicIconButton label="全部功能" title="全部功能" expanded={panel==='menu'}
           onClick={()=>setOpen('menu')}>☰</GothicIconButton>
       </div>
