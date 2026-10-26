@@ -24,6 +24,15 @@
   --color-mist-500: #ab9fba;
   --color-danger-300: #ffaaa7;
   --radius-panel: 1.25rem;
+  /* V0.4: single Tailwind token source for the immersive Gothic HUD. */
+  --color-gothic-night: #100b13;
+  --color-gothic-panel: #1e1420;
+  --color-gothic-wine: #55313f;
+  --color-gothic-brass: #b68c61;
+  --color-gothic-gold: #f0c588;
+  --color-gothic-glow: #ffe1a8;
+  --color-gothic-ivory: #fae5c8;
+  --color-gothic-muted: #d4b99d;
 }
 
 @layer base {
