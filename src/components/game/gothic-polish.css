@@ -268,3 +268,39 @@
 .gothic-lobby--still .gothic-lobby__painting{transform:none!important;transition:none!important}
 .gothic-lobby--still .gothic-lobby__light,
 .gothic-lobby--still .gothic-lobby__mist{animation:none!important}
+
+/* Subtle world hotspots communicate interaction without permanently adding buttons. */
+.gothic-lobby__character-hit::after,.ga-witch::after{
+  content:"✧ 交谈";position:absolute;bottom:15%;left:50%;
+  transform:translate(-50%,5px);min-width:75px;text-align:center;
+  border:1px solid rgba(235,186,122,.65);border-radius:17px;
+  background:rgba(16,8,17,.77);color:#ffdfb4;padding:7px 11px;
+  font:11px Georgia,serif;letter-spacing:.14em;white-space:nowrap;
+  opacity:0;pointer-events:none;
+  transition:opacity .19s,transform .19s;
+  box-shadow:0 7px 20px #0009;
+}
+.gothic-lobby__character-hit:is(:hover,:focus-visible)::after,
+.ga-witch:is(:hover,:focus-visible)::after{
+  opacity:1;transform:translate(-50%,0);
+}
+.ga-witch::after{bottom:8%}
+.gothic-lobby__player:focus-visible,
+.ga :is(a,button):focus-visible{outline:2px solid #fbe1b2;outline-offset:3px}
+.gothic-lobby__feature button:active{transform:scale(.97)}
+@media(pointer:coarse){
+  .gothic-lobby__painting{transform:none;will-change:auto}
+  .gothic-lobby__character-hit::after,.ga-witch::after{display:none}
+}
+@media(max-width:600px){
+  .gothic-lobby__mist{filter:none;animation:none;opacity:.23}
+  .gothic-lobby__painting{will-change:auto}
+  .ga-dust{animation:none;opacity:.12}
+}
+@media(prefers-contrast:more){
+  .gothic-lobby__resources>span,.gothic-lobby__top-actions button,
+  .gothic-lobby__nav-glyph::before,.ga-door,.ga-picks button,.ga-dock a{
+    border-color:#ffe4b5;
+  }
+  .ga-door-copy small,.gothic-lobby__player-copy small{color:#fff0d9}
+}
