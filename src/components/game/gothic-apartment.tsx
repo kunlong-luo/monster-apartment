@@ -77,7 +77,7 @@ export function GothicApartment(){
       setMoving(null);setSelected(index);
     }else setSelected(value=>value===index?null:index);
   };
-  return <main className="ga" data-testid="gothic-apartment" aria-label="哥特公寓经营"
+  return <main className={reducedMotion?'ga ga--still':'ga'} data-testid="gothic-apartment" aria-label="哥特公寓经营"
     onKeyDown={event=>{if(event.key==='Escape'){setWitchOpen(false);setNotices(false);}}}>
     <div className="ga-backdrop" style={{backgroundImage:'url('+'../lobby-hero.webp'+')'}} aria-hidden="true"/>
     <div className="ga-light" aria-hidden="true"/>
