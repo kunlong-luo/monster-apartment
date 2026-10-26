@@ -1,4 +1,3 @@
-import {CozyClient} from '@/components/game/cozy-client';
+import {GothicApartment} from '@/components/game/gothic-apartment';
 
-/** Preserve the complete original apartment simulator and its local save. */
-export default function ApartmentPage(){return <CozyClient/>;}
+export default function ApartmentPage(){return <GothicApartment/>;}
