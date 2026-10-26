@@ -43,15 +43,27 @@ export function GothicAtmosphere({paused=false}:{paused?:boolean}){
   const mount=useRef<HTMLDivElement>(null);
   useEffect(()=>{
     const el=mount.current;
-    if(!el||paused||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    if(!el)return;
+    if(paused||window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      el.dataset.renderer='disabled';
+      return;
+    }
+    el.dataset.renderer='loading';
     let disposed=false;
     let cleanup:(()=>void)|undefined;
     void loadAtmosphere().then(async()=>{
       if(disposed||!el.isConnected)return;
       const release=await window.GothicAtmosphereRuntime?.mountAtmosphere(el);
-      if(disposed)release?.();else cleanup=release;
-    }).catch(()=>{
-      // The UI, painting, links and save continue without optional particles.
+      if(disposed)release?.();else{
+        cleanup=release;
+        // No WebGL is a supported degraded mode; asset failures are not.
+        if(!el.dataset.renderer||el.dataset.renderer==='loading')
+          el.dataset.renderer=el.querySelector('canvas')?'pixi':'unsupported';
+      }
+    }).catch(error=>{
+      // UI and saved gameplay remain playable, but report the asset failure.
+      el.dataset.renderer='asset-error';
+      el.dataset.rendererError=error instanceof Error?error.message:String(error);
     });
     return ()=>{disposed=true;cleanup?.();};
   },[paused]);
