@@ -6,8 +6,7 @@ import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import {workshopRank,TOWN_MARKET,townMarketAvailable,TOWN_RESIDENTS,residentForDay,residentRequestStock,residentRequestAvailable} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
-import {CHANGE_EVENT,commitWorldAction} from '@/lib/moonwork/world-store';
-import {Panel,WorkshopLink} from './world-primitives';
+import {Panel,WorkshopLink,Action} from './world-primitives';
 
 export function Town({s}:{s:WorkshopState}){
   const rank=workshopRank(s.completed);
@@ -68,14 +67,10 @@ export function Town({s}:{s:WorkshopState}){
         </div>
         <p className="mw-resident-explanation">交出的材料将从真实设备或仓库扣除。
           与市集采购共享每日交易次数，无法两边都领。</p>
-        <button type="button" className="mw-action-button" data-testid="resident-deliver"
-          disabled={!canHelp} onClick={()=>{
-            const status=commitWorldAction(window.localStorage,'resident');
-            if(status==='applied'){
-              setLocalVisit(resident.after);
-              window.dispatchEvent(new Event(CHANGE_EVENT));
-            }else setLocalVisit(status==='error'?'存档写入失败':'当前库存或交易机会不足');
-          }}>{visitComplete?'已帮助居民':marketUsed?'今天已在市集交易':canHelp?'交付材料 · 完成街头委托':'材料不足 · 去工坊生产'}</button>
+        <Action type="resident" testId="resident-deliver" disabled={!canHelp}
+          onApplied={()=>setLocalVisit(resident.after)}>
+          {visitComplete?'已帮助居民':marketUsed?'今天已在市集交易':canHelp?'交付材料 · 完成街头委托':'材料不足 · 去工坊生产'}
+        </Action>
         {visitComplete&&<p className="mw-visit-result" role="status">{localVisit||resident.after}</p>}
         {!visitComplete&&localVisit&&<p className="mw-visit-result" role="status">{localVisit}</p>}
         <p className="mw-resident-reputation">累计帮助街区居民 {s.residentsHelped??0} 次</p>
@@ -113,12 +108,9 @@ export function Town({s}:{s:WorkshopState}){
               <p>+{deal.amount} {offer.kind==='water'?'水汽':offer.kind==='fiber'?'孢子':'晶核'} · {deal.hint}</p>
               <p className="mw-market-price">花费 ✦{deal.cost} 星币</p>
               {missing&&<p className="mw-market-warning">先在工坊建设对应设备</p>}
-              <button type="button" className="mw-action-button"
-                disabled={!available}
-                onClick={()=>{
-                  const result=commitWorldAction(window.localStorage,offer.action);
-                  if(result==='applied')window.dispatchEvent(new Event(CHANGE_EVENT));
-                }}>{marketUsed?'今日已采购':available?'购买本日货箱':'当前无法采购'}</button>
+              <Action type={offer.action} disabled={!available}>
+                {marketUsed?'今日已采购':available?'购买本日货箱':'当前无法采购'}
+              </Action>
             </div>
           </article>;
         })}

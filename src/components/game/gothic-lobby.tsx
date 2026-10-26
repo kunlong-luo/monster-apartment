@@ -3,11 +3,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import {AnimatePresence} from 'motion/react';
-import {useMemo,useState,useSyncExternalStore} from 'react';
+import {useMemo,useState} from 'react';
+import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import workshopPainting from '../../../v2/art/moon-workshop.avif';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
-import {SAVE_KEY,CHANGE_EVENT,parseSavedWorld,commitWorldAction} from '@/lib/moonwork/world-store';
+import {CHANGE_EVENT,commitWorldAction} from '@/lib/moonwork/world-store';
 import {GothicAtmosphere} from './gothic-atmosphere';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 import {GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
@@ -21,24 +22,9 @@ const links=[
   {href:'/town/',icon:'✧',label:'探索',description:'月光街'},
   {href:'/warehouse/',icon:'♧',label:'商店',description:'兑换生产材料'},
 ];
-function subscribe(onChange:()=>void){
-  const storage=(event:StorageEvent)=>{if(!event.key||event.key===SAVE_KEY)onChange();};
-  window.addEventListener('storage',storage);
-  window.addEventListener(CHANGE_EVENT,onChange);
-  window.addEventListener('pageshow',onChange);
-  return ()=>{
-    window.removeEventListener('storage',storage);
-    window.removeEventListener(CHANGE_EVENT,onChange);
-    window.removeEventListener('pageshow',onChange);
-  };
-}
-function currentSave(){
-  try{return localStorage.getItem(SAVE_KEY);}catch{return null;}
-}
-const emptyServerSave=()=>null;
 export function GothicLobby(){
-  const raw=useSyncExternalStore(subscribe,currentSave,emptyServerSave);
-  const world=useMemo(()=>parseSavedWorld(raw)??newWorkshop(),[raw]);
+  const saved=useWorkshopWorld();
+  const world=useMemo(()=>saved??newWorkshop(),[saved]);
   const [panel,setPanel]=useState<Panel>(null);
   const [dialogue,setDialogue]=useState('');
   const {reduced:reducedMotion,toggle:toggleMotion}=useGothicMotion();

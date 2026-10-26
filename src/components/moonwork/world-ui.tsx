@@ -1,9 +1,10 @@
 'use client';
 import Link from 'next/link';
-import {useEffect,useMemo,useSyncExternalStore} from 'react';
+import {useEffect} from 'react';
+import {useWorkshopWorld} from './world-save-react';
 import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
-import {SAVE_KEY,CHANGE_EVENT,parseSavedWorld} from '@/lib/moonwork/world-store';
+import {SAVE_KEY,CHANGE_EVENT} from '@/lib/moonwork/world-store';
 import {Panel,WorkshopLink} from './world-primitives';
 import {Town} from './world-town';
 import {Orders} from './world-orders';
@@ -18,21 +19,8 @@ const nav=[
   {id:'characters',label:'角色',full:'角色图鉴',glyph:'♟',href:'/characters/'},
   {id:'warehouse',label:'仓库',full:'魔法仓库',glyph:'⬡',href:'/warehouse/'},
 ] as const;
-function subscribe(cb:()=>void){
-  const onStorage=(e:StorageEvent)=>{if(e.key===SAVE_KEY||e.key===null)cb();};
-  window.addEventListener('storage',onStorage);
-  window.addEventListener(CHANGE_EVENT,cb);
-  window.addEventListener('pageshow',cb);
-  return ()=>{window.removeEventListener('storage',onStorage);
-    window.removeEventListener(CHANGE_EVENT,cb);window.removeEventListener('pageshow',cb);};
-}
-function rawSave(){try{return localStorage.getItem(SAVE_KEY);}catch{return null;}}
-function useSave(){
-  const raw=useSyncExternalStore(subscribe,rawSave,()=>null);
-  return useMemo(()=>parseSavedWorld(raw),[raw]);
-}
 export function MoonworkWorld({area}:{area:WorldArea}){
-  const s=useSave();
+  const s=useWorkshopWorld();
   useEffect(()=>{
     // The world must exist whether a new player enters via town or workshop.
     // Missing is not the same as corrupted: never overwrite an existing key,
