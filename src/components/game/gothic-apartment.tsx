@@ -8,7 +8,7 @@ import {COZY_RESIDENTS,ROOM_DETAILS,FURNISHINGS,
   buildCozyRoom,moveInCozy,decorateCozy,relocateCozyResident,careForCozyResident,
   cozyCareUsedToday,cozyDay,cozyGoal,cozyDailyIncome,cozyRescuePreview,resolveCozyIncident,COZY_INCIDENTS} from '@/core/cozy-engine';
 import type {CozyState,HomeType,Furnishing} from '@/core/cozy-engine';
-import {GothicActionButton,GothicDock,GothicIconButton,GothicResourcePill} from './gothic-hud';
+import {GothicActionButton,GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
 import './gothic-apartment.css';
 const KEY='monster-apartment:cozy:v1';
 const subscribeClient=()=>()=>{};
@@ -176,27 +176,32 @@ export function GothicApartment(){
     {feedback&&<div className="ga-feedback" role="status" key={feedback.id}>
       <span aria-hidden="true">✦</span>{feedback.text}
     </div>}
-    {witchOpen&&<div className="ga-conversation-scrim"
-      onMouseDown={event=>{if(event.target===event.currentTarget)setWitchOpen(false);}}>
-      <section className="ga-conversation" role="dialog" aria-modal="true" aria-label="与月纱交谈">
-        <button type="button" className="ga-conversation-close" aria-label="关闭月纱对话"
-          onClick={()=>setWitchOpen(false)}>×</button>
-        <div className="ga-conversation-art"><Image src={moonveil} alt="月纱的绘制肖像" fill sizes="130px"/></div>
-        <div className="ga-conversation-text">
-          <span className="ga-micro">THE MISTRESS OF THE MANOR · 月纱</span>
-          <h2>今夜的公寓，如何了？</h2>
-          <p>“已经住进 {goal.guests} 位邻居了。每扇门后都有属于自己的故事……要不要再去看看？”</p>
-          <p>幸福度 {goal.happiness} / 100 · 预计每日收入 +{cozyDailyIncome(world).total} ✦</p>
-          <Link href="/orders/" className="ga-conversation-link">查看月纱委托 ›</Link>
+    {witchOpen&&<GothicModal title="与月纱交谈" closeLabel="关闭月纱对话"
+      onClose={()=>setWitchOpen(false)} wide>
+      <div className="relative hidden min-h-[215px] w-[120px] shrink-0 overflow-hidden rounded-md border border-gothic-brass/60 bg-gothic-panel sm:block">
+        <Image src={moonveil} alt="月纱的绘制肖像" fill sizes="130px" className="object-cover"/>
+      </div>
+      <div className="min-w-0 flex-1 space-y-3 pr-4">
+        <span className="text-[10px] leading-relaxed tracking-[.12em] text-gothic-gold">THE MISTRESS OF THE MANOR · 月纱</span>
+        <h2 className="text-xl font-semibold leading-snug text-gothic-ivory sm:text-2xl">今夜的公寓，如何了？</h2>
+        <p className="text-sm leading-7 text-gothic-muted">“已经住进 {goal.guests} 位邻居了。每扇门后都有属于自己的故事……要不要再去看看？”</p>
+        <p className="text-xs leading-relaxed text-gothic-muted">幸福度 {goal.happiness} / 100 · 预计每日收入 +{cozyDailyIncome(world).total} ✦</p>
+        <GothicPanelLink href="/orders/">查看月纱委托 ›</GothicPanelLink>
+      </div>
+    </GothicModal>}
+    {notices&&<div className="absolute right-3 top-[72px] z-20 w-[min(350px,92vw)] rounded-xl border border-gothic-brass/75 bg-gothic-panel/95 p-4 text-gothic-ivory shadow-[0_15px_44px_#000c] backdrop-blur-xl"
+      role="dialog" aria-label="公寓日志" onKeyDown={event=>{if(event.key==='Escape')setNotices(false);}}>
+      <button type="button" aria-label="关闭公寓日志" onClick={()=>setNotices(false)}
+        className="absolute right-2 top-2 grid size-8 place-items-center rounded-full border border-gothic-brass/50 bg-gothic-panel text-xl leading-none hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow">×</button>
+      <div className="flex items-start gap-3 pr-4">
+        <Image src={moonveil} alt="月纱" width={64} height={75}
+          className="h-[75px] w-16 shrink-0 rounded-md border border-gothic-brass/50 object-cover"/>
+        <div className="min-w-0 space-y-2">
+          <h2 className="text-base font-semibold text-gothic-gold">月纱的夜间记录</h2>
+          <p className="text-xs leading-relaxed text-gothic-muted">{latest?.zh??'今晚还没有新的故事。'}</p>
+          <p className="text-xs leading-relaxed text-gothic-muted">目前 {goal.guests} 位住客，平均幸福度 {goal.happiness}。</p>
         </div>
-      </section>
-    </div>}
-    {notices&&<div className="ga-popover" role="dialog" aria-label="公寓日志">
-      <button type="button" aria-label="关闭公寓日志" onClick={()=>setNotices(false)}>×</button>
-      <Image src={moonveil} alt="月纱" width={64} height={75}/>
-      <strong>月纱的夜间记录</strong>
-      <p>{latest?.zh??'今晚还没有新的故事。'}</p>
-      <p>目前 {goal.guests} 位住客，平均幸福度 {goal.happiness}。</p>
+      </div>
     </div>}
     <GothicDock items={nav} label="公寓世界导航"/>
   </main>;
