@@ -6,6 +6,7 @@ import {
   machineLevel,
   machineSalvageRefund,
   workshopNextStep,
+  workshopHint,
   WORKERS,
   MACHINES,
 } from '../../../v2/src/workshop-engine';
@@ -36,6 +37,7 @@ export function WorkshopStageContainer({
   const quote =
     selectedPlot !== null ? machineUpgradeQuote(world, selectedPlot) : null;
   const isMoving = movingFrom !== null;
+  const hint = workshopHint(world);
 
   const selectedText = chosenWorker
     ? '待派工：' + WORKERS[chosenWorker].zh
@@ -75,6 +77,11 @@ export function WorkshopStageContainer({
         data-testid="v2-stage"
         aria-label="PixiJS WebGL 工坊场景：点击设备或空地进行操作"
       ></div>
+      <span className="sr-only" data-testid="v2-guide-instruction" aria-live="polite">
+        {world.completed===0&&hint.target!==null
+          ?'操作提示：目标 '+String(hint.target+1).padStart(2,'0')+' 号地块。'
+          :''}
+      </span>
 
       <div className="selection">
         <span id="selected" data-testid="v2-next-step">{selectedText}</span>

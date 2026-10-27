@@ -146,6 +146,61 @@ export function salvageMachine(s:WorkshopState,index:number):WorkshopState {
 }
 /** Contextual objective: surface only one useful next decision in the
  * existing selection bar, instead of filling the full-screen art with UI. */
+/** One spatial hint derived from the same authoritative save as the engine.
+ * Never auto-move machines, mint currency or bypass player decisions. */
+export type WorkshopHint={
+  action:'move'|'build'|'staff'|'shift'|'recover';
+  source:number|null;target:number|null;
+  craft?:Craft;worker?:WorkerId;
+};
+export function workshopHint(s:WorkshopState):WorkshopHint {
+  const indices=(craft:Craft)=>s.tiles.flatMap((tile,i)=>tile?.craft===craft?[i]:[]);
+  const vacancy=()=>s.tiles.findIndex(tile=>tile===null);
+  const adjacentEmpty=(index:number)=>s.tiles.findIndex((tile,i)=>
+    tile===null&&linked(index,i));
+  const hasPair=(a:Craft,b:Craft)=>indices(a).some(i=>indices(b).some(j=>linked(i,j)));
+  const recover=():WorkshopHint=>({
+    action:'recover',
+    source:s.tiles.findIndex((tile,i)=>tile!==null&&indices(tile.craft).length>1),
+    target:null,
+  });
+  for(const craft of ['well','garden'] as const){
+    if(indices(craft).length===0)return s.coins<MACHINES[craft].cost?recover():{
+      action:'build',source:null,target:vacancy(),craft,
+    };
+  }
+  if(!hasPair('well','garden')){
+    for(const source of indices('garden')){
+      for(const well of indices('well')){
+        const target=adjacentEmpty(well);
+        if(target>=0)return {action:'move',source,target};
+      }
+    }
+    for(const source of indices('well')){
+      for(const garden of indices('garden')){
+        const target=adjacentEmpty(garden);
+        if(target>=0)return {action:'move',source,target};
+      }
+    }
+    return {action:'move',source:indices('garden')[0],target:null};
+  }
+  if(indices('kiln').length===0){
+    if(s.coins<MACHINES.kiln.cost)return recover();
+    const target=indices('garden').map(adjacentEmpty).find(i=>i>=0)??vacancy();
+    return {action:'build',source:null,target,craft:'kiln'};
+  }
+  if(!hasPair('garden','kiln')){
+    const target=indices('garden').map(adjacentEmpty).find(i=>i>=0);
+    return {action:'move',source:indices('kiln')[0],target:target??null};
+  }
+  for(const [craft,worker] of [['well','brook'],['garden','fern'],['kiln','cinder']] as const){
+    if(!s.tiles.some(tile=>tile?.craft===craft&&tile.worker)){
+      const target=indices(craft).find(i=>s.tiles[i]?.worker===null)??indices(craft)[0];
+      return {action:'staff',source:null,target,worker};
+    }
+  }
+  return {action:'shift',source:null,target:null};
+}
 export function workshopNextStep(s:WorkshopState):string {
   const hasConnection=(from:Craft,to:Craft)=>
     s.tiles.some((a,i)=>a?.craft===from&&s.tiles.some((b,j)=>

@@ -3,7 +3,7 @@ import {
   newWorkshop,placeMachine,moveMachine,assignWorker,runShift,
   linked,validWorkshop,unassignWorker,acceptPatronCommission, PATRON_ADULT_AGE,
   machineLevel,machineUpgradeQuote,upgradeMachine,workshopRank,
-  machineSalvageRefund,salvageMachine,workshopNextStep,
+  machineSalvageRefund,salvageMachine,workshopNextStep,workshopHint,
   forecastPatronCommission, PATRON_EXTRA_CORES,
   importPatronCore, PATRON_IMPORT_PRICE,
   acceptPremiumOrder,forecastOrderChoice,PREMIUM_EXTRA_CORES,
@@ -27,16 +27,21 @@ describe('V2 workshop: positioning and staffing are the gameplay',()=>{
   it('provides a contextual first-day goal without adding unrelated buttons',()=>{
     const initial=newWorkshop();
     expect(workshopNextStep(initial)).toContain('温室');
+    expect(workshopHint(initial)).toMatchObject({action:'move',source:7,target:6});
+    expect(workshopHint(salvageMachine(initial,7))).toMatchObject({action:'build',craft:'garden'});
     expect(workshopNextStep(salvageMachine(initial,7))).toContain('重新建造孢子温室');
     expect(workshopNextStep(salvageMachine(initial,5))).toContain('重新建造水汽泵');
     let world=moveMachine(initial,7,6);
     expect(workshopNextStep(world)).toContain('熔炉');
+    expect(workshopHint(world)).toMatchObject({action:'build',craft:'kiln',target:1});
     world=placeMachine(world,7,'kiln');
     expect(workshopNextStep(world)).toContain('派工');
+    expect(workshopHint(world)).toMatchObject({action:'staff',worker:'brook',target:5});
     world=assignWorker(world,'brook',5);
     world=assignWorker(world,'fern',6);
     world=assignWorker(world,'cinder',7);
     expect(workshopNextStep(world)).toContain('开始一天生产');
+    expect(workshopHint(world)).toMatchObject({action:'shift',source:null,target:null});
     world=runShift(world);
     expect(workshopNextStep(world)).toContain('自动交付');
   });

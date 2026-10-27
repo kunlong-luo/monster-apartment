@@ -193,3 +193,36 @@ test('selected machine can be safely dismantled to recover money and rebuild',as
   await expect(page.getByTestId('v2-coins')).toHaveText('115');
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
 });
+
+
+test('first-shift scene highlights actual garden move and updates the next target',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/workshop/');
+  const canvas=page.getByTestId('v2-stage').locator('canvas');
+  await expect(canvas).toBeVisible({timeout:25_000});
+  const stage=page.getByTestId('v2-stage');
+  await expect(stage).toHaveAttribute('data-guide-action','move');
+  await expect(stage).toHaveAttribute('data-guide-source','7');
+  await expect(stage).toHaveAttribute('data-guide-target','6');
+  await expect(page.getByTestId('v2-guide-instruction')).toContainText('07 号地块');
+  const box=await canvas.boundingBox();
+  expect(box).not.toBeNull();
+  // Initial garden 08 -> empty 07, using the actual Pixi stage coordinate grid.
+  await canvas.click({position:{
+    x:(131+2*160+73)/1050*box!.width,
+    y:(104+160+73)/645*box!.height
+  }});
+  await page.getByTestId('v2-move').click();
+  await canvas.click({position:{
+    x:(131+160+73)/1050*box!.width,
+    y:(104+160+73)/645*box!.height
+  }});
+  await expect(stage).toHaveAttribute('data-guide-action','build');
+  await expect(page.getByTestId('v2-next-step')).toContainText('晶核熔炉');
+  await expect.poll(()=>page.evaluate(()=>{
+    const raw=localStorage.getItem('monster-apartment:workshop-v2-lab');
+    return raw?JSON.parse(raw).tiles[6]?.craft:null;
+  })).toBe('garden');
+  await page.reload();
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-guide-action','build');
+});

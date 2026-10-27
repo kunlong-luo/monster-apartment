@@ -1,7 +1,7 @@
 import { Application, AnimatedSprite, Container, Graphics, Sprite, Text, Texture } from 'pixi.js';
 import { makeRasterArt } from './raster-sprites';
 import { patronFrames } from './patron-art';
-import { BOARD_SIZE, WIDTH, MACHINES, linked, machineLevel } from './workshop-engine';
+import { BOARD_SIZE, WIDTH, MACHINES, linked, machineLevel, workshopHint } from './workshop-engine';
 import type { WorkshopState, Craft } from './workshop-engine';
 
 export type LabSelect={plot:(index:number)=>void; patronTap?:()=>void};
@@ -110,6 +110,11 @@ export async function mountWorkshopLab(
   let flowPaths:{from:{x:number;y:number};to:{x:number;y:number};tint:number}[]=[];
   const flowLayer=new Graphics();
   app.stage.addChild(flowLayer);
+  // A single contextual, non-interactive teaching cue above the painted map.
+  // It disappears after the first delivery and never intercepts plot clicks.
+  const tutorialLayer=new Container();
+  tutorialLayer.eventMode='none';
+  app.stage.addChild(tutorialLayer);
   // Feedback overlays are independent of the rebuildable board scene.
   // A completed shift cannot silently change inventory without visual cues.
   const feedbackLayer=new Container();
@@ -171,6 +176,8 @@ export async function mountWorkshopLab(
       // Small working rhythm; not a CSS wobble applied to the entire scene.
       machine.y+=(Math.sin(elapsed*3+index*.8)-Math.sin((elapsed-dt/60)*3+index*.8))*.5;
     }
+    tutorialLayer.alpha=window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ?1:.81+.19*Math.sin(elapsed*2.5);
     flowLayer.clear();
     for(const [i,flow] of flowPaths.entries()){
       const progress=(elapsed*.36+i*.31)%1;
@@ -195,6 +202,13 @@ export async function mountWorkshopLab(
     for(const actor of actors)actor.stop();
     actors.length=0;machineArt.length=0;flowPaths=[];
     stage.removeChildren().forEach(child=>child.destroy({children:true}));
+    tutorialLayer.removeChildren().forEach(child=>child.destroy({children:true}));
+    const hint=workshopHint(current);
+    element.dataset.guideAction=hint.action;
+    element.dataset.guideSource=hint.source===null?'':String(hint.source);
+    element.dataset.guideTarget=hint.target===null?'':String(hint.target);
+    element.dataset.guideWorker=hint.worker??'';
+    const firstDeliveryPending=current.completed===0;
     const text=glabel('月光工坊 · 生产区',19,0xebd3b0,true);
     text.position.set(LEFT,MOBILE?22:48);stage.addChild(text);
     if(MOBILE){
@@ -313,6 +327,33 @@ export async function mountWorkshopLab(
         12,COLORS[machine.craft],true);
       label.anchor.set(.5,0);
       label.position.set(x+CELL/2,y+CELL-29);stage.addChild(label);
+    }
+    // Hint source and destination are distinct: no fullscreen tutorial modal,
+    // no auto-play and no labels hiding the painted machine actors.
+    if(firstDeliveryPending){
+      for(const [index,label,color] of [
+        [hint.source,'① 选这里',0xf5bd82],
+        [hint.target,
+          hint.action==='move'?'② 搬到这里':
+          hint.action==='build'?'② 在这里建造':
+          hint.action==='staff'?'② 点这里派工':'',
+          0xaff1d4],
+      ] as const){
+        if(index===null||index<0||!label)continue;
+        const {x,y}=plotXY(index);
+        const outline=new Graphics().roundRect(x-3,y-3,CELL+6,CELL+6,15)
+          .stroke({width:4,color,alpha:.95});
+        outline.eventMode='none';
+        tutorialLayer.addChild(outline);
+        const ribbon=new Graphics().roundRect(x+5,y+CELL-27,CELL-10,23,7)
+          .fill({color:0x17111e,alpha:.96})
+          .stroke({color,alpha:.75,width:1});
+        ribbon.eventMode='none';tutorialLayer.addChild(ribbon);
+        const caption=glabel(label,14,color,true);
+        caption.anchor.set(.5,0);
+        caption.position.set(x+CELL/2,y+CELL-24);
+        caption.eventMode='none';tutorialLayer.addChild(caption);
+      }
     }
     // Lines on the floor tell the player that this is one connected factory.
     for(let i=0;i<BOARD_SIZE;i++){
