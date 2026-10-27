@@ -4,6 +4,8 @@ import {
   workshopRank,
   machineUpgradeQuote,
   machineLevel,
+  machineSalvageRefund,
+  workshopNextStep,
   WORKERS,
   MACHINES,
 } from '../../../v2/src/workshop-engine';
@@ -43,7 +45,7 @@ export function WorkshopStageContainer({
     ? '移动设备：再选一个空格'
     : selectedPlot !== null
     ? '选中 ' + String(selectedPlot + 1).padStart(2, '0') + ' 号地块'
-    : '点地块查看、建造或派工';
+    : workshopNextStep(world);
 
   const upgradeVisible = Boolean(selectedTile && quote);
   const upgradeDisabled = Boolean(quote && !quote.canUpgrade);
@@ -75,7 +77,17 @@ export function WorkshopStageContainer({
       ></div>
 
       <div className="selection">
-        <span id="selected">{selectedText}</span>
+        <span id="selected" data-testid="v2-next-step">{selectedText}</span>
+        <button
+          type="button"
+          id="salvage"
+          data-testid="v2-salvage"
+          hidden={!selectedTile}
+          title="只返还设备原价的 60%，已储存材料、升级与派工不会保留"
+          className="shrink-0 rounded-md border border-gothic-brass/70 bg-gothic-panel/80 px-2 py-1 text-[10px] text-gothic-muted transition-colors hover:border-gothic-glow hover:text-gothic-ivory focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none"
+        >
+          拆除返还 ✦{machineSalvageRefund(selectedTile)}
+        </button>
         <button
           type="button"
           id="upgrade"

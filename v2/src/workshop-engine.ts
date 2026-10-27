@@ -130,6 +130,42 @@ export const linked=(from:number,to:number):boolean=>
   validIndex(from)&&validIndex(to)&&
   (Math.abs(from-to)===WIDTH||Math.floor(from/WIDTH)===Math.floor(to/WIDTH)
     &&Math.abs(from-to)===1);
+/** A wrong purchase must never permanently strand a save without enough
+ * currency to build the core kiln. Salvaging refunds 60% of base machine cost;
+ * upgrades, stored water/fiber and the worker assignment are discarded. */
+export function machineSalvageRefund(machine:Machine|null):number {
+  return machine?Math.floor(MACHINES[machine.craft].cost*3/5):0;
+}
+export function salvageMachine(s:WorkshopState,index:number):WorkshopState {
+  if(!validIndex(index)||!s.tiles[index])return s;
+  const refund=machineSalvageRefund(s.tiles[index]);
+  if(!Number.isSafeInteger(s.coins+refund))return s;
+  const tiles=s.tiles.slice();
+  tiles[index]=null;
+  return {...s,tiles,coins:s.coins+refund};
+}
+/** Contextual objective: surface only one useful next decision in the
+ * existing selection bar, instead of filling the full-screen art with UI. */
+export function workshopNextStep(s:WorkshopState):string {
+  const hasConnection=(from:Craft,to:Craft)=>
+    s.tiles.some((a,i)=>a?.craft===from&&s.tiles.some((b,j)=>
+      b?.craft===to&&linked(i,j)));
+  if(!hasConnection('well','garden'))
+    return '第1步 · 把温室移动到紧邻水汽泵的空格';
+  if(!s.tiles.some(m=>m?.craft==='kiln'))
+    return s.coins<MACHINES.kiln.cost
+      ?'资金不足 · 选中多余设备回收星币，再建晶核熔炉'
+      :'第2步 · 建造晶核熔炉，并紧邻温室';
+  if(!hasConnection('garden','kiln'))
+    return '第3步 · 把晶核熔炉搬到温室旁边';
+  for(const [craft,worker] of [['well','brook'],['garden','fern'],['kiln','cinder']] as const){
+    if(!s.tiles.some(m=>m?.craft===craft&&m.worker))
+      return '第4步 · 选择工匠'+WORKERS[worker].zh+'，点击对应设备派工';
+  }
+  if(s.warehouse.core>=s.order.cores)
+    return '晶核已达标 · 继续生产至第'+s.order.due+'天自动交付';
+  return '第5步 · 点击「开始一天生产」，积攒晶核完成订单';
+}
 export function newWorkshop():WorkshopState {
   const tiles:(Machine|null)[]=Array.from({length:BOARD_SIZE},()=>null);
   tiles[5]={craft:'well',worker:null,stored:0};

@@ -3,6 +3,7 @@ import {
   newWorkshop,placeMachine,moveMachine,assignWorker,runShift,
   linked,validWorkshop,unassignWorker,acceptPatronCommission, PATRON_ADULT_AGE,
   machineLevel,machineUpgradeQuote,upgradeMachine,workshopRank,
+  machineSalvageRefund,salvageMachine,workshopNextStep,
   forecastPatronCommission, PATRON_EXTRA_CORES,
   importPatronCore, PATRON_IMPORT_PRICE,
   acceptPremiumOrder,forecastOrderChoice,PREMIUM_EXTRA_CORES,
@@ -23,6 +24,41 @@ const connect=()=>{
 };
 
 describe('V2 workshop: positioning and staffing are the gameplay',()=>{
+  it('provides a contextual first-day goal without adding unrelated buttons',()=>{
+    const initial=newWorkshop();
+    expect(workshopNextStep(initial)).toContain('温室');
+    let world=moveMachine(initial,7,6);
+    expect(workshopNextStep(world)).toContain('熔炉');
+    world=placeMachine(world,7,'kiln');
+    expect(workshopNextStep(world)).toContain('派工');
+    world=assignWorker(world,'brook',5);
+    world=assignWorker(world,'fern',6);
+    world=assignWorker(world,'cinder',7);
+    expect(workshopNextStep(world)).toContain('开始一天生产');
+    world=runShift(world);
+    expect(workshopNextStep(world)).toContain('自动交付');
+  });
+  it('salvages wrong machine investments to recover from a soft lock',()=>{
+    let world=moveMachine(newWorkshop(),7,6);
+    world=placeMachine(world,0,'well');
+    world=placeMachine(world,1,'garden');
+    world=placeMachine(world,2,'garden');
+    expect(world.coins).toBe(28);
+    expect(workshopNextStep(world)).toContain('资金不足');
+    expect(machineSalvageRefund(world.tiles[1])).toBe(15);
+    expect(salvageMachine(world,-1)).toBe(world);
+    expect(salvageMachine(world,8)).toBe(world);
+    const rescued=salvageMachine(world,1);
+    expect(rescued.coins).toBe(43);
+    expect(rescued.tiles[1]).toBeNull();
+    expect(world.tiles[1]?.craft).toBe('garden');
+    expect(validWorkshop(rescued)).toBe(true);
+    const built=placeMachine(rescued,7,'kiln');
+    expect(built.tiles[7]?.craft).toBe('kiln');
+    expect(built.coins).toBe(5);
+    expect(machineSalvageRefund(null)).toBe(0);
+    expect(salvageMachine({...world,coins:Number.MAX_SAFE_INTEGER},1).coins).toBe(Number.MAX_SAFE_INTEGER);
+  });
   it('begins with disconnected production, a contract and finite cash',()=>{
     const s=newWorkshop();
     expect(s.version).toBe(2);

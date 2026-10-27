@@ -1,5 +1,5 @@
 import { WORKERS, MACHINES, newWorkshop, validWorkshop,
-  placeMachine, moveMachine, assignWorker, runShift, acceptPatronCommission,
+  placeMachine, moveMachine, salvageMachine, machineSalvageRefund, assignWorker, runShift, acceptPatronCommission,
   upgradeMachine, machineUpgradeQuote, machineLevel, workshopRank,
   forecastPatronCommission, importPatronCore, PATRON_IMPORT_PRICE,
   PREMIUM_ORDER_PENALTY, STANDARD_ORDER_PENALTY } from './workshop-engine';
@@ -253,7 +253,18 @@ const onRootClick=(event:MouseEvent)=>{
   if(!(origin instanceof Element))return;
   const worker=origin.closest<HTMLButtonElement>('[data-worker]');
   const build=origin.closest<HTMLButtonElement>('[data-build]');
-  if(origin.closest('#upgrade')){
+  if(origin.closest('#salvage')){
+    if(selectedPlot===null||!world.tiles[selectedPlot])return;
+    const index=selectedPlot;
+    const machine=world.tiles[index]!;
+    const refund=machineSalvageRefund(machine);
+    if(!window.confirm('拆除'+MACHINES[machine.craft].zh+'？已存材料、升级及工匠派工会清除，返还 ✦'+refund+' 星币。'))return;
+    const before=world;
+    const next=salvageMachine(world,index);
+    apply(next,'已回收 '+MACHINES[machine.craft].zh+'，获得 ✦'+refund+' 星币。','good');
+    if(next!==before){selectedPlot=null;clearChoice();}
+    render();
+  }else if(origin.closest('#upgrade')){
     if(selectedPlot!==null){
       const index=selectedPlot;
       const before=world.tiles[index];

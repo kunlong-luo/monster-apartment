@@ -161,3 +161,35 @@ test('canceling machine movement does not alter the real factory save', async ({
   expect(saved.tiles[6]).toBeNull();
   expect(saved.coins).toBe(100);
 });
+
+
+test('selected machine can be safely dismantled to recover money and rebuild',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/workshop/');
+  const canvas=page.getByTestId('v2-stage').locator('canvas');
+  await expect(canvas).toBeVisible({timeout:25_000});
+  await expect(page.getByTestId('v2-next-step')).toContainText('温室');
+  const refund=page.getByTestId('v2-salvage');
+  await expect(refund).toBeHidden();
+  const box=await canvas.boundingBox();
+  expect(box).not.toBeNull();
+  // Initial greenhouse is on plot 08 (index 7).
+  await canvas.click({position:{
+    x:(131+2*160+73)/1050*box!.width,
+    y:(104+160+73)/645*box!.height
+  }});
+  await expect(refund).toBeVisible();
+  await expect(refund).toContainText('15');
+  page.once('dialog',dialog=>dialog.accept());
+  await refund.click();
+  await expect(page.getByTestId('v2-coins')).toHaveText('115');
+  await expect(refund).toBeHidden();
+  await expect.poll(()=>page.evaluate(()=>{
+    const raw=localStorage.getItem('monster-apartment:workshop-v2-lab');
+    const state=raw?JSON.parse(raw):null;
+    return state?.tiles?.[7]===null&&state?.coins===115;
+  })).toBe(true);
+  await page.reload();
+  await expect(page.getByTestId('v2-coins')).toHaveText('115');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+});
