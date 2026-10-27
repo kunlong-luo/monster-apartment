@@ -75,6 +75,8 @@ jobs:
       - run: google-chrome --version
       - name: Use existing system font fallback
         run: fc-match "sans-serif"
+      - name: Verify all seven pages boot before gameplay flows
+        run: pnpm exec playwright test e2e/route-health.spec.ts --workers=1 --retries=0
       - run: pnpm e2e
       - name: Upload gameplay art review screenshots
         if: always()
