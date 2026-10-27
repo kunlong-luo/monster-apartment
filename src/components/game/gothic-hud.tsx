@@ -61,36 +61,48 @@ export function GothicResourcePill({
 }
 
 export function GothicDock({
-  items,label,className='',activeHref,testId
+  items,label,className='',activeHref,testId,compact=false
 }:{
   items:readonly GothicDestination[];
   label:string;
   className?:string;
   activeHref?:string;
   testId?:string;
+  /** Smaller jewel-like entry points for a scene-led lobby. */
+  compact?:boolean;
 }){
   return <nav data-testid={testId} aria-label={label} className={
     'absolute bottom-[max(8px,env(safe-area-inset-bottom))] left-1/2 z-[5] '+
     'flex w-max max-w-[98vw] -translate-x-1/2 items-end justify-center gap-1.5 '+
-    'sm:gap-3 lg:gap-5 '+className
+    (compact?'sm:gap-2 lg:gap-3 ':'sm:gap-3 lg:gap-5 ')+className
   }>
     {items.map(item=><Link key={item.href} href={item.href}
       aria-label={item.ariaLabel??(item.description?item.label+' · '+item.description:item.label)}
       aria-current={activeHref===item.href?'page':undefined}
       title={item.description}
       className={
-        'group flex h-[61px] w-[57px] flex-col items-center justify-center gap-0.5 '+
-        'rounded-md border border-gothic-brass/65 bg-[linear-gradient(145deg,#593b39ed,#190f19f2_75%)] '+
-        'text-gothic-ivory shadow-[inset_0_1px_#ffdbac30,0_4px_18px_#000b] '+
-        'backdrop-blur-sm transition-transform duration-200 '+
+        'group relative flex flex-col items-center justify-center gap-0.5 '+
+        'text-gothic-ivory backdrop-blur-[3px] '+
+        'transition-[transform,border-color,box-shadow] duration-200 '+
         'hover:-translate-y-1 hover:border-gothic-glow '+
         'focus-visible:-translate-y-1 focus-visible:outline-2 focus-visible:outline-gothic-glow '+
-        'motion-reduce:transition-none sm:h-[68px] sm:w-[73px] md:w-[82px] '+
+        'motion-reduce:transition-none '+
+        (compact
+          ?'h-[52px] w-[52px] rounded-[10px] border border-gothic-brass/55 '+
+           'bg-[linear-gradient(155deg,#533b43cf,#110c18ea_80%)] '+
+           'shadow-[inset_0_1px_#ffddb534,inset_0_0_0_1px_#100b15ad,0_6px_17px_#0008] '+
+           'sm:h-[60px] sm:w-[62px] '
+          :'h-[61px] w-[57px] rounded-md border border-gothic-brass/65 '+
+           'bg-[linear-gradient(145deg,#593b39ed,#190f19f2_75%)] '+
+           'shadow-[inset_0_1px_#ffdbac30,0_4px_18px_#000b] '+
+           'sm:h-[68px] sm:w-[73px] md:w-[82px] ')+
         (activeHref===item.href?'border-gothic-glow bg-gothic-wine/85 text-gothic-glow -translate-y-1':'')
       }>
       <span aria-hidden="true"
-        className="text-[25px] leading-none text-gothic-gold drop-shadow-[0_1px_5px_#000] group-hover:text-gothic-glow sm:text-[29px]">{item.icon}</span>
-      <span className="text-[11px] font-medium tracking-wide sm:text-[13px]">{item.label}</span>
+        className={(compact?'text-[22px] sm:text-[25px] ':'text-[25px] sm:text-[29px] ')+
+          'leading-none text-gothic-gold drop-shadow-[0_1px_5px_#000] group-hover:text-gothic-glow'}>{item.icon}</span>
+      <span className={(compact?'text-[10px] sm:text-[11px] ':'text-[11px] sm:text-[13px] ')+
+        'font-medium tracking-[.08em]'}>{item.label}</span>
     </Link>)}
   </nav>;
 }

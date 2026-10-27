@@ -7,6 +7,10 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link')).toHaveCount(5);
   await expect(page.getByRole('navigation',{name:'快捷功能'}).getByRole('link')).toHaveCount(3);
   await expect(page.getByTestId('lobby-coins')).toHaveText('100');
+  // Lobby uses the compact HUD; ordinary destinations remain fully labeled.
+  const dockLinks=page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link');
+  const dockSize=await dockLinks.first().evaluate(el=>el.getBoundingClientRect().width);
+  expect(dockSize).toBeLessThanOrEqual(64);
   const size=await page.evaluate(()=>({
     width:document.documentElement.scrollWidth-innerWidth,
     height:document.documentElement.scrollHeight-innerHeight,

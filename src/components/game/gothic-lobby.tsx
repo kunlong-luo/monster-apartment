@@ -114,8 +114,8 @@ export function GothicLobby(){
         {href:'/workshop/',icon:'⚒',label:'工坊'},
         {href:'/town/',icon:'✧',label:'街区'}
       ].map(item=><Link href={item.href} key={item.href} title={item.label}
-        className="group grid min-w-12 justify-items-center gap-1 text-[10px] tracking-wide text-gothic-ivory drop-shadow-[0_3px_6px_#000] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-gothic-glow">
-        <span aria-hidden="true" className="grid size-10 place-items-center rounded-xl border border-gothic-brass/75 bg-[linear-gradient(145deg,#49303cdd,#140d18ed)] text-[23px] text-gothic-gold shadow-[inset_0_1px_#ffe9ac35,0_6px_15px_#0008] transition-colors group-hover:border-gothic-glow">{item.icon}</span>
+        className="group grid min-w-10 justify-items-center gap-1 text-[10px] tracking-[.12em] text-gothic-ivory drop-shadow-[0_3px_7px_#000] transition-transform duration-200 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none">
+        <span aria-hidden="true" className="grid size-9 place-items-center rounded-[10px] border border-gothic-brass/65 bg-[linear-gradient(145deg,#49303ccc,#140d18ed)] text-[21px] text-gothic-gold shadow-[inset_0_1px_#ffe9ac28,0_6px_15px_#0008] transition-[border-color,box-shadow] group-hover:border-gothic-glow group-hover:shadow-[0_0_18px_#d8a87445] sm:size-10">{item.icon}</span>
         <span>{item.label}</span>
       </Link>)}
     </nav>
@@ -125,13 +125,13 @@ export function GothicLobby(){
     <div className="gothic-lobby__character-caption pointer-events-none absolute z-[1] bottom-[clamp(106px,16vh,158px)] left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5 text-[#f6d9b8] [text-shadow:0_3px_12px_#000]" aria-hidden="true"><span className="text-[13px] tracking-[.23em]">月纱</span><small className="text-[10px] text-[#d0b298]">暗夜公寓的女主人</small></div>
 
     <Link href="/orders/" aria-label="查看当前主线任务"
-      className="absolute bottom-[104px] left-3 z-[3] flex max-w-[min(310px,68vw)] items-center gap-2 rounded-lg border border-gothic-brass/60 border-l-[3px] border-l-gothic-gold/90 bg-gothic-panel/85 px-3 py-2 text-[11px] leading-snug text-gothic-ivory shadow-[0_5px_20px_#0009] backdrop-blur-lg transition-[border-color,transform] hover:-translate-y-0.5 hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow sm:bottom-[120px] sm:left-6">
+      className="absolute bottom-[86px] left-3 z-[3] flex max-w-[min(310px,68vw)] items-center gap-2 rounded-md border border-gothic-brass/55 border-l-2 border-l-gothic-gold/90 bg-[linear-gradient(100deg,#231625d9,#211622b7)] px-3 py-2 text-[11px] leading-snug text-gothic-ivory shadow-[0_5px_16px_#0009] transition-[border-color,transform] hover:-translate-y-0.5 hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none sm:bottom-[106px] sm:left-6">
       <span className="text-gothic-gold" aria-hidden="true">◇</span>
       <span>主线 · 交付 {world.warehouse.core} / {world.order.cores} 晶核</span>
       <span className="ml-auto text-lg leading-none" aria-hidden="true">›</span>
     </Link>
 
-    <GothicDock items={links} label="主要游戏功能"/>
+    <GothicDock items={links} label="主要游戏功能" compact/>
 
     <AnimatePresence mode="wait">
     {panel&&<GothicModal key={panel} title={panel==='bond'?'与月纱交谈':panel==='menu'?'所有功能':panel==='profile'?'玩家资料':'委托消息'}
