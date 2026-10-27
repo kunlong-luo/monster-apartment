@@ -72,7 +72,7 @@ test('Tailwind modal traps focus and returns focus when dismissed',async({page})
   await expect(dialog).toBeFocused();
   await expect(dialog.getByRole('link')).toHaveCount(6);
   await page.keyboard.press('Shift+Tab');
-  await expect(dialog.getByRole('link',{name:/委托大厅/})).toBeFocused();
+  await expect(dialog.getByRole('link',{name:/晶核工坊/})).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(dialog.getByRole('button',{name:'关闭面板'})).toBeFocused();
   await page.keyboard.press('Escape');
@@ -181,18 +181,27 @@ test('workshop provides a direct and safe return to the main lobby',async({page}
 // The overlay must not play when another handler prevents a link navigation.
 test('cancelled links do not dim the scene or navigate',async({page})=>{
   await page.goto('/');
-  const overlay=page.getByTestId('gothic-route-transition');
-  await page.evaluate(()=>{
+  // Ensure React has hydrated before injecting a test-only link.
+  await page.getByRole('button',{name:'全部功能'}).click();
+  await expect(page.getByRole('dialog',{name:'所有功能'})).toBeVisible();
+  await page.getByRole('button',{name:'关闭面板'}).click();
+  const result=await page.evaluate(()=>{
     const anchor=document.createElement('a');
     anchor.href='/workshop/';
     anchor.textContent='被取消的导航';
-    anchor.id='cancelled-game-navigation';
     anchor.addEventListener('click',event=>event.preventDefault());
     document.querySelector('main')!.appendChild(anchor);
+    const allowed=anchor.dispatchEvent(new MouseEvent('click',{
+      bubbles:true,cancelable:true,button:0,
+    }));
+    const phase=document.querySelector<HTMLElement>('[data-testid="gothic-route-transition"]')
+      ?.dataset.phase;
+    anchor.remove();
+    return {allowed,phase,pathname:window.location.pathname};
   });
-  await page.locator('#cancelled-game-navigation').click();
-  await expect(page).toHaveURL(/\/$/);
-  await expect(overlay).toHaveAttribute('data-phase','idle');
+  expect(result.allowed).toBe(false);
+  expect(result.phase).toBe('idle');
+  expect(result.pathname).toBe('/');
 });
 
 test('main quest reflects saved stock and presents readable progress',async({page})=>{
