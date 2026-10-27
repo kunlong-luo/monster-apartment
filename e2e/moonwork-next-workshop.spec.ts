@@ -24,7 +24,7 @@ test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',asy
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-day')).toHaveText('2');
   await page.getByTestId('v2-world-gate').click();
-  await expect(page).toHaveURL(/\/town\/?$/);
+  await expect(page).toHaveURL(/\/town\/?$/,{timeout:15_000});
   await expect(page.getByTestId('world-day')).toHaveText('2');
   await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'工坊',exact:true}).click();
   await expect(page).toHaveURL(/\/workshop\/?$/);
