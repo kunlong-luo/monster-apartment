@@ -11,15 +11,17 @@ import {
   MACHINES,
 } from '../../../v2/src/workshop-engine';
 import type {Craft, WorkerId, WorkshopState} from '../../../v2/src/workshop-engine';
+import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
 
 export function WorkshopStageContainer({
-  world,
+  world,onAction,
   chosenWorker,
   chosenMachine,
   movingFrom,
   selectedPlot,
 }: {
   world: WorkshopState;
+  onAction:(action:WorkshopAction)=>void;
   chosenWorker: WorkerId | null;
   chosenMachine: Craft | null;
   movingFrom: number | null;
@@ -89,6 +91,7 @@ export function WorkshopStageContainer({
           type="button"
           id="salvage"
           data-testid="v2-salvage"
+          onClick={()=>onAction({type:'salvage'})}
           hidden={!selectedTile}
           title="只返还设备原价的 60%，已储存材料、升级与派工不会保留"
           className="shrink-0 rounded-md border border-gothic-brass/70 bg-gothic-panel/80 px-2 py-1 text-[10px] text-gothic-muted transition-colors hover:border-gothic-glow hover:text-gothic-ivory focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none"
@@ -99,6 +102,7 @@ export function WorkshopStageContainer({
           type="button"
           id="upgrade"
           data-testid="v2-upgrade"
+          onClick={()=>onAction({type:'upgrade'})}
           hidden={!upgradeVisible}
           disabled={upgradeDisabled}
           title="等级越高，每班水汽、孢子或晶核产量越多"

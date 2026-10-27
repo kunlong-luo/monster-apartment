@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import {forecastPatronCommission, PATRON_IMPORT_PRICE} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
+import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
 
 const PATRON_LINES: Record<string, string> = {
   offered: '「你的工坊真有本事。月光落下之前，能为我准备这些晶核吗？」',
@@ -15,9 +16,11 @@ const PATRON_LINES: Record<string, string> = {
 export function WorkshopContractPanel({
   world,
   portraitSrc,
+  onAction,
 }: {
   world: WorkshopState;
   portraitSrc: string;
+  onAction:(action:WorkshopAction)=>void;
 }) {
   const patron = world.patron ?? null;
   const forecast = patron ? forecastPatronCommission(world) : null;
@@ -141,6 +144,7 @@ export function WorkshopContractPanel({
           type="button"
           id="patron-accept"
           data-testid="v2-patron-accept"
+          onClick={()=>onAction({type:'accept-patron'})}
           hidden={patron?.status !== 'offered'}
         >
           接受月纱委托 · 奖励 ✦135
@@ -150,6 +154,7 @@ export function WorkshopContractPanel({
           type="button"
           id="patron-import"
           data-testid="v2-patron-import"
+          onClick={()=>onAction({type:'import-patron-core'})}
           hidden={!showImport}
           disabled={world.coins < PATRON_IMPORT_PRICE}
         >

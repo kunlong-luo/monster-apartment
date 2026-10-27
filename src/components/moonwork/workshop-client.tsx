@@ -13,7 +13,10 @@ import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
 import {WorkshopControls} from './workshop-controls';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
-import type {WorkshopSelectionSnapshot,WorkshopSelectionListener} from '../../../v2/src/workshop-runtime-contract';
+import type {
+  WorkshopAction,WorkshopRuntimeController,WorkshopSelectionSnapshot,
+  WorkshopSelectionListener
+} from '../../../v2/src/workshop-runtime-contract';
 
 declare global {
   interface Window {
@@ -22,7 +25,7 @@ declare global {
         root: HTMLElement,
         assetBase?: string,
         onSelectionChange?: WorkshopSelectionListener,
-      ) => Promise<() => void>;
+      ) => Promise<WorkshopRuntimeController>;
     };
     __moonworkRuntimeLoading?: Promise<void>;
   }
@@ -65,6 +68,8 @@ function loadRuntime(base: string) {
 
 export function WorkshopClient() {
   const host = useRef<HTMLDivElement>(null);
+  const gameController = useRef<WorkshopRuntimeController|null>(null);
+  const onAction = (action:WorkshopAction) => gameController.current?.dispatch(action);
   const [error, setError] = useState('');
   const [blockedSave, setBlockedSave] = useState(false);
   const [recoveryVersion, setRecoveryVersion] = useState(0);
@@ -120,11 +125,15 @@ export function WorkshopClient() {
         const runtime = window.MoonworkRuntime;
         if (!runtime) throw Error('PixiJS runtime is missing.');
 
-        const cleanup = await runtime.mountWorkshopGame(root, base, onSelectionChange);
+        const controller = await runtime.mountWorkshopGame(root, base, onSelectionChange);
         if (cancelled) {
-          cleanup();
+          controller.destroy();
         } else {
-          dispose = cleanup;
+          gameController.current = controller;
+          dispose = () => {
+            if(gameController.current===controller) gameController.current=null;
+            controller.destroy();
+          };
           window.dispatchEvent(new Event(CHANGE_EVENT));
         }
       })
@@ -174,6 +183,7 @@ export function WorkshopClient() {
               type="button"
               id="reset"
               data-testid="v2-reset"
+              onClick={()=>onAction({type:'reset'})}
               aria-label="重新开始"
             >
               ↻
@@ -184,6 +194,7 @@ export function WorkshopClient() {
         {/* Middle: Canvas Stage & Sidebar */}
         <section className="middle">
           <WorkshopStageContainer
+            onAction={onAction}
             world={world}
             chosenWorker={selection.worker}
             chosenMachine={selection.machine}
@@ -192,13 +203,14 @@ export function WorkshopClient() {
           />
 
           <aside className="sidebar">
-            <WorkshopContractPanel world={world} portraitSrc={portraitUrl} />
+            <WorkshopContractPanel world={world} portraitSrc={portraitUrl} onAction={onAction} />
             <WorkshopShiftPanel world={world} />
           </aside>
         </section>
 
         {/* Factory input controls are one React-owned component. */}
         <WorkshopControls
+          onAction={onAction}
           world={world}
           chosenWorker={selection.worker}
           chosenMachine={selection.machine}

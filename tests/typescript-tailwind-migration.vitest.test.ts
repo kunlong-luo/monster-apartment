@@ -93,6 +93,30 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(controls).toContain('data-testid={\'v2-worker-\' + id}');
     expect(controls).toContain('data-testid={\'v2-build-\' + id}');
   });
+  it('routes every React factory control through an explicit typed command bridge',()=>{
+    const runtime=read('v2/src/main.ts');
+    const bridge=read('v2/src/workshop-runtime-contract.ts');
+    const client=read('src/components/moonwork/workshop-client.tsx');
+    const controls=read('src/components/moonwork/workshop-controls.tsx');
+    const stage=read('src/components/moonwork/workshop-stage-container.tsx');
+    const patron=read('src/components/moonwork/workshop-contract-panel.tsx');
+    expect(bridge).toContain('export type WorkshopAction=');
+    expect(bridge).toContain('export type WorkshopRuntimeController=');
+    expect(runtime).toContain('function dispatch(action:WorkshopAction)');
+    expect(runtime).not.toContain('onRootClick');
+    expect(runtime).not.toContain("root.addEventListener('click'");
+    expect(runtime).not.toContain("origin.closest");
+    expect(client).toContain('gameController.current?.dispatch(action)');
+    expect(client).toContain("onAction({type:'reset'})");
+    expect(controls).toContain("onAction({type:'shift'})");
+    expect(controls).toContain("onAction({type:'toggle-move'})");
+    expect(controls).toContain("type:'choose-worker',worker:id");
+    expect(controls).toContain("type:'choose-machine',machine:id");
+    expect(stage).toContain("onAction({type:'salvage'})");
+    expect(stage).toContain("onAction({type:'upgrade'})");
+    expect(patron).toContain("onAction({type:'accept-patron'})");
+    expect(patron).toContain("onAction({type:'import-patron-core'})");
+  });
   it('communicates selected plots and tools with a typed runtime callback',()=>{
     const runtime=read('v2/src/main.ts');
     const client=read('src/components/moonwork/workshop-client.tsx');

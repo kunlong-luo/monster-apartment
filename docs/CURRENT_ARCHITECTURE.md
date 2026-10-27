@@ -46,8 +46,14 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 - `v2/src/workshop-runtime-contract.ts` 声明 `WorkshopSelectionSnapshot` 和 `WorkshopSelectionListener`，作为 React 与单独打包的 Pixi IIFE 的稳定类型契约。
 - `mountWorkshopGame(root, assetBase, onSelectionChange)` 在每次工坊暂态选择变更后调用监听器；React 直接接受对象并比较字段，取消监听器无需清除 DOM 自定义事件。
 - `#status`、`#summary` 为运行时保留的明确状态节点；`#stage` 的 `data-*` 属性仍用于场景诊断和 E2E，并不作为 React 业务状态来源。
-- `data-worker` / `data-build` / `#move` / `#shift` 仍是现有 React 按钮到运行时的委托点击协议；后续可以按单一阶段迁移到显式 action dispatcher，不应在同一提交同时重写所有玩法输入。
+- `WorkshopAction` 联合类型与 `WorkshopRuntimeController.dispatch` 是 React 按钮到运行时的唯一指令通道。工坊按钮的 `onClick` 直接发命令，已经去除 root DOM 点击委托、CSS 选择器查找与 `data-worker/data-build` 输入解析。Pixi 地块仍使用自己的 pointertap，不改变生产或存档模型。
 
 ## 场景快捷入口的样式所有权（第四轮）
 
 角色图鉴的派工链接、订单/仓库绘景上的快捷入口统一使用 `world-primitives.tsx` 的 `WORLD_LINK_CLASS` Tailwind v4 组件样式，不再依赖 `gothic-world.css` 中覆盖按钮的 `!important`。已删除 `world.css` 的未使用 `.mw-action-button`、旧工匠链接和快捷入口规则。
+
+## 类型化工坊指令通道（第五轮）
+
+- `v2/src/workshop-runtime-contract.ts` 定义可穷尽的 `WorkshopAction`（选择工匠/设备、移动、升级、拆除、生产、重开、月纱接单与补货）及 `WorkshopRuntimeController`（`dispatch`、`destroy`）。
+- React 通过 `gameController.current?.dispatch(action)` 调用运行时；由生命周期内的 controller 同时负责卸载销毁，不向 `window` 暴露全局游戏实例。
+- 控件的 DOM `id` 和 `data-testid` 保留以兼容样式与测试，但不再被逻辑事件委托读取。初始角色导览、Pixi 地块点击、订单自动结算、已有 V2 存档不变。

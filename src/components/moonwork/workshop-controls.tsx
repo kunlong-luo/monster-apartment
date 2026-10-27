@@ -3,17 +3,19 @@ import Link from 'next/link';
 import workerTriptych from '../../../v2/art/worker-triptych.avif';
 import {WORKERS,MACHINES} from '../../../v2/src/workshop-engine';
 import type {WorkshopState,Machine,Craft,WorkerId} from '../../../v2/src/workshop-engine';
+import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
 
 /** React is the only owner of the worker roster, machine catalog and
  * shift/movement buttons. The Pixi stage handles plot interactions only.
- * data-worker/data-build and #move/#shift are stable runtime contracts. */
+ * Their onClick handlers send typed actions; React keeps all test IDs. */
 const workers=['brook','fern','cinder'] as const;
 const machines=['well','garden','kiln'] as const;
 const glyphs:Record<Craft,string>={well:'◉',garden:'❀',kiln:'⬡'};
 export function WorkshopControls({
-  world,chosenWorker,chosenMachine,selectedTile,isMoving
+  world,chosenWorker,chosenMachine,selectedTile,isMoving,onAction
 }:{
   world:WorkshopState;
+  onAction:(action:WorkshopAction)=>void;
   chosenWorker:WorkerId|null;
   chosenMachine:Craft|null;
   selectedTile:Machine|null;
@@ -44,8 +46,8 @@ export function WorkshopControls({
               <button
                 key={id}
                 type="button"
-                data-worker={id}
                 data-testid={'v2-worker-' + id}
+                onClick={()=>onAction({type:'choose-worker',worker:id})}
                 aria-pressed={isSelected}
                 aria-label={'选择工匠 ' + profile.zh}
                 className={`worker group flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg border border-gothic-brass/65 bg-gothic-panel/85 px-1.5 py-1 text-gothic-ivory transition-colors hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none ${
@@ -98,8 +100,8 @@ export function WorkshopControls({
               <button
                 key={id}
                 type="button"
-                data-build={id}
                 data-testid={'v2-build-' + id}
+                onClick={()=>onAction({type:'choose-machine',machine:id})}
                 aria-pressed={isSelected}
                 aria-label={'建设 ' + info.zh}
                 disabled={world.coins < info.cost}
@@ -133,6 +135,7 @@ export function WorkshopControls({
           type="button"
           id="move"
           data-testid="v2-move"
+          onClick={()=>onAction({type:'toggle-move'})}
           disabled={!selectedTile && !isMoving}
           aria-pressed={isMoving}
           aria-label="移动机器设备"
@@ -150,6 +153,7 @@ export function WorkshopControls({
           type="button"
           id="shift"
           data-testid="v2-shift"
+          onClick={()=>onAction({type:'shift'})}
           aria-label="开始一天生产轮班"
           className="shift-btn group flex flex-1 items-center justify-center gap-1 rounded-lg border border-gothic-gold/80 bg-gradient-to-r from-gothic-gold to-gothic-brass px-3 py-1.5 text-xs font-bold text-ink-950 shadow-md transition-all hover:brightness-110 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none"
         >

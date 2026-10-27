@@ -4,7 +4,7 @@ import { WORKERS, MACHINES, newWorkshop, validWorkshop,
   PREMIUM_ORDER_PENALTY, STANDARD_ORDER_PENALTY } from './workshop-engine';
 import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
 import { mountWorkshopLab } from './workshop-lab-stage';
-import type {WorkshopSelectionListener} from './workshop-runtime-contract';
+import type {WorkshopAction,WorkshopRuntimeController,WorkshopSelectionListener} from './workshop-runtime-contract';
 
 const STORAGE='monster-apartment:workshop-v2-lab';
 /** Bind the Pixi stage and game actions to the single Next.js React shell.
@@ -12,7 +12,7 @@ const STORAGE='monster-apartment:workshop-v2-lab';
  * This runtime owns only Pixi, transient selection, status and persistence. */
 export async function mountWorkshopGame(root:HTMLElement,
   assetBase:string=document.baseURI,
-  onSelectionChange?:WorkshopSelectionListener):Promise<()=>void>{
+  onSelectionChange?:WorkshopSelectionListener):Promise<WorkshopRuntimeController>{
 if(root.dataset.reactControls!=='true')
   throw Error('工坊必须由 Next.js React 界面挂载。');
 const $=(id:string)=>root.querySelector<HTMLElement>('#'+id)!;
@@ -130,12 +130,13 @@ function render(){
     selectedPlot,
   });
 }
-const onRootClick=(event:MouseEvent)=>{
-  const origin=event.target;
-  if(!(origin instanceof Element))return;
-  const worker=origin.closest<HTMLButtonElement>('[data-worker]');
-  const build=origin.closest<HTMLButtonElement>('[data-build]');
-  if(origin.closest('#salvage')){
+/** Explicit command dispatcher: React owns button events; Pixi retains
+ * tile pointer events. This never reads a DOM event target or CSS selector. */
+let disposed=false;
+function dispatch(action:WorkshopAction):void{
+  if(disposed)return;
+  switch(action.type){
+    case 'salvage':{
     if(selectedPlot===null||!world.tiles[selectedPlot])return;
     const index=selectedPlot;
     const machine=world.tiles[index]!;
@@ -146,7 +147,9 @@ const onRootClick=(event:MouseEvent)=>{
     apply(next,'已回收 '+MACHINES[machine.craft].zh+'，获得 ✦'+refund+' 星币。','good');
     if(next!==before){selectedPlot=null;clearChoice();}
     render();
-  }else if(origin.closest('#upgrade')){
+      break;
+    }
+    case 'upgrade':{
     if(selectedPlot!==null){
       const index=selectedPlot;
       const before=world.tiles[index];
@@ -155,23 +158,29 @@ const onRootClick=(event:MouseEvent)=>{
         '无法升级此位置。','good');
       render();
     }
-  }else if(origin.closest('#patron-accept')){
-    acceptPatron();
-  }else if(origin.closest('#patron-import')){
-    buyPatronCore();
-  }else if(worker){
-    const id=worker.dataset.worker as WorkerId;
+      break;
+    }
+    case 'accept-patron':
+      acceptPatron();break;
+    case 'import-patron-core':
+      buyPatronCore();break;
+    case 'choose-worker':{
+    const id=action.worker;
     const selected=chosenWorker===id;clearChoice();
     chosenWorker=selected?null:id;
     message=selected?'已取消派工。':'选择一台机器，将 '+WORKERS[id].zh+' 派去工作。';
     effect='normal';render();
-  }else if(build){
-    const id=build.dataset.build as Craft;
+      break;
+    }
+    case 'choose-machine':{
+    const id=action.machine;
     const selected=chosenMachine===id;clearChoice();
     chosenMachine=selected?null:id;
     message=selected?'已取消建造。':'选择空地建造 '+MACHINES[id].zh+'。';
     effect='normal';render();
-  }else if(origin.closest('#move')){
+      break;
+    }
+    case 'toggle-move':{
     if(movingFrom!==null){
       movingFrom=null;
       message='已取消设备搬动。';effect='normal';render();
@@ -180,7 +189,9 @@ const onRootClick=(event:MouseEvent)=>{
       message='现在点击一个空格，搬动这台机器（不收费）。';effect='normal';
       render();
     }
-  }else if(origin.closest('#shift')){
+      break;
+    }
+    case 'shift':{
     clearChoice();
     const next=runShift(world);
     const report=next.last!;
@@ -197,15 +208,24 @@ const onRootClick=(event:MouseEvent)=>{
     next.patron?.status==='completed'&&changed||report.fulfilled?'good':
       next.patron?.status==='missed'&&changed||report.lost?'bad':'normal');
     selectedPlot=null;render();
-  }else if(origin.closest('#reset')){
+      break;
+    }
+    case 'reset':{
     if(!window.confirm('重新开工？当前工坊存档会被覆盖。'))return;
     world=newWorkshop();clearChoice();selectedPlot=null;
     message='新工坊已开始。先连接温室和水泵。';effect='normal';
     try{localStorage.setItem(STORAGE,JSON.stringify(world));
       window.dispatchEvent(new Event('moonwork:v2-update'));}catch{/* optional */}
     render();
+      break;
+    }
+    default:{
+      // The union makes all known controls exhaustive at compile time.
+      const unreachable:never=action;
+      return unreachable;
+    }
   }
-};
+}
 const onStorage=(event:StorageEvent)=>{
   if(event.key!==STORAGE)return;
   let next:unknown=null;
@@ -217,12 +237,15 @@ const onStorage=(event:StorageEvent)=>{
   world=next;clearChoice();selectedPlot=null;
   message='已同步另一窗口的工坊进度。';effect='normal';render();
 };
-root.addEventListener('click',onRootClick);
 window.addEventListener('storage',onStorage);
 render();
-return ()=>{
-  root.removeEventListener('click',onRootClick);
-  window.removeEventListener('storage',onStorage);
-  stage.destroy();
+return {
+  dispatch,
+  destroy:()=>{
+    if(disposed)return;
+    disposed=true;
+    window.removeEventListener('storage',onStorage);
+    stage.destroy();
+  },
 };
 }
