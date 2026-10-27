@@ -221,6 +221,7 @@ function render(){
     root.dataset.chosenWorker=chosenWorker??'';
     root.dataset.chosenMachine=chosenMachine??'';
     root.dataset.movingFrom=movingFrom===null?'':String(movingFrom);
+    root.dataset.selectedPlot=selectedPlot===null?'':String(selectedPlot);
     root.dispatchEvent(new Event('moonwork:controls-change'));
   }
 }

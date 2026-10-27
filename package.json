@@ -4,14 +4,10 @@
   "version": "0.10.0",
   "type": "module",
   "packageManager": "pnpm@12.13.0",
-  "engines": {
-    "node": ">=24 <25",
-    "pnpm": ">=12 <13"
-  },
   "scripts": {
-    "dev": "next dev --hostname 127.0.0.1 --port 3000",
+    "dev": "next dev -p 3000 -H 0.0.0.0",
     "build": "next build",
-    "start": "next start --hostname 127.0.0.1 --port 3000",
+    "start": "next start -p 3000 -H 0.0.0.0",
     "typecheck": "tsc --noEmit",
     "lint": "eslint app src next.config.ts playwright.config.ts vitest.config.ts",
     "test": "vitest run",

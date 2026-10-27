@@ -1,0 +1,6 @@
+{
+  "summary":  "详细规划《月光工坊》纯 React 原生化重构方案：彻底移除 app/workshop/page.tsx 对 v2/index.html 的静态读取与注入，将工坊顶部资源、主工作台侧边栏、委托与月纱卡片、生产报告、底部建造与工种分配全面重构为 Next.js 原生 React 组件；保留 PixiJS WebGL 画布渲染与事件通信，确保存档格式、经营规则与端到端测试 100% 兼容。",
+  "updatedAt":  "2026-10-27T00:12:33.086000095Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}
