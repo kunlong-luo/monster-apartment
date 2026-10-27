@@ -33,7 +33,7 @@
         "./src/*"
       ]
     },
-    "allowJs": true
+    "allowJs": false
   },
   "include": [
     "next-env.d.ts",
