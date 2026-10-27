@@ -47,6 +47,6 @@ export function Action({type,children,disabled=false,testId,onApplied}:{
     <button type="button" data-testid={testId} disabled={disabled}
       className={WORLD_ACTION_CLASS}
       onClick={execute}>{children}</button>
-    {message&&<p role="status" className="mw-message">{message}</p>}
+    {message&&<output role="status" className="block text-xs text-[#c7f0b8]">{message}</output>}
   </div>;
 }

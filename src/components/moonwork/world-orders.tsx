@@ -42,7 +42,7 @@ export function Orders({s}:{s:WorkshopState}){
         </p>
         <Action type="premium">接受高额大宗订单</Action>
       </div>}
-      <div className="mw-context-links"><WorkshopLink>前往工坊调整产线</WorkshopLink>
+      <div className="flex flex-wrap items-center gap-2"><WorkshopLink>前往工坊调整产线</WorkshopLink>
         <Link className={WORLD_LINK_CLASS} href="/warehouse/">去仓库查看材料 ↗</Link></div>
     </Panel>
     <Panel title="☽ 月纱的特别委托">

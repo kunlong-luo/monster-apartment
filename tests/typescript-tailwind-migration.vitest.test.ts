@@ -47,6 +47,21 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(read('src/components/moonwork/world-ui.tsx')).toContain("import './world.css'");
     expect(read('src/components/moonwork/workshop-client.tsx')).toContain("import '@/components/game/gothic-workshop.css'");
   });
+  it('keeps inventory and world-action layout in Tailwind, not stale CSS classes',()=>{
+    const warehouse=read('src/components/moonwork/world-warehouse.tsx');
+    const primitives=read('src/components/moonwork/world-primitives.tsx');
+    const orders=read('src/components/moonwork/world-orders.tsx');
+    const css=read('src/components/moonwork/world.css');
+    const overrides=read('src/components/game/gothic-world.css');
+    expect(warehouse).toContain('<WarehouseStockLine');
+    expect(warehouse).toContain('flex items-center justify-between gap-3 border-b');
+    expect(primitives).toContain('className="block text-xs text-[#c7f0b8]"');
+    expect(orders).toContain('className="flex flex-wrap items-center gap-2"');
+    for(const selector of ['.mw-stock','.mw-message','.mw-context-links']){
+      expect(css).not.toContain(selector);
+    }
+    expect(overrides).not.toContain('.mw-stock');
+  });
   it('renders workshop controls only in React, without a parallel HTML toolbar',()=>{
     const runtime=read('v2/src/main.ts');
     const client=read('src/components/moonwork/workshop-client.tsx');

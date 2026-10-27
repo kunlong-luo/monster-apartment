@@ -8,6 +8,14 @@ import {PATRON_IMPORT_PRICE} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
 import {Panel,Action,WorkshopLink} from './world-primitives';
 
+/** Inventory rows are UI primitives, not hand-maintained CSS selectors. */
+function WarehouseStockLine({label,amount}:{label:string;amount:number}){
+  return <div className="flex items-center justify-between gap-3 border-b border-[#7186976a] py-4">
+    <span className="text-[15px] text-[#d6dbdc]">{label}</span>
+    <b className="font-[Georgia,serif] text-[32px] font-bold text-[#ffdb9e] tabular-nums">{amount}</b>
+  </div>;
+}
+
 export function Warehouse({s}:{s:WorkshopState}){
   const stored=(kind:'well'|'garden')=>s.tiles.filter(t=>t?.craft===kind).reduce((total,t)=>total+(t?.stored??0),0);
   const p=s.patron;const canBuy=!!p&&['offered','active'].includes(p.status)&&s.day<=p.due&&s.coins>=PATRON_IMPORT_PRICE;
@@ -27,15 +35,15 @@ export function Warehouse({s}:{s:WorkshopState}){
     </section>
     <div className="mw-grid mw-columns mt-2.5 grid grid-cols-1 gap-2.5">
     <Panel title="⬡ 当前真实库存">
-      <div className="mw-stock"><span>✦ 共享晶核</span><b>{s.warehouse.core}</b></div>
-      <div className="mw-stock"><span>◈ 水汽泵储水</span><b>{stored('well')}</b></div>
-      <div className="mw-stock"><span>❀ 温室内孢子</span><b>{stored('garden')}</b></div>
+      <WarehouseStockLine label="✦ 共享晶核" amount={s.warehouse.core}/>
+      <WarehouseStockLine label="◈ 水汽泵储水" amount={stored('well')}/>
+      <WarehouseStockLine label="❀ 温室内孢子" amount={stored('garden')}/>
       <p>水和孢子仍存放在设备内；普通订单和月纱委托争夺同一批晶核。</p>
     </Panel>
     <Panel title="☽ 月夜商人采购">
       <p>采购一枚晶核需要 ✦{PATRON_IMPORT_PRICE}，直接扣除真实星币并增加共享仓库库存。仅在月纱委托有效期内可购买。</p>
       {canBuy?<Action type="import">付费采购 +1 晶核</Action>:<p>当前无法采购：尚未解锁访客、委托结束或余额不足。</p>}
-      <div className="mw-context-links"><WorkshopLink>回工坊继续生产</WorkshopLink>
+      <div className="flex flex-wrap items-center gap-2"><WorkshopLink>回工坊继续生产</WorkshopLink>
         <Link className={WORLD_LINK_CLASS} href="/orders/">查看订单需求 ↗</Link></div>
     </Panel>
     </div>

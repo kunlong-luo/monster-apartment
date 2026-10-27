@@ -32,3 +32,11 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 - `v2/src/workshop-engine.ts`：设备升级与派工、委托选择、预测逻辑、存档校验；同时重导出原有公共接口，旧模块引用不需要修改。
 
 以上模块不引用 React、DOM 或 PixiJS，且与原 V2 存档 JSON 结构兼容。新领域功能应优先进入职责明确的模块，不继续增加巨型单文件。
+
+## Pixi 场景与 Tailwind 组件边界（第三轮）
+
+- `v2/src/workshop-painted-art.ts`：容错加载绘制 AVIF 贴图；失败时沿用现有 GPU 精灵的安全降级路径。
+- `v2/src/workshop-floating-feedback.ts`：临时数字贴图的数量上限、逐帧位移、透明度、生命周期；始终不截获地块点击。
+- `v2/src/workshop-shift-effects.ts`：依据已结算的真实班次结果生成产量、缺料、交付提示，不重复触发存档重载时的动画。
+- `v2/src/workshop-lab-stage.ts`：仍管理 Pixi 容器层级、场景交互、贴图合成与屏幕自适应；不再重复管理以上三个子模块。
+- 库存数字行、快捷链接布局以及行为结果提示改用 React 组件及 Tailwind v4 类；删除 `world.css` 中无引用的 `.mw-stock`、`.mw-message`、`.mw-context-links` 等历史选择器。复杂绘景 CSS 暂时保留。

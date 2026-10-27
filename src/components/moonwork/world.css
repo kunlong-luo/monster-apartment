@@ -5,10 +5,6 @@
 .mw-big small{font-size:19px;color:#c9d5d8}
 .mw-meter{width:100%;height:9px;border-radius:12px;background:#111d30;overflow:hidden}
 .mw-meter i{display:block;height:100%;background:linear-gradient(90deg,#8bd7c9,#f9d99d)}
-.mw-message{color:#c7f0b8!important;font-size:12px!important}
-.mw-stock{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #7186976a;padding:16px 0}
-.mw-stock span{font-size:15px;color:#d6dbdc}
-.mw-stock b{font:700 32px Georgia,serif;color:#ffe0ac}
 .mw :focus-visible{outline:3px solid #ffe1ae;outline-offset:3px}
 
 /* Report a recoverable client-only Pixi loading problem inside Next. */
@@ -20,8 +16,6 @@
   background:linear-gradient(120deg,#3c3844,#243e4c);border-radius:10px}.mw-risk-choice>strong{font-size:16px;color:#ffe5ab}.mw-risk-choice p{font-size:12px;line-height:1.65}.mw-risk-choice .mw-risk-high{border-left:3px solid #f0a187;
   background:#4d333b;padding:7px;color:#ffe0ca}.mw-risk-choice .mw-risk-safe{border-left:3px solid #9dd9ba;
   background:#263f40;padding:7px;color:#d4f0df}
-
-.mw-context-links{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 
 /* V2.6: the town is a navigable diegetic district rather than a KPI hero.
    Building faces are pure CSS, no procedural SVG character "art". */
