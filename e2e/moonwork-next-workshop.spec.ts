@@ -337,3 +337,31 @@ test('factory honors system and in-game reduced motion while preserving gameplay
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-foundation-tiles','15',{timeout:25_000});
   await expect(page.getByTestId('v2-day')).toHaveText('2');
 });
+
+test('gothic workshop renders an optional guest as a real portrait cameo',async({page})=>{
+  test.setTimeout(90_000);
+  const seed={
+    version:2,day:6,coins:100,
+    tiles:Array.from({length:15},(_,i)=>
+      i===5?{craft:'well',worker:null,stored:0}:
+      i===7?{craft:'garden',worker:null,stored:0}:null),
+    warehouse:{core:0},order:{due:10,cores:2,reward:70},
+    last:null,completed:1,failed:0,
+    patron:{status:'offered',due:8,cores:7,reward:200}
+  };
+  await page.addInitScript(value=>{
+    const key='monster-apartment:workshop-v2-lab';
+    if(localStorage.getItem(key)===null)localStorage.setItem(key,JSON.stringify(value));
+  },seed);
+  await page.goto('/workshop/');
+  const stage=page.getByTestId('v2-stage');
+  await expect(stage.locator('canvas')).toBeVisible({timeout:25_000});
+  await expect(stage).toHaveAttribute('data-patron-visible','true');
+  await expect(stage).toHaveAttribute('data-patron-art','painted-medallion');
+  await expect(stage).toHaveAttribute('data-patron-frames','0');
+  await page.getByTestId('v2-return-lobby').click();
+  await expect(page.getByTestId('gothic-lobby')).toBeVisible();
+  await page.goBack();
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-patron-art','painted-medallion',{timeout:25_000});
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')!).patron.status)).toBe('offered');
+});

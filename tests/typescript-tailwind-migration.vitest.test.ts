@@ -41,7 +41,7 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     const declaration=read('src/types/next-static-webp.d.ts');
     const polish=read('src/components/game/gothic-polish.css');
     expect(declaration).toContain("declare module '*.webp'");
-    expect(lobby).toContain("import lobbyHero from '../../../public/art/lobby-hero-v2.webp'");
+    expect(lobby).toContain("import lobbyHero from '../../../public/art/lobby-hero-v3.webp'");
     expect(lobby).toContain('data-testid="gothic-lobby-painting-image"');
     expect(lobby).toContain('unoptimized');
     expect(lobby).not.toContain('./lobby-hero.webp'+")");
@@ -50,9 +50,10 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
   });
   it('ships real lossily-compressed WebP paintings at usable resolutions',()=>{
     const scenes=[
-      {file:'public/art/lobby-hero-v2.webp',minWidth:1000,minHeight:600,minBytes:170000},
-      {file:'public/art/yuesha-portrait-v2.webp',minWidth:440,minHeight:500,minBytes:65000},
-      {file:'public/art/yuesha-bust-v2.webp',minWidth:600,minHeight:550,minBytes:100000},
+      {file:'public/art/lobby-hero-v3.webp',minWidth:1550,minHeight:980,minBytes:300000},
+      {file:'public/art/yuesha-portrait-v3.webp',minWidth:680,minHeight:800,minBytes:140000},
+      {file:'public/art/yuesha-bust-v3.webp',minWidth:900,minHeight:880,minBytes:200000},
+      {file:'public/art/yuesha-avatar-v3.webp',minWidth:490,minHeight:490,minBytes:70000},
     ];
     for(const art of scenes){
       const data=readFileSync(join(root,art.file));
@@ -71,11 +72,16 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     const apartment=read('src/components/game/gothic-apartment.tsx');
     const world=read('src/components/moonwork/world-ui.tsx');
     const workshop=read('src/components/moonwork/workshop-client.tsx');
-    expect(lobby).toContain('yuesha-portrait-v2.webp');
-    expect(apartment).toContain('yuesha-bust-v2.webp');
-    expect(world).toContain('lobby-hero-v2.webp');
+    expect(lobby).toContain('yuesha-avatar-v3.webp');
+    expect(apartment).toContain('yuesha-bust-v3.webp');
+    expect(world).toContain('lobby-hero-v3.webp');
     expect(workshop).not.toContain('url(../lobby-hero.webp)');
     expect(workshop).toContain('moonveilPortrait.src');
+    const stage=read('v2/src/workshop-lab-stage.ts');
+    const loader=read('v2/src/workshop-painted-art.ts');
+    expect(loader).toContain("new URL('./assets/yuesha-avatar-v3.webp',assetBase)");
+    expect(stage).toContain("'painted-medallion'");
+    expect(stage).toContain('portrait.mask=mask');
   });
   it('keeps the painted scene sharp and renders only independent animated lighting',()=>{
     const lobby=read('src/components/game/gothic-lobby.tsx');
@@ -198,9 +204,9 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(scene).toContain("document.removeEventListener('visibilitychange',updateMotion)");
     expect(scene).toContain("window.addEventListener(motionEvent,updateMotion)");
     expect(scene).toContain("window.removeEventListener(motionEvent,updateMotion)");
-    expect(loader).toContain("new URL('./assets/lobby-hero-v2.webp',assetBase)");
+    expect(loader).toContain("new URL('./assets/lobby-hero-v3.webp',assetBase)");
     expect(loader).toContain("backdropSource='high-res-webp'");
-    expect(builder).toContain("'../public/art/lobby-hero-v2.webp'");
+    expect(builder).toContain("'../public/art/lobby-hero-v3.webp'");
   });
   it('communicates selected plots and tools with a typed runtime callback',()=>{
     const runtime=read('v2/src/main.ts');

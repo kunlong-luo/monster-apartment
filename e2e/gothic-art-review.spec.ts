@@ -9,9 +9,9 @@ test('desktop and phone Gothic HUD scenes stay fully visible',async({page})=>{
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await expect(page.getByTestId('gothic-lobby-painting-image')).toBeVisible();
   const hero=page.getByTestId('gothic-lobby-painting-image');
-  await expect(hero).toHaveJSProperty('naturalWidth',1030);
-  await expect(hero).toHaveJSProperty('naturalHeight',645);
-  await expect(page.locator('.gothic-lobby__avatar img')).toHaveJSProperty('naturalWidth',450);
+  await expect(hero).toHaveJSProperty('naturalWidth',1587);
+  await expect(hero).toHaveJSProperty('naturalHeight',991);
+  await expect(page.locator('.gothic-lobby__avatar img')).toHaveJSProperty('naturalWidth',500);
   await expect(page.getByTestId('gothic-light-layer')).toBeAttached();
   await expect(page.getByTestId('gothic-scene-illumination')).toHaveAttribute('data-motion','still');
   await page.screenshot({path:'test-results/gothic-lobby-desktop.png',animations:'disabled'});
