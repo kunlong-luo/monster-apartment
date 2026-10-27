@@ -49,7 +49,7 @@ export async function mountWorkshopLab(
   const observer=new ResizeObserver(resize);
   observer.observe(element);resize();
   const art=makeRasterArt();
-  const {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail}=
+  const {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait}=
     await loadWorkshopPaintedArt(assetBase);
   element.dataset.backdropSource=backdropSource;
   element.dataset.machineArt=kilnArtReview&&paintedDetail.well&&paintedDetail.garden
@@ -390,25 +390,48 @@ export async function mountWorkshopLab(
         W,H,CELL,MOBILE,plotXY,previousOrderReward,previousPatronStatus,
       });
     element.dataset.patronVisible=current.patron?'true':'false';
-    element.dataset.patronFrames=current.patron?'8':'0';
+    element.dataset.patronArt=current.patron
+      ?patronPortrait?'painted-medallion':'animated-raster-fallback'
+      :'hidden';
+    element.dataset.patronFrames=current.patron&&!patronPortrait?'8':'0';
     if(current.patron){
       const isMobile=MOBILE;
-      const x=isMobile?94:988,y=isMobile?198:610;
-      const halo=new Graphics().ellipse(x,y-16,isMobile?57:79,isMobile?17:21)
-        .fill({color:0xf6d29d,alpha:.24});
-      stage.addChild(halo);
-      const visitor=new AnimatedSprite(patronFrames());
-      visitor.anchor.set(.5,1);visitor.position.set(x,y);
-      visitor.width=isMobile?126:165;visitor.height=isMobile?161:235;
-      visitor.animationSpeed=.11;visitor.loop=true;
-      visitor.gotoAndPlay(current.day%8);
-      visitor.eventMode=current.patron.status==='offered'?'static':'none';
-      visitor.cursor=current.patron.status==='offered'?'pointer':'default';
-      visitor.on('pointertap',()=>callbacks.patronTap?.());
-      stage.addChild(visitor);actors.push(visitor);
+      const x=isMobile?100:975,y=isMobile?118:490;
+      if(patronPortrait){
+        // A sharply cropped, circular painted cameo is more faithful than
+        // stretching a flat portrait into fake animated limbs.
+        const radius=isMobile?57:73;
+        const halo=new Graphics().circle(x,y,radius+8)
+          .fill({color:0x160f21,alpha:.92})
+          .stroke({color:0xf6d29d,alpha:.8,width:3});
+        halo.eventMode='none';stage.addChild(halo);
+        const mask=new Graphics().circle(x,y,radius-3).fill(0xffffff);
+        mask.eventMode='none';stage.addChild(mask);
+        const portrait=new Sprite(patronPortrait);
+        portrait.anchor.set(.5);portrait.position.set(x,y);
+        portrait.width=radius*2;portrait.height=radius*2;
+        portrait.mask=mask;
+        portrait.eventMode=current.patron.status==='offered'?'static':'none';
+        portrait.cursor=current.patron.status==='offered'?'pointer':'default';
+        portrait.on('pointertap',()=>callbacks.patronTap?.());
+        stage.addChild(portrait);
+        const ring=new Graphics().circle(x,y,radius+3)
+          .stroke({color:0xffdaa2,alpha:.83,width:2});
+        ring.eventMode='none';stage.addChild(ring);
+      }else{
+        const visitor=new AnimatedSprite(patronFrames());
+        visitor.anchor.set(.5,1);visitor.position.set(x,isMobile?198:610);
+        visitor.width=isMobile?126:165;visitor.height=isMobile?161:235;
+        visitor.animationSpeed=.11;visitor.loop=true;
+        visitor.gotoAndPlay(current.day%8);
+        visitor.eventMode=current.patron.status==='offered'?'static':'none';
+        visitor.cursor=current.patron.status==='offered'?'pointer':'default';
+        visitor.on('pointertap',()=>callbacks.patronTap?.());
+        stage.addChild(visitor);actors.push(visitor);
+      }
       const tag=glabel('月纱 · 成年魔女',isMobile?14:13,0xf6d2bc,true);
       tag.anchor.set(.5,0);
-      tag.position.set(x,isMobile?191:608);
+      tag.position.set(x,isMobile?192:603);
       stage.addChild(tag);
     }
     // Fresh AnimatedSprite instances honor the latest OS/player motion setting.
