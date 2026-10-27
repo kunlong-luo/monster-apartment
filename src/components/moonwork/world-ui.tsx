@@ -55,7 +55,7 @@ export function MoonworkWorld({area}:{area:WorldArea}){
       <h1>{title}</h1>
       {!s?<Panel title="尚无可用的 V2 工坊存档">
         <p>月光街还没有记录你的生产旅程。进入工坊，摆放设备、安排工匠并完成第一张委托；这些场景会自动呈现你的经营成果。</p>
-        <WorkshopLink className="mw-button">进入工坊开始经营</WorkshopLink>
+        <WorkshopLink>进入工坊开始经营</WorkshopLink>
       </Panel>:area==='town'?<Town s={s}/>:area==='orders'?<Orders s={s}/>:area==='characters'?<Characters s={s}/>:<Warehouse s={s}/>}
     </div>
     <footer className="mw-footer">✦ 夜色公寓 · 你的选择影响每一位住客</footer>

@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import {WORLD_LINK_CLASS} from './world-primitives';
 import Image from 'next/image';
 import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import {forecastPatronCommission,forecastOrderChoice,PREMIUM_EXTRA_CORES,PREMIUM_EXTRA_REWARD,PREMIUM_ORDER_PENALTY,STANDARD_ORDER_PENALTY} from '../../../v2/src/workshop-engine';
@@ -42,7 +43,7 @@ export function Orders({s}:{s:WorkshopState}){
         <Action type="premium">接受高额大宗订单</Action>
       </div>}
       <div className="mw-context-links"><WorkshopLink>前往工坊调整产线</WorkshopLink>
-        <Link className="mw-link" href="/warehouse/">去仓库查看材料 ↗</Link></div>
+        <Link className={WORLD_LINK_CLASS} href="/warehouse/">去仓库查看材料 ↗</Link></div>
     </Panel>
     <Panel title="☽ 月纱的特别委托">
       {!p?<p>首次交付普通订单之后，28 岁的魔女商人月纱才会到访。她的订单与普通订单共享真实库存。</p>:

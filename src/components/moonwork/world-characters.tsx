@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import {WORLD_LINK_CLASS} from './world-primitives';
 import Image from 'next/image';
 import workerTriptych from '../../../v2/art/worker-triptych.avif';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
@@ -48,7 +49,7 @@ export function Characters({s}:{s:WorkshopState}){
         <h2>月纱 · 28 岁月夜魔女</h2>
         <p>她的委托从真实库存扣除晶核，并与普通订单竞争交付资源。
           {s.patron?'当前委托状态：'+s.patron.status:'首张正式订单完成后解锁。'}</p>
-        <Link className="mw-link" href="/orders/">进入委托大厅 ↗</Link>
+        <Link className={WORLD_LINK_CLASS} href="/orders/">进入委托大厅 ↗</Link>
       </div>
     </section>
   </>;

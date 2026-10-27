@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import {WORLD_LINK_CLASS} from './world-primitives';
 import Image from 'next/image';
 import {useState} from 'react';
 import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
@@ -117,8 +118,8 @@ export function Town({s}:{s:WorkshopState}){
       </div>
     </section>
     <div className="mw-town-next">
-      <Link href="/characters/" className="mw-link">查看工匠配置 ↗</Link>
-      <Link href="/orders/" className="mw-link">确认订单缺口 ↗</Link>
+      <Link href="/characters/" className={WORLD_LINK_CLASS}>查看工匠配置 ↗</Link>
+      <Link href="/orders/" className={WORLD_LINK_CLASS}>确认订单缺口 ↗</Link>
       <WorkshopLink>返回工坊投产 ↗</WorkshopLink>
     </div>
   </>;

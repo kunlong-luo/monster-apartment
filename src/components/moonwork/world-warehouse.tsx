@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import {WORLD_LINK_CLASS} from './world-primitives';
 import Image from 'next/image';
 import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import kilnPainted from '../../../v2/art/kiln-art-review.avif';
@@ -35,7 +36,7 @@ export function Warehouse({s}:{s:WorkshopState}){
       <p>采购一枚晶核需要 ✦{PATRON_IMPORT_PRICE}，直接扣除真实星币并增加共享仓库库存。仅在月纱委托有效期内可购买。</p>
       {canBuy?<Action type="import">付费采购 +1 晶核</Action>:<p>当前无法采购：尚未解锁访客、委托结束或余额不足。</p>}
       <div className="mw-context-links"><WorkshopLink>回工坊继续生产</WorkshopLink>
-        <Link className="mw-link" href="/orders/">查看订单需求 ↗</Link></div>
+        <Link className={WORLD_LINK_CLASS} href="/orders/">查看订单需求 ↗</Link></div>
     </Panel>
     </div>
   </>;
