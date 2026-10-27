@@ -133,3 +133,44 @@ test('returning from workshop retains the sharp full-resolution lobby painting',
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await expect(painting).toHaveJSProperty('naturalWidth',original.width);
 });
+
+test('scene links transition safely with reduced motion and keep full-size imagery',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1280,height:800});
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.goto('/');
+  const curtain=page.getByTestId('gothic-route-transition');
+  await expect(curtain).toHaveAttribute('data-phase','idle');
+  await expect(curtain).toHaveCSS('pointer-events','none');
+  const lobby=page.getByTestId('gothic-lobby-painting-image');
+  await lobby.evaluate((img:HTMLImageElement)=>img.decode());
+  await page.getByRole('navigation',{name:'主要游戏功能'})
+    .getByRole('link',{name:/公寓 ·/}).click();
+  await expect(page.getByTestId('gothic-apartment')).toBeVisible();
+  await expect(curtain).toHaveAttribute('data-phase','idle',{timeout:5000});
+  const background=await page.locator('.ga-backdrop').evaluate(el=>getComputedStyle(el).backgroundImage);
+  expect(background).toContain('lobby-hero');
+  expect(background).not.toContain('../lobby-hero');
+  await page.getByRole('navigation',{name:'公寓世界导航'})
+    .getByRole('link',{name:'大厅'}).click();
+  await expect(page.getByTestId('gothic-lobby')).toBeVisible();
+  await expect(lobby).toHaveJSProperty('complete',true);
+  await page.getByRole('button',{name:'切换动态特效'}).click();
+  await expect(page.getByRole('button',{name:'切换动态特效'})).toHaveAttribute('aria-pressed','true');
+  await page.getByRole('navigation',{name:'主要游戏功能'})
+    .getByRole('link',{name:/公寓 ·/}).click();
+  await expect(page.getByTestId('gothic-apartment')).toBeVisible();
+  await expect(curtain).toHaveAttribute('data-phase','idle');
+  await expect(curtain).toHaveCSS('opacity','0');
+});
+
+test('workshop provides a direct and safe return to the main lobby',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:30000});
+  await page.getByTestId('v2-return-lobby').click();
+  await expect(page.getByTestId('gothic-lobby')).toBeVisible();
+  const image=page.getByTestId('gothic-lobby-painting-image');
+  await expect(image).toHaveJSProperty('complete',true);
+  expect(await image.evaluate((img:HTMLImageElement)=>img.naturalWidth)).toBeGreaterThan(0);
+});

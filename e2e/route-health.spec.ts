@@ -28,6 +28,13 @@ test('seven production routes boot with interactive game surfaces',async({page})
         await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
       }
       expect(pageErrors.slice(errorsBefore),route.path+' client errors').toEqual([]);
+      if(['/apartment/','/town/','/orders/','/characters/','/warehouse/'].includes(route.path)){
+        const selector=route.path==='/apartment/'?'.ga-backdrop':'.mw-gothic-scene';
+        const background=await page.locator(selector).evaluate(el=>getComputedStyle(el).backgroundImage);
+        expect(background,route.path+' painted background must resolve with Pages basePath')
+          .toContain('lobby-hero');
+        expect(background).not.toContain('../lobby-hero');
+      }
     }catch(error){
       const body=await page.locator('body').innerText().catch(()=>'<unavailable>');
       console.error('ROUTE BOOT DIAGNOSTIC',JSON.stringify({

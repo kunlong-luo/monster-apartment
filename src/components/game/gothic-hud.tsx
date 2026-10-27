@@ -84,9 +84,10 @@ export function GothicDock({
         'group relative flex flex-col items-center justify-center gap-0.5 '+
         'text-gothic-ivory backdrop-blur-[3px] '+
         'transition-[transform,border-color,box-shadow] duration-200 '+
-        'hover:-translate-y-1 hover:border-gothic-glow '+
-        'focus-visible:-translate-y-1 focus-visible:outline-2 focus-visible:outline-gothic-glow '+
-        'motion-reduce:transition-none '+
+        'hover:-translate-y-0.5 hover:border-gothic-glow hover:shadow-[0_0_22px_#e0ad7547] '+
+        'active:translate-y-0 active:scale-[.98] '+
+        'focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-gothic-glow '+
+        'motion-reduce:transform-none motion-reduce:transition-none '+
         (compact
           ?'h-[52px] w-[52px] rounded-[10px] border border-gothic-brass/55 '+
            'bg-[linear-gradient(155deg,#533b43cf,#110c18ea_80%)] '+

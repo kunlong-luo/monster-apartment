@@ -175,6 +175,9 @@ export function WorkshopClient() {
                 >
                   月光街 · 世界地图 ↗
                 </Link>
+                <span aria-hidden="true" className="px-1.5 text-gothic-brass">·</span>
+                <Link href="/" className="world-gate" aria-label="返回大厅"
+                  data-testid="v2-return-lobby">返回大厅 ↗</Link>
               </small>
             </div>
           </div>
