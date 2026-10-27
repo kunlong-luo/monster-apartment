@@ -14,6 +14,7 @@ test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',asy
   await expect(page.getByTestId('v2-internal-coins')).toHaveCount(0);
   await expect(page.getByTestId('v2-day')).toHaveText('1');
   await expect(page.getByTestId('v2-world-nav')).toBeVisible();
+  await expect(page.getByTestId('v2-status')).toBeVisible();
   await expect(page.getByTestId('workshop-react-hud')).toBeVisible();
   await expect(page.locator('#root .game-world-nav')).toHaveCount(0);
   await expect(page.getByTestId('v2-coins')).toHaveText('100');
