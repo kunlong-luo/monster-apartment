@@ -265,8 +265,13 @@ test('accurate next-shift forecast becomes production and a visible first contra
     warehouse:{core:0},order:{due:5,cores:2,reward:70},
     last:null,completed:0,failed:0,patron:null
   };
-  await page.addInitScript(seed=>localStorage.setItem(
-    'monster-apartment:workshop-v2-lab',JSON.stringify(seed)),initial);
+  // Init scripts also execute on reload; seed once so the persistence
+  // assertion checks the real game save instead of overwriting it.
+  await page.addInitScript(seed=>{
+    const key='monster-apartment:workshop-v2-lab';
+    if(localStorage.getItem(key)===null)
+      localStorage.setItem(key,JSON.stringify(seed));
+  },initial);
   await page.goto('/workshop/');
   const stage=page.getByTestId('v2-stage');
   await expect(stage).toHaveAttribute('data-scene-refreshes',/^[1-9]\d*$/,{timeout:25_000});
