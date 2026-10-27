@@ -10,8 +10,8 @@ test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',asy
   await expect(stage).toHaveAttribute('data-renderer','pixi-webgl-bitmap');
   await expect(page.getByTestId('v2-day')).toHaveCount(1);
   await expect(page.getByTestId('v2-coins')).toHaveCount(1);
-  await expect(page.getByTestId('v2-internal-day')).toHaveCount(1);
-  await expect(page.getByTestId('v2-internal-coins')).toHaveCount(1);
+  await expect(page.getByTestId('v2-internal-day')).toHaveCount(0);
+  await expect(page.getByTestId('v2-internal-coins')).toHaveCount(0);
   await expect(page.getByTestId('v2-day')).toHaveText('1');
   await expect(page.getByTestId('v2-world-nav')).toBeVisible();
   await expect(page.getByTestId('workshop-react-hud')).toBeVisible();
@@ -118,4 +118,45 @@ test('Next workshop uses React-owned worker and machine controls with the origin
   await page.getByRole('navigation',{name:'月光工坊世界'})
     .getByRole('link',{name:'委托大厅'}).click();
   await expect(page.getByTestId('world-coins')).toHaveText('62');
+});
+
+test('invalid save is preserved until the player explicitly confirms recovery', async ({page}) => {
+  test.setTimeout(90_000);
+  await page.addInitScript(() => {
+    localStorage.setItem('monster-apartment:workshop-v2-lab', '{broken');
+  });
+  await page.goto('/workshop/');
+  const recovery = page.getByRole('alertdialog', {name: '工坊存档需要处理'});
+  await expect(recovery).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe('{broken');
+  page.once('dialog', dialog => dialog.accept());
+  await recovery.getByRole('button', {name: '确认重新开始'}).click();
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout: 25_000});
+  await expect(page.getByTestId('v2-day')).toHaveText('1');
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab') || '{}').version)).toBe(2);
+});
+
+test('canceling machine movement does not alter the real factory save', async ({page}) => {
+  test.setTimeout(90_000);
+  await page.goto('/workshop/');
+  const canvas = page.getByTestId('v2-stage').locator('canvas');
+  await expect(canvas).toBeVisible({timeout: 25_000});
+  const box = await canvas.boundingBox();
+  expect(box).not.toBeNull();
+  // Plot 06 (index 5) starts with the water pump.
+  await canvas.click({position: {
+    x: (131 + 73) / 1050 * box!.width,
+    y: (104 + 160 + 73) / 645 * box!.height,
+  }});
+  const move = page.getByTestId('v2-move');
+  await expect(move).toBeEnabled();
+  await move.click();
+  await expect(move).toHaveAttribute('aria-pressed', 'true');
+  await move.click();
+  await expect(move).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.getByTestId('v2-status')).toContainText('已取消设备搬动');
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab') || '{}'));
+  expect(saved.tiles[5].craft).toBe('well');
+  expect(saved.tiles[6]).toBeNull();
+  expect(saved.coins).toBe(100);
 });
