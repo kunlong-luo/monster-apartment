@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import {WORLD_LINK_CLASS} from './world-primitives';
 import Image from 'next/image';
-import {useState} from 'react';
 import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import {workshopRank,TOWN_MARKET,townMarketAvailable,TOWN_RESIDENTS,residentForDay,residentRequestStock,residentRequestAvailable} from '../../../v2/src/workshop-engine';
@@ -21,7 +20,6 @@ export function Town({s}:{s:WorkshopState}){
   const resident=TOWN_RESIDENTS[residentKind];
   const availableStock=residentRequestStock(s);
   const canHelp=residentRequestAvailable(s);
-  const [localVisit,setLocalVisit]=useState<string>('');
   const visitComplete=s.market?.day===s.day && s.market.kind===residentKind;
   return <>
     <div className="mw-town-focus">
@@ -68,12 +66,10 @@ export function Town({s}:{s:WorkshopState}){
         </div>
         <p className="mw-resident-explanation">交出的材料将从真实设备或仓库扣除。
           与市集采购共享每日交易次数，无法两边都领。</p>
-        <Action type="resident" testId="resident-deliver" disabled={!canHelp}
-          onApplied={()=>setLocalVisit(resident.after)}>
+        <Action key={s.day} type="resident" testId="resident-deliver" disabled={!canHelp}>
           {visitComplete?'已帮助居民':marketUsed?'今日交易机会已使用':canHelp?'交付材料 · 完成街头委托':'材料不足 · 去工坊生产'}
         </Action>
-        {visitComplete&&<p className="mw-visit-result" role="status">{localVisit||resident.after}</p>}
-        {!visitComplete&&localVisit&&<p className="mw-visit-result" role="status">{localVisit}</p>}
+        {visitComplete&&<p className="mw-visit-result" role="status">{resident.after}</p>}
         <p className="mw-resident-reputation">累计帮助街区居民 {s.residentsHelped??0} 次</p>
       </div>
     </section>
@@ -109,8 +105,8 @@ export function Town({s}:{s:WorkshopState}){
               <p>+{deal.amount} {offer.kind==='water'?'水汽':offer.kind==='fiber'?'孢子':'晶核'} · {deal.hint}</p>
               <p className="mw-market-price">花费 ✦{deal.cost} 星币</p>
               {missing&&<p className="mw-market-warning">先在工坊建设对应设备</p>}
-              <Action type={offer.action} disabled={!available}>
-                {marketUsed?'今日已采购':available?'购买本日货箱':'当前无法采购'}
+              <Action key={s.day} type={offer.action} disabled={!available}>
+                {marketUsed?'今日机会已使用':available?'购买本日货箱':missing?'先建对应设备':s.coins<deal.cost?'星币不足':'当前无法采购'}
               </Action>
             </div>
           </article>;
