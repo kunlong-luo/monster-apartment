@@ -38,7 +38,10 @@ const nav=[{href:'/',icon:'♜',label:'大厅'},{href:'/town/',icon:'✧',label:
 export function GothicApartment(){
   const ready=useSyncExternalStore(subscribeClient,clientSnapshot,serverSnapshot);
   const [world,setWorld]=useState<CozyState>(readCozySave);
-  const [corruptSave,setCorruptSave]=useState(false);
+  const [corruptSave,setCorruptSave]=useState(()=>{
+    if(typeof window==='undefined')return false;
+    try{return invalidCozySave(localStorage.getItem(KEY));}catch{return false;}
+  });
   const [saveRecoveryError,setSaveRecoveryError]=useState('');
   const [selected,setSelected]=useState<number|null>(null);
   const [moving,setMoving]=useState<number|null>(null);
@@ -51,10 +54,7 @@ export function GothicApartment(){
     if(!ready)return;
     try{
       // Guard the original save before the first write, just like the new workshop.
-      if(invalidCozySave(localStorage.getItem(KEY))){
-        setCorruptSave(true);
-        return;
-      }
+      if(invalidCozySave(localStorage.getItem(KEY)))return;
       localStorage.setItem(KEY,JSON.stringify(world));
     }catch{/* Storage can be unavailable; play remains possible in memory. */}
   },[ready,world]);
