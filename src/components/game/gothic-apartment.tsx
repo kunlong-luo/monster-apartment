@@ -173,7 +173,7 @@ export function GothicApartment(){
       <button type="button" aria-label="关闭公寓日志" onClick={()=>setNotices(false)}
         className="absolute right-2 top-2 grid size-8 place-items-center rounded-full border border-gothic-brass/50 bg-gothic-panel text-xl leading-none hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow">×</button>
       <div className="flex items-start gap-3 pr-4">
-        <Image src={moonveil} alt="月纱" width={64} height={75}
+        <Image src={moonveil} alt="月纱" width={64} height={75} unoptimized
           className="h-[75px] w-16 shrink-0 rounded-md border border-gothic-brass/50 object-cover"/>
         <div className="min-w-0 space-y-2">
           <h2 className="text-base font-semibold text-gothic-gold">月纱的夜间记录</h2>
