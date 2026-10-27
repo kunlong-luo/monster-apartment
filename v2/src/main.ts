@@ -45,16 +45,28 @@ function plot(index:number){
   if(chosenWorker){
     const id=chosenWorker;
     if(!world.tiles[index]){message='先在这个格子建机器，才能派人。';effect='bad';}
-    else apply(assignWorker(world,id,index),WORKERS[id].zh+'已派往 '+String(index+1).padStart(2,'0')+' 号工位。');
+    else{
+      const previous=world;
+      const next=assignWorker(world,id,index);
+      apply(next,WORKERS[id].zh+'已派往 '+String(index+1).padStart(2,'0')+' 号工位。');
+      if(next!==previous)selectedPlot=index;
+    }
     clearChoice();
   }else if(chosenMachine){
     const kind=chosenMachine;
-    apply(placeMachine(world,index,kind),'已建造 '+MACHINES[kind].zh+'。');
+    const previous=world;
+    const next=placeMachine(world,index,kind);
+    apply(next,'已建造 '+MACHINES[kind].zh+'。');
+    if(next!==previous)selectedPlot=index;
     clearChoice();
   }else if(movingFrom!==null){
     if(movingFrom===index){message='已取消移动。';effect='normal';}
-    else apply(moveMachine(world,movingFrom,index),
-      '机器已搬动。连接路线与下一次产量会随之改变。','good');
+    else{
+      const previous=world;
+      const next=moveMachine(world,movingFrom,index);
+      apply(next,'机器已搬动。连接路线与下一次产量会随之改变。','good');
+      if(next!==previous)selectedPlot=index;
+    }
     clearChoice();
   }else{
     selectedPlot=index;
