@@ -269,7 +269,7 @@ test('accurate next-shift forecast becomes production and a visible first contra
     'monster-apartment:workshop-v2-lab',JSON.stringify(seed)),initial);
   await page.goto('/workshop/');
   const stage=page.getByTestId('v2-stage');
-  await expect(stage).toHaveAttribute('data-scene-refreshes',/^[1-9]\\d*$/,{timeout:25_000});
+  await expect(stage).toHaveAttribute('data-scene-refreshes',/^[1-9]\d*$/,{timeout:25_000});
   await expect(page.getByTestId('v2-shift-forecast')).toContainText('水汽 +2');
   await expect(page.getByTestId('v2-shift-forecast')).toContainText('孢子 +2');
   await expect(page.getByTestId('v2-shift-forecast')).toContainText('晶核 +2');
