@@ -7,6 +7,7 @@ test('desktop and phone Gothic HUD scenes stay fully visible',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
+  await expect(page.getByTestId('gothic-lobby-painting-image')).toBeVisible();
   await expect(page.getByTestId('gothic-light-layer')).toBeAttached();
   await page.screenshot({path:'test-results/gothic-lobby-desktop.png',animations:'disabled'});
   await page.goto('/apartment/');

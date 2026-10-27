@@ -6,7 +6,7 @@ import {AnimatePresence} from 'motion/react';
 import {useMemo,useState} from 'react';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
-import workshopPainting from '../../../v2/art/moon-workshop.avif';
+import lobbyHero from '../../../public/lobby-hero.webp';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
 import {CHANGE_EVENT,commitWorldAction} from '@/lib/moonwork/world-store';
 import {GothicAtmosphere} from './gothic-atmosphere';
@@ -61,8 +61,13 @@ export function GothicLobby(){
     onPointerMove={moveLight} onPointerLeave={resetLight}
     onKeyDown={event=>{if(event.key==='Escape')close();}}>
     <div className="gothic-lobby__stage" aria-hidden="true">
-      <div className="gothic-lobby__fallback" style={{backgroundImage:'url('+workshopPainting.src+')'}}/>
-      <div className="gothic-lobby__painting" style={{backgroundImage:"url("+'./lobby-hero.webp'+")"}}/>
+      <div className="gothic-lobby__fallback"/>
+      <div className="gothic-lobby__painting">
+        <Image src={lobbyHero} fill sizes="100vw" priority unoptimized
+          alt="" draggable={false} aria-hidden="true"
+          data-testid="gothic-lobby-painting-image"
+          className="select-none object-cover object-center"/>
+      </div>
       <div className="gothic-lobby__light" aria-hidden="true" data-testid="gothic-light-layer"/>
       <div className="gothic-lobby__vignette"/>
       <div className="gothic-lobby__embers"/>

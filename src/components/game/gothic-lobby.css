@@ -10,8 +10,9 @@
 .gothic-lobby__stage,.gothic-lobby__fallback,.gothic-lobby__painting,
 .gothic-lobby__vignette,.gothic-lobby__embers{position:absolute;inset:0;pointer-events:none}
 .gothic-lobby__stage{z-index:-1}
-.gothic-lobby__fallback{background-position:center;background-size:cover;filter:brightness(.65) saturate(.85)}
-.gothic-lobby__painting{background-position:center center;background-size:cover}
+.gothic-lobby__fallback{background:radial-gradient(ellipse at 48% 30%,#443046 0%,#1c1529 52%,#0b0811 100%)}
+.gothic-lobby__painting{overflow:hidden}
+.gothic-lobby__painting img{display:block;object-fit:cover;object-position:center;filter:none}
 .gothic-lobby__vignette{background:
   linear-gradient(180deg,rgba(7,5,11,.52) 0%,transparent 22%,transparent 70%,rgba(10,4,11,.85) 100%),
   linear-gradient(90deg,rgba(6,4,10,.45),transparent 24%,transparent 72%,rgba(6,4,10,.37)),

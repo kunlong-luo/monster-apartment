@@ -89,3 +89,34 @@ test('motion preference survives routes and suppresses Pixi particles',async({pa
   await page.getByRole('navigation',{name:'公寓世界导航'}).getByRole('link',{name:'大厅'}).click();
   await expect(page.getByRole('button',{name:'切换动态特效'})).toHaveAttribute('aria-pressed','true');
 });
+
+// Regression: Next client navigation sometimes omits a trailing slash.
+// A relative ./lobby-hero.webp incorrectly resolves outside the Pages
+// basePath after returning, exposing the tiny blurred Pixi art fallback.
+test('returning from workshop retains the sharp full-resolution lobby painting',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/');
+  const painting=page.getByTestId('gothic-lobby-painting-image');
+  await expect(painting).toBeVisible();
+  const original=await painting.evaluate(async(image:HTMLImageElement)=>{
+    await image.decode();
+    return {src:image.currentSrc,width:image.naturalWidth,height:image.naturalHeight};
+  });
+  expect(original.width).toBeGreaterThan(0);
+  expect(original.height).toBeGreaterThan(0);
+  expect(original.src).toContain('lobby-hero');
+  await page.getByRole('navigation',{name:'快捷功能'}).getByRole('link',{name:'工坊'}).click();
+  await expect(page).toHaveURL(/\/workshop\/?$/);
+  await expect(page.getByTestId('v2-stage')).toBeVisible();
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'大厅'}).click();
+  await expect(page.getByTestId('gothic-lobby')).toBeVisible();
+  const returned=await painting.evaluate(async(image:HTMLImageElement)=>{
+    await image.decode();
+    return {src:image.currentSrc,width:image.naturalWidth,height:image.naturalHeight,
+      transform:getComputedStyle(image.parentElement!).transform};
+  });
+  expect(returned.src).toBe(original.src);
+  expect(returned.width).toBe(original.width);
+  expect(returned.height).toBe(original.height);
+  expect(returned.transform).toBe('none');
+});

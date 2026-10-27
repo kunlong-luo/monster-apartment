@@ -57,3 +57,10 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 - `v2/src/workshop-runtime-contract.ts` 定义可穷尽的 `WorkshopAction`（选择工匠/设备、移动、升级、拆除、生产、重开、月纱接单与补货）及 `WorkshopRuntimeController`（`dispatch`、`destroy`）。
 - React 通过 `gameController.current?.dispatch(action)` 调用运行时；由生命周期内的 controller 同时负责卸载销毁，不向 `window` 暴露全局游戏实例。
 - 控件的 DOM `id` 和 `data-testid` 保留以兼容样式与测试，但不再被逻辑事件委托读取。初始角色导览、Pixi 地块点击、订单自动结算、已有 V2 存档不变。
+
+## 大厅主绘景清晰度与返回路由（第六轮）
+
+- `public/lobby-hero.webp` 用 Next 静态图导入，`next/image` 的 `unoptimized` 保留原始像素，生成的图片 URL 由构建系统正确处理 GitHub Pages basePath，不再拼接相对于路由的 `./lobby-hero.webp`。
+- 工坊低像素原型图不再作为大厅备用贴图；图片不可加载时退回无模糊的暗色渐变。主绘景不应用持续性 scale/translate GPU 重采样。
+- 鼠标轻微互动只移动烛光/氛围图层；雾层使用渐变羽化，不给整屏增加模糊滤镜。
+- `gothic-lobby.spec.ts` 检查从工坊返回大厅后主图完成解码、URL 与像素尺寸不变。
