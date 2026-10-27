@@ -83,3 +83,10 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 - 用户关闭动态特效、系统 Reduced Motion、公寓暂停时不会继续播放烛光循环动画。
 - `GothicAtmosphere` 补充异步卸载保护，不再在切页后给已卸载的舞台 DOM 写错误标记。保留已有 PixiJS 运行时与存档。
 - Vitest 与 Playwright 补充双场景主图清晰度、层级、动画偏好和返回路径的回归检查。
+
+## 动效与 HUD 质量门禁（第九轮）
+
+- 大厅主线任务使用真实存档的库存、订单目标计算进度条，并在库存已满足时显示就绪状态。数值经过 0～100% 限制并提供原生 progressbar ARIA 信息，不增加多余操作按钮。
+- 地图弹窗移除重复的委托入口。原有路由和游戏数据不变。
+- `GothicRouteTransition` 监听 document 冒泡点击，让 React/Next 以及控件的 `preventDefault()` 先运行；阻止跳转不再触发暗金遮罩。历史返回只用 pathname 的入场渐隐，避免 popstate 的离场状态覆盖入场。过渡仍然永远不可点击且有兜底恢复。
+- Playwright 检查导航取消、真实任务进度、历史往返和弹窗入口去重。

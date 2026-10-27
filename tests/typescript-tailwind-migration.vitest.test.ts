@@ -66,6 +66,16 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(polish).toContain('.gothic-scene-illumination__moonshaft');
     expect(atmosphere).toContain('if(disposed||!el.isConnected)return;');
   });
+  it('uses cancelled-navigation-safe events and no duplicate menu links',()=>{
+    const transition=read('src/components/game/gothic-route-transition.tsx');
+    const lobby=read('src/components/game/gothic-lobby.tsx');
+    expect(transition).toContain("document.addEventListener('click',clicked);");
+    expect(transition).not.toContain("document.addEventListener('click',clicked,true)");
+    expect(transition).not.toContain("addEventListener('popstate',depart)");
+    expect(lobby).toContain('data-testid="gothic-main-quest-progress"');
+    expect(lobby).toContain('aria-valuenow={Math.min(orderStock,orderTarget)}');
+    expect(lobby).not.toContain("label:'委托大厅',description:'契约与交付'");
+  });
   it('has one current UI, no retired game routes or standalone HTML',()=>{
     for(const route of ['classic','legacy','survival']){
       expect(()=>read('app/'+route+'/page.tsx')).toThrow();

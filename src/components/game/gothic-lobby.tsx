@@ -27,6 +27,10 @@ const links=[
 export function GothicLobby(){
   const saved=useWorkshopWorld();
   const world=useMemo(()=>saved??newWorkshop(),[saved]);
+  const orderTarget=Math.max(1,world.order.cores);
+  const orderStock=world.warehouse.core;
+  const orderProgress=Math.round(Math.min(100,Math.max(0,orderStock/orderTarget*100)));
+  const orderReady=orderStock>=orderTarget;
   const [panel,setPanel]=useState<Panel>(null);
   const [dialogue,setDialogue]=useState('');
   const {reduced:reducedMotion,toggle:toggleMotion}=useGothicMotion();
@@ -126,11 +130,23 @@ export function GothicLobby(){
       onClick={talk} aria-label="与月纱互动" title="与月纱互动"/>
     <div className="gothic-lobby__character-caption pointer-events-none absolute z-[1] bottom-[clamp(106px,16vh,158px)] left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5 text-[#f6d9b8] [text-shadow:0_3px_12px_#000]" aria-hidden="true"><span className="text-[13px] tracking-[.23em]">月纱</span><small className="text-[10px] text-[#d0b298]">暗夜公寓的女主人</small></div>
 
-    <Link href="/orders/" aria-label="查看当前主线任务"
-      className="absolute bottom-[86px] left-3 z-[3] flex max-w-[min(310px,68vw)] items-center gap-2 rounded-md border border-gothic-brass/55 border-l-2 border-l-gothic-gold/90 bg-[linear-gradient(100deg,#231625d9,#211622b7)] px-3 py-2 text-[11px] leading-snug text-gothic-ivory shadow-[0_5px_16px_#0009] transition-[border-color,transform] hover:-translate-y-0.5 hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none sm:bottom-[106px] sm:left-6">
-      <span className="text-gothic-gold" aria-hidden="true">◇</span>
-      <span>主线 · 交付 {world.warehouse.core} / {world.order.cores} 晶核</span>
-      <span className="ml-auto text-lg leading-none" aria-hidden="true">›</span>
+    <Link href="/orders/" aria-label="查看当前主线任务" data-testid="gothic-main-quest"
+      className="group absolute bottom-[86px] left-3 z-[3] flex w-[min(310px,68vw)] items-center gap-2 rounded-lg border border-gothic-brass/55 border-l-2 border-l-gothic-gold/90 bg-[linear-gradient(105deg,#231625e8,#211622c7)] px-3 py-2.5 text-[11px] leading-snug text-gothic-ivory shadow-[0_5px_16px_#0009,inset_0_1px_#ffe0a21c] transition-[border-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-gothic-glow hover:shadow-[0_7px_20px_#000a,0_0_14px_#edc99023] focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none sm:bottom-[106px] sm:left-6">
+      <span className="shrink-0 text-base text-gothic-gold" aria-hidden="true">{orderReady?'✦':'◇'}</span>
+      <span className="grid min-w-0 flex-1 gap-1.5">
+        <span className="truncate font-medium tracking-[.045em]">
+          {orderReady?'主线 · 晶核已备齐':'主线 · 交付 '+orderStock+' / '+orderTarget+' 晶核'}
+        </span>
+        <span role="progressbar" aria-label="晶核收集进度"
+          aria-valuemin={0} aria-valuemax={orderTarget}
+          aria-valuenow={Math.min(orderStock,orderTarget)}
+          data-testid="gothic-main-quest-progress"
+          className="block h-[3px] w-full overflow-hidden rounded-full bg-[#8e6b5357]">
+          <span className={'block h-full rounded-full transition-[width] duration-300 motion-reduce:transition-none '+(orderReady?'bg-[#abe1b5]':'bg-[#edc990]')}
+            style={{width:orderProgress+'%'}}/>
+        </span>
+      </span>
+      <span className="shrink-0 text-lg leading-none text-gothic-gold transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden="true">›</span>
     </Link>
 
     <GothicDock items={links} label="主要游戏功能" compact/>
@@ -171,8 +187,7 @@ export function GothicLobby(){
         <span className="text-[10px] tracking-widest text-gothic-gold">ALL DESTINATIONS</span>
         <h2 className="text-2xl font-semibold">公寓地图</h2>
         <div className="grid grid-cols-2 gap-2">
-          {[...links,{href:'/workshop/',icon:'⚒',label:'晶核工坊',description:'生产与派工'},
-            {href:'/orders/',icon:'◇',label:'委托大厅',description:'契约与交付'}]
+          {[...links,{href:'/workshop/',icon:'⚒',label:'晶核工坊',description:'生产与派工'}]
             .map(item=><Link href={item.href} key={item.href} onClick={close}
               className="flex min-h-20 flex-col gap-1 rounded-md border border-gothic-brass/60 bg-gothic-panel/70 p-2.5 text-gothic-ivory transition-colors hover:border-gothic-glow hover:bg-gothic-wine/60 focus-visible:outline-2 focus-visible:outline-gothic-glow">
               <b className="text-2xl font-normal leading-none text-gothic-gold">{item.icon}</b>

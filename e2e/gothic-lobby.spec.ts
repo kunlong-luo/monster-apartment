@@ -70,6 +70,7 @@ test('Tailwind modal traps focus and returns focus when dismissed',async({page})
   const dialog=page.getByRole('dialog',{name:'所有功能'});
   await expect(dialog).toBeVisible();
   await expect(dialog).toBeFocused();
+  await expect(dialog.getByRole('link')).toHaveCount(6);
   await page.keyboard.press('Shift+Tab');
   await expect(dialog.getByRole('link',{name:/委托大厅/})).toBeFocused();
   await page.keyboard.press('Tab');
@@ -175,4 +176,37 @@ test('workshop provides a direct and safe return to the main lobby',async({page}
   const image=page.getByTestId('gothic-lobby-painting-image');
   await expect(image).toHaveJSProperty('complete',true);
   expect(await image.evaluate((img:HTMLImageElement)=>img.naturalWidth)).toBeGreaterThan(0);
+});
+
+// The overlay must not play when another handler prevents a link navigation.
+test('cancelled links do not dim the scene or navigate',async({page})=>{
+  await page.goto('/');
+  const overlay=page.getByTestId('gothic-route-transition');
+  await page.evaluate(()=>{
+    const anchor=document.createElement('a');
+    anchor.href='/workshop/';
+    anchor.textContent='被取消的导航';
+    anchor.id='cancelled-game-navigation';
+    anchor.addEventListener('click',event=>event.preventDefault());
+    document.querySelector('main')!.appendChild(anchor);
+  });
+  await page.locator('#cancelled-game-navigation').click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(overlay).toHaveAttribute('data-phase','idle');
+});
+
+test('main quest reflects saved stock and presents readable progress',async({page})=>{
+  await page.goto('/');
+  const quest=page.getByTestId('gothic-main-quest');
+  const progress=page.getByTestId('gothic-main-quest-progress');
+  await expect(quest).toBeVisible();
+  const min=Number(await progress.getAttribute('aria-valuemin'));
+  const max=Number(await progress.getAttribute('aria-valuemax'));
+  const now=Number(await progress.getAttribute('aria-valuenow'));
+  expect(min).toBe(0);
+  expect(max).toBeGreaterThan(0);
+  expect(now).toBeGreaterThanOrEqual(0);
+  expect(now).toBeLessThanOrEqual(max);
+  await quest.click();
+  await expect(page).toHaveURL(/\/orders\/?$/);
 });

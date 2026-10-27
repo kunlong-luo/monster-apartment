@@ -29,3 +29,16 @@
 }
 @media(prefers-reduced-motion:reduce){.gothic-lobby__embers{animation:none}}
 .gothic-lobby--still .gothic-lobby__embers{animation:none}
+ 
+/* Portrait/very short screens: keep the true quest progress above the dock,
+ * and avoid competing with the bottom edge of the character illustration. */
+@media(max-height:620px){
+  .gothic-lobby [data-testid="gothic-main-quest"]{
+    bottom:77px;padding-block:6px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .gothic-lobby [data-testid="gothic-main-quest"] :is(span,svg){
+    transition:none!important;
+  }
+}

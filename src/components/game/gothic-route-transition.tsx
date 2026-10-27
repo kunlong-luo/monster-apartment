@@ -44,12 +44,15 @@ export function GothicRouteTransition(){
       if(!ROUTES.has(destination)||source===destination)return;
       depart();
     };
-    document.addEventListener('click',clicked,true);
-    window.addEventListener('popstate',depart);
+    // React/Next link handlers have run by document bubbling time.
+    // Capture-phase listening incorrectly animated cancelled navigation.
+    document.addEventListener('click',clicked);
+    // The pathname effect supplies the arrival fade for history traversal.
+    // A popstate "depart" races React's arrival effect on Back/Forward.
     return ()=>{
       clear();
-      document.removeEventListener('click',clicked,true);
-      window.removeEventListener('popstate',depart);
+      document.removeEventListener('click',clicked);
+      // No history listener to leak on unmount.
     };
   },[reduced]);
 
