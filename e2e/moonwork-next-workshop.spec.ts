@@ -252,3 +252,46 @@ test('plot selection only repaints focus without restarting the Pixi scene',asyn
   await expect(page.getByTestId('v2-day')).toHaveText('2');
   await expect.poll(async()=>Number(await stage.getAttribute('data-scene-refreshes'))).toBeGreaterThan(Number(baseline));
 });
+
+
+test('accurate next-shift forecast becomes production and a visible first contract reward',async({page})=>{
+  test.setTimeout(90_000);
+  const initial={
+    version:2,day:1,coins:62,
+    tiles:Array.from({length:15},(_,i)=>
+      i===5?{craft:'well',worker:'brook',stored:0}:
+      i===6?{craft:'garden',worker:'fern',stored:0}:
+      i===7?{craft:'kiln',worker:'cinder',stored:0}:null),
+    warehouse:{core:0},order:{due:5,cores:2,reward:70},
+    last:null,completed:0,failed:0,patron:null
+  };
+  await page.addInitScript(seed=>localStorage.setItem(
+    'monster-apartment:workshop-v2-lab',JSON.stringify(seed)),initial);
+  await page.goto('/workshop/');
+  const stage=page.getByTestId('v2-stage');
+  await expect(stage).toHaveAttribute('data-scene-refreshes',/^[1-9]\\d*$/,{timeout:25_000});
+  await expect(page.getByTestId('v2-shift-forecast')).toContainText('水汽 +2');
+  await expect(page.getByTestId('v2-shift-forecast')).toContainText('孢子 +2');
+  await expect(page.getByTestId('v2-shift-forecast')).toContainText('晶核 +2');
+  expect((await page.evaluate(()=>JSON.parse(localStorage.getItem(
+    'monster-apartment:workshop-v2-lab')!).day))).toBe(1);
+  await page.getByTestId('v2-shift').click();
+  await expect(stage).toHaveAttribute('data-last-shift-flow','water:2;fiber:2;cores:2');
+  await expect(page.getByTestId('v2-output')).toHaveText('2');
+  await expect(page.getByTestId('v2-stock')).toHaveText('2');
+  for(let day=3;day<=5;day++){
+    await page.getByTestId('v2-shift').click();
+    await expect(page.getByTestId('v2-day')).toHaveText(String(day));
+  }
+  await expect(page.getByTestId('v2-shift-forecast')).toContainText('本班结算订单');
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-day')).toHaveText('6');
+  await expect(stage).toHaveAttribute('data-last-shift-delivery','first');
+  await expect(page.getByTestId('v2-coins')).toHaveText('132');
+  await expect(page.getByTestId('v2-diagnosis')).toContainText('订单完成');
+  await expect(page.getByTestId('v2-patron-card')).toBeVisible();
+  await page.reload();
+  await expect(page.getByTestId('v2-coins')).toHaveText('132');
+  await expect(page.getByTestId('v2-day')).toHaveText('6');
+  await expect(page.getByTestId('v2-stage')).not.toHaveAttribute('data-last-shift-delivery','first');
+});

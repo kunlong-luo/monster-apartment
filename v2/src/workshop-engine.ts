@@ -478,6 +478,23 @@ export function runShift(s:WorkshopState):WorkshopState {
   return {...s,day:s.day+1,coins,tiles,warehouse:{core:warehouse},
     order,completed,failed,last:report,patron};
 }
+/** A one-day, side-effect-free production preview. Uses the exact same
+ * deterministic engine and does not advance time or write a save. */
+export type NextShiftForecast={
+  dayAfter:number;water:number;fiber:number;cores:number;blocked:string[];
+  warehouseAfter:number;coinsAfter:number;
+  willDeliver:boolean;willMiss:boolean;reward:number;
+};
+export function forecastNextShift(s:WorkshopState):NextShiftForecast {
+  const next=runShift(s);
+  const report=next.last!;
+  return {
+    dayAfter:next.day,water:report.water,fiber:report.fiber,cores:report.cores,
+    blocked:[...report.blocked],warehouseAfter:next.warehouse.core,
+    coinsAfter:next.coins,willDeliver:report.fulfilled,willMiss:report.lost,
+    reward:report.fulfilled?s.order.reward:0,
+  };
+}
 /** A side-effect-free what-if forecast; uses the very same shift engine.
  * Results assume today's staffing, layout and equipment stay unchanged. */
 export type PatronForecast={

@@ -1,6 +1,6 @@
 import {describe,expect,it} from 'vitest';
 import {
-  newWorkshop,placeMachine,moveMachine,assignWorker,runShift,
+  newWorkshop,placeMachine,moveMachine,assignWorker,runShift,forecastNextShift,
   linked,validWorkshop,unassignWorker,acceptPatronCommission, PATRON_ADULT_AGE,
   machineLevel,machineUpgradeQuote,upgradeMachine,workshopRank,
   machineSalvageRefund,salvageMachine,workshopNextStep,workshopHint,
@@ -24,6 +24,35 @@ const connect=()=>{
 };
 
 describe('V2 workshop: positioning and staffing are the gameplay',()=>{
+  it('previews the next shift without consuming a day or changing the save',()=>{
+    const empty=newWorkshop();
+    expect(forecastNextShift(empty)).toMatchObject({
+      dayAfter:2,water:0,fiber:0,cores:0,warehouseAfter:0,
+      coinsAfter:100,willDeliver:false,willMiss:false,
+    });
+    expect(empty).toEqual(newWorkshop());
+    const connected=connect();
+    const original=JSON.stringify(connected);
+    expect(forecastNextShift(connected)).toMatchObject({
+      dayAfter:2,water:2,fiber:2,cores:2,warehouseAfter:2,
+      coinsAfter:62,willDeliver:false,reward:0,
+    });
+    expect(JSON.stringify(connected)).toBe(original);
+    let due=connected;
+    for(let i=0;i<4;i++)due=runShift(due);
+    const delivery=forecastNextShift(due);
+    expect(delivery).toMatchObject({
+      dayAfter:6,willDeliver:true,willMiss:false,reward:70,coinsAfter:132,
+      warehouseAfter:8,
+    });
+    expect(due.day).toBe(5);
+    expect(due.completed).toBe(0);
+    let missed=newWorkshop();
+    for(let i=0;i<4;i++)missed=runShift(missed);
+    expect(forecastNextShift(missed)).toMatchObject({
+      dayAfter:6,willDeliver:false,willMiss:true,warehouseAfter:0,coinsAfter:85,
+    });
+  });
   it('provides a contextual first-day goal without adding unrelated buttons',()=>{
     const initial=newWorkshop();
     expect(workshopNextStep(initial)).toContain('温室');

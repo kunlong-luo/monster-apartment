@@ -3,6 +3,7 @@
 import {
   PREMIUM_ORDER_PENALTY,
   STANDARD_ORDER_PENALTY,
+  forecastNextShift,
 } from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
 
@@ -40,6 +41,18 @@ export function getDiagnosisText(world: WorkshopState): string {
 export function WorkshopShiftPanel({world}: {world: WorkshopState}) {
   const report = world.last;
   const diagnosis = getDiagnosisText(world);
+  const predicted = forecastNextShift(world);
+  const previewNote = predicted.willDeliver
+    ? '本班结算订单 · 奖励 ✦' + predicted.reward
+    : predicted.willMiss
+      ? '本班将逾期 · 先补足晶核'
+      : predicted.blocked.some(reason=>reason.endsWith(':water'))
+        ? '温室缺水 · 检查水泵和相邻布局'
+        : predicted.blocked.some(reason=>reason.endsWith(':fiber'))
+          ? '熔炉缺孢子 · 检查温室和相邻布局'
+          : predicted.cores===0
+            ? '暂无晶核产出 · 先连接设备并派工'
+            : '按当前设备和工匠排班推演';
 
   return (
     <section className="panel" aria-label="上一轮生产报告">
@@ -65,6 +78,15 @@ export function WorkshopShiftPanel({world}: {world: WorkshopState}) {
           </b>
           <small>晶核</small>
         </div>
+      </div>
+      <div data-testid="v2-shift-forecast"
+        className="mt-2 rounded-md border border-gothic-brass/35 bg-gothic-panel/65 px-2.5 py-2 text-[10px] leading-snug text-gothic-muted">
+        <span className="text-gothic-gold">NEXT SHIFT · 下一班预计</span>
+        <strong className="mt-1 block font-semibold tabular-nums text-gothic-ivory">
+          水汽 +{predicted.water}　→　孢子 +{predicted.fiber}　→　晶核 +{predicted.cores}
+        </strong>
+        <small className={predicted.willMiss||predicted.blocked.length
+          ?'mt-1 block text-rose-200':'mt-1 block text-gothic-muted'}>{previewNote}</small>
       </div>
       <p id="diagnosis" data-testid="v2-diagnosis" role="status">
         {diagnosis}
