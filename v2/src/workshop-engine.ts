@@ -161,7 +161,7 @@ export function workshopHint(s:WorkshopState):WorkshopHint {
   const hasPair=(a:Craft,b:Craft)=>indices(a).some(i=>indices(b).some(j=>linked(i,j)));
   const recover=():WorkshopHint=>({
     action:'recover',
-    source:s.tiles.findIndex((tile,i)=>tile!==null&&indices(tile.craft).length>1),
+    source:s.tiles.findIndex(tile=>tile!==null&&indices(tile.craft).length>1),
     target:null,
   });
   for(const craft of ['well','garden'] as const){
