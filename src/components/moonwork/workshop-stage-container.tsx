@@ -88,6 +88,9 @@ export function WorkshopStageContainer({
           {upgradeText}
         </button>
       </div>
+      <p id="status" data-testid="v2-status" role="status"
+        className="min-h-7 shrink-0 border-t border-gothic-brass/30 bg-gothic-panel/85 px-3 py-1 text-[11px] leading-5 text-gothic-muted data-[tone=bad]:text-rose-200 data-[tone=good]:text-emerald-200"
+      />
     </div>
   );
 }
