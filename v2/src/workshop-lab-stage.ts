@@ -1,6 +1,9 @@
-import { Application, AnimatedSprite, Container, Graphics, Sprite, Text, Texture } from 'pixi.js';
+import { Application, AnimatedSprite, Container, Graphics, Sprite, Text } from 'pixi.js';
 import { makeRasterArt } from './raster-sprites';
 import { patronFrames } from './patron-art';
+import { loadWorkshopPaintedArt } from './workshop-painted-art';
+import { createFloatingFeedback } from './workshop-floating-feedback';
+import { paintShiftFeedback } from './workshop-shift-effects';
 import { BOARD_SIZE, WIDTH, MACHINES, linked, machineLevel, workshopHint } from './workshop-engine';
 import type { WorkshopState, Craft } from './workshop-engine';
 
@@ -46,44 +49,8 @@ export async function mountWorkshopLab(
   const observer=new ResizeObserver(resize);
   observer.observe(element);resize();
   const art=makeRasterArt();
-  // The painterly architecture is independent from machines, workers and hit areas.
-  // AVIF is an enhancement: unsupported codecs fall back to the legacy scene.
-  let painted:Texture|null=null;
-  let paintedFloor:Texture|null=null;
-  let kilnArtReview:Texture|null=null;
-  const paintedDetail:Partial<Record<'well'|'garden',Texture>>={};
-  try{
-    const image=new Image();
-    image.crossOrigin='anonymous';
-    image.src=new URL('./assets/moon-workshop.avif',assetBase).href;
-    await image.decode();
-    painted=Texture.from(image);
-    const floorImage=new Image();
-    floorImage.crossOrigin='anonymous';
-    floorImage.src=new URL('./assets/moonstone-floor.avif',assetBase).href;
-    await floorImage.decode();
-    paintedFloor=Texture.from(floorImage);
-  }catch{/* keep gameplay available even if an asset cannot decode */}
-  // One actual painted, alpha-backed machine crop for visual review only.
-  // Never replace all machine art from a flattened screenshot.
-  try {
-    const kilnImage=new Image();
-    kilnImage.crossOrigin='anonymous';
-    kilnImage.src=new URL('./assets/kiln-art-review.avif',assetBase).href;
-    await kilnImage.decode();
-    kilnArtReview=Texture.from(kilnImage);
-  } catch {/* retain interactive fallback sprite when codec or file is absent */}
-  // Painterly detail overlays keep the procedural lower machines as a
-  // temporary physical base; characters from the concept art are masked out.
-  for(const kind of ['well','garden'] as const){
-    try{
-      const image=new Image();
-    image.crossOrigin='anonymous';
-      image.src=new URL('./assets/'+kind+'-art-review.avif',assetBase).href;
-      await image.decode();
-      paintedDetail[kind]=Texture.from(image);
-    }catch{/* independent codec/image failure does not block production */}
-  }
+  const {painted,paintedFloor,kilnArtReview,paintedDetail}=
+    await loadWorkshopPaintedArt(assetBase);
   element.dataset.machineArt=kilnArtReview&&paintedDetail.well&&paintedDetail.garden
     ?'all-painted-machine-reviews':'mixed-machine-art';
   element.dataset.visualTheme=painted?'painted-moonwork':'procedural-fallback';
@@ -137,20 +104,8 @@ export async function mountWorkshopLab(
     target.on('pointertap',()=>callbacks.plot(index));
     plotHits.addChild(target);
   }
-  const feedback:{sprite:Text;age:number;originY:number}[]=[];
-  const showFeedback=(message:string,x:number,y:number,color:number)=>{
-    if(feedback.length>=6){
-      const stale=feedback.shift()!;
-      feedbackLayer.removeChild(stale.sprite);
-      stale.sprite.destroy();
-    }
-    const sprite=glabel(message,18,color,true);
-    sprite.anchor.set(.5);
-    sprite.position.set(x,y);
-    sprite.eventMode='none';
-    feedbackLayer.addChild(sprite);
-    feedback.push({sprite,age:0,originY:y});
-  };
+  const feedback=createFloatingFeedback(feedbackLayer,glabel);
+  const {showFeedback}=feedback;
   let lastShiftDay=state.day;
   let elapsed=0;
   for(let i=0;i<20;i++){
@@ -158,6 +113,7 @@ export async function mountWorkshopLab(
     mote.position.set(60+i*49%940,35+i*71%560);
     motes.addChild(mote);moving.push(mote);
   }
+  const reducedMotionQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
   app.ticker.add(ticker=>{
     const dt=ticker.deltaTime;
     elapsed+=dt/60;
@@ -165,22 +121,12 @@ export async function mountWorkshopLab(
       m.y-=dt*(.11+i%4*.055);
       if(m.y<0)m.y=H;
     });
-    for(let i=feedback.length-1;i>=0;i--){
-      const effect=feedback[i];
-      effect.age+=dt/60;
-      effect.sprite.y=effect.originY-Math.min(42,effect.age*34);
-      effect.sprite.alpha=Math.max(0,1-effect.age/1.5);
-      if(effect.age>=1.5){
-        feedbackLayer.removeChild(effect.sprite);
-        effect.sprite.destroy();
-        feedback.splice(i,1);
-      }
-    }
+    feedback.tick(dt);
     for(const [index,machine] of machineArt.entries()){
       // Small working rhythm; not a CSS wobble applied to the entire scene.
       machine.y+=(Math.sin(elapsed*3+index*.8)-Math.sin((elapsed-dt/60)*3+index*.8))*.5;
     }
-    tutorialLayer.alpha=window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    tutorialLayer.alpha=reducedMotionQuery.matches
       ?1:.81+.19*Math.sin(elapsed*2.5);
     flowLayer.clear();
     for(const [i,flow] of flowPaths.entries()){
@@ -402,61 +348,10 @@ export async function mountWorkshopLab(
     // Keep her away from machine hit areas in both stage compositions.
     // Only real advanced shifts generate floating result feedback.
     // Do not replay effects on save reload or toolbar-only interactions.
-    if(completedShift&&current.last){
-      const report=current.last;
-      const productionSpot=(craft:Craft)=>{
-        const index=current.tiles.findIndex(tile=>tile?.craft===craft&&tile.worker);
-        if(index<0)return {x:W/2,y:H/2};
-        const pos=plotXY(index);
-        return {x:pos.x+CELL/2,y:pos.y+CELL/2};
-      };
-      element.dataset.lastShiftFlow=
-        'water:'+report.water+';fiber:'+report.fiber+';cores:'+report.cores;
-      element.dataset.lastShiftDelivery=report.fulfilled
-        ?current.completed===1?'first':'complete':report.lost?'missed':'none';
-      if(report.water>0){
-        const pos=productionSpot('well');
-        showFeedback('◉ +'+report.water+' 水汽',pos.x,pos.y,0x9be6ff);
-      }
-      if(report.fiber>0){
-        const pos=productionSpot('garden');
-        showFeedback('❀ +'+report.fiber+' 孢子',pos.x,pos.y,0xcbf3ae);
-      }
-      for(const blocked of report.blocked.slice(0,2)){
-        const [craft,rawIndex,reason]=blocked.split(':');
-        const index=Number(rawIndex);
-        if(!Number.isInteger(index)||index<0||index>=BOARD_SIZE)continue;
-        const pos=plotXY(index);
-        showFeedback(craft==='garden'&&reason==='water'
-          ?'缺水 · 检查水泵':'缺孢子 · 检查温室',
-          pos.x+CELL/2,pos.y+CELL/2,0xffb5a7);
-      }
-      if(report.cores===0&&report.water===0&&report.fiber===0
-        &&report.blocked.length===0)
-        showFeedback('还没有产出 · 先派工',W/2,MOBILE?215:82,0xffc6a9);
-      if(current.last.cores>0){
-        const firstKiln=current.tiles.findIndex(tile=>tile?.craft==='kiln'
-          &&tile.worker);
-        const pos=firstKiln<0?{x:W/2,y:H/2}:plotXY(firstKiln);
-        showFeedback('✦ +'+current.last.cores+' 晶核',
-          firstKiln<0?pos.x:pos.x+CELL/2,
-          firstKiln<0?pos.y:pos.y+CELL/2,0xffdfaa);
-        element.dataset.lastShiftEffect='cores:'+current.last.cores;
-      }else{
-        element.dataset.lastShiftEffect='cores:0';
-      }
-      if(report.fulfilled)showFeedback(
-        (current.completed===1?'首单交付成功':'订单交付成功')+
-          ' · ✦ +'+previousOrderReward,
-        W/2,MOBILE?215:82,0xc6f2b2);
-      else if(report.lost)showFeedback('订单逾期',W/2,
-        MOBILE?215:82,0xffb7ac);
-      if(current.patron?.status==='completed'
-        &&previousPatronStatus!=='completed'){
-        showFeedback('月纱契约 +'+current.patron.reward,
-          MOBILE?165:860,MOBILE?197:190,0xf6dfb4);
-      }
-    }
+    if(completedShift&&current.last)
+      paintShiftFeedback(current,element,showFeedback,{
+        W,H,CELL,MOBILE,plotXY,previousOrderReward,previousPatronStatus,
+      });
     element.dataset.patronVisible=current.patron?'true':'false';
     element.dataset.patronFrames=current.patron?'8':'0';
     if(current.patron){
