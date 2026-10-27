@@ -46,7 +46,7 @@ export function WorkshopStageContainer({
     : isMoving
     ? '移动设备：再选一个空格'
     : selectedPlot !== null
-    ? '选中 ' + String(selectedPlot + 1).padStart(2, '0') + ' 号地块'
+    ? '选中 ' + String(selectedPlot + 1).padStart(2, '0') + ' 号地块 · ' + workshopNextStep(world)
     : workshopNextStep(world);
 
   const upgradeVisible = Boolean(selectedTile && quote);
@@ -84,7 +84,7 @@ export function WorkshopStageContainer({
       </span>
 
       <div className="selection">
-        <span id="selected" data-testid="v2-next-step">{selectedText}</span>
+        <span id="selected" data-testid="v2-next-step" title={selectedText}>{selectedText}</span>
         <button
           type="button"
           id="salvage"

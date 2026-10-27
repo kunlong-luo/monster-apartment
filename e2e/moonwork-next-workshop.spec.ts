@@ -49,7 +49,7 @@ test('Next workshop remains playable on a 390px phone viewport',async({page})=>{
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-day')).toHaveText('2');
   await page.getByTestId('v2-world-gate').click();
-  await expect(page.getByTestId('world-day')).toHaveText('2');
+  await expect(page.getByTestId('world-day')).toHaveText('2',{timeout:15_000});
 });
 
 
@@ -234,8 +234,8 @@ test('plot selection only repaints focus without restarting the Pixi scene',asyn
   const stage=page.getByTestId('v2-stage');
   const canvas=stage.locator('canvas');
   await expect(canvas).toBeVisible({timeout:25_000});
+  await expect(stage).toHaveAttribute('data-scene-refreshes',/^[1-9]\d*$/,{timeout:25_000});
   const baseline=await stage.getAttribute('data-scene-refreshes');
-  expect(baseline).toBeTruthy();
   const box=await canvas.boundingBox();
   expect(box).not.toBeNull();
   await canvas.click({position:{

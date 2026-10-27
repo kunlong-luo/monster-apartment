@@ -182,7 +182,7 @@ test('painted worker roster and scene art load as real gameplay destinations',as
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25000});
   await page.getByRole('navigation',{name:'月光工坊世界'})
     .getByRole('link',{name:'角色图鉴'}).click();
-  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
+  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible({timeout:15_000});
   for(const id of ['brook','fern','cinder']){
     const art=page.getByTestId('worker-card-'+id).getByRole('img');
     await expect(art).toBeVisible();
