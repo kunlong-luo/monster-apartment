@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import './globals.css';
+import {GothicRouteTransition} from '@/components/game/gothic-route-transition';
 
 export const metadata: Metadata = {
   title: '灵核公寓 · Spirit Core Residence',
@@ -17,7 +18,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>{children}<GothicRouteTransition/></body>
     </html>
   );
 }

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import {AnimatePresence} from 'motion/react';
 import {useEffect,useState,useSyncExternalStore} from 'react';
 import moonveil from '../../../v2/art/moonveil-portrait.avif';
+import lobbyHero from '../../../public/lobby-hero.webp';
 import {newCozyGame,validCozySave,resumeCozySave,advanceCozy,
   relocateCozyResident,cozyDay,cozyGoal,cozyDailyIncome} from '@/core/cozy-engine';
 import type {CozyState} from '@/core/cozy-engine';
@@ -112,7 +113,7 @@ export function GothicApartment(){
   };
   return <main className={reducedMotion?'ga ga--still':'ga'} data-testid="gothic-apartment" aria-label="哥特公寓经营"
     onKeyDown={event=>{if(event.key==='Escape'){setWitchOpen(false);setNotices(false);}}}>
-    <div className="ga-backdrop" style={{backgroundImage:'url('+'../lobby-hero.webp'+')'}} aria-hidden="true"/>
+    <div className="ga-backdrop" style={{backgroundImage:'url('+JSON.stringify(lobbyHero.src)+')'}} aria-hidden="true"/>
     <div className="ga-light" aria-hidden="true"/>
     <div className="ga-shade" aria-hidden="true"/>
     <div className="ga-dust" aria-hidden="true"/>

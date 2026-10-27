@@ -7,6 +7,7 @@ import {useWorkshopWorld} from './world-save-react';
 import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from './world-navigation';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
+import lobbyHero from '../../../public/lobby-hero.webp';
 import {SAVE_KEY,CHANGE_EVENT} from '@/lib/moonwork/world-store';
 import {Panel,WorkshopLink} from './world-primitives';
 import {Town} from './world-town';
@@ -31,7 +32,7 @@ export function MoonworkWorld({area}:{area:WorldArea}){
   },[]);
   const title={town:'月光街',orders:'委托大厅',characters:'角色图鉴',warehouse:'魔法仓库'}[area];
   return <main className="mw mw-gothic relative isolate h-dvh min-h-[560px] overflow-hidden bg-[#100910] font-serif text-[#f3dcc2] max-[700px]:min-h-0" data-testid="moonwork-world" data-area={area}>
-    <div className="mw-gothic-scene pointer-events-none absolute inset-0 -z-[3] bg-[#21151d] bg-cover bg-center" aria-hidden="true" style={{backgroundImage:'url('+'../lobby-hero.webp'+')'}}/>
+    <div className="mw-gothic-scene pointer-events-none absolute inset-0 -z-[3] bg-[#21151d] bg-cover bg-center" aria-hidden="true" style={{backgroundImage:'url('+JSON.stringify(lobbyHero.src)+')'}}/>
     <div className="mw-gothic-shadow pointer-events-none absolute inset-0 -z-[2] bg-[linear-gradient(180deg,#09070bd9_0%,transparent_22%,transparent_65%,#09070de8_100%),linear-gradient(90deg,#10091180,transparent_35%,#0c0713a8_75%,#07050cdd_100%)]" aria-hidden="true"/>
     <Link href="/"
       className="absolute left-3 top-3 z-[8] flex h-9 items-center gap-2 rounded-full border border-gothic-brass/70 bg-gothic-panel/85 px-3 text-xs text-gothic-ivory shadow-[0_6px_20px_#0007] backdrop-blur-md transition-colors hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow sm:left-5"

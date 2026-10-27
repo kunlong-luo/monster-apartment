@@ -48,3 +48,27 @@
 
 /* Only the seven current routes are shipped. Layered scene art and canvas
  * effects use scoped CSS; ordinary controls are styled with Tailwind v4. */
+
+/* Scene navigation: painterly assets stay in place, no full-screen blur/scale.
+ * A pointer-transparent dark-gold curtain survives Next route replacement. */
+.gothic-route-transition{
+  position:fixed;inset:0;z-index:80;pointer-events:none;opacity:0;
+  display:grid;place-items:center;
+  background:radial-gradient(ellipse at 50% 42%,#322131e0,#120b18ed 68%,#09060cfa);
+  transition:opacity 400ms ease-out;
+}
+.gothic-route-transition[data-phase="depart"]{
+  opacity:.78;transition-duration:170ms;transition-timing-function:ease-in;
+}
+.gothic-route-transition[data-phase="arrive"]{opacity:0;transition-duration:400ms}
+.gothic-route-transition__sigil{
+  color:#f6d4a1;font:normal 36px Georgia,serif;
+  text-shadow:0 0 26px #ffddaa64;transform:scale(.9);
+  opacity:0;transition:opacity 160ms,transform 330ms ease;
+}
+.gothic-route-transition[data-phase="depart"] .gothic-route-transition__sigil{
+  opacity:.75;transform:scale(1);
+}
+@media(prefers-reduced-motion:reduce){
+  .gothic-route-transition,.gothic-route-transition__sigil{transition:none!important;opacity:0!important}
+}
