@@ -61,6 +61,7 @@ export function GothicAtmosphere({paused=false}:{paused?:boolean}){
           el.dataset.renderer=el.querySelector('canvas')?'pixi':'unsupported';
       }
     }).catch(error=>{
+      if(disposed||!el.isConnected)return;
       // UI and saved gameplay remain playable, but report the asset failure.
       el.dataset.renderer='asset-error';
       el.dataset.rendererError=error instanceof Error?error.message:String(error);

@@ -10,6 +10,7 @@ import lobbyHero from '../../../public/lobby-hero.webp';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
 import {CHANGE_EVENT,commitWorldAction} from '@/lib/moonwork/world-store';
 import {GothicAtmosphere} from './gothic-atmosphere';
+import {GothicSceneIllumination} from './gothic-scene-illumination';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 import {GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
 import './gothic-lobby.css';
@@ -45,7 +46,7 @@ export function GothicLobby(){
   };
   const close=()=>setPanel(null);
   const moveLight=(event:React.PointerEvent<HTMLElement>)=>{
-    if(event.pointerType!=='mouse')return;
+    if(reducedMotion||event.pointerType!=='mouse')return;
     const bounds=event.currentTarget.getBoundingClientRect();
     const dx=(event.clientX-bounds.left)/bounds.width-.5;
     const dy=(event.clientY-bounds.top)/bounds.height-.5;
@@ -72,6 +73,7 @@ export function GothicLobby(){
       <div className="gothic-lobby__vignette"/>
       <div className="gothic-lobby__embers"/>
       <div className="gothic-lobby__mist" aria-hidden="true"/>
+      <GothicSceneIllumination variant="lobby" paused={reducedMotion}/>
     </div>
 
     <GothicAtmosphere paused={reducedMotion}/>

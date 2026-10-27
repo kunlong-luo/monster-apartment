@@ -46,8 +46,50 @@
   opacity:.31;filter:drop-shadow(0 0 4px #f6a866);
 }
 .gothic-lobby__feature>span,.ga-list-title,.ga-micro{letter-spacing:.19em}
-/* Residence — architectural door plaques, not emoji cards. */
-.ga-backdrop{transform:scale(1.017);transform-origin:center}
+/* Preserve the apartment painting's pixels across SPA navigation. */
+.ga-backdrop{transform:none;filter:none}
+/* Edge tracery and candle glow: decorative only, no painting-wide blur. */
+.gothic-scene-illumination{
+  position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+  contain:layout paint;
+}
+.gothic-scene-illumination__tracery,
+.gothic-scene-illumination__moonshaft{
+  position:absolute;inset:0;pointer-events:none;
+}
+.gothic-scene-illumination__tracery{
+  background:
+    linear-gradient(90deg,#d9ae7359,transparent 90%) left 18px top 18px / 19% 1px no-repeat,
+    linear-gradient(270deg,#d9ae7359,transparent 90%) right 18px top 18px / 19% 1px no-repeat,
+    linear-gradient(#d9ae7366,transparent) left 18px top 18px / 1px 18% no-repeat,
+    linear-gradient(#d9ae7366,transparent) right 18px top 18px / 1px 18% no-repeat,
+    radial-gradient(circle at 18px 18px,#e3be86aa 1.5px,transparent 2.4px),
+    radial-gradient(circle at calc(100% - 18px) 18px,#e3be86aa 1.5px,transparent 2.4px);
+  opacity:.42;
+}
+.gothic-scene-illumination__moonshaft{
+  background:linear-gradient(176deg,#b8b2f220 0%,#9382c80a 31%,transparent 63%);
+  clip-path:polygon(43% 0,58% 0,69% 70%,32% 70%);
+  mix-blend-mode:screen;
+}
+.gothic-scene-illumination__candle{
+  position:absolute;top:21%;width:clamp(85px,22vw,345px);
+  aspect-ratio:1;pointer-events:none;border-radius:50%;
+  background:radial-gradient(circle,#ffd49b42 0%,#eaa25f19 28%,transparent 72%);
+  mix-blend-mode:screen;opacity:.37;transform-origin:center;
+}
+.gothic-scene-illumination__candle--left{left:7%}
+.gothic-scene-illumination__candle--right{right:6%;top:28%}
+.gothic-scene-illumination--apartment .gothic-scene-illumination__tracery{opacity:.5}
+.gothic-scene-illumination--apartment .gothic-scene-illumination__candle--left{left:3%;top:26%}
+@media(max-width:600px){
+  .gothic-scene-illumination__tracery{opacity:.23}
+  .gothic-scene-illumination__moonshaft{opacity:.48}
+  .gothic-scene-illumination__candle{width:clamp(85px,27vw,160px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .gothic-scene-illumination__candle{transition:none!important;animation:none!important}
+}
 .ga-light{
   background:
     radial-gradient(ellipse 26% 45% at 21% 27%,rgba(251,180,103,.11),transparent 83%),
