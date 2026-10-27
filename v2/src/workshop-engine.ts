@@ -150,6 +150,12 @@ export function workshopNextStep(s:WorkshopState):string {
   const hasConnection=(from:Craft,to:Craft)=>
     s.tiles.some((a,i)=>a?.craft===from&&s.tiles.some((b,j)=>
       b?.craft===to&&linked(i,j)));
+  for(const craft of ['well','garden'] as const){
+    if(!s.tiles.some(machine=>machine?.craft===craft))
+      return s.coins<MACHINES[craft].cost
+        ?'资金不足 · 回收其他设备或重置工坊，重新建造'+MACHINES[craft].zh
+        :'第1步 · 重新建造'+MACHINES[craft].zh+'并接入生产链';
+  }
   if(!hasConnection('well','garden'))
     return '第1步 · 把温室移动到紧邻水汽泵的空格';
   if(!s.tiles.some(m=>m?.craft==='kiln'))

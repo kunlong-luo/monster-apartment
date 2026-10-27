@@ -72,7 +72,7 @@ function plot(index:number){
     selectedPlot=index;
     const machine=world.tiles[index];
     message=machine
-      ?MACHINES[machine.craft].zh+' · 点击「移动机器」后选择一个空格。'
+      ?MACHINES[machine.craft].zh+' · 可移动、升级，或拆除回收星币。'
       :'空地 '+(index+1)+' 号：选择一种设备建造。';
     effect='normal';
   }
