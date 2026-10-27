@@ -1,10 +1,15 @@
-.mw-header{max-width:1220px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:24px 20px;border-bottom:1px solid #b5a08355}.mw-logo{color:#ffe0a9;text-decoration:none;font:700 30px Georgia,serif;letter-spacing:.07em}.mw-logo small{color:#b9c3ce;font:500 11px system-ui}.mw-stats{display:flex;gap:8px}.mw-stats span{border:1px solid #857d7399;border-radius:8px;background:#132537;color:#cbcccf;padding:9px 14px;font-size:12px}.mw-stats b{color:#ffe0a9;font-size:16px}.mw-nav{max-width:1220px;margin:auto;display:flex;gap:8px;flex-wrap:wrap;padding:14px 20px}.mw-nav>a{display:inline-block;text-decoration:none;background:#253b50;color:#d7d9db;border:1px solid #708191;padding:11px 17px;border-radius:9px;font-size:13px;font-weight:700}.mw-nav>a:hover,
-.mw-nav>a.selected{color:#ffe4b4;background:#38546a;border-color:#d9ba83}.mw-eyebrow{color:#b6b8be;font-size:11px!important;letter-spacing:.14em;text-transform:uppercase}.mw-hero{position:relative;overflow:hidden;min-height:280px;padding:38px;border:1px solid #bd987780;border-radius:18px;background:linear-gradient(115deg,#2a4357 0%,#303f58 65%,#1a2b42)}.mw-hero h2{font:700 clamp(26px,3vw,38px) Georgia,serif;color:#ffdcac;max-width:650px}.mw-hero p{position:relative;z-index:1;max-width:620px;color:#d5d8df;font-size:14px;line-height:1.9}.mw-moon{position:absolute;font:normal 210px Georgia,serif;right:8%;top:-5%;color:#ffe2b5;text-shadow:0 0 45px #fbd49988;opacity:.42}.mw-tile{min-width:0;background:linear-gradient(145deg,#283e4fee,#182a3dee);border:1px solid #74818a9c;border-radius:14px;padding:24px}.mw-tile{display:flex;flex-direction:column;gap:13px;text-decoration:none;color:#ffe1b0;transition:transform .16s,border-color .16s}.mw-tile:hover{transform:translateY(-3px);border-color:#e4c18c}.mw-tile b{font:700 23px Georgia,serif}.mw-tile span{font-size:13px;color:#bbcbd3;line-height:1.7}.mw-button,
-.mw-link,
-.mw-action-button{display:inline-block;min-height:42px;padding:12px 19px;border:1px solid #c8ad81;border-radius:8px;text-decoration:none;font-size:13px;font-weight:750;cursor:pointer;margin-top:10px}.mw-button,
-.mw-action-button{background:linear-gradient(110deg,#ffe0a4,#d9a668);color:#28202a}.mw-link{color:#ffe6c7;background:#334c60}.mw-action-button:hover{background:#f3c17f}.mw-big{font:700 40px Georgia,serif!important;color:#ffdfac!important}.mw-big small{font-size:19px;color:#c9d5d8}.mw-meter{width:100%;height:9px;border-radius:12px;background:#111d30;overflow:hidden}.mw-meter i{display:block;height:100%;background:linear-gradient(90deg,#8bd7c9,#f9d99d)}.mw-message{color:#c7f0b8!important;font-size:12px!important}.mw-character-icon{font:normal 60px Georgia,serif!important;color:#dbd4a0!important;margin:0!important}.mw-stock{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #7186976a;padding:16px 0}.mw-stock span{font-size:15px;color:#d6dbdc}.mw-stock b{font:700 32px Georgia,serif;color:#ffe0ac}.mw :focus-visible{outline:3px solid #ffe1ae;outline-offset:3px}
-@media(max-width:800px){.mw-hero{padding:24px}.mw-moon{opacity:.17}.mw-header{flex-wrap:wrap;padding:16px}.mw-stats{width:100%;justify-content:space-between}.mw-stats>span{flex:1;text-align:center}.mw-nav{padding:9px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}.mw-nav>a{font-size:10px;text-align:center;padding:8px 1px}.mw-tile{padding:18px}.mw-logo{font-size:25px}}
-@media(prefers-reduced-motion:reduce){.mw-tile{transition:none}}
+/* Active moonlit world primitives: complex painted scene styles follow below.
+ * Navigation, actions, modal shells and generic panels are Tailwind-owned. */
+.mw-eyebrow{color:#b6b8be;font-size:11px!important;letter-spacing:.14em;text-transform:uppercase}
+.mw-big{font:700 40px Georgia,serif!important;color:#ffdfac!important}
+.mw-big small{font-size:19px;color:#c9d5d8}
+.mw-meter{width:100%;height:9px;border-radius:12px;background:#111d30;overflow:hidden}
+.mw-meter i{display:block;height:100%;background:linear-gradient(90deg,#8bd7c9,#f9d99d)}
+.mw-message{color:#c7f0b8!important;font-size:12px!important}
+.mw-stock{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #7186976a;padding:16px 0}
+.mw-stock span{font-size:15px;color:#d6dbdc}
+.mw-stock b{font:700 32px Georgia,serif;color:#ffe0ac}
+.mw :focus-visible{outline:3px solid #ffe1ae;outline-offset:3px}
 
 /* Report a recoverable client-only Pixi loading problem inside Next. */
 .mw-runtime-error{position:fixed;bottom:18px;left:5%;max-width:90%;z-index:1000;padding:16px 22px;border:1px solid #db9c9c;border-radius:12px;background:#412734;color:#fff0ec}
@@ -16,24 +21,7 @@
   background:#4d333b;padding:7px;color:#ffe0ca}.mw-risk-choice .mw-risk-safe{border-left:3px solid #9dd9ba;
   background:#263f40;padding:7px;color:#d4f0df}
 
-/* Same navigation geometry/palette as the PixiJS workshop header. */
-.mw-nav{max-width:1220px;display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:9px 20px}.mw-nav>a{min-width:0;display:flex;align-items:center;justify-content:center;
-  gap:9px;background:linear-gradient(135deg,#27384a,#1a283d 65%,#27384a);
-  border:1px solid #947c61;border-radius:9px;box-shadow:inset 0 1px #f1d5a52b;
-  color:#e1d0b6;text-align:center;padding:10px 6px;font-weight:750}.mw-nav>a:hover,
-.mw-nav>a.selected{background:linear-gradient(#68523e,#353747);
-  border-color:#d3a86c;color:#ffebc6}.mw-nav .world-nav-glyph{font:normal 19px Georgia,serif;color:#e6ba83}.mw-context-links{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.mw-context-links .mw-link{margin-top:10px}
-@media(max-width:610px){.mw-nav{padding:8px 10px;gap:3px}.mw-nav>a{flex-direction:column;gap:0;padding:6px 1px;font-size:10px}.mw-nav .world-nav-glyph{font-size:19px}
-}.mw-header{background:linear-gradient(#18283b,#162638ad);
-  border-bottom:1px solid #d0a87377}.mw-logo{text-shadow:0 1px 14px #deba7a44}.mw-hero{border:2px solid #be9c75;
-  box-shadow:0 28px 55px #080d1899,inset 0 0 0 5px #1a2a35,
-    inset 0 0 0 6px #a9875150;
-  background:radial-gradient(ellipse at 86% 34%,#788ba15a,transparent 44%),
-    repeating-linear-gradient(95deg,#372c3329 0px,#372c3329 4px,#23384b2a 6px,#23384b2a 16px),
-    linear-gradient(120deg,#30465b,#26374f 65%,#17293c)}.mw-tile{border-color:#a78e6fbb;
-  box-shadow:inset 0 0 0 1px #e8ce9b23,0 8px 28px #0b142437}.mw-tile{border-left:3px solid #caa272}.mw-tile:hover{border-color:#ebc990}
-@media(prefers-reduced-motion:reduce){.mw-tile{transition:none}}
+.mw-context-links{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 
 /* V2.6: the town is a navigable diegetic district rather than a KPI hero.
    Building faces are pure CSS, no procedural SVG character "art". */
