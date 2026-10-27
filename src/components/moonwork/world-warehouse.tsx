@@ -25,7 +25,7 @@ export function Warehouse({s}:{s:WorkshopState}){
       </div>
       <Link href="/town/" className="mw-hero-shortcut">去月光街补货 ↗</Link>
     </section>
-    <div className="mw-grid mw-columns">
+    <div className="mw-grid mw-columns mt-2.5 grid grid-cols-1 gap-2.5">
     <Panel title="⬡ 当前真实库存">
       <div className="mw-stock"><span>✦ 共享晶核</span><b>{s.warehouse.core}</b></div>
       <div className="mw-stock"><span>◈ 水汽泵储水</span><b>{stored('well')}</b></div>

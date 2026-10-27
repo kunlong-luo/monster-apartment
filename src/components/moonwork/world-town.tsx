@@ -78,7 +78,7 @@ export function Town({s}:{s:WorkshopState}){
       </div>
     </section>
     </div>
-    <div className="mw-stat-grid">
+    <div className="mw-stat-grid mt-2.5 grid grid-cols-1 gap-2.5">
       <Panel title="当前工坊"><strong>{rank.zh}</strong></Panel>
       <Panel title="已建设设备"><strong>{s.tiles.filter(Boolean).length} / 15</strong></Panel>
       <Panel title="已交付订单"><strong>{s.completed} 单</strong></Panel>

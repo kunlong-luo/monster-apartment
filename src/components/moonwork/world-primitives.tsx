@@ -21,7 +21,10 @@ export const WORLD_ACTION_CLASS=WORLD_LINK_CLASS+
 export const WorkshopLink=({children,className=''}:{children:ReactNode;className?:string})=>
   <Link href="/workshop/" className={WORLD_LINK_CLASS+' '+className}>{children}</Link>;
 export function Panel({title,children}:{title:string;children:ReactNode}){
-  return <section className="mw-panel min-w-0 rounded-xl border border-gothic-brass/60 bg-gothic-panel/85 p-4 text-gothic-ivory shadow-[0_8px_24px_#0006] sm:p-5"><h2>{title}</h2>{children}</section>;
+  return <section className="mw-panel min-w-0 rounded-[10px] border border-[#aa855d75] bg-[linear-gradient(135deg,#34222ab9,#181219c9)] p-[14px] text-[#eee0cd] shadow-[inset_0_1px_#ebcd9220,0_5px_19px_#0004] [&_p]:text-xs [&_p]:leading-[1.7] [&_p]:text-[#dcc7ae] [&_strong]:text-[22px] [&_strong]:text-[#ffdb9e]">
+    <h2 className="mb-[15px] border-b border-[#af907654] pb-[13px] font-serif text-[19px] font-bold text-[#f6d09e]">{title}</h2>
+    {children}
+  </section>;
 }
 export function Action({type,children,disabled=false,testId,onApplied}:{
   type:WorldAction;children:ReactNode;disabled?:boolean;testId?:string;

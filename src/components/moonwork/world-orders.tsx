@@ -23,7 +23,7 @@ export function Orders({s}:{s:WorkshopState}){
       </div>
       <Link href="/workshop/" className="mw-hero-shortcut">返回工坊 ↗</Link>
     </section>
-    <div className="mw-grid mw-columns">
+    <div className="mw-grid mw-columns mt-2.5 grid grid-cols-1 gap-2.5">
     <Panel title="◇ 正式委托">
       <p className="mw-eyebrow">CURRENT ORDER</p>
       <p className="mw-big">{s.warehouse.core} <small>/ {s.order.cores} 晶核</small></p>
