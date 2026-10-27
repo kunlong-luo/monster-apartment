@@ -1,30 +1,4 @@
 
-/* Gothic Rebuild v1: the illustrated world occupies the whole viewport;
-   React controls are compact diegetic HUDs with internal scrolling only. */
-.mw.mw-gothic{height:100dvh;min-height:560px;overflow:hidden;position:relative;isolation:isolate;
-  background:#100910;color:#f3dcc2;font-family:Georgia,"Noto Serif SC","Songti SC",serif}
-.mw-gothic-scene{position:absolute;inset:0;z-index:-3;background-color:#21151d;
-  background-position:center;background-size:cover;pointer-events:none}
-.mw-gothic-shadow{position:absolute;inset:0;z-index:-2;pointer-events:none;
-  background:linear-gradient(180deg,#09070bd9 0%,transparent 22%,transparent 65%,#09070de8 100%),
-  linear-gradient(90deg,#10091180,transparent 35%,#0c0713a8 75%,#07050cdd 100%)}
-.mw-gothic-character{position:absolute;left:30%;width:30%;top:15%;height:68%;z-index:0;
-  cursor:pointer;text-decoration:none!important}
-.mw-gothic-character-label{position:absolute;bottom:4%;left:50%;transform:translateX(-50%);
-  white-space:nowrap;letter-spacing:.12em;font-size:11px;color:#ffe5c2;
-  text-shadow:0 3px 9px #000;opacity:0;transition:opacity .2s}
-.mw-gothic-character:hover .mw-gothic-character-label,.mw-gothic-character:focus-visible .mw-gothic-character-label{opacity:1}
-.mw.mw-gothic .mw-main{position:absolute;z-index:4;top:85px;right:clamp(12px,2.4vw,42px);
-  bottom:94px;left:auto;width:clamp(330px,35vw,540px);max-width:calc(100vw - 42px);
-  min-height:0;padding:18px 20px 25px;overflow-y:auto;overflow-x:hidden;
-  scrollbar-color:#ab8258 #231521;scrollbar-width:thin;
-  border:1px solid #b9946877;border-radius:18px;
-  background:linear-gradient(135deg,#241721ed,#160f19e8 48%,#1e161bdc);
-  box-shadow:0 18px 70px #08040bc9,inset 0 1px #f5e3c933;
-  backdrop-filter:blur(17px);overscroll-behavior:contain}
-.mw.mw-gothic .mw-main>h1{font-size:clamp(23px,2.5vw,34px);line-height:1.2;
-  margin:3px 0 16px;color:#ffdeb1;letter-spacing:.12em}
-.mw.mw-gothic .mw-eyebrow{color:#bc9e7e;font-family:Georgia,serif;font-size:10px!important}
 .mw.mw-gothic .mw-panel,.mw.mw-gothic .mw-tile,.mw.mw-gothic .mw-market,
 .mw.mw-gothic .mw-town-resident,.mw.mw-gothic .mw-market-offer{
   border:1px solid #aa855d75!important;background:linear-gradient(135deg,#34222ab9,#181219c9)!important;
@@ -70,16 +44,4 @@
 .mw.mw-gothic .mw-witch-banner{padding:10px;gap:10px}
 .mw.mw-gothic .mw-witch-painting{width:85px;min-width:85px}
 .mw.mw-gothic .mw-witch-banner h2{font-size:18px}
-.mw.mw-gothic .mw-footer{position:absolute;z-index:2;left:0;bottom:10px;
-  padding:4px 15px;border:0;text-align:left;font-size:9px;background:none;color:#ac8e78}
 .mw.mw-gothic .mw-town-next{margin-bottom:18px}
-@media(max-width:700px){
-  .mw.mw-gothic{min-height:0}
-  .mw.mw-gothic .mw-main{top:44%;bottom:80px;left:10px;right:10px;width:auto;
-    max-width:none;padding:13px 13px 19px;border-radius:13px}
-  .mw-gothic-character{left:17%;top:10%;width:64%;height:31%}
-  .mw.mw-gothic .mw-main>h1{font-size:21px}
-  .mw.mw-gothic .mw-footer{display:none}
-}
-@media(prefers-reduced-motion:reduce){
-}
