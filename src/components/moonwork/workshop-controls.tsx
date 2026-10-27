@@ -39,7 +39,7 @@ export function WorkshopControls({
             const occupied = world.tiles.findIndex(
               (tile) => tile?.worker === id,
             );
-            const isSelected = selection.worker === id;
+            const isSelected = chosenWorker === id;
             return (
               <button
                 key={id}
@@ -93,7 +93,7 @@ export function WorkshopControls({
         <div id="catalog" className="options">
           {machines.map((id) => {
             const info = MACHINES[id];
-            const isSelected = selection.machine === id;
+            const isSelected = chosenMachine === id;
             return (
               <button
                 key={id}
