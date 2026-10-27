@@ -9,25 +9,6 @@
 .ga-shade{z-index:-1;background:linear-gradient(180deg,#07050bd8,transparent 25%,transparent 70%,#09040be9),
   linear-gradient(90deg,#07040bb5,transparent 32%,transparent 72%,#0a0712ba)}
 .ga-loading{display:grid;place-items:center;font-size:24px;letter-spacing:.13em}
-.ga-room-list{position:absolute;z-index:3;top:23%;left:clamp(9px,2vw,28px);width:clamp(198px,22vw,315px);
-  max-height:60%;display:flex;flex-direction:column;gap:10px}
-.ga-list-title{font:10px Georgia,serif;letter-spacing:.17em;color:#c7a87c;
-  text-shadow:0 1px 8px #000}
-.ga-doors{display:grid;grid-template-columns:1fr;gap:5px;overflow:auto;
-  scrollbar-width:thin;scrollbar-color:#9b7549 transparent}
-.ga-door{display:flex;text-align:left;align-items:center;gap:9px;min-height:52px;
-  border:1px solid #ad845992;border-radius:8px;padding:6px 9px;
-  background:linear-gradient(105deg,#24151dde,#1c1114b7);
-  backdrop-filter:blur(9px);box-shadow:0 5px 12px #0005}
-.ga-door.is-active,.ga-door:hover,.ga-door:focus-visible{background:linear-gradient(100deg,#66402f,#2c1b25df);
-  border-color:#f5ca8e}
-.ga-door.is-occupied{border-left:3px solid #dbb17a}
-.ga-door-icon{font-size:26px;width:34px;text-align:center;flex:none;color:#e9ba7b}
-.ga-door-copy{display:grid;gap:4px;min-width:0}
-.ga-door-copy strong{font-size:clamp(11px,1vw,13px);white-space:nowrap}
-.ga-door-copy small{font-size:10px;color:#ceb89e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ga-incident{display:inline-flex;color:#ffbba4;font-size:11px;line-height:1.4;
-  background:#3e2332d8;border:1px solid #aa7467;border-radius:7px;padding:8px}
 .ga-witch{position:absolute;z-index:1;top:12%;left:39%;width:24%;height:70%;
   border:0;background:transparent!important;cursor:pointer}
 .ga-witch-title{position:absolute;left:50%;bottom:18%;transform:translateX(-50%);
@@ -54,18 +35,10 @@
   padding:8px;border-radius:8px}
 .ga :is(a,button):focus-visible{outline:2px solid #fff0be;outline-offset:2px}
 @media(max-width:850px){
-  .ga-room-list{top:18%;width:220px;max-height:57%}
   .ga-lower{top:auto;bottom:91px;width:260px;max-height:44%}
   .ga-witch{left:35%;width:32%}
 }
 @media(max-width:600px){
-  .ga-room-list{left:7px;top:14%;width:45%;max-height:31%;gap:3px}
-  .ga-list-title{font-size:8px}
-  .ga-doors{gap:3px}
-  .ga-door{min-height:37px;padding:4px 5px;gap:3px}
-  .ga-door-icon{font-size:17px;width:23px}
-  .ga-door-copy strong{font-size:10px}
-  .ga-door-copy small{font-size:9px}
   .ga-witch{left:48%;top:11%;width:45%;height:31%}
   .ga-witch-title{bottom:56%;left:74%;font-size:11px}
   .ga-witch-title small{display:none}

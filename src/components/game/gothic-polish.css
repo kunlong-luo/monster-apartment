@@ -56,16 +56,6 @@
   background-size:173px 191px;background-position:23% 14%;
   opacity:.2;animation:v04-fog 19s ease-in-out infinite alternate;
 }
-.ga-room-list{width:clamp(195px,19vw,278px);top:18%;gap:9px}
-.ga-doors{gap:7px;padding:4px 4px 4px 2px}
-.ga-door{
-  min-height:49px;position:relative;overflow:hidden;padding:7px 8px 7px 11px;
-  border-radius:4px 10px 10px 4px;
-  background:
-    linear-gradient(105deg,#3f2826e3,#1a1019dc 48%,#26141ce8);
-  border-color:#a8885b80;box-shadow:inset 2px 0 #c8a06c68,inset 0 1px #f8d8ae30,0 6px 14px #0503078a;
-  transition:transform .22s,border-color .22s,background .22s,box-shadow .22s
-}
 .ga-door::after{
   content:"";position:absolute;top:11px;right:9px;width:5px;height:5px;border-radius:50%;
   background:#90786e;box-shadow:0 0 0 2px #0c070f78
@@ -73,12 +63,6 @@
 .ga-door.is-occupied::after{
   background:#f6d095;box-shadow:0 0 8px #ffc77b,0 0 1px 2px #180f14
 }
-.ga-door:hover,.ga-door.is-active{transform:translateX(4px);
-  box-shadow:inset 2px 0 #ffd9a8,inset 0 1px #ffe2b652,0 7px 21px #050307b5}
-.ga-door-icon{color:#edbf80;font-size:24px;
-  text-shadow:0 1px 5px #000,0 0 9px #d7a0774d}
-.ga-door-copy strong{font-weight:550;letter-spacing:.025em;color:#fbe2c3}
-.ga-door-copy small{color:#caae92}
 .ga-lower{max-height:58%}
 .ga-room-drawer{animation:v04-panel-in .23s cubic-bezier(.17,.75,.31,1) both}
 .ga-story,.ga-room-drawer{border-color:#d2a46e7c;
@@ -119,14 +103,9 @@
   100%{opacity:0;transform:translate(-50%,-9px)}
 }
 @media(max-width:840px){
-  .ga-room-list{top:15%}
 }
 @media(max-width:600px){
   .gothic-lobby__painting{background-position:50% center}
-  .ga-room-list{left:7px;top:14%;width:46%;max-height:31%;gap:3px}
-  .ga-doors{gap:3px;padding:2px}
-  .ga-door{min-height:37px;padding:4px 6px;border-radius:3px 6px 6px 3px}
-  .ga-door-icon{font-size:17px;width:22px}
   .ga-lower{max-height:none}
   .ga-feedback{bottom:76px;font-size:10px;padding:8px 10px}
 }
