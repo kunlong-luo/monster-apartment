@@ -11,17 +11,14 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint app src next.config.ts playwright.config.ts vitest.config.ts",
     "test": "vitest run",
-    "test:rules": "node --test tests/engine.test.mjs",
     "e2e": "playwright test",
     "check:stable-deps": "node scripts/check-stable-dependencies.mjs"
   },
   "dependencies": {
     "motion": "14.6.0",
     "next": "16.4.2",
-    "phaser": "4.2.1",
     "react": "19.3.1",
-    "react-dom": "19.3.1",
-    "zustand": "5.0.15"
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
