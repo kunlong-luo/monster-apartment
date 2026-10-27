@@ -13,16 +13,18 @@ export async function mountWorkshopGame(root:HTMLElement,
   assetBase:string=document.baseURI):Promise<()=>void>{
 const $=(id:string)=>root.querySelector<HTMLElement>('#'+id)!;
 let world:WorkshopState=newWorkshop();
-let savedAtMount=false;
-try {
-  const parsed:unknown=JSON.parse(localStorage.getItem(STORAGE)??'null');
-  if(validWorkshop(parsed)){world=parsed;savedAtMount=true;}
-}catch {/* private browsing and invalid saves both start clean */}
-if(!savedAtMount){
-  // A player's untouched first factory must exist for all linked pages.
-  // Valid old saves are never silently rewritten on mount.
+let raw:string|null=null;
+try{raw=localStorage.getItem(STORAGE);}catch{/* Private browsing may deny storage. */}
+if(raw!==null){
+  // Corrupt saves must never be silently replaced by a new game.
+  let parsed:unknown;
+  try{parsed=JSON.parse(raw);}catch{throw Error('现有工坊存档无法解析，原始内容已保留。');}
+  if(!validWorkshop(parsed))throw Error('现有工坊存档结构异常，原始内容已保留。');
+  world=parsed;
+}else{
+  // Initialize only when no prior save exists.
   try{localStorage.setItem(STORAGE,JSON.stringify(world));}
-  catch{/* storage unavailable in private browsing */}
+  catch{/* A temporary unsaved session is still playable. */}
 }
 let selectedPlot:number|null=null;
 let chosenWorker:WorkerId|null=null;
@@ -35,7 +37,8 @@ function apply(next:WorkshopState,feedback:string,tone:typeof effect='normal'){
   if(next===world){message='无法这样操作：请检查格子、机器或星币。';effect='bad';return;}
   world=next;message=feedback;effect=tone;
   try{localStorage.setItem(STORAGE,JSON.stringify(world));
-    window.dispatchEvent(new Event('moonwork:v2-update'));}catch{/* local save optional */}
+    window.dispatchEvent(new Event('moonwork:v2-update'));}
+  catch{message=feedback+'（保存失败，刷新后可能丢失进度）';effect='bad';}
 }
 function clearChoice(){chosenWorker=null;chosenMachine=null;movingFrom=null;}
 function plot(index:number){
@@ -264,7 +267,10 @@ const onRootClick=(event:MouseEvent)=>{
     message=selected?'已取消建造。':'选择空地建造 '+MACHINES[id].zh+'。';
     effect='normal';render();
   }else if(origin.closest('#move')){
-    if(selectedPlot!==null&&world.tiles[selectedPlot]){
+    if(movingFrom!==null){
+      movingFrom=null;
+      message='已取消设备搬动。';effect='normal';render();
+    }else if(selectedPlot!==null&&world.tiles[selectedPlot]){
       movingFrom=selectedPlot;chosenMachine=null;chosenWorker=null;
       message='现在点击一个空格，搬动这台机器（不收费）。';effect='normal';
       render();
@@ -287,7 +293,7 @@ const onRootClick=(event:MouseEvent)=>{
       next.patron?.status==='missed'&&changed||report.lost?'bad':'normal');
     selectedPlot=null;render();
   }else if(origin.closest('#reset')){
-    if(!window.confirm('重新开工？当前 V2 实验存档会被覆盖。'))return;
+    if(!window.confirm('重新开工？当前工坊存档会被覆盖。'))return;
     world=newWorkshop();clearChoice();selectedPlot=null;
     message='新工坊已开始。先连接温室和水泵。';effect='normal';
     try{localStorage.setItem(STORAGE,JSON.stringify(world));
@@ -295,10 +301,23 @@ const onRootClick=(event:MouseEvent)=>{
     render();
   }
 };
+const onStorage=(event:StorageEvent)=>{
+  if(event.key!==STORAGE)return;
+  let next:unknown=null;
+  try{next=JSON.parse(event.newValue??'null');}catch{/* Invalid external data. */}
+  if(!validWorkshop(next)){
+    message='另一窗口的工坊存档已被清除或损坏，请勿覆盖原存档。';
+    effect='bad';render();return;
+  }
+  world=next;clearChoice();selectedPlot=null;
+  message='已同步另一窗口的工坊进度。';effect='normal';render();
+};
 root.addEventListener('click',onRootClick);
+window.addEventListener('storage',onStorage);
 render();
 return ()=>{
   root.removeEventListener('click',onRootClick);
+  window.removeEventListener('storage',onStorage);
   stage.destroy();
 };
 }
