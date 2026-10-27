@@ -358,9 +358,8 @@ export function WorkshopClient() {
         </section>
 
         {/* Footer */}
-        <footer>
-          <p id="status" data-testid="v2-status" role="status"></p>
-          <small>✦ 月光商区 · 工坊日志</small>
+        <footer aria-hidden="true">
+          <small>✦ 月光商区</small>
         </footer>
         <span id="summary" className="sr-only"></span>
       </main>
