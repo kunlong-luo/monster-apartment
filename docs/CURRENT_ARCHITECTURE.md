@@ -90,3 +90,13 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 - 地图弹窗移除重复的委托入口。原有路由和游戏数据不变。
 - `GothicRouteTransition` 监听 document 冒泡点击，让 React/Next 以及控件的 `preventDefault()` 先运行；阻止跳转不再触发暗金遮罩。历史返回只用 pathname 的入场渐隐，避免 popstate 的离场状态覆盖入场。过渡仍然永远不可点击且有兜底恢复。
 - Playwright 检查导航取消、真实任务进度、历史往返和弹窗入口去重。
+
+## 第九轮原画实装与真实任务 HUD
+
+- `public/art/lobby-hero-v2.webp`：去除烘焙假 UI 后的哥特城堡/月纱双光源绘景，1030×645；替换大厅、公寓、街区/委托/角色/仓库及工坊 React 外层背景，原全屏 SVG/AVIF 原型背景不再充当主大厅绘景。
+- `public/art/yuesha-portrait-v2.webp`：450×510，替换大厅头像、公寓头像、角色页及工坊委托肖像。
+- `public/art/yuesha-bust-v2.webp`：620×560，用作大厅和公寓的大尺寸月纱对话视觉。三张均为 AI 生成的有背景平面绘景，**不冒充透明分层动作精灵**。
+- 窄屏（宽度 700px 及以下）使用约 25% 的图片水平焦点，让月纱在竖屏裁切下继续可见，普通大屏保持 full-cover。
+- 新图的 WebP 容器魔数、VP8 帧尺寸与合理大小由 Vitest 验证；Playwright 验证浏览器实际解码的像素分辨率与手机裁切位置。
+- `WorkshopClient` 继续使用独立 PixiJS 舞台和原存档，只把其 React UI 背景/委托肖像改成新图，并移除过渡状态导致的旧肖像闪现。
+- 旧 `v2/art` 极小 AVIF 仅留给 Pixi 内部待迁移贴图，不会从仓库强行删除造成运行时丢资源。

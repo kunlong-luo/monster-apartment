@@ -8,6 +8,10 @@ test('desktop and phone Gothic HUD scenes stay fully visible',async({page})=>{
   await page.goto('/');
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await expect(page.getByTestId('gothic-lobby-painting-image')).toBeVisible();
+  const hero=page.getByTestId('gothic-lobby-painting-image');
+  await expect(hero).toHaveJSProperty('naturalWidth',1030);
+  await expect(hero).toHaveJSProperty('naturalHeight',645);
+  await expect(page.locator('.gothic-lobby__avatar img')).toHaveJSProperty('naturalWidth',450);
   await expect(page.getByTestId('gothic-light-layer')).toBeAttached();
   await expect(page.getByTestId('gothic-scene-illumination')).toHaveAttribute('data-motion','still');
   await page.screenshot({path:'test-results/gothic-lobby-desktop.png',animations:'disabled'});
@@ -19,9 +23,11 @@ test('desktop and phone Gothic HUD scenes stay fully visible',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto('/');
   await expect(page.getByRole('navigation',{name:'主要游戏功能'})).toBeVisible();
+  await expect(page.getByTestId('gothic-lobby-painting-image')).toHaveCSS('object-position','25% 50%');
   await page.screenshot({path:'test-results/gothic-lobby-mobile.png',animations:'disabled'});
   await page.goto('/apartment/');
   await expect(page.getByTestId('ga-room-5')).toBeVisible();
+  await expect(page.locator('.ga-backdrop')).toHaveCSS('background-position','25% 50%');
   await page.screenshot({path:'test-results/gothic-apartment-mobile.png',animations:'disabled'});
 });
 

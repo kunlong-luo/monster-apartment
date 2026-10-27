@@ -41,12 +41,41 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     const declaration=read('src/types/next-static-webp.d.ts');
     const polish=read('src/components/game/gothic-polish.css');
     expect(declaration).toContain("declare module '*.webp'");
-    expect(lobby).toContain("import lobbyHero from '../../../public/lobby-hero.webp'");
+    expect(lobby).toContain("import lobbyHero from '../../../public/art/lobby-hero-v2.webp'");
     expect(lobby).toContain('data-testid="gothic-lobby-painting-image"');
     expect(lobby).toContain('unoptimized');
     expect(lobby).not.toContain('./lobby-hero.webp'+")");
     expect(polish).toContain('.gothic-lobby__painting{transform:none;filter:none}');
     expect(polish).not.toContain('scale(1.028)');
+  });
+  it('ships real lossily-compressed WebP paintings at usable resolutions',()=>{
+    const scenes=[
+      {file:'public/art/lobby-hero-v2.webp',minWidth:1000,minHeight:600,minBytes:170000},
+      {file:'public/art/yuesha-portrait-v2.webp',minWidth:440,minHeight:500,minBytes:65000},
+      {file:'public/art/yuesha-bust-v2.webp',minWidth:600,minHeight:550,minBytes:100000},
+    ];
+    for(const art of scenes){
+      const data=readFileSync(join(root,art.file));
+      expect(data.toString('ascii',0,4),art.file).toBe('RIFF');
+      expect(data.toString('ascii',8,12),art.file).toBe('WEBP');
+      expect(data.toString('ascii',12,16),art.file).toBe('VP8 ');
+      const start=data.indexOf(Buffer.from([0x9d,0x01,0x2a]),20);
+      expect(start,art.file).toBeGreaterThanOrEqual(0);
+      const width=data.readUInt16LE(start+3)&0x3fff;
+      const height=data.readUInt16LE(start+5)&0x3fff;
+      expect(width,art.file).toBeGreaterThanOrEqual(art.minWidth);
+      expect(height,art.file).toBeGreaterThanOrEqual(art.minHeight);
+      expect(data.byteLength,art.file).toBeGreaterThan(art.minBytes);
+    }
+    const lobby=read('src/components/game/gothic-lobby.tsx');
+    const apartment=read('src/components/game/gothic-apartment.tsx');
+    const world=read('src/components/moonwork/world-ui.tsx');
+    const workshop=read('src/components/moonwork/workshop-client.tsx');
+    expect(lobby).toContain('yuesha-portrait-v2.webp');
+    expect(apartment).toContain('yuesha-bust-v2.webp');
+    expect(world).toContain('lobby-hero-v2.webp');
+    expect(workshop).not.toContain('url(../lobby-hero.webp)');
+    expect(workshop).toContain('moonveilPortrait.src');
   });
   it('keeps the painted scene sharp and renders only independent animated lighting',()=>{
     const lobby=read('src/components/game/gothic-lobby.tsx');
