@@ -22,6 +22,10 @@ await copyFile(
   resolve(root,'node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-400-normal.woff2'),
   resolve(root,'dist/assets/noto-sans-sc.woff2'),
 );
+await copyFile(resolve(root,'../public/art/lobby-hero-v3.webp'),
+  resolve(root,'dist/assets/lobby-hero-v3.webp'));
+await copyFile(resolve(root,'../public/art/yuesha-avatar-v3.webp'),
+  resolve(root,'dist/assets/yuesha-avatar-v3.webp'));
 await copyFile(resolve(root,'../public/art/lobby-hero-v2.webp'),
   resolve(root,'dist/assets/lobby-hero-v2.webp'));
 await copyFile(resolve(root,'art/moon-workshop.avif'),resolve(root,'dist/assets/moon-workshop.avif'));

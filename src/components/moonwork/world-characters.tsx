@@ -3,7 +3,7 @@ import Link from 'next/link';
 import {WORLD_LINK_CLASS} from './world-primitives';
 import Image from 'next/image';
 import workerTriptych from '../../../v2/art/worker-triptych.avif';
-import moonveilPortrait from '../../../public/art/yuesha-portrait-v2.webp';
+import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import {WORKERS,MACHINES} from '../../../v2/src/workshop-engine';
 import type {WorkshopState,WorkerId} from '../../../v2/src/workshop-engine';
 const ids=['brook','fern','cinder'] as const;

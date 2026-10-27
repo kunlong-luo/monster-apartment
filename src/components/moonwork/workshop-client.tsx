@@ -13,8 +13,8 @@ import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
 import {WorkshopControls} from './workshop-controls';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
-import lobbyHero from '../../../public/art/lobby-hero-v2.webp';
-import moonveilPortrait from '../../../public/art/yuesha-portrait-v2.webp';
+import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
+import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import type {
   WorkshopAction,WorkshopRuntimeController,WorkshopSelectionSnapshot,
   WorkshopSelectionListener

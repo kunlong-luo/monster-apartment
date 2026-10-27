@@ -8,11 +8,12 @@ export async function loadWorkshopPaintedArt(assetBase:string){
   let backdropSource:'high-res-webp'|'legacy-avif'|'procedural'='procedural';
   let paintedFloor:Texture|null=null;
   let kilnArtReview:Texture|null=null;
+  let patronPortrait:Texture|null=null;
   const paintedDetail:Partial<Record<'well'|'garden',Texture>>={};
   try{
     const image=new Image();
     image.crossOrigin='anonymous';
-    image.src=new URL('./assets/lobby-hero-v2.webp',assetBase).href;
+    image.src=new URL('./assets/lobby-hero-v3.webp',assetBase).href;
     await image.decode();
     painted=Texture.from(image);
     backdropSource='high-res-webp';
@@ -20,11 +21,20 @@ export async function loadWorkshopPaintedArt(assetBase:string){
     try{
       const image=new Image();
       image.crossOrigin='anonymous';
-      image.src=new URL('./assets/moon-workshop.avif',assetBase).href;
+      image.src=new URL('./assets/lobby-hero-v2.webp',assetBase).href;
       await image.decode();
       painted=Texture.from(image);
-      backdropSource='legacy-avif';
-    }catch{/* stage retains procedural fallback if both textures fail */}
+      backdropSource='high-res-webp';
+    }catch{
+      try{
+        const image=new Image();
+        image.crossOrigin='anonymous';
+        image.src=new URL('./assets/moon-workshop.avif',assetBase).href;
+        await image.decode();
+        painted=Texture.from(image);
+        backdropSource='legacy-avif';
+      }catch{/* generated background remains playable */}
+    }
   }
   try{
     const floorImage=new Image();
@@ -33,6 +43,14 @@ export async function loadWorkshopPaintedArt(assetBase:string){
     await floorImage.decode();
     paintedFloor=Texture.from(floorImage);
   }catch{/* keep gameplay available even if an asset cannot decode */}
+  // High-detail cameo remains independent of the factory floor textures.
+  try{
+    const image=new Image();
+    image.crossOrigin='anonymous';
+    image.src=new URL('./assets/yuesha-avatar-v3.webp',assetBase).href;
+    await image.decode();
+    patronPortrait=Texture.from(image);
+  }catch{/* keep the original animated visitor as an offline fallback */}
   // One actual painted, alpha-backed machine crop for visual review only.
   // Never replace all machine art from a flattened screenshot.
   try {
@@ -54,5 +72,5 @@ export async function loadWorkshopPaintedArt(assetBase:string){
     }catch{/* independent codec/image failure does not block production */}
   }
 
-  return {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail};
+  return {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait};
 }

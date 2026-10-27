@@ -5,9 +5,9 @@ import Image from 'next/image';
 import {AnimatePresence} from 'motion/react';
 import {useMemo,useState} from 'react';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
-import moonveilPortrait from '../../../public/art/yuesha-portrait-v2.webp';
-import moonveilBust from '../../../public/art/yuesha-bust-v2.webp';
-import lobbyHero from '../../../public/art/lobby-hero-v2.webp';
+import moonveilAvatar from '../../../public/art/yuesha-avatar-v3.webp';
+import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
+import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
 import {CHANGE_EVENT,commitWorldAction} from '@/lib/moonwork/world-store';
 import {GothicAtmosphere} from './gothic-atmosphere';
@@ -86,8 +86,8 @@ export function GothicLobby(){
     <header className="absolute inset-x-0 top-0 z-[4] grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-x-2 px-3 pt-3 sm:px-5 max-[840px]:grid-cols-[minmax(0,1fr)_auto]" aria-label="玩家与资源">
       <button type="button" className="flex min-h-12 w-max max-w-full items-center gap-2.5 bg-transparent text-left text-gothic-ivory focus-visible:outline-2 focus-visible:outline-gothic-glow"
         onClick={()=>setOpen('profile')} aria-label="打开玩家资料" aria-expanded={panel==='profile'}>
-        <span className="gothic-lobby__avatar relative block size-[clamp(44px,4.4vw,73px)] shrink-0 overflow-hidden rounded-full border-2 border-[#e8c690] bg-[#362232] shadow-[0_0_0_3px_#171015bb,0_2px_18px_#0009]"><Image src={moonveilPortrait} alt="" fill unoptimized
-          sizes="60px" className="gothic-lobby__avatar-image object-cover"/></span>
+        <span className="gothic-lobby__avatar relative block size-[clamp(44px,4.4vw,73px)] shrink-0 overflow-hidden rounded-full border-2 border-[#e8c690] bg-[#362232] shadow-[0_0_0_3px_#171015bb,0_2px_18px_#0009]"><Image src={moonveilAvatar} alt="" fill unoptimized
+          sizes="60px" className="gothic-lobby__avatar-image object-cover object-center"/></span>
         <span className="gothic-lobby__player-copy grid gap-1 whitespace-nowrap [text-shadow:0_2px_6px_#000]"><strong className="text-[clamp(13px,1.3vw,22px)] font-semibold">夜色蔷薇</strong><small className="text-[clamp(9px,.75vw,12px)] text-[#e3cbaa]">月光公寓 · 第 {world.day} 天</small></span>
       </button>
       <div className="flex items-center gap-1.5 pt-1 max-[840px]:col-span-2 max-[840px]:col-start-1 max-[840px]:row-start-2 max-[840px]:justify-center" aria-label="当前存档资源">
@@ -127,7 +127,7 @@ export function GothicLobby(){
       </Link>)}
     </nav>
 
-    <button type="button" className="gothic-lobby__character-hit absolute z-[1] border-0! bg-transparent! inset-[15%_36%_16%_35%] cursor-pointer focus-visible:outline-2 focus-visible:outline-gothic-glow"
+    <button type="button" className="gothic-lobby__character-hit absolute z-[1] border-0! bg-transparent! inset-[15%_46%_16%_20%] max-[700px]:inset-[22%_27%_24%_25%] cursor-pointer focus-visible:outline-2 focus-visible:outline-gothic-glow"
       onClick={talk} aria-label="与月纱互动" title="与月纱互动"/>
     <div className="gothic-lobby__character-caption pointer-events-none absolute z-[1] bottom-[clamp(106px,16vh,158px)] left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5 text-[#f6d9b8] [text-shadow:0_3px_12px_#000]" aria-hidden="true"><span className="text-[13px] tracking-[.23em]">月纱</span><small className="text-[10px] text-[#d0b298]">暗夜公寓的女主人</small></div>
 

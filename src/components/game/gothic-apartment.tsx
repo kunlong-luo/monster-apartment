@@ -3,9 +3,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {AnimatePresence} from 'motion/react';
 import {useEffect,useState,useSyncExternalStore} from 'react';
-import moonveil from '../../../public/art/yuesha-portrait-v2.webp';
-import moonveilBust from '../../../public/art/yuesha-bust-v2.webp';
-import lobbyHero from '../../../public/art/lobby-hero-v2.webp';
+import moonveil from '../../../public/art/yuesha-avatar-v3.webp';
+import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
+import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import {newCozyGame,validCozySave,resumeCozySave,advanceCozy,
   relocateCozyResident,cozyDay,cozyGoal,cozyDailyIncome} from '@/core/cozy-engine';
 import type {CozyState} from '@/core/cozy-engine';
