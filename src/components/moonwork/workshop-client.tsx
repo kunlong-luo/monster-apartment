@@ -17,6 +17,7 @@ import {
   newWorkshop,
 } from '../../../v2/src/workshop-engine';
 import type {Craft, WorkerId} from '../../../v2/src/workshop-engine';
+import workerTriptych from '../../../v2/art/worker-triptych.avif';
 
 declare global {
   interface Window {
@@ -259,7 +260,12 @@ export function WorkshopClient() {
                     }`}
                   >
                     <span
-                      className={'worker-miniature ' + id}
+                      className={'worker-miniature ' + id + ' block size-8 shrink-0 rounded-full border border-gothic-brass/70 bg-no-repeat sm:size-9'}
+                      style={{
+                        backgroundImage: 'url(' + workerTriptych.src + ')',
+                        backgroundSize: '300% 100%',
+                        backgroundPosition: id === 'brook' ? '0% center' : id === 'fern' ? '50% center' : '100% center',
+                      }}
                       role="img"
                       aria-label={profile.zh + '的绘制头像'}
                     />
