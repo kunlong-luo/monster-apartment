@@ -1,5 +1,6 @@
 /** Residents used by the current housing simulation, not old gacha code. */
-export type SpiritId='seedling'|'dewdrop'|'lantern-beetle'|'fern-hare'|'moon-scout';
+export type SpiritId='seedling'|'dewdrop'|'lantern-beetle'|'fern-hare'|'moon-scout'
+  |'pebble-crab'|'whisper-cat'|'moss-keeper'|'prism-mole';
 
 export type HomeType = 'nest' | 'bath' | 'workshop' | 'greenhouse';
 export type Furnishing = 'plant' | 'lamp' | 'books';
