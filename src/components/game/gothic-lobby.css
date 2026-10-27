@@ -42,3 +42,9 @@
     transition:none!important;
   }
 }
+ 
+/* 2D art direction: the focal character sits left of center in the new
+ * painting. Show her face on narrow phones instead of cropping to the moon. */
+@media(max-width:700px){
+  .gothic-lobby__painting img{object-position:25% center}
+}

@@ -140,3 +140,8 @@
     align-items:flex-start;justify-content:end;gap:11px}.mw-world-hero-copy h2{font-size:29px}.mw-world-hero-copy p{font-size:12px}.mw-warehouse-art{right:0;top:-20px;max-width:38%;opacity:.37}
 }
 @media(prefers-reduced-motion:reduce){.mw-worker-card{transition:none}}
+
+/* Large scenic WebP crops differently on a narrow display: retain Yuesha. */
+@media(max-width:700px){
+  .mw-gothic-scene{background-position:25% center}
+}

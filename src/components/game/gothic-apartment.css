@@ -46,3 +46,8 @@
   .ga-story,.ga-room-drawer{padding:12px 13px;border-radius:11px}
 }
 @media(prefers-reduced-motion:reduce){}
+
+/* Match the portrait focal point with the lobby on mobile. */
+@media(max-width:700px){
+  .ga-backdrop{background-position:25% center}
+}

@@ -13,6 +13,8 @@ import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
 import {WorkshopControls} from './workshop-controls';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
+import lobbyHero from '../../../public/art/lobby-hero-v2.webp';
+import moonveilPortrait from '../../../public/art/yuesha-portrait-v2.webp';
 import type {
   WorkshopAction,WorkshopRuntimeController,WorkshopSelectionSnapshot,
   WorkshopSelectionListener
@@ -79,9 +81,9 @@ export function WorkshopClient() {
   const [selection, setSelection] =
     useState<WorkshopSelectionSnapshot>(initialSelection);
 
-  const [portraitUrl, setPortraitUrl] = useState<string>(
-    './assets/moonveil-portrait.avif',
-  );
+  // Use the same production art as the other React scenes. The low-res
+  // Pixi sidecar portrait remains only for its separate internal textures.
+  const portraitUrl=moonveilPortrait.src;
 
   useEffect(() => {
     const root = host.current?.querySelector<HTMLElement>('#root');
@@ -101,10 +103,9 @@ export function WorkshopClient() {
     root.dataset.reactControls = 'true';
     root.classList.add('gothic-workshop');
     root.style.backgroundImage =
-      'linear-gradient(110deg,#0c0712be,#0d0815d5),url(../lobby-hero.webp)';
+      'linear-gradient(110deg,#0c0712be,#0d0815d5),url('+JSON.stringify(lobbyHero.src)+')';
 
     const base = assetRoot();
-    setPortraitUrl(new URL('assets/moonveil-portrait.avif', base).href);
 
     let cancelled = false;
     let dispose: (() => void) | undefined;
