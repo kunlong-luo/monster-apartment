@@ -124,6 +124,10 @@ export async function mountWorkshopLab(
   // Kept outside the re-rendered `stage` so every refresh retains its handlers.
   const plotHits=new Container();
   app.stage.addChild(plotHits);
+  // Selection feedback never recreates actors or machine sprites.
+  const focusLayer=new Graphics();
+  focusLayer.eventMode='none';
+  app.stage.addChild(focusLayer);
   for(let index=0;index<BOARD_SIZE;index++){
     const {x,y}=plotXY(index);
     const target=new Graphics().roundRect(x,y,CELL,CELL,13)
@@ -192,12 +196,26 @@ export async function mountWorkshopLab(
   let lastSnapshot:WorkshopState|null=null;
   let lastSelection:number|null=null;
   let sceneRefreshes=0;
+  const paintFocus=(selected:number|null)=>{
+    focusLayer.clear();
+    if(selected===null||selected<0||selected>=BOARD_SIZE)return;
+    const {x,y}=plotXY(selected);
+    focusLayer.roundRect(x-3,y-3,CELL+6,CELL+6,15)
+      .stroke({color:0xffdea2,alpha:1,width:4});
+  };
   const render=(current:WorkshopState,selected:number|null)=>{
-    if(lastSnapshot===current&&lastSelection===selected)return;
+    if(lastSnapshot===current){
+      if(lastSelection!==selected){
+        lastSelection=selected;
+        paintFocus(selected);
+      }
+      return;
+    }
     const previousPatronStatus=lastSnapshot?.patron?.status;
     const completedShift=current.day>lastShiftDay&&!!current.last;
     lastShiftDay=current.day;
     lastSnapshot=current;lastSelection=selected;
+    paintFocus(selected);
     element.dataset.sceneRefreshes=String(++sceneRefreshes);
     for(const actor of actors)actor.stop();
     actors.length=0;machineArt.length=0;flowPaths=[];
@@ -236,8 +254,7 @@ export async function mountWorkshopLab(
     for(let i=0;i<BOARD_SIZE;i++){
       const {x,y}=plotXY(i);
       const machine=current.tiles[i];
-      const active=selected===i;
-      const border=active?0xffdea2:machine?COLORS[machine.craft]:0x4c606e;
+      const border=machine?COLORS[machine.craft]:0x4c606e;
       const tile=new Sprite(paintedFloor??art.floor);
       tile.width=CELL;tile.height=CELL;
       if(paintedFloor){
@@ -252,7 +269,7 @@ export async function mountWorkshopLab(
       stage.addChild(tile);
       // Hit border is a thin interaction guide, not the machine artwork.
       const guide=frame(x,y,CELL,CELL,0x1b324b,border);
-      guide.alpha=active?.8:.18;
+      guide.alpha=.18;
       guide.eventMode='none';
       stage.addChild(guide);
       const num=glabel(String(i+1).padStart(2,'0'),12,0x8b9aa4);

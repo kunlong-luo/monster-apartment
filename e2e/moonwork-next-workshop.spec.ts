@@ -226,3 +226,29 @@ test('first-shift scene highlights actual garden move and updates the next targe
   await page.reload();
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-guide-action','build');
 });
+
+
+test('plot selection only repaints focus without restarting the Pixi scene',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/workshop/');
+  const stage=page.getByTestId('v2-stage');
+  const canvas=stage.locator('canvas');
+  await expect(canvas).toBeVisible({timeout:25_000});
+  const baseline=await stage.getAttribute('data-scene-refreshes');
+  expect(baseline).toBeTruthy();
+  const box=await canvas.boundingBox();
+  expect(box).not.toBeNull();
+  await canvas.click({position:{
+    x:(131+73)/1050*box!.width,y:(104+160+73)/645*box!.height,
+  }});
+  await expect(page.getByTestId('v2-next-step')).toContainText('06 号地块');
+  await expect(stage).toHaveAttribute('data-scene-refreshes',baseline!);
+  await canvas.click({position:{
+    x:(131+2*160+73)/1050*box!.width,y:(104+160+73)/645*box!.height,
+  }});
+  await expect(page.getByTestId('v2-next-step')).toContainText('08 号地块');
+  await expect(stage).toHaveAttribute('data-scene-refreshes',baseline!);
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+  await expect.poll(async()=>Number(await stage.getAttribute('data-scene-refreshes'))).toBeGreaterThan(Number(baseline));
+});
