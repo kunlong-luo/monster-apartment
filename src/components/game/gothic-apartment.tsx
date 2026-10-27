@@ -15,6 +15,10 @@ import {GothicRoomDrawer} from './gothic-room-drawer';
 import './gothic-apartment.css';
 import './gothic-polish.css';
 const KEY='monster-apartment:cozy:v1';
+function invalidCozySave(raw:string|null):boolean {
+  if(raw===null)return false;
+  try{return !validCozySave(JSON.parse(raw));}catch{return true;}
+}
 const subscribeClient=()=>()=>{};
 const clientSnapshot=()=>true;
 const serverSnapshot=()=>false;
@@ -34,6 +38,8 @@ const nav=[{href:'/',icon:'♜',label:'大厅'},{href:'/town/',icon:'✧',label:
 export function GothicApartment(){
   const ready=useSyncExternalStore(subscribeClient,clientSnapshot,serverSnapshot);
   const [world,setWorld]=useState<CozyState>(readCozySave);
+  const [corruptSave,setCorruptSave]=useState(false);
+  const [saveRecoveryError,setSaveRecoveryError]=useState('');
   const [selected,setSelected]=useState<number|null>(null);
   const [moving,setMoving]=useState<number|null>(null);
   const [paused,setPaused]=useState(false);
@@ -43,18 +49,25 @@ export function GothicApartment(){
   const [feedback,setFeedback]=useState<{id:number;text:string}|null>(null);
   useEffect(()=>{
     if(!ready)return;
-    try{localStorage.setItem(KEY,JSON.stringify(world));}catch{/* Optional local save. */}
+    try{
+      // Guard the original save before the first write, just like the new workshop.
+      if(invalidCozySave(localStorage.getItem(KEY))){
+        setCorruptSave(true);
+        return;
+      }
+      localStorage.setItem(KEY,JSON.stringify(world));
+    }catch{/* Storage can be unavailable; play remains possible in memory. */}
   },[ready,world]);
   useEffect(()=>{
     // Do not let the day clock penalize players who are reading dialogue,
     // inspecting room actions, or switching away from the browser tab.
-    if(!ready||paused||witchOpen||notices||selected!==null||world.phase!=='playing')return;
+    if(!ready||corruptSave||paused||witchOpen||notices||selected!==null||world.phase!=='playing')return;
     const clock=window.setInterval(()=>{
       if(document.visibilityState==='visible')
         setWorld(current=>advanceCozy(current));
     },2000);
     return ()=>window.clearInterval(clock);
-  },[ready,paused,witchOpen,notices,selected,world.phase]);
+  },[ready,corruptSave,paused,witchOpen,notices,selected,world.phase]);
   useEffect(()=>{
     if(!feedback)return;
     const timer=window.setTimeout(()=>setFeedback(current=>
@@ -62,6 +75,26 @@ export function GothicApartment(){
     return ()=>window.clearTimeout(timer);
   },[feedback]);
   if(!ready)return <main className="ga ga-loading">☽ 公寓正在点亮烛火…</main>;
+  if(corruptSave)return <main className="flex min-h-dvh items-center justify-center bg-gothic-night p-5 text-gothic-ivory">
+    <section role="alertdialog" aria-modal="true" aria-labelledby="cozy-recovery-title"
+      className="w-full max-w-md rounded-xl border border-gothic-brass/70 bg-gothic-panel p-6 shadow-2xl">
+      <h1 id="cozy-recovery-title" className="text-xl font-semibold text-gothic-glow">公寓存档需要处理</h1>
+      <p className="mt-3 text-sm leading-7 text-gothic-muted">检测到现有公寓存档无法读取。为避免覆盖玩家进度，游戏已暂停自动保存。只有确认重新开始后才会替换原存档。</p>
+      <div className="mt-5 flex flex-wrap gap-3">
+        <button type="button" className="rounded-lg border border-gothic-gold bg-gothic-wine px-4 py-2 text-sm hover:brightness-110"
+          onClick={()=>{
+            if(!window.confirm('确定覆盖无法读取的公寓存档，重新开始吗？'))return;
+            try{
+              const fresh=newCozyGame();
+              localStorage.setItem(KEY,JSON.stringify(fresh));
+              setWorld(fresh);setCorruptSave(false);setSaveRecoveryError('');
+            }catch{setSaveRecoveryError('无法写入新存档，请检查浏览器存储权限。');}
+          }}>确认重新开始</button>
+        <Link href="/" className="rounded-lg border border-gothic-brass/60 px-4 py-2 text-sm">返回大厅</Link>
+      </div>
+      {saveRecoveryError&&<p role="alert" className="mt-3 text-sm text-rose-200">{saveRecoveryError}</p>}
+    </section>
+  </main>;
   const goal=cozyGoal(world);
   const latest=world.journal[world.journal.length-1];
   const change=(next:CozyState)=>{
