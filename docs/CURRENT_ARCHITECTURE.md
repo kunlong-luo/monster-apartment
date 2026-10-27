@@ -13,3 +13,12 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 存档键依旧为 `monster-apartment:cozy:v1` 与 `monster-apartment:workshop-v2-lab`。两条经营线目前独立。
 
 少量 `gothic-*.css` 和 `world.css` 仍提供当前场景的绘景层及特殊效果；UI 布局与业务组件优先写 Tailwind。
+
+## 单一 UI 所有权与样式边界（2026-10）
+
+- React + TypeScript：控制按钮、工匠清单、设备目录、委托面板、仓库数据、资源 HUD。工坊按钮与列表收敛在 `src/components/moonwork/workshop-controls.tsx`。
+- PixiJS：独立打包的 2D 场景、机器绘景、角色动画、格子命中和视觉反馈。运行时 `v2/src/main.ts` 只负责挂载、派发指令、暂态选择及本地存档；不得用 `innerHTML` 或逐个更新 React 控件。
+- 正式工坊仅挂载在 Next 的 `/workshop/`；`v2/src/runtime.ts`、`v2/scripts/build.mjs` 是必需的 Pixi 资源入口及编译工具，不是旧 UI。
+- CSS：共七份，`app/globals.css` 负责 Tailwind 主题；其他文件目前仍包含复杂哥特式绘景、响应式布局与特殊视觉效果。继续将普通控件样式迁移至 Tailwind，但不机械删除已在场景中使用的规则。
+- JavaScript：无 `.js`/`.jsx` 正式源文件。六个 `.mjs` 仅用于 lint/PostCSS、构建、资源审核与本地静态服务；这些属于现代 Node 工具链，不需要强制改成 TS。
+- 技术债：`src/core/cozy-engine.ts`、`v2/src/workshop-engine.ts`、`v2/src/workshop-lab-stage.ts` 是需逐步拆分的大型规则/绘制文件；React 与 Pixi 之间目前仍通过 DOM dataset/custom events 交换暂态输入，后续考虑收敛为显式类型化适配器，保持已有存档键及行为。

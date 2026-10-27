@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 /*
- * V0.3.0 Midnight Cozy — one visual language for the React HUD and Phaser stage.
- * No remote fonts or image downloads; the game remains static-export friendly.
+ * Single Tailwind v4 theme for the current React HUD and PixiJS scenes.
+ * No runtime CDN font dependencies; the game remains static-export friendly.
  */
 @theme {
   --font-sans: "Trebuchet MS", "Noto Sans CJK SC", "Microsoft YaHei", system-ui, sans-serif;
@@ -24,7 +24,7 @@
   --color-mist-500: #ab9fba;
   --color-danger-300: #ffaaa7;
   --radius-panel: 1.25rem;
-  /* V0.4: single Tailwind token source for the immersive Gothic HUD. */
+  /* Shared Gothic game tokens. */
   --color-gothic-night: #100b13;
   --color-gothic-panel: #1e1420;
   --color-gothic-wine: #55313f;
@@ -46,5 +46,5 @@
   ::selection { background: #f2be75; color: #181629; }
 }
 
-/* V1: active routes use TypeScript/TSX and Tailwind v4; historical styles
- * are only loaded by the optional legacy route layouts. */
+/* Only the seven current routes are shipped. Layered scene art and canvas
+ * effects use scoped CSS; ordinary controls are styled with Tailwind v4. */

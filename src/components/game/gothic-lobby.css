@@ -23,12 +23,8 @@
 .gothic-lobby__top-actions button:hover,.gothic-lobby__top-actions button:focus-visible,
 .gothic-lobby__player:hover{filter:brightness(1.2)}
 .gothic-lobby :is(a,button):focus-visible{outline:2px solid #ffe6ac;outline-offset:3px}
-@media(max-width:840px){
-}
 @media(max-width:590px){
   .gothic-lobby{min-height:360px}
-}
-@media(max-height:610px){
 }
 @media(prefers-reduced-motion:reduce){.gothic-lobby__embers{animation:none}}
 .gothic-lobby--still .gothic-lobby__embers{animation:none}

@@ -47,4 +47,18 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(read('src/components/moonwork/world-ui.tsx')).toContain("import './world.css'");
     expect(read('src/components/moonwork/workshop-client.tsx')).toContain("import '@/components/game/gothic-workshop.css'");
   });
+  it('renders workshop controls only in React, without a parallel HTML toolbar',()=>{
+    const runtime=read('v2/src/main.ts');
+    const client=read('src/components/moonwork/workshop-client.tsx');
+    const controls=read('src/components/moonwork/workshop-controls.tsx');
+    expect(runtime).not.toContain('innerHTML');
+    expect(runtime).not.toContain("$('catalog')");
+    expect(runtime).not.toContain("$('actions')");
+    expect(runtime).not.toContain("$('coins')");
+    expect(runtime).toContain("root.dataset.reactControls!=='true'");
+    expect(client).toContain('<WorkshopControls');
+    expect(controls).toContain('data-testid={\'v2-shift\'}');
+    expect(controls).toContain('data-testid={\'v2-worker-\' + id}');
+    expect(controls).toContain('data-testid={\'v2-build-\' + id}');
+  });
 });
