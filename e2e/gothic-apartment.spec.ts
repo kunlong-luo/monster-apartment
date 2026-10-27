@@ -66,3 +66,21 @@ test('apartment clock pauses for room choices and resumes after closing the draw
   await page.getByRole('button',{name:'关闭房间操作'}).click();
   await expect.poll(tick,{timeout:6000}).toBeGreaterThan(before);
 });
+
+test('apartment never silently destroys an unreadable existing player save',async({page})=>{
+  await page.addInitScript(()=>{
+    localStorage.setItem('monster-apartment:cozy:v1','{broken-cozy');
+  });
+  await page.goto('/apartment/');
+  const recovery=page.getByRole('alertdialog',{name:'公寓存档需要处理'});
+  await expect(recovery).toBeVisible();
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:cozy:v1'))).toBe('{broken-cozy');
+  page.once('dialog',dialog=>dialog.dismiss());
+  await recovery.getByRole('button',{name:'确认重新开始'}).click();
+  await expect(recovery).toBeVisible();
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:cozy:v1'))).toBe('{broken-cozy');
+  page.once('dialog',dialog=>dialog.accept());
+  await recovery.getByRole('button',{name:'确认重新开始'}).click();
+  await expect(page.getByTestId('gothic-apartment')).toBeVisible();
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'{}'))).toHaveProperty('version');
+});
