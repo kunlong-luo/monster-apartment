@@ -100,3 +100,11 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 - 新图的 WebP 容器魔数、VP8 帧尺寸与合理大小由 Vitest 验证；Playwright 验证浏览器实际解码的像素分辨率与手机裁切位置。
 - `WorkshopClient` 继续使用独立 PixiJS 舞台和原存档，只把其 React UI 背景/委托肖像改成新图，并移除过渡状态导致的旧肖像闪现。
 - 旧 `v2/art` 极小 AVIF 仅留给 Pixi 内部待迁移贴图，不会从仓库强行删除造成运行时丢资源。
+
+## PixiJS 工坊场景性能与绘景（第十轮）
+
+- 新版 `lobby-hero-v2.webp` 同步加入独立的 PixiJS sidecar 资源目录。工坊绘景优先解码正式 WebP，旧 AVIF 与 Canvas 程序图仅作为非致命回退；`data-backdrop-source` 可观察真实来源。
+- 15 个地块的地面图、编号与交互边框独立放进持久的 `foundation` Container；生产结算/建造/派工只更新地块色调，并重建确实变化的设备和工匠视觉，而不再销毁重建全部基础地砖。`data-foundation-tiles` 保证总数稳定。
+- Pixi 的粒子、物流光点、机器轻摆、工匠角色动画遵守操作系统 Reduced Motion 与游戏保存的动效开关。关闭动效时仅保留非装饰的生产反馈计时；后台标签页则暂停 WebGL ticker。切换可恢复，切页移除事件监听。
+- 不改变地块的 Pixi 点击坐标、命中层、交易/生产引擎、世界存档或 HUD 标签。
+- Playwright 新增减少动效、持久地砖、回大厅后再进工坊与存档持久的回归检查。

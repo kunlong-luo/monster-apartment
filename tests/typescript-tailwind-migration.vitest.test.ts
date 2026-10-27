@@ -186,6 +186,22 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(patron).toContain("onAction({type:'accept-patron'})");
     expect(patron).toContain("onAction({type:'import-patron-core'})");
   });
+  it('reuses Pixi ground tiles and pauses worker animation with game motion setting',()=>{
+    const scene=read('v2/src/workshop-lab-stage.ts');
+    const loader=read('v2/src/workshop-painted-art.ts');
+    const builder=read('v2/scripts/build.mjs');
+    expect(scene).toContain('const floorTiles:Sprite[]=[];');
+    expect(scene).toContain("element.dataset.foundationTiles=String(floorTiles.length)");
+    expect(scene).toContain('const tile=floorTiles[i];');
+    expect(scene).toContain("element.dataset.motionState=allowed?'running':'paused'");
+    expect(scene).toContain("document.addEventListener('visibilitychange',updateMotion)");
+    expect(scene).toContain("document.removeEventListener('visibilitychange',updateMotion)");
+    expect(scene).toContain("window.addEventListener(motionEvent,updateMotion)");
+    expect(scene).toContain("window.removeEventListener(motionEvent,updateMotion)");
+    expect(loader).toContain("new URL('./assets/lobby-hero-v2.webp',assetBase)");
+    expect(loader).toContain("backdropSource='high-res-webp'");
+    expect(builder).toContain("'../public/art/lobby-hero-v2.webp'");
+  });
   it('communicates selected plots and tools with a typed runtime callback',()=>{
     const runtime=read('v2/src/main.ts');
     const client=read('src/components/moonwork/workshop-client.tsx');

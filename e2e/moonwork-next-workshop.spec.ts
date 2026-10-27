@@ -8,6 +8,8 @@ test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',asy
   const stage=page.getByTestId('v2-stage');
   await expect(stage.locator('canvas')).toBeVisible({timeout:25_000});
   await expect(stage).toHaveAttribute('data-renderer','pixi-webgl-bitmap');
+  await expect(stage).toHaveAttribute('data-backdrop-source','high-res-webp');
+  await expect(stage).toHaveAttribute('data-foundation-tiles','15');
   await expect(page.getByTestId('v2-day')).toHaveCount(1);
   await expect(page.getByTestId('v2-coins')).toHaveCount(1);
   await expect(page.getByTestId('v2-internal-day')).toHaveCount(0);
@@ -248,9 +250,11 @@ test('plot selection only repaints focus without restarting the Pixi scene',asyn
   }});
   await expect(page.getByTestId('v2-next-step')).toContainText('08 号地块');
   await expect(stage).toHaveAttribute('data-scene-refreshes',baseline!);
+  await expect(stage).toHaveAttribute('data-foundation-tiles','15');
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-day')).toHaveText('2');
   await expect.poll(async()=>Number(await stage.getAttribute('data-scene-refreshes'))).toBeGreaterThan(Number(baseline));
+  await expect(stage).toHaveAttribute('data-foundation-tiles','15');
 });
 
 
@@ -299,4 +303,37 @@ test('accurate next-shift forecast becomes production and a visible first contra
   await expect(page.getByTestId('v2-coins')).toHaveText('132');
   await expect(page.getByTestId('v2-day')).toHaveText('6');
   await expect(page.getByTestId('v2-stage')).not.toHaveAttribute('data-last-shift-delivery','first');
+});
+
+// Animation switches must not recreate the Pixi scene or alter the save.
+test('factory honors system and in-game reduced motion while preserving gameplay',async({page})=>{
+  test.setTimeout(90_000);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/workshop/');
+  const stage=page.getByTestId('v2-stage');
+  await expect(stage.locator('canvas')).toBeVisible({timeout:25_000});
+  await expect(stage).toHaveAttribute('data-motion-state','paused');
+  await expect(stage).toHaveAttribute('data-backdrop-source','high-res-webp');
+  const baseline=await stage.getAttribute('data-scene-refreshes');
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await expect(stage).toHaveAttribute('data-motion-state','running');
+  await page.evaluate(()=>{
+    localStorage.setItem('monster-apartment:gothic-motion-reduced','1');
+    window.dispatchEvent(new Event('monster-apartment:motion-changed'));
+  });
+  await expect(stage).toHaveAttribute('data-motion-state','paused');
+  await expect(stage).toHaveAttribute('data-scene-refreshes',baseline!);
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+  await expect(stage).toHaveAttribute('data-foundation-tiles','15');
+  await page.evaluate(()=>{
+    localStorage.setItem('monster-apartment:gothic-motion-reduced','0');
+    window.dispatchEvent(new Event('monster-apartment:motion-changed'));
+  });
+  await expect(stage).toHaveAttribute('data-motion-state','running');
+  await page.getByTestId('v2-return-lobby').click();
+  await expect(page.getByTestId('gothic-lobby')).toBeVisible();
+  await page.goBack();
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-foundation-tiles','15',{timeout:25_000});
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
 });
