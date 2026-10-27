@@ -1,7 +1,17 @@
 'use client';
 
-import {motion,useReducedMotion} from 'motion/react';
+import {motion} from 'motion/react';
+import {useSyncExternalStore} from 'react';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
+
+const REDUCED_MOTION='(prefers-reduced-motion: reduce)';
+function subscribeReducedMotion(callback:()=>void){
+  const media=window.matchMedia(REDUCED_MOTION);
+  media.addEventListener('change',callback);
+  return ()=>media.removeEventListener('change',callback);
+}
+const browserReducedMotion=()=>window.matchMedia(REDUCED_MOTION).matches;
+const serverReducedMotion=()=>false;
 
 /** Atmospheric lighting stays separate from the full-resolution painting.
  * The entire layer is decorative, hit-test transparent and motion-aware. */
@@ -12,7 +22,11 @@ export function GothicSceneIllumination({
   paused?:boolean;
 }){
   const {reduced}=useGothicMotion();
-  const prefersReduced=useReducedMotion();
+  // Observe live operating-system/browser preference changes. Motion's
+  // module-level media snapshot may be stale in client-side route tests.
+  const prefersReduced=useSyncExternalStore(
+    subscribeReducedMotion,browserReducedMotion,serverReducedMotion
+  );
   const still=Boolean(paused||reduced||prefersReduced);
   const left=still?{opacity:.37,scale:1}:{opacity:[.32,.52,.32],scale:[1,1.035,1]};
   const right=still?{opacity:.31,scale:1}:{opacity:[.29,.46,.29],scale:[1,1.025,1]};

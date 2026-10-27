@@ -56,7 +56,9 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     const atmosphere=read('src/components/game/gothic-atmosphere.tsx');
     expect(lobby).toContain('<GothicSceneIllumination variant="lobby"');
     expect(apartment).toContain('<GothicSceneIllumination variant="apartment"');
-    expect(lighting).toContain("import {motion,useReducedMotion} from 'motion/react'");
+    expect(lighting).toContain("import {motion} from 'motion/react'");
+    expect(lighting).toContain('useSyncExternalStore(');
+    expect(lighting).toContain("media.addEventListener('change',callback)");
     expect(lighting).toContain("data-motion={still?'still':'ambient'}");
     expect(polish).toContain('pointer-events:none;');
     expect(polish).toContain('.ga-backdrop{transform:none;filter:none}');
