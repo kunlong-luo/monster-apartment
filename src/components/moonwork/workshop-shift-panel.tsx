@@ -83,7 +83,7 @@ export function WorkshopShiftPanel({world}: {world: WorkshopState}) {
         className="mt-2 rounded-md border border-gothic-brass/35 bg-gothic-panel/65 px-2.5 py-2 text-[10px] leading-snug text-gothic-muted">
         <span className="text-gothic-gold">NEXT SHIFT · 下一班预计</span>
         <strong className="mt-1 block font-semibold tabular-nums text-gothic-ivory">
-          水汽 +{predicted.water}　→　孢子 +{predicted.fiber}　→　晶核 +{predicted.cores}
+          水汽 +{predicted.water} → 孢子 +{predicted.fiber} → 晶核 +{predicted.cores}
         </strong>
         <small className={predicted.willMiss||predicted.blocked.length
           ?'mt-1 block text-rose-200':'mt-1 block text-gothic-muted'}>{previewNote}</small>
