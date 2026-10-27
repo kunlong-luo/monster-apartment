@@ -108,7 +108,9 @@ test('returning from workshop retains the sharp full-resolution lobby painting',
   await page.getByRole('navigation',{name:'快捷功能'}).getByRole('link',{name:'工坊'}).click();
   await expect(page).toHaveURL(/\/workshop\/?$/);
   await expect(page.getByTestId('v2-stage')).toBeVisible();
-  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'大厅'}).click();
+  // The workshop dock leads to world areas; browser Back also restores the
+  // previous lobby. The apartment has a dedicated 返回大厅 navigation link.
+  await page.goBack();
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   const returned=await painting.evaluate(async(image:HTMLImageElement)=>{
     await image.decode();
@@ -119,4 +121,11 @@ test('returning from workshop retains the sharp full-resolution lobby painting',
   expect(returned.width).toBe(original.width);
   expect(returned.height).toBe(original.height);
   expect(returned.transform).toBe('none');
+  await page.getByRole('navigation',{name:'主要游戏功能'})
+    .getByRole('link',{name:/公寓 ·/}).click();
+  await expect(page.getByTestId('gothic-apartment')).toBeVisible();
+  await page.getByRole('navigation',{name:'公寓世界导航'})
+    .getByRole('link',{name:'大厅'}).click();
+  await expect(page.getByTestId('gothic-lobby')).toBeVisible();
+  await expect(painting).toHaveJSProperty('naturalWidth',original.width);
 });
