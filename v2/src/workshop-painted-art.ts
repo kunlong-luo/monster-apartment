@@ -1,21 +1,32 @@
 import {Texture} from 'pixi.js';
 
-/** Optional painted AVIF textures: failed codecs or missing files cannot
- * prevent the deterministic factory from booting with generated sprites.
- * Keep the original sequential floor/backdrop decoding behavior. */
+/** Painted Pixi texture loader. A high-detail WebP is the primary backdrop;
+ * older AVIF and procedural textures remain nonfatal codec fallbacks. */
 export async function loadWorkshopPaintedArt(assetBase:string){
-  // The painterly architecture is independent from machines, workers and hit areas.
-  // AVIF is an enhancement: unsupported codecs fall back to the legacy scene.
+  // The backdrop loads exactly once per stage mount, never once per shift.
   let painted:Texture|null=null;
+  let backdropSource:'high-res-webp'|'legacy-avif'|'procedural'='procedural';
   let paintedFloor:Texture|null=null;
   let kilnArtReview:Texture|null=null;
   const paintedDetail:Partial<Record<'well'|'garden',Texture>>={};
   try{
     const image=new Image();
     image.crossOrigin='anonymous';
-    image.src=new URL('./assets/moon-workshop.avif',assetBase).href;
+    image.src=new URL('./assets/lobby-hero-v2.webp',assetBase).href;
     await image.decode();
     painted=Texture.from(image);
+    backdropSource='high-res-webp';
+  }catch{
+    try{
+      const image=new Image();
+      image.crossOrigin='anonymous';
+      image.src=new URL('./assets/moon-workshop.avif',assetBase).href;
+      await image.decode();
+      painted=Texture.from(image);
+      backdropSource='legacy-avif';
+    }catch{/* stage retains procedural fallback if both textures fail */}
+  }
+  try{
     const floorImage=new Image();
     floorImage.crossOrigin='anonymous';
     floorImage.src=new URL('./assets/moonstone-floor.avif',assetBase).href;
@@ -43,5 +54,5 @@ export async function loadWorkshopPaintedArt(assetBase:string){
     }catch{/* independent codec/image failure does not block production */}
   }
 
-  return {painted,paintedFloor,kilnArtReview,paintedDetail};
+  return {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail};
 }
