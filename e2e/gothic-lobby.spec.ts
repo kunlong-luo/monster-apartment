@@ -125,6 +125,7 @@ test('returning from workshop retains the sharp full-resolution lobby painting',
   expect(returned.width).toBe(original.width);
   expect(returned.height).toBe(original.height);
   expect(returned.transform).toBe('none');
+  await expect(page.getByTestId('gothic-scene-illumination')).toBeAttached();
   await page.getByRole('navigation',{name:'主要游戏功能'})
     .getByRole('link',{name:/公寓 ·/}).click();
   await expect(page.getByTestId('gothic-apartment')).toBeVisible();
@@ -147,6 +148,7 @@ test('scene links transition safely with reduced motion and keep full-size image
   await page.getByRole('navigation',{name:'主要游戏功能'})
     .getByRole('link',{name:/公寓 ·/}).click();
   await expect(page.getByTestId('gothic-apartment')).toBeVisible();
+  await expect(page.getByTestId('gothic-scene-illumination')).toHaveAttribute('data-variant','apartment');
   await expect(curtain).toHaveAttribute('data-phase','idle',{timeout:5000});
   const background=await page.locator('.ga-backdrop').evaluate(el=>getComputedStyle(el).backgroundImage);
   expect(background).toContain('lobby-hero');

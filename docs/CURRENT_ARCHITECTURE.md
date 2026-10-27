@@ -75,3 +75,11 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 - `gothic-apartment.tsx` 与 `world-ui.tsx` 同大厅一样静态导入高质量 WebP，用编译后的图片 `.src` 生成背景 URL，消除 `../lobby-hero.webp` 在无结尾斜线的浏览器路径下指向错误目录的问题。
 - 工坊标题区新增可访问的直接“返回大厅”，避免多次跳转才能回首页；`GothicDock` 增加轻微悬停辉光、按压回馈且保留 reduced-motion 行为。
 - Playwright 新增往返公寓/工坊/大厅、链接无阻挡、禁用动画以及各正式场景背景解析检查。
+
+## 月光和烛火层次（第八轮）
+
+- 大厅与公寓共享 `GothicSceneIllumination` 透明装饰层：克制的金属边线、渐变月光束、左右烛光光晕。只动画光照（Motion），不变换主背景纹理，不做整屏 CSS Blur，不盖住交互目标。
+- `ga-backdrop` 取消 `scale(1.017)`，避免二次重采样影响返回公寓的清晰度。
+- 用户关闭动态特效、系统 Reduced Motion、公寓暂停时不会继续播放烛光循环动画。
+- `GothicAtmosphere` 补充异步卸载保护，不再在切页后给已卸载的舞台 DOM 写错误标记。保留已有 PixiJS 运行时与存档。
+- Vitest 与 Playwright 补充双场景主图清晰度、层级、动画偏好和返回路径的回归检查。

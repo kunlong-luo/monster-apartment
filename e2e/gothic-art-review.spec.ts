@@ -9,9 +9,12 @@ test('desktop and phone Gothic HUD scenes stay fully visible',async({page})=>{
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await expect(page.getByTestId('gothic-lobby-painting-image')).toBeVisible();
   await expect(page.getByTestId('gothic-light-layer')).toBeAttached();
+  await expect(page.getByTestId('gothic-scene-illumination')).toHaveAttribute('data-motion','still');
   await page.screenshot({path:'test-results/gothic-lobby-desktop.png',animations:'disabled'});
   await page.goto('/apartment/');
   await expect(page.getByTestId('ga-room-0')).toBeVisible();
+  await expect(page.getByTestId('gothic-scene-illumination')).toHaveAttribute('data-variant','apartment');
+  await expect(page.locator('.ga-backdrop')).toHaveCSS('transform','none');
   await page.screenshot({path:'test-results/gothic-apartment-desktop.png',animations:'disabled'});
   await page.setViewportSize({width:390,height:844});
   await page.goto('/');
@@ -43,6 +46,7 @@ test('actual PixiJS 8 Gothic motes mount and unmount when animation is toggled',
   await page.goto('/');
   const atmosphere=page.getByTestId('gothic-pixi-atmosphere');
   await expect(atmosphere).toHaveAttribute('data-renderer',/^(pixi|unsupported)$/,{timeout:30000});
+  await expect(page.getByTestId('gothic-scene-illumination')).toHaveAttribute('data-motion','ambient');
   const mode=await atmosphere.getAttribute('data-renderer');
   if(mode==='unsupported'){
     // CI browsers can disable GPU contexts; gracefully degrading is required.
@@ -61,6 +65,7 @@ test('actual PixiJS 8 Gothic motes mount and unmount when animation is toggled',
   await page.getByRole('button',{name:'切换动态特效'}).click();
   await expect(atmosphere.locator('canvas')).toHaveCount(0);
   await expect(atmosphere).toHaveAttribute('data-renderer','disabled');
+  await expect(page.getByTestId('gothic-scene-illumination')).toHaveAttribute('data-motion','still');
   await page.getByRole('button',{name:'切换动态特效'}).click();
   await expect(atmosphere).toHaveAttribute('data-renderer',/^(pixi|unsupported)$/,{timeout:30000});
   if(mode==='pixi')await expect(atmosphere.locator('canvas')).toHaveCount(1);

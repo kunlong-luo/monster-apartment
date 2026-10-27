@@ -48,6 +48,21 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(polish).toContain('.gothic-lobby__painting{transform:none;filter:none}');
     expect(polish).not.toContain('scale(1.028)');
   });
+  it('keeps the painted scene sharp and renders only independent animated lighting',()=>{
+    const lobby=read('src/components/game/gothic-lobby.tsx');
+    const apartment=read('src/components/game/gothic-apartment.tsx');
+    const polish=read('src/components/game/gothic-polish.css');
+    const lighting=read('src/components/game/gothic-scene-illumination.tsx');
+    const atmosphere=read('src/components/game/gothic-atmosphere.tsx');
+    expect(lobby).toContain('<GothicSceneIllumination variant="lobby"');
+    expect(apartment).toContain('<GothicSceneIllumination variant="apartment"');
+    expect(lighting).toContain("import {motion,useReducedMotion} from 'motion/react'");
+    expect(lighting).toContain("pointer-transparent"); // lighting contract in JSDoc
+    expect(polish).toContain('.ga-backdrop{transform:none;filter:none}');
+    expect(polish).not.toContain('scale(1.017)');
+    expect(polish).toContain('.gothic-scene-illumination__moonshaft');
+    expect(atmosphere).toContain('if(disposed||!el.isConnected)return;');
+  });
   it('has one current UI, no retired game routes or standalone HTML',()=>{
     for(const route of ['classic','legacy','survival']){
       expect(()=>read('app/'+route+'/page.tsx')).toThrow();
