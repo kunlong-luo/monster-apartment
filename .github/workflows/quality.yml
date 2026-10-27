@@ -29,7 +29,6 @@ jobs:
       - run: pnpm check:stable-deps
       - run: pnpm typecheck
       - run: pnpm lint
-      - run: pnpm test:rules
       - run: pnpm test
       - run: pnpm build
 
@@ -45,7 +44,6 @@ jobs:
       - run: npm --prefix v2 run audit:art
       - run: npm --prefix v2 run typecheck
       - run: npm --prefix v2 run build
-      - run: test -s v2/dist/assets/workshop.js
       - run: test -s v2/dist/assets/workshop-runtime.js
       - run: test -s v2/dist/assets/gothic-atmosphere.js
       - run: test -s v2/dist/assets/noto-sans-sc.woff2
@@ -82,19 +80,12 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: v082-cozy-apartment-art-review
+          name: gothic-game-art-review
           path: |
             test-results/gothic-lobby-desktop.png
             test-results/gothic-lobby-mobile.png
             test-results/gothic-apartment-desktop.png
             test-results/gothic-apartment-mobile.png
-            test-results/cozy-desktop.png
-            test-results/cozy-mobile.png
-            test-results/spirit-desktop.png
-            test-results/spirit-mobile.png
-            test-results/workshop-v2-mobile.png
-            test-results/workshop-v2-sprites-desktop.png
-            test-results/workshop-v2-patron-mobile.png
           if-no-files-found: warn
           retention-days: 14
 
@@ -116,7 +107,6 @@ jobs:
       - run: npm --prefix v2 run build
       - run: test -f out/index.html
       - run: test -s out/town/index.html && test -s out/orders/index.html && test -s out/characters/index.html && test -s out/warehouse/index.html && test -s out/workshop/index.html
-      - run: test -s v2/dist/assets/workshop.js
       - run: test -s v2/dist/assets/workshop-runtime.js
       - run: test -s v2/dist/assets/noto-sans-sc.woff2
       - run: test -s v2/dist/assets/moon-workshop.avif

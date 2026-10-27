@@ -36,12 +36,13 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(rootLayout).not.toContain('world.css');
     expect(rootLayout).not.toContain('gothic-workshop.css');
   });
-  it('loads legacy styles only inside backward-compatible route layouts',()=>{
-    const old=read('src/styles/legacy-game.css');
-    expect(old).toContain('.game-shell');
-    expect(old).toContain('.cozy-room');
+  it('has one current UI, no retired game routes or standalone HTML',()=>{
     for(const route of ['classic','legacy','survival']){
-      expect(read('app/'+route+'/layout.tsx')).toContain("import '@/styles/legacy-game.css'");
+      expect(()=>read('app/'+route+'/page.tsx')).toThrow();
+    }
+    for(const removed of ['src/styles/legacy-game.css','v2/index.html',
+      'v2/src/workshop.css','src/components/game/game-screen.tsx']){
+      expect(()=>read(removed)).toThrow();
     }
     expect(read('src/components/moonwork/world-ui.tsx')).toContain("import './world.css'");
     expect(read('src/components/moonwork/workshop-client.tsx')).toContain("import '@/components/game/gothic-workshop.css'");
