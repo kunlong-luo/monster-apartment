@@ -22,3 +22,12 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 - CSS：共七份，`app/globals.css` 负责 Tailwind 主题；其他文件目前仍包含复杂哥特式绘景、响应式布局与特殊视觉效果。继续将普通控件样式迁移至 Tailwind，但不机械删除已在场景中使用的规则。
 - JavaScript：无 `.js`/`.jsx` 正式源文件。六个 `.mjs` 仅用于 lint/PostCSS、构建、资源审核与本地静态服务；这些属于现代 Node 工具链，不需要强制改成 TS。
 - 技术债：`src/core/cozy-engine.ts`、`v2/src/workshop-engine.ts`、`v2/src/workshop-lab-stage.ts` 是需逐步拆分的大型规则/绘制文件；React 与 Pixi 之间目前仍通过 DOM dataset/custom events 交换暂态输入，后续考虑收敛为显式类型化适配器，保持已有存档键及行为。
+
+## 工坊领域模块（第二轮拆分）
+
+- `v2/src/workshop-model.ts`：序列化数据类型、设备/工匠静态配置、经济常数与棋盘拓扑。
+- `v2/src/workshop-guidance.ts`：纯函数新手引导、下一步目标；不引用任何 UI。
+- `v2/src/workshop-town.ts`：街区交易、每日交易次数、居民委托与材料库存变化。
+- `v2/src/workshop-engine.ts`：可变更工坊状态的纯动作、生产结算、订单与月纱契约、存档校验；同时重导出原有公共接口，旧模块引用不需要修改。
+
+以上模块不引用 React、DOM 或 PixiJS，且与原 V2 存档 JSON 结构兼容。新领域功能应优先进入职责明确的模块，不继续增加巨型单文件。

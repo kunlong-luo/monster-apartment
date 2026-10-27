@@ -1,99 +1,22 @@
-/** V2 REBOOT — deterministic factory/colony game rules.
- * No DOM, SVG, React or rendering dependency. The PixiJS stage will consume
- * this world snapshot and animate bitmap sprite actors independently. */
-export type Craft='well'|'garden'|'kiln';
-export type Element='water'|'plant'|'fire';
-export type Supply='water'|'fiber'|'core';
-export type WorkerId='brook'|'fern'|'cinder';
-export type MachineLevel=1|2|3;
-export type Machine={craft:Craft;worker:WorkerId|null;stored:number;
-  /** Optional so pre-upgrade V2 saves and initial machines keep the same shape. */
-  level?:2|3;
-};
-export type WorkshopOrder={due:number;cores:number;reward:number;
-  /** Optional. Absent from existing V2 saves and normal contracts. */
-  premium?:true;
-};
-export const PREMIUM_EXTRA_CORES=5;
-export const PREMIUM_EXTRA_REWARD=120;
-export const STANDARD_ORDER_PENALTY=15;
-export const PREMIUM_ORDER_PENALTY=40;
-/** Yuesha is an adult witch merchant; her optional request draws from the
- * same real stock as ordinary contracts. Legacy V2 saves omit this field. */
-export type PatronStatus='offered'|'active'|'completed'|'missed'|'expired';
-export type PatronCommission={
-  status:PatronStatus;due:number;cores:number;reward:number;
-};
-export const PATRON_NAME='月纱';
-export const PATRON_ADULT_AGE=28;
-export const PATRON_FAILURE_COST=20;
-export const PATRON_EXTRA_CORES=7;
-/** Short-term wholesale cores compete with permanent equipment upgrades. */
-export const PATRON_IMPORT_PRICE=42;
-export type DailyProduction={
-  water:number;fiber:number;cores:number;blocked:string[];
-  fulfilled:boolean;lost:boolean;
-  /** Anniversary rewards are earned through shipped orders, not idle clicks. */
-  milestone?:3|5;
-  /** Persists premium delivery feedback after the order has rolled over. */
-  premium?:boolean;
-};
-export type WorkshopState={
-  version:2;day:number;coins:number;
-  tiles:(Machine|null)[];
-  warehouse:{core:number};
-  order:WorkshopOrder;
-  last:DailyProduction|null;
-  completed:number;failed:number;
-  patron?:PatronCommission|null;
-  /** Legacy V2 saves omit the daily town market record. */
-  market?:{day:number;kind:TownExchange};
-  /** Number of fulfilled resident requests; optional for older saves. */
-  residentsHelped?:number;
-};
-export type TownSupply='water'|'fiber'|'core';
-export type ResidentSupply='residentWater'|'residentFiber'|'residentCore';
-export type TownExchange=TownSupply|ResidentSupply;
-export const TOWN_MARKET={
-  water:{cost:12,amount:3,zh:'水汽补给',hint:'注入一台水汽泵'},
-  fiber:{cost:24,amount:3,zh:'孢子货箱',hint:'存入一座温室'},
-  core:{cost:37,amount:1,zh:'晶核采购',hint:'直接入共享仓库'},
-} as const;
-/** The visitor never consumes anonymous player rewards: the quoted units
- * leave the actual machine tank / shared warehouse on acceptance. */
-export const TOWN_RESIDENTS={
-  residentWater:{
-    name:'阿洛',age:31,job:'蒸汽钟楼守护人',resource:'water',
-    amount:2,reward:26,story:'钟楼的老蒸汽阀开裂了。能让给我两份水汽吗？我愿意付修理费。',
-    after:'钟楼重新敲响；下一次温室生产少了这两份备用水汽。'
-  },
-  residentFiber:{
-    name:'菲娅',age:27,job:'月光花艺师',resource:'fiber',
-    amount:2,reward:39,story:'舞会还缺一束会发光的孢子花。能从温室匀两份给我吗？',
-    after:'花艺师带走了孢子；熔炉需要重新积攒足够纤维。'
-  },
-  residentCore:{
-    name:'伊索',age:36,job:'街区照明匠',resource:'core',
-    amount:1,reward:51,story:'东街的月灯快熄灭了。能卖我一枚晶核吗？委托的库存也会少一枚。',
-    after:'东街重新亮起月灯；普通和特别委托的共享库存减少了一枚。'
-  }
-} as const;
-export function residentForDay(day:number):ResidentSupply{
-  return (['residentWater','residentFiber','residentCore'] as const)[(day-1)%3];
-}
-export const WIDTH=5;
-export const HEIGHT=3;
-export const BOARD_SIZE=WIDTH*HEIGHT;
-export const MACHINES:Record<Craft,{cost:number;skill:Element;zh:string;en:string}>={
-  well:{cost:22,skill:'water',zh:'水汽泵',en:'Mist pump'},
-  garden:{cost:25,skill:'plant',zh:'孢子温室',en:'Spore greenhouse'},
-  kiln:{cost:38,skill:'fire',zh:'晶核熔炉',en:'Core kiln'},
-};
-export const WORKERS:Record<WorkerId,{skill:Element;zh:string;en:string}>={
-  brook:{skill:'water',zh:'泉泡',en:'Brook'},
-  fern:{skill:'plant',zh:'青枝',en:'Fern'},
-  cinder:{skill:'fire',zh:'炽角',en:'Cinder'},
-};
+/** Deterministic workshop actions and production settlement.
+ * Public compatibility entrypoint: do not break existing save consumers. */
+import {
+  MACHINES,WORKERS,BOARD_SIZE,validIndex,linked,TOWN_MARKET,TOWN_RESIDENTS,
+  PATRON_EXTRA_CORES,PATRON_FAILURE_COST,PATRON_IMPORT_PRICE,
+  PREMIUM_EXTRA_CORES,PREMIUM_EXTRA_REWARD,
+  PREMIUM_ORDER_PENALTY,STANDARD_ORDER_PENALTY
+} from './workshop-model';
+import type {
+  Craft,WorkerId,Machine,MachineLevel,WorkshopState,DailyProduction
+} from './workshop-model';
+export * from './workshop-model';
+export {workshopHint,workshopNextStep} from './workshop-guidance';
+export type {WorkshopHint} from './workshop-guidance';
+export {
+  buyTownSupply,townMarketAvailable,deliverResidentRequest,
+  residentRequestStock,residentRequestAvailable
+} from './workshop-town';
+
 const PRICE:Record<Craft,readonly [number,number]>={
   well:[40,88],garden:[48,98],kiln:[60,124],
 };
@@ -125,11 +48,6 @@ export function workshopRank(completed:number):{level:1|2|3;zh:string;nextGoal:n
   if(completed>=3)return {level:2,zh:'星匠工坊',nextGoal:5};
   return {level:1,zh:'见习工坊',nextGoal:3};
 }
-const validIndex=(n:number)=>Number.isInteger(n)&&n>=0&&n<BOARD_SIZE;
-export const linked=(from:number,to:number):boolean=>
-  validIndex(from)&&validIndex(to)&&
-  (Math.abs(from-to)===WIDTH||Math.floor(from/WIDTH)===Math.floor(to/WIDTH)
-    &&Math.abs(from-to)===1);
 /** A wrong purchase must never permanently strand a save without enough
  * currency to build the core kiln. Salvaging refunds 60% of base machine cost;
  * upgrades, stored water/fiber and the worker assignment are discarded. */
@@ -143,96 +61,6 @@ export function salvageMachine(s:WorkshopState,index:number):WorkshopState {
   const tiles=s.tiles.slice();
   tiles[index]=null;
   return {...s,tiles,coins:s.coins+refund};
-}
-/** Contextual objective: surface only one useful next decision in the
- * existing selection bar, instead of filling the full-screen art with UI. */
-/** One spatial hint derived from the same authoritative save as the engine.
- * Never auto-move machines, mint currency or bypass player decisions. */
-export type WorkshopHint={
-  action:'move'|'build'|'staff'|'shift'|'recover';
-  source:number|null;target:number|null;
-  craft?:Craft;worker?:WorkerId;
-};
-export function workshopHint(s:WorkshopState):WorkshopHint {
-  const indices=(craft:Craft)=>s.tiles.flatMap((tile,i)=>tile?.craft===craft?[i]:[]);
-  const vacancy=()=>s.tiles.findIndex(tile=>tile===null);
-  const distance=(a:number,b:number)=>
-    Math.abs(Math.floor(a/WIDTH)-Math.floor(b/WIDTH))+
-    Math.abs(a%WIDTH-b%WIDTH);
-  const adjacentEmpty=(index:number,near?:number)=>{
-    const candidates=s.tiles.flatMap((tile,i)=>
-      tile===null&&linked(index,i)?[i]:[]);
-    if(near!==undefined)candidates.sort((a,b)=>distance(a,near)-distance(b,near)||a-b);
-    return candidates[0]??-1;
-  };
-  const hasPair=(a:Craft,b:Craft)=>indices(a).some(i=>indices(b).some(j=>linked(i,j)));
-  const recover=():WorkshopHint=>({
-    action:'recover',
-    source:s.tiles.findIndex(tile=>tile!==null&&indices(tile.craft).length>1),
-    target:null,
-  });
-  for(const craft of ['well','garden'] as const){
-    if(indices(craft).length===0)return s.coins<MACHINES[craft].cost?recover():{
-      action:'build',source:null,target:vacancy(),craft,
-    };
-  }
-  if(!hasPair('well','garden')){
-    for(const source of indices('garden')){
-      for(const well of indices('well')){
-        const target=adjacentEmpty(well,source);
-        if(target>=0)return {action:'move',source,target};
-      }
-    }
-    for(const source of indices('well')){
-      for(const garden of indices('garden')){
-        const target=adjacentEmpty(garden,source);
-        if(target>=0)return {action:'move',source,target};
-      }
-    }
-    return {action:'move',source:indices('garden')[0],target:null};
-  }
-  if(indices('kiln').length===0){
-    if(s.coins<MACHINES.kiln.cost)return recover();
-    const target=indices('garden').map(index=>adjacentEmpty(index)).find(i=>i>=0)??vacancy();
-    return {action:'build',source:null,target,craft:'kiln'};
-  }
-  if(!hasPair('garden','kiln')){
-    const target=indices('garden').map(index=>adjacentEmpty(index)).find(i=>i>=0);
-    return {action:'move',source:indices('kiln')[0],target:target??null};
-  }
-  for(const [craft,worker] of [['well','brook'],['garden','fern'],['kiln','cinder']] as const){
-    if(!s.tiles.some(tile=>tile?.craft===craft&&tile.worker)){
-      const target=indices(craft).find(i=>s.tiles[i]?.worker===null)??indices(craft)[0];
-      return {action:'staff',source:null,target,worker};
-    }
-  }
-  return {action:'shift',source:null,target:null};
-}
-export function workshopNextStep(s:WorkshopState):string {
-  const hasConnection=(from:Craft,to:Craft)=>
-    s.tiles.some((a,i)=>a?.craft===from&&s.tiles.some((b,j)=>
-      b?.craft===to&&linked(i,j)));
-  for(const craft of ['well','garden'] as const){
-    if(!s.tiles.some(machine=>machine?.craft===craft))
-      return s.coins<MACHINES[craft].cost
-        ?'资金不足 · 回收其他设备或重置工坊，重新建造'+MACHINES[craft].zh
-        :'第1步 · 重新建造'+MACHINES[craft].zh+'并接入生产链';
-  }
-  if(!hasConnection('well','garden'))
-    return '第1步 · 把温室移动到紧邻水汽泵的空格';
-  if(!s.tiles.some(m=>m?.craft==='kiln'))
-    return s.coins<MACHINES.kiln.cost
-      ?'资金不足 · 选中多余设备回收星币，再建晶核熔炉'
-      :'第2步 · 建造晶核熔炉，并紧邻温室';
-  if(!hasConnection('garden','kiln'))
-    return '第3步 · 把晶核熔炉搬到温室旁边';
-  for(const [craft,worker] of [['well','brook'],['garden','fern'],['kiln','cinder']] as const){
-    if(!s.tiles.some(m=>m?.craft===craft&&m.worker))
-      return '第4步 · 选择工匠'+WORKERS[worker].zh+'，点击对应设备派工';
-  }
-  if(s.warehouse.core>=s.order.cores)
-    return '晶核已达标 · 继续生产至第'+s.order.due+'天自动交付';
-  return '第5步 · 点击「开始一天生产」，积攒晶核完成订单';
 }
 export function newWorkshop():WorkshopState {
   const tiles:(Machine|null)[]=Array.from({length:BOARD_SIZE},()=>null);
@@ -327,77 +155,6 @@ export function forecastOrderChoice(s:WorkshopState):OrderChoiceForecast|null {
     premium:challenging.fulfillment,
     patronIfPremium:challenging.guest,
   };
-}
-
-/** A town decision with a tangible economic effect, one choice per game day.
- * Inputs must exist: no machine means no place to unload water or fiber.
- * These are stocked goods, not free daily rewards or an abstract bonus.
- * The least-stocked eligible device receives the shipment. */
-export function buyTownSupply(s:WorkshopState,kind:TownSupply):WorkshopState {
-  if(!Object.hasOwn(TOWN_MARKET,kind))return s;
-  const offer=TOWN_MARKET[kind];
-  if(s.market?.day===s.day||s.coins<offer.cost)return s;
-  if(kind==='core'){
-    if(!Number.isSafeInteger(s.warehouse.core+offer.amount))return s;
-    return {...s,coins:s.coins-offer.cost,market:{day:s.day,kind},
-      warehouse:{core:s.warehouse.core+offer.amount}};
-  }
-  const craft=kind==='water'?'well':'garden';
-  const index=s.tiles.reduce((best,i,j)=>{
-    if(i?.craft!==craft||!Number.isSafeInteger(i.stored+offer.amount))return best;
-    return best===-1||i.stored<s.tiles[best]!.stored?j:best;
-  },-1);
-  if(index<0)return s;
-  const tiles=s.tiles.slice();
-  tiles[index]={...tiles[index]!,stored:tiles[index]!.stored+offer.amount};
-  return {...s,coins:s.coins-offer.cost,market:{day:s.day,kind},tiles};
-}
-export function townMarketAvailable(s:WorkshopState,kind:TownSupply):boolean {
-  if(!Object.hasOwn(TOWN_MARKET,kind)||s.market?.day===s.day
-    ||s.coins<TOWN_MARKET[kind].cost)return false;
-  if(kind==='core')return Number.isSafeInteger(s.warehouse.core+TOWN_MARKET.core.amount);
-  const craft=kind==='water'?'well':'garden';
-  return s.tiles.some(t=>t?.craft===craft&&
-    Number.isSafeInteger(t.stored+TOWN_MARKET[kind].amount));
-}
-
-/** Same daily slot as buying town supplies: help a resident OR import goods.
- * A resident only pays if the required material is truly in stock. */
-export function deliverResidentRequest(s:WorkshopState):WorkshopState {
-  if(s.market?.day===s.day||!Number.isSafeInteger(s.residentsHelped??0)
-    ||(s.residentsHelped??0)>=Number.MAX_SAFE_INTEGER)return s;
-  const kind=residentForDay(s.day);
-  const request=TOWN_RESIDENTS[kind];
-  if(!Number.isSafeInteger(s.coins+request.reward))return s;
-  if(kind==='residentCore'){
-    if(s.warehouse.core<request.amount)return s;
-    return {...s,coins:s.coins+request.reward,
-      warehouse:{core:s.warehouse.core-request.amount},
-      market:{day:s.day,kind},residentsHelped:(s.residentsHelped??0)+1};
-  }
-  const craft=kind==='residentWater'?'well':'garden';
-  const index=s.tiles.reduce((best,t,i)=>{
-    if(t?.craft!==craft||t.stored<request.amount)return best;
-    return best===-1||t.stored>s.tiles[best]!.stored?i:best;
-  },-1);
-  if(index===-1)return s;
-  const tiles=s.tiles.slice();
-  tiles[index]={...tiles[index]!,stored:tiles[index]!.stored-request.amount};
-  return {...s,coins:s.coins+request.reward,tiles,
-    market:{day:s.day,kind},residentsHelped:(s.residentsHelped??0)+1};
-}
-/** Shows the actual resource constraint behind the visitor choice. */
-export function residentRequestStock(s:WorkshopState):number {
-  const kind=residentForDay(s.day);
-  if(kind==='residentCore')return s.warehouse.core;
-  const craft=kind==='residentWater'?'well':'garden';
-  return Math.max(0,...s.tiles.filter(t=>t?.craft===craft).map(t=>t!.stored));
-}
-export function residentRequestAvailable(s:WorkshopState):boolean {
-  const request=TOWN_RESIDENTS[residentForDay(s.day)];
-  return s.market?.day!==s.day&&residentRequestStock(s)>=request.amount
-    &&(s.residentsHelped??0)<Number.MAX_SAFE_INTEGER
-    &&Number.isSafeInteger(s.coins+request.reward);
 }
 
 export function runShift(s:WorkshopState):WorkshopState {
