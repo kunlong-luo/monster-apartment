@@ -57,7 +57,8 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(lobby).toContain('<GothicSceneIllumination variant="lobby"');
     expect(apartment).toContain('<GothicSceneIllumination variant="apartment"');
     expect(lighting).toContain("import {motion,useReducedMotion} from 'motion/react'");
-    expect(lighting).toContain("pointer-transparent"); // lighting contract in JSDoc
+    expect(lighting).toContain("data-motion={still?'still':'ambient'}");
+    expect(polish).toContain('pointer-events:none;');
     expect(polish).toContain('.ga-backdrop{transform:none;filter:none}');
     expect(polish).not.toContain('scale(1.017)');
     expect(polish).toContain('.gothic-scene-illumination__moonshaft');
