@@ -7,7 +7,7 @@ import {useWorkshopWorld} from './world-save-react';
 import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from './world-navigation';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
-import lobbyHero from '../../../public/lobby-hero.webp';
+import lobbyHero from '../../../public/art/lobby-hero-v2.webp';
 import {SAVE_KEY,CHANGE_EVENT} from '@/lib/moonwork/world-store';
 import {Panel,WorkshopLink} from './world-primitives';
 import {Town} from './world-town';

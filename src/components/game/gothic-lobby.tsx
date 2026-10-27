@@ -5,8 +5,9 @@ import Image from 'next/image';
 import {AnimatePresence} from 'motion/react';
 import {useMemo,useState} from 'react';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
-import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
-import lobbyHero from '../../../public/lobby-hero.webp';
+import moonveilPortrait from '../../../public/art/yuesha-portrait-v2.webp';
+import moonveilBust from '../../../public/art/yuesha-bust-v2.webp';
+import lobbyHero from '../../../public/art/lobby-hero-v2.webp';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
 import {CHANGE_EVENT,commitWorldAction} from '@/lib/moonwork/world-store';
 import {GothicAtmosphere} from './gothic-atmosphere';
@@ -156,7 +157,8 @@ export function GothicLobby(){
       onClose={close} wide={panel==='bond'}>
       {panel==='bond'&&<>
         <div className="relative hidden min-h-[210px] w-[125px] shrink-0 overflow-hidden rounded-md border border-gothic-brass/50 bg-gothic-panel sm:block">
-          <Image src={moonveilPortrait} alt="月纱" fill sizes="130px" className="object-cover"/>
+          <Image src={moonveilBust} alt="月纱" fill unoptimized sizes="130px"
+            className="object-cover object-[48%_45%]"/>
         </div>
         <div className="min-w-0 flex-1 space-y-2 pr-5">
           <span className="text-[10px] tracking-[.17em] text-gothic-gold">SPECIAL GUEST · 月纱</span>

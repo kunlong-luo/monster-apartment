@@ -3,8 +3,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {AnimatePresence} from 'motion/react';
 import {useEffect,useState,useSyncExternalStore} from 'react';
-import moonveil from '../../../v2/art/moonveil-portrait.avif';
-import lobbyHero from '../../../public/lobby-hero.webp';
+import moonveil from '../../../public/art/yuesha-portrait-v2.webp';
+import moonveilBust from '../../../public/art/yuesha-bust-v2.webp';
+import lobbyHero from '../../../public/art/lobby-hero-v2.webp';
 import {newCozyGame,validCozySave,resumeCozySave,advanceCozy,
   relocateCozyResident,cozyDay,cozyGoal,cozyDailyIncome} from '@/core/cozy-engine';
 import type {CozyState} from '@/core/cozy-engine';
@@ -155,7 +156,8 @@ export function GothicApartment(){
     {witchOpen&&<GothicModal key={"moonveil"} title="与月纱交谈" closeLabel="关闭月纱对话"
       onClose={()=>setWitchOpen(false)} wide>
       <div className="relative hidden min-h-[215px] w-[120px] shrink-0 overflow-hidden rounded-md border border-gothic-brass/60 bg-gothic-panel sm:block">
-        <Image src={moonveil} alt="月纱的绘制肖像" fill sizes="130px" className="object-cover"/>
+        <Image src={moonveilBust} alt="月纱的绘制肖像" fill unoptimized sizes="130px"
+          className="object-cover object-[48%_45%]"/>
       </div>
       <div className="min-w-0 flex-1 space-y-3 pr-4">
         <span className="text-[10px] leading-relaxed tracking-[.12em] text-gothic-gold">THE MISTRESS OF THE MANOR · 月纱</span>
