@@ -36,6 +36,18 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(rootLayout).not.toContain('world.css');
     expect(rootLayout).not.toContain('gothic-workshop.css');
   });
+  it('types the static WebP lobby painting without route-relative URLs',()=>{
+    const lobby=read('src/components/game/gothic-lobby.tsx');
+    const declaration=read('src/types/next-static-webp.d.ts');
+    const polish=read('src/components/game/gothic-polish.css');
+    expect(declaration).toContain("declare module '*.webp'");
+    expect(lobby).toContain("import lobbyHero from '../../../public/lobby-hero.webp'");
+    expect(lobby).toContain('data-testid="gothic-lobby-painting-image"');
+    expect(lobby).toContain('unoptimized');
+    expect(lobby).not.toContain('./lobby-hero.webp'+")");
+    expect(polish).toContain('.gothic-lobby__painting{transform:none;filter:none}');
+    expect(polish).not.toContain('scale(1.028)');
+  });
   it('has one current UI, no retired game routes or standalone HTML',()=>{
     for(const route of ['classic','legacy','survival']){
       expect(()=>read('app/'+route+'/page.tsx')).toThrow();
