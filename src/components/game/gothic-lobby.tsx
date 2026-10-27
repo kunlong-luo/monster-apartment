@@ -13,6 +13,7 @@ import {GothicAtmosphere} from './gothic-atmosphere';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 import {GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
 import './gothic-lobby.css';
+import './gothic-polish.css';
 
 type Panel='profile'|'bond'|'updates'|'menu'|null;
 const links=[

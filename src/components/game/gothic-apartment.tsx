@@ -13,6 +13,7 @@ import {GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLi
 import {GothicRoomDoors} from './gothic-room-doors';
 import {GothicRoomDrawer} from './gothic-room-drawer';
 import './gothic-apartment.css';
+import './gothic-polish.css';
 const KEY='monster-apartment:cozy:v1';
 const subscribeClient=()=>()=>{};
 const clientSnapshot=()=>true;

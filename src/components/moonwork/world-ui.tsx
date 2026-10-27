@@ -1,5 +1,7 @@
 'use client';
 import Link from 'next/link';
+import './world.css';
+import '@/components/game/gothic-world.css';
 import {useEffect} from 'react';
 import {useWorkshopWorld} from './world-save-react';
 import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';

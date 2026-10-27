@@ -2,6 +2,7 @@
 
 import {useEffect, useRef, useState} from 'react';
 import Link from 'next/link';
+import '@/components/game/gothic-workshop.css';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 import {GothicDock, GothicResourcePill} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from './world-navigation';

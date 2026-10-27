@@ -1,10 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import './globals.css';
-import '@/components/moonwork/world.css';
-import '@/components/game/gothic-world.css';
-import '@/components/game/gothic-workshop.css';
-import '@/components/game/gothic-polish.css';
 
 export const metadata: Metadata = {
   title: '灵核公寓 · Spirit Core Residence',
