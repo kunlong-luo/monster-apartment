@@ -95,6 +95,10 @@ export const WORKERS:Record<WorkerId,{skill:Element;zh:string;en:string}>={
   cinder:{skill:'fire',zh:'炽角',en:'Cinder'},
 };
 
+export function machineLevel(machine:Machine|null):MachineLevel {
+  return machine?.level??1;
+}
+
 /** Shared board topology. Imported by the guidance and simulation modules. */
 export const validIndex=(n:number)=>Number.isInteger(n)&&n>=0&&n<BOARD_SIZE;
 export const linked=(from:number,to:number):boolean=>

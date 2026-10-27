@@ -28,6 +28,7 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 - `v2/src/workshop-model.ts`：序列化数据类型、设备/工匠静态配置、经济常数与棋盘拓扑。
 - `v2/src/workshop-guidance.ts`：纯函数新手引导、下一步目标；不引用任何 UI。
 - `v2/src/workshop-town.ts`：街区交易、每日交易次数、居民委托与材料库存变化。
-- `v2/src/workshop-engine.ts`：可变更工坊状态的纯动作、生产结算、订单与月纱契约、存档校验；同时重导出原有公共接口，旧模块引用不需要修改。
+- `v2/src/workshop-production.ts`：单日产出流水线、原料转移、订单和月纱的结算规则。
+- `v2/src/workshop-engine.ts`：设备升级与派工、委托选择、预测逻辑、存档校验；同时重导出原有公共接口，旧模块引用不需要修改。
 
 以上模块不引用 React、DOM 或 PixiJS，且与原 V2 存档 JSON 结构兼容。新领域功能应优先进入职责明确的模块，不继续增加巨型单文件。

@@ -5,6 +5,7 @@ import {newWorkshop,runShift,placeMachine,moveMachine,assignWorker,validWorkshop
 import * as model from '../v2/src/workshop-model';
 import * as guide from '../v2/src/workshop-guidance';
 import * as town from '../v2/src/workshop-town';
+import * as production from '../v2/src/workshop-production';
 
 describe('workshop domain module compatibility',()=>{
   it('preserves the public facade and source-of-truth configuration',()=>{
@@ -16,6 +17,8 @@ describe('workshop domain module compatibility',()=>{
     expect(workshopHint).toBe(guide.workshopHint);
     expect(workshopNextStep).toBe(guide.workshopNextStep);
     expect(buyTownSupply).toBe(town.buyTownSupply);
+    expect(runShift).toBe(production.runShift);
+    expect(model.machineLevel({craft:'well',stored:0,worker:null})).toBe(1);
   });
   it('keeps old V2 saves and physical production unchanged after the split',()=>{
     const initial=newWorkshop();
