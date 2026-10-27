@@ -49,8 +49,9 @@ export async function mountWorkshopLab(
   const observer=new ResizeObserver(resize);
   observer.observe(element);resize();
   const art=makeRasterArt();
-  const {painted,paintedFloor,kilnArtReview,paintedDetail}=
+  const {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail}=
     await loadWorkshopPaintedArt(assetBase);
+  element.dataset.backdropSource=backdropSource;
   element.dataset.machineArt=kilnArtReview&&paintedDetail.well&&paintedDetail.garden
     ?'all-painted-machine-reviews':'mixed-machine-art';
   element.dataset.visualTheme=painted?'painted-moonwork':'procedural-fallback';
@@ -65,11 +66,34 @@ export async function mountWorkshopLab(
   }
   app.stage.addChild(backdrop);
   app.stage.addChild(new Graphics().rect(0,0,W,H)
-    .fill({color:0x101e2c,alpha:painted?.17:0}));
+    .fill({color:0x101e2c,alpha:painted?.25:0}));
   // 8 different bitmap pose frames per creature, assembled once and reused.
   element.dataset.renderer='pixi-webgl-bitmap';
   element.dataset.workerFrames='8';
+  // Immutable foundation: ground, numbered plaques and borders are built
+  // exactly once. Only machine-dependent floor tint/opacity changes on sync.
+  const foundation=new Container();app.stage.addChild(foundation);
+  const floorTiles:Sprite[]=[];
   const stage=new Container();app.stage.addChild(stage);
+  for(let i=0;i<BOARD_SIZE;i++){
+    const {x,y}=plotXY(i);
+    const tile=new Sprite(paintedFloor??art.floor);
+    tile.width=CELL;tile.height=CELL;
+    if(paintedFloor){
+      tile.anchor.set(.5);
+      tile.position.set(x+CELL/2,y+CELL/2);
+      tile.rotation=((i%4)*Math.PI)/2;
+    }else tile.position.set(x,y);
+    tile.eventMode='none';
+    foundation.addChild(tile);floorTiles.push(tile);
+    const border=frame(x,y,CELL,CELL,0x1b324b,0x91a5b0);
+    border.alpha=.18;border.eventMode='none';
+    foundation.addChild(border);
+    const number=glabel(String(i+1).padStart(2,'0'),12,0x8b9aa4);
+    number.position.set(x+12,y+9);number.eventMode='none';
+    foundation.addChild(number);
+  }
+  element.dataset.foundationTiles=String(floorTiles.length);
   const motes=new Container();app.stage.addChild(motes);
   const moving:Graphics[]=[];
   const actors:AnimatedSprite[]=[];
@@ -114,20 +138,48 @@ export async function mountWorkshopLab(
     motes.addChild(mote);moving.push(mote);
   }
   const reducedMotionQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const motionKey='monster-apartment:gothic-motion-reduced';
+  const motionEvent='monster-apartment:motion-changed';
+  let animationEnabled=false;
+  const allowMotion=()=>{
+    let savedStill=false;
+    try{savedStill=window.localStorage.getItem(motionKey)==='1';}
+    catch{/* Private storage: still honor system preference. */}
+    return !document.hidden&&!reducedMotionQuery.matches&&!savedStill;
+  };
+  const updateMotion=()=>{
+    const allowed=allowMotion();
+    animationEnabled=allowed;
+    element.dataset.motionState=allowed?'running':'paused';
+    motes.visible=allowed;flowLayer.visible=allowed;
+    tutorialLayer.alpha=allowed?.85:1;
+    for(const actor of actors){if(allowed)actor.play();else actor.stop();}
+    // Invisible tabs must not keep scheduling WebGL work.
+    if(document.hidden)app.ticker.stop();
+    else app.ticker.start();
+  };
+  const onMotionStorage=(event:StorageEvent)=>{
+    if(!event.key||event.key===motionKey)updateMotion();
+  };
+  reducedMotionQuery.addEventListener('change',updateMotion);
+  document.addEventListener('visibilitychange',updateMotion);
+  window.addEventListener(motionEvent,updateMotion);
+  window.addEventListener('storage',onMotionStorage);
   app.ticker.add(ticker=>{
     const dt=ticker.deltaTime;
+    // Feedback must still complete when a player disables decorative motion.
+    feedback.tick(dt);
+    if(!animationEnabled)return;
     elapsed+=dt/60;
     moving.forEach((m,i)=>{
       m.y-=dt*(.11+i%4*.055);
       if(m.y<0)m.y=H;
     });
-    feedback.tick(dt);
     for(const [index,machine] of machineArt.entries()){
-      // Small working rhythm; not a CSS wobble applied to the entire scene.
-      machine.y+=(Math.sin(elapsed*3+index*.8)-Math.sin((elapsed-dt/60)*3+index*.8))*.5;
+      machine.y+=(Math.sin(elapsed*3+index*.8)-
+        Math.sin((elapsed-dt/60)*3+index*.8))*.5;
     }
-    tutorialLayer.alpha=reducedMotionQuery.matches
-      ?1:.81+.19*Math.sin(elapsed*2.5);
+    tutorialLayer.alpha=.81+.19*Math.sin(elapsed*2.5);
     flowLayer.clear();
     for(const [i,flow] of flowPaths.entries()){
       const progress=(elapsed*.36+i*.31)%1;
@@ -137,6 +189,7 @@ export async function mountWorkshopLab(
       flowLayer.circle(x,y,12).fill({color:flow.tint,alpha:.13});
     }
   });
+  updateMotion();
   // Pure DOM-control changes must never dispose and restart animated sprites.
   // The engine returns immutable world snapshots for all material changes.
   let lastSnapshot:WorkshopState|null=null;
@@ -201,26 +254,10 @@ export async function mountWorkshopLab(
     for(let i=0;i<BOARD_SIZE;i++){
       const {x,y}=plotXY(i);
       const machine=current.tiles[i];
-      const border=machine?COLORS[machine.craft]:0x4c606e;
-      const tile=new Sprite(paintedFloor??art.floor);
-      tile.width=CELL;tile.height=CELL;
-      if(paintedFloor){
-        tile.anchor.set(.5);
-        tile.position.set(x+CELL/2,y+CELL/2);
-        tile.rotation=((i%4)*Math.PI)/2; // rotate only the visual texture
-      }else tile.position.set(x,y);
+      // Foundation sprites survive every world snapshot and every shift.
+      const tile=floorTiles[i];
       tile.tint=machine?0xffffff:0xc9d6e0;
-      if(painted)tile.alpha=machine?.87:.76; // keep the architectural layers visible
-      tile.eventMode='static';tile.cursor='pointer';
-      tile.on('pointertap',()=>callbacks.plot(i));
-      stage.addChild(tile);
-      // Hit border is a thin interaction guide, not the machine artwork.
-      const guide=frame(x,y,CELL,CELL,0x1b324b,border);
-      guide.alpha=.18;
-      guide.eventMode='none';
-      stage.addChild(guide);
-      const num=glabel(String(i+1).padStart(2,'0'),12,0x8b9aa4);
-      num.position.set(x+12,y+9);stage.addChild(num);
+      tile.alpha=painted?(machine?.87:.76):1;
       if(!machine){
         const plus=glabel('＋',28,0x4a6976);plus.anchor.set(.5);
         plus.position.set(x+CELL/2,y+CELL/2);stage.addChild(plus);
@@ -374,10 +411,16 @@ export async function mountWorkshopLab(
       tag.position.set(x,isMobile?191:608);
       stage.addChild(tag);
     }
+    // Fresh AnimatedSprite instances honor the latest OS/player motion setting.
+    updateMotion();
   };
   render(state,null);
   return {sync:render,destroy:()=>{
     observer.disconnect();
+    reducedMotionQuery.removeEventListener('change',updateMotion);
+    document.removeEventListener('visibilitychange',updateMotion);
+    window.removeEventListener(motionEvent,updateMotion);
+    window.removeEventListener('storage',onMotionStorage);
     actors.forEach(actor=>actor.stop());
     app.destroy(true,{children:true});
     canvas.remove();
