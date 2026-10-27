@@ -57,7 +57,7 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(runtime).not.toContain("$('coins')");
     expect(runtime).toContain("root.dataset.reactControls!=='true'");
     expect(client).toContain('<WorkshopControls');
-    expect(controls).toContain('data-testid={\'v2-shift\'}');
+    expect(controls).toContain('data-testid="v2-shift"');
     expect(controls).toContain('data-testid={\'v2-worker-\' + id}');
     expect(controls).toContain('data-testid={\'v2-build-\' + id}');
   });
