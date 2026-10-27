@@ -7,7 +7,7 @@ import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import {workshopRank,TOWN_MARKET,townMarketAvailable,TOWN_RESIDENTS,residentForDay,residentRequestStock,residentRequestAvailable} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
-import {Panel,WorkshopLink,Action} from './world-primitives';
+import {WorkshopLink,Action} from './world-primitives';
 
 export function Town({s}:{s:WorkshopState}){
   const rank=workshopRank(s.completed);
@@ -22,7 +22,7 @@ export function Town({s}:{s:WorkshopState}){
   const availableStock=residentRequestStock(s);
   const canHelp=residentRequestAvailable(s);
   const [localVisit,setLocalVisit]=useState<string>('');
-  const visitComplete=s.market?.day===s.day&&s.market.kind===residentKind;
+  const visitComplete=s.market?.day===s.day && s.market.kind===residentKind;
   return <>
     <div className="mw-town-focus">
     <section className="mw-town-scene" aria-label="月光街的炼金商区" data-testid="moonlit-town-scene">
@@ -70,7 +70,7 @@ export function Town({s}:{s:WorkshopState}){
           与市集采购共享每日交易次数，无法两边都领。</p>
         <Action type="resident" testId="resident-deliver" disabled={!canHelp}
           onApplied={()=>setLocalVisit(resident.after)}>
-          {visitComplete?'已帮助居民':marketUsed?'今天已在市集交易':canHelp?'交付材料 · 完成街头委托':'材料不足 · 去工坊生产'}
+          {visitComplete?'已帮助居民':marketUsed?'今日交易机会已使用':canHelp?'交付材料 · 完成街头委托':'材料不足 · 去工坊生产'}
         </Action>
         {visitComplete&&<p className="mw-visit-result" role="status">{localVisit||resident.after}</p>}
         {!visitComplete&&localVisit&&<p className="mw-visit-result" role="status">{localVisit}</p>}
@@ -78,10 +78,10 @@ export function Town({s}:{s:WorkshopState}){
       </div>
     </section>
     </div>
-    <div className="mw-stat-grid mt-2.5 grid grid-cols-1 gap-2.5">
-      <Panel title="当前工坊"><strong>{rank.zh}</strong></Panel>
-      <Panel title="已建设设备"><strong>{s.tiles.filter(Boolean).length} / 15</strong></Panel>
-      <Panel title="已交付订单"><strong>{s.completed} 单</strong></Panel>
+    <div aria-label="街区经营概况" className="mt-2 flex flex-wrap gap-1.5 text-[11px] text-gothic-muted">
+      <span className="rounded-full border border-gothic-brass/35 bg-gothic-panel/70 px-2.5 py-1">✦ {rank.zh}</span>
+      <span className="rounded-full border border-gothic-brass/35 bg-gothic-panel/70 px-2.5 py-1">设备 {s.tiles.filter(Boolean).length}/15</span>
+      <span className="rounded-full border border-gothic-brass/35 bg-gothic-panel/70 px-2.5 py-1">已交付 {s.completed} 单</span>
     </div>
     <section className="mw-market" aria-label="月夜市集" data-testid="moonlit-market">
       <div className="mw-market-header">
