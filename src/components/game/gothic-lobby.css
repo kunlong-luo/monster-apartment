@@ -20,35 +20,15 @@
   radial-gradient(circle at 69% 44%,#fac78d 1px,transparent 2px);
   background-size:233px 173px,379px 277px;animation:gl-lights 12s ease-in-out infinite alternate}
 @keyframes gl-lights{to{transform:translateY(-9px);opacity:.15}}
-.gothic-lobby__player{display:flex;align-items:center;gap:10px;width:max-content;max-width:100%;
-  border:0;background:none;text-align:left;min-height:54px}
-.gothic-lobby__avatar{position:relative;flex:none;display:block;width:clamp(44px,4.4vw,73px);
-  height:clamp(44px,4.4vw,73px);border:2px solid var(--gold);border-radius:50%;
-  background:#362232;overflow:hidden;box-shadow:0 0 0 3px #171015bb,0 2px 18px #0009}
-.gothic-lobby__avatar-image{object-fit:cover}
-.gothic-lobby__player-copy{display:grid;gap:4px;white-space:nowrap;text-shadow:0 2px 6px #000}
-.gothic-lobby__player-copy strong{font-size:clamp(13px,1.3vw,22px);font-weight:650}
-.gothic-lobby__player-copy small{font-size:clamp(9px,.75vw,12px);color:#e3cbaa}
 .gothic-lobby__top-actions button:hover,.gothic-lobby__top-actions button:focus-visible,
 .gothic-lobby__player:hover{filter:brightness(1.2)}
-.gothic-lobby__character-hit{position:absolute;z-index:1;inset:15% 36% 16% 35%;
-  border:0!important;background:none!important;cursor:pointer}
-.gothic-lobby__character-caption{position:absolute;z-index:1;bottom:clamp(106px,16vh,158px);
-  left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;
-  color:#f6d9b8;gap:2px;text-shadow:0 3px 12px #000;pointer-events:none}
-.gothic-lobby__character-caption span{font-size:13px;letter-spacing:.23em}
-.gothic-lobby__character-caption small{font-size:10px;color:#d0b298}
 .gothic-lobby :is(a,button):focus-visible{outline:2px solid #ffe6ac;outline-offset:3px}
 @media(max-width:840px){
 }
 @media(max-width:590px){
   .gothic-lobby{min-height:360px}
-  .gothic-lobby__player-copy strong{font-size:13px}
-  .gothic-lobby__player-copy small{font-size:9px}
-  .gothic-lobby__character-caption{bottom:124px}
 }
 @media(max-height:610px){
-  .gothic-lobby__character-caption{bottom:108px}
 }
 @media(prefers-reduced-motion:reduce){.gothic-lobby__embers{animation:none}}
 .gothic-lobby--still .gothic-lobby__embers{animation:none}
