@@ -156,8 +156,15 @@ export type WorkshopHint={
 export function workshopHint(s:WorkshopState):WorkshopHint {
   const indices=(craft:Craft)=>s.tiles.flatMap((tile,i)=>tile?.craft===craft?[i]:[]);
   const vacancy=()=>s.tiles.findIndex(tile=>tile===null);
-  const adjacentEmpty=(index:number)=>s.tiles.findIndex((tile,i)=>
-    tile===null&&linked(index,i));
+  const distance=(a:number,b:number)=>
+    Math.abs(Math.floor(a/WIDTH)-Math.floor(b/WIDTH))+
+    Math.abs(a%WIDTH-b%WIDTH);
+  const adjacentEmpty=(index:number,near?:number)=>{
+    const candidates=s.tiles.flatMap((tile,i)=>
+      tile===null&&linked(index,i)?[i]:[]);
+    if(near!==undefined)candidates.sort((a,b)=>distance(a,near)-distance(b,near)||a-b);
+    return candidates[0]??-1;
+  };
   const hasPair=(a:Craft,b:Craft)=>indices(a).some(i=>indices(b).some(j=>linked(i,j)));
   const recover=():WorkshopHint=>({
     action:'recover',
@@ -172,13 +179,13 @@ export function workshopHint(s:WorkshopState):WorkshopHint {
   if(!hasPair('well','garden')){
     for(const source of indices('garden')){
       for(const well of indices('well')){
-        const target=adjacentEmpty(well);
+        const target=adjacentEmpty(well,source);
         if(target>=0)return {action:'move',source,target};
       }
     }
     for(const source of indices('well')){
       for(const garden of indices('garden')){
-        const target=adjacentEmpty(garden);
+        const target=adjacentEmpty(garden,source);
         if(target>=0)return {action:'move',source,target};
       }
     }
@@ -186,11 +193,11 @@ export function workshopHint(s:WorkshopState):WorkshopHint {
   }
   if(indices('kiln').length===0){
     if(s.coins<MACHINES.kiln.cost)return recover();
-    const target=indices('garden').map(adjacentEmpty).find(i=>i>=0)??vacancy();
+    const target=indices('garden').map(index=>adjacentEmpty(index)).find(i=>i>=0)??vacancy();
     return {action:'build',source:null,target,craft:'kiln'};
   }
   if(!hasPair('garden','kiln')){
-    const target=indices('garden').map(adjacentEmpty).find(i=>i>=0);
+    const target=indices('garden').map(index=>adjacentEmpty(index)).find(i=>i>=0);
     return {action:'move',source:indices('kiln')[0],target:target??null};
   }
   for(const [craft,worker] of [['well','brook'],['garden','fern'],['kiln','cinder']] as const){
