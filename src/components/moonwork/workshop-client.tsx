@@ -7,7 +7,7 @@ import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 import {GothicDock, GothicResourcePill} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from './world-navigation';
 import {useWorkshopWorld} from './world-save-react';
-import {CHANGE_EVENT} from '@/lib/moonwork/world-store';
+import {SAVE_KEY, CHANGE_EVENT, parseSavedWorld} from '@/lib/moonwork/world-store';
 import {WorkshopContractPanel} from './workshop-contract-panel';
 import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
@@ -84,6 +84,8 @@ function loadRuntime(base: string) {
 export function WorkshopClient() {
   const host = useRef<HTMLDivElement>(null);
   const [error, setError] = useState('');
+  const [blockedSave, setBlockedSave] = useState(false);
+  const [recoveryVersion, setRecoveryVersion] = useState(0);
   const savedWorld = useWorkshopWorld();
   const world = savedWorld ?? newWorkshop();
 
@@ -101,6 +103,17 @@ export function WorkshopClient() {
   useEffect(() => {
     const root = host.current?.querySelector<HTMLElement>('#root');
     if (!root) return;
+
+    // Do not start the Pixi runtime against an existing invalid save: the
+    // player must explicitly opt into replacing it.
+    let raw: string | null = null;
+    try { raw = window.localStorage.getItem(SAVE_KEY); } catch { /* Storage may be blocked. */ }
+    if (raw !== null && !parseSavedWorld(raw)) {
+      setBlockedSave(true);
+      return;
+    }
+    setBlockedSave(false);
+    setError('');
 
     root.dataset.reactControls = 'true';
     root.classList.add('gothic-workshop');
@@ -151,7 +164,7 @@ export function WorkshopClient() {
       root.removeEventListener('moonwork:controls-change', onControlsChange);
       dispose?.();
     };
-  }, []);
+  }, [recoveryVersion]);
 
   const selectedTile =
     selection.selectedPlot !== null ? world.tiles[selection.selectedPlot] : null;
@@ -183,12 +196,6 @@ export function WorkshopClient() {
             </div>
           </div>
           <div className="top-stats">
-            <span>
-              第 <b id="day" data-testid="v2-internal-day">{world.day}</b> 天
-            </span>
-            <span>
-              ✦ <b id="coins" data-testid="v2-internal-coins">{world.coins}</b>
-            </span>
             <button
               type="button"
               id="reset"
@@ -402,7 +409,30 @@ export function WorkshopClient() {
         }))}
       />
 
-      {error && (
+      {blockedSave && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-[#09050ce8] px-5 backdrop-blur-md" role="alertdialog" aria-modal="true" aria-labelledby="workshop-save-error">
+          <div className="w-full max-w-md rounded-xl border border-gothic-brass/70 bg-gothic-panel p-6 text-gothic-ivory shadow-2xl">
+            <h2 id="workshop-save-error" className="text-xl font-semibold text-gothic-glow">工坊存档需要处理</h2>
+            <p className="mt-3 text-sm leading-7 text-gothic-muted">检测到已有但无法读取的工坊存档。为避免意外丢失进度，游戏没有自动覆盖它。只有你确认重新开始后才会创建新存档。</p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <button type="button" className="rounded-lg border border-gothic-gold bg-gothic-wine px-4 py-2 text-sm text-gothic-ivory hover:brightness-110" onClick={() => {
+                if (!window.confirm('确定覆盖无法读取的工坊存档，并重新开始吗？')) return;
+                try {
+                  window.localStorage.setItem(SAVE_KEY, JSON.stringify(newWorkshop()));
+                  window.dispatchEvent(new Event(CHANGE_EVENT));
+                  setBlockedSave(false);
+                  setRecoveryVersion((v) => v + 1);
+                } catch {
+                  setError('无法写入新存档，请检查浏览器存储权限。');
+                }
+              }}>确认重新开始</button>
+              <Link href="/town/" className="rounded-lg border border-gothic-brass/60 px-4 py-2 text-sm text-gothic-ivory">返回月光街</Link>
+            </div>
+            {error && <p className="mt-3 text-sm text-red-200" role="alert">{error}</p>}
+          </div>
+        </div>
+      )}
+      {error && !blockedSave && (
         <p role="alert" className="mw-runtime-error">
           工坊画面未能启动：{error}。请检查浏览器 WebGL 支持并刷新。
         </p>
