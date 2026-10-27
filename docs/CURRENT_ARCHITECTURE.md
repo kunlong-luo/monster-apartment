@@ -21,7 +21,7 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 - 正式工坊仅挂载在 Next 的 `/workshop/`；`v2/src/runtime.ts`、`v2/scripts/build.mjs` 是必需的 Pixi 资源入口及编译工具，不是旧 UI。
 - CSS：共七份，`app/globals.css` 负责 Tailwind 主题；其他文件目前仍包含复杂哥特式绘景、响应式布局与特殊视觉效果。继续将普通控件样式迁移至 Tailwind，但不机械删除已在场景中使用的规则。
 - JavaScript：无 `.js`/`.jsx` 正式源文件。六个 `.mjs` 仅用于 lint/PostCSS、构建、资源审核与本地静态服务；这些属于现代 Node 工具链，不需要强制改成 TS。
-- 技术债：`src/core/cozy-engine.ts`、`v2/src/workshop-engine.ts`、`v2/src/workshop-lab-stage.ts` 是需逐步拆分的大型规则/绘制文件；React 与 Pixi 之间目前仍通过 DOM dataset/custom events 交换暂态输入，后续考虑收敛为显式类型化适配器，保持已有存档键及行为。
+- 技术债：`src/core/cozy-engine.ts`、工坊规则模块及 `v2/src/workshop-lab-stage.ts` 仍需按职责逐步拆分。工坊 React 与 Pixi 暂态选中状态已采用显式 TypeScript 类型回调接口，不再通过 DOM dataset/custom events 反向读取状态；保留现有存档键及行为。
 
 ## 工坊领域模块（第二轮拆分）
 
@@ -40,3 +40,10 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 - `v2/src/workshop-shift-effects.ts`：依据已结算的真实班次结果生成产量、缺料、交付提示，不重复触发存档重载时的动画。
 - `v2/src/workshop-lab-stage.ts`：仍管理 Pixi 容器层级、场景交互、贴图合成与屏幕自适应；不再重复管理以上三个子模块。
 - 库存数字行、快捷链接布局以及行为结果提示改用 React 组件及 Tailwind v4 类；删除 `world.css` 中无引用的 `.mw-stock`、`.mw-message`、`.mw-context-links` 等历史选择器。复杂绘景 CSS 暂时保留。
+
+## 运行时到 React 的类型化同步（第四轮）
+
+- `v2/src/workshop-runtime-contract.ts` 声明 `WorkshopSelectionSnapshot` 和 `WorkshopSelectionListener`，作为 React 与单独打包的 Pixi IIFE 的稳定类型契约。
+- `mountWorkshopGame(root, assetBase, onSelectionChange)` 在每次工坊暂态选择变更后调用监听器；React 直接接受对象并比较字段，取消监听器无需清除 DOM 自定义事件。
+- `#status`、`#summary` 为运行时保留的明确状态节点；`#stage` 的 `data-*` 属性仍用于场景诊断和 E2E，并不作为 React 业务状态来源。
+- `data-worker` / `data-build` / `#move` / `#shift` 仍是现有 React 按钮到运行时的委托点击协议；后续可以按单一阶段迁移到显式 action dispatcher，不应在同一提交同时重写所有玩法输入。

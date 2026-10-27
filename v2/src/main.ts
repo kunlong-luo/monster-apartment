@@ -4,13 +4,15 @@ import { WORKERS, MACHINES, newWorkshop, validWorkshop,
   PREMIUM_ORDER_PENALTY, STANDARD_ORDER_PENALTY } from './workshop-engine';
 import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
 import { mountWorkshopLab } from './workshop-lab-stage';
+import type {WorkshopSelectionListener} from './workshop-runtime-contract';
 
 const STORAGE='monster-apartment:workshop-v2-lab';
 /** Bind the Pixi stage and game actions to the single Next.js React shell.
  * React owns every visible business control, readout and catalog.
  * This runtime owns only Pixi, transient selection, status and persistence. */
 export async function mountWorkshopGame(root:HTMLElement,
-  assetBase:string=document.baseURI):Promise<()=>void>{
+  assetBase:string=document.baseURI,
+  onSelectionChange?:WorkshopSelectionListener):Promise<()=>void>{
 if(root.dataset.reactControls!=='true')
   throw Error('工坊必须由 Next.js React 界面挂载。');
 const $=(id:string)=>root.querySelector<HTMLElement>('#'+id)!;
@@ -121,11 +123,12 @@ function render(){
       (machine.worker?WORKERS[machine.worker].zh:'')
     :'').filter(Boolean);
   $('summary').textContent=board.join(' · ');
-  root.dataset.chosenWorker=chosenWorker??'';
-  root.dataset.chosenMachine=chosenMachine??'';
-  root.dataset.movingFrom=movingFrom===null?'':String(movingFrom);
-  root.dataset.selectedPlot=selectedPlot===null?'':String(selectedPlot);
-  root.dispatchEvent(new Event('moonwork:controls-change'));
+  onSelectionChange?.({
+    worker:chosenWorker,
+    machine:chosenMachine,
+    movingFrom,
+    selectedPlot,
+  });
 }
 const onRootClick=(event:MouseEvent)=>{
   const origin=event.target;

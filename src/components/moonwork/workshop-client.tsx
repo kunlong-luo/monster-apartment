@@ -13,7 +13,7 @@ import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
 import {WorkshopControls} from './workshop-controls';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
-import type {Craft, WorkerId} from '../../../v2/src/workshop-engine';
+import type {WorkshopSelectionSnapshot,WorkshopSelectionListener} from '../../../v2/src/workshop-runtime-contract';
 
 declare global {
   interface Window {
@@ -21,27 +21,16 @@ declare global {
       mountWorkshopGame: (
         root: HTMLElement,
         assetBase?: string,
+        onSelectionChange?: WorkshopSelectionListener,
       ) => Promise<() => void>;
     };
     __moonworkRuntimeLoading?: Promise<void>;
   }
 }
 
-type Selection = {
-  worker: WorkerId | null;
-  machine: Craft | null;
-  movingFrom: number | null;
-  selectedPlot: number | null;
+const initialSelection: WorkshopSelectionSnapshot = {
+  worker:null,machine:null,movingFrom:null,selectedPlot:null,
 };
-
-const readSelection = (root: HTMLElement): Selection => ({
-  worker: (root.dataset.chosenWorker || null) as WorkerId | null,
-  machine: (root.dataset.chosenMachine || null) as Craft | null,
-  movingFrom: root.dataset.movingFrom ? Number(root.dataset.movingFrom) : null,
-  selectedPlot: root.dataset.selectedPlot
-    ? Number(root.dataset.selectedPlot)
-    : null,
-});
 
 function assetRoot() {
   return workshopAssetRoot(window.location.href);
@@ -82,12 +71,8 @@ export function WorkshopClient() {
   const savedWorld = useWorkshopWorld();
   const world = savedWorld ?? newWorkshop();
 
-  const [selection, setSelection] = useState<Selection>({
-    worker: null,
-    machine: null,
-    movingFrom: null,
-    selectedPlot: null,
-  });
+  const [selection, setSelection] =
+    useState<WorkshopSelectionSnapshot>(initialSelection);
 
   const [portraitUrl, setPortraitUrl] = useState<string>(
     './assets/moonveil-portrait.avif',
@@ -119,19 +104,15 @@ export function WorkshopClient() {
     let cancelled = false;
     let dispose: (() => void) | undefined;
 
-    const onControlsChange = () => {
-      setSelection((prev) => {
-        const next = readSelection(root);
-        return prev.worker === next.worker &&
-          prev.machine === next.machine &&
-          prev.movingFrom === next.movingFrom &&
-          prev.selectedPlot === next.selectedPlot
-          ? prev
-          : next;
-      });
+    // Type-safe selection snapshots cross the IIFE boundary through a
+    // callback; no DOM attribute decoding or synthetic control-change event.
+    const onSelectionChange:WorkshopSelectionListener = (next) => {
+      if(cancelled)return;
+      setSelection(prev=>prev.worker===next.worker &&
+        prev.machine===next.machine &&
+        prev.movingFrom===next.movingFrom &&
+        prev.selectedPlot===next.selectedPlot?prev:next);
     };
-
-    root.addEventListener('moonwork:controls-change', onControlsChange);
 
     void loadRuntime(base)
       .then(async () => {
@@ -139,13 +120,12 @@ export function WorkshopClient() {
         const runtime = window.MoonworkRuntime;
         if (!runtime) throw Error('PixiJS runtime is missing.');
 
-        const cleanup = await runtime.mountWorkshopGame(root, base);
+        const cleanup = await runtime.mountWorkshopGame(root, base, onSelectionChange);
         if (cancelled) {
           cleanup();
         } else {
           dispose = cleanup;
           window.dispatchEvent(new Event(CHANGE_EVENT));
-          onControlsChange();
         }
       })
       .catch((e) => {
@@ -154,7 +134,8 @@ export function WorkshopClient() {
 
     return () => {
       cancelled = true;
-      root.removeEventListener('moonwork:controls-change', onControlsChange);
+      // The IIFE's callback can outlive an aborted async mount, so the
+      // cancelled flag prevents state updates after React has unmounted.
       dispose?.();
     };
   }, [recoveryVersion]);

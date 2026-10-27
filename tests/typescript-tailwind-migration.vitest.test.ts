@@ -76,4 +76,20 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(controls).toContain('data-testid={\'v2-worker-\' + id}');
     expect(controls).toContain('data-testid={\'v2-build-\' + id}');
   });
+  it('communicates selected plots and tools with a typed runtime callback',()=>{
+    const runtime=read('v2/src/main.ts');
+    const client=read('src/components/moonwork/workshop-client.tsx');
+    const bridge=read('v2/src/workshop-runtime-contract.ts');
+    expect(bridge).toContain('export type WorkshopSelectionSnapshot');
+    expect(bridge).toContain('export type WorkshopSelectionListener');
+    expect(runtime).toContain('onSelectionChange?.({');
+    expect(client).toContain('mountWorkshopGame(root, base, onSelectionChange)');
+    expect(client).toContain('WorkshopSelectionSnapshot');
+    expect(runtime).not.toContain('moonwork:controls-change');
+    expect(client).not.toContain('moonwork:controls-change');
+    for(const field of ['chosenWorker','chosenMachine','movingFrom','selectedPlot']){
+      expect(runtime).not.toContain('root.dataset.'+field);
+      expect(client).not.toContain('root.dataset.'+field);
+    }
+  });
 });
