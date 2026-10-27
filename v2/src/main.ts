@@ -95,6 +95,23 @@ if(requestedWorker&&Object.hasOwn(WORKERS,requestedWorker)){
 }
 function render(){
   stage.sync(world,selectedPlot);
+  if(root.dataset.reactControls==='true'){
+    // React owns ALL visible business readouts and button properties on Next
+    // pages. Never mutate React-managed text nodes, hidden, disabled or styles.
+    // Only the Pixi canvas, ephemeral selection, and status log live here.
+    $('status').textContent=message;
+    $('status').setAttribute('data-tone',effect);
+    const board=world.tiles.map((m,i)=>m
+      ?String(i+1)+':'+MACHINES[m.craft].zh+' '+(m.worker?WORKERS[m.worker].zh:'')
+      :'').filter(Boolean);
+    $('summary').textContent=board.join(' · ');
+    root.dataset.chosenWorker=chosenWorker??'';
+    root.dataset.chosenMachine=chosenMachine??'';
+    root.dataset.movingFrom=movingFrom===null?'':String(movingFrom);
+    root.dataset.selectedPlot=selectedPlot===null?'':String(selectedPlot);
+    root.dispatchEvent(new Event('moonwork:controls-change'));
+    return;
+  }
   $('day').textContent=String(world.day);
   $('coins').textContent=String(world.coins);
   $('core').textContent=String(world.warehouse.core);
@@ -215,15 +232,6 @@ function render(){
   }else $('diagnosis').textContent='水汽泵 → 孢子温室 → 晶核熔炉。设备必须上下左右相邻，专长匹配时产量更高。';
   const board=world.tiles.map((m,i)=>m?(''+(i+1)+':'+MACHINES[m.craft].zh+' '+(m.worker?WORKERS[m.worker].zh:'')):'').filter(Boolean);
   $('summary').textContent=board.join(' · ');
-  if(root.dataset.reactControls==='true'){
-    // React controls share this single gameplay command source. These are
-    // transient selections, not additional fields in the existing V2 save.
-    root.dataset.chosenWorker=chosenWorker??'';
-    root.dataset.chosenMachine=chosenMachine??'';
-    root.dataset.movingFrom=movingFrom===null?'':String(movingFrom);
-    root.dataset.selectedPlot=selectedPlot===null?'':String(selectedPlot);
-    root.dispatchEvent(new Event('moonwork:controls-change'));
-  }
 }
 const onRootClick=(event:MouseEvent)=>{
   const origin=event.target;

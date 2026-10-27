@@ -8,6 +8,10 @@ test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',asy
   const stage=page.getByTestId('v2-stage');
   await expect(stage.locator('canvas')).toBeVisible({timeout:25_000});
   await expect(stage).toHaveAttribute('data-renderer','pixi-webgl-bitmap');
+  await expect(page.getByTestId('v2-day')).toHaveCount(1);
+  await expect(page.getByTestId('v2-coins')).toHaveCount(1);
+  await expect(page.getByTestId('v2-internal-day')).toHaveCount(1);
+  await expect(page.getByTestId('v2-internal-coins')).toHaveCount(1);
   await expect(page.getByTestId('v2-day')).toHaveText('1');
   await expect(page.getByTestId('v2-world-nav')).toBeVisible();
   await expect(page.getByTestId('workshop-react-hud')).toBeVisible();

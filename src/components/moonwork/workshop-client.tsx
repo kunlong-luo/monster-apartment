@@ -183,10 +183,10 @@ export function WorkshopClient() {
           </div>
           <div className="top-stats">
             <span>
-              第 <b id="day" data-testid="v2-day">{world.day}</b> 天
+              第 <b id="day" data-testid="v2-internal-day">{world.day}</b> 天
             </span>
             <span>
-              ✦ <b id="coins" data-testid="v2-coins">{world.coins}</b>
+              ✦ <b id="coins" data-testid="v2-internal-coins">{world.coins}</b>
             </span>
             <button
               type="button"
