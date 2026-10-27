@@ -10,8 +10,9 @@ const nextConfig: NextConfig = {
   // Turbopack is the default engine for dev and build in Next 16.
   reactStrictMode: true,
   poweredByHeader: false,
-  // Phaser is bundled into a client-only chunk; it must never be evaluated on the server.
-  serverExternalPackages: ['phaser'],
+  // Playwright uses 127.0.0.1 while the Next dev server binds 0.0.0.0.
+  // Next 16 blocks cross-origin dev chunks/HMR unless this host is trusted.
+  allowedDevOrigins: ['127.0.0.1', 'localhost'],
   typedRoutes: true,
 };
 
