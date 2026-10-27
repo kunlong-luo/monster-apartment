@@ -31,7 +31,7 @@ export function Warehouse({s}:{s:WorkshopState}){
         <p>水汽与孢子保存在各自设备内，晶核进入共享仓库；
           工坊、居民、市集和委托全部从这里影响实际物资。</p>
       </div>
-      <Link href="/town/" className="mw-hero-shortcut">去月光街补货 ↗</Link>
+      <Link href="/town/" className={WORLD_LINK_CLASS+' shrink-0'}>去月光街补货 ↗</Link>
     </section>
     <div className="mw-grid mw-columns mt-2.5 grid grid-cols-1 gap-2.5">
     <Panel title="⬡ 当前真实库存">

@@ -34,7 +34,7 @@ export function Characters({s}:{s:WorkshopState}){
             <p className="mw-worker-assignment">{working
               ?'正在 '+String(plot+1).padStart(2,'0')+' 号工位 · '+MACHINES[s.tiles[plot]!.craft].zh
               :'目前待派工'}</p>
-            <Link href={'/workshop/?worker='+id} className="mw-worker-action"
+            <Link href={'/workshop/?worker='+id} className={WORLD_LINK_CLASS+' mt-auto w-full max-[620px]:px-2 max-[620px]:text-[11px]'}
               aria-label={'安排'+w.zh+'到工坊'}>前往工坊安排岗位 ↗</Link>
           </div>
         </section>;

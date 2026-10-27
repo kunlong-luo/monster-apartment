@@ -1,18 +1,10 @@
-.mw.mw-gothic .mw-tile,
 .mw.mw-gothic .mw-market,
 .mw.mw-gothic .mw-town-resident,
 .mw.mw-gothic .mw-market-offer{
   border:1px solid #aa855d75!important;background:linear-gradient(135deg,#34222ab9,#181219c9)!important;
   color:#eee0cd!important;box-shadow:inset 0 1px #ebcd9220,0 5px 19px #0004;
   border-radius:10px!important;padding:14px!important}.mw.mw-gothic .mw-town-resident h2,
-.mw.mw-gothic .mw-market-header h2{color:#f6d09e;font-size:19px}.mw.mw-gothic .mw-market-offer p{color:#dcc7ae!important;font-size:12px;line-height:1.7}.mw.mw-gothic .mw-button,
-.mw.mw-gothic .mw-link,
-.mw.mw-gothic .mw-action-button,
-.mw.mw-gothic .mw-worker-action,
-.mw.mw-gothic .mw-hero-shortcut{
-  background:linear-gradient(105deg,#694632,#32202d)!important;border:1px solid #d8a874!important;
-  border-radius:6px!important;color:#ffe8c4!important;font-size:12px!important;
-  padding:9px 11px!important;min-height:36px;box-shadow:inset 0 1px #fff2}.mw.mw-gothic :is(a,
+.mw.mw-gothic .mw-market-header h2{color:#f6d09e;font-size:19px}.mw.mw-gothic .mw-market-offer p{color:#dcc7ae!important;font-size:12px;line-height:1.7}.mw.mw-gothic :is(a,
 button):focus-visible{outline:2px solid #ffdda2;outline-offset:2px}.mw.mw-gothic .mw-town-focus{display:flex;flex-direction:column;gap:10px}.mw.mw-gothic .mw-town-scene,
 .mw.mw-gothic .mw-town-focus .mw-town-scene{min-height:215px;
   height:215px;box-shadow:0 6px 20px #0008;border:1px solid #b58c54;

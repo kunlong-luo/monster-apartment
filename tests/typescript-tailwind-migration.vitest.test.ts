@@ -62,6 +62,23 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     }
     expect(overrides).not.toContain('.mw-stock');
   });
+  it('styles world entry links with shared Tailwind utilities, not legacy selectors',()=>{
+    const characters=read('src/components/moonwork/world-characters.tsx');
+    const orders=read('src/components/moonwork/world-orders.tsx');
+    const warehouse=read('src/components/moonwork/world-warehouse.tsx');
+    const sceneCSS=read('src/components/moonwork/world.css');
+    const overrides=read('src/components/game/gothic-world.css');
+    expect(characters).toContain("className={WORLD_LINK_CLASS+' mt-auto");
+    expect(orders).toContain("className={WORLD_LINK_CLASS+' shrink-0'}");
+    expect(warehouse).toContain("className={WORLD_LINK_CLASS+' shrink-0'}");
+    for(const selector of ['.mw-worker-action','.mw-hero-shortcut','.mw-action-button']){
+      expect(sceneCSS).not.toContain(selector);
+      expect(overrides).not.toContain(selector);
+    }
+    expect(overrides).not.toContain('.mw-tile');
+    expect(overrides).not.toContain('.mw-button');
+    expect(overrides).not.toContain('.mw-link');
+  });
   it('renders workshop controls only in React, without a parallel HTML toolbar',()=>{
     const runtime=read('v2/src/main.ts');
     const client=read('src/components/moonwork/workshop-client.tsx');

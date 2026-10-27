@@ -47,3 +47,7 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 - `mountWorkshopGame(root, assetBase, onSelectionChange)` 在每次工坊暂态选择变更后调用监听器；React 直接接受对象并比较字段，取消监听器无需清除 DOM 自定义事件。
 - `#status`、`#summary` 为运行时保留的明确状态节点；`#stage` 的 `data-*` 属性仍用于场景诊断和 E2E，并不作为 React 业务状态来源。
 - `data-worker` / `data-build` / `#move` / `#shift` 仍是现有 React 按钮到运行时的委托点击协议；后续可以按单一阶段迁移到显式 action dispatcher，不应在同一提交同时重写所有玩法输入。
+
+## 场景快捷入口的样式所有权（第四轮）
+
+角色图鉴的派工链接、订单/仓库绘景上的快捷入口统一使用 `world-primitives.tsx` 的 `WORLD_LINK_CLASS` Tailwind v4 组件样式，不再依赖 `gothic-world.css` 中覆盖按钮的 `!important`。已删除 `world.css` 的未使用 `.mw-action-button`、旧工匠链接和快捷入口规则。

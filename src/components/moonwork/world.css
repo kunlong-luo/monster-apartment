@@ -54,7 +54,7 @@
   border:1px solid #9c866b;background:linear-gradient(160deg,#303e50,#243448);
   border-radius:12px}.mw-market-icon{flex:0 0 48px;height:48px;display:grid;place-items:center;
   color:#ffdb9c;background:#253348;border:1px solid #a59072;
-  font:normal 32px Georgia,serif;border-radius:12px}.mw-market-detail{min-width:0;display:flex;flex-direction:column}.mw-market-detail small{color:#b6c5c7;font-size:11px}.mw-market-detail h3{margin:4px 0;font:700 18px Georgia,serif;color:#ffe3b9}.mw-market-detail p{font-size:12px;color:#d0d6d4;line-height:1.5;margin:5px 0}.mw-market-detail .mw-market-price{font-weight:800;color:#fbe0af}.mw-market-detail .mw-market-warning{color:#ffc2a6}.mw-market-offer .mw-action-button{margin-top:auto;font-size:12px;padding:10px 12px}.mw-market-offer .mw-action-button:disabled{opacity:.45;cursor:not-allowed}.mw-town-next{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+  font:normal 32px Georgia,serif;border-radius:12px}.mw-market-detail{min-width:0;display:flex;flex-direction:column}.mw-market-detail small{color:#b6c5c7;font-size:11px}.mw-market-detail h3{margin:4px 0;font:700 18px Georgia,serif;color:#ffe3b9}.mw-market-detail p{font-size:12px;color:#d0d6d4;line-height:1.5;margin:5px 0}.mw-market-detail .mw-market-price{font-weight:800;color:#fbe0af}.mw-market-detail .mw-market-warning{color:#ffc2a6}.mw-town-next{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
 @media(max-width:900px){.mw-market-offers{grid-template-columns:1fr}.mw-market-offer{align-items:center}.mw-market-detail{flex:1}}
 @media(max-width:610px){.mw-town-scene{min-height:340px}.mw-town-banner{padding:15px 16px 0}.mw-town-banner p:not(.mw-eyebrow){font-size:11px}.mw-town-buildings{gap:6px;margin:24px 9px 15px}.mw-town-building{min-height:106px;padding:19px 2px 8px}.mw-town-forge{min-height:124px}.mw-building-name{font-size:12px}.mw-town-building small{font-size:9px;text-align:center}.mw-building-glyph{font-size:25px}.mw-town-orb{font-size:125px;right:1%}.mw-market{padding:13px}.mw-market-offer{padding:12px}.mw-market-header h2{font-size:22px}
 }
@@ -78,7 +78,7 @@
   color:#b8c9d1;margin-left:7px}.mw-resident-quote{font-size:15px;line-height:1.8;color:#eff0e7}.mw-resident-deal{display:flex;justify-content:space-between;gap:12px;
   flex-wrap:wrap;border-block:1px solid #b8a28671;padding:11px 0;font-size:13px;
   color:#e6d5bd}.mw-resident-deal strong{color:#ffdea6}.mw-resident-explanation{font-size:12px;line-height:1.6;color:#b9c9cc}.mw-resident-reputation{font-size:12px;color:#e0c69b}.mw-visit-result{border-left:3px solid #b3d2aa;padding:7px 9px;
-  color:#dcf4df;font-size:12px;line-height:1.7;background:#233e36}.mw-town-resident .mw-action-button:disabled{opacity:.62;cursor:not-allowed}
+  color:#dcf4df;font-size:12px;line-height:1.7;background:#233e36}
 @media(max-width:610px){.mw-town-resident{grid-template-columns:76px 1fr;
   gap:11px;padding:12px;margin-top:10px}.mw-resident-character{min-height:190px}.mw-character-figure{font-size:46px}.mw-resident-dialogue h2{font-size:20px}.mw-resident-dialogue h2 small{font-size:10px;margin-left:2px}.mw-resident-quote{font-size:12px;line-height:1.5}.mw-resident-deal{font-size:11px}.mw-resident-explanation{font-size:10px}
 }
@@ -105,7 +105,7 @@
   border-radius:9px}.mw-resident-guide-label{position:absolute;z-index:2;bottom:0;left:0;right:0;
   padding:6px 8px;text-align:center;color:#ffe5b5;
   font-size:11px;background:linear-gradient(transparent,#121d30ed);
-  text-shadow:0 1px 3px #09080b}.mw-town-focus .mw-resident-dialogue h2{font-size:22px}.mw-town-focus .mw-resident-quote{font-size:13px;line-height:1.65}.mw-town-focus .mw-resident-explanation{font-size:11px}.mw-town-focus .mw-resident-dialogue .mw-action-button{padding:10px 9px;font-size:12px}
+  text-shadow:0 1px 3px #09080b}.mw-town-focus .mw-resident-dialogue h2{font-size:22px}.mw-town-focus .mw-resident-quote{font-size:13px;line-height:1.65}.mw-town-focus .mw-resident-explanation{font-size:11px}
 @media(max-width:850px){.mw-town-focus{grid-template-columns:minmax(0,1fr)}.mw-town-focus .mw-town-scene{min-height:375px}.mw-town-focus .mw-town-resident{display:grid;
     grid-template-columns:155px minmax(0,1fr);gap:12px;align-items:start}.mw-town-focus .mw-resident-character{min-height:225px;flex-basis:auto}
 }
@@ -126,22 +126,17 @@
   border-bottom:2px solid #ac8860;overflow:hidden}.mw-worker-portrait:after{content:'';position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,transparent 50%,#172539ad 100%)}.mw-worker-role{position:absolute;right:9px;bottom:12px;z-index:1;
   font-weight:700;color:#ffe2ab;border:1px solid #be9a6d;
-  border-radius:7px;padding:6px 10px;background:#172a3dd9;font-size:12px}.mw-worker-details{display:flex;flex-direction:column;flex:1;padding:19px;gap:8px}.mw-worker-details h2{font:700 27px Georgia,serif;color:#ffe1ac;margin:0}.mw-worker-details h2 small{font:normal 12px system-ui,sans-serif;color:#acbaca}.mw-worker-job{font-size:12px;color:#cfb790;margin:0}.mw-worker-assignment{padding:12px 0;color:#e2e7dd;font-size:13px;line-height:1.6;margin:0}.mw-worker-action{display:block;color:#fff0d6;border:1px solid #c39c6c;
-  background:linear-gradient(115deg,#5d4b40,#32445b);text-align:center;
-  border-radius:9px;padding:12px 8px;text-decoration:none;font-weight:750;font-size:12px;
-  margin-top:auto}.mw-worker-action:hover{background:#76634b}.mw-witch-banner{display:flex;gap:20px;align-items:center;margin-bottom:18px}.mw-witch-painting{position:relative;flex:0 0 140px;height:166px;
+  border-radius:7px;padding:6px 10px;background:#172a3dd9;font-size:12px}.mw-worker-details{display:flex;flex-direction:column;flex:1;padding:19px;gap:8px}.mw-worker-details h2{font:700 27px Georgia,serif;color:#ffe1ac;margin:0}.mw-worker-details h2 small{font:normal 12px system-ui,sans-serif;color:#acbaca}.mw-worker-job{font-size:12px;color:#cfb790;margin:0}.mw-worker-assignment{padding:12px 0;color:#e2e7dd;font-size:13px;line-height:1.6;margin:0}.mw-witch-banner{display:flex;gap:20px;align-items:center;margin-bottom:18px}.mw-witch-painting{position:relative;flex:0 0 140px;height:166px;
   overflow:hidden;border:1px solid #bc9a74;border-radius:10px}.mw-witch-painting img{object-fit:cover;object-position:center 19%}.mw-world-art-hero{position:relative;isolation:isolate;min-height:238px;
   display:flex;align-items:end;justify-content:space-between;gap:12px;
   padding:32px;border:2px solid #bda078;border-radius:17px;overflow:hidden;
   box-shadow:0 19px 40px #0c1324a6;background:#243249}.mw-world-hero-painting{object-fit:cover;object-position:center 47%;z-index:-2;
   filter:saturate(1.2) contrast(1.04)}.mw-world-art-hero:after{content:'';position:absolute;z-index:-1;inset:0;
   background:linear-gradient(95deg,#142038ed 0%,#1d2f3e9c 62%,#162942a3)}.mw-world-hero-copy{position:relative;max-width:700px}.mw-world-hero-copy h2{font:700 36px Georgia,serif;color:#ffe4b5;margin:7px 0;
-  text-shadow:0 4px 14px #10101a}.mw-world-hero-copy p{font-size:14px;line-height:1.75;color:#f3efe3;margin:0}.mw-hero-shortcut{flex:0 0 auto;color:#ffe5b6;text-decoration:none;
-  padding:11px 14px;background:#25354acb;border:1px solid #d4b48c;border-radius:9px;
-  font-size:12px;font-weight:800}.mw-hero-shortcut:hover{background:#67513a}.mw-warehouse-art{position:absolute;z-index:0;top:9px;right:23%;max-width:23%;
+  text-shadow:0 4px 14px #10101a}.mw-world-hero-copy p{font-size:14px;line-height:1.75;color:#f3efe3;margin:0}.mw-warehouse-art{position:absolute;z-index:0;top:9px;right:23%;max-width:23%;
   object-fit:contain;filter:drop-shadow(0 0 16px #fec98f80);opacity:.87;pointer-events:none}
 @media(max-width:850px){.mw-worker-grid{gap:9px}.mw-worker-portrait{min-height:205px}.mw-worker-details{padding:12px}.mw-worker-details h2{font-size:20px}}
-@media(max-width:620px){.mw-worker-grid{grid-template-columns:1fr;gap:14px}.mw-worker-card{display:grid;grid-template-columns:42% 58%;min-height:225px}.mw-worker-portrait{height:100%;min-height:225px;border-bottom:0;border-right:2px solid #a98b68}.mw-worker-details{padding:12px;gap:5px}.mw-worker-details h2{font-size:19px}.mw-worker-details h2 small{display:block;font-size:11px;margin-top:3px}.mw-worker-assignment{font-size:12px;padding:6px 0}.mw-worker-action{font-size:11px;padding:9px 5px}.mw-witch-banner{padding:12px;gap:12px}.mw-witch-painting{flex-basis:102px;height:150px}.mw-witch-banner h2{font-size:20px}.mw-witch-banner p{font-size:11px}.mw-world-art-hero{min-height:205px;padding:19px;display:flex;flex-direction:column;
+@media(max-width:620px){.mw-worker-grid{grid-template-columns:1fr;gap:14px}.mw-worker-card{display:grid;grid-template-columns:42% 58%;min-height:225px}.mw-worker-portrait{height:100%;min-height:225px;border-bottom:0;border-right:2px solid #a98b68}.mw-worker-details{padding:12px;gap:5px}.mw-worker-details h2{font-size:19px}.mw-worker-details h2 small{display:block;font-size:11px;margin-top:3px}.mw-worker-assignment{font-size:12px;padding:6px 0}.mw-witch-banner{padding:12px;gap:12px}.mw-witch-painting{flex-basis:102px;height:150px}.mw-witch-banner h2{font-size:20px}.mw-witch-banner p{font-size:11px}.mw-world-art-hero{min-height:205px;padding:19px;display:flex;flex-direction:column;
     align-items:flex-start;justify-content:end;gap:11px}.mw-world-hero-copy h2{font-size:29px}.mw-world-hero-copy p{font-size:12px}.mw-warehouse-art{right:0;top:-20px;max-width:38%;opacity:.37}
 }
 @media(prefers-reduced-motion:reduce){.mw-worker-card{transition:none}}

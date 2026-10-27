@@ -5,8 +5,8 @@ import type {ReactNode} from 'react';
 import {CHANGE_EVENT,commitWorldAction} from '@/lib/moonwork/world-store';
 import type {WorldAction,ActionStatus} from '@/lib/moonwork/world-store';
 
-/** Shared utility-only buttons; the modern world does not need the old
- * .mw-link/.mw-action-button cascade to compute interactive styles. */
+/** Shared Tailwind v4 action and link styles for world panels, heroes
+ * and worker assignment. No page-scoped action override is required. */
 export const WORLD_LINK_CLASS=
   'mt-2.5 inline-flex min-h-9 items-center justify-center rounded-md border '+
   'border-[#d8a874] bg-[linear-gradient(105deg,#694632,#32202d)] px-3 py-2 '+
