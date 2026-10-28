@@ -194,3 +194,9 @@ repeatable: false
 - 剧情必需线索、三结局以及 CG-M 主线收藏不依赖装备/角色达到 UR；角色潜力与故事推进的奖励归不同领域，不以装备分值代替角色性格或人物信任。
 
 同一角色通过 `characterId` 在图鉴、人物私室、工坊岗位和成长档案中引用**一份权威六维与装备状态**。详情 [17 属性](17-CHARACTER-ATTRIBUTES-AND-POTENTIAL.md)、[18 装备](18-EQUIPMENT-FORGING-PRD.md)。
+
+## 14. V3.4 人格/生活/关系与成长分层状态
+
+人物的 `CharacterLifeProfile` 在相同 `characterId` 下管理**身份、20 能力、人格特质、动态情绪、关系、兴趣和人生标记**，设计见 [20](20-HOLISTIC-PERSON-SYSTEM.md)。永久成长事件更新能力/技能与训练记录；生活状态事件更新精力/心情/压力；对话与公寓生活事件更新双向关系；剧情决定改变目标、承诺和可揭示秘密。四类事件不能互相越权：例如 `equipment-equipped` 不应写 `trust+20`，`dialogue-watched` 不能新增矿产。
+
+多个页面用同一权威人物快照与事件 ID，旧档六项能力兼容映射，新能力按角色配置初始化，性格标签不能在访问房间时重新随机生成。人物实例草案见 [21](21-CHARACTER-LIVING-PROFILES.md)。

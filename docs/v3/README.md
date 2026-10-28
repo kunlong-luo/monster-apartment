@@ -1,4 +1,4 @@
-# 《怪物公寓》V3.3 策划总入口
+# 《怪物公寓》V3.4 策划总入口
 
 > **文档状态：需求与剧情方案（Proposal），不是已上线功能。** 编写日期：2026-10-28。本文档体系是后续开发的唯一 V3 产品基线；已有代码与实际发布状态以主分支和 CI 为准。
 
@@ -28,9 +28,11 @@
 | [14-CHARACTER-PRIVATE-ROOMS-PRD.md](14-CHARACTER-PRIVATE-ROOMS-PRD.md) | 客户端/玩法 | **每个人物独立私室**、进入房间、真人物对话、互动热点与旧六房存档兼容 |
 | [15-CHARACTER-ROOM-BIBLE.md](15-CHARACTER-ROOM-BIBLE.md) | 编剧/美术 | **12 位招募住客 + 8 位主线 NPC** 各一张独立精美房间绘景/生活动作/对白 |
 | [16-RARITY-VISUAL-TOKENS.md](16-RARITY-VISUAL-TOKENS.md) | 视觉/客户端 | **UR 神话·月蚀红色主题**与 SSR 金/SR 紫/R 蓝/N 暖灰的统一视觉 token |
-| [17-CHARACTER-ATTRIBUTES-AND-POTENTIAL.md](17-CHARACTER-ATTRIBUTES-AND-POTENTIAL.md) | 玩法/数值/角色 | **六维属性、等级、训练、职业适配与五品阶潜力成长** |
+| [17-CHARACTER-ATTRIBUTES-AND-POTENTIAL.md](17-CHARACTER-ATTRIBUTES-AND-POTENTIAL.md) | 玩法/数值/角色 | **20 项基础能力的等级、训练、专精与五品阶成长** |
 | [18-EQUIPMENT-FORGING-PRD.md](18-EQUIPMENT-FORGING-PRD.md) | 系统/工程 | **装备与首饰六槽、自动锻造队列、材料守恒、穿戴/强化及存档** |
 | [19-EQUIPMENT-RECIPES-AND-ART.md](19-EQUIPMENT-RECIPES-AND-ART.md) | 配方/美术/验收 | **六件可打造基础器具和首饰、三件未来高级配方、外观与角色搭配** |
+| [20-HOLISTIC-PERSON-SYSTEM.md](20-HOLISTIC-PERSON-SYSTEM.md) | **人物/玩法/工程** | **完整人物体系**：身份、20 能力、人格、情绪需求、关系、技能、人生经历与数据结构 |
+| [21-CHARACTER-LIVING-PROFILES.md](21-CHARACTER-LIVING-PROFILES.md) | **编剧/美术/玩法** | **八位核心 NPC 的完整人物生活档案**：性格、习惯、人生目标、情绪和可见关系发展 |
 
 ## 当前版本与 V3 目标的边界
 
@@ -99,3 +101,11 @@
 - 新功能仍为规划、未实现。参数仅是测试初稿；**先完成自动工坊与剧情纵切片，再接入第一批锻造和装备。**
 
 详见 [17 六维属性与成长](17-CHARACTER-ATTRIBUTES-AND-POTENTIAL.md) · [18 自动锻造/装备 PRD](18-EQUIPMENT-FORGING-PRD.md) · [19 装备配方/美术](19-EQUIPMENT-RECIPES-AND-ART.md)。
+
+## V3.4 从六维升级为「完整人物」（2026-10-28）
+
+**新的权威方向：人物不是六项属性组成的战力表。** 在保留体魄、智慧、力量、精神、血气、速度六个已有字段的基础上，规划身体、认知、心灵、社交、生活五组**20 项可培养能力**，同时建模身份/身体形态、人格气质、动态情绪与需求、人与人的信任关系、技能专长、兴趣习惯和人生经历。
+
+**永久能力 vs 人格和关系必须分开**：装备可以提高观察、专注、力量或恢复；不可以让月纱突然信任玩家，或擦掉她的旧合同责任。每个人物在自己的专属房间里应通过动作、陈设与对话体现独立的人格。稀有度提升职业成长潜力，**不是人物的道德/情感高低**。
+
+[20 人物完整模拟体系](20-HOLISTIC-PERSON-SYSTEM.md) 是设计总基线，[21 人物生活档案](21-CHARACTER-LIVING-PROFILES.md) 提供核心 NPC 实例，[17 属性与潜力](17-CHARACTER-ATTRIBUTES-AND-POTENTIAL.md) 描述能力成长。**全部为策划，正式人物系统尚未实装。**
