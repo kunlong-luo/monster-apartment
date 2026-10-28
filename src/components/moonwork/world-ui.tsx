@@ -8,7 +8,6 @@ import {useWorkshopWorld} from './world-save-react';
 import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from './world-navigation';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
-import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
 import {Panel,WorkshopLink} from './world-primitives';
 import {Town} from './world-town';
 import {Orders} from './world-orders';
