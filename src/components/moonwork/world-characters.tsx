@@ -22,7 +22,7 @@ function WorkerPainting({id,label,working}:{
   </div>;
 }
 
-export function Characters({s}:{s:WorkshopState}){
+export function Characters({s,onVisit}:{s:WorkshopState;onVisit:(id:WorkerId)=>void}){
   return <>
     <section className="mw-art-gallery-intro" data-testid="character-gallery-header">
       <span className="mw-eyebrow">WORKER ROSTER · THE PEOPLE OF MOONLIGHT WORKSHOP</span>
@@ -44,6 +44,11 @@ export function Characters({s}:{s:WorkshopState}){
               ?'正在 '+String(plot+1).padStart(2,'0')+' 号工位 · '+MACHINES[s.tiles[plot]!.craft].zh
               :'目前待派工'}</p>
             <CharacterLifePortrait id={id} activity={working?'在工坊值守':'目前待派工 · 可以休息'}/>
+            <button type="button" onClick={()=>onVisit(id)}
+              data-testid={'visit-worker-room-'+id}
+              className="mt-2 min-h-11 rounded-lg border border-gothic-gold/70 bg-gothic-wine/60 px-4 py-2 text-xs text-gothic-ivory hover:border-gothic-glow hover:bg-gothic-wine focus-visible:outline-2 focus-visible:outline-gothic-glow">
+              拜访{w.zh}的私人房间 ↗
+            </button>
             <Link href={'/workshop/?worker='+id} className={WORLD_LINK_CLASS+' mt-auto w-full max-[620px]:px-2 max-[620px]:text-[11px]'}
               aria-label={'安排'+w.zh+'到工坊'}>前往工坊安排岗位 ↗</Link>
           </div>

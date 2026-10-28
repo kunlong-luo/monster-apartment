@@ -70,7 +70,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
         <div className={'pointer-events-none absolute left-[21%] top-[18%] size-[36%] rounded-full blur-3xl '+palette.glow}/>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-[#0d0b12f0] to-transparent"/>
         <span aria-hidden="true" className="pointer-events-none absolute left-[5%] top-[29%] text-[clamp(58px,11vw,110px)] leading-none text-[#e8cda84f]">{palette.symbol}</span>
-        <div className="absolute bottom-0 right-[7%] h-[96%] w-[55%] max-w-[340px] origin-bottom motion-safe:animate-[sway_5s_ease-in-out_infinite] motion-reduce:animate-none">
+        <div className="absolute bottom-0 right-[7%] h-[96%] w-[55%] max-w-[340px] origin-bottom motion-safe:animate-[room-breathe_5s_ease-in-out_infinite] motion-reduce:animate-none">
           <WorkerArtwork id={id} name={profile.name}/>
         </div>
         <div className="pointer-events-none absolute bottom-3 left-3 z-[1] max-w-[47%] space-y-2">

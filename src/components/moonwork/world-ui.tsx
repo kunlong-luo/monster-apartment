@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import './world.css';
 import '@/components/game/gothic-world.css';
-import {useEffect} from 'react';
+import {useEffect,useState} from 'react';
 import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
 import {useWorkshopWorld} from './world-save-react';
 import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
@@ -12,12 +12,15 @@ import {Panel,WorkshopLink} from './world-primitives';
 import {Town} from './world-town';
 import {Orders} from './world-orders';
 import {Characters} from './world-characters';
+import {WorkerPrivateRoom} from '@/components/game/worker-private-room';
+import type {WorkerCharacterId} from '@/core/character-life';
 import {Warehouse} from './world-warehouse';
 
 export type WorldArea='town'|'orders'|'characters'|'warehouse';
 
 export function MoonworkWorld({area}:{area:WorldArea}){
   const s=useWorkshopWorld();
+  const [visiting,setVisiting]=useState<WorkerCharacterId|null>(null);
   useEffect(()=>{void ensureWorkshopWorld();},[]);
   const title={town:'月光街',orders:'委托大厅',characters:'角色图鉴',warehouse:'魔法仓库'}[area];
   return <main className="mw mw-gothic relative isolate h-dvh min-h-[560px] overflow-hidden bg-[#100910] font-serif text-[#f3dcc2] max-[700px]:min-h-0" data-testid="moonwork-world" data-area={area}>
@@ -46,8 +49,11 @@ export function MoonworkWorld({area}:{area:WorldArea}){
       {!s?<Panel title="尚无可用的 V2 工坊存档">
         <p>月光街还没有记录你的生产旅程。进入工坊，摆放设备、安排工匠并完成第一张委托；这些场景会自动呈现你的经营成果。</p>
         <WorkshopLink>进入工坊开始经营</WorkshopLink>
-      </Panel>:area==='town'?<Town s={s}/>:area==='orders'?<Orders s={s}/>:area==='characters'?<Characters s={s}/>:<Warehouse s={s}/>}
+      </Panel>:area==='town'?<Town s={s}/>:area==='orders'?<Orders s={s}/>:area==='characters'?<Characters s={s} onVisit={id=>setVisiting(id)}/>:<Warehouse s={s}/>}
     </div>
+    {area==='characters'&&s&&visiting&&<WorkerPrivateRoom id={visiting}
+      working={s.tiles.some(tile=>tile?.worker===visiting)}
+      onClose={()=>setVisiting(null)}/>}
     <footer className="mw-footer absolute bottom-2.5 left-0 z-[2] border-0 bg-transparent px-[15px] py-1 text-left text-[9px] text-[#ac8e78] max-[700px]:hidden">✦ 夜色公寓 · 你的选择影响每一位住客</footer>
   </main>;
 }

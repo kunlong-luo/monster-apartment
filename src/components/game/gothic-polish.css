@@ -200,3 +200,7 @@
 
 /* User preference is stronger than decorative CSS animation, in every scene. */
 .ga--still .ga-light,.ga--still .ga-dust{animation:none!important;transition:none!important}
+
+/* A restrained idle pose, only on existing high-resolution transparent worker artwork. */
+@keyframes room-breathe {0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){.worker-artwork{animation:none!important}}
