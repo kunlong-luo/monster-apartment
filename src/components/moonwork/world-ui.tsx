@@ -6,9 +6,8 @@ import {useEffect} from 'react';
 import {useWorkshopWorld} from './world-save-react';
 import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from './world-navigation';
-import {newWorkshop} from '../../../v2/src/workshop-engine';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
-import {SAVE_KEY,CHANGE_EVENT} from '@/lib/moonwork/world-store';
+import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
 import {Panel,WorkshopLink} from './world-primitives';
 import {Town} from './world-town';
 import {Orders} from './world-orders';
@@ -19,17 +18,7 @@ export type WorldArea='town'|'orders'|'characters'|'warehouse';
 
 export function MoonworkWorld({area}:{area:WorldArea}){
   const s=useWorkshopWorld();
-  useEffect(()=>{
-    // The world must exist whether a new player enters via town or workshop.
-    // Missing is not the same as corrupted: never overwrite an existing key,
-    // even if its value is invalid, without the player's consent.
-    try{
-      if(window.localStorage.getItem(SAVE_KEY)===null){
-        window.localStorage.setItem(SAVE_KEY,JSON.stringify(newWorkshop()));
-        window.dispatchEvent(new Event(CHANGE_EVENT));
-      }
-    }catch{/* Storage may be unavailable; keep the no-save recovery screen. */}
-  },[]);
+  useEffect(()=>{void ensureWorkshopWorld();},[]);
   const title={town:'月光街',orders:'委托大厅',characters:'角色图鉴',warehouse:'魔法仓库'}[area];
   return <main className="mw mw-gothic relative isolate h-dvh min-h-[560px] overflow-hidden bg-[#100910] font-serif text-[#f3dcc2] max-[700px]:min-h-0" data-testid="moonwork-world" data-area={area}>
     <div className="mw-gothic-scene pointer-events-none absolute inset-0 -z-[3] bg-[#21151d] bg-cover bg-center" aria-hidden="true" style={{backgroundImage:'url('+JSON.stringify(lobbyHero.src)+')'}}/>
