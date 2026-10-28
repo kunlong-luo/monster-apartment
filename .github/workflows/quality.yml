@@ -27,6 +27,7 @@ jobs:
           key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
       - run: pnpm check:stable-deps
+      - run: pnpm audit:room-art
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test

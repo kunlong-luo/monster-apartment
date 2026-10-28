@@ -10,7 +10,10 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   const bounds=await chamber.boundingBox();
   expect(bounds?.width).toBeGreaterThan(1040);
   await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-scene-id','yuesha');
-  await expect(page.getByTestId('room-resident-present-yuesha')).toBeVisible();
+  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-composition','embedded-resident');
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-render-mode','embedded');
+  await expect(page.getByTestId('room-resident-embedded-yuesha')).toHaveCount(1);
+  await expect(page.getByTestId('room-resident-present-yuesha')).toHaveCount(0);
   await page.screenshot({path:'test-results/room-yuesha-desktop.png'});
   await expect(page.getByTestId('life-profile-yuesha')).toContainText('谨慎而机敏');
   const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'{}').coins);
@@ -65,6 +68,8 @@ test('Brook, Fern and Cinder have unique rooms and persisted personal choices',a
     const dialog=page.getByRole('dialog',{name:'拜访'+person.name+'的房间'});
     await expect(dialog).toBeVisible();
     await expect(page.getByTestId('worker-private-room-'+person.id)).toContainText(person.name);
+    await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-composition','architecture-crop');
+    await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-render-mode','separate');
     await page.screenshot({path:'test-results/room-'+person.id+'-desktop.png'});
     await dialog.getByTestId('scene-object-'+person.objects[0]).click();
     await dialog.getByTestId('scene-object-'+person.objects[1]).click();

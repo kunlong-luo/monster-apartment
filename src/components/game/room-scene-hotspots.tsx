@@ -5,7 +5,7 @@ import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 
 /** Percentages refer to the scenic layer, not the whole screen.
  * Different layouts prevent object markers covering resident portraits. */
-import {roomHotspotPositions} from '@/core/room-stage-layout';
+import {roomHotspotPosition} from '@/core/room-stage-layout';
 export type {SceneSpot} from '@/core/room-stage-layout';
 export type SceneHotspotItem<T extends string=string>={id:T;label:string};
 
@@ -23,12 +23,11 @@ export function RoomSceneHotspots<T extends string>({
   description?:string;
 }){
   const reducedMotion=useReducedMotion();
-  const positions=roomHotspotPositions(roomId??'');
   const known=items.filter(item=>observed.includes(item.id)).length;
-  return <div className="pointer-events-none absolute inset-0 z-[4]" aria-label={characterName+'的房间物件'}>
-    {items.slice(0,positions.length).map((item,index)=>{
+  return <div className="pointer-events-none absolute inset-0 z-[4]" data-hotspot-layout="object-id" aria-label={characterName+'的房间物件'}>
+    {items.map((item,index)=>{
       const discovered=observed.includes(item.id);
-      const point=positions[index];
+      const point=roomHotspotPosition(roomId??'',item.id,index);
       return <button type="button" key={item.id}
         aria-label={item.label}
         aria-pressed={selected===item.id}

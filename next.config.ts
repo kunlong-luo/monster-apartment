@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
   // Next 16 blocks cross-origin dev chunks/HMR unless this host is trusted.
   allowedDevOrigins: ['127.0.0.1', 'localhost'],
   typedRoutes: true,
+  env: {NEXT_PUBLIC_GAME_BASE_PATH:staticExport?'/monster-apartment':''},
 };
 
 export default nextConfig;

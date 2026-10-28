@@ -7,6 +7,7 @@ import type {CharacterId,WorkerCharacterId} from '@/core/character-life';
 import {WorkerArtwork} from '@/components/moonwork/worker-artwork';
 import type {RoomPose} from '@/core/room-performance';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
+import {ROOM_ART_MANIFEST,roomPublicAssetPath} from '@/core/room-art-manifest';
 
 /** The resident is independently animated; background pixels are never scaled.
  * A worker on shift is never duplicated in their private room. */
@@ -21,20 +22,35 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
     pose==='attentive'?{x:-3,y:-3,rotate:-.5}:
     pose==='warm'?{x:-1,y:-2,rotate:.6}:
     {x:2,y:1,rotate:.7};
+  const art=ROOM_ART_MANIFEST[id];
   const away=working&&id!=='yuesha';
+  // The temporary Moonsha room painting already includes Moonsha.
+  // Keep her one painted appearance until a verified transparent actor ships.
+  const embedded=!away&&art.composition==='embedded-resident';
+  const production=art.residentStatus==='production';
+  const frame=art.productionAssets.residentFrames[
+    {idle:0,attentive:1,warm:2,guarded:3}[pose]
+  ];
   return <div className="pointer-events-none absolute inset-0 z-[2]"
-    data-testid="room-resident-layer" data-pose={away?"away":pose}>
+    data-testid="room-resident-layer" data-pose={away?"away":pose}
+    data-render-mode={away?'away':embedded?'embedded':'separate'}>
     {away?<div data-testid={'room-resident-away-'+id}
       className="absolute right-[5%] bottom-[27%] w-[45%] max-w-56 rounded-lg border border-[#efd4aa66] bg-[#170e19e8] p-3 text-center shadow-[0_9px_25px_#000a]">
       <span aria-hidden="true" className="block text-2xl text-[#f5cc8a]">✉</span>
       <p className="mt-1 text-xs text-[#ffe4c0]">{name}正在工坊值守</p>
       <p className="mt-1 text-[11px] leading-5 text-[#d8bea9]">桌上留有便条；等值守结束后再当面交谈。</p>
-    </div>:<motion.div data-testid={'room-resident-present-'+id}
+    </div>:embedded?<span className="sr-only" data-testid={'room-resident-embedded-'+id}>
+      {name}已绘制在概念背景中，暂不重复叠加不透明立绘
+    </span>:<motion.div data-testid={'room-resident-present-'+id}
       className="absolute right-[2%] bottom-0 h-[94%] w-[49%] max-w-[410px] origin-bottom"
       initial={false}
       animate={performerMotion}
       transition={reduced?{duration:0}:pose==='idle'?{duration:7,ease:'easeInOut',repeat:Infinity}:{duration:.48,ease:'easeOut'}}>
-      {id==='yuesha'
+      {production
+        ?<Image src={roomPublicAssetPath(frame)} alt={name+'在会客室中'} fill unoptimized draggable={false}
+          sizes="(max-width:640px) 49vw, 410px"
+          className="object-contain object-bottom drop-shadow-[0_12px_22px_#000b]"/>
+        :id==='yuesha'
         ?<Image src={moonveilBust} alt={name+'在会客室中'} fill unoptimized draggable={false}
           sizes="(max-width:640px) 49vw, 410px"
           className="object-contain object-bottom drop-shadow-[0_12px_22px_#000b]"/>

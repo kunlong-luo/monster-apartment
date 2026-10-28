@@ -12,7 +12,8 @@
     "lint": "eslint app src next.config.ts playwright.config.ts vitest.config.ts",
     "test": "vitest run",
     "e2e": "playwright test",
-    "check:stable-deps": "node scripts/check-stable-dependencies.mjs"
+    "check:stable-deps": "node scripts/check-stable-dependencies.mjs",
+    "audit:room-art": "node scripts/audit-room-art.mjs"
   },
   "dependencies": {
     "motion": "14.6.0",

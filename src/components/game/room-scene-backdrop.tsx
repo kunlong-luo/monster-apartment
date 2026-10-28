@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import {useReducedMotion} from 'motion/react';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
-import {ROOM_ART_MANIFEST} from '@/core/room-art-manifest';
+import {ROOM_ART_MANIFEST,roomPublicAssetPath} from '@/core/room-art-manifest';
 import moonlitPainting from '../../../public/art/lobby-hero-v3.webp';
 import type {CharacterId} from '@/core/character-life';
 
@@ -34,14 +34,20 @@ const ROOM_AMBIENCE={
 
 export function RoomSceneBackdrop({id}:{id:CharacterId}){
   const ambience=ROOM_AMBIENCE[id];
+  const art=ROOM_ART_MANIFEST[id];
+  const fallbackCrop=art.composition==='architecture-crop';
+  const source=art.backgroundStatus==='production'?roomPublicAssetPath(art.productionAssets.background):moonlitPainting;
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
   const still=Boolean(systemReduced||gameReduced);
-  return <div data-testid="room-scene-backdrop" data-scene-id={id} data-art-quality={ROOM_ART_MANIFEST[id].backgroundStatus}
+  return <div data-testid="room-scene-backdrop" data-scene-id={id} data-art-quality={art.backgroundStatus} data-composition={art.composition}
     className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-    <Image src={moonlitPainting} alt="" fill unoptimized priority={id==='yuesha'}
-      sizes="(max-width:1024px) 94vw, 850px"
-      className="object-cover object-[45%_43%]"/>
+    <div data-testid="room-background-frame"
+      className={fallbackCrop?'absolute inset-y-0 -left-[112%] w-[215%]':'absolute inset-0'}>
+      <Image src={source} alt="" fill unoptimized priority={id==='yuesha'}
+        sizes={fallbackCrop?'(max-width:1024px) 180vw, 1750px':'(max-width:1024px) 94vw, 850px'}
+        className={fallbackCrop?'object-cover object-right':'object-cover object-[45%_43%]'}/>
+    </div>
     <div className={'absolute inset-0 '+ambience.veil}/>
     <div className={'absolute inset-0 '+ambience.moon}/>
     <div className={'private-room__moonshaft absolute inset-0 mix-blend-screen '+(still?'private-room__still':'')}/>

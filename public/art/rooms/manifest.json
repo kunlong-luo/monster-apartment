@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "rooms": {
+    "yuesha": {
+      "status": "concept",
+      "composition": "embedded-resident",
+      "background": "public/art/rooms/yuesha/background.webp",
+      "poses": [
+        "public/art/rooms/yuesha/poses/idle.webp",
+        "public/art/rooms/yuesha/poses/attentive.webp",
+        "public/art/rooms/yuesha/poses/warm.webp",
+        "public/art/rooms/yuesha/poses/guarded.webp"
+      ],
+      "layout": "concept"
+    },
+    "brook": {
+      "status": "concept",
+      "composition": "architecture-crop",
+      "background": "public/art/rooms/brook/background.webp",
+      "poses": [
+        "public/art/rooms/brook/poses/idle.webp",
+        "public/art/rooms/brook/poses/attentive.webp",
+        "public/art/rooms/brook/poses/warm.webp",
+        "public/art/rooms/brook/poses/guarded.webp"
+      ],
+      "layout": "concept"
+    },
+    "fern": {
+      "status": "concept",
+      "composition": "architecture-crop",
+      "background": "public/art/rooms/fern/background.webp",
+      "poses": [
+        "public/art/rooms/fern/poses/idle.webp",
+        "public/art/rooms/fern/poses/attentive.webp",
+        "public/art/rooms/fern/poses/warm.webp",
+        "public/art/rooms/fern/poses/guarded.webp"
+      ],
+      "layout": "concept"
+    },
+    "cinder": {
+      "status": "concept",
+      "composition": "architecture-crop",
+      "background": "public/art/rooms/cinder/background.webp",
+      "poses": [
+        "public/art/rooms/cinder/poses/idle.webp",
+        "public/art/rooms/cinder/poses/attentive.webp",
+        "public/art/rooms/cinder/poses/warm.webp",
+        "public/art/rooms/cinder/poses/guarded.webp"
+      ],
+      "layout": "concept"
+    }
+  }
+}
