@@ -97,7 +97,6 @@ export function WorkshopClient() {
   const portraitUrl=moonveilPortrait.src;
 
   useEffect(() => {
-    setRuntimeReady(false);
     const root = host.current?.querySelector<HTMLElement>('#root');
     if (!root) return;
 
@@ -379,6 +378,7 @@ export function WorkshopClient() {
                   window.localStorage.setItem(SAVE_KEY, JSON.stringify(newWorkshop()));
                   window.dispatchEvent(new Event(CHANGE_EVENT));
                   setBlockedSave(false);
+                  setRuntimeReady(false);
                   setRecoveryVersion((v) => v + 1);
                 } catch {
                   setError('无法写入新存档，请检查浏览器存储权限。');
