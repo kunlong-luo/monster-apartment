@@ -1,6 +1,6 @@
 {
-  "summary":  "Implementation plan for upgrading the Monster Apartment UI based on the reference design image (/public/assets/aistudio/image_26a43a92.png). Covers top header navigation with SVG gold-plated icons, left character roster, interactive central room hotspots, right dialogue panel with Lucide icons, and the bottom three-column dashboard (Room Switcher, Memory CGs, Affection/Gifts).",
-  "updatedAt":  "2026-10-28T14:01:33.176591033Z",
+  "summary":  "Implementation plan for unifying the navigation menu buttons across all non-lobby routes (/town/, /orders/, /characters/, /warehouse/, /workshop/, /apartment/) using a standardized GothicDock floating navigation bar with uniform sizing, spacing, active highlights, and canonical Gothic glyphs (♜ 公寓, ♟ 角色, ❦ 委托, ⚜ 探索, ♧ 仓库).",
+  "updatedAt":  "2026-10-28T14:23:08.242804455Z",
   "requestFeedback":  true,
   "userFacing":  true
 }

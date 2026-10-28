@@ -17,7 +17,7 @@ import {GothicRoomDoors} from './gothic-room-doors';
 import {GothicRoomDrawer} from './gothic-room-drawer';
 import {YueshaPrivateRoom} from './yuesha-private-room';
 import './gothic-apartment.css';
-import './gothic-polish.css';
+import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 const KEY='monster-apartment:cozy:v1';
 function invalidCozySave(raw:string|null):boolean {
   if(raw===null)return false;
@@ -36,9 +36,6 @@ function readCozySave():CozyState{
   }catch{/* Invalid saves cannot crash the game. */}
   return saved;
 }
-const nav=[{href:'/',icon:'⌂',label:'大厅'},{href:'/town/',icon:'✧',label:'探索'},
-  {href:'/workshop/',icon:'⚒',label:'工坊'},{href:'/orders/',icon:'❦',label:'委托'},
-  {href:'/characters/',icon:'♟',label:'角色'}];
 export function GothicApartment(){
   const ready=useSyncExternalStore(subscribeClient,clientSnapshot,serverSnapshot);
   const [world,setWorld]=useState<CozyState>(readCozySave);
@@ -200,6 +197,7 @@ export function GothicApartment(){
         </div>
       </div>
     </div>}
-    <GothicDock items={nav} label="公寓世界导航"/>
+    <GothicDock label="暗夜公寓世界导航" activeHref="/apartment/"
+      items={WORLD_NAV.map(n => ({ href: n.href, icon: n.glyph, label: n.label, ariaLabel: n.full }))}/>
   </main>;
 }

@@ -107,49 +107,41 @@ export function GothicResourcePill({
 }
 
 export function GothicDock({
-  items,label,className='',activeHref,testId,compact=false
+  items,label,className='',activeHref,testId
 }:{
   items:readonly GothicDestination[];
   label:string;
   className?:string;
   activeHref?:string;
   testId?:string;
-  /** Smaller jewel-like entry points for a scene-led lobby. */
   compact?:boolean;
 }){
   return <nav data-testid={testId} aria-label={label} className={
-    'absolute bottom-[max(8px,env(safe-area-inset-bottom))] left-1/2 z-[5] '+
-    'flex w-max max-w-[98vw] -translate-x-1/2 items-end justify-center gap-1.5 '+
-    (compact?'sm:gap-2 lg:gap-3 ':'sm:gap-3 lg:gap-5 ')+className
+    'absolute bottom-[max(8px,env(safe-area-inset-bottom))] left-1/2 z-[10] '+
+    'flex w-max max-w-[98vw] -translate-x-1/2 items-center justify-center gap-2 sm:gap-3.5 '+
+    'rounded-2xl border border-gothic-brass/45 bg-[linear-gradient(180deg,#1e1223e6,#100915f0)] '+
+    'px-3 py-2 shadow-[0_12px_32px_#000a,inset_0_1px_#ffe0a220] backdrop-blur-md '+className
   }>
     {items.map(item=><Link key={item.href} href={item.href}
       aria-label={item.ariaLabel??(item.description?item.label+' · '+item.description:item.label)}
       aria-current={activeHref===item.href?'page':undefined}
       data-tooltip={item.description || item.label}
       className={
-        'group relative flex flex-col items-center justify-center gap-0.5 '+
-        'text-gothic-ivory backdrop-blur-[3px] '+
-        'transition-[transform,border-color,box-shadow] duration-200 '+
-        'hover:-translate-y-0.5 hover:border-gothic-glow hover:shadow-[0_0_22px_#e0ad7547] '+
-        'active:translate-y-0 active:scale-[.98] '+
-        'focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-gothic-glow '+
+        'group flex min-w-10 flex-col items-center gap-1 text-[10px] sm:text-[11px] tracking-[.12em] '+
+        'text-gothic-ivory drop-shadow-[0_2px_6px_#000] transition-transform duration-200 '+
+        'hover:-translate-y-0.5 active:translate-y-0 active:scale-[.97] '+
+        'focus-visible:outline-2 focus-visible:outline-gothic-glow '+
         'motion-reduce:transform-none motion-reduce:transition-none '+
-        (compact
-          ?'h-[52px] w-[52px] rounded-[10px] border border-gothic-brass/55 '+
-           'bg-[linear-gradient(155deg,#533b43cf,#110c18ea_80%)] '+
-           'shadow-[inset_0_1px_#ffddb534,inset_0_0_0_1px_#100b15ad,0_6px_17px_#0008] '+
-           'sm:h-[60px] sm:w-[62px] '
-          :'h-[61px] w-[57px] rounded-md border border-gothic-brass/65 '+
-           'bg-[linear-gradient(145deg,#593b39ed,#190f19f2_75%)] '+
-           'shadow-[inset_0_1px_#ffdbac30,0_4px_18px_#000b] '+
-           'sm:h-[68px] sm:w-[73px] md:w-[82px] ')+
-        (activeHref===item.href?'border-gothic-glow bg-gothic-wine/85 text-gothic-glow -translate-y-1':'')
+        (activeHref===item.href?'text-gothic-glow font-bold':'')
       }>
-      <span aria-hidden="true"
-        className={(compact?'text-[22px] sm:text-[25px] ':'text-[25px] sm:text-[29px] ')+
-          'leading-none text-gothic-gold drop-shadow-[0_1px_5px_#000] group-hover:text-gothic-glow'}>{item.icon}</span>
-      <span className={(compact?'text-[10px] sm:text-[11px] ':'text-[11px] sm:text-[13px] ')+
-        'max-w-full truncate font-medium tracking-[.02em] sm:tracking-[.08em]'}>{item.label}</span>
+      <span aria-hidden="true" className={
+        'grid size-9 sm:size-10 place-items-center rounded-[10px] border '+
+        'bg-[linear-gradient(145deg,#49303ccc,#140d18ed)] text-[20px] sm:text-[21px] text-gothic-gold '+
+        'shadow-[inset_0_1px_#ffe9ac28,0_6px_15px_#0008] transition-[border-color,box-shadow,background-color] '+
+        'group-hover:border-gothic-glow group-hover:shadow-[0_0_18px_#d8a87445] '+
+        (activeHref===item.href?'border-gothic-glow bg-gothic-wine text-gothic-glow shadow-[0_0_18px_#d8a87466]':'border-gothic-brass/65')
+      }>{item.icon}</span>
+      <span>{item.label}</span>
     </Link>)}
   </nav>;
 }
