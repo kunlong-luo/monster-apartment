@@ -724,6 +724,10 @@
   }
 }
 
+@media (min-width:611px) and (max-width:820px){
+  .gothic-workshop-shell #root.lab.gothic-workshop .middle{bottom:202px}
+}
+
 /* Responsive input rail: reserve actual space for the board, controls and
    bottom navigation. Avoid clipped icons and overlapping command labels. */
 .gothic-workshop-shell #root.lab.gothic-workshop .options > button {
