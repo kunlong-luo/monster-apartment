@@ -1,6 +1,7 @@
 import {describe,it,expect} from 'vitest';
 import {ABILITY_GROUPS,CHARACTER_PROFILES,decideYuesha,newCharacterLife,
-  validCharacterLife,visitCharacter,yueshaAfterChoice} from '../src/core/character-life';
+  validCharacterLife,visitCharacter,inspectCharacterRoom,decideWorker,
+  WORKER_DIALOGUES,CHARACTER_ROOM_OBJECTS,yueshaAfterChoice} from '../src/core/character-life';
 import {decodeCharacterLife} from '../src/lib/game/character-life-store';
 
 describe('V3.4 character identities and durable room choices',()=>{
@@ -38,6 +39,46 @@ describe('V3.4 character identities and durable room choices',()=>{
     expect(yueshaAfterChoice(first.decisions['yuesha-first-visit']))
       .toContain('东街');
     expect(yueshaAfterChoice('careful')).toContain('生产');
+  });
+  it('keeps pre-extension lore saves readable with optional new fields',()=>{
+    const old=decideYuesha(visitCharacter(newCharacterLife(),'yuesha'),'careful');
+    expect(old.observations).toBeUndefined();
+    expect(old.workerDecisions).toBeUndefined();
+    expect(validCharacterLife(old)).toBe(true);
+    expect(decodeCharacterLife(JSON.stringify(old)).status).toBe('ok');
+  });
+  it('remembers each worker room discovery and dialogue once',()=>{
+    let state=newCharacterLife();
+    for(const id of ['brook','fern','cinder'] as const){
+      const scene=WORKER_DIALOGUES[id];
+      expect(scene.objects).toHaveLength(3);
+      expect(new Set(scene.objects.map(o=>o.id)).size).toBe(3);
+      expect(CHARACTER_ROOM_OBJECTS[id]).toEqual(scene.objects.map(x=>x.id));
+      state=visitCharacter(state,id);
+      state=inspectCharacterRoom(state,id,scene.objects[0].id);
+      state=inspectCharacterRoom(state,id,scene.objects[1].id);
+      const duplicate=inspectCharacterRoom(state,id,scene.objects[0].id);
+      expect(duplicate).toBe(state);
+      state=decideWorker(state,id,'care');
+      expect(decideWorker(state,id,'practice')).toBe(state);
+      expect(state.workerDecisions?.[id]).toBe('care');
+    }
+    expect(state.visited).toEqual(['brook','fern','cinder']);
+    expect(validCharacterLife(state)).toBe(true);
+    expect(decodeCharacterLife(JSON.stringify(state)).status).toBe('ok');
+    expect(inspectCharacterRoom(state,'brook','seal')).toBe(state);
+  });
+  it('rejects malformed extension data and preserves the original format',()=>{
+    const base=newCharacterLife();
+    const invalid=[
+      {...base,workerDecisions:{brook:'unlimited'}},
+      {...base,workerDecisions:{stranger:'care'}},
+      {...base,observations:{fern:['toolbox']}},
+      {...base,observations:{brook:['gauge','gauge']}},
+      {...base,observations:{stranger:['gauge']}},
+    ];
+    for(const item of invalid)expect(validCharacterLife(item)).toBe(false);
+    expect(validCharacterLife(base)).toBe(true);
   });
   it('does not silently overwrite malformed or future saves',()=>{
     const v=newCharacterLife();

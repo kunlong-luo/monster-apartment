@@ -13,8 +13,13 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
   const [feedback,setFeedback]=useState('');
   const {status,progress}=useCharacterLife();
   const choice=progress.decisions['yuesha-first-visit'];
+  const observed=progress.observations?.yuesha??[];
   useEffect(()=>{if(status==='ok')commitCharacterLife({type:'visit',id:'yuesha'});},[status]);
-  const inspect=(item:Hotspot)=>{setHotspot(item);setFeedback('');};
+  const inspect=(item:Hotspot)=>{
+    setHotspot(item);
+    const result=commitCharacterLife({type:'inspect',id:'yuesha',item});
+    setFeedback(result==='applied'?'你记下了这段细节。':result==='duplicate'?'这个物品你已经仔细看过了。':'人物观察记录暂时无法保存。');
+  };
   const discuss=(value:YueshaChoice)=>{
     const result=commitCharacterLife({type:'yuesha-choice',choice:value});
     setFeedback(result==='applied'?'月纱记住了你的选择。':result==='duplicate'?'这段初次谈话已经记录。':'人物档案无法写入，原存档未被覆盖。');
@@ -69,6 +74,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
           aria-pressed={hotspot===item.id}
           className="min-h-10 rounded-full border border-[#b18b68a8] bg-[#2d1e2bbd] px-3 py-1.5 text-xs hover:border-[#ffe0b6] aria-pressed:bg-[#674351]">{item.label}</button>)}
       </div>
+      {observed.length>0&&<p className="text-[10px] text-gothic-muted">已记录 {observed.length}/3 件会客室物品</p>}
       {hotspot&&<p className="rounded-lg bg-[#382433a1] p-3 text-xs leading-6 text-[#f2d2b5]" data-testid="yuesha-hotspot-text">
         {hotspot==='seal'?'蜡封上的月纹，与旧公寓钥匙的纹样有些相似。月纱没有立即回答你的疑问。':
           hotspot==='tea'?'杯里有桂皮与温暖的香气。月纱说，做生意之前应该先好好喝一杯茶。':
