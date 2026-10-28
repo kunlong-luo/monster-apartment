@@ -16,12 +16,11 @@
     "audit:room-art": "node scripts/audit-room-art.mjs"
   },
   "dependencies": {
-    "dexie": "4.4.7",
-    "lucide-react": "^1.63.0",
     "motion": "14.6.0",
     "next": "16.4.2",
     "react": "19.3.1",
     "react-dom": "19.3.1",
+    "dexie": "4.4.7",
     "zustand": "5.0.16"
   },
   "devDependencies": {
