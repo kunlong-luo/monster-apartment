@@ -8,7 +8,7 @@ import type {YueshaChoice} from '@/core/character-life';
 import {commitCharacterLife,useCharacterLife} from '@/lib/game/character-life-store';
 import {CharacterLifePortrait} from './character-life-portrait';
 type Hotspot='seal'|'tea'|'ledger';
-export function YueshaPrivateRoom(){
+export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:number}){
   const [hotspot,setHotspot]=useState<Hotspot|null>(null);
   const [feedback,setFeedback]=useState('');
   const {status,progress}=useCharacterLife();
@@ -35,6 +35,11 @@ export function YueshaPrivateRoom(){
       </div>
     </div>
     <p className="text-[10px] text-[#bda089]">场景纵切片：暂复用现有高清绘景与月纱立绘，独立室内 CG 仍待制作。</p>
+    <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[#ad89644a] bg-[#211520b8] px-3 py-2 text-xs" data-testid="yuesha-living-state">
+      <span>今夜心情：{happiness>=70?'安心':'牵挂邻居'}</span>
+      <span>公寓现住 {guests} 位邻居</span>
+      <span>与你的关系：{choice==='transparent'?'认可公开负责':choice==='careful'?'认可谨慎守约':'初识 · 保持距离'}</span>
+    </div>
     {status!=='ok'&&<p role="alert" className="rounded-lg border border-[#b37f82] p-3 text-xs text-[#ffc5c5]">
       {status==='corrupt'?'人物档案存档损坏：已保留原数据，不会自动覆盖。':'浏览器未允许持久保存人物档案，本次无法记录选择。'}
     </p>}

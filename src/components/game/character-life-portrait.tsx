@@ -3,7 +3,7 @@ import {useState} from 'react';
 import {ABILITY_GROUPS,ABILITY_LABELS,CHARACTER_PROFILES} from '@/core/character-life';
 import type {CharacterId} from '@/core/character-life';
 
-export function CharacterLifePortrait({id}:{id:CharacterId}){
+export function CharacterLifePortrait({id,activity}:{id:CharacterId;activity?:string}){
   const [expanded,setExpanded]=useState(false);
   const actor=CHARACTER_PROFILES[id];
   return <section className="rounded-xl border border-[#ae885f7d] bg-[#170e1ccf] p-3 text-[#f4dec5]" data-testid={'life-profile-'+id}>
@@ -14,6 +14,7 @@ export function CharacterLifePortrait({id}:{id:CharacterId}){
         data-testid={'life-expand-'+id}>{expanded?'收起能力':'查看完整档案'}</button>
     </div>
     <p className="mt-2 text-xs leading-6 text-[#e4d0bd]">{actor.description}</p>
+    {activity&&<p className="mt-1 text-[11px] text-[#d6b58f]">当前生活状态：{activity}</p>}
     <div className="mt-2 flex flex-wrap gap-1.5">{actor.traits.map(trait=>
       <span key={trait} className="rounded-full border border-[#976f6191] bg-[#4026329a] px-2 py-1 text-[10px]">{trait}</span>)}</div>
     <div className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">

@@ -57,9 +57,9 @@ export function GothicApartment(){
   const [feedback,setFeedback]=useState<{id:number;text:string}|null>(null);
   useEffect(()=>{
     // Character cards can open the same in-scene room without adding an eighth route.
-    if(new URLSearchParams(window.location.search).get('visit')==='yuesha'){
-      setWitchRoom(true);setWitchOpen(true);
-    }
+    if(new URLSearchParams(window.location.search).get('visit')!=='yuesha')return;
+    const frame=window.requestAnimationFrame(()=>{setWitchRoom(true);setWitchOpen(true);});
+    return ()=>window.cancelAnimationFrame(frame);
   },[]);
   useEffect(()=>{
     if(!ready)return;
@@ -167,7 +167,7 @@ export function GothicApartment(){
           className="min-h-9 rounded-full border border-gothic-brass/60 bg-gothic-panel/80 px-3 text-xs hover:border-gothic-glow">
           ← 返回月纱对话
         </button>
-        <YueshaPrivateRoom/>
+        <YueshaPrivateRoom guests={goal.guests} happiness={goal.happiness}/>
       </div>:<>
       <div className="relative hidden min-h-[215px] w-[120px] shrink-0 overflow-hidden rounded-md border border-gothic-brass/60 bg-gothic-panel sm:block">
         <Image src={moonveilBust} alt="月纱的绘制肖像" fill unoptimized sizes="130px"
