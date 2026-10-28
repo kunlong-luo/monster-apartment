@@ -18,6 +18,20 @@
 
 不再包含旧版 `/classic`、`/legacy`、`/survival` 和独立 `/workshop-lab` 实验室。
 
+## V3.0 自动化经营与完整剧情策划（待开发）
+
+已建立 [**V3.0 完整策划文档目录**](docs/v3/README.md)，包含：
+
+- [产品方向与七页经营循环](docs/v3/01-PRODUCT-VISION.md)
+- [自动生产、离线经营、仓库与订单 PRD](docs/v3/02-AUTO-PRODUCTION-PRD.md)
+- [世界状态、剧情事件与任务模型](docs/v3/03-WORLD-STATE-AND-QUESTS.md)
+- [世界观与八位关键 NPC 人物档案](docs/v3/04-WORLD-AND-CHARACTERS.md)
+- [**序章至第五章、三结局的完整主线剧本**](docs/v3/05-MAIN-STORY-SCRIPT.md)
+- [人物支线及职业成长](docs/v3/06-CHARACTER-QUESTS.md)
+- [分阶段开发计划与验收测试](docs/v3/07-ROADMAP-AND-ACCEPTANCE.md)
+
+**注意：以上是后续开发基线，不代表自动生产、剧情演出和人物支线已经上线。** 当前 V2 工坊仍按照游戏日结算；正式迁移之前保留原有数据和玩法。
+
 ## 开发
 
 需要 Node.js 24、pnpm 12，开发模式下 PixiJS 资源由独立静态服务器提供。
