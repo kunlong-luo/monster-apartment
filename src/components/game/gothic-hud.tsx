@@ -190,12 +190,14 @@ export function GothicActionButton({
  * separate CSS panel implementation.
  */
 export function GothicModal({
-  title,onClose,children,wide=false,closeLabel="关闭面板"
+  title,onClose,children,wide=false,immersive=false,closeLabel="关闭面板"
 }:{
   title:string;
   onClose:()=>void;
   children:ReactNode;
   wide?:boolean;
+  /** Scenic visit mode: scene artwork owns the majority of the visible modal. */
+  immersive?:boolean;
   closeLabel?:string;
 }){
   const dialog=useRef<HTMLElement>(null);
@@ -234,11 +236,12 @@ export function GothicModal({
         }
       }}
       className={
-        'relative flex max-h-[88dvh] w-full gap-3 overflow-y-auto rounded-xl border border-gothic-brass/80 '+
+        'relative flex w-full gap-3 overflow-y-auto rounded-xl border border-gothic-brass/80 '+
+        (immersive?'max-h-[93dvh] ':'max-h-[88dvh] ')+
         'bg-[radial-gradient(ellipse_at_15%_0%,#69374647,transparent_55%),linear-gradient(140deg,#291b28,#100c15_85%)] '+
         'p-5 text-gothic-ivory shadow-[0_26px_75px_#000e,inset_0_0_0_3px_#f1d09b14] '+
         'outline-none sm:gap-6 sm:p-9 '+
-        (wide?'max-w-[690px]':'max-w-[610px]')
+        (immersive?'max-w-[1080px] p-3 sm:p-5 ':wide?'max-w-[690px]':'max-w-[610px]')
       }>
       <button type="button" className={
         'absolute right-2.5 top-2.5 z-10 grid size-9 place-items-center rounded-full border '+

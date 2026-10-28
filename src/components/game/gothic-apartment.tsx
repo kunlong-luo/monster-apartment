@@ -161,7 +161,7 @@ export function GothicApartment(){
     </div>}
     <AnimatePresence mode="wait">
     {witchOpen&&<GothicModal key={"moonveil"} title="与月纱交谈" closeLabel="关闭月纱对话"
-      onClose={()=>{setWitchOpen(false);setWitchRoom(false);}} wide>
+      onClose={()=>{setWitchOpen(false);setWitchRoom(false);}} wide immersive={witchRoom}>
       {witchRoom?<div className="min-w-0 flex-1 space-y-3">
         <button type="button" onClick={()=>setWitchRoom(false)}
           className="min-h-9 rounded-full border border-gothic-brass/60 bg-gothic-panel/80 px-3 text-xs hover:border-gothic-glow">

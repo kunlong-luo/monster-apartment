@@ -55,7 +55,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
   };
   const foundHint=observed.includes(scene.objects[0].id)&&observed.includes(scene.objects[1].id);
 
-  return <GothicModal title={'拜访'+profile.name+'的房间'} closeLabel={'离开'+profile.name+'的房间'} onClose={onClose} wide>
+  return <GothicModal title={'拜访'+profile.name+'的房间'} closeLabel={'离开'+profile.name+'的房间'} onClose={onClose} wide immersive>
     <div data-testid={'worker-private-room-'+id} className="min-w-0 w-full space-y-3">
       <header className="flex items-center justify-between gap-2 pr-8">
         <div>
@@ -63,7 +63,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
           <h2 className="mt-1 text-xl text-gothic-ivory">{profile.name} · {scene.roomName}</h2>
         </div>
       </header>
-      <div className={'relative h-[clamp(205px,35vh,315px)] overflow-hidden rounded-xl border border-gothic-brass/65 bg-[#120f1c]'}
+      <div className={'relative h-[clamp(270px,53vh,565px)] overflow-hidden rounded-xl border border-gothic-brass/65 bg-[#120f1c]'}
         aria-label={profile.name+'的房间概念场景'}>
         <Image src={moonlitStreet} fill sizes="(max-width:700px) 92vw, 690px" alt=""
           className="object-cover object-[40%_42%] opacity-50" aria-hidden/>
@@ -71,7 +71,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
         <div className={'pointer-events-none absolute left-[21%] top-[18%] size-[36%] rounded-full blur-3xl '+palette.glow}/>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-[#0d0b12f0] to-transparent"/>
         <span aria-hidden="true" className="pointer-events-none absolute left-[5%] top-[29%] text-[clamp(58px,11vw,110px)] leading-none text-[#e8cda84f]">{palette.symbol}</span>
-        <div className="absolute bottom-0 right-[7%] h-[96%] w-[55%] max-w-[340px] origin-bottom motion-safe:animate-[room-breathe_5s_ease-in-out_infinite] motion-reduce:animate-none">
+        <div className="absolute bottom-0 right-[7%] h-[96%] w-[55%] max-w-[475px] origin-bottom motion-safe:animate-[room-breathe_5s_ease-in-out_infinite] motion-reduce:animate-none">
           <WorkerArtwork id={id} name={profile.name}/>
         </div>
         <div className="pointer-events-none absolute bottom-3 left-3 z-[1] max-w-[47%] space-y-2">

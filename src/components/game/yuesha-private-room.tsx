@@ -25,11 +25,11 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     setFeedback(result==='applied'?'月纱记住了你的选择。':result==='duplicate'?'这段初次谈话已经记录。':'人物档案无法写入，原存档未被覆盖。');
   };
   return <div className="min-w-0 flex-1 space-y-3" data-testid="yuesha-private-room">
-    <div className="relative h-[clamp(205px,36vh,310px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]">
+    <div className="relative h-[clamp(285px,51vh,550px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]">
       <Image src={moonveilBackdrop} alt="" fill priority sizes="(max-width:700px) 90vw, 640px"
         className="object-cover object-[44%_40%] opacity-65" aria-hidden/>
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#110b18ba,transparent_48%,#120a1ca8),linear-gradient(0deg,#120a1af4,transparent_43%)]"/>
-      <div className="pointer-events-none absolute right-[4%] bottom-0 h-[95%] w-[42%] max-w-[230px]">
+      <div className="pointer-events-none absolute right-[4%] bottom-0 h-[95%] w-[42%] max-w-[375px]">
         <Image src={moonveilBust} alt="月纱在月夜会客室等待来访" fill sizes="240px" unoptimized
           className="object-contain object-bottom drop-shadow-[0_8px_22px_#000]"/>
       </div>
