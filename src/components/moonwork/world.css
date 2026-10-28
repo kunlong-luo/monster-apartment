@@ -161,3 +161,38 @@
 }
 .mw-worker-role{max-width:calc(100% - 18px);white-space:normal;text-align:right}
 @media(max-width:620px){.mw-worker-role{font-size:10px;padding:4px 6px}}
+
+/* Shared transparent portrait art: the three workers now have independent
+   silhouettes and color-led presentation instead of a magnified triptych. */
+.mw-worker-portrait{
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse at 50% 72%,#a5dfef24,transparent 57%),
+    radial-gradient(ellipse at 50% 43%,#617b8d40,transparent 73%),
+    linear-gradient(156deg,#34445a,#172538 80%);
+}
+.mw-worker-portrait--fern{
+  background:radial-gradient(ellipse at 50% 70%,#b4e59b38,transparent 55%),
+    linear-gradient(155deg,#3c5146,#1b3037 83%);
+}
+.mw-worker-portrait--cinder{
+  background:radial-gradient(ellipse at 50% 72%,#f8b77138,transparent 58%),
+    linear-gradient(155deg,#59423d,#202a39 85%);
+}
+.mw-worker-portrait > .worker-artwork{
+  position:absolute;inset:0;width:100%;height:100%;
+  padding:6% 7% 8%;
+}
+.mw-worker-portrait .worker-artwork canvas,
+.mw-worker-portrait .worker-artwork img{
+  object-fit:contain;
+  object-position:center 60%;
+  filter:drop-shadow(0 13px 13px #06111a88);
+}
+.worker-artwork--compact canvas,.worker-artwork--compact img{
+  filter:none!important;
+}
+@media(prefers-reduced-motion:no-preference){
+  .mw-worker-card.on-duty .worker-artwork{animation:mw-worker-idle 3.3s ease-in-out infinite alternate}
+  @keyframes mw-worker-idle{from{transform:translateY(2px)}to{transform:translateY(-3px)}}
+}
