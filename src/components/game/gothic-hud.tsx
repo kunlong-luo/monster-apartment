@@ -241,7 +241,7 @@ export function GothicModal({
         'bg-[radial-gradient(ellipse_at_15%_0%,#69374647,transparent_55%),linear-gradient(140deg,#291b28,#100c15_85%)] '+
         'p-5 text-gothic-ivory shadow-[0_26px_75px_#000e,inset_0_0_0_3px_#f1d09b14] '+
         'outline-none sm:gap-6 sm:p-9 '+
-        (immersive?'max-w-[1080px] p-3 sm:p-5 ':wide?'max-w-[690px]':'max-w-[610px]')
+        (immersive?'max-w-[1440px] p-3 sm:p-5 ':wide?'max-w-[690px]':'max-w-[610px]')
       }>
       <button type="button" className={
         'absolute right-2.5 top-2.5 z-10 grid size-9 place-items-center rounded-full border '+

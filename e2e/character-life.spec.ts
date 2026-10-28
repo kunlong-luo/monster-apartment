@@ -6,6 +6,9 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   await expect(page.getByRole('dialog',{name:'与月纱交谈'})).toContainText('幸福度');
   await page.getByTestId('visit-yuesha-room').click();
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  const chamber=page.getByRole('dialog',{name:'与月纱交谈'});
+  const bounds=await chamber.boundingBox();
+  expect(bounds?.width).toBeGreaterThan(1040);
   await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-scene-id','yuesha');
   await expect(page.getByTestId('room-resident-present-yuesha')).toBeVisible();
   await page.screenshot({path:'test-results/room-yuesha-desktop.png'});
