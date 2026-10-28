@@ -173,3 +173,14 @@ repeatable: false
 - 即使 CG 文件缺失或玩家关闭动画，对话/任务仍然可继续；隐藏 CG 不提供主线必需的稀有角色或生产装置。
 
 详见 [08 对话 PRD](08-NARRATIVE-DIALOGUE-UX.md)、[09 CG 规范](09-CG-COLLECTION-AND-ART.md) 与 [10 伏笔事件表](10-FORESHADOWING-AND-EASTER-EGGS.md)。
+
+## 12. V3.2 角色房间访问状态与剧情幂等
+
+每个 `characterId` 派生最多一个 `CharacterSuite`；它是一个可访问的独立叙事/美术场景，**不是 `CozyState.rooms` 的新建经营房**。可招募住客由 `recruit-owned` 或旧 `known` 映射开放；固定剧情 NPC 由 `story-met`/拜访许可开放。
+
+- 房间进度记录 `visited`、`inspectedHotspotIds`、`viewedSceneIds` 和可选装饰解锁；所有影响回忆/关系的首次事件仍使用世界事件 ID 幂等。
+- 访问人物不需要额外召唤，重复卡不生成第二个房间；换工作岗位或经营房间不删除其个人空间。
+- 可观察热点允许给出可回访线索，但剧情秘密按章节判断，不因进入人物私室提前泄漏第三至五章真相。
+- 阅读房间对白时，经营模拟仍使用单一时间轴；动画切页与加载失败不改变收益和任务进度。
+
+具体 UI、序列化建议和四间先行试验见 [14-CHARACTER-PRIVATE-ROOMS-PRD.md](14-CHARACTER-PRIVATE-ROOMS-PRD.md)，所有人物房间的职业和伏笔道具详见 [15-CHARACTER-ROOM-BIBLE.md](15-CHARACTER-ROOM-BIBLE.md)。

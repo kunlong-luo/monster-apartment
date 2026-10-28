@@ -25,6 +25,9 @@
 | [11-VERTICAL-SLICE-AND-CONTENT-PIPELINE.md](11-VERTICAL-SLICE-AND-CONTENT-PIPELINE.md) | 制作/验收 | 自动生产→遇见月纱→解锁 CG→发现第一个彩蛋的完整纵切片 |
 | [12-GACHA-RECRUITMENT-PRD.md](12-GACHA-RECRUITMENT-PRD.md) | 产品/规则/工程 | **V3.2 免费角色招募**：五品阶、概率、保底、重复补偿、存档与抽卡演出 |
 | [13-CARD-ROSTER-AND-ART-DIRECTION.md](13-CARD-ROSTER-AND-ART-DIRECTION.md) | 人物/美术 | 首批 12 个可招募住客草案、品阶卡面、房间关系与内容生产规范 |
+| [14-CHARACTER-PRIVATE-ROOMS-PRD.md](14-CHARACTER-PRIVATE-ROOMS-PRD.md) | 客户端/玩法 | **每个人物独立私室**、进入房间、真人物对话、互动热点与旧六房存档兼容 |
+| [15-CHARACTER-ROOM-BIBLE.md](15-CHARACTER-ROOM-BIBLE.md) | 编剧/美术 | **12 位招募住客 + 8 位主线 NPC** 各一张独立精美房间绘景/生活动作/对白 |
+| [16-RARITY-VISUAL-TOKENS.md](16-RARITY-VISUAL-TOKENS.md) | 视觉/客户端 | **UR 神话·月蚀红色主题**与 SSR 金/SR 紫/R 蓝/N 暖灰的统一视觉 token |
 
 ## 当前版本与 V3 目标的边界
 
@@ -73,3 +76,11 @@
 - 首版仅免费游戏内契约券，不引入真实付费抽卡、概率商品交易或影响通关的抽卡壁垒。
 
 先完成自动生产和首个剧情收藏闭环，再以小范围原型验证召唤。如果抽卡导致玩家只刷品质、不再关心人物与经营，应该缩小系统而不是加更多抽数。
+
+## V3.2 角色专属房间与 UR 绯红主题（最新设计决定）
+
+**每位招募角色和已结识的剧情人物都应有专属可拜访空间和一张精美室内大图**；进入后可见人物生活状态、进行剧情对话、观察有意义的道具并获得真实的回忆与线索。首批先制作泉泡、芽核、露珠灵、月纱四间房，再逐步完成 12 名招募住客 + 8 位主线 NPC 的二十间设计。每个房间画面独特，不共用大背景换立绘。
+
+请严格区别**现有 `CozyState.rooms` 六间经营房**和新增的**人物私室 `CharacterSuite`**：私室按 `characterId` 一人一间，不占经营槽位、不自动增加房租、不会覆盖旧档。人物拜访入口保留在 `/apartment/` 与 `/characters/` 等现有七页内。详见 [14 房间 PRD](14-CHARACTER-PRIVATE-ROOMS-PRD.md) 与 [15 二十间房间分镜](15-CHARACTER-ROOM-BIBLE.md)。
+
+**UR 品阶视觉已确定改为绯红/赤红**（`#DE344B`），SSR 保持黄铜金、SR 紫、R 月蓝、N 暖灰。UR 红色不仅应用于卡牌，还统一于召唤、图鉴标签、房间门牌及专属月蚀演出；不与设备红色故障标识混淆。详见 [16 品阶视觉 Token](16-RARITY-VISUAL-TOKENS.md)。这些仍是开发与美术目标，**不是已生成的二十张房间原画或已部署的功能**。
