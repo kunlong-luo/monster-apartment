@@ -76,8 +76,9 @@ export function WorkerPrivateRoom({id,onClose,working}:{
         <div className="absolute bottom-0 right-[7%] h-[96%] w-[55%] max-w-[475px] origin-bottom motion-safe:animate-[room-breathe_5s_ease-in-out_infinite] motion-reduce:animate-none">
           <WorkerArtwork id={id} name={profile.name}/>
         </div>
-        <RoomSceneHotspots characterName={profile.name} items={scene.objects}
-          observed={observed} selected={selectedItem} onInspect={inspect}/>
+        <RoomSceneHotspots characterName={profile.name} roomId={id} items={scene.objects}
+          observed={observed} selected={selectedItem} onInspect={inspect}
+          description={scene.objects.find(item=>item.id===selectedItem)?.text}/>
         <div className="pointer-events-none absolute bottom-3 left-3 z-[1] max-w-[47%] space-y-2">
           <span className={'inline-block rounded-full border bg-[#14101acc] px-3 py-1 text-[10px] '+palette.ribbon}>{palette.roomDetail}</span>
           <p className="text-[11px] leading-5 text-[#f5ddc3]">{working?'正在工坊值守 · 屋内留着便条':'暂时休息 · 可以聊聊天'}</p>

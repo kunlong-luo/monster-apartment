@@ -1,28 +1,56 @@
 'use client';
 
 import type {CSSProperties} from 'react';
+import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 
-/** Story objects are selected on the scene itself, not duplicated as dashboard actions. */
+/** Percentages refer to the scenic layer, not the whole screen.
+ * Different layouts prevent object markers covering resident portraits. */
+export type SceneSpot={left:`${number}%`;top:`${number}%`};
 export type SceneHotspotItem<T extends string=string>={id:T;label:string};
-const SPOTS=[
-  {left:'9%',top:'35%'},
-  {left:'29%',top:'68%'},
-  {left:'49%',top:'24%'},
-] as const;
+const DEFAULT_SPOTS:readonly SceneSpot[]=[
+  {left:'12%',top:'36%'},
+  {left:'28%',top:'68%'},
+  {left:'43%',top:'25%'},
+];
+const ROOM_SPOTS:Record<string,readonly SceneSpot[]>={
+  yuesha:[
+    {left:'16%',top:'53%'},{left:'39%',top:'74%'},{left:'47%',top:'34%'},
+  ],
+  brook:[
+    {left:'14%',top:'70%'},{left:'29%',top:'31%'},{left:'43%',top:'55%'},
+  ],
+  fern:[
+    {left:'14%',top:'67%'},{left:'32%',top:'32%'},{left:'45%',top:'72%'},
+  ],
+  cinder:[
+    {left:'15%',top:'65%'},{left:'33%',top:'30%'},{left:'47%',top:'72%'},
+  ],
+};
 
+export function roomHotspotPositions(roomId:string):readonly SceneSpot[]{
+  return ROOM_SPOTS[roomId]??DEFAULT_SPOTS;
+}
+
+/** Interactive scene markers stay keyboard-operable and expose discovery
+ * feedback without forcing players to scroll to a separate action panel. */
 export function RoomSceneHotspots<T extends string>({
-  items,observed,selected,onInspect,characterName,
+  items,observed,selected,onInspect,characterName,roomId,description,
 }:{
   items:readonly SceneHotspotItem<T>[];
   observed:readonly string[];
   selected:T|null;
   onInspect:(id:T)=>void;
   characterName:string;
+  roomId?:string;
+  description?:string;
 }){
+  const reducedMotion=useReducedMotion();
+  const positions=roomHotspotPositions(roomId??'');
+  const known=items.filter(item=>observed.includes(item.id)).length;
   return <div className="pointer-events-none absolute inset-0 z-[4]" aria-label={characterName+'的房间物件'}>
-    {items.slice(0,SPOTS.length).map((item,index)=>{
-      const known=observed.includes(item.id);
-      const point=SPOTS[index];
+    {items.slice(0,positions.length).map((item,index)=>{
+      const discovered=observed.includes(item.id);
+      const point=positions[index];
       return <button type="button" key={item.id}
         aria-label={item.label}
         aria-pressed={selected===item.id}
@@ -31,21 +59,32 @@ export function RoomSceneHotspots<T extends string>({
         onClick={()=>onInspect(item.id)}
         className={'group pointer-events-auto absolute z-10 flex min-h-11 min-w-11 max-w-[min(52vw,190px)] -translate-y-1/2 items-center gap-2 rounded-full border px-2.5 py-1.5 shadow-[0_3px_16px_#0009] backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-2 focus-visible:outline-[#ffe3b2] motion-reduce:transition-none '+
           (selected===item.id
-            ?'border-[#ffe0aa] bg-[#765540dd] text-[#fff0d3] shadow-[0_0_19px_#eac38f7a]'
-            :known
-              ?'border-[#d3ab719e] bg-[#2a1a27cc] text-[#f9d8a3] hover:border-[#ffe0aa]'
-              :'border-[#d7af8091] bg-[#201521c9] text-[#f5e1cd] hover:border-[#ffe0aa] hover:bg-[#674556dd]')}
+            ?'border-[#ffe0aa] bg-[#765540e8] text-[#fff0d3] shadow-[0_0_19px_#eac38f7a]'
+            :discovered
+              ?'border-[#d3ab719e] bg-[#2a1a27da] text-[#f9d8a3] hover:border-[#ffe0aa]'
+              :'border-[#d7af8091] bg-[#201521d9] text-[#f5e1cd] hover:border-[#ffe0aa] hover:bg-[#674556dd]')}
       >
         <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center rounded-full border border-[#daba8f70] bg-[#3c2834d9] text-sm text-[#f5d3a7]">
-          {known?'✦':'⌕'}
+          {discovered?'✦':'⌕'}
         </span>
         <span className="min-w-0 text-left text-[10px] leading-[1.3] sm:hidden sm:group-hover:block sm:group-focus-visible:block">
           {item.label}
         </span>
       </button>;
     })}
+    <AnimatePresence mode="wait">
+      {selected&&description&&<motion.div key={selected}
+        role="status" aria-live="polite" data-testid="scene-discovery"
+        initial={reducedMotion?false:{opacity:0,y:10}}
+        animate={{opacity:1,y:0}}
+        exit={reducedMotion?{opacity:0}:{opacity:0,y:7}}
+        transition={{duration:reducedMotion?0:.2}}
+        className="pointer-events-none absolute bottom-12 left-[5%] right-[5%] z-[9] max-w-[min(80%,560px)] rounded-lg border border-[#e7bb8e9e] bg-[#1b1124e9] px-3 py-2 text-[11px] leading-5 text-[#ffe0bf] shadow-[0_6px_24px_#000a] backdrop-blur-md">
+        <span className="mr-1 text-[#ffc980]">✧</span>{description}
+      </motion.div>}
+    </AnimatePresence>
     <span className="pointer-events-none absolute bottom-2 left-3 rounded-full border border-[#c79b7258] bg-[#160f1ad5] px-2.5 py-1 text-[10px] text-[#f1c99f]">
-      探索房间 · {observed.length}/{items.length}
+      探索房间 · {known}/{items.length}
     </span>
   </div>;
 }

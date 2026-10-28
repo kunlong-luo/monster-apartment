@@ -36,9 +36,12 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
           className="object-contain object-bottom drop-shadow-[0_8px_22px_#000]"/>
       </div>
       <div className="pointer-events-none absolute top-3 left-3 text-[10px] tracking-[.15em] text-[#f6d0a3]">PRIVATE CHAMBER · MOONLIT CONTRACTS</div>
-      <RoomSceneHotspots characterName="月纱"
+      <RoomSceneHotspots characterName="月纱" roomId="yuesha"
         items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}
-        selected={hotspot} observed={observed} onInspect={inspect}/>
+        selected={hotspot} observed={observed} onInspect={inspect}
+        description={hotspot==='seal'?'蜡封上的月纹，与旧公寓钥匙的纹样有些相似。月纱没有立即回答你的疑问。':
+          hotspot==='tea'?'杯里有桂皮与温暖的香气。月纱说，做生意之前应该先好好喝一杯茶。':
+          hotspot==='ledger'?'账簿封面有多年前的磨损痕迹。里面记着什么，目前还不能公开。':undefined}/>
       <div className="pointer-events-none absolute bottom-9 left-3 max-w-[56%] space-y-1 text-shadow-md">
         <h3 className="text-lg text-[#ffe3bd] sm:text-2xl">月纱的契约会客室</h3>
         <p className="text-[11px] leading-5 text-[#e4c7ab]">月纹、旧契约和一杯香料茶</p>
