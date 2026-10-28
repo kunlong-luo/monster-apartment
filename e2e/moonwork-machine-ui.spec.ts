@@ -53,3 +53,28 @@ test('world buttons and headings remain in their panels on a narrow phone',async
     expect(p.right).toBeLessThanOrEqual(320);
   }
 });
+
+test('three distinct worker portraits are transparent and consistent across gallery and controls',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/characters/');
+  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
+  for(const id of ['brook','fern','cinder'] as const){
+    const card=page.getByTestId('worker-card-'+id);
+    const artwork=card.locator('.worker-artwork');
+    await expect(artwork).toHaveAttribute('data-art-source',/transparent/);
+    // The old AVIF triptych was only a few kilobytes and scaled to full cards.
+    // Per-worker Canvas fallback is 3x native resolution and truly alpha-backed.
+    const canvas=artwork.locator('canvas');
+    if(await canvas.isVisible()){
+      await expect(canvas).toHaveAttribute('width','498');
+      await expect(canvas).toHaveAttribute('height','498');
+    }else await expect(artwork.locator('img')).toBeVisible();
+    await expect(card.locator('.mw-worker-portrait')).not.toHaveCSS('background-size','300% 100%');
+  }
+  await page.getByTestId('worker-card-brook').getByRole('link').click();
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+  for(const id of ['brook','fern','cinder'] as const){
+    const portrait=page.getByTestId('v2-worker-'+id).locator('.worker-artwork');
+    await expect(portrait).toHaveAttribute('data-art-source',/transparent/);
+  }
+});
