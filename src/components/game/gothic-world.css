@@ -13,3 +13,19 @@ button):focus-visible{outline:2px solid #ffdda2;outline-offset:2px}.mw.mw-gothic
 .mw.mw-gothic .mw-art-gallery-intro{min-height:175px;
   padding:16px!important;border-radius:10px}.mw.mw-gothic .mw-world-hero-copy h2,
 .mw.mw-gothic .mw-art-gallery-intro h2{font-size:22px}.mw.mw-gothic .mw-warehouse-art{display:none}.mw.mw-gothic .mw-world-hero-copy p{font-size:12px;line-height:1.5}.mw.mw-gothic .mw-witch-banner{padding:10px;gap:10px}.mw.mw-gothic .mw-witch-painting{width:85px;min-width:85px}.mw.mw-gothic .mw-witch-banner h2{font-size:18px}.mw.mw-gothic .mw-town-next{margin-bottom:18px}
+
+/* Long Chinese CTA labels and icon captions must fit their own hit targets. */
+.mw.mw-gothic .mw-town-portal{min-width:0;overflow:hidden}
+.mw.mw-gothic .mw-town-portal span:last-child{min-width:0}
+.mw.mw-gothic .mw-town-portal strong{
+  display:block;max-width:100%;white-space:normal;overflow-wrap:anywhere;
+  text-align:center;line-height:1.35
+}
+.mw.mw-gothic .mw-market-detail{min-width:0}
+.mw.mw-gothic .mw-market-offer button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:410px){
+  .mw.mw-gothic .mw-town-portals{gap:3px!important;left:6px;right:6px}
+  .mw.mw-gothic .mw-town-portal{gap:2px;padding:5px 2px!important}
+  .mw.mw-gothic .mw-town-portal strong{font-size:10px}
+  .mw.mw-gothic .mw-portal-glyph{font-size:15px}
+}
