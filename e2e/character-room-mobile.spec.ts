@@ -36,6 +36,8 @@ test('mobile Moonsha visit still supports scenic inspection and return',async({p
   await page.getByRole('button',{name:'与女主人月纱交流'}).click();
   await page.getByTestId('visit-yuesha-room').click();
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  await expect(page.getByTestId('room-scene-backdrop')).toBeVisible();
+  await expect(page.getByTestId('room-resident-present-yuesha')).toBeVisible();
   await page.screenshot({path:'test-results/room-yuesha-mobile.png'});
   await page.getByTestId('scene-object-seal').click();
   await expect(page.getByTestId('scene-discovery')).toContainText('月纹');

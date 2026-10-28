@@ -1,33 +1,21 @@
 'use client';
-import Image from 'next/image';
 import Link from 'next/link';
 import {useEffect,useState} from 'react';
-import moonlitStreet from '../../../public/art/lobby-hero-v3.webp';
 import {CHARACTER_PROFILES,WORKER_DIALOGUES} from '@/core/character-life';
 import type {WorkerCharacterId,RoomObjectId,WorkerChoice} from '@/core/character-life';
 import {commitCharacterLife,useCharacterLife} from '@/lib/game/character-life-store';
-import {WorkerArtwork} from '@/components/moonwork/worker-artwork';
 import {CharacterLifePortrait} from './character-life-portrait';
 import {GothicModal} from './gothic-hud';
 import {RoomSceneHotspots} from './room-scene-hotspots';
+import {RoomSceneBackdrop} from './room-scene-backdrop';
+import {RoomResidentSprite} from './room-resident-sprite';
+import {roomSceneReaction} from '@/core/room-scene-reactions';
 import './gothic-polish.css';
 
 const SCENE_PALETTES={
-  brook:{
-    veil:'from-[#072f42d6] via-[#10354d8c] to-[#061626d9]',
-    glow:'bg-[#68d8ef56]',ribbon:'border-cyan-300/40 text-cyan-100',symbol:'◈',
-    roomDetail:'铜管休息区 · 水汽回廊',
-  },
-  fern:{
-    veil:'from-[#143a30dd] via-[#2c4b3580] to-[#10271ce0]',
-    glow:'bg-[#8ce1a34a]',ribbon:'border-emerald-200/50 text-emerald-100',symbol:'❀',
-    roomDetail:'藤蔓书架 · 月光花房',
-  },
-  cinder:{
-    veil:'from-[#4e2517dd] via-[#5d38227b] to-[#251114ea]',
-    glow:'bg-[#ff9a515c]',ribbon:'border-amber-200/50 text-amber-100',symbol:'⚒',
-    roomDetail:'炉火台 · 黄铜修理间',
-  },
+  brook:{ribbon:'border-cyan-300/40 text-cyan-100',roomDetail:'铜管休息区 · 水汽回廊'},
+  fern:{ribbon:'border-emerald-200/50 text-emerald-100',roomDetail:'藤蔓书架 · 月光花房'},
+  cinder:{ribbon:'border-amber-200/50 text-amber-100',roomDetail:'炉火台 · 黄铜修理间'},
 } as const;
 
 export function WorkerPrivateRoom({id,onClose,working}:{
@@ -37,6 +25,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
   const scene=WORKER_DIALOGUES[id];
   const palette=SCENE_PALETTES[id];
   const [selectedItem,setSelectedItem]=useState<RoomObjectId|null>(null);
+  const [reaction,setReaction]=useState('');
   const [notice,setNotice]=useState('');
   const {status,progress}=useCharacterLife();
   const choice=progress.workerDecisions?.[id];
@@ -47,6 +36,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
 
   const inspect=(item:RoomObjectId)=>{
     setSelectedItem(item);
+    setReaction(roomSceneReaction(id,item));
     if(status!=='ok'){setNotice('此时无法保存人物观察，已有记录不会被覆盖。');return;}
     const result=commitCharacterLife({type:'inspect',id,item});
     setNotice(result==='applied'?'你记下了这个细节。':result==='duplicate'?'你曾经留意过这件物品。':'观察记录暂时无法保存。');
@@ -70,21 +60,8 @@ export function WorkerPrivateRoom({id,onClose,working}:{
       <div className="min-w-0 space-y-2">
       <div className={'relative h-[clamp(270px,53vh,565px)] overflow-hidden rounded-xl border border-gothic-brass/65 bg-[#120f1c]'}
         aria-label={profile.name+'的房间概念场景'}>
-        <Image src={moonlitStreet} fill sizes="(max-width:700px) 92vw, 690px" alt=""
-          className="object-cover object-[40%_42%] opacity-50" aria-hidden/>
-        <div className={'pointer-events-none absolute inset-0 bg-gradient-to-r '+palette.veil}/>
-        <div className={'pointer-events-none absolute left-[21%] top-[18%] size-[36%] rounded-full blur-3xl '+palette.glow}/>
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-[#0d0b12f0] to-transparent"/>
-        <span aria-hidden="true" className="pointer-events-none absolute left-[5%] top-[29%] text-[clamp(58px,11vw,110px)] leading-none text-[#e8cda84f]">{palette.symbol}</span>
-        {!working?<div data-testid={'room-resident-present-'+id}
-          className="absolute bottom-0 right-[7%] h-[96%] w-[55%] max-w-[475px] origin-bottom motion-safe:animate-[room-breathe_5s_ease-in-out_infinite] motion-reduce:animate-none">
-          <WorkerArtwork id={id} name={profile.name}/>
-        </div>:<div data-testid={'room-resident-away-'+id}
-          className="pointer-events-none absolute bottom-[24%] right-[6%] w-[43%] max-w-[230px] rounded-lg border border-[#efd4aa66] bg-[#170e19d9] px-3 py-3 text-center shadow-[0_9px_25px_#000a]">
-          <span aria-hidden="true" className="block text-2xl text-[#f5cc8a]">✉</span>
-          <p className="mt-1 text-xs text-[#ffe4c0]">{profile.name}正在工坊值守</p>
-          <p className="mt-1 text-[11px] leading-5 text-[#d8bea9]">桌上留有便条，回到房间后再见面。</p>
-        </div>}
+        <RoomSceneBackdrop id={id}/>
+        <RoomResidentSprite id={id} name={profile.name} working={working} reaction={reaction}/>
         <RoomSceneHotspots characterName={profile.name} roomId={id} items={scene.objects}
           observed={observed} selected={selectedItem} onInspect={inspect}
           description={scene.objects.find(item=>item.id===selectedItem)?.text}/>
@@ -93,7 +70,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
           <p className="text-[11px] leading-5 text-[#f5ddc3]">{working?'正在工坊值守 · 屋内留着便条':'暂时休息 · 可以聊聊天'}</p>
         </div>
       </div>
-      <p className="text-[10px] leading-5 text-gothic-muted">场景交互原型：使用现有透明人物精灵；独立高清室内原画仍待替换。</p>
+      <p className="text-[10px] leading-5 text-gothic-muted">轻触物件寻找房间线索。角色演出独立于环境，工匠值守时仅保留便条。</p>
       </div>
       <div className="min-w-0 space-y-3 lg:max-h-[min(62vh,580px)] lg:overflow-y-auto lg:pr-2 [scrollbar-color:#a67f67_#281822] [scrollbar-width:thin]">
       {status!=='ok'&&<p role="alert" className="rounded-lg border border-rose-300/50 p-3 text-xs text-rose-200">

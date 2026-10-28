@@ -204,3 +204,8 @@
 /* A restrained idle pose, only on existing high-resolution transparent worker artwork. */
 @keyframes room-breathe {0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media(prefers-reduced-motion:reduce){.worker-artwork{animation:none!important}}
+
+/* Private room lighting fades without blurring or transforming scene artwork. */
+.private-room__candlelight{animation:private-room-candle 6.5s ease-in-out infinite alternate}
+@keyframes private-room-candle{from{opacity:.58}to{opacity:.93}}
+@media(prefers-reduced-motion:reduce){.private-room__candlelight{animation:none!important}}

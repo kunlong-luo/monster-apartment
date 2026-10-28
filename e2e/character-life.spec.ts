@@ -6,6 +6,8 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   await expect(page.getByRole('dialog',{name:'与月纱交谈'})).toContainText('幸福度');
   await page.getByTestId('visit-yuesha-room').click();
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-scene-id','yuesha');
+  await expect(page.getByTestId('room-resident-present-yuesha')).toBeVisible();
   await page.screenshot({path:'test-results/room-yuesha-desktop.png'});
   await expect(page.getByTestId('life-profile-yuesha')).toContainText('谨慎而机敏');
   const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'{}').coins);
@@ -15,6 +17,10 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   await page.getByRole('button',{name:'月纹蜡封'}).click();
   await expect(page.getByTestId('scene-discovery')).toContainText('月纹');
   await expect(page.getByTestId('yuesha-hotspot-text')).toContainText('月纹');
+  await expect(page.getByTestId('room-resident-reaction')).toContainText('半月印纹');
+  await page.getByRole('button',{name:'香料茶杯'}).click();
+  await page.getByRole('button',{name:'旧账簿'}).click();
+  await expect(page.getByTestId('yuesha-room-easter-egg')).toContainText('真相');
   await page.reload();
   await page.getByRole('button',{name:'与女主人月纱交流'}).click();
   await page.getByTestId('visit-yuesha-room').click();

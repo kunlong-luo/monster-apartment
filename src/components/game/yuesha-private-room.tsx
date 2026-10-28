@@ -1,17 +1,18 @@
 'use client';
-import Image from 'next/image';
 import {useEffect,useState} from 'react';
-import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
-import moonveilBackdrop from '../../../public/art/lobby-hero-v3.webp';
 import {yueshaAfterChoice} from '@/core/character-life';
 import {roomInvestigationConclusion} from '@/core/room-investigation';
 import type {YueshaChoice} from '@/core/character-life';
 import {commitCharacterLife,useCharacterLife} from '@/lib/game/character-life-store';
 import {CharacterLifePortrait} from './character-life-portrait';
 import {RoomSceneHotspots} from './room-scene-hotspots';
+import {RoomSceneBackdrop} from './room-scene-backdrop';
+import {RoomResidentSprite} from './room-resident-sprite';
+import {roomSceneReaction,yueshaRoomEasterEgg} from '@/core/room-scene-reactions';
 type Hotspot='seal'|'tea'|'ledger';
 export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:number}){
   const [hotspot,setHotspot]=useState<Hotspot|null>(null);
+  const [reaction,setReaction]=useState('');
   const [feedback,setFeedback]=useState('');
   const {status,progress}=useCharacterLife();
   const choice=progress.decisions['yuesha-first-visit'];
@@ -19,6 +20,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
   useEffect(()=>{if(status==='ok')commitCharacterLife({type:'visit',id:'yuesha'});},[status]);
   const inspect=(item:Hotspot)=>{
     setHotspot(item);
+    setReaction(roomSceneReaction('yuesha',item));
     const result=commitCharacterLife({type:'inspect',id:'yuesha',item});
     setFeedback(result==='applied'?'你记下了这段细节。':result==='duplicate'?'这个物品你已经仔细看过了。':'人物观察记录暂时无法保存。');
   };
@@ -29,27 +31,21 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
   return <div className="min-w-0 flex-1 space-y-3" data-testid="yuesha-private-room">
     <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(300px,1fr)] lg:items-start">
     <div className="min-w-0 space-y-2">
-    <div className="relative h-[clamp(285px,51vh,550px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]">
-      <Image src={moonveilBackdrop} alt="" fill priority sizes="(max-width:700px) 90vw, 640px"
-        className="object-cover object-[44%_40%] opacity-65" aria-hidden/>
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#110b18ba,transparent_48%,#120a1ca8),linear-gradient(0deg,#120a1af4,transparent_43%)]"/>
-      <div className="pointer-events-none absolute right-[4%] bottom-0 h-[95%] w-[42%] max-w-[375px]">
-        <Image src={moonveilBust} alt="月纱在月夜会客室等待来访" fill sizes="240px" unoptimized
-          className="object-contain object-bottom drop-shadow-[0_8px_22px_#000]"/>
-      </div>
-      <div className="pointer-events-none absolute top-3 left-3 text-[10px] tracking-[.15em] text-[#f6d0a3]">PRIVATE CHAMBER · MOONLIT CONTRACTS</div>
+    <div className="relative h-[clamp(305px,54vh,590px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]" data-testid="yuesha-room-stage">
+      <RoomSceneBackdrop id="yuesha"/>
+      <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction}/>
       <RoomSceneHotspots characterName="月纱" roomId="yuesha"
         items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}
         selected={hotspot} observed={observed} onInspect={inspect}
         description={hotspot==='seal'?'蜡封上的月纹，与旧公寓钥匙的纹样有些相似。月纱没有立即回答你的疑问。':
           hotspot==='tea'?'杯里有桂皮与温暖的香气。月纱说，做生意之前应该先好好喝一杯茶。':
           hotspot==='ledger'?'账簿封面有多年前的磨损痕迹。里面记着什么，目前还不能公开。':undefined}/>
-      <div className="pointer-events-none absolute bottom-9 left-3 max-w-[56%] space-y-1 text-shadow-md">
+      <div className="pointer-events-none absolute top-9 left-3 max-w-[52%] space-y-1 text-shadow-md">
         <h3 className="text-lg text-[#ffe3bd] sm:text-2xl">月纱的契约会客室</h3>
         <p className="text-[11px] leading-5 text-[#e4c7ab]">月纹、旧契约和一杯香料茶</p>
       </div>
     </div>
-    <p className="text-[10px] text-[#bda089]">场景原型：人物与绘景分层，独立室内 CG 仍待制作。</p>
+    <p className="text-[10px] text-[#bda089]">轻触场景中的月纹物件，寻找契约背后的记忆；人物表情与线索分别反馈。</p>
     </div>
     <div className="min-w-0 space-y-3 lg:max-h-[min(62vh,580px)] lg:overflow-y-auto lg:pr-2 [scrollbar-color:#a67f67_#281822] [scrollbar-width:thin]">
     <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[#ad89644a] bg-[#211520b8] px-3 py-2 text-xs" data-testid="yuesha-living-state">
@@ -84,6 +80,10 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
           '账簿封面有多年前的磨损痕迹。里面记着什么，目前还不能公开。'}
       </p>}
     </div>
+    {yueshaRoomEasterEgg(observed,choice)&&<p role="status" data-testid="yuesha-room-easter-egg"
+      className="rounded-xl border border-[#dfb98690] bg-[#462439dc] px-4 py-3 text-xs leading-7 text-[#ffe3be]">
+      ✦ 杯垫背面的密语 · {yueshaRoomEasterEgg(observed,choice)}
+    </p>}
     {roomInvestigationConclusion(progress)&&<p data-testid="yuesha-four-room-memory"
       className="rounded-xl border border-[#d9a96880] bg-[#392633de] px-4 py-3 text-xs leading-7 text-[#ffe0b4]">
       ✦ 月纱翻开一本还未寄出的调查册：{roomInvestigationConclusion(progress)}

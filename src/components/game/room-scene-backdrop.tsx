@@ -1,0 +1,44 @@
+import Image from 'next/image';
+import moonlitPainting from '../../../public/art/lobby-hero-v3.webp';
+import type {CharacterId} from '@/core/character-life';
+
+/** Background and lighting never move the original painting: no image resampling
+ * after returning from another route. Each room has its own ambient palette. */
+const ROOM_AMBIENCE={
+  yuesha:{
+    veil:'bg-[linear-gradient(90deg,#150d23bd_0%,#27112735_51%,#170b21a6_100%)]',
+    moon:'bg-[radial-gradient(ellipse_at_76%_14%,#b9a3ff45,transparent_49%)]',
+    candle:'bg-[radial-gradient(ellipse_at_14%_67%,#ffc17a47,transparent_49%)]',
+  },
+  brook:{
+    veil:'bg-[linear-gradient(90deg,#082d45d9,#0b3c5754_53%,#071627bb)]',
+    moon:'bg-[radial-gradient(ellipse_at_75%_12%,#80d8ff4d,transparent_52%)]',
+    candle:'bg-[radial-gradient(ellipse_at_15%_72%,#8ce1f343,transparent_49%)]',
+  },
+  fern:{
+    veil:'bg-[linear-gradient(90deg,#102d25d9,#25533961_52%,#0a261bd6)]',
+    moon:'bg-[radial-gradient(ellipse_at_75%_12%,#b2ffc04a,transparent_51%)]',
+    candle:'bg-[radial-gradient(ellipse_at_13%_72%,#b6ec8e45,transparent_48%)]',
+  },
+  cinder:{
+    veil:'bg-[linear-gradient(90deg,#381a18da,#66342164_54%,#211017d8)]',
+    moon:'bg-[radial-gradient(ellipse_at_74%_12%,#ffc2893e,transparent_50%)]',
+    candle:'bg-[radial-gradient(ellipse_at_15%_73%,#ff9b4b50,transparent_49%)]',
+  },
+} as const;
+
+export function RoomSceneBackdrop({id}:{id:CharacterId}){
+  const ambience=ROOM_AMBIENCE[id];
+  return <div data-testid="room-scene-backdrop" data-scene-id={id}
+    className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <Image src={moonlitPainting} alt="" fill unoptimized priority={id==='yuesha'}
+      sizes="(max-width:1024px) 94vw, 850px"
+      className="object-cover object-[45%_43%]"/>
+    <div className={'absolute inset-0 '+ambience.veil}/>
+    <div className={'absolute inset-0 '+ambience.moon}/>
+    <div data-testid="room-environment-light"
+      className={'private-room__candlelight absolute inset-0 mix-blend-screen motion-reduce:animate-none '+ambience.candle}/>
+    <div className="absolute inset-0 bg-[linear-gradient(0deg,#0f091be5_0%,transparent_29%,transparent_78%,#0c07168c_100%)]"/>
+    <div className="absolute inset-[9px] rounded-[8px] border border-[#f5c99124] shadow-[inset_0_0_40px_#f8be6c0e]"/>
+  </div>;
+}
