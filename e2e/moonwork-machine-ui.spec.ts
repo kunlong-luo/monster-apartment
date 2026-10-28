@@ -89,7 +89,8 @@ test('daily output visuals use exact machine and input source, not fabricated to
   world=placeMachine(world,7,'kiln');
   world=assignWorker(world,'cinder',7);
   await page.addInitScript(seed=>{
-    localStorage.setItem('monster-apartment:workshop-v2-lab',JSON.stringify(seed));
+    const key='monster-apartment:workshop-v2-lab';
+    if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify(seed));
   },world);
   await page.goto('/workshop/');
   const stage=page.getByTestId('v2-stage');
