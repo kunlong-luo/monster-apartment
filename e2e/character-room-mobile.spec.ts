@@ -45,6 +45,10 @@ test('mobile Moonsha visit still supports scenic inspection and return',async({p
   await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-object-id','seal');
   await page.screenshot({path:'test-results/room-yuesha-inspection-mobile.png'});
   await expect(page.getByTestId('scene-discovery')).toContainText('月纹');
+  await expect(page.getByTestId('yuesha-memory-progress')).toContainText('1 / 4');
+  await expect(page.getByTestId('yuesha-memory-card-ledger')).toBeDisabled();
+  await page.getByTestId('yuesha-memory-card-seal').click();
+  await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-object-id','seal');
   await page.getByRole('button',{name:/返回月纱对话/}).click();
   await expect(page.getByTestId('yuesha-private-room')).toHaveCount(0);
 });

@@ -21,6 +21,8 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   await expect(page.getByTestId('yuesha-dialogue')).toContainText('账本摊开');
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'{}').coins)).toBe(before);
   await expect(page.getByTestId('room-topic-yuesha-contract')).toBeDisabled();
+  await expect(page.getByTestId('yuesha-memory-progress')).toContainText('0 / 4');
+  await expect(page.getByTestId('yuesha-memory-card-contract')).toBeDisabled();
   await expect(page.getByTestId('room-scene-focus')).toHaveCount(0);
   await page.getByRole('button',{name:'月纹蜡封'}).click();
   await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-object-id','seal');
@@ -33,6 +35,11 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-focus-pose','warm');
   await page.getByRole('button',{name:'旧账簿'}).click();
   await expect(page.getByTestId('yuesha-room-easter-egg')).toContainText('真相');
+  await expect(page.getByTestId('yuesha-memory-progress')).toContainText('4 / 4');
+  await page.getByTestId('yuesha-memory-card-contract').click();
+  await expect(page.getByTestId('yuesha-memory-secret')).toContainText('半月');
+  await page.getByTestId('yuesha-memory-card-seal').click();
+  await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-object-id','seal');
   await expect(page.getByTestId('room-topic-yuesha-contract')).toBeEnabled();
   await page.getByTestId('room-topic-yuesha-contract').click();
   await expect(page.getByTestId('room-topic-response-yuesha')).toContainText('见证人');
@@ -41,6 +48,7 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   await page.getByTestId('visit-yuesha-room').click();
   await expect(page.getByTestId('yuesha-dialogue')).toContainText('账本摊开');
   await expect(page.getByTestId('yuesha-choice-careful')).toHaveCount(0);
+  await expect(page.getByTestId('yuesha-memory-progress')).toContainText('4 / 4');
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:character-life:v1')||'{}'));
   expect(saved.visited).toEqual(['yuesha']);
   expect(saved.decisions['yuesha-first-visit']).toBe('transparent');

@@ -10,6 +10,7 @@ import {RoomSceneBackdrop} from './room-scene-backdrop';
 import {RoomResidentSprite} from './room-resident-sprite';
 import {RoomSceneFocus} from './room-scene-focus';
 import {RoomConversationTopics} from './room-conversation-topics';
+import {YueshaMemoryShelf} from './yuesha-memory-shelf';
 import {RoomDialogueTheater} from './room-dialogue-theater';
 import {roomObjectPose,roomTopicPose} from '@/core/room-performance';
 import type {RoomPose} from '@/core/room-performance';
@@ -39,10 +40,19 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     const result=commitCharacterLife({type:'yuesha-choice',choice:value});
     setFeedback(result==='applied'?'月纱记住了你的选择。':result==='duplicate'?'这段初次谈话已经记录。':'人物档案无法写入，原存档未被覆盖。');
   };
+  const revisit=(item:Hotspot)=>{
+    // A replay is a presentation action, not another write to the lore save.
+    if(!observed.includes(item))return;
+    setHotspot(item);
+    setReaction(roomSceneReaction('yuesha',item));
+    setPose(roomObjectPose('yuesha',item));
+    setFeedback('已重温这段收录的记忆。');
+    stageRef.current?.scrollIntoView({block:'center',behavior:'auto'});
+  };
   return <div className="min-w-0 flex-1 space-y-3" data-testid="yuesha-private-room">
-    <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(300px,1fr)] lg:items-start">
+    <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,2.1fr)_minmax(300px,.9fr)] lg:items-start">
     <div className="min-w-0 space-y-2">
-    <div className="relative h-[clamp(305px,54vh,590px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]" data-testid="yuesha-room-stage" ref={stageRef}>
+    <div className="relative h-[clamp(315px,57vh,640px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]" data-testid="yuesha-room-stage" ref={stageRef}>
       <RoomSceneBackdrop id="yuesha"/>
       <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={pose}/>
       <RoomSceneFocus id="yuesha" item={hotspot} pose={pose}/>
@@ -61,7 +71,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     </div>
     <p className="text-[10px] text-[#bda089]">轻触场景中的月纹物件，寻找契约背后的记忆；人物演出与线索分别反馈。</p>
     </div>
-    <div className="min-w-0 space-y-3 lg:max-h-[min(62vh,580px)] lg:overflow-y-auto lg:pr-2 [scrollbar-color:#a67f67_#281822] [scrollbar-width:thin]">
+    <div className="min-w-0 space-y-3 rounded-xl border border-[#a980655e] bg-[linear-gradient(165deg,#2b1824a8,#160f19df)] p-3 shadow-[inset_0_1px_#f9d9a624] lg:max-h-[min(68vh,670px)] lg:overflow-y-auto lg:pr-2 [scrollbar-color:#a67f67_#281822] [scrollbar-width:thin]">
     <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[#ad89644a] bg-[#211520b8] px-3 py-2 text-xs" data-testid="yuesha-living-state">
       <span>今夜心情：{happiness>=70?'安心':'牵挂邻居'}</span>
       <span>公寓现住 {guests} 位邻居</span>
@@ -111,6 +121,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     </p>}
     </div>
     </div>
+    <YueshaMemoryShelf progress={progress} onRevisit={revisit}/>
     <CharacterLifePortrait id="yuesha"/>
   </div>;
 }
