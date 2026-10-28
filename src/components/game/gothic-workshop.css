@@ -46,69 +46,151 @@
   left: 0;
   right: 0;
   top: 0;
-  height: 68px;
-  padding: 10px clamp(12px, 1.7vw, 28px);
-  background: linear-gradient(rgba(9, 5, 13, 0.85), transparent);
-  gap: 12px;
+  min-height: 60px;
+  padding: 8px clamp(12px, 1.8vw, 28px);
+  background: linear-gradient(180deg, rgba(12, 8, 16, 0.96) 0%, rgba(16, 10, 22, 0.88) 75%, transparent 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(8px, 1.4vw, 18px);
   flex-shrink: 0;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(182, 140, 97, 0.22);
 }
 
 .gothic-workshop-shell #root.lab.gothic-workshop .logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
   min-width: 0;
-  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.gothic-workshop-shell #root.lab.gothic-workshop .logo > span {
-  font-size: 24px;
+.gothic-workshop-shell #root.lab.gothic-workshop .logo .star-sigil {
+  font-size: 22px;
   color: #f0c588;
-  text-shadow: 0 0 14px rgba(240, 197, 136, 0.45);
+  line-height: 1;
+  text-shadow: 0 0 14px rgba(240, 197, 136, 0.6);
+}
+
+.gothic-workshop-shell #root.lab.gothic-workshop .logo .logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .gothic-workshop-shell #root.lab.gothic-workshop .logo strong {
+  font-family: Georgia, "Noto Serif SC", serif;
   font-size: 17px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: #ffe1a8;
+  line-height: 1.15;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
-.gothic-workshop-shell #root.lab.gothic-workshop .logo small {
-  font-size: 10px;
+.gothic-workshop-shell #root.lab.gothic-workshop .logo .workshop-tagline {
+  font-size: 9px;
+  letter-spacing: 0.14em;
   color: #d4b99d;
+  font-weight: 500;
+  text-transform: uppercase;
+  opacity: 0.85;
 }
 
-.gothic-workshop-shell #root.lab.gothic-workshop .logo .world-gate {
-  color: #f0c588;
+/* Upgraded Gothic Navigation Buttons: Jewel styling, high contrast, elegant icons */
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-nav-gates {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.gothic-workshop-shell #root.lab.gothic-workshop .gothic-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 33px;
+  padding: 0 13px;
+  border-radius: 9999px;
+  border: 1px solid rgba(182, 140, 97, 0.68);
+  background: linear-gradient(135deg, rgba(42, 26, 40, 0.9) 0%, rgba(22, 14, 25, 0.92) 100%);
+  color: #fae5c8;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
   text-decoration: none;
-  transition: color 0.15s ease;
+  white-space: nowrap;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 225, 173, 0.18);
+  backdrop-filter: blur(8px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
 }
 
-.gothic-workshop-shell #root.lab.gothic-workshop .logo .world-gate:hover {
+.gothic-workshop-shell #root.lab.gothic-workshop .gothic-nav-btn:hover {
+  border-color: #f0c588;
   color: #ffe1a8;
-  text-decoration: underline;
+  background: linear-gradient(135deg, rgba(85, 49, 63, 0.95) 0%, rgba(42, 25, 42, 0.95) 100%);
+  box-shadow: 0 0 16px rgba(240, 197, 136, 0.35), inset 0 1px 0 rgba(255, 225, 173, 0.3);
+  transform: translateY(-1px);
 }
 
-.gothic-workshop-shell #root.lab.gothic-workshop .top-stats > span {
-  display: none; /* Managed by React HUD */
+.gothic-workshop-shell #root.lab.gothic-workshop .gothic-nav-btn:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.gothic-workshop-shell #root.lab.gothic-workshop .gothic-nav-btn:focus-visible {
+  outline: 2px solid #f0c588;
+  outline-offset: 2px;
+}
+
+.gothic-workshop-shell #root.lab.gothic-workshop .gothic-nav-btn .gothic-nav-glyph {
+  font-size: 12px;
+  color: #f0c588;
+  line-height: 1;
+}
+
+/* Top Stats & HUD */
+.gothic-workshop-shell #root.lab.gothic-workshop .top-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-hud-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .gothic-workshop-shell #root.lab.gothic-workshop #reset {
-  border: 1px solid #b68c61aa;
+  border: 1px solid rgba(182, 140, 97, 0.65);
   border-radius: 50%;
   background: rgba(38, 25, 36, 0.85);
   color: #f0c588;
-  font-size: 18px;
+  font-size: 17px;
   width: 32px;
   height: 32px;
   display: grid;
   place-items: center;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 225, 173, 0.15);
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .gothic-workshop-shell #root.lab.gothic-workshop #reset:hover {
   border-color: #ffe1a8;
   color: #ffe1a8;
   background: #55313f;
-  box-shadow: 0 0 10px rgba(240, 197, 136, 0.35);
+  box-shadow: 0 0 12px rgba(240, 197, 136, 0.45);
+  transform: rotate(45deg);
+}
+
+.gothic-workshop-shell #root.lab.gothic-workshop #reset:active {
+  transform: rotate(180deg) scale(0.95);
 }
 
 /* Middle Layout: World Stage & Sidebar */
@@ -619,25 +701,35 @@
 /* Tablet Layout (<= 820px) */
 @media (max-width: 820px) {
   .gothic-workshop-shell #root.lab.gothic-workshop .top {
-    height: 52px;
-    padding: 6px 12px;
+    min-height: 54px;
+    padding: 6px 10px;
+    gap: 8px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .logo strong {
-    font-size: 14px;
+    font-size: 15px;
   }
-  .gothic-workshop-shell #root.lab.gothic-workshop .logo > span {
+  .gothic-workshop-shell #root.lab.gothic-workshop .logo .star-sigil {
+    font-size: 19px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .logo .workshop-tagline {
     display: none;
   }
+  .gothic-workshop-shell #root.lab.gothic-workshop .gothic-nav-btn {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 11px;
+    gap: 4px;
+  }
   .gothic-workshop-shell #root.lab.gothic-workshop .middle {
-    top: 56px;
-    bottom: 164px;
+    top: 62px;
+    bottom: 180px;
     left: 8px;
     right: 8px;
     grid-template-columns: minmax(0, 1fr) minmax(170px, 32vw);
-    gap: 6px;
+    gap: 8px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console {
-    bottom: 76px;
+    bottom: 84px;
     left: 8px;
     right: 8px;
     gap: 6px;
@@ -646,23 +738,58 @@
     padding: 6px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .panel-head b {
-    font-size: 10px;
+    font-size: 11px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .main-actions {
-    min-width: 96px;
-    flex-basis: 96px;
+    min-width: 130px;
+    flex-basis: 130px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions button {
+    white-space: nowrap;
+    padding: 7px 8px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions button span {
+    white-space: nowrap;
+    font-size: 11px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .worker strong,
   .gothic-workshop-shell #root.lab.gothic-workshop .machine-card strong {
-    font-size: 9px;
+    font-size: 10px;
   }
 }
 
-/* Mobile Layout (<= 610px) */
-@media (max-width: 610px) {
+/* Mobile Layout (<= 640px) */
+@media (max-width: 640px) {
+  .gothic-workshop-shell #root.lab.gothic-workshop .top {
+    min-height: auto;
+    padding: 6px 8px;
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .logo {
+    order: 1;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .top-stats {
+    order: 2;
+    margin-left: auto;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-nav-gates {
+    order: 3;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .gothic-nav-btn {
+    height: 29px;
+    padding: 0 6px;
+    font-size: 10.5px;
+    justify-content: center;
+    gap: 4px;
+  }
   .gothic-workshop-shell #root.lab.gothic-workshop .middle {
-    top: 52px;
-    bottom: 198px;
+    top: 86px;
+    bottom: 232px;
     left: 6px;
     right: 6px;
     display: flex;
@@ -683,7 +810,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 6px;
-    max-height: 112px;
+    max-height: 96px;
     flex-shrink: 0;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .panel {
@@ -694,26 +821,45 @@
     margin: 2px 0 4px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console {
-    bottom: 64px;
+    bottom: 78px;
     left: 6px;
     right: 6px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 4px;
   }
-  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions {
-    display: flex;
-    flex: 0 0 84px;
-    min-width: 84px;
-    gap: 3px;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions button {
-    padding: 4px 6px;
-    font-size: 10px;
-  }
   .gothic-workshop-shell #root.lab.gothic-workshop .console-panel {
+    min-width: 0;
     max-width: none;
+    padding: 5px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .panel-head {
+    margin-bottom: 3px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .panel-head b {
+    font-size: 10px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .panel-route-link {
     display: none;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .options {
+    gap: 3px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions {
+    grid-column: 1 / -1;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions button {
+    min-height: 34px;
+    padding: 6px 4px;
+    white-space: nowrap;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions button span {
+    font-size: 11px;
+    white-space: nowrap;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .patron-portrait {
     display: none;
@@ -721,6 +867,20 @@
   .gothic-workshop-shell #root.lab.gothic-workshop .patron-card {
     margin-top: 4px;
     padding: 5px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .selection #selected {
+    font-size: 10px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .stage-label {
+    min-width: 0;
+    gap: 5px;
+    padding: 6px 10px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .stage-label small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -747,86 +907,27 @@
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .selection {
   min-width: 0;
-  flex-wrap: wrap;
-  row-gap: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: nowrap;
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .selection #selected {
-  flex: 1 1 120px;
-  max-width: 100%;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .selection :is(#upgrade,#salvage) {
-  max-width: 100%;
-  min-width: 0;
-  white-space: normal;
-  text-align: center;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
-@media(max-width:610px) {
-  .gothic-workshop-shell #root.lab.gothic-workshop .middle {
-    bottom: 228px;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .console {
-    left: 8px;
-    right: 8px;
-    bottom: 76px;
-    display: grid;
-    grid-template-columns: repeat(2,minmax(0,1fr));
-    gap: 5px;
-    align-items: stretch;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .console-panel {
-    min-width: 0;
-    max-width: none;
-    padding: 6px;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .panel-head {
-    min-width: 0;
-    margin-bottom: 3px;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .options {
-    gap: 3px;
-    min-width: 0;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions {
-    grid-column: 1 / -1;
-    min-width: 0;
-    display: grid;
-    grid-template-columns: repeat(2,minmax(0,1fr));
-    gap: 5px;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions button {
-    min-width: 0;
-    min-height: 34px;
-    padding: 6px 4px;
-    white-space: normal;
-    line-height: 1.2;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions button span {
-    font-size: 10px;
-    white-space: normal;
-    overflow-wrap: anywhere;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .worker-miniature {
-    width: 29px;
-    height: 29px;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .sidebar {
-    min-height: 0;
-    max-height: 96px;
-    overflow-y: auto;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .stage-label {
-    min-width: 0;
-    gap: 5px;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .stage-label small {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-}
+
 @media (max-width:360px) {
-  .gothic-workshop-shell #root.lab.gothic-workshop .middle {bottom: 218px}
-  .gothic-workshop-shell #root.lab.gothic-workshop .console {bottom: 72px}
+  .gothic-workshop-shell #root.lab.gothic-workshop .middle {bottom: 226px}
+  .gothic-workshop-shell #root.lab.gothic-workshop .console {bottom: 74px}
   .gothic-workshop-shell #root.lab.gothic-workshop .worker-miniature {width:25px;height:25px}
 }

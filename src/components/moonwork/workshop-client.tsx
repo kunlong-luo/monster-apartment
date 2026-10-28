@@ -159,31 +159,75 @@ export function WorkshopClient() {
         {/* Top Header */}
         <header className="top">
           <div className="logo">
-            <span>✧</span>
-            <div>
+            <span aria-hidden="true" className="star-sigil">✧</span>
+            <div className="logo-text">
               <strong>月光工坊</strong>
-              <small>
-                <Link
-                  className="world-gate"
-                  href="/town/"
-                  data-testid="v2-world-gate"
-                  aria-label="返回月光街，进入其他游戏场景"
-                >
-                  月光街 · 世界地图 ↗
-                </Link>
-                <span aria-hidden="true" className="px-1.5 text-gothic-brass">·</span>
-                <Link href="/" className="world-gate" aria-label="返回大厅"
-                  data-testid="v2-return-lobby">返回大厅 ↗</Link>
-              </small>
+              <small className="workshop-tagline">Moonlight Atelier</small>
             </div>
           </div>
+
+          {/* Upgraded Gothic navigation gates */}
+          <nav className="workshop-nav-gates" aria-label="游戏场景导航">
+            <Link
+              href="/"
+              className="gothic-nav-btn world-gate"
+              data-testid="v2-return-lobby"
+              aria-label="返回大厅"
+              title="返回哥特公寓主大厅"
+            >
+              <span className="gothic-nav-glyph" aria-hidden="true">⌂</span>
+              <span>返回大厅 ↗</span>
+            </Link>
+            <Link
+              href="/town/"
+              className="gothic-nav-btn world-gate"
+              data-testid="v2-world-gate"
+              aria-label="返回月光街，进入其他游戏场景"
+              title="前往月光街世界地图"
+            >
+              <span className="gothic-nav-glyph" aria-hidden="true">🧭</span>
+              <span>月光街 · 世界地图 ↗</span>
+            </Link>
+          </nav>
+
           <div className="top-stats">
+            <div
+              data-testid="workshop-react-hud"
+              className="workshop-hud-pills flex items-center gap-1 sm:gap-1.5"
+              aria-label="工坊当前资源"
+            >
+              <span className="hidden sm:inline-flex">
+                <GothicResourcePill
+                  symbol="☾"
+                  amount={world.day}
+                  label="工坊天数"
+                  testId="v2-day"
+                />
+              </span>
+              <span>
+                <GothicResourcePill
+                  symbol="✦"
+                  amount={world.coins}
+                  label="星币"
+                  testId="v2-coins"
+                />
+              </span>
+              <span>
+                <GothicResourcePill
+                  symbol="◆"
+                  amount={world.warehouse.core}
+                  label="晶核"
+                />
+              </span>
+            </div>
+
             <button
               type="button"
               id="reset"
               data-testid="v2-reset"
               onClick={()=>onAction({type:'reset'})}
               aria-label="重新开始"
+              title="重新开始工坊"
             >
               ↻
             </button>
@@ -223,37 +267,6 @@ export function WorkshopClient() {
         </footer>
         <span id="summary" className="sr-only"></span>
       </main>
-
-      {/* Floating HUD Resource Pills */}
-      <div
-        data-testid="workshop-react-hud"
-        className="pointer-events-none absolute right-14 top-2 z-[22] flex items-start gap-1.5 sm:right-[68px] sm:top-3 sm:gap-2"
-        aria-label="工坊当前资源"
-      >
-        <span className="pointer-events-auto hidden sm:inline-flex">
-          <GothicResourcePill
-            symbol="☾"
-            amount={world.day}
-            label="工坊天数"
-            testId="v2-day"
-          />
-        </span>
-        <span className="pointer-events-auto">
-          <GothicResourcePill
-            symbol="✦"
-            amount={world.coins}
-            label="星币"
-            testId="v2-coins"
-          />
-        </span>
-        <span className="pointer-events-auto">
-          <GothicResourcePill
-            symbol="◆"
-            amount={world.warehouse.core}
-            label="晶核"
-          />
-        </span>
-      </div>
 
       {/* Shared Gothic World Navigation Dock */}
       <GothicDock

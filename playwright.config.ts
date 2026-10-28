@@ -21,7 +21,7 @@ export default defineConfig({
   } }],
   webServer: [
     {
-      command: 'pnpm dev',
+      command: 'npm run dev',
       url: baseURL,
       cwd: import.meta.dirname,
       reuseExistingServer: !process.env.CI,
