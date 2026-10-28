@@ -9,7 +9,7 @@ import type {
 } from './workshop-model';
 import {runShift} from './workshop-production';
 export * from './workshop-model';
-export {runShift} from './workshop-production';
+export {runShift, projectMachineProduction, type MachineCycle} from './workshop-production';
 export {workshopHint,workshopNextStep} from './workshop-guidance';
 export type {WorkshopHint} from './workshop-guidance';
 export {

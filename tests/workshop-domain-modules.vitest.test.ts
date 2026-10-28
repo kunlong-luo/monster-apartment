@@ -1,7 +1,7 @@
 import {describe,it,expect} from 'vitest';
 import {newWorkshop,runShift,placeMachine,moveMachine,assignWorker,validWorkshop,
   linked,workshopHint,workshopNextStep,buyTownSupply,residentForDay,
-  TOWN_MARKET,WORKERS,MACHINES} from '../v2/src/workshop-engine';
+  TOWN_MARKET,WORKERS,MACHINES,projectMachineProduction} from '../v2/src/workshop-engine';
 import * as model from '../v2/src/workshop-model';
 import * as guide from '../v2/src/workshop-guidance';
 import * as town from '../v2/src/workshop-town';
@@ -18,6 +18,7 @@ describe('workshop domain module compatibility',()=>{
     expect(workshopNextStep).toBe(guide.workshopNextStep);
     expect(buyTownSupply).toBe(town.buyTownSupply);
     expect(runShift).toBe(production.runShift);
+    expect(projectMachineProduction).toBe(production.projectMachineProduction);
     expect(model.machineLevel({craft:'well',stored:0,worker:null})).toBe(1);
   });
   it('keeps old V2 saves and physical production unchanged after the split',()=>{

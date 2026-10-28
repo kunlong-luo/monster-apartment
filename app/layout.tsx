@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   title: '灵核公寓 · Spirit Core Residence',
   description: '在月光街亲手建造三层小公寓，迎接奇幻灵核住户，布置家具，经营房租，发现邻居间的小故事。',
   applicationName: 'Spirit Core Residence',
+  openGraph: {
+    title: '灵核公寓 · Spirit Core Residence',
+    description: '在月光街亲手建造三层小公寓，迎接奇幻灵核住户，布置家具，经营房租，发现邻居间的小故事。',
+  },
 };
 
 export const viewport: Viewport = {

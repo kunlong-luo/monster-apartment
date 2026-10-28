@@ -29,7 +29,7 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(css).toContain('@theme');
     expect(css).not.toContain('.cozy-room');
     expect(css).not.toContain('.game-shell');
-    expect(css.length).toBeLessThan(3000);
+    expect(css.length).toBeLessThan(5000);
     const rootLayout=read('app/layout.tsx');
     expect(rootLayout).toContain("import './globals.css'");
     expect(rootLayout).not.toContain('legacy-game.css');

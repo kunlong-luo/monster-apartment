@@ -27,7 +27,7 @@ export function MoonworkWorld({area}:{area:WorldArea}){
       className="absolute left-3 top-3 z-[8] flex h-9 items-center gap-2 rounded-full border border-gothic-brass/70 bg-gothic-panel/85 px-3 text-xs text-gothic-ivory shadow-[0_6px_20px_#0007] backdrop-blur-md transition-colors hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow sm:left-5"
       aria-label="返回哥特公寓大厅">⌂ <span className="hidden sm:inline">返回大厅</span>
     </Link>
-    <Link href="/orders/" className="mw-gothic-character group absolute top-[15%] left-[30%] z-0 h-[68%] w-[30%] cursor-pointer no-underline max-[700px]:top-[10%] max-[700px]:left-[17%] max-[700px]:h-[31%] max-[700px]:w-[64%]" title="与月纱相见"
+    <Link href="/orders/" className="mw-gothic-character group absolute top-[15%] left-[30%] z-0 h-[68%] w-[30%] cursor-pointer no-underline max-[700px]:top-[10%] max-[700px]:left-[17%] max-[700px]:h-[31%] max-[700px]:w-[64%]" data-tooltip="与月纱相见"
       aria-label="前往月纱委托"><span className="mw-gothic-character-label absolute bottom-[4%] left-1/2 -translate-x-1/2 whitespace-nowrap text-[11px] tracking-[.12em] text-[#ffe5c2] opacity-0 [text-shadow:0_3px_9px_#000] transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none">月纱 · 特别委托</span>
     </Link>
     <header className="pointer-events-none absolute inset-x-0 top-0 z-[5] flex min-h-[70px] justify-end gap-2 bg-[linear-gradient(#110914cd,transparent)] px-3 py-3 sm:px-6">

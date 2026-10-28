@@ -35,9 +35,9 @@ function readCozySave():CozyState{
   }catch{/* Invalid saves cannot crash the game. */}
   return saved;
 }
-const nav=[{href:'/',icon:'♜',label:'大厅'},{href:'/town/',icon:'✧',label:'探索'},
+const nav=[{href:'/',icon:'⌂',label:'大厅'},{href:'/town/',icon:'✧',label:'探索'},
   {href:'/workshop/',icon:'⚒',label:'工坊'},{href:'/orders/',icon:'❦',label:'委托'},
-  {href:'/characters/',icon:'♟',label:'住客'}];
+  {href:'/characters/',icon:'♟',label:'角色'}];
 export function GothicApartment(){
   const ready=useSyncExternalStore(subscribeClient,clientSnapshot,serverSnapshot);
   const [world,setWorld]=useState<CozyState>(readCozySave);
@@ -86,7 +86,6 @@ export function GothicApartment(){
       <div className="mt-5 flex flex-wrap gap-3">
         <button type="button" className="rounded-lg border border-gothic-gold bg-gothic-wine px-4 py-2 text-sm hover:brightness-110"
           onClick={()=>{
-            if(!window.confirm('确定覆盖无法读取的公寓存档，重新开始吗？'))return;
             try{
               const fresh=newCozyGame();
               localStorage.setItem(KEY,JSON.stringify(fresh));
@@ -138,7 +137,7 @@ export function GothicApartment(){
     </header>
     <GothicRoomDoors world={world} selected={selected} onChoose={choose}/>
     <button className="ga-witch" type="button" onClick={()=>{setSelected(null);setWitchOpen(true);}}
-      aria-label="与女主人月纱交流" title="月纱 · 女主人"/>
+      aria-label="与女主人月纱交流" data-tooltip="月纱 · 女主人"/>
     <div className="ga-witch-title" aria-hidden="true">月纱 <small>暗夜公寓的女主人</small></div>
     <section className="ga-lower" aria-label="房间交互及经营动态">
       {selected===null?<div className="ga-story">

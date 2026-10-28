@@ -27,6 +27,38 @@ const iconButtonStyle=[
   'motion-reduce:transition-none'
 ].join(' ');
 
+export function GothicTooltip({
+  text,
+  children,
+  position = 'top',
+}: {
+  text?: string;
+  children: ReactNode;
+  position?: 'top' | 'bottom' | 'left' | 'right';
+}) {
+  if (!text) return <>{children}</>;
+
+  const positionClasses = {
+    top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
+    bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
+    left: 'right-full top-1/2 -translate-y-1/2 mr-2',
+    right: 'left-full top-1/2 -translate-y-1/2 ml-2',
+  };
+
+  return (
+    <div className="group/tooltip relative inline-flex">
+      {children}
+      <div
+        role="tooltip"
+        className={`pointer-events-none absolute ${positionClasses[position]} z-50 hidden whitespace-nowrap rounded-lg border border-gothic-brass/70 bg-[#180d1a]/95 px-2.5 py-1 text-[11px] font-medium text-gothic-glow shadow-[0_4px_20px_rgba(0,0,0,0.9)] backdrop-blur-md group-hover/tooltip:block group-focus-within/tooltip:block motion-reduce:transition-none`}
+      >
+        <span className="mr-1 text-gothic-gold" aria-hidden="true">✦</span>
+        {text}
+      </div>
+    </div>
+  );
+}
+
 export function GothicIconButton({
   children,onClick,label,title,pressed,expanded
 }:{
@@ -37,11 +69,20 @@ export function GothicIconButton({
   pressed?:boolean;
   expanded?:boolean;
 }){
-  return <button type="button" className={iconButtonStyle}
-    aria-label={label} title={title} aria-pressed={pressed}
-    aria-expanded={expanded} onClick={onClick}>
-    {children}
-  </button>;
+  const hint = title || label;
+  return (
+    <button
+      type="button"
+      className={iconButtonStyle}
+      aria-label={label}
+      data-tooltip={hint}
+      aria-pressed={pressed}
+      aria-expanded={expanded}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
 }
 
 export function GothicResourcePill({
@@ -49,15 +90,20 @@ export function GothicResourcePill({
 }:{
   symbol:string;amount:string|number;label?:string;testId?:string;
 }){
-  return <span title={label} className={
-    'flex h-8 min-w-0 shrink-0 items-center gap-1 rounded-full border border-gothic-brass/50 '+
-    'bg-gothic-panel/80 px-2.5 text-xs text-gothic-ivory shadow-[inset_0_1px_#ffe5be2c,0_5px_15px_#0008] '+
-    'whitespace-nowrap backdrop-blur-lg sm:gap-1.5 sm:px-3'
-  }>
-    <span className="text-base leading-none text-gothic-gold" aria-hidden="true">{symbol}</span>
-    <strong data-testid={testId} className="font-medium tabular-nums">{amount}</strong>
-    {label&&<small className="hidden text-[10px] text-gothic-muted md:inline">{label}</small>}
-  </span>;
+  return (
+    <span
+      data-tooltip={label}
+      className={
+        'flex h-8 min-w-0 shrink-0 items-center gap-1 rounded-full border border-gothic-brass/50 '+
+        'bg-gothic-panel/80 px-2.5 text-xs text-gothic-ivory shadow-[inset_0_1px_#ffe5be2c,0_5px_15px_#0008] '+
+        'whitespace-nowrap backdrop-blur-lg sm:gap-1.5 sm:px-3'
+      }
+    >
+      <span className="text-base leading-none text-gothic-gold" aria-hidden="true">{symbol}</span>
+      <strong data-testid={testId} className="font-medium tabular-nums">{amount}</strong>
+      {label&&<small className="hidden text-[10px] text-gothic-muted md:inline">{label}</small>}
+    </span>
+  );
 }
 
 export function GothicDock({
@@ -79,7 +125,7 @@ export function GothicDock({
     {items.map(item=><Link key={item.href} href={item.href}
       aria-label={item.ariaLabel??(item.description?item.label+' · '+item.description:item.label)}
       aria-current={activeHref===item.href?'page':undefined}
-      title={item.description}
+      data-tooltip={item.description || item.label}
       className={
         'group relative flex flex-col items-center justify-center gap-0.5 '+
         'text-gothic-ivory backdrop-blur-[3px] '+

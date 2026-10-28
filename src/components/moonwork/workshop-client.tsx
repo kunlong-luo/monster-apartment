@@ -199,7 +199,7 @@ export function WorkshopClient() {
             </div>
 
             <div className="logo hidden lg:flex items-center gap-2">
-              <span aria-hidden="true" className="star-sigil">✧</span>
+              <span aria-hidden="true" className="star-sigil">⚜</span>
               <div className="logo-text">
                 <strong>月光工坊</strong>
                 <small className="workshop-tagline">Lv.3 暗夜工坊</small>
@@ -214,7 +214,7 @@ export function WorkshopClient() {
               className="gothic-nav-btn world-gate"
               data-testid="v2-return-lobby"
               aria-label="返回大厅"
-              title="返回哥特公寓主大厅"
+              data-tooltip="返回哥特公寓主大厅"
             >
               <span className="gothic-nav-glyph" aria-hidden="true">⌂</span>
               <span>返回大厅 ↗</span>
@@ -224,7 +224,7 @@ export function WorkshopClient() {
               className="gothic-nav-btn world-gate"
               data-testid="v2-world-gate"
               aria-label="返回月光街，进入其他游戏场景"
-              title="前往月光街世界地图"
+              data-tooltip="前往月光街世界地图"
             >
               <span className="gothic-nav-glyph" aria-hidden="true">🧭</span>
               <span>月光街 · 世界地图 ↗</span>
@@ -268,7 +268,7 @@ export function WorkshopClient() {
               data-testid="v2-reset"
               onClick={()=>onAction({type:'reset'})}
               aria-label="重新开始"
-              title="重新开始工坊"
+              data-tooltip="重新开始工坊"
             >
               ↻
             </button>
@@ -301,7 +301,7 @@ export function WorkshopClient() {
               type="button"
               onClick={() => setSpeechIndex((prev) => (prev + 1) % ASSISTANT_LINES.length)}
               className="gothic-cameo-bubble text-left"
-              title="点击倾听工坊见闻"
+              data-tooltip="点击倾听工坊见闻"
               aria-label="看板娘台词，点击切换"
             >
               <div className="bubble-speaker">
@@ -364,7 +364,6 @@ export function WorkshopClient() {
             <p className="mt-3 text-sm leading-7 text-gothic-muted">检测到已有但无法读取的工坊存档。为避免意外丢失进度，游戏没有自动覆盖它。只有你确认重新开始后才会创建新存档。</p>
             <div className="mt-5 flex flex-wrap gap-3">
               <button type="button" className="rounded-lg border border-gothic-gold bg-gothic-wine px-4 py-2 text-sm text-gothic-ivory hover:brightness-110" onClick={() => {
-                if (!window.confirm('确定覆盖无法读取的工坊存档，并重新开始吗？')) return;
                 try {
                   window.localStorage.setItem(SAVE_KEY, JSON.stringify(newWorkshop()));
                   window.dispatchEvent(new Event(CHANGE_EVENT));

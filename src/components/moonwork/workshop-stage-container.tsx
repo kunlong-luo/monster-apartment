@@ -86,14 +86,14 @@ export function WorkshopStageContainer({
       </span>
 
       <div className="selection">
-        <span id="selected" data-testid="v2-next-step" title={selectedText}>{selectedText}</span>
+        <span id="selected" data-testid="v2-next-step" data-tooltip={selectedText}>{selectedText}</span>
         <button
           type="button"
           id="salvage"
           data-testid="v2-salvage"
           onClick={()=>onAction({type:'salvage'})}
           hidden={!selectedTile}
-          title="只返还设备原价的 60%，已储存材料、升级与派工不会保留"
+          data-tooltip="只返还设备原价的 60%，已储存材料、升级与派工不会保留"
           className="shrink-0 rounded-md border border-gothic-brass/70 bg-gothic-panel/80 px-2 py-1 text-[10px] text-gothic-muted transition-colors hover:border-gothic-glow hover:text-gothic-ivory focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none"
         >
           拆除返还 ✦{machineSalvageRefund(selectedTile)}
@@ -105,7 +105,7 @@ export function WorkshopStageContainer({
           onClick={()=>onAction({type:'upgrade'})}
           hidden={!upgradeVisible}
           disabled={upgradeDisabled}
-          title="等级越高，每班水汽、孢子或晶核产量越多"
+          data-tooltip="等级越高，每班水汽、孢子或晶核产量越多"
           aria-label="设备升级"
         >
           {upgradeText}

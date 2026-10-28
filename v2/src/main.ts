@@ -141,7 +141,6 @@ function dispatch(action:WorkshopAction):void{
     const index=selectedPlot;
     const machine=world.tiles[index]!;
     const refund=machineSalvageRefund(machine);
-    if(!window.confirm('拆除'+MACHINES[machine.craft].zh+'？已存材料、升级及工匠派工会清除，返还 ✦'+refund+' 星币。'))return;
     const before=world;
     const next=salvageMachine(world,index);
     apply(next,'已回收 '+MACHINES[machine.craft].zh+'，获得 ✦'+refund+' 星币。','good');
@@ -211,7 +210,6 @@ function dispatch(action:WorkshopAction):void{
       break;
     }
     case 'reset':{
-    if(!window.confirm('重新开工？当前工坊存档会被覆盖。'))return;
     world=newWorkshop();clearChoice();selectedPlot=null;
     message='新工坊已开始。先连接温室和水泵。';effect='normal';
     try{localStorage.setItem(STORAGE,JSON.stringify(world));
