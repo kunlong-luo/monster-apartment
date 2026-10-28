@@ -1,17 +1,7 @@
 import {Container,Graphics} from 'pixi.js';
 import type {Craft} from './workshop-model';
 import type {MachineVisualState} from './workshop-machine-status';
-
-export type DevicePhase='idle'|'blocked'|'startup'|'working'|'output';
-export function devicePhase(
-  state:MachineVisualState,seconds:number,startedAt:number|null,settledAt:number|null
-):DevicePhase{
-  if(state==='idle')return 'idle';
-  if(state==='blocked')return 'blocked';
-  if(settledAt!==null&&seconds>=settledAt&&seconds-settledAt<1.05)return 'output';
-  if(startedAt!==null&&seconds>=startedAt&&seconds-startedAt<.72)return 'startup';
-  return 'working';
-}
+import {devicePhase} from './workshop-machine-phases';
 
 /** A few persistent, non-interactive particles per machine. Their motion is
  * visual only: no fake rewards, timers or DOM writes. Colors and trajectories
