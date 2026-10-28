@@ -18,7 +18,7 @@ export type GothicDestination={
 };
 
 const iconButtonStyle=[
-  'grid size-9 shrink-0 place-items-center rounded-full border',
+  'grid size-9 shrink-0 place-items-center overflow-hidden rounded-full border',
   'border-gothic-brass/65 bg-gothic-panel/85 text-gothic-ivory',
   'text-lg shadow-[inset_0_1px_0_#ffe4b52a,0_5px_18px_#0009]',
   'backdrop-blur-md transition-[transform,background-color,border-color] duration-200',
@@ -50,9 +50,9 @@ export function GothicResourcePill({
   symbol:string;amount:string|number;label?:string;testId?:string;
 }){
   return <span title={label} className={
-    'flex h-8 min-w-0 items-center gap-1.5 rounded-full border border-gothic-brass/50 '+
+    'flex h-8 min-w-0 shrink-0 items-center gap-1 rounded-full border border-gothic-brass/50 '+
     'bg-gothic-panel/80 px-2.5 text-xs text-gothic-ivory shadow-[inset_0_1px_#ffe5be2c,0_5px_15px_#0008] '+
-    'backdrop-blur-lg sm:px-3'
+    'whitespace-nowrap backdrop-blur-lg sm:gap-1.5 sm:px-3'
   }>
     <span className="text-base leading-none text-gothic-gold" aria-hidden="true">{symbol}</span>
     <strong data-testid={testId} className="font-medium tabular-nums">{amount}</strong>
@@ -103,7 +103,7 @@ export function GothicDock({
         className={(compact?'text-[22px] sm:text-[25px] ':'text-[25px] sm:text-[29px] ')+
           'leading-none text-gothic-gold drop-shadow-[0_1px_5px_#000] group-hover:text-gothic-glow'}>{item.icon}</span>
       <span className={(compact?'text-[10px] sm:text-[11px] ':'text-[11px] sm:text-[13px] ')+
-        'font-medium tracking-[.08em]'}>{item.label}</span>
+        'max-w-full truncate font-medium tracking-[.02em] sm:tracking-[.08em]'}>{item.label}</span>
     </Link>)}
   </nav>;
 }
@@ -124,7 +124,7 @@ export function GothicActionButton({
     aria-pressed={pressed} onClick={onClick}
     className={
       'flex min-h-[60px] min-w-0 flex-col items-start gap-1 rounded-md border '+
-      'border-gothic-brass/70 bg-[linear-gradient(135deg,#432a31dc,#1a111cdd)] px-2.5 py-2 text-left '+
+      'border-gothic-brass/70 bg-[linear-gradient(135deg,#432a31dc,#1a111cdd)] px-2.5 py-2 text-left overflow-hidden '+
       'text-gothic-ivory shadow-[inset_0_1px_#ffdbac32,0_3px_12px_#0004] '+
       'transition-[border-color,background-color,transform] duration-150 '+
       'hover:border-gothic-glow hover:bg-gothic-wine/80 active:scale-[.98] '+
@@ -133,7 +133,7 @@ export function GothicActionButton({
       'motion-reduce:transition-none sm:min-h-[68px] sm:px-3'
     }>
     <span aria-hidden="true" className="text-[22px] leading-none text-gothic-gold">{rune}</span>
-    <strong className="text-xs font-medium leading-snug">{label}</strong>
+    <strong className="w-full break-words text-xs font-medium leading-snug">{label}</strong>
     <small className="line-clamp-2 text-[10px] leading-snug text-gothic-muted">{detail}</small>
   </button>;
 }
