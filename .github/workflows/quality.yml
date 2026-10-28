@@ -88,6 +88,8 @@ jobs:
             test-results/gothic-lobby-mobile.png
             test-results/gothic-apartment-desktop.png
             test-results/gothic-apartment-mobile.png
+            test-results/room-*-desktop.png
+            test-results/room-*-mobile.png
           if-no-files-found: warn
           retention-days: 14
 

@@ -11,6 +11,7 @@ test('mobile personal suites keep hotspots inside the scene and close naturally'
     await page.getByTestId('visit-worker-room-'+room.id).click();
     const dialog=page.getByRole('dialog',{name:'拜访'+room.name+'的房间'});
     await expect(dialog).toBeVisible();
+    await page.screenshot({path:'test-results/room-'+room.id+'-mobile.png'});
     const scene=page.getByLabel(room.name+'的房间概念场景');
     const sceneBox=await scene.boundingBox();
     const hotspot=page.getByTestId('scene-object-'+room.first);
@@ -35,6 +36,7 @@ test('mobile Moonsha visit still supports scenic inspection and return',async({p
   await page.getByRole('button',{name:'与女主人月纱交流'}).click();
   await page.getByTestId('visit-yuesha-room').click();
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  await page.screenshot({path:'test-results/room-yuesha-mobile.png'});
   await page.getByTestId('scene-object-seal').click();
   await expect(page.getByTestId('scene-discovery')).toContainText('月纹');
   await page.getByRole('button',{name:/返回月纱对话/}).click();

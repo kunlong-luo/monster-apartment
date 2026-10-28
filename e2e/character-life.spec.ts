@@ -6,6 +6,7 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   await expect(page.getByRole('dialog',{name:'与月纱交谈'})).toContainText('幸福度');
   await page.getByTestId('visit-yuesha-room').click();
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  await page.screenshot({path:'test-results/room-yuesha-desktop.png'});
   await expect(page.getByTestId('life-profile-yuesha')).toContainText('谨慎而机敏');
   const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'{}').coins);
   await page.getByTestId('yuesha-choice-transparent').click();
@@ -51,6 +52,7 @@ test('Brook, Fern and Cinder have unique rooms and persisted personal choices',a
     const dialog=page.getByRole('dialog',{name:'拜访'+person.name+'的房间'});
     await expect(dialog).toBeVisible();
     await expect(page.getByTestId('worker-private-room-'+person.id)).toContainText(person.name);
+    await page.screenshot({path:'test-results/room-'+person.id+'-desktop.png'});
     await dialog.getByRole('button',{name:person.objects[0]}).click();
     await dialog.getByRole('button',{name:person.objects[1]}).click();
     await expect(page.getByTestId('worker-room-secret-'+person.id)).toContainText(person.secret);
