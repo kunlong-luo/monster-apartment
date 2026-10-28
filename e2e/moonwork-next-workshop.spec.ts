@@ -371,6 +371,7 @@ test('Dexie restores the same V2 world after the localStorage key is lost', asyn
   test.setTimeout(90_000);
   await page.goto('/workshop/');
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:25_000});
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-day')).toHaveText('2');
   await expect.poll(()=>page.evaluate(async()=>{

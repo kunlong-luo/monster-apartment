@@ -17,7 +17,7 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   }));
   expect(size.width).toBeLessThanOrEqual(1);
   expect(size.height).toBeLessThanOrEqual(1);
-  await page.getByRole('button',{name:'与月纱互动'}).click();
+  await page.getByRole('button',{name:'与月纱交谈'}).click();
   await expect(page.getByRole('dialog',{name:'与月纱交谈'})).toBeVisible();
   await page.getByRole('button',{name:'关闭面板'}).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
@@ -41,7 +41,7 @@ test('lobby reflects a real shared workshop save without inventing currency',asy
   await page.goto('/');
   await expect(page.getByTestId('lobby-coins')).toHaveText('243');
   await expect(page.getByTestId('lobby-cores')).toHaveText('3');
-  await page.getByRole('button',{name:'与月纱互动'}).click();
+  await page.getByRole('button',{name:'与月纱交谈'}).click();
   await page.getByRole('button',{name:'接受月纱的特别委托'}).click();
   await expect(page.getByRole('status')).toContainText('契约已经成立');
   await page.getByRole('button',{name:'关闭面板'}).click();

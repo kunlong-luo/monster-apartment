@@ -80,6 +80,9 @@ export function WorkshopClient() {
   const gameController = useRef<WorkshopRuntimeController|null>(null);
   const onAction = (action:WorkshopAction) => gameController.current?.dispatch(action);
   const [error, setError] = useState('');
+  // Pixi canvas may be visible before mountWorkshopGame has returned its controller.
+  // Keep React and Pixi actions inert until dispatch can actually apply them.
+  const [runtimeReady,setRuntimeReady] = useState(false);
   const [blockedSave, setBlockedSave] = useState(false);
   const [recoveryVersion, setRecoveryVersion] = useState(0);
   const [speechIndex, setSpeechIndex] = useState(0);
@@ -94,6 +97,7 @@ export function WorkshopClient() {
   const portraitUrl=moonveilPortrait.src;
 
   useEffect(() => {
+    setRuntimeReady(false);
     const root = host.current?.querySelector<HTMLElement>('#root');
     if (!root) return;
 
@@ -138,6 +142,7 @@ export function WorkshopClient() {
           controller.destroy();
         } else {
           gameController.current = controller;
+          setRuntimeReady(true);
           dispose = () => {
             if(gameController.current===controller) gameController.current=null;
             controller.destroy();
@@ -167,7 +172,9 @@ export function WorkshopClient() {
       data-testid="next-workshop-shell"
       className="gothic-workshop-shell relative isolate min-h-dvh overflow-hidden"
     >
-      <main id="root" className="lab gothic-workshop" data-react-controls="true">
+      <main id="root" className="lab gothic-workshop" data-react-controls="true"
+        data-runtime-ready={runtimeReady?'true':'false'}
+        aria-busy={!runtimeReady} inert={!runtimeReady}>
         {/* Top Header */}
         <header className="top">
           <div className="flex items-center gap-2.5">
@@ -344,6 +351,10 @@ export function WorkshopClient() {
         <span id="summary" className="sr-only"></span>
       </main>
 
+      {!runtimeReady&&!blockedSave&&!error&&<p role="status"
+        className="pointer-events-none absolute left-1/2 top-[45%] z-[15] -translate-x-1/2 rounded-lg border border-gothic-gold/45 bg-[#170f20eb] px-4 py-3 text-xs text-gothic-ivory shadow-lg">
+        正在准备工坊设备…
+      </p>}
       {/* Shared Gothic World Navigation Dock */}
       <GothicDock
         label="月光工坊世界"
