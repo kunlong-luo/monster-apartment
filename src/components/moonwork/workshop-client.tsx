@@ -14,7 +14,6 @@ import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
 import {WorkshopControls} from './workshop-controls';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
-import {EMPTY_SELECTION,ensureWorkshopWorld,useMoonworkState} from '@/lib/moonwork/world-state';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import type {
@@ -97,7 +96,6 @@ export function WorkshopClient() {
     setBlockedSave(false);
     setError('');
 
-    setSelection(EMPTY_SELECTION);
     setSelection(EMPTY_SELECTION);
     root.dataset.reactControls = 'true';
     root.classList.add('gothic-workshop');
