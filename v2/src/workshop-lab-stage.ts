@@ -5,6 +5,9 @@ import { loadWorkshopPaintedArt } from './workshop-painted-art';
 import { createFloatingFeedback } from './workshop-floating-feedback';
 import { paintShiftFeedback } from './workshop-shift-effects';
 import {inspectMachineSignals} from './workshop-machine-status';
+import {projectMachineProduction} from './workshop-production';
+import type {MachineCycle} from './workshop-production';
+import {createMachineEffects} from './workshop-machine-effects';
 import type {MachineVisualState} from './workshop-machine-status';
 import { BOARD_SIZE, WIDTH, MACHINES, linked, machineLevel, workshopHint } from './workshop-engine';
 import type { WorkshopState, Craft, WorkerId } from './workshop-engine';
@@ -116,8 +119,9 @@ export async function mountWorkshopLab(
     }else paintedActors.push({sprite,baseY:y,seed});
     return sprite;
   };
-  const machineArt:{sprite:Sprite;state:MachineVisualState;index:number}[]=[];
+  const machineArt:{sprite:Sprite;detail:Sprite|null;baseY:number;state:MachineVisualState;index:number}[]=[];
   const machineEffects:{ring:Graphics;state:MachineVisualState;index:number}[]=[];
+  const deviceEffects:ReturnType<typeof createMachineEffects>[]=[];
   let flowPaths:{from:{x:number;y:number};to:{x:number;y:number};tint:number}[]=[];
   const flowLayer=new Graphics();
   app.stage.addChild(flowLayer);
@@ -149,21 +153,31 @@ export async function mountWorkshopLab(
     plotHits.addChild(target);
   }
   const pulses:{sprite:Graphics;age:number}[]=[];
-  const emitProductionPulses=(current:WorkshopState)=>{
-    if(!animationEnabled||!current.last)return;
-    for(const [craft,amount] of [
-      ['well',current.last.water],['garden',current.last.fiber],['kiln',current.last.cores],
-    ] as const){
-      if(amount<=0)continue;
-      const index=current.tiles.findIndex(t=>t?.craft===craft&&t.worker);
-      if(index<0)continue;
-      const {x,y}=plotXY(index);
+  const cargo:{sprite:Graphics;age:number;from:{x:number;y:number};
+    to:{x:number;y:number}}[]=[];
+  /** Settlement visuals use the PREVIOUS snapshot. The station that produced
+   * a unit is never guessed from the new save or from a global report total. */
+  const emitProductionPulses=(cycles:MachineCycle[])=>{
+    if(!animationEnabled)return;
+    for(const cycle of cycles){
+      if(cycle.amount<=0)continue;
+      const {x,y}=plotXY(cycle.index);
       const ring=new Graphics().circle(0,0,15)
-        .stroke({width:3,color:COLORS[craft],alpha:.95});
+        .stroke({width:3,color:COLORS[cycle.craft],alpha:.95});
       ring.position.set(x+CELL*.5,y+CELL*.57);
       ring.eventMode='none';
       feedbackLayer.addChild(ring);
       pulses.push({sprite:ring,age:0});
+      if(cycle.sourceIndex===null)continue;
+      const from=plotXY(cycle.sourceIndex);
+      const fromPoint={x:from.x+CELL*.5,y:from.y+CELL*.5};
+      const toPoint={x:x+CELL*.5,y:y+CELL*.5};
+      const item=new Graphics().circle(0,0,5)
+        .fill({color:COLORS[cycle.craft],alpha:.93});
+      item.position.copyFrom(fromPoint);
+      item.eventMode='none';
+      feedbackLayer.addChild(item);
+      cargo.push({sprite:item,age:0,from:fromPoint,to:toPoint});
     }
   };
   const feedback=createFloatingFeedback(feedbackLayer,glabel);
@@ -220,6 +234,22 @@ export async function mountWorkshopLab(
         pulses.splice(i,1);
       }
     }
+    for(let i=cargo.length-1;i>=0;i--){
+      const packet=cargo[i];
+      packet.age+=dt/60;
+      const t=Math.min(1,packet.age/.85);
+      const smooth=t*t*(3-2*t);
+      packet.sprite.position.set(
+        packet.from.x+(packet.to.x-packet.from.x)*smooth,
+        packet.from.y+(packet.to.y-packet.from.y)*smooth-17*Math.sin(t*Math.PI));
+      packet.sprite.alpha=Math.min(1,(1-t)*2);
+      if(t>=1){
+        feedbackLayer.removeChild(packet.sprite);
+        packet.sprite.destroy();
+        cargo.splice(i,1);
+      }
+    }
+    for(const fx of deviceEffects)fx.tick(elapsed+dt/60,animationEnabled);
     if(!animationEnabled)return;
     elapsed+=dt/60;
     for(const actor of paintedActors){
@@ -234,9 +264,10 @@ export async function mountWorkshopLab(
     for(const item of machineArt){
       if(item.state!=='working')continue;
       // Only staffed, unblocked machinery vibrates. Idle machines stand still.
-      const wave=Math.sin(elapsed*3+item.index*.8)-
-        Math.sin((elapsed-dt/60)*3+item.index*.8);
-      item.sprite.y+=wave*(shiftBurst>0?1.55:.24);
+      const bob=Math.sin(elapsed*3+item.index*.8)*
+        (shiftBurst>0?1.55:.24);
+      item.sprite.y=item.baseY+bob;
+      if(item.detail)item.detail.y=item.baseY+bob;
     }
     for(const item of machineEffects){
       if(item.state==='working')
@@ -277,7 +308,8 @@ export async function mountWorkshopLab(
       }
       return;
     }
-    const previousPatronStatus=lastSnapshot?.patron?.status;
+    const previousSnapshot=lastSnapshot;
+    const previousPatronStatus=previousSnapshot?.patron?.status;
     const previousOrderReward=lastSnapshot?.order.reward??0;
     const completedShift=current.day>lastShiftDay&&!!current.last;
     lastShiftDay=current.day;
@@ -286,10 +318,16 @@ export async function mountWorkshopLab(
     element.dataset.sceneRefreshes=String(++sceneRefreshes);
     for(const actor of actors)actor.stop();
     actors.length=0;paintedActors.length=0;
-    machineArt.length=0;machineEffects.length=0;flowPaths=[];
+    machineArt.length=0;machineEffects.length=0;deviceEffects.length=0;
+    flowPaths=[];
     stage.removeChildren().forEach(child=>child.destroy({children:true}));
     tutorialLayer.removeChildren().forEach(child=>child.destroy({children:true}));
     const signals=inspectMachineSignals(current);
+    const previousSignals=previousSnapshot?inspectMachineSignals(previousSnapshot):null;
+    const shiftCycles=completedShift&&previousSnapshot
+      ?projectMachineProduction(previousSnapshot).cycles:[];
+    element.dataset.devicePhaseEvents=shiftCycles.filter(c=>c.amount>0)
+      .map(c=>c.index+':output').join(';');
     element.dataset.machineStates=signals.map((entry,index)=>entry?index+':'+entry.state:'').filter(Boolean).join(';');
     const hint=workshopHint(current);
     element.dataset.guideAction=hint.action;
@@ -370,11 +408,12 @@ export async function mountWorkshopLab(
       fixture.height=CELL*(.88+(level-1)*.035);
       fixture.eventMode='static';fixture.cursor='pointer';
       fixture.on('pointertap',()=>callbacks.plot(i));
-      stage.addChild(fixture);machineArt.push({sprite:fixture,state:signal.state,index:i});
+      stage.addChild(fixture);
       const detail=machine.craft==='well'?paintedDetail.well:
         machine.craft==='garden'?paintedDetail.garden:null;
+      let overlay:Sprite|null=null;
       if(detail){
-        const overlay=new Sprite(detail);
+        overlay=new Sprite(detail);
         overlay.anchor.set(.5,1);
         overlay.position.copyFrom(fixture.position);
         overlay.width=fixture.width;
@@ -382,6 +421,15 @@ export async function mountWorkshopLab(
         overlay.eventMode='none'; // never intercept plot/fixture interaction
         stage.addChild(overlay);
       }
+      machineArt.push({sprite:fixture,detail:overlay,baseY:fixture.y,
+        state:signal.state,index:i});
+      const newlyStarted=signal.state==='working'&&
+        !!previousSignals&&previousSignals[i]?.state!=='working';
+      const justProduced=shiftCycles.some(c=>c.index===i&&c.amount>0);
+      const fx=createMachineEffects(machine.craft,signal.state,i,
+        x+CELL*.50,y+CELL*.69,newlyStarted?elapsed:null,
+        justProduced?elapsed:null);
+      stage.addChild(fx.node);deviceEffects.push(fx);
       if(machine.worker){
         const actor=createWorkerSprite(
           machine.worker,x+CELL*.77,y+CELL*.94,CELL*.60,CELL*.60,i,
@@ -460,9 +508,10 @@ export async function mountWorkshopLab(
     // selections, save hydration and denied commands never trigger a burst.
     if(completedShift&&current.last){
       if(animationEnabled)shiftBurst=1.1;
-      emitProductionPulses(current);
+      emitProductionPulses(shiftCycles);
       paintShiftFeedback(current,element,showFeedback,{
-        W,H,CELL,MOBILE,plotXY,previousOrderReward,previousPatronStatus,
+        W,H,CELL,MOBILE,plotXY,cycles:shiftCycles,
+        previousOrderReward,previousPatronStatus,
       });
     }
     element.dataset.patronVisible=current.patron?'true':'false';
