@@ -27,6 +27,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     setFeedback(result==='applied'?'月纱记住了你的选择。':result==='duplicate'?'这段初次谈话已经记录。':'人物档案无法写入，原存档未被覆盖。');
   };
   return <div className="min-w-0 flex-1 space-y-3" data-testid="yuesha-private-room">
+    <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(300px,1fr)] lg:items-start">
+    <div className="min-w-0 space-y-2">
     <div className="relative h-[clamp(285px,51vh,550px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]">
       <Image src={moonveilBackdrop} alt="" fill priority sizes="(max-width:700px) 90vw, 640px"
         className="object-cover object-[44%_40%] opacity-65" aria-hidden/>
@@ -47,7 +49,9 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
         <p className="text-[11px] leading-5 text-[#e4c7ab]">月纹、旧契约和一杯香料茶</p>
       </div>
     </div>
-    <p className="text-[10px] text-[#bda089]">场景纵切片：暂复用现有高清绘景与月纱立绘，独立室内 CG 仍待制作。</p>
+    <p className="text-[10px] text-[#bda089]">场景原型：人物与绘景分层，独立室内 CG 仍待制作。</p>
+    </div>
+    <div className="min-w-0 space-y-3 lg:max-h-[min(62vh,580px)] lg:overflow-y-auto lg:pr-2 [scrollbar-color:#a67f67_#281822] [scrollbar-width:thin]">
     <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[#ad89644a] bg-[#211520b8] px-3 py-2 text-xs" data-testid="yuesha-living-state">
       <span>今夜心情：{happiness>=70?'安心':'牵挂邻居'}</span>
       <span>公寓现住 {guests} 位邻居</span>
@@ -84,6 +88,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       className="rounded-xl border border-[#d9a96880] bg-[#392633de] px-4 py-3 text-xs leading-7 text-[#ffe0b4]">
       ✦ 月纱翻开一本还未寄出的调查册：{roomInvestigationConclusion(progress)}
     </p>}
+    </div>
+    </div>
     <CharacterLifePortrait id="yuesha"/>
   </div>;
 }

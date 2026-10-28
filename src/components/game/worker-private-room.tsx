@@ -66,6 +66,8 @@ export function WorkerPrivateRoom({id,onClose,working}:{
           <p className="mt-1 max-w-[52ch] text-[11px] leading-5 text-gothic-muted">{scene.roomSummary}</p>
         </div>
       </header>
+      <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(300px,1fr)] lg:items-start">
+      <div className="min-w-0 space-y-2">
       <div className={'relative h-[clamp(270px,53vh,565px)] overflow-hidden rounded-xl border border-gothic-brass/65 bg-[#120f1c]'}
         aria-label={profile.name+'的房间概念场景'}>
         <Image src={moonlitStreet} fill sizes="(max-width:700px) 92vw, 690px" alt=""
@@ -91,7 +93,9 @@ export function WorkerPrivateRoom({id,onClose,working}:{
           <p className="text-[11px] leading-5 text-[#f5ddc3]">{working?'正在工坊值守 · 屋内留着便条':'暂时休息 · 可以聊聊天'}</p>
         </div>
       </div>
-      <p className="text-[10px] leading-5 text-gothic-muted">房间交互原型：人物使用现有透明精灵和环境绘景。三张独立正式高清室内原画仍待制作与替换。</p>
+      <p className="text-[10px] leading-5 text-gothic-muted">场景交互原型：使用现有透明人物精灵；独立高清室内原画仍待替换。</p>
+      </div>
+      <div className="min-w-0 space-y-3 lg:max-h-[min(62vh,580px)] lg:overflow-y-auto lg:pr-2 [scrollbar-color:#a67f67_#281822] [scrollbar-width:thin]">
       {status!=='ok'&&<p role="alert" className="rounded-lg border border-rose-300/50 p-3 text-xs text-rose-200">
         {status==='corrupt'?'人物存档无法读取；已保留原记录，不会覆盖。':'浏览器暂时无法保存人物拜访记录。'}</p>}
       <section className="space-y-2" aria-label={profile.name+'的交谈'}>
@@ -121,6 +125,8 @@ export function WorkerPrivateRoom({id,onClose,working}:{
           className="rounded-lg border border-gothic-gold/40 bg-[#422e2bc9] p-3 text-xs leading-6 text-gothic-ivory">✧ 隐藏观察：{scene.whisper}</p>}
         {notice&&<p className="text-[11px] text-gothic-muted" role="status">{notice}</p>}
       </section>
+      </div>
+      </div>
       <CharacterLifePortrait id={id} activity={working?'在工坊工作':'目前休息中'}/>
     </div>
   </GothicModal>;
