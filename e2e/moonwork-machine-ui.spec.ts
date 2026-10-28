@@ -1,3 +1,4 @@
+import {assignWorker,moveMachine,newWorkshop,placeMachine} from '../v2/src/workshop-engine';
 import {test,expect} from '@playwright/test';
 
 test('mobile workshop machine states follow real staffing and supply',async({page})=>{
@@ -77,4 +78,30 @@ test('three distinct worker portraits are transparent and consistent across gall
     const portrait=page.getByTestId('v2-worker-'+id).locator('.worker-artwork');
     await expect(portrait).toHaveAttribute('data-art-source',/transparent/);
   }
+});
+
+test('daily output visuals use exact machine and input source, not fabricated totals',async({page})=>{
+  test.setTimeout(90_000);
+  let world=newWorkshop();
+  world=assignWorker(world,'brook',5);
+  world=assignWorker(world,'fern',7);
+  world=moveMachine(world,7,6);
+  world=placeMachine(world,7,'kiln');
+  world=assignWorker(world,'cinder',7);
+  await page.addInitScript(seed=>{
+    localStorage.setItem('monster-apartment:workshop-v2-lab',JSON.stringify(seed));
+  },world);
+  await page.goto('/workshop/');
+  const stage=page.getByTestId('v2-stage');
+  await expect(stage.locator('canvas')).toBeVisible({timeout:25_000});
+  await expect(stage).toHaveAttribute('data-machine-states',/5:working;6:working;7:working/);
+  await page.getByTestId('v2-shift').click();
+  await expect(stage).toHaveAttribute('data-last-shift-output','5:well:2;6:garden:2;7:kiln:2');
+  await expect(stage).toHaveAttribute('data-last-shift-inputs','5>6:1;6>7:2');
+  await expect(stage).toHaveAttribute('data-device-phase-events','5:output;6:output;7:output');
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+  await page.reload();
+  await expect(stage.locator('canvas')).toBeVisible({timeout:25_000});
+  await expect(stage).not.toHaveAttribute('data-last-shift-output',/./);
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
 });
