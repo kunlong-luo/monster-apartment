@@ -70,27 +70,117 @@ export const CHARACTER_PROFILES:Readonly<Record<CharacterId,Profile>>={
   },
 };
 export type YueshaChoice='transparent'|'careful';
+export type WorkerCharacterId=Exclude<CharacterId,'yuesha'>;
+export type WorkerChoice='care'|'practice';
+export type RoomObjectId='seal'|'tea'|'ledger'|'toolbox'|'gauge'|'nightbell'
+  |'herbarium'|'moonflower'|'watermap'|'hammer'|'blueprint'|'keepsake';
+export const CHARACTER_ROOM_OBJECTS:Record<CharacterId,readonly RoomObjectId[]>={
+  yuesha:['seal','tea','ledger'],
+  brook:['toolbox','gauge','nightbell'],
+  fern:['herbarium','moonflower','watermap'],
+  cinder:['hammer','blueprint','keepsake'],
+};
+export const WORKER_DIALOGUES:Record<WorkerCharacterId,{
+  roomName:string;roomSummary:string;greeting:string;
+  choices:readonly [{id:'care';label:string},{id:'practice';label:string}];
+  responses:Record<WorkerChoice,string>;
+  objects:readonly {id:RoomObjectId;label:string;text:string}[];
+  whisper:string;
+}>={
+  brook:{
+    roomName:'铜管休息间',roomSummary:'潮湿的铜阀、蓝色月灯与修理工具，泉泡喜欢在这里慢慢整理思绪。',
+    greeting:'“咕噜！你真的会来休息间找我？今天我把扳手放在了一个特别安全的地方……应该吧！”',
+    choices:[{id:'care',label:'“工作累了，就先休息一会。”'},{id:'practice',label:'“一起核对水位表，找找原因吧。”'}],
+    responses:{
+      care:'“原来我不用每次都证明自己很有用。那、那我今天先坐一会儿！”',
+      practice:'“一起查表真好！你看，压力回落的时候，铜铃会先响一声。”',
+    },
+    objects:[
+      {id:'toolbox',label:'空掉的工具挂钩',text:'泉泡把扳手按大小排过序，最常用的那一格却空着。'},
+      {id:'gauge',label:'水汽压力表',text:'蓝色刻度旁有一个细小手写记号，正好对应排水阀的夜间压力。'},
+      {id:'nightbell',label:'小铜铃',text:'“如果水泵的声音太大，你听到铃响就叫我。”泉泡小声说。'},
+    ],
+    whisper:'你把空挂钩与水位表的刻痕连在一起：泉泡寻找的扳手也许就在检修阀旁。',
+  },
+  fern:{
+    roomName:'叶影温室',roomSummary:'月光玻璃、植物手札和很久以前保存的花瓣。青枝的生活有自己的节律。',
+    greeting:'“先小声一点好吗？这朵花刚睡下。欢迎你来，窗边还有一个位置。”',
+    choices:[{id:'care',label:'“我愿意等植物慢慢长好。”'},{id:'practice',label:'“我们研究更节水的种植办法。”'}],
+    responses:{
+      care:'“你愿意给它们时间……这比任何肥料都难得。谢谢。”',
+      practice:'“新的技术不一定伤害花。只要我们肯听水脉的回答。”',
+    },
+    objects:[
+      {id:'herbarium',label:'花期手札',text:'青枝记录了每朵花开放的日期，也记着它们枯萎时的天气。'},
+      {id:'moonflower',label:'窗边月光花',text:'花瓣靠近窗框的一侧泛着淡淡的月光，另一侧却失去了颜色。'},
+      {id:'watermap',label:'旧水脉图',text:'图纸上的一道浅线在东街前突然中断，青枝尚未确认原因。'},
+    ],
+    whisper:'手札里退色的花期与水脉图上的断线对应，仿佛有人曾改变了地下流向。',
+  },
+  cinder:{
+    roomName:'炉火修补间',roomSummary:'厚重的炉砖、暖铜工具墙和收起来的失败零件。这里有炽角自豪也懊恼的过去。',
+    greeting:'“嘿！你来得正好。我刚把这个齿轮重新磨了一遍——这次保证不会弹出去！”',
+    choices:[{id:'care',label:'“比起产量，我更在意设备安全。”'},{id:'practice',label:'“研究怎样让工坊稳定高效吧。”'}],
+    responses:{
+      care:'“我知道。以前总想着造得更快……现在要让大家平安回家才算本事。”',
+      practice:'“说得好！真正的效率不是让炉子冒烟，是它能一直可靠地工作。”',
+    },
+    objects:[
+      {id:'hammer',label:'旧锻锤',text:'锤柄包着磨损的皮带，是炽角第一件自己完成的工具。'},
+      {id:'blueprint',label:'稳定器草图',text:'草图旁写着“不能只算最大产量”，一些关键参数还待实验。'},
+      {id:'keepsake',label:'失败零件匣',text:'这些废件没有被丢掉。炽角说，它们能提醒自己别再犯同样的错。'},
+    ],
+    whisper:'锤柄刻痕与旧熔炉铭牌出现同一符号，这可能不只是工匠的私人习惯。',
+  },
+};
 export type CharacterLifeState={
   version:1;
   visited:CharacterId[];
-  /** Unique once-only choice; not a repeatable affection meter. */
+  /** Original V3.4 decision is retained verbatim for save compatibility. */
   decisions:Partial<Record<'yuesha-first-visit',YueshaChoice>>;
+  /** Optional V3.4 additions; historical saves remain valid without these fields. */
+  workerDecisions?:Partial<Record<WorkerCharacterId,WorkerChoice>>;
+  observations?:Partial<Record<CharacterId,RoomObjectId[]>>;
 };
 export const newCharacterLife=():CharacterLifeState=>({version:1,visited:[],decisions:{}});
+const WORKER_IDS:readonly WorkerCharacterId[]=['brook','fern','cinder'];
 export function validCharacterLife(value:unknown):value is CharacterLifeState{
-  if(!value||typeof value!=='object')return false;
+  if(!value||typeof value!=='object'||Array.isArray(value))return false;
   const s=value as Partial<CharacterLifeState>;
-  return s.version===1&&Array.isArray(s.visited)&&
-    s.visited.every(id=>typeof id==='string'&&Object.hasOwn(CHARACTER_PROFILES,id))&&
-    new Set(s.visited).size===s.visited.length&&s.visited.length<=4&&
-    !!s.decisions&&typeof s.decisions==='object'&&!Array.isArray(s.decisions)&&
-    Object.keys(s.decisions).every(key=>key==='yuesha-first-visit')&&
-    (s.decisions['yuesha-first-visit']===undefined||
-     s.decisions['yuesha-first-visit']==='transparent'||
-     s.decisions['yuesha-first-visit']==='careful');
+  if(s.version!==1||!Array.isArray(s.visited)||
+    !s.visited.every(id=>typeof id==='string'&&Object.hasOwn(CHARACTER_PROFILES,id))||
+    new Set(s.visited).size!==s.visited.length||s.visited.length>4||
+    !s.decisions||typeof s.decisions!=='object'||Array.isArray(s.decisions)||
+    !Object.keys(s.decisions).every(key=>key==='yuesha-first-visit')||
+    ![undefined,'transparent','careful'].includes(s.decisions['yuesha-first-visit']))return false;
+  if(s.workerDecisions!==undefined){
+    if(!s.workerDecisions||typeof s.workerDecisions!=='object'||Array.isArray(s.workerDecisions))return false;
+    for(const [key,choice] of Object.entries(s.workerDecisions)){
+      if(!WORKER_IDS.includes(key as WorkerCharacterId)||!['care','practice'].includes(choice))return false;
+    }
+  }
+  if(s.observations!==undefined){
+    if(!s.observations||typeof s.observations!=='object'||Array.isArray(s.observations))return false;
+    for(const [key,ids] of Object.entries(s.observations)){
+      if(!Object.hasOwn(CHARACTER_ROOM_OBJECTS,key)||!Array.isArray(ids)||
+        new Set(ids).size!==ids.length||ids.length>3||
+        !ids.every(id=>CHARACTER_ROOM_OBJECTS[key as CharacterId].includes(id)))return false;
+    }
+  }
+  return true;
 }
 export function visitCharacter(state:CharacterLifeState,id:CharacterId):CharacterLifeState{
   return state.visited.includes(id)?state:{...state,visited:[...state.visited,id]};
+}
+export function inspectCharacterRoom(state:CharacterLifeState,id:CharacterId,item:RoomObjectId):CharacterLifeState{
+  if(!CHARACTER_ROOM_OBJECTS[id].includes(item))return state;
+  const old=state.observations?.[id]??[];
+  if(old.includes(item))return state;
+  return {...state,observations:{...state.observations,[id]:[...old,item]}};
+}
+export function decideWorker(state:CharacterLifeState,id:WorkerCharacterId,choice:WorkerChoice):CharacterLifeState{
+  if(state.workerDecisions?.[id])return state;
+  return {...state,workerDecisions:{...state.workerDecisions,[id]:choice}};
 }
 export function decideYuesha(state:CharacterLifeState,choice:YueshaChoice):CharacterLifeState{
   if(state.decisions['yuesha-first-visit'])return state;

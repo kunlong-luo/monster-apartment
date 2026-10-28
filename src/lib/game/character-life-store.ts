@@ -1,7 +1,7 @@
 'use client';
 import {useSyncExternalStore} from 'react';
-import {decideYuesha,newCharacterLife,validCharacterLife,visitCharacter} from '../../core/character-life';
-import type {CharacterId,CharacterLifeState,YueshaChoice} from '../../core/character-life';
+import {decideWorker,decideYuesha,inspectCharacterRoom,newCharacterLife,validCharacterLife,visitCharacter} from '../../core/character-life';
+import type {CharacterId,CharacterLifeState,RoomObjectId,WorkerCharacterId,WorkerChoice,YueshaChoice} from '../../core/character-life';
 export const CHARACTER_LIFE_KEY='monster-apartment:character-life:v1';
 export const CHARACTER_LIFE_EVENT='monster-apartment:character-life-change';
 const UNAVAILABLE='__character-life-unavailable__';
@@ -29,7 +29,11 @@ export function useCharacterLife():ReadResult{
   const raw=useSyncExternalStore(subscribe,readLifeSnapshot,()=>null);
   return decodeCharacterLife(raw);
 }
-type Action={type:'visit';id:CharacterId}|{type:'yuesha-choice';choice:YueshaChoice};
+type Action=
+  |{type:'visit';id:CharacterId}
+  |{type:'yuesha-choice';choice:YueshaChoice}
+  |{type:'worker-choice';id:WorkerCharacterId;choice:WorkerChoice}
+  |{type:'inspect';id:CharacterId;item:RoomObjectId};
 export type LifeActionStatus='applied'|'duplicate'|'corrupt'|'unavailable';
 /** Separate lore progress; no workshop/cozy resource or money side effects. */
 export function commitCharacterLife(action:Action):LifeActionStatus{
@@ -37,7 +41,9 @@ export function commitCharacterLife(action:Action):LifeActionStatus{
   if(snapshot.status!=='ok')return snapshot.status;
   const previous=snapshot.progress;
   const next=action.type==='visit'?visitCharacter(previous,action.id):
-    decideYuesha(previous,action.choice);
+    action.type==='yuesha-choice'?decideYuesha(previous,action.choice):
+    action.type==='worker-choice'?decideWorker(previous,action.id,action.choice):
+    inspectCharacterRoom(previous,action.id,action.item);
   if(next===previous)return 'duplicate';
   try{
     window.localStorage.setItem(CHARACTER_LIFE_KEY,JSON.stringify(next));
