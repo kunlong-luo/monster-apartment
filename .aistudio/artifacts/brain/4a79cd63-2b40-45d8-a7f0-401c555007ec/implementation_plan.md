@@ -1,125 +1,114 @@
-# 《月光工坊》纯 React 原生化重构方案
+# 《月光工坊》Midnight Cozy 哥特全景重构实施计划
 
-彻底移除工坊场景对 `v2/index.html` 外部 HTML 字符串与非受控 DOM 注入的依赖，将侧边栏委托、生产报告、控制台及状态面板重构为现代化、强类型的 Next.js / React 原生组件，同时完整保留 PixiJS WebGL 舞台与既有存档兼容性。
-
-## User Review & Critical Decisions
-
-> [!IMPORTANT]
-> 用户已在前期沟通中确认以下两大核心方向：
-> 1. **优先级确认**：优先彻底完成工坊的纯 React 原生化，消除混合注入与独立运行时残留代码。
-> 2. **渲染架构方案**：保留高性能 PixiJS 8 WebGL 画布作为工坊主视觉与瓦片点击层，将所有外部 HUD、侧边栏、委托面板、生产控制台重构为原生 React 组件。
-
-- **Confirmed Decision 1**: 废弃 `app/workshop/page.tsx` 中 `readFileSync('v2/index.html')` 动态字符串切割与 `dangerouslySetInnerHTML` 渲染模式，改为声明式 Next.js React 页面结构。
-- **Confirmed Decision 2**: 保持单一业务引擎 `v2/src/workshop-engine.ts` 与既有 localStorage 键（`monster-apartment:workshop-v2-lab`）完全一致，确保所有已有存档无缝读取。
-- **Confirmed Decision 3**: PixiJS 舞台仅负责 15 格地块、机器光效、工人位图动画及魔女立绘渲染，所有按钮、数字、进度条、委托卡片由 React 状态树驱动。
+本项目旨在将用户提供的成熟工坊管理界面参考设计，全面转换为符合《怪物公寓 / 灵核公寓》世界观的 **Midnight Cozy 暗红与复古金铜暗夜哥特风格**。重构将严格遵循项目的工程规范（Next.js 16 App Router、React 19、Tailwind CSS v4、PixiJS 8、Zustand 与 Dexie 持久化存档），在彻底升级 UI 质感与交互维度的同时，确保原有数值引擎（`workshop-engine.ts`）与所有自动化测试 100% 兼容。
 
 ---
 
-## 1. Overview & Core Concept
+## 一、 用户确认与关键设计决策
 
-- **What It Does**: 提供一套代码整洁、响应式完善、完全由 React 状态驱动的《月光工坊》主界面。彻底消灭旧版静态 HTML 切割代码，消除由于 DOM 查找与 Portal 嵌套带来的边缘状态不一致。
-- **Target Audience**: 喜爱奇幻模拟经营、注重流畅操作与沉浸氛围的玩家。
-- **Key Value**: 提升页面加载速度与组件生命周期安全性，消除潜在内存泄漏，使后续产线配方扩充与小镇剧情扩展能够直接在标准 React 组件树中迭代。
-
----
-
-## 2. User Experience & Visual Design
-
-### Key User Flows
-1. **主舞台巡视与操作**：玩家点击 PixiJS 画布上的地块（15 格），React 选区组件立即响应并高亮当前工位信息、机器等级与升级报价。
-2. **派工与建造**：点击底部 React 工匠卡（布鲁克、芬恩、辛德）或设备卡（水泵、温室、熔炉），直接为选定地块分配工人或建造新设备。
-3. **委托推进与生产结算**：点击“开始一天生产”，触发确定性生产步进，侧边栏生产流水线与诊断建议即时更新；满足条件时呈现月纱特别委托卡片与采购选项。
-4. **全端响应式适配**：大屏呈现经典三栏比例（世界画布 + 右侧委托面板 + 底部操作台）；390px 移动端竖屏自动切换为精简折叠布局，保证触控区域 $\ge 44\text{px}$ 且无滚动条溢出。
-
-### Visual Identity & Theme
-- **Color Palette & Mood (Midnight Cozy Gothic)**:
-  - Neutral Canvas: `#100f20`（深邃午夜黑）、`#181629`（暗夜紫底）
-  - Structural Panels: `#24223b`（微透毛玻璃）、`#50445f`（黄铜暗线）
-  - Primary Accents: `#f0c588`（流光暖金）、`#b68c61`（古典黄铜）、`#ffe1a8`（月光浅金）
-  - Semantics & State: `#66c4a6`（高产薄荷绿）、`#ffaaa7`（缺料警告粉红）
-- **Typography & Hierarchy**:
-  - 核心数值与天数采用 `tabular-nums font-mono`，避免数字跳动；
-  - 标题使用宋体/衬线字族（Georgia / Noto Serif CJK SC），呈现炼金工坊羊皮纸质感。
-- **Zero-Pill Discipline**:
-  - 所有资源计数、天数、状态提示采用轻量文字与 `·` / `/` 分隔符，严禁多重药丸胶囊堆叠。
+根据澄清问答，本次重构的核心视觉与交互方向如下：
+1. **视觉风格**：采用 **Midnight Cozy 暗红与复古金铜暗夜哥特风格**。主调为深天鹅绒紫黑（`#100b13`）、酒红（`#55313f`）、复古黄铜（`#b68c61`）与明耀香槟金（`#f0c588` / `#ffe1a8`），融合高阶毛玻璃滤镜与细腻内发光，淘汰一切平庸的扁平亮色。
+2. **场景呈现**：左侧保留并强化**月纱魔女看板大立绘**与**动态对话气泡**，右上方为**PixiJS WebGL 精灵工坊场景**并增加**设备浮动状态标签**（铁锭/晶核熔炉、水汽泵、温室的运行进度与缺料预警）。
+3. **底栏管理控制台**：忠实实现参考图的**专业三栏式底栏结构**：
+   - **左栏（设备库与建设卡片）**：提供 `设备` / `材料` / `成品` 标签页，以高质量卡片展示水汽泵、温室、晶核熔炉的运行状态、倒计时/进度条、产出类型与升级/拆除操作。
+   - **中栏（工匠派工）**：列表化呈现芬恩（园艺师）、布鲁克（水汽匠）、辛德（晶核锻造师）的岗位分配、工作状态标签，支持一键指派、换岗与「一键自动分配」快捷操作。
+   - **右栏（生产日志）**：以时间轴呈现工坊每一轮排班的材料消耗、晶核产出、派工变动及缺料告警。
 
 ---
 
-## 3. Key Product Decisions & Trade-Offs
-
-- **Decision 1: React 状态树与 PixiJS 通信机制**
-  - *Chosen Approach*: 采用双向事件桥接（React 订阅 `window` 级别的 `moonwork:v2-update` 驱动视图重渲染；点击 React 控件通过标准自定义事件通知 Pixi 引擎更新舞台高亮与镜头反馈）。
-  - *Why*: 彻底摆脱对底层 DOM ID 的直接强耦合（如 `$('day').textContent = ...`），使状态流向单一清晰，同时保证原有 WebGL 渲染性能不受损。
-  - *Alternatives Considered*: 纯 Canvas 重绘全部 UI（文字排版与无障碍访问较差）或全盘使用 React DOM 替换 Canvas（丢失 60FPS 粒子与工作帧动画）。
-
-- **Decision 2: 渐进式兼容与旧版解耦**
-  - *Chosen Approach*: 在 Next.js 项目中建立独立的 `WorkshopGameView` 原生组件，`v2/` 目录仅保留共享规则引擎与独立静态演示；移除 `app/workshop/page.tsx` 对 `fs.readFileSync` 的服务端开销。
-  - *Why*: 提升 Next.js App Router 静态预渲染与 SSR 效率，避免构建期读取文件引起的异常。
-
----
-
-## 4. Technical Architecture & Data Strategy
-
-### System Component Architecture
+## 二、 架构与数据流设计
 
 ```
-┌───────────────────────────────────────────────────────────────┐
-│                    app/workshop/page.tsx                      │
-│            (Next.js App Router Page - Pure React)             │
-└───────────────────────────────┬───────────────────────────────┘
-                                │
-        ┌───────────────────────┴───────────────────────┐
-        ▼                                               ▼
-┌───────────────────────────────┐       ┌───────────────────────────────┐
-│   WorkshopNavbar & HUD (React)│       │  GothicDock & Navigation      │
-│  (Day, Coins, Cores, World)   │       │   (Town, Orders, Warehouse)   │
-└───────────────────────────────┘       └───────────────────────────────┘
-                                │
-        ┌───────────────────────┴───────────────────────┐
-        ▼                                               ▼
-┌───────────────────────────────┐       ┌───────────────────────────────┐
-│     WorkshopStageViewport     │       │     WorkshopSidebar (React)   │
-│ ┌───────────────────────────┐ │       │ ┌───────────────────────────┐ │
-│ │  PixiJS 8 WebGL Canvas    │ │       │ │ Today's Contract Panel    │ │
-│ │ (15 Plots, Lights, Anims) │ │       │ │ (Target, Meter, Deadline) │ │
-│ └─────────────┬─────────────┘ │       │ ├───────────────────────────┤ │
-│               ▼               │       │ │ Moonveil Patron Card      │ │
-│ ┌───────────────────────────┐ │       │ │ (Dialogue, Accept, Import)│ │
-│ │  Selection & Upgrade Bar  │ │       │ ├───────────────────────────┤ │
-│ │  (Status, Level, Cost)    │ │       │ │ Last Shift Report Panel   │ │
-│ └───────────────────────────┘ │       │ │ (Water, Fiber, Output)    │ │
-└───────────────────────────────┘       │ └───────────────────────────┘ │
-                                │       └───────────────────────────────┘
-        ┌───────────────────────┴───────────────────────┐
-        ▼                                               ▼
-┌───────────────────────────────────────────────────────────────┐
-│                 WorkshopConsole (React Controls)              │
-│ ┌──────────────────────────┐ ┌──────────────────────────────┐ │
-│ │ Worker Assignment Bar    │ │ Machine Building Catalog     │ │
-│ │ (Brook, Fern, Cinder)    │ │ (Well, Garden, Kiln)         │ │
-│ └──────────────────────────┘ └──────────────────────────────┘ │
-│ ┌───────────────────────────────────────────────────────────┐ │
-│ │ Production Controls (Move Machine ↗, Start Shift ▶)       │ │
-│ └───────────────────────────────────────────────────────────┘ │
-└───────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Top HUD & Global Navigation Bar                      │
+│ [玩家头像/等级] [✦星币 ◆晶核 💧清水 🌿纤维] [✧月光工坊 Lv.3✧] [⌂大厅 🧭地图 ↻] │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+    ┌───────────────────────────────┴──────────────────────────────┐
+    ▼                                                              ▼
+┌───────────────────────────┐      ┌─────────────────────────────────────┐
+│   Left: 看板娘月纱大立绘   │      │     Center: PixiJS 工坊动画舞台     │
+│   · 高清 WebP 手绘立绘    │      │     · 水汽泵 / 温室 / 熔炉 3x5 地块 │
+│   · 哥特对话气泡与动态反馈 │      │     · 精灵工匠巡逻与工件交互       │
+│   · 契约交付进度与宝箱奖励 │      │     · 设备悬浮生产气泡 (进度/缺料)  │
+└───────────────────────────┘      └──────────────────┬──────────────────┘
+                                                      │
+                                   ┌──────────────────┴──────────────────┐
+                                   ▼                                     ▼
+                      ┌────────────────────────┐            ┌────────────────────────┐
+                      │    ▶ 一键生产 / 排班    │            │    ⚡ 设备调度 / 搬移   │
+                      │       (Shift)          │            │       (Move)           │
+                      └────────────────────────┘            └────────────────────────┘
+                                    │
+┌───────────────────────────────────┴────────────────────────────────────┐
+│                  Bottom Console: 三栏式工坊管理控制台                   │
+│                                                                        │
+│ ┌──────────────────────┐ ┌──────────────────────┐ ┌──────────────────┐ │
+│ │  1. 设备库与建造升级  │ │    2. 工匠派工管理    │ │   3. 生产实时日志  │ │
+│ │  · 标签:设备/材料/成品│ │  · 布鲁克 / 水汽泵   │ │  · 14:28 获得晶核  │ │
+│ │  · 状态/进度/升级按钮 │ │  · 芬恩 / 银叶苗床   │ │  · 14:25 消耗清水  │ │
+│ │  · 拆除返还与数据联动 │ │  · 辛德 / 晶核熔炉   │ │  · 筛选: 全部/产出 │ │
+│ └──────────────────────┘ └──────────────────────┘ └──────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Data State Flow
-1. **持久化层**: `localStorage['monster-apartment:workshop-v2-lab']` 作为唯一权威数据，包含 `tiles`, `coins`, `day`, `order`, `warehouse`, `patron`, `last`。
-2. **纯逻辑引擎**: `v2/src/workshop-engine.ts` 提供无副作用的动作函数（`assignWorker`, `placeMachine`, `runShift`, `upgradeMachine`, `acceptPatronCommission`）。
-3. **React 驱动**: `useWorkshopWorld` Hook 监听存档更新事件并分发至各子面板，实现毫秒级 UI 响应。
+1. **状态驱动与数据同步**：
+   - 核心状态依然由 `v2/src/workshop-engine.ts` 与 `src/lib/moonwork/world-state.ts`（Zustand Store）权威维护，并自动同步至本地 `localStorage`（键名 `monster-apartment:workshop-v2-lab`）和 Dexie IndexedDB。
+   - 设备状态与工匠指派均映射至 `world.tiles`，升级触发 `upgradeQuote`，生产日志记录在新增的轻量状态字段中。
+2. **测试契约与 DOM ID 保证**：
+   - 所有现有自动化测试与 Playwright 依赖的标记完整保留：
+     - `v2-stage`, `v2-shift`, `v2-move`, `v2-upgrade`, `v2-salvage`, `v2-reset`
+     - `v2-worker-brook`, `v2-worker-fern`, `v2-worker-cinder`
+     - `v2-build-well`, `v2-build-garden`, `v2-build-kiln`
+     - `v2-day`, `v2-coins`, `v2-stock`, `v2-deadline`, `workshop-react-hud`, `v2-world-nav`, `v2-world-gate`, `v2-return-lobby`
 
 ---
 
-## 5. Implementation Steps (Plan)
+## 三、 文件变更规划
 
-1. **Step 1: 创建工坊原生 React 子组件**
-   - 新建 `src/components/moonwork/workshop-contract-panel.tsx`：实现每日委托进度条、截止倒计时及月纱访客卡片。
-   - 新建 `src/components/moonwork/workshop-shift-panel.tsx`：实现上轮班次水汽/孢子/晶核产出流水线与诊断状态。
-   - 新建 `src/components/moonwork/workshop-stage-container.tsx`：轻量封装 PixiJS 画布挂载容器与底部选区升级条。
-2. **Step 2: 重构 `WorkshopClient` 与页面入口**
-   - 重构 `src/components/moonwork/workshop-client.tsx`，使用原生 React 组件排版替代 `dangerouslySetInnerHTML={{__html:markup}}`。
-   - 简化 `app/workshop/page.tsx`，移除 `readFileSync`，转为干净的 React 页面导出。
-3. **Step 3: 优化双向事件桥接与测试验证**
-   - 保持所有按钮的 `data-testid`（如 `v2-shift`, `v2-move`, `v2-upgrade`, `v2-worker-*`, `v2-build-*`）不变。
-   - 运行单元测试（`npm test`）与 Playwright 端到端测试（`npm run e2e`），确保全绿通过。
+### 1. 组件与状态层升级
+- **`src/components/moonwork/workshop-client.tsx`**：
+  - 整合全新的哥特式视口布局：顶部整合式 HUD、主舞台区域（左看板娘 + 中 PixiJS 画布 + 右上今日目标）、下部三栏控制台。
+  - 引入看板娘月纱大立绘（`public/art/yuesha-portrait-v3.webp`）与动态气泡组件。
+  - 维护生产日志事件流与一键自动分配工匠交互。
+- **`src/components/moonwork/workshop-equipment-panel.tsx`**（新建）：
+  - 对应参考图左下「设备 / 工匠 / 材料 / 成品」卡片库。
+  - 包含每个已建造设备的精美插图、Lv 标记、生产百分比进度条、产出物徽章、升级（`✦ cost`）与拆除（返还）按钮。
+  - 支持直接点击选择设备进行建设或选中升级。
+- **`src/components/moonwork/workshop-roster-panel.tsx`**（新建）：
+  - 对应参考图中下「工匠派工」列表。
+  - 展示 3 位工匠的圆形头像、专属工种称号（水汽匠、园艺师、锻造师）、当前分配设备、工作中/缺原料状态标签、以及撤下/指派操作。
+  - 提供右上角「自动分配」快捷开关。
+- **`src/components/moonwork/workshop-log-panel.tsx`**（新建）：
+  - 对应参考图右下「生产日志」时间轴。
+  - 记录每次排班的物料流转（清水、孢子纤维、晶核产出）、设备受阻警报（如温室缺水、熔炉缺料）、合同达成与奖金发放。
+- **`src/components/moonwork/workshop-stage-container.tsx`**：
+  - 优化 Pixi 画布容器尺寸，在画布上方叠加悬浮设备气泡（展示各设备当前工作阶段与百分比）。
+  - 保留右侧悬浮目标卡片（今日目标 6/10 晶核交付与宝箱奖励）。
+
+### 2. 哥特样式升级
+- **`src/components/game/gothic-workshop.css`**：
+  - 深度定制 Midnight Cozy 哥特暗色主题类名：
+    - `.gothic-console-grid`：响应式三栏自适应容器（1440px 桌面端并排三栏，1024px 及以下流畅收拢与标签切换）。
+    - `.gothic-card-brass`：复古金铜双重线框、暗红酒渍微光、深色天鹅绒面板底色。
+    - `.gothic-cameo-bubble`：羊皮纸微光对话气泡、尾部指针与呼吸发光效果。
+    - `.gothic-status-tag`：工作中（金绿翡翠）、生产中（冷翠）、缺料（暗绛红）。
+  - 保证所有交互元素符合无障碍对比度（WCAG AA）与触摸最小尺寸（>=40px）。
+
+---
+
+## 四、 详细验证计划
+
+### 1. 自动化质量检查
+- 运行 `npm test`：确保 79 个现有 Vitest 测试全部通过（特别是 `tests/workshop-v2.vitest.test.ts`、`tests/typescript-tailwind-migration.vitest.test.ts`）。
+- 运行 `npm run check:stable-deps`：验证依赖未被篡改。
+- 运行 `npm run typecheck`（`tsc --noEmit`）：确保 TypeScript 0 错误。
+- 运行 `npm run lint`：保证 ESLint 规范 0 警告、0 错误。
+
+### 2. 视觉与交互端到端体验验证
+- **顶部 HUD**：验证星币、晶核、工坊天数与世界导航按钮无任何重叠。
+- **看板娘互动**：验证月纱大立绘正常加载，对话气泡随排班操作动态更新反馈。
+- **设备卡片互动**：点击卡片可触发设备选中与升级，生产中进度条根据当前订单进度正确展示。
+- **工匠派工互动**：点击「撤下」与「指派」能即时改变地块上的工人绑定，并触发 Pixi 舞台人物更新。
+- **排班流转与日志**：点击「开始一天生产（一键收取）」后，日期增加、晶核入库、并在右侧生产日志中追加最新产出条目。
+- **多端响应式**：分别在 1440px 桌面端、1024px 平板及 390px 移动端视口下检查，确认三栏控制台与看板娘自然适配，无文字溢出或元素断层。

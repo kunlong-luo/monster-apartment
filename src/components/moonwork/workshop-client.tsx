@@ -16,6 +16,9 @@ import {WorkshopControls} from './workshop-controls';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
+import yueshaBust from '../../../public/art/yuesha-bust-v3.webp';
+import yueshaAvatar from '../../../public/art/yuesha-avatar-v3.webp';
+import Image from 'next/image';
 import type {
   WorkshopAction,WorkshopRuntimeController,WorkshopSelectionListener
 } from '../../../v2/src/workshop-runtime-contract';
@@ -64,6 +67,14 @@ function loadRuntime(base: string) {
   return window.__moonworkRuntimeLoading;
 }
 
+const ASSISTANT_LINES = [
+  '今天的工坊运转非常顺利呢~ 我们再加把劲吧！',
+  '晶核熔炉与水汽泵正在稳定产出，阁下请放心~',
+  '别忘了为工匠们安排合适的工位哦，工效会大幅提升呢！',
+  '月光街的委托人随时可能来访，多储备一些晶核吧~',
+  '原料充足时生产效率最高，注意检查仓储消耗哦！',
+];
+
 export function WorkshopClient() {
   const host = useRef<HTMLDivElement>(null);
   const gameController = useRef<WorkshopRuntimeController|null>(null);
@@ -71,6 +82,7 @@ export function WorkshopClient() {
   const [error, setError] = useState('');
   const [blockedSave, setBlockedSave] = useState(false);
   const [recoveryVersion, setRecoveryVersion] = useState(0);
+  const [speechIndex, setSpeechIndex] = useState(0);
   const savedWorld = useWorkshopWorld();
   const world = savedWorld ?? newWorkshop();
 
@@ -158,11 +170,40 @@ export function WorkshopClient() {
       <main id="root" className="lab gothic-workshop" data-react-controls="true">
         {/* Top Header */}
         <header className="top">
-          <div className="logo">
-            <span aria-hidden="true" className="star-sigil">✧</span>
-            <div className="logo-text">
-              <strong>月光工坊</strong>
-              <small className="workshop-tagline">Moonlight Atelier</small>
+          <div className="flex items-center gap-2.5">
+            {/* Player profile matching reference */}
+            <div className="player-profile-badge flex items-center gap-2 rounded-xl border border-[#b68c61]/50 bg-[#160d1b]/85 px-2.5 py-1 backdrop-blur-sm shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+              <div className="relative h-8 w-8 sm:h-9 sm:w-9 shrink-0 overflow-hidden rounded-full border border-[#f0c588]/80 shadow-[0_0_8px_rgba(240,197,136,0.3)]">
+                <Image
+                  src={yueshaAvatar}
+                  alt="工坊领主头像"
+                  fill
+                  sizes="36px"
+                  className="object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <div className="flex flex-col text-left">
+                <div className="flex items-center gap-1.5 leading-none">
+                  <span className="text-[10px] sm:text-[11px] font-bold text-[#f0c588]">Lv.60</span>
+                  <span className="text-[11px] sm:text-xs font-semibold text-[#f9eedb]">SparkPrairie</span>
+                </div>
+                <div className="mt-1 flex items-center gap-1">
+                  <span className="text-[8px] sm:text-[9px] font-medium text-[#c8a982]">EXP</span>
+                  <div className="h-1.5 w-12 sm:w-16 overflow-hidden rounded-full bg-[#2a1727]">
+                    <div className="h-full w-[72%] rounded-full bg-gradient-to-r from-[#b68c61] to-[#e4ad58]" />
+                  </div>
+                  <span className="text-[8px] text-[#e0cfbe]/70">72%</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="logo hidden lg:flex items-center gap-2">
+              <span aria-hidden="true" className="star-sigil">✧</span>
+              <div className="logo-text">
+                <strong>月光工坊</strong>
+                <small className="workshop-tagline">Lv.3 暗夜工坊</small>
+              </div>
             </div>
           </div>
 
@@ -236,6 +277,41 @@ export function WorkshopClient() {
 
         {/* Middle: Canvas Stage & Sidebar */}
         <section className="middle">
+          {/* Left: Moonveil Anime Assistant Cameo & Dialogue */}
+          <aside className="gothic-cameo-assistant" aria-label="工坊看板娘月纱">
+            <div className="gothic-cameo-frame">
+              <div className="gothic-cameo-img-wrap">
+                <Image
+                  src={yueshaBust}
+                  alt="工坊看板娘月纱"
+                  fill
+                  sizes="(max-width: 1200px) 180px, 240px"
+                  className="object-cover object-top filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]"
+                  priority
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <div className="gothic-cameo-badge">
+                <span className="cameo-role-star" aria-hidden="true">✦</span>
+                <span className="cameo-name">月纱 · 首席魔女</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setSpeechIndex((prev) => (prev + 1) % ASSISTANT_LINES.length)}
+              className="gothic-cameo-bubble text-left"
+              title="点击倾听工坊见闻"
+              aria-label="看板娘台词，点击切换"
+            >
+              <div className="bubble-speaker">
+                <span className="bubble-tag">月纱</span>
+                <span className="bubble-hint" aria-hidden="true">点击倾听 ✎</span>
+              </div>
+              <p className="bubble-content">{ASSISTANT_LINES[speechIndex]}</p>
+            </button>
+          </aside>
+
           <WorkshopStageContainer
             onAction={onAction}
             world={world}
