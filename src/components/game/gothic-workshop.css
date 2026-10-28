@@ -958,7 +958,8 @@
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .middle {
     top: 86px;
-    bottom: 232px;
+    /* Reserve a gap above the two-row console on 390px phones. */
+    bottom: 255px;
     left: 6px;
     right: 6px;
     display: flex;
@@ -1096,7 +1097,7 @@
 }
 
 @media (max-width:360px) {
-  .gothic-workshop-shell #root.lab.gothic-workshop .middle {bottom: 226px}
+  .gothic-workshop-shell #root.lab.gothic-workshop .middle {bottom: 250px}
   .gothic-workshop-shell #root.lab.gothic-workshop .console {bottom: 74px}
   .gothic-workshop-shell #root.lab.gothic-workshop .worker-miniature {width:25px;height:25px}
 }
