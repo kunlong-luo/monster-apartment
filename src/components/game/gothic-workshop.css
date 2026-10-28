@@ -723,3 +723,106 @@
     padding: 5px;
   }
 }
+
+/* Responsive input rail: reserve actual space for the board, controls and
+   bottom navigation. Avoid clipped icons and overlapping command labels. */
+.gothic-workshop-shell #root.lab.gothic-workshop .options > button {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .options > button strong,
+.gothic-workshop-shell #root.lab.gothic-workshop .options > button small {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .selection {
+  min-width: 0;
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .selection #selected {
+  flex: 1 1 120px;
+  max-width: 100%;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .selection :is(#upgrade,#salvage) {
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+  text-align: center;
+}
+@media(max-width:610px) {
+  .gothic-workshop-shell #root.lab.gothic-workshop .middle {
+    bottom: 228px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console {
+    left: 8px;
+    right: 8px;
+    bottom: 76px;
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 5px;
+    align-items: stretch;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console-panel {
+    min-width: 0;
+    max-width: none;
+    padding: 6px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .panel-head {
+    min-width: 0;
+    margin-bottom: 3px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .options {
+    gap: 3px;
+    min-width: 0;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions {
+    grid-column: 1 / -1;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 5px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions button {
+    min-width: 0;
+    min-height: 34px;
+    padding: 6px 4px;
+    white-space: normal;
+    line-height: 1.2;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .main-actions button span {
+    font-size: 10px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .worker-miniature {
+    width: 29px;
+    height: 29px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .sidebar {
+    min-height: 0;
+    max-height: 96px;
+    overflow-y: auto;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .stage-label {
+    min-width: 0;
+    gap: 5px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .stage-label small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+@media (max-width:360px) {
+  .gothic-workshop-shell #root.lab.gothic-workshop .middle {bottom: 218px}
+  .gothic-workshop-shell #root.lab.gothic-workshop .console {bottom: 72px}
+  .gothic-workshop-shell #root.lab.gothic-workshop .worker-miniature {width:25px;height:25px}
+}
