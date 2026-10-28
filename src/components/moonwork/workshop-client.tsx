@@ -13,11 +13,11 @@ import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
 import {WorkshopControls} from './workshop-controls';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
+import {EMPTY_SELECTION,ensureWorkshopWorld,useMoonworkState} from '@/lib/moonwork/world-state';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import type {
-  WorkshopAction,WorkshopRuntimeController,WorkshopSelectionSnapshot,
-  WorkshopSelectionListener
+  WorkshopAction,WorkshopRuntimeController,WorkshopSelectionListener
 } from '../../../v2/src/workshop-runtime-contract';
 
 declare global {
@@ -32,10 +32,6 @@ declare global {
     __moonworkRuntimeLoading?: Promise<void>;
   }
 }
-
-const initialSelection: WorkshopSelectionSnapshot = {
-  worker:null,machine:null,movingFrom:null,selectedPlot:null,
-};
 
 function assetRoot() {
   return workshopAssetRoot(window.location.href);
@@ -78,8 +74,8 @@ export function WorkshopClient() {
   const savedWorld = useWorkshopWorld();
   const world = savedWorld ?? newWorkshop();
 
-  const [selection, setSelection] =
-    useState<WorkshopSelectionSnapshot>(initialSelection);
+  const selection=useMoonworkState(state=>state.selection);
+  const setSelection=useMoonworkState(state=>state.setSelection);
 
   // Use the same production art as the other React scenes. The low-res
   // Pixi sidecar portrait remains only for its separate internal textures.
@@ -100,6 +96,7 @@ export function WorkshopClient() {
     setBlockedSave(false);
     setError('');
 
+    setSelection(EMPTY_SELECTION);
     root.dataset.reactControls = 'true';
     root.classList.add('gothic-workshop');
     root.style.backgroundImage =
@@ -114,13 +111,11 @@ export function WorkshopClient() {
     // callback; no DOM attribute decoding or synthetic control-change event.
     const onSelectionChange:WorkshopSelectionListener = (next) => {
       if(cancelled)return;
-      setSelection(prev=>prev.worker===next.worker &&
-        prev.machine===next.machine &&
-        prev.movingFrom===next.movingFrom &&
-        prev.selectedPlot===next.selectedPlot?prev:next);
+      setSelection(next);
     };
 
-    void loadRuntime(base)
+    void ensureWorkshopWorld()
+      .then(()=>cancelled?Promise.resolve():loadRuntime(base))
       .then(async () => {
         if (cancelled) return;
         const runtime = window.MoonworkRuntime;
