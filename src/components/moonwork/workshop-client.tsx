@@ -1,6 +1,7 @@
 'use client';
 
 import {useEffect, useRef, useState} from 'react';
+import {useMoonworkState,ensureWorkshopWorld,EMPTY_SELECTION} from '@/lib/moonwork/world-state';
 import Link from 'next/link';
 import '@/components/game/gothic-workshop.css';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
@@ -96,6 +97,7 @@ export function WorkshopClient() {
     setBlockedSave(false);
     setError('');
 
+    setSelection(EMPTY_SELECTION);
     setSelection(EMPTY_SELECTION);
     root.dataset.reactControls = 'true';
     root.classList.add('gothic-workshop');
