@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {CHARACTER_PROFILES,WORKER_DIALOGUES} from '@/core/character-life';
 import type {WorkerCharacterId,RoomObjectId,WorkerChoice} from '@/core/character-life';
 import {commitCharacterLife,useCharacterLife} from '@/lib/game/character-life-store';
@@ -10,6 +10,10 @@ import {RoomSceneHotspots} from './room-scene-hotspots';
 import {RoomSceneBackdrop} from './room-scene-backdrop';
 import {RoomResidentSprite} from './room-resident-sprite';
 import {RoomConversationTopics} from './room-conversation-topics';
+import {RoomDialogueTheater} from './room-dialogue-theater';
+import {roomObjectPose,roomTopicPose} from '@/core/room-performance';
+import type {RoomPose} from '@/core/room-performance';
+import type {RoomConversationTopic} from '@/core/room-conversations';
 import {roomSceneReaction} from '@/core/room-scene-reactions';
 import './gothic-polish.css';
 
@@ -22,11 +26,14 @@ const SCENE_PALETTES={
 export function WorkerPrivateRoom({id,onClose,working}:{
   id:WorkerCharacterId;onClose:()=>void;working:boolean;
 }){
+  const stageRef=useRef<HTMLDivElement>(null);
   const profile=CHARACTER_PROFILES[id];
   const scene=WORKER_DIALOGUES[id];
   const palette=SCENE_PALETTES[id];
   const [selectedItem,setSelectedItem]=useState<RoomObjectId|null>(null);
   const [reaction,setReaction]=useState('');
+  const [pose,setPose]=useState<RoomPose>('idle');
+  const [theater,setTheater]=useState<RoomConversationTopic|null>(null);
   const [notice,setNotice]=useState('');
   const {status,progress}=useCharacterLife();
   const choice=progress.workerDecisions?.[id];
@@ -38,11 +45,13 @@ export function WorkerPrivateRoom({id,onClose,working}:{
   const inspect=(item:RoomObjectId)=>{
     setSelectedItem(item);
     setReaction(roomSceneReaction(id,item));
+    setPose(roomObjectPose(id,item));
     if(status!=='ok'){setNotice('此时无法保存人物观察，已有记录不会被覆盖。');return;}
     const result=commitCharacterLife({type:'inspect',id,item});
     setNotice(result==='applied'?'你记下了这个细节。':result==='duplicate'?'你曾经留意过这件物品。':'观察记录暂时无法保存。');
   };
   const answer=(value:WorkerChoice)=>{
+    setPose(value==='care'?'warm':'attentive');
     const result=commitCharacterLife({type:'worker-choice',id,choice:value});
     setNotice(result==='applied'?'这次交谈成为了你们共同的回忆。':result==='duplicate'?'你们已经谈过这件事。':'选择未能保存，原档不会被覆盖。');
   };
@@ -60,12 +69,15 @@ export function WorkerPrivateRoom({id,onClose,working}:{
       <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(300px,1fr)] lg:items-start">
       <div className="min-w-0 space-y-2">
       <div className={'relative h-[clamp(270px,53vh,565px)] overflow-hidden rounded-xl border border-gothic-brass/65 bg-[#120f1c]'}
-        aria-label={profile.name+'的房间概念场景'}>
+        aria-label={profile.name+'的房间概念场景'} ref={stageRef}>
         <RoomSceneBackdrop id={id}/>
-        <RoomResidentSprite id={id} name={profile.name} working={working} reaction={reaction}/>
+        <RoomResidentSprite id={id} name={profile.name} working={working} reaction={reaction} pose={pose}/>
         <RoomSceneHotspots characterName={profile.name} roomId={id} items={scene.objects}
           observed={observed} selected={selectedItem} onInspect={inspect}
           description={scene.objects.find(item=>item.id===selectedItem)?.text}/>
+        {theater&&!working&&<RoomDialogueTheater key={theater.id} name={profile.name}
+          title={theater.title} response={theater.response}
+          onClose={()=>{setTheater(null);setPose('idle');}}/>}
         <div className="pointer-events-none absolute bottom-3 left-3 z-[1] max-w-[47%] space-y-2">
           <span className={'inline-block rounded-full border bg-[#14101acc] px-3 py-1 text-[10px] '+palette.ribbon}>{palette.roomDetail}</span>
           <p className="text-[11px] leading-5 text-[#f5ddc3]">{working?'正在工坊值守 · 屋内留着便条':'暂时休息 · 可以聊聊天'}</p>
@@ -96,7 +108,12 @@ export function WorkerPrivateRoom({id,onClose,working}:{
         </div>}
       </section>
       <RoomConversationTopics id={id} observed={observed} working={working}
-        onSpeak={()=>setReaction('你们谈起了与这间房有关的往事。')}/>
+        onSpeak={topic=>{
+          setPose(roomTopicPose(id,topic.id));
+          setReaction('你们谈起了与这间房有关的往事。');
+          setTheater(topic);
+          stageRef.current?.scrollIntoView({block:'center',behavior:'auto'});
+        }}/>
       <section className="space-y-2" aria-label="观察人物房间">
         <h3 className="text-xs tracking-wider text-gothic-gold">房间观察 · 在画面中选择感兴趣的物件</h3>
         {selectedItem&&<p data-testid={'worker-room-object-'+id} className="rounded-lg bg-gothic-wine/35 p-3 text-xs leading-6">

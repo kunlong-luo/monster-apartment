@@ -101,3 +101,38 @@ test('assigned worker is not duplicated in their private room',async({page})=>{
   await page.getByRole('button',{name:'空掉的工具挂钩'}).click();
   await expect(page.getByTestId('scene-discovery')).toContainText('扳手');
 });
+
+
+test('cinematic conversation auto-advances, can skip, and never rewrites lore decisions',async({page})=>{
+  await page.goto('/apartment/');
+  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
+  await page.getByTestId('visit-yuesha-room').click();
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-pose','idle');
+  await page.getByTestId('scene-object-tea').click();
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-pose','warm');
+  const before=await page.evaluate(()=>localStorage.getItem('monster-apartment:character-life:v1'));
+  await page.getByTestId('room-topic-yuesha-tea').click();
+  await expect(page.getByTestId('room-dialogue-theater')).toBeVisible();
+  await expect(page.getByTestId('room-theater-line')).toContainText('桂皮');
+  await expect(page.getByTestId('room-dialogue-theater')).toHaveAttribute('data-state','playing');
+  await page.getByTestId('room-theater-skip').click();
+  await expect(page.getByTestId('room-dialogue-theater')).toHaveAttribute('data-state','finished');
+  await expect(page.getByTestId('room-theater-line')).toContainText('人也是');
+  await page.getByTestId('room-theater-close').click();
+  await expect(page.getByTestId('room-dialogue-theater')).toHaveCount(0);
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-pose','idle');
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:character-life:v1'))).toBe(before);
+});
+
+test('reduced-motion setting presents complete conversation immediately',async({page})=>{
+  await page.goto('/apartment/');
+  await page.evaluate(()=>localStorage.setItem('monster-apartment:gothic-motion-reduced','1'));
+  await page.reload();
+  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
+  await page.getByTestId('visit-yuesha-room').click();
+  await page.getByTestId('room-topic-yuesha-moon').click();
+  await expect(page.getByTestId('room-dialogue-theater')).toHaveAttribute('data-state','finished');
+  await expect(page.getByTestId('room-theater-skip')).toHaveCount(0);
+  await expect(page.getByTestId('room-theater-line')).toContainText('今晚');
+  await page.getByTestId('room-theater-close').click();
+});

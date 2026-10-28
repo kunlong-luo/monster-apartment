@@ -209,3 +209,25 @@
 .private-room__candlelight{animation:private-room-candle 6.5s ease-in-out infinite alternate}
 @keyframes private-room-candle{from{opacity:.58}to{opacity:.93}}
 @media(prefers-reduced-motion:reduce){.private-room__candlelight{animation:none!important}}
+
+/* Atmospheric scene layers animate independently of the painted room. */
+.private-room__moonshaft{
+  pointer-events:none;
+  background:linear-gradient(172deg,#c6b4ff2b 0%,#a68bff13 39%,transparent 68%);
+  clip-path:polygon(57% 0%,83% 0%,100% 100%,37% 100%);
+  animation:private-room-moon 11s ease-in-out infinite alternate;
+}
+.private-room__motes{
+  pointer-events:none;
+  background-image:radial-gradient(circle,#ffd4ad99 1px,transparent 2px),radial-gradient(circle,#d6c1ff77 1px,transparent 2px);
+  background-size:197px 229px,307px 287px;
+  background-position:14% 33%,75% 41%;
+  opacity:.34;
+  animation:private-room-dust 18s ease-in-out infinite alternate;
+}
+@keyframes private-room-moon{from{opacity:.4}to{opacity:.83}}
+@keyframes private-room-dust{from{opacity:.18;transform:translateY(0)}to{opacity:.43;transform:translateY(-5px)}}
+.private-room__still{animation:none!important}
+@media(prefers-reduced-motion:reduce){
+  .private-room__moonshaft,.private-room__motes{animation:none!important}
+}

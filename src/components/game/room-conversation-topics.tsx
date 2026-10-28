@@ -2,6 +2,7 @@
 
 import {useState} from 'react';
 import {roomConversationTopics} from '@/core/room-conversations';
+import type {RoomConversationTopic} from '@/core/room-conversations';
 import type {CharacterId,RoomObjectId} from '@/core/character-life';
 
 /** Revisit-friendly optional dialogue: the initial one-time branch stays intact. */
@@ -9,7 +10,7 @@ export function RoomConversationTopics({id,observed,working=false,onSpeak}:{
   id:CharacterId;
   observed:readonly RoomObjectId[];
   working?:boolean;
-  onSpeak?:(response:string)=>void;
+  onSpeak?:(topic:RoomConversationTopic)=>void;
 }){
   const [active,setActive]=useState<string|null>(null);
   const topics=roomConversationTopics(id,observed);
@@ -29,7 +30,7 @@ export function RoomConversationTopics({id,observed,working=false,onSpeak}:{
           aria-pressed={active===topic.id}
           title={!topic.unlocked?topic.lockedHint:undefined}
           data-testid={'room-topic-'+id+'-'+topic.id}
-          onClick={()=>{setActive(topic.id);onSpeak?.(topic.response);}}
+          onClick={()=>{setActive(topic.id);onSpeak?.(topic);}}
           className={'min-h-11 rounded-lg border px-2 py-2 text-left text-[11px] leading-5 transition-colors focus-visible:outline-2 focus-visible:outline-[#ffe1b8] disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none '+
             (active===topic.id?'border-[#f4d397] bg-[#68405be6] text-[#fff0d8]':'border-[#b3937890] bg-[#382330b3] text-[#f4dcc8] hover:border-[#e8c09c]')}>
           {topic.unlocked?'✧ ':'🔒 '}{topic.title}

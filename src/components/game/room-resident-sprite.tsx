@@ -5,16 +5,25 @@ import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import type {CharacterId,WorkerCharacterId} from '@/core/character-life';
 import {WorkerArtwork} from '@/components/moonwork/worker-artwork';
+import type {RoomPose} from '@/core/room-performance';
+import {useGothicMotion} from '@/lib/game/gothic-motion';
 
 /** The resident is independently animated; background pixels are never scaled.
  * A worker on shift is never duplicated in their private room. */
-export function RoomResidentSprite({id,name,working=false,reaction=''}:{
-  id:CharacterId;name:string;working?:boolean;reaction?:string;
+export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle'}:{
+  id:CharacterId;name:string;working?:boolean;reaction?:string;pose?:RoomPose;
 }){
-  const reduced=useReducedMotion();
+  const systemReduced=useReducedMotion();
+  const {reduced:gameReduced}=useGothicMotion();
+  const reduced=Boolean(systemReduced||gameReduced);
+  const performerMotion=reduced?{x:0,y:0,rotate:0}:
+    pose==='idle'?{x:0,y:[0,-3,0,2,0],rotate:0}:
+    pose==='attentive'?{x:-3,y:-3,rotate:-.5}:
+    pose==='warm'?{x:-1,y:-2,rotate:.6}:
+    {x:2,y:1,rotate:.7};
   const away=working&&id!=='yuesha';
   return <div className="pointer-events-none absolute inset-0 z-[2]"
-    data-testid="room-resident-layer">
+    data-testid="room-resident-layer" data-pose={away?"away":pose}>
     {away?<div data-testid={'room-resident-away-'+id}
       className="absolute right-[5%] bottom-[27%] w-[45%] max-w-56 rounded-lg border border-[#efd4aa66] bg-[#170e19e8] p-3 text-center shadow-[0_9px_25px_#000a]">
       <span aria-hidden="true" className="block text-2xl text-[#f5cc8a]">✉</span>
@@ -23,8 +32,8 @@ export function RoomResidentSprite({id,name,working=false,reaction=''}:{
     </div>:<motion.div data-testid={'room-resident-present-'+id}
       className="absolute right-[2%] bottom-0 h-[94%] w-[49%] max-w-[410px] origin-bottom"
       initial={false}
-      animate={reduced?undefined:{y:[0,-3,0,2,0]}}
-      transition={{duration:7,ease:'easeInOut',repeat:Infinity}}>
+      animate={performerMotion}
+      transition={reduced?{duration:0}:pose==='idle'?{duration:7,ease:'easeInOut',repeat:Infinity}:{duration:.48,ease:'easeOut'}}>
       {id==='yuesha'
         ?<Image src={moonveilBust} alt={name+'在会客室中'} fill unoptimized draggable={false}
           sizes="(max-width:640px) 49vw, 410px"

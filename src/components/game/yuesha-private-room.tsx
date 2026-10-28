@@ -1,5 +1,5 @@
 'use client';
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {yueshaAfterChoice} from '@/core/character-life';
 import {roomInvestigationConclusion} from '@/core/room-investigation';
 import type {YueshaChoice} from '@/core/character-life';
@@ -9,11 +9,18 @@ import {RoomSceneHotspots} from './room-scene-hotspots';
 import {RoomSceneBackdrop} from './room-scene-backdrop';
 import {RoomResidentSprite} from './room-resident-sprite';
 import {RoomConversationTopics} from './room-conversation-topics';
+import {RoomDialogueTheater} from './room-dialogue-theater';
+import {roomObjectPose,roomTopicPose} from '@/core/room-performance';
+import type {RoomPose} from '@/core/room-performance';
+import type {RoomConversationTopic} from '@/core/room-conversations';
 import {roomSceneReaction,yueshaRoomEasterEgg} from '@/core/room-scene-reactions';
 type Hotspot='seal'|'tea'|'ledger';
 export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:number}){
+  const stageRef=useRef<HTMLDivElement>(null);
   const [hotspot,setHotspot]=useState<Hotspot|null>(null);
   const [reaction,setReaction]=useState('');
+  const [pose,setPose]=useState<RoomPose>('idle');
+  const [theater,setTheater]=useState<RoomConversationTopic|null>(null);
   const [feedback,setFeedback]=useState('');
   const {status,progress}=useCharacterLife();
   const choice=progress.decisions['yuesha-first-visit'];
@@ -22,25 +29,29 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
   const inspect=(item:Hotspot)=>{
     setHotspot(item);
     setReaction(roomSceneReaction('yuesha',item));
+    setPose(roomObjectPose('yuesha',item));
     const result=commitCharacterLife({type:'inspect',id:'yuesha',item});
     setFeedback(result==='applied'?'你记下了这段细节。':result==='duplicate'?'这个物品你已经仔细看过了。':'人物观察记录暂时无法保存。');
   };
   const discuss=(value:YueshaChoice)=>{
+    setPose(value==='transparent'?'warm':'attentive');
     const result=commitCharacterLife({type:'yuesha-choice',choice:value});
     setFeedback(result==='applied'?'月纱记住了你的选择。':result==='duplicate'?'这段初次谈话已经记录。':'人物档案无法写入，原存档未被覆盖。');
   };
   return <div className="min-w-0 flex-1 space-y-3" data-testid="yuesha-private-room">
     <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(300px,1fr)] lg:items-start">
     <div className="min-w-0 space-y-2">
-    <div className="relative h-[clamp(305px,54vh,590px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]" data-testid="yuesha-room-stage">
+    <div className="relative h-[clamp(305px,54vh,590px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]" data-testid="yuesha-room-stage" ref={stageRef}>
       <RoomSceneBackdrop id="yuesha"/>
-      <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction}/>
+      <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={pose}/>
       <RoomSceneHotspots characterName="月纱" roomId="yuesha"
         items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}
         selected={hotspot} observed={observed} onInspect={inspect}
         description={hotspot==='seal'?'蜡封上的月纹，与旧公寓钥匙的纹样有些相似。月纱没有立即回答你的疑问。':
           hotspot==='tea'?'杯里有桂皮与温暖的香气。月纱说，做生意之前应该先好好喝一杯茶。':
           hotspot==='ledger'?'账簿封面有多年前的磨损痕迹。里面记着什么，目前还不能公开。':undefined}/>
+      {theater&&<RoomDialogueTheater key={theater.id} name="月纱" title={theater.title}
+        response={theater.response} onClose={()=>{setTheater(null);setPose('idle');}}/>}
       <div className="pointer-events-none absolute top-9 left-3 max-w-[52%] space-y-1 text-shadow-md">
         <h3 className="text-lg text-[#ffe3bd] sm:text-2xl">月纱的契约会客室</h3>
         <p className="text-[11px] leading-5 text-[#e4c7ab]">月纹、旧契约和一杯香料茶</p>
@@ -73,7 +84,12 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       {feedback&&<p role="status" className="text-xs text-[#ebc79c]">{feedback}</p>}
     </div>
     <RoomConversationTopics id="yuesha" observed={observed}
-      onSpeak={()=>setReaction('“原来你也在意这段往事。”月纱微笑着看向你。')}/>
+      onSpeak={topic=>{
+        setPose(roomTopicPose('yuesha',topic.id));
+        setReaction('“原来你也在意这段往事。”月纱微笑着看向你。');
+        setTheater(topic);
+        stageRef.current?.scrollIntoView({block:'center',behavior:'auto'});
+      }}/>
     <div className="space-y-2">
       <span className="text-xs text-[#f0c58e]">月纱的藏品 · 点击场景里的物品，查看她留下的线索</span>
       {observed.length>0&&<p className="text-[10px] text-gothic-muted">已记录 {observed.length}/3 件会客室物品</p>}

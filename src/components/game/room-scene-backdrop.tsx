@@ -1,4 +1,9 @@
+'use client';
+
 import Image from 'next/image';
+import {useReducedMotion} from 'motion/react';
+import {useGothicMotion} from '@/lib/game/gothic-motion';
+import {ROOM_ART_MANIFEST} from '@/core/room-art-manifest';
 import moonlitPainting from '../../../public/art/lobby-hero-v3.webp';
 import type {CharacterId} from '@/core/character-life';
 
@@ -29,15 +34,20 @@ const ROOM_AMBIENCE={
 
 export function RoomSceneBackdrop({id}:{id:CharacterId}){
   const ambience=ROOM_AMBIENCE[id];
-  return <div data-testid="room-scene-backdrop" data-scene-id={id}
+  const systemReduced=useReducedMotion();
+  const {reduced:gameReduced}=useGothicMotion();
+  const still=Boolean(systemReduced||gameReduced);
+  return <div data-testid="room-scene-backdrop" data-scene-id={id} data-art-quality={ROOM_ART_MANIFEST[id].backgroundStatus}
     className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
     <Image src={moonlitPainting} alt="" fill unoptimized priority={id==='yuesha'}
       sizes="(max-width:1024px) 94vw, 850px"
       className="object-cover object-[45%_43%]"/>
     <div className={'absolute inset-0 '+ambience.veil}/>
     <div className={'absolute inset-0 '+ambience.moon}/>
+    <div className={'private-room__moonshaft absolute inset-0 mix-blend-screen '+(still?'private-room__still':'')}/>
+    <div className={'private-room__motes absolute inset-0 '+(still?'private-room__still':'')}/>
     <div data-testid="room-environment-light"
-      className={'private-room__candlelight absolute inset-0 mix-blend-screen motion-reduce:animate-none '+ambience.candle}/>
+      className={'private-room__candlelight absolute inset-0 mix-blend-screen motion-reduce:animate-none '+(still?' private-room__still ':' ')+ambience.candle}/>
     <div className="absolute inset-0 bg-[linear-gradient(0deg,#0f091be5_0%,transparent_29%,transparent_78%,#0c07168c_100%)]"/>
     <div className="absolute inset-[9px] rounded-[8px] border border-[#f5c99124] shadow-[inset_0_0_40px_#f8be6c0e]"/>
   </div>;

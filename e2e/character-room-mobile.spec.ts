@@ -44,3 +44,16 @@ test('mobile Moonsha visit still supports scenic inspection and return',async({p
   await page.getByRole('button',{name:/返回月纱对话/}).click();
   await expect(page.getByTestId('yuesha-private-room')).toHaveCount(0);
 });
+
+
+test('mobile cinematic performance scrolls into view and exits without closing the room',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/apartment/');
+  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
+  await page.getByTestId('visit-yuesha-room').click();
+  await page.getByTestId('room-topic-yuesha-moon').click();
+  await expect(page.getByTestId('room-dialogue-theater')).toBeInViewport();
+  await page.getByTestId('room-theater-close').click();
+  await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  await expect(page.getByTestId('room-dialogue-theater')).toHaveCount(0);
+});
