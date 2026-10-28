@@ -4,6 +4,7 @@ import {useEffect,useState} from 'react';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import moonveilBackdrop from '../../../public/art/lobby-hero-v3.webp';
 import {yueshaAfterChoice} from '@/core/character-life';
+import {roomInvestigationConclusion} from '@/core/room-investigation';
 import type {YueshaChoice} from '@/core/character-life';
 import {commitCharacterLife,useCharacterLife} from '@/lib/game/character-life-store';
 import {CharacterLifePortrait} from './character-life-portrait';
@@ -81,6 +82,10 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
           '账簿封面有多年前的磨损痕迹。里面记着什么，目前还不能公开。'}
       </p>}
     </div>
+    {roomInvestigationConclusion(progress)&&<p data-testid="yuesha-four-room-memory"
+      className="rounded-xl border border-[#d9a96880] bg-[#392633de] px-4 py-3 text-xs leading-7 text-[#ffe0b4]">
+      ✦ 月纱翻开一本还未寄出的调查册：{roomInvestigationConclusion(progress)}
+    </p>}
     <CharacterLifePortrait id="yuesha"/>
   </div>;
 }
