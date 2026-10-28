@@ -8,6 +8,7 @@ import {CharacterLifePortrait} from './character-life-portrait';
 import {RoomSceneHotspots} from './room-scene-hotspots';
 import {RoomSceneBackdrop} from './room-scene-backdrop';
 import {RoomResidentSprite} from './room-resident-sprite';
+import {RoomSceneFocus} from './room-scene-focus';
 import {RoomConversationTopics} from './room-conversation-topics';
 import {RoomDialogueTheater} from './room-dialogue-theater';
 import {roomObjectPose,roomTopicPose} from '@/core/room-performance';
@@ -44,6 +45,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     <div className="relative h-[clamp(305px,54vh,590px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]" data-testid="yuesha-room-stage" ref={stageRef}>
       <RoomSceneBackdrop id="yuesha"/>
       <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={pose}/>
+      <RoomSceneFocus id="yuesha" item={hotspot} pose={pose}/>
       <RoomSceneHotspots characterName="月纱" roomId="yuesha"
         items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}
         selected={hotspot} observed={observed} onInspect={inspect}

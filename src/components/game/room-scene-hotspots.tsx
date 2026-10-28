@@ -2,6 +2,7 @@
 
 import type {CSSProperties} from 'react';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
+import {useGothicMotion} from '@/lib/game/gothic-motion';
 
 /** Percentages refer to the scenic layer, not the whole screen.
  * Different layouts prevent object markers covering resident portraits. */
@@ -22,7 +23,9 @@ export function RoomSceneHotspots<T extends string>({
   roomId?:string;
   description?:string;
 }){
-  const reducedMotion=useReducedMotion();
+  const systemReduced=useReducedMotion();
+  const {reduced:gameReduced}=useGothicMotion();
+  const reducedMotion=Boolean(systemReduced||gameReduced);
   const known=items.filter(item=>observed.includes(item.id)).length;
   return <div className="pointer-events-none absolute inset-0 z-[4]" data-hotspot-layout="object-id" aria-label={characterName+'的房间物件'}>
     {items.map((item,index)=>{

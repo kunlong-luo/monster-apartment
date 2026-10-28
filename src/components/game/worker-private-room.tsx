@@ -9,6 +9,7 @@ import {GothicModal} from './gothic-hud';
 import {RoomSceneHotspots} from './room-scene-hotspots';
 import {RoomSceneBackdrop} from './room-scene-backdrop';
 import {RoomResidentSprite} from './room-resident-sprite';
+import {RoomSceneFocus} from './room-scene-focus';
 import {RoomConversationTopics} from './room-conversation-topics';
 import {RoomDialogueTheater} from './room-dialogue-theater';
 import {roomObjectPose,roomTopicPose} from '@/core/room-performance';
@@ -72,6 +73,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
         aria-label={profile.name+'的房间概念场景'} ref={stageRef}>
         <RoomSceneBackdrop id={id}/>
         <RoomResidentSprite id={id} name={profile.name} working={working} reaction={reaction} pose={pose}/>
+        <RoomSceneFocus id={id} item={selectedItem} pose={pose}/>
         <RoomSceneHotspots characterName={profile.name} roomId={id} items={scene.objects}
           observed={observed} selected={selectedItem} onInspect={inspect}
           description={scene.objects.find(item=>item.id===selectedItem)?.text}/>

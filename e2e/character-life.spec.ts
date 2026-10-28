@@ -21,11 +21,16 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   await expect(page.getByTestId('yuesha-dialogue')).toContainText('账本摊开');
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'{}').coins)).toBe(before);
   await expect(page.getByTestId('room-topic-yuesha-contract')).toBeDisabled();
+  await expect(page.getByTestId('room-scene-focus')).toHaveCount(0);
   await page.getByRole('button',{name:'月纹蜡封'}).click();
+  await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-object-id','seal');
+  await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-focus-pose','guarded');
+  await page.screenshot({path:'test-results/room-yuesha-inspection-desktop.png'});
   await expect(page.getByTestId('scene-discovery')).toContainText('月纹');
   await expect(page.getByTestId('yuesha-hotspot-text')).toContainText('月纹');
   await expect(page.getByTestId('room-resident-reaction')).toContainText('半月印纹');
   await page.getByRole('button',{name:'香料茶杯'}).click();
+  await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-focus-pose','warm');
   await page.getByRole('button',{name:'旧账簿'}).click();
   await expect(page.getByTestId('yuesha-room-easter-egg')).toContainText('真相');
   await expect(page.getByTestId('room-topic-yuesha-contract')).toBeEnabled();
@@ -72,6 +77,7 @@ test('Brook, Fern and Cinder have unique rooms and persisted personal choices',a
     await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-render-mode','separate');
     await page.screenshot({path:'test-results/room-'+person.id+'-desktop.png'});
     await dialog.getByTestId('scene-object-'+person.objects[0]).click();
+    await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-object-id',person.objects[0]);
     await dialog.getByTestId('scene-object-'+person.objects[1]).click();
     await expect(page.getByTestId('worker-room-secret-'+person.id)).toContainText(person.secret);
     await page.getByTestId('worker-room-choice-'+person.id+'-care').click();

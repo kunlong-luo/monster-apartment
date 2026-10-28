@@ -41,9 +41,9 @@ export function RoomDialogueTheater({name,title,response,onClose}:{
         setIndex(beats.length-1);
       }
     }}
-    className="pointer-events-auto absolute inset-0 z-[16] flex flex-col justify-end overflow-hidden bg-[linear-gradient(0deg,#0c0719f9,#1e1024d3_36%,#0d081775_86%)] p-3 text-[#ffe7cf] sm:p-6">
+    className="pointer-events-auto absolute inset-0 z-[16] flex flex-col justify-end overflow-hidden bg-[linear-gradient(180deg,transparent_0%,#0c071422_38%,#0b0618e7_82%,#090415f7_100%)] p-3 text-[#ffe7cf] sm:p-6">
     <header className="absolute inset-x-3 top-3 flex items-start justify-between gap-4 sm:inset-x-6 sm:top-6">
-      <div className="max-w-[65%]">
+      <div className="max-w-[65%] rounded-lg border border-[#c99e7350] bg-[#1a1020b9] px-2 py-1 shadow-[0_6px_22px_#0007] sm:px-3 sm:py-2">
         <span className="text-[10px] tracking-[.18em] text-[#ffcc94]">MOONLIT MEMORY</span>
         <h3 className="mt-1 text-sm text-[#ffe4be] sm:text-lg">{title}</h3>
       </div>
