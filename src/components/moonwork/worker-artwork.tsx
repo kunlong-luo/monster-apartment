@@ -14,7 +14,8 @@ export function WorkerArtwork({
   id:WorkerId;name:string;frame?:number;compact?:boolean;
 }){
   const canvasRef=useRef<HTMLCanvasElement>(null);
-  const [painting,setPainting]=useState<string|null>(null);
+  const [approved,setApproved]=useState<{id:WorkerId;src:string}|null>(null);
+  const painting=approved?.id===id?approved.src:null;
   useEffect(()=>{
     const canvas=canvasRef.current;
     if(!canvas)return;
@@ -25,16 +26,15 @@ export function WorkerArtwork({
   },[id,frame]);
   useEffect(()=>{
     let active=true;
-    setPainting(null);
     const url=new URL(window.location.href);
     url.pathname=url.pathname.replace(
       /\/(town|orders|characters|warehouse|apartment)\/?$/, '/workshop/');
     const src=new URL('assets/workers/'+id+'.webp',workshopAssetRoot(url.href)).href;
     const probe=new window.Image();
     probe.onload=()=>{
-      if(active&&probe.naturalWidth>=256&&probe.naturalHeight>=256)setPainting(src);
+      if(active&&probe.naturalWidth>=256&&probe.naturalHeight>=256)setApproved({id,src});
     };
-    probe.onerror=()=>{if(active)setPainting(null);};
+    probe.onerror=()=>{};
     probe.src=src;
     return()=>{active=false;probe.onload=null;probe.onerror=null;};
   },[id]);
