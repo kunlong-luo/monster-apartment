@@ -143,7 +143,7 @@ export function WorkshopClient() {
       // cancelled flag prevents state updates after React has unmounted.
       dispose?.();
     };
-  }, [recoveryVersion]);
+  }, [recoveryVersion,setSelection]);
 
   const selectedTile =
     selection.selectedPlot !== null ? world.tiles[selection.selectedPlot] : null;
