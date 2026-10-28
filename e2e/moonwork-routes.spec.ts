@@ -186,7 +186,7 @@ test('painted worker roster and scene art load as real gameplay destinations',as
   for(const id of ['brook','fern','cinder']){
     const art=page.getByTestId('worker-card-'+id).getByRole('img');
     await expect(art).toBeVisible();
-    await expect(art).toHaveCSS('background-image',/worker-triptych/);
+    await expect(art).toHaveAttribute('data-art-source',/transparent/);
     await expect(page.getByTestId('worker-card-'+id)
       .getByRole('link',{name:/安排.+到工坊/})).toBeVisible();
   }
@@ -212,7 +212,7 @@ test('choosing an illustrated guild worker preselects their real Pixi factory as
   await expect(page.getByTestId('v2-worker-fern')).toHaveClass(/active/);
   await expect(page.locator('#selected')).toContainText('待派工');
   const img=page.getByTestId('v2-worker-fern').getByRole('img');
-  await expect(img).toHaveCSS('background-image',/worker-triptych/);
+  await expect(img).toHaveAttribute('data-art-source',/transparent/);
   // Complete the real interaction: choosing a machine assigns the selected
   // worker and persists it for all other routes, not merely changing a label.
   const canvas=page.getByTestId('v2-stage').locator('canvas');
