@@ -14,37 +14,72 @@ const expert=(craft:Craft,id:WorkerId|null)=>
 /** Strict local flow. Material cannot teleport between rooms.
  * A worker's specialty changes throughput. Bottlenecks are inspectable
  * in the shift report's blocked[] entries. */
-export function runShift(s:WorkshopState):WorkshopState {
+export type MachineCycle={
+  index:number;craft:Craft;worker:WorkerId;
+  amount:number;sourceIndex:number|null;sourceCost:number;
+  blocked:'water'|'fiber'|null;
+};
+
+/** Single authoritative factory step, used by shift settlement, visual status,
+ * and true per-device output feedback. This never touches the original save.
+ * An action with amount=0 is a genuinely starved machine, not decorative RNG. */
+export function projectMachineProduction(s:WorkshopState):{
+  tiles:WorkshopState['tiles'];report:DailyProduction;cycles:MachineCycle[]
+}{
   const tiles=s.tiles.map(t=>t?{...t}:null);
-  const report:DailyProduction={water:0,fiber:0,cores:0,blocked:[],fulfilled:false,lost:false};
-  // Stage 1: staffed pumps generate water into their own tanks.
+  const report:DailyProduction={
+    water:0,fiber:0,cores:0,blocked:[],fulfilled:false,lost:false,
+  };
+  const cycles:MachineCycle[]=[];
   for(let i=0;i<BOARD_SIZE;i++){
     const machine=tiles[i];
     if(machine?.craft!=='well'||!machine.worker)continue;
     const amount=(expert('well',machine.worker)?2:1)+machineLevel(machine)-1;
     machine.stored+=amount;report.water+=amount;
+    cycles.push({index:i,craft:'well',worker:machine.worker,amount,
+      sourceIndex:null,sourceCost:0,blocked:null});
   }
-  // Stage 2: greenhouses must touch pumps, and employ a worker.
   for(let i=0;i<BOARD_SIZE;i++){
     const machine=tiles[i];
     if(machine?.craft!=='garden'||!machine.worker)continue;
     const source=tiles.findIndex((other,j)=>other?.craft==='well'&&
       linked(i,j)&&other.stored>=1);
-    if(source<0){report.blocked.push('garden:'+i+':water');continue;}
+    if(source<0){
+      report.blocked.push('garden:'+i+':water');
+      cycles.push({index:i,craft:'garden',worker:machine.worker,amount:0,
+        sourceIndex:null,sourceCost:1,blocked:'water'});
+      continue;
+    }
     tiles[source]!.stored-=1;
     const amount=(expert('garden',machine.worker)?2:1)+machineLevel(machine)-1;
     machine.stored+=amount;report.fiber+=amount;
+    cycles.push({index:i,craft:'garden',worker:machine.worker,amount,
+      sourceIndex:source,sourceCost:1,blocked:null});
   }
-  // Stage 3: kilns need two fibers from an adjacent greenhouse.
   for(let i=0;i<BOARD_SIZE;i++){
     const machine=tiles[i];
     if(machine?.craft!=='kiln'||!machine.worker)continue;
     const source=tiles.findIndex((other,j)=>other?.craft==='garden'&&
       linked(i,j)&&other.stored>=2);
-    if(source<0){report.blocked.push('kiln:'+i+':fiber');continue;}
+    if(source<0){
+      report.blocked.push('kiln:'+i+':fiber');
+      cycles.push({index:i,craft:'kiln',worker:machine.worker,amount:0,
+        sourceIndex:null,sourceCost:2,blocked:'fiber'});
+      continue;
+    }
     tiles[source]!.stored-=2;
-    report.cores+=(expert('kiln',machine.worker)?2:1)+machineLevel(machine)-1;
+    const amount=(expert('kiln',machine.worker)?2:1)+machineLevel(machine)-1;
+    report.cores+=amount;
+    cycles.push({index:i,craft:'kiln',worker:machine.worker,amount,
+      sourceIndex:source,sourceCost:2,blocked:null});
   }
+  return {tiles,report,cycles};
+}
+
+/** Advance one game day atomically. Equipment outcome and presentation are
+ * computed from the exact same immutable production projector. */
+export function runShift(s:WorkshopState):WorkshopState {
+  const {tiles,report}=projectMachineProduction(s);
   let warehouse=s.warehouse.core+report.cores;
   let coins=s.coins;
   let completed=s.completed,failed=s.failed;
