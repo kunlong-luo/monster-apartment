@@ -7,7 +7,7 @@ import { paintShiftFeedback } from './workshop-shift-effects';
 import {inspectMachineSignals} from './workshop-machine-status';
 import type {MachineVisualState} from './workshop-machine-status';
 import { BOARD_SIZE, WIDTH, MACHINES, linked, machineLevel, workshopHint } from './workshop-engine';
-import type { WorkshopState, Craft } from './workshop-engine';
+import type { WorkshopState, Craft, WorkerId } from './workshop-engine';
 
 export type LabSelect={plot:(index:number)=>void; patronTap?:()=>void};
 export type LabView={sync:(state:WorkshopState,selected:number|null)=>void; destroy:()=>void};
@@ -73,8 +73,6 @@ export async function mountWorkshopLab(
   element.dataset.renderer='pixi-webgl-bitmap';
   element.dataset.workerFrames='8';
   element.dataset.workerArt=Object.keys(workerPaintings).length===3?'painted-transparent':'hi-dpi-transparent-fallback';
-  const workerFrames=(id:keyof typeof art.workers)=>workerPaintings[id]
-    ?Array.from({length:8},()=>workerPaintings[id]!) :art.workers[id];
   // Immutable foundation: ground, numbered plaques and borders are built
   // exactly once. Only machine-dependent floor tint/opacity changes on sync.
   const foundation=new Container();app.stage.addChild(foundation);
@@ -102,6 +100,22 @@ export async function mountWorkshopLab(
   const motes=new Container();app.stage.addChild(motes);
   const moving:Graphics[]=[];
   const actors:AnimatedSprite[]=[];
+  const paintedActors:{sprite:Sprite;baseY:number;seed:number}[]=[];
+  /** Single-frame painted artwork should breathe, not repeat fake poses. */
+  const createWorkerSprite=(
+    id:WorkerId,x:number,y:number,width:number,height:number,seed:number,speed:number
+  ):Sprite=>{
+    const texture=workerPaintings[id];
+    const sprite:Sprite=texture?new Sprite(texture):new AnimatedSprite(art.workers[id]);
+    sprite.anchor.set(.5,1);sprite.position.set(x,y);
+    sprite.width=width;sprite.height=height;
+    if(sprite instanceof AnimatedSprite){
+      sprite.animationSpeed=speed;
+      sprite.loop=true;sprite.gotoAndPlay(seed%8);
+      actors.push(sprite);
+    }else paintedActors.push({sprite,baseY:y,seed});
+    return sprite;
+  };
   const machineArt:{sprite:Sprite;state:MachineVisualState;index:number}[]=[];
   const machineEffects:{ring:Graphics;state:MachineVisualState;index:number}[]=[];
   let flowPaths:{from:{x:number;y:number};to:{x:number;y:number};tint:number}[]=[];
@@ -179,6 +193,7 @@ export async function mountWorkshopLab(
     motes.visible=allowed;flowLayer.visible=allowed;
     tutorialLayer.alpha=allowed?.85:1;
     for(const actor of actors){if(allowed)actor.play();else actor.stop();}
+    if(!allowed)for(const actor of paintedActors)actor.sprite.y=actor.baseY;
     // Invisible tabs must not keep scheduling WebGL work.
     if(document.hidden)app.ticker.stop();
     else app.ticker.start();
@@ -207,6 +222,10 @@ export async function mountWorkshopLab(
     }
     if(!animationEnabled)return;
     elapsed+=dt/60;
+    for(const actor of paintedActors){
+      actor.sprite.y=actor.baseY+Math.sin(elapsed*2.2+actor.seed*.75)*
+        (shiftBurst>0?3.2:1.4);
+    }
     shiftBurst=Math.max(0,shiftBurst-dt/60);
     moving.forEach((m,i)=>{
       m.y-=dt*(.11+i%4*.055);
@@ -266,7 +285,8 @@ export async function mountWorkshopLab(
     paintFocus(selected);
     element.dataset.sceneRefreshes=String(++sceneRefreshes);
     for(const actor of actors)actor.stop();
-    actors.length=0;machineArt.length=0;machineEffects.length=0;flowPaths=[];
+    actors.length=0;paintedActors.length=0;
+    machineArt.length=0;machineEffects.length=0;flowPaths=[];
     stage.removeChildren().forEach(child=>child.destroy({children:true}));
     tutorialLayer.removeChildren().forEach(child=>child.destroy({children:true}));
     const signals=inspectMachineSignals(current);
@@ -288,12 +308,8 @@ export async function mountWorkshopLab(
       caption.position.set(32,65);stage.addChild(caption);
       for(const [n,id] of (['brook','fern','cinder'] as const).entries()){
         const x=220+n*220;
-        const sprite=new AnimatedSprite(workerFrames(id));
-        sprite.anchor.set(.5,1);sprite.position.set(x,169);
-        sprite.width=94;sprite.height=94;
-        sprite.animationSpeed=.11+n*.015;
-        sprite.loop=true;sprite.gotoAndPlay(n*2);
-        stage.addChild(sprite);actors.push(sprite);
+        const sprite=createWorkerSprite(id,x,169,94,94,n*2,.11+n*.015);
+        stage.addChild(sprite);
         const isWorking=current.tiles.some(tile=>tile?.worker===id);
         const name=glabel((id==='brook'?'泉泡':id==='fern'?'青枝':'炽角')+
           (isWorking?' · 工作中':' · 等派工'),14,
@@ -367,15 +383,12 @@ export async function mountWorkshopLab(
         stage.addChild(overlay);
       }
       if(machine.worker){
-        const actor=new AnimatedSprite(workerFrames(machine.worker));
-        actor.anchor.set(.5,1);
-        actor.position.set(x+CELL*.77,y+CELL*.94);
-        actor.width=CELL*.60;actor.height=CELL*.60;
-        actor.animationSpeed=signal.state==='working'?.13+(.01*(i%3)):.025;
-        actor.loop=true;actor.gotoAndPlay(i%8);
+        const actor=createWorkerSprite(
+          machine.worker,x+CELL*.77,y+CELL*.94,CELL*.60,CELL*.60,i,
+          signal.state==='working'?.13+(.01*(i%3)):.025);
         actor.eventMode='static';actor.cursor='pointer';
         actor.on('pointertap',()=>callbacks.plot(i));
-        stage.addChild(actor);actors.push(actor);
+        stage.addChild(actor);
       }
       if(level>1){
         const star=glabel(level===3?'✦ Lv.3':'✦ Lv.2',12,0xffdaa1,true);
