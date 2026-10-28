@@ -67,7 +67,12 @@ function fleckNoise(g:Ctx,seed:number,region:{x:number;y:number;w:number;h:numbe
   g.restore();
 }
 export function drawCreature(id:WorkerId,frame:number):HTMLCanvasElement {
-  const {canvas,g}=cvs(166,166);
+  // Keep the fallback alpha-backed; render at 3x intrinsic resolution so
+  // scaled Pixi worker figures stay antialiased on high-DPI displays.
+  // Production-grade painted sprites (if available) replace these frames.
+  const ratio=3;
+  const {canvas,g}=cvs(166*ratio,166*ratio);
+  g.scale(ratio,ratio);
   const p=frame%8,t=p/8*PI*2;
   const bob=Math.sin(t)*2.7;
   const work=Math.max(0,Math.sin(t));
