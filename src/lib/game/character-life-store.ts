@@ -1,7 +1,7 @@
 'use client';
 import {useSyncExternalStore} from 'react';
-import {decideYuesha,newCharacterLife,validCharacterLife,visitCharacter} from '@/core/character-life';
-import type {CharacterId,CharacterLifeState,YueshaChoice} from '@/core/character-life';
+import {decideYuesha,newCharacterLife,validCharacterLife,visitCharacter} from '../../core/character-life';
+import type {CharacterId,CharacterLifeState,YueshaChoice} from '../../core/character-life';
 export const CHARACTER_LIFE_KEY='monster-apartment:character-life:v1';
 export const CHARACTER_LIFE_EVENT='monster-apartment:character-life-change';
 const UNAVAILABLE='__character-life-unavailable__';
