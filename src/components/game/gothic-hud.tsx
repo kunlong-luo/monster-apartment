@@ -118,16 +118,16 @@ export function GothicDock({
 }){
   return <nav data-testid={testId} aria-label={label} className={
     'absolute bottom-[max(8px,env(safe-area-inset-bottom))] left-1/2 z-[10] '+
-    'flex w-max max-w-[98vw] -translate-x-1/2 items-center justify-center gap-2 sm:gap-3.5 '+
+    'flex w-max max-w-[calc(100vw-12px)] -translate-x-1/2 items-center justify-center gap-1 sm:gap-3.5 '+
     'rounded-2xl border border-gothic-brass/45 bg-[linear-gradient(180deg,#1e1223e6,#100915f0)] '+
-    'px-3 py-2 shadow-[0_12px_32px_#000a,inset_0_1px_#ffe0a220] backdrop-blur-md '+className
+    'px-1.5 py-1.5 shadow-[0_12px_32px_#000a,inset_0_1px_#ffe0a220] backdrop-blur-md sm:px-3 sm:py-2 '+className
   }>
     {items.map(item=><Link key={item.href} href={item.href}
       aria-label={item.ariaLabel??(item.description?item.label+' · '+item.description:item.label)}
       aria-current={activeHref===item.href?'page':undefined}
       data-tooltip={item.description || item.label}
       className={
-        'group flex min-w-10 flex-col items-center gap-1 text-[10px] sm:text-[11px] tracking-[.12em] '+
+        'group flex min-w-9 flex-col items-center gap-0.5 text-[9px] sm:min-w-10 sm:gap-1 sm:text-[11px] tracking-[.06em] sm:tracking-[.12em] '+
         'text-gothic-ivory drop-shadow-[0_2px_6px_#000] transition-transform duration-200 '+
         'hover:-translate-y-0.5 active:translate-y-0 active:scale-[.97] '+
         'focus-visible:outline-2 focus-visible:outline-gothic-glow '+
@@ -135,7 +135,7 @@ export function GothicDock({
         (activeHref===item.href?'text-gothic-glow font-bold':'')
       }>
       <span aria-hidden="true" className={
-        'grid size-9 sm:size-10 place-items-center rounded-[10px] border '+
+        'grid size-8 sm:size-10 place-items-center rounded-[10px] border '+
         'bg-[linear-gradient(145deg,#49303ccc,#140d18ed)] text-[20px] sm:text-[21px] text-gothic-gold '+
         'shadow-[inset_0_1px_#ffe9ac28,0_6px_15px_#0008] transition-[border-color,box-shadow,background-color] '+
         'group-hover:border-gothic-glow group-hover:shadow-[0_0_18px_#d8a87445] '+

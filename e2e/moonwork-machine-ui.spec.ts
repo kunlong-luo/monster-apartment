@@ -41,6 +41,12 @@ test('world buttons and headings remain in their panels on a narrow phone',async
   await page.setViewportSize({width:320,height:700});
   await page.goto('/town/');
   await expect(page.getByTestId('moonlit-town-scene')).toBeVisible();
+  const worldNav=page.getByRole('navigation',{name:'月光工坊世界'});
+  await expect(worldNav.getByRole('link')).toHaveCount(7);
+  const dockBounds=await worldNav.boundingBox();
+  expect(dockBounds).not.toBeNull();
+  expect(dockBounds!.x).toBeGreaterThanOrEqual(-1);
+  expect(dockBounds!.x+dockBounds!.width).toBeLessThanOrEqual(321);
   const positions=await page.locator('.mw-town-portal').evaluateAll(anchors=>
     anchors.map(node=>{
       const rect=node.getBoundingClientRect();

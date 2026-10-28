@@ -9,8 +9,9 @@ export const CANONICAL_GAME_NAV = [
 ] as const;
 
 export const WORLD_NAV = [
+  { id: 'lobby', label: '大厅', full: '大厅', glyph: '⌂', href: '/' },
   { id: 'apartment', label: '公寓', full: '暗夜公寓', glyph: '♜', href: '/apartment/' },
-  { id: 'workshop', label: '工坊', full: '晶核工坊', glyph: '⚒', href: '/workshop/' },
+  { id: 'workshop', label: '工坊', full: '工坊', glyph: '⚒', href: '/workshop/' },
   { id: 'characters', label: '角色', full: '角色图鉴', glyph: '♟', href: '/characters/' },
   { id: 'orders', label: '委托', full: '委托大厅', glyph: '❦', href: '/orders/' },
   { id: 'town', label: '探索', full: '月光街', glyph: '⚜', href: '/town/' },

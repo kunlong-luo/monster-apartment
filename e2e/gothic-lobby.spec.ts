@@ -91,7 +91,7 @@ test('motion preference survives routes and suppresses Pixi particles',async({pa
     .getByRole('link',{name:/公寓 ·/}).click();
   await expect(page.getByTestId('gothic-pixi-atmosphere').locator('canvas')).toHaveCount(0);
   await expect(page.getByTestId('gothic-apartment')).toHaveClass(/ga--still/);
-  await page.getByRole('navigation',{name:'公寓世界导航'}).getByRole('link',{name:'大厅'}).click();
+  await page.getByRole('navigation',{name:'公寓世界导航'}).getByRole('link',{name:'大厅',exact:true}).click();
   await expect(page.getByRole('button',{name:'切换动态特效'})).toHaveAttribute('aria-pressed','true');
 });
 
@@ -131,7 +131,7 @@ test('returning from workshop retains the sharp full-resolution lobby painting',
     .getByRole('link',{name:/公寓 ·/}).click();
   await expect(page.getByTestId('gothic-apartment')).toBeVisible();
   await page.getByRole('navigation',{name:'公寓世界导航'})
-    .getByRole('link',{name:'大厅'}).click();
+    .getByRole('link',{name:'大厅',exact:true}).click();
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await expect(painting).toHaveJSProperty('naturalWidth',original.width);
 });
@@ -155,7 +155,7 @@ test('scene links transition safely with reduced motion and keep full-size image
   expect(background).toContain('lobby-hero');
   expect(background).not.toContain('../lobby-hero');
   await page.getByRole('navigation',{name:'公寓世界导航'})
-    .getByRole('link',{name:'大厅'}).click();
+    .getByRole('link',{name:'大厅',exact:true}).click();
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await expect(lobby).toHaveJSProperty('complete',true);
   await page.getByRole('button',{name:'切换动态特效'}).click();
