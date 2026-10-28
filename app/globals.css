@@ -46,6 +46,25 @@
   ::selection { background: #f2be75; color: #181629; }
 }
 
+/* Gold-plated metallic filter and glow for Lucide SVG icons */
+.gothic-gold-icon {
+  color: #f0c588;
+  filter: drop-shadow(0 0 4px rgba(240, 197, 136, 0.45));
+}
+
+.gothic-hotspot-btn {
+  background: radial-gradient(circle at 30% 30%, rgba(68, 38, 56, 0.95), rgba(20, 12, 22, 0.98));
+  border: 1.5px solid #eec285;
+  box-shadow: inset 0 1px 2px rgba(255, 235, 195, 0.35), 0 4px 15px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.gothic-hotspot-btn:hover {
+  transform: scale(1.08);
+  border-color: #ffe6bd;
+  box-shadow: inset 0 1px 4px rgba(255, 240, 210, 0.6), 0 0 18px rgba(240, 197, 136, 0.65);
+}
+
 /* Custom Midnight Gothic Tooltip CSS */
 [data-tooltip] {
   position: relative;

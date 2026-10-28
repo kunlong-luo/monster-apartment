@@ -133,6 +133,47 @@ export const WORKER_DIALOGUES:Record<WorkerCharacterId,{
     whisper:'锤柄刻痕与旧熔炉铭牌出现同一符号，这可能不只是工匠的私人习惯。',
   },
 };
+
+export const YUESHA_ROOM_SCENES = [
+  { id: 'chamber', name: '契约会客室', sub: '当前场景' },
+  { id: 'balcony', name: '月光阳台', sub: '夜色露台' },
+  { id: 'bath', name: '私人浴室', sub: '温汤水汽' },
+  { id: 'wardrobe', name: '衣帽间', sub: '华服更衣' },
+] as const;
+
+export const YUESHA_MEMORIES = [
+  { id: 'first_night', title: '初遇之夜', quote: '月光下的第一份契约' },
+  { id: 'secret', title: '月下的秘密', quote: '属于魔女的心事' },
+  { id: 'warmth', title: '枕边的温度', quote: '深夜微光的陪伴' },
+  { id: 'contract', title: '未完的契约', quote: '未尽的盟誓' },
+] as const;
+
+export const YUESHA_HOTSPOTS = [
+  { id: 'wardrobe', label: '衣柜', icon: 'Shirt', top: '22%', left: '24%', text: '沉木衣柜里收纳着华美的礼服与蕾丝披肩。' },
+  { id: 'vanity', label: '梳妆台', icon: 'Search', top: '38%', left: '20%', text: '黄铜镜前摆放着各种精致的香水瓶与月晶饰品。' },
+  { id: 'rose', label: '玫瑰花', icon: 'Search', top: '56%', left: '18%', text: '盛开的暗红玫瑰，带有一丝幽香。' },
+  { id: 'tea', label: '红茶', icon: 'Coffee', top: '64%', left: '30%', text: '热气腾腾的红茶散发出桂皮与蜂蜜的甜香。' },
+  { id: 'contract', label: '旧契约', icon: 'Mail', top: '65%', left: '48%', text: '盖有月纹火漆的古老羊皮纸，书写着未公开的约定。' },
+  { id: 'window', label: '月光窗', icon: 'Search', top: '26%', left: '58%', text: '哥特式的尖顶高窗，月光倾泻而下。' },
+  { id: 'cat', label: '黑猫', icon: 'Cat', top: '41%', left: '72%', text: '一只神秘的纯黑猫咪，慵懒地躺在发光的软垫上。' },
+  { id: 'bed', label: '床榻', icon: 'Bed', top: '60%', left: '74%', text: '深红金丝绒雕花大床，散发着沉木馨香。' },
+] as const;
+
+export const YUESHA_DIALOGUES = [
+  { id: 'how_are_you', text: '最近过得怎么样？', icon: 'MessageSquare', response: '“有你常来拜访，这间寂静的会客室热闹了不少呢。”' },
+  { id: 'moonlight', text: '今晚的月色真美。', icon: 'Moon', response: '“是啊……特别是在窗前的这束月光里，让人心思泛起。”' },
+  { id: 'tea_together', text: '想和你一起喝杯茶。', icon: 'Coffee', response: '“刚好，红茶刚煮好。坐下来慢慢品尝吧。”' },
+  { id: 'about_contract', text: '关于我们的契约……', icon: 'BookOpen', response: '“有些契约不会写在纸上，而是刻在月光里。别担心，我一直守约。”' },
+  { id: 'research', text: '你在研究什么？', icon: 'Search', response: '“在整理一些旧魔法地图与水晶能量流动。你有兴趣一起看看吗？”' },
+  { id: 'embrace', text: '可以抱你吗？', icon: 'Heart', response: '“……真是贪心呢。不过，如果是你的话，今夜准许了。”' },
+] as const;
+
+export const YUESHA_GIFTS = [
+  { id: 'rose', name: '月光玫瑰', icon: '🌹', exp: 50 },
+  { id: 'tea', name: '香料红茶', icon: '☕', exp: 30 },
+  { id: 'pendant', name: '月纹吊坠', icon: '📿', exp: 100 },
+  { id: 'pudding', name: '夜色布丁', icon: '🍮', exp: 40 },
+] as const;
 export type CharacterLifeState={
   version:1;
   visited:CharacterId[];
