@@ -18,9 +18,9 @@
 
 不再包含旧版 `/classic`、`/legacy`、`/survival` 和独立 `/workshop-lab` 实验室。
 
-## V3.0 自动化经营与完整剧情策划（待开发）
+## V3.1 剧情驱动、自动经营与 CG 收藏策划（待开发）
 
-已建立 [**V3.0 完整策划文档目录**](docs/v3/README.md)，包含：
+已建立 [**V3.1 完整策划文档目录**](docs/v3/README.md)，包含：
 
 - [产品方向与七页经营循环](docs/v3/01-PRODUCT-VISION.md)
 - [自动生产、离线经营、仓库与订单 PRD](docs/v3/02-AUTO-PRODUCTION-PRD.md)
@@ -29,8 +29,12 @@
 - [**序章至第五章、三结局的完整主线剧本**](docs/v3/05-MAIN-STORY-SCRIPT.md)
 - [人物支线及职业成长](docs/v3/06-CHARACTER-QUESTS.md)
 - [分阶段开发计划与验收测试](docs/v3/07-ROADMAP-AND-ACCEPTANCE.md)
+- [对话驱动的剧情交互与镜头规范](docs/v3/08-NARRATIVE-DIALOGUE-UX.md)
+- [高品质故事 CG 收藏与美术生产规范](docs/v3/09-CG-COLLECTION-AND-ART.md)
+- [**六条伏笔、六个隐藏彩蛋及回收机制（含剧透）**](docs/v3/10-FORESHADOWING-AND-EASTER-EGGS.md)
+- [首个 15–20 分钟可玩章节与内容流水线](docs/v3/11-VERTICAL-SLICE-AND-CONTENT-PIPELINE.md)
 
-**注意：以上是后续开发基线，不代表自动生产、剧情演出和人物支线已经上线。** 当前 V2 工坊仍按照游戏日结算；正式迁移之前保留原有数据和玩法。
+**注意：以上是后续开发基线，不代表自动生产、剧情演出、CG 收藏、隐藏彩蛋和人物支线已经上线。** 当前 V2 工坊仍按照游戏日结算；正式迁移之前保留原有数据和玩法。
 
 ## 开发
 

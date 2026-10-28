@@ -160,3 +160,16 @@ repeatable: false
 角色页：显示关系阶段、个人事件与技能，不能只有无业务作用的华丽卡牌。
 
 **P1 交付检查：** 可从角色页面查看任务、跳工坊生产、切街道观察照明，在所有页面显示同一进度，并在刷页/切标签后保持一致。
+
+## 11. V3.1 收藏、伏笔与彩蛋事件（新增）
+
+世界进度新增独立但可关联的 **CollectionProgress**：`unlockedIds`、`seenIds`、`inspectedClueIds`；剧情标记可包括 `story:plant:clock13`（埋设不等于玩家发现）与 `secret-discovered:E-06`（玩家亲自发现）。这些字段属于建议模型，实际 schema 需迁移测试。
+
+- 主线**必经伏笔**在第一次播放时仅记录 `foreshadowId:planted`，不得因为看见道具就提前解锁剧透性秘密 CG。
+- 主动调查必须验证章节/已存在真实事件和调查地点，以唯一事件 ID 原子提交；由事件解锁 CG，不能由画面动画结束来生成经济或收藏奖。
+- 一张隐藏 CG 有且仅有一个权威首次解锁事件；重复热点点击、关闭/重开、剧情回看、多标签页并发不能追加第二份。
+- 解锁前不要加载秘密大图或展示其标题，解锁后通过角色图鉴画廊筛选。玩家已获得的线索可随时重访；没有「错过一次就永远不可得」。
+- **示例**：`public-project-completed:east-street-lamps` → 公寓屋顶信使热点 `available` → 玩家检查明信片 → 事务事件 `secret-discovered:E-06` → `CG-S-006` 解锁 → 重看只读。
+- 即使 CG 文件缺失或玩家关闭动画，对话/任务仍然可继续；隐藏 CG 不提供主线必需的稀有角色或生产装置。
+
+详见 [08 对话 PRD](08-NARRATIVE-DIALOGUE-UX.md)、[09 CG 规范](09-CG-COLLECTION-AND-ART.md) 与 [10 伏笔事件表](10-FORESHADOWING-AND-EASTER-EGGS.md)。
