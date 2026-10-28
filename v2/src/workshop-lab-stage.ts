@@ -4,6 +4,8 @@ import { patronFrames } from './patron-art';
 import { loadWorkshopPaintedArt } from './workshop-painted-art';
 import { createFloatingFeedback } from './workshop-floating-feedback';
 import { paintShiftFeedback } from './workshop-shift-effects';
+import {inspectMachineSignals} from './workshop-machine-status';
+import type {MachineVisualState} from './workshop-machine-status';
 import { BOARD_SIZE, WIDTH, MACHINES, linked, machineLevel, workshopHint } from './workshop-engine';
 import type { WorkshopState, Craft } from './workshop-engine';
 
@@ -97,7 +99,8 @@ export async function mountWorkshopLab(
   const motes=new Container();app.stage.addChild(motes);
   const moving:Graphics[]=[];
   const actors:AnimatedSprite[]=[];
-  const machineArt:Sprite[]=[];
+  const machineArt:{sprite:Sprite;state:MachineVisualState;index:number}[]=[];
+  const machineEffects:{ring:Graphics;state:MachineVisualState;index:number}[]=[];
   let flowPaths:{from:{x:number;y:number};to:{x:number;y:number};tint:number}[]=[];
   const flowLayer=new Graphics();
   app.stage.addChild(flowLayer);
@@ -175,9 +178,19 @@ export async function mountWorkshopLab(
       m.y-=dt*(.11+i%4*.055);
       if(m.y<0)m.y=H;
     });
-    for(const [index,machine] of machineArt.entries()){
-      machine.y+=(Math.sin(elapsed*3+index*.8)-
-        Math.sin((elapsed-dt/60)*3+index*.8))*.5;
+    for(const item of machineArt){
+      if(item.state!=='working')continue;
+      // Only staffed, unblocked machinery vibrates. Idle machines stand still.
+      const wave=Math.sin(elapsed*3+item.index*.8)-
+        Math.sin((elapsed-dt/60)*3+item.index*.8);
+      item.sprite.y+=wave*.55;
+    }
+    for(const item of machineEffects){
+      if(item.state==='working')
+        item.ring.alpha=.27+.21*(1+Math.sin(elapsed*4+item.index))*.5;
+      else if(item.state==='blocked')
+        item.ring.alpha=.25+.13*(1+Math.sin(elapsed*1.3+item.index))*.5;
+      else item.ring.alpha=.1;
     }
     tutorialLayer.alpha=.81+.19*Math.sin(elapsed*2.5);
     flowLayer.clear();
@@ -218,9 +231,11 @@ export async function mountWorkshopLab(
     paintFocus(selected);
     element.dataset.sceneRefreshes=String(++sceneRefreshes);
     for(const actor of actors)actor.stop();
-    actors.length=0;machineArt.length=0;flowPaths=[];
+    actors.length=0;machineArt.length=0;machineEffects.length=0;flowPaths=[];
     stage.removeChildren().forEach(child=>child.destroy({children:true}));
     tutorialLayer.removeChildren().forEach(child=>child.destroy({children:true}));
+    const signals=inspectMachineSignals(current);
+    element.dataset.machineStates=signals.map((entry,index)=>entry?index+':'+entry.state:'').filter(Boolean).join(';');
     const hint=workshopHint(current);
     element.dataset.guideAction=hint.action;
     element.dataset.guideSource=hint.source===null?'':String(hint.source);
@@ -281,6 +296,14 @@ export async function mountWorkshopLab(
         }
       }
       const level=machineLevel(machine);
+      const signal=signals[i]!;
+      const glow=new Graphics().ellipse(x+CELL*.5,y+CELL*.78,CELL*.35,CELL*.19)
+        .fill({color:signal.state==='working'?COLORS[machine.craft]:
+          signal.state==='blocked'?0xea7968:0x6d7183,alpha:.36});
+      glow.eventMode='none';
+      glow.alpha=signal.state==='working'?.36:signal.state==='blocked'?.25:.10;
+      stage.addChild(glow);
+      machineEffects.push({ring:glow,state:signal.state,index:i});
       if(level>1){
         const glow=new Graphics().ellipse(x+CELL*.49,y+CELL*.79,
           CELL*.34+(level-2)*12,CELL*.21+(level-2)*5)
@@ -296,7 +319,7 @@ export async function mountWorkshopLab(
       fixture.height=CELL*(.88+(level-1)*.035);
       fixture.eventMode='static';fixture.cursor='pointer';
       fixture.on('pointertap',()=>callbacks.plot(i));
-      stage.addChild(fixture);machineArt.push(fixture);
+      stage.addChild(fixture);machineArt.push({sprite:fixture,state:signal.state,index:i});
       const detail=machine.craft==='well'?paintedDetail.well:
         machine.craft==='garden'?paintedDetail.garden:null;
       if(detail){
@@ -313,7 +336,7 @@ export async function mountWorkshopLab(
         actor.anchor.set(.5,1);
         actor.position.set(x+CELL*.77,y+CELL*.94);
         actor.width=CELL*.60;actor.height=CELL*.60;
-        actor.animationSpeed=.13+(.01*(i%3));
+        actor.animationSpeed=signal.state==='working'?.13+(.01*(i%3)):.025;
         actor.loop=true;actor.gotoAndPlay(i%8);
         actor.eventMode='static';actor.cursor='pointer';
         actor.on('pointertap',()=>callbacks.plot(i));
@@ -324,8 +347,10 @@ export async function mountWorkshopLab(
         star.position.set(x+CELL-62,y+11);
         stage.addChild(star);
       }
-      const label=glabel(MACHINES[machine.craft].zh+' · '+machine.stored,
-        12,COLORS[machine.craft],true);
+      const stateLabel=signal.state==='idle'?'待派工':
+        signal.state==='blocked'?'缺'+(signal.problem==='water'?'水汽':'孢子'):'运转中';
+      const label=glabel(MACHINES[machine.craft].zh+' · '+machine.stored+' · '+stateLabel,
+        11,signal.state==='blocked'?0xffac99:COLORS[machine.craft],true);
       label.anchor.set(.5,0);
       label.position.set(x+CELL/2,y+CELL-29);stage.addChild(label);
     }
@@ -373,7 +398,7 @@ export async function mountWorkshopLab(
           .lineTo(b.x+CELL/2,b.y+CELL/2)
           .stroke({color:water?0x69d2ed:0xd5eaa1,width:7,alpha:.6});
         stage.addChildAt(pipe,0);
-        if(first.worker&&second.worker){
+        if(signals[i]?.state==='working'&&signals[j]?.state==='working'){
           flowPaths.push({from:{x:a.x+CELL/2,y:a.y+CELL/2},
             to:{x:b.x+CELL/2,y:b.y+CELL/2},tint:water?0x73d6ef:0xc7f1a9});
         }
@@ -434,7 +459,8 @@ export async function mountWorkshopLab(
       tag.position.set(x,isMobile?192:603);
       stage.addChild(tag);
     }
-    // Fresh AnimatedSprite instances honor the latest OS/player motion setting.
+    // Shift settlement cues are bound to measured output, not animation RNG.
+    // A paused device never emits a fake production pulse.
     updateMotion();
   };
   render(state,null);
