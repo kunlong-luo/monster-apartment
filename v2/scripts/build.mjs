@@ -35,3 +35,15 @@ await copyFile(resolve(root,'art/moonstone-floor.avif'),resolve(root,'dist/asset
 await copyFile(resolve(root,'art/kiln-art-review.avif'),resolve(root,'dist/assets/kiln-art-review.avif'));
 await copyFile(resolve(root,'art/well-art-review.avif'),resolve(root,'dist/assets/well-art-review.avif'));
 await copyFile(resolve(root,'art/garden-art-review.avif'),resolve(root,'dist/assets/garden-art-review.avif'));
+
+/** Optional original alpha worker paintings. Builds without art in development;
+ * when artists submit the approved files, deploy bundles them automatically. */
+for(const worker of ['brook','fern','cinder']){
+  try{
+    await mkdir(resolve(root,'dist/assets/workers'),{recursive:true});
+    await copyFile(resolve(root,'art/production/workers',worker+'.webp'),
+      resolve(root,'dist/assets/workers',worker+'.webp'));
+  }catch(error){
+    if(error?.code!=='ENOENT')throw error;
+  }
+}
