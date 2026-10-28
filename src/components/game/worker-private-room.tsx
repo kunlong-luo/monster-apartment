@@ -8,6 +8,7 @@ import {commitCharacterLife,useCharacterLife} from '@/lib/game/character-life-st
 import {WorkerArtwork} from '@/components/moonwork/worker-artwork';
 import {CharacterLifePortrait} from './character-life-portrait';
 import {GothicModal} from './gothic-hud';
+import './gothic-polish.css';
 
 const SCENE_PALETTES={
   brook:{
