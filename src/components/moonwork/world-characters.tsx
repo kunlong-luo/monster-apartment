@@ -7,6 +7,7 @@ import {WORKERS,MACHINES} from '../../../v2/src/workshop-engine';
 import type {WorkshopState,WorkerId} from '../../../v2/src/workshop-engine';
 import {WorkerArtwork} from './worker-artwork';
 import {CharacterLifePortrait} from '@/components/game/character-life-portrait';
+import {RoomInvestigationJournal} from '@/components/game/room-investigation-journal';
 const ids=['brook','fern','cinder'] as const;
 /** Original per-worker transparent portrait with the same identity as the
  * animated factory actor; no low-resolution three-column image crop. */
@@ -29,6 +30,7 @@ export function Characters({s,onVisit}:{s:WorkshopState;onVisit:(id:WorkerId)=>v
       <h2>真正的工匠，在真正的岗位工作。</h2>
       <p>每位工匠只对应一个岗位。查看当前派工，再进入工坊改变水汽、孢子和晶核的生产效率。</p>
     </section>
+    <RoomInvestigationJournal/>
     <div className="mw-worker-grid" data-testid="painted-worker-gallery">
       {ids.map((id:WorkerId,i)=>{
         const w=WORKERS[id];const plot=s.tiles.findIndex(t=>t?.worker===id);
