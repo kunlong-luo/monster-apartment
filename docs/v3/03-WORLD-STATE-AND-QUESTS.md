@@ -184,3 +184,13 @@ repeatable: false
 - 阅读房间对白时，经营模拟仍使用单一时间轴；动画切页与加载失败不改变收益和任务进度。
 
 具体 UI、序列化建议和四间先行试验见 [14-CHARACTER-PRIVATE-ROOMS-PRD.md](14-CHARACTER-PRIVATE-ROOMS-PRD.md)，所有人物房间的职业和伏笔道具详见 [15-CHARACTER-ROOM-BIBLE.md](15-CHARACTER-ROOM-BIBLE.md)。
+
+## 13. V3.3 装备/属性领域事件与故事状态
+
+- `character-trained`：一次真实训练完成后追加有限六维成长，事件按训练工单 ID 去重。
+- `forge-started / forge-completed`：锻造台记录已保留原料、唯一工单、制作物品实例和完成时间；收货属于经济数据，不由剧情或 CG 动画凭空发放。
+- `equipment-equipped / equipment-unequipped`：道具只占一个部位和一个归属，同一 `itemId` 不能同时穿在两个人身上；更换时正确返回背包。
+- `room-item-observed`：人物私人房间出现与已穿戴装备有关的可选对白/道具；**首次事件才允许解锁小回忆，重复看不涨无限关系**。
+- 剧情必需线索、三结局以及 CG-M 主线收藏不依赖装备/角色达到 UR；角色潜力与故事推进的奖励归不同领域，不以装备分值代替角色性格或人物信任。
+
+同一角色通过 `characterId` 在图鉴、人物私室、工坊岗位和成长档案中引用**一份权威六维与装备状态**。详情 [17 属性](17-CHARACTER-ATTRIBUTES-AND-POTENTIAL.md)、[18 装备](18-EQUIPMENT-FORGING-PRD.md)。
