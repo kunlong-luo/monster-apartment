@@ -3,7 +3,7 @@ import {ABILITY_GROUPS,CHARACTER_PROFILES,decideYuesha,newCharacterLife,
   validCharacterLife,visitCharacter,inspectCharacterRoom,decideWorker,
   WORKER_DIALOGUES,CHARACTER_ROOM_OBJECTS,yueshaAfterChoice} from '../src/core/character-life';
 import {decodeCharacterLife} from '../src/lib/game/character-life-store';
-import {roomHotspotPositions} from '../src/components/game/room-scene-hotspots';
+import {roomHotspotPositions} from '../src/core/room-stage-layout';
 
 describe('V3.4 character identities and durable room choices',()=>{
   it('places interactive objects differently by character without leaving the scene',()=>{
