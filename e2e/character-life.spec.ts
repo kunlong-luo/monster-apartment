@@ -73,6 +73,7 @@ test('Brook, Fern and Cinder have unique rooms and persisted personal choices',a
 
 test('assigned worker is not duplicated in their private room',async({page})=>{
   await page.goto('/characters/');
+  await expect(page.getByTestId('life-profile-brook')).toBeVisible();
   await page.evaluate(()=>{
     const key='monster-apartment:workshop-v2-lab';
     const world=JSON.parse(localStorage.getItem(key)!);
