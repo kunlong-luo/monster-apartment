@@ -11,6 +11,7 @@ test('four personal suites reveal one cross-character investigation without extr
     const dialog=page.getByRole('dialog',{name:'拜访'+item.name+'的房间'});
     await expect(dialog).toBeVisible();
     await dialog.getByRole('button',{name:item.first}).click();
+    await expect(page.getByTestId('scene-discovery')).toBeVisible();
     await dialog.getByRole('button',{name:item.second}).click();
     await dialog.getByRole('button',{name:'离开'+item.name+'的房间'}).click();
   }

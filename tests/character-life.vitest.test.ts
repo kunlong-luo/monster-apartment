@@ -3,8 +3,22 @@ import {ABILITY_GROUPS,CHARACTER_PROFILES,decideYuesha,newCharacterLife,
   validCharacterLife,visitCharacter,inspectCharacterRoom,decideWorker,
   WORKER_DIALOGUES,CHARACTER_ROOM_OBJECTS,yueshaAfterChoice} from '../src/core/character-life';
 import {decodeCharacterLife} from '../src/lib/game/character-life-store';
+import {roomHotspotPositions} from '../src/components/game/room-scene-hotspots';
 
 describe('V3.4 character identities and durable room choices',()=>{
+  it('places interactive objects differently by character without leaving the scene',()=>{
+    const sets=['yuesha','brook','fern','cinder'].map(roomHotspotPositions);
+    expect(sets.every(items=>items.length===3)).toBe(true);
+    expect(new Set(sets.map(items=>JSON.stringify(items))).size).toBe(4);
+    for(const spots of sets){
+      for(const spot of spots){
+        expect(Number.parseFloat(spot.left)).toBeGreaterThanOrEqual(5);
+        expect(Number.parseFloat(spot.left)).toBeLessThan(55);
+        expect(Number.parseFloat(spot.top)).toBeGreaterThanOrEqual(20);
+        expect(Number.parseFloat(spot.top)).toBeLessThan(80);
+      }
+    }
+  });
   it('defines twenty distinct abilities and differentiated main characters',()=>{
     const keys=ABILITY_GROUPS.flatMap(group=>group.keys);
     expect(keys).toHaveLength(20);

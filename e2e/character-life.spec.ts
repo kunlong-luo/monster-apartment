@@ -12,6 +12,7 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   await expect(page.getByTestId('yuesha-dialogue')).toContainText('账本摊开');
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'{}').coins)).toBe(before);
   await page.getByRole('button',{name:'月纹蜡封'}).click();
+  await expect(page.getByTestId('scene-discovery')).toContainText('月纹');
   await expect(page.getByTestId('yuesha-hotspot-text')).toContainText('月纹');
   await page.reload();
   await page.getByRole('button',{name:'与女主人月纱交流'}).click();
