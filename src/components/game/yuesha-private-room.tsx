@@ -8,6 +8,7 @@ import {CharacterLifePortrait} from './character-life-portrait';
 import {RoomSceneHotspots} from './room-scene-hotspots';
 import {RoomSceneBackdrop} from './room-scene-backdrop';
 import {RoomResidentSprite} from './room-resident-sprite';
+import {RoomConversationTopics} from './room-conversation-topics';
 import {roomSceneReaction,yueshaRoomEasterEgg} from '@/core/room-scene-reactions';
 type Hotspot='seal'|'tea'|'ledger';
 export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:number}){
@@ -71,6 +72,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       {choice&&<p className="text-[11px] text-[#f0c58e]">已记录的观点：{choice==='transparent'?'透明公开优先':'稳健交付优先'}。这是人物故事选择，不会直接修改订单和仓库。</p>}
       {feedback&&<p role="status" className="text-xs text-[#ebc79c]">{feedback}</p>}
     </div>
+    <RoomConversationTopics id="yuesha" observed={observed}
+      onSpeak={()=>setReaction('“原来你也在意这段往事。”月纱微笑着看向你。')}/>
     <div className="space-y-2">
       <span className="text-xs text-[#f0c58e]">月纱的藏品 · 点击场景里的物品，查看她留下的线索</span>
       {observed.length>0&&<p className="text-[10px] text-gothic-muted">已记录 {observed.length}/3 件会客室物品</p>}

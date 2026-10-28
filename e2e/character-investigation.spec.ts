@@ -21,6 +21,10 @@ test('four personal suites reveal one cross-character investigation without extr
   await page.getByRole('button',{name:'旧账簿'}).click();
   await expect(page.getByTestId('yuesha-four-room-memory')).toContainText('四个人的房间');
   await page.goto('/characters/');
+  await expect(page.getByTestId('room-memory-gallery')).toContainText('4 / 4');
+  await expect(page.getByTestId('memory-card-contract')).toBeEnabled();
+  await page.getByTestId('memory-card-contract').click();
+  await expect(page.getByTestId('memory-card-detail')).toContainText('半月');
   await page.getByTestId('investigation-toggle').click();
   await expect(page.getByTestId('room-investigation-journal')).toContainText('4/4');
   await expect(page.getByTestId('investigation-conclusion')).toBeVisible();

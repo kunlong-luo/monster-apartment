@@ -9,6 +9,7 @@ import {GothicModal} from './gothic-hud';
 import {RoomSceneHotspots} from './room-scene-hotspots';
 import {RoomSceneBackdrop} from './room-scene-backdrop';
 import {RoomResidentSprite} from './room-resident-sprite';
+import {RoomConversationTopics} from './room-conversation-topics';
 import {roomSceneReaction} from '@/core/room-scene-reactions';
 import './gothic-polish.css';
 
@@ -94,6 +95,8 @@ export function WorkerPrivateRoom({id,onClose,working}:{
           >{item.label}</button>)}
         </div>}
       </section>
+      <RoomConversationTopics id={id} observed={observed} working={working}
+        onSpeak={()=>setReaction('你们谈起了与这间房有关的往事。')}/>
       <section className="space-y-2" aria-label="观察人物房间">
         <h3 className="text-xs tracking-wider text-gothic-gold">房间观察 · 在画面中选择感兴趣的物件</h3>
         {selectedItem&&<p data-testid={'worker-room-object-'+id} className="rounded-lg bg-gothic-wine/35 p-3 text-xs leading-6">
