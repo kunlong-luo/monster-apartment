@@ -46,7 +46,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       <span>公寓现住 {guests} 位邻居</span>
       <span>与你的关系：{choice==='transparent'?'认可公开负责':choice==='careful'?'认可谨慎守约':'初识 · 保持距离'}</span>
     </div>
-    {status!=='ok'&&<p role="alert" className="rounded-lg border border-[#b37f82] p-3 text-xs text-[#ffc5c5]">
+    {status!=='ok'&&<p role="alert" data-testid="character-life-error" className="rounded-lg border border-[#b37f82] p-3 text-xs text-[#ffc5c5]">
       {status==='corrupt'?'人物档案存档损坏：已保留原数据，不会自动覆盖。':'浏览器未允许持久保存人物档案，本次无法记录选择。'}
     </p>}
     <div className="space-y-2">

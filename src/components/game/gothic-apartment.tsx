@@ -94,6 +94,8 @@ export function GothicApartment(){
       <div className="mt-5 flex flex-wrap gap-3">
         <button type="button" className="rounded-lg border border-gothic-gold bg-gothic-wine px-4 py-2 text-sm hover:brightness-110"
           onClick={()=>{
+            // An unreadable player save must not be overwritten by one accidental tap.
+            if(!window.confirm('现有公寓存档无法读取。确认永久覆盖原始存档并重新开始吗？此操作无法撤销。'))return;
             try{
               const fresh=newCozyGame();
               localStorage.setItem(KEY,JSON.stringify(fresh));

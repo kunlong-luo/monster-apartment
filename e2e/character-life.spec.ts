@@ -35,7 +35,7 @@ test('character gallery can open the same room; corrupt lore save is not silentl
   await page.reload();
   await page.getByRole('button',{name:'与女主人月纱交流'}).click();
   await page.getByTestId('visit-yuesha-room').click();
-  await expect(page.getByRole('alert')).toContainText('存档损坏');
+  await expect(page.getByTestId('character-life-error')).toContainText('存档损坏');
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:character-life:v1'))).toBe('{damaged');
 });
 
