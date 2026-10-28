@@ -3,6 +3,7 @@ import Link from 'next/link';
 import './world.css';
 import '@/components/game/gothic-world.css';
 import {useEffect} from 'react';
+import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
 import {useWorkshopWorld} from './world-save-react';
 import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from './world-navigation';
