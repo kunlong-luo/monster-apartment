@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import {useEffect,useState} from 'react';
 import moonlitStreet from '../../../public/art/lobby-hero-v3.webp';
 import {CHARACTER_PROFILES,WORKER_DIALOGUES} from '@/core/character-life';
@@ -73,9 +74,15 @@ export function WorkerPrivateRoom({id,onClose,working}:{
         <div className={'pointer-events-none absolute left-[21%] top-[18%] size-[36%] rounded-full blur-3xl '+palette.glow}/>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-[#0d0b12f0] to-transparent"/>
         <span aria-hidden="true" className="pointer-events-none absolute left-[5%] top-[29%] text-[clamp(58px,11vw,110px)] leading-none text-[#e8cda84f]">{palette.symbol}</span>
-        <div className="absolute bottom-0 right-[7%] h-[96%] w-[55%] max-w-[475px] origin-bottom motion-safe:animate-[room-breathe_5s_ease-in-out_infinite] motion-reduce:animate-none">
+        {!working?<div data-testid={'room-resident-present-'+id}
+          className="absolute bottom-0 right-[7%] h-[96%] w-[55%] max-w-[475px] origin-bottom motion-safe:animate-[room-breathe_5s_ease-in-out_infinite] motion-reduce:animate-none">
           <WorkerArtwork id={id} name={profile.name}/>
-        </div>
+        </div>:<div data-testid={'room-resident-away-'+id}
+          className="pointer-events-none absolute bottom-[24%] right-[6%] w-[43%] max-w-[230px] rounded-lg border border-[#efd4aa66] bg-[#170e19d9] px-3 py-3 text-center shadow-[0_9px_25px_#000a]">
+          <span aria-hidden="true" className="block text-2xl text-[#f5cc8a]">✉</span>
+          <p className="mt-1 text-xs text-[#ffe4c0]">{profile.name}正在工坊值守</p>
+          <p className="mt-1 text-[11px] leading-5 text-[#d8bea9]">桌上留有便条，回到房间后再见面。</p>
+        </div>}
         <RoomSceneHotspots characterName={profile.name} roomId={id} items={scene.objects}
           observed={observed} selected={selectedItem} onInspect={inspect}
           description={scene.objects.find(item=>item.id===selectedItem)?.text}/>
@@ -88,10 +95,16 @@ export function WorkerPrivateRoom({id,onClose,working}:{
       {status!=='ok'&&<p role="alert" className="rounded-lg border border-rose-300/50 p-3 text-xs text-rose-200">
         {status==='corrupt'?'人物存档无法读取；已保留原记录，不会覆盖。':'浏览器暂时无法保存人物拜访记录。'}</p>}
       <section className="space-y-2" aria-label={profile.name+'的交谈'}>
-        <h3 className="text-xs tracking-wider text-gothic-gold">与 {profile.name} 交谈</h3>
+        <h3 className="text-xs tracking-wider text-gothic-gold">{working?'房间留言与回忆':'与 '+profile.name+'交谈'}</h3>
         <p className="rounded-lg border border-gothic-brass/35 bg-gothic-panel/85 px-3 py-3 text-sm leading-7"
-          data-testid={'worker-room-dialogue-'+id}>{choice?scene.responses[choice]:scene.greeting}</p>
-        {!choice&&<div className="grid gap-2 sm:grid-cols-2">
+          data-testid={'worker-room-dialogue-'+id}>
+          {working?(choice?'你想起上次交谈时，'+scene.responses[choice]:'目前无人应答；仍可调查物件。等工匠休息后再当面交谈。'):
+            choice?scene.responses[choice]:scene.greeting}
+        </p>
+        {working&&!choice&&<p className="text-[11px] leading-6 text-gothic-muted">
+          可以前往 <Link href="/workshop/" className="underline decoration-gothic-brass underline-offset-4 hover:text-gothic-glow">工坊</Link> 查看排班。人物同一时间只出现在一处。
+        </p>}
+        {!choice&&!working&&<div className="grid gap-2 sm:grid-cols-2">
           {scene.choices.map(item=><button key={item.id} type="button"
             disabled={status!=='ok'}
             onClick={()=>answer(item.id)}

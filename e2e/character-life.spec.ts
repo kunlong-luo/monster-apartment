@@ -68,3 +68,20 @@ test('Brook, Fern and Cinder have unique rooms and persisted personal choices',a
   expect(stored.workerDecisions).toEqual({brook:'care',fern:'care',cinder:'care'});
   expect(stored.observations.brook).toEqual(['toolbox','gauge']);
 });
+
+test('assigned worker is not duplicated in their private room',async({page})=>{
+  await page.goto('/characters/');
+  await page.evaluate(()=>{
+    const key='monster-apartment:workshop-v2-lab';
+    const world=JSON.parse(localStorage.getItem(key)!);
+    world.tiles[5].worker='brook';
+    localStorage.setItem(key,JSON.stringify(world));
+  });
+  await page.reload();
+  await page.getByTestId('visit-worker-room-brook').click();
+  await expect(page.getByTestId('room-resident-away-brook')).toBeVisible();
+  await expect(page.getByTestId('room-resident-present-brook')).toHaveCount(0);
+  await expect(page.getByTestId('worker-room-choice-brook-care')).toHaveCount(0);
+  await page.getByRole('button',{name:'空掉的工具挂钩'}).click();
+  await expect(page.getByTestId('scene-discovery')).toContainText('扳手');
+});
