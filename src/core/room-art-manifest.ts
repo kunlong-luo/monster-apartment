@@ -1,5 +1,5 @@
 import type {CharacterId} from './character-life';
-import input from '../../../public/art/rooms/manifest.json';
+import input from '../../public/art/rooms/manifest.json';
 
 export type RoomArtStatus='concept'|'production';
 export type RoomComposition='embedded-resident'|'architecture-crop'|'separated';
