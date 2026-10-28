@@ -22,7 +22,7 @@ export function inspectMachineSignals(s:WorkshopState):Array<MachineVisualSignal
       blocked.set(index,{craft,problem:reason});
     }
   }
-  return s.tiles.map((machine,index)=>{
+  return s.tiles.map<MachineVisualSignal|null>((machine,index)=>{
     if(!machine)return null;
     if(!machine.worker)return {state:'idle',problem:null};
     const issue=blocked.get(index);
