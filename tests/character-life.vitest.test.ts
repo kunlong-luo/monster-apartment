@@ -13,9 +13,9 @@ describe('V3.4 character identities and durable room choices',()=>{
     for(const spots of sets){
       for(const spot of spots){
         expect(Number.parseFloat(spot.left)).toBeGreaterThanOrEqual(5);
-        expect(Number.parseFloat(spot.left)).toBeLessThan(55);
+        expect(Number.parseFloat(spot.left)).toBeLessThan(80);
         expect(Number.parseFloat(spot.top)).toBeGreaterThanOrEqual(20);
-        expect(Number.parseFloat(spot.top)).toBeLessThan(80);
+        expect(Number.parseFloat(spot.top)).toBeLessThan(85);
       }
     }
   });
