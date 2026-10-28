@@ -134,10 +134,29 @@ export async function mountWorkshopLab(
     target.on('pointertap',()=>callbacks.plot(index));
     plotHits.addChild(target);
   }
+  const pulses:{sprite:Graphics;age:number}[]=[];
+  const emitProductionPulses=(current:WorkshopState)=>{
+    if(!animationEnabled||!current.last)return;
+    for(const [craft,amount] of [
+      ['well',current.last.water],['garden',current.last.fiber],['kiln',current.last.cores],
+    ] as const){
+      if(amount<=0)continue;
+      const index=current.tiles.findIndex(t=>t?.craft===craft&&t.worker);
+      if(index<0)continue;
+      const {x,y}=plotXY(index);
+      const ring=new Graphics().circle(0,0,15)
+        .stroke({width:3,color:COLORS[craft],alpha:.95});
+      ring.position.set(x+CELL*.5,y+CELL*.57);
+      ring.eventMode='none';
+      feedbackLayer.addChild(ring);
+      pulses.push({sprite:ring,age:0});
+    }
+  };
   const feedback=createFloatingFeedback(feedbackLayer,glabel);
   const {showFeedback}=feedback;
   let lastShiftDay=state.day;
   let elapsed=0;
+  let shiftBurst=0;
   for(let i=0;i<20;i++){
     const mote=new Graphics().circle(0,0,1+i%3).fill({color:0xefcf9b,alpha:.24});
     mote.position.set(60+i*49%940,35+i*71%560);
@@ -175,8 +194,20 @@ export async function mountWorkshopLab(
     const dt=ticker.deltaTime;
     // Feedback must still complete when a player disables decorative motion.
     feedback.tick(dt);
+    for(let i=pulses.length-1;i>=0;i--){
+      const item=pulses[i];
+      item.age+=dt/60;
+      item.sprite.scale.set(1+item.age*2.1);
+      item.sprite.alpha=Math.max(0,1-item.age/1.1);
+      if(item.age>=1.1){
+        feedbackLayer.removeChild(item.sprite);
+        item.sprite.destroy();
+        pulses.splice(i,1);
+      }
+    }
     if(!animationEnabled)return;
     elapsed+=dt/60;
+    shiftBurst=Math.max(0,shiftBurst-dt/60);
     moving.forEach((m,i)=>{
       m.y-=dt*(.11+i%4*.055);
       if(m.y<0)m.y=H;
@@ -186,11 +217,12 @@ export async function mountWorkshopLab(
       // Only staffed, unblocked machinery vibrates. Idle machines stand still.
       const wave=Math.sin(elapsed*3+item.index*.8)-
         Math.sin((elapsed-dt/60)*3+item.index*.8);
-      item.sprite.y+=wave*.55;
+      item.sprite.y+=wave*(shiftBurst>0?1.55:.24);
     }
     for(const item of machineEffects){
       if(item.state==='working')
-        item.ring.alpha=.27+.21*(1+Math.sin(elapsed*4+item.index))*.5;
+        item.ring.alpha=(shiftBurst>0?.53:.17)+
+          .15*(1+Math.sin(elapsed*(shiftBurst>0?8:3)+item.index))*.5;
       else if(item.state==='blocked')
         item.ring.alpha=.25+.13*(1+Math.sin(elapsed*1.3+item.index))*.5;
       else item.ring.alpha=.1;
@@ -351,7 +383,7 @@ export async function mountWorkshopLab(
         stage.addChild(star);
       }
       const stateLabel=signal.state==='idle'?'待派工':
-        signal.state==='blocked'?'缺'+(signal.problem==='water'?'水汽':'孢子'):'运转中';
+        signal.state==='blocked'?'缺'+(signal.problem==='water'?'水汽':'孢子'):'可生产';
       const label=glabel(MACHINES[machine.craft].zh+' · '+machine.stored+' · '+stateLabel,
         11,signal.state==='blocked'?0xffac99:COLORS[machine.craft],true);
       label.anchor.set(.5,0);
@@ -411,12 +443,15 @@ export async function mountWorkshopLab(
     // A mature, distinct guest silhouette. This portrait uses bitmap frames
     // with independently animated hair, eye blink, and sleeve movement.
     // Keep her away from machine hit areas in both stage compositions.
-    // Only real advanced shifts generate floating result feedback.
-    // Do not replay effects on save reload or toolbar-only interactions.
-    if(completedShift&&current.last)
+    // Real settlement animates startup -> energy transfer -> result; simple
+    // selections, save hydration and denied commands never trigger a burst.
+    if(completedShift&&current.last){
+      if(animationEnabled)shiftBurst=1.1;
+      emitProductionPulses(current);
       paintShiftFeedback(current,element,showFeedback,{
         W,H,CELL,MOBILE,plotXY,previousOrderReward,previousPatronStatus,
       });
+    }
     element.dataset.patronVisible=current.patron?'true':'false';
     element.dataset.patronArt=current.patron
       ?patronPortrait?'painted-medallion':'animated-raster-fallback'
