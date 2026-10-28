@@ -17,12 +17,19 @@ export type RoomArtInfo={
   };
 };
 const FRAME_SET=['idle.webp','attentive.webp','warm.webp','guarded.webp'] as const;
-export const ROOM_ART_MANIFEST:Readonly<Record<CharacterId,RoomArtInfo>>=
-  Object.fromEntries((['yuesha','brook','fern','cinder'] as const).map(id=>[id,{
+function roomArtInfo(id:CharacterId):RoomArtInfo{
+  return {
     id,backgroundStatus:'concept',residentStatus:'concept',
     backgroundLayer:'static-painted',residentLayer:'separate-actor',objectLayer:'interactive-hotspots',
     productionAssets:{
       background:'public/art/rooms/'+id+'/background.webp',
       residentFrames:FRAME_SET.map(frame=>'public/art/rooms/'+id+'/poses/'+frame),
     },
-  }])) as Readonly<Record<CharacterId,RoomArtInfo>>;
+  };
+}
+export const ROOM_ART_MANIFEST={
+  yuesha:roomArtInfo('yuesha'),
+  brook:roomArtInfo('brook'),
+  fern:roomArtInfo('fern'),
+  cinder:roomArtInfo('cinder'),
+} satisfies Readonly<Record<CharacterId,RoomArtInfo>>;
