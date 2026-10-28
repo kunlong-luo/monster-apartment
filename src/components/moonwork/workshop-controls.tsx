@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import workerTriptych from '../../../v2/art/worker-triptych.avif';
+import {WorkerArtwork} from './worker-artwork';
 import {WORKERS,MACHINES} from '../../../v2/src/workshop-engine';
 import type {WorkshopState,Machine,Craft,WorkerId} from '../../../v2/src/workshop-engine';
 import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
@@ -56,16 +56,9 @@ export function WorkshopControls({
                     : ''
                 }`}
               >
-                <span
-                  className={'worker-miniature ' + id + ' block size-8 shrink-0 rounded-full border border-gothic-brass/70 bg-no-repeat sm:size-9'}
-                  style={{
-                    backgroundImage: 'url(' + workerTriptych.src + ')',
-                    backgroundSize: '300% 100%',
-                    backgroundPosition: id === 'brook' ? '0% center' : id === 'fern' ? '50% center' : '100% center',
-                  }}
-                  role="img"
-                  aria-label={profile.zh + '的绘制头像'}
-                />
+                <span className="worker-miniature block size-8 shrink-0 overflow-hidden rounded-full border border-gothic-brass/70 bg-[#22374a] sm:size-9">
+                  <WorkerArtwork id={id} name={profile.zh} compact/>
+                </span>
                 <strong className="text-[11px] leading-tight sm:text-xs">
                   {profile.zh}
                 </strong>
