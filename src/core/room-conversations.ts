@@ -29,7 +29,7 @@ export const ROOM_CONVERSATION_TOPICS:Readonly<Record<CharacterId,readonly RoomC
   fern:[
     {id:'plant',title:'聊聊窗边的花',requires:[],lockedHint:'',
       response:'“植物不会说话，但它们留下的变化，是最诚实的日记。”'},
-    {id:'pages',title:'花期手札',requires:['herbarium'],lockedHint:'先观察花期手札',
+    {id:'pages',title:'聊聊花期记录',requires:['herbarium'],lockedHint:'先观察花期手札',
       response:'“这些日期原本很平常，直到我发现有几天的花瓣同时失去了颜色。”'},
     {id:'moonwater',title:'花与旧水脉',requires:['herbarium','moonflower'],lockedHint:'先观察手札和窗边月光花',
       response:'“有时不是花不肯开放，是它脚下的水已不再流向这里。我还在寻找原因。”'},

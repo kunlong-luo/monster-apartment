@@ -57,17 +57,17 @@ test('character gallery can open the same room; corrupt lore save is not silentl
 test('Brook, Fern and Cinder have unique rooms and persisted personal choices',async({page})=>{
   await page.goto('/characters/');
   for(const person of [
-    {id:'brook',name:'泉泡',objects:['空掉的工具挂钩','水汽压力表'],secret:'扳手'},
-    {id:'fern',name:'青枝',objects:['花期手札','窗边月光花'],secret:'水脉图'},
-    {id:'cinder',name:'炽角',objects:['旧锻锤','稳定器草图'],secret:'旧熔炉'},
+    {id:'brook',name:'泉泡',objects:['toolbox','gauge'],secret:'扳手'},
+    {id:'fern',name:'青枝',objects:['herbarium','moonflower'],secret:'水脉图'},
+    {id:'cinder',name:'炽角',objects:['hammer','blueprint'],secret:'旧熔炉'},
   ] as const){
     await page.getByTestId('visit-worker-room-'+person.id).click();
     const dialog=page.getByRole('dialog',{name:'拜访'+person.name+'的房间'});
     await expect(dialog).toBeVisible();
     await expect(page.getByTestId('worker-private-room-'+person.id)).toContainText(person.name);
     await page.screenshot({path:'test-results/room-'+person.id+'-desktop.png'});
-    await dialog.getByRole('button',{name:person.objects[0]}).click();
-    await dialog.getByRole('button',{name:person.objects[1]}).click();
+    await dialog.getByTestId('scene-object-'+person.objects[0]).click();
+    await dialog.getByTestId('scene-object-'+person.objects[1]).click();
     await expect(page.getByTestId('worker-room-secret-'+person.id)).toContainText(person.secret);
     await page.getByTestId('worker-room-choice-'+person.id+'-care').click();
     await expect(page.getByTestId('worker-room-choice-'+person.id+'-practice')).toHaveCount(0);
