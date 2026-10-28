@@ -14,7 +14,7 @@ export function RoomSceneHotspots<T extends string>({
   items,observed,selected,onInspect,characterName,
 }:{
   items:readonly SceneHotspotItem<T>[];
-  observed:readonly T[];
+  observed:readonly string[];
   selected:T|null;
   onInspect:(id:T)=>void;
   characterName:string;

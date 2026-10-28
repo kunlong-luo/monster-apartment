@@ -8,6 +8,7 @@ import {commitCharacterLife,useCharacterLife} from '@/lib/game/character-life-st
 import {WorkerArtwork} from '@/components/moonwork/worker-artwork';
 import {CharacterLifePortrait} from './character-life-portrait';
 import {GothicModal} from './gothic-hud';
+import {RoomSceneHotspots} from './room-scene-hotspots';
 import './gothic-polish.css';
 
 const SCENE_PALETTES={
@@ -61,6 +62,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
         <div>
           <p className="text-[10px] tracking-[.2em] text-gothic-gold">MOONLIGHT APARTMENT · PRIVATE SUITE</p>
           <h2 className="mt-1 text-xl text-gothic-ivory">{profile.name} · {scene.roomName}</h2>
+          <p className="mt-1 max-w-[52ch] text-[11px] leading-5 text-gothic-muted">{scene.roomSummary}</p>
         </div>
       </header>
       <div className={'relative h-[clamp(270px,53vh,565px)] overflow-hidden rounded-xl border border-gothic-brass/65 bg-[#120f1c]'}
@@ -74,6 +76,8 @@ export function WorkerPrivateRoom({id,onClose,working}:{
         <div className="absolute bottom-0 right-[7%] h-[96%] w-[55%] max-w-[475px] origin-bottom motion-safe:animate-[room-breathe_5s_ease-in-out_infinite] motion-reduce:animate-none">
           <WorkerArtwork id={id} name={profile.name}/>
         </div>
+        <RoomSceneHotspots characterName={profile.name} items={scene.objects}
+          observed={observed} selected={selectedItem} onInspect={inspect}/>
         <div className="pointer-events-none absolute bottom-3 left-3 z-[1] max-w-[47%] space-y-2">
           <span className={'inline-block rounded-full border bg-[#14101acc] px-3 py-1 text-[10px] '+palette.ribbon}>{palette.roomDetail}</span>
           <p className="text-[11px] leading-5 text-[#f5ddc3]">{working?'正在工坊值守 · 屋内留着便条':'暂时休息 · 可以聊聊天'}</p>
@@ -96,14 +100,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
         </div>}
       </section>
       <section className="space-y-2" aria-label="观察人物房间">
-        <h3 className="text-xs tracking-wider text-gothic-gold">观察房间 · {observed.length}/{scene.objects.length}</h3>
-        <div className="flex flex-wrap gap-2">
-          {scene.objects.map(item=><button key={item.id} type="button"
-            aria-pressed={selectedItem===item.id}
-            onClick={()=>inspect(item.id)}
-            className="min-h-10 rounded-full border border-gothic-brass/55 bg-gothic-panel/85 px-3 text-xs hover:border-gothic-glow aria-pressed:bg-gothic-wine"
-          >{observed.includes(item.id)?'✦ ':''}{item.label}</button>)}
-        </div>
+        <h3 className="text-xs tracking-wider text-gothic-gold">房间观察 · 在画面中选择感兴趣的物件</h3>
         {selectedItem&&<p data-testid={'worker-room-object-'+id} className="rounded-lg bg-gothic-wine/35 p-3 text-xs leading-6">
           {scene.objects.find(item=>item.id===selectedItem)?.text}</p>}
         {foundHint&&<p role="status" data-testid={'worker-room-secret-'+id}

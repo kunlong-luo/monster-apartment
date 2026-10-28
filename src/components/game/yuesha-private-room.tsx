@@ -8,6 +8,7 @@ import {roomInvestigationConclusion} from '@/core/room-investigation';
 import type {YueshaChoice} from '@/core/character-life';
 import {commitCharacterLife,useCharacterLife} from '@/lib/game/character-life-store';
 import {CharacterLifePortrait} from './character-life-portrait';
+import {RoomSceneHotspots} from './room-scene-hotspots';
 type Hotspot='seal'|'tea'|'ledger';
 export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:number}){
   const [hotspot,setHotspot]=useState<Hotspot|null>(null);
@@ -35,7 +36,10 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
           className="object-contain object-bottom drop-shadow-[0_8px_22px_#000]"/>
       </div>
       <div className="pointer-events-none absolute top-3 left-3 text-[10px] tracking-[.15em] text-[#f6d0a3]">PRIVATE CHAMBER · MOONLIT CONTRACTS</div>
-      <div className="absolute bottom-3 left-3 max-w-[56%] space-y-1 text-shadow-md">
+      <RoomSceneHotspots characterName="月纱"
+        items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}
+        selected={hotspot} observed={observed} onInspect={inspect}/>
+      <div className="pointer-events-none absolute bottom-9 left-3 max-w-[56%] space-y-1 text-shadow-md">
         <h3 className="text-lg text-[#ffe3bd] sm:text-2xl">月纱的契约会客室</h3>
         <p className="text-[11px] leading-5 text-[#e4c7ab]">月纹、旧契约和一杯香料茶</p>
       </div>
@@ -65,16 +69,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       {feedback&&<p role="status" className="text-xs text-[#ebc79c]">{feedback}</p>}
     </div>
     <div className="space-y-2">
-      <span className="text-xs text-[#f0c58e]">观察会客室的物件</span>
-      <div className="flex flex-wrap gap-2">
-        {([
-          {id:'seal',label:'月纹蜡封'},
-          {id:'tea',label:'香料茶杯'},
-          {id:'ledger',label:'旧账簿'},
-        ] as const).map(item=><button key={item.id} type="button" onClick={()=>inspect(item.id)}
-          aria-pressed={hotspot===item.id}
-          className="min-h-10 rounded-full border border-[#b18b68a8] bg-[#2d1e2bbd] px-3 py-1.5 text-xs hover:border-[#ffe0b6] aria-pressed:bg-[#674351]">{item.label}</button>)}
-      </div>
+      <span className="text-xs text-[#f0c58e]">月纱的藏品 · 点击场景里的物品，查看她留下的线索</span>
       {observed.length>0&&<p className="text-[10px] text-gothic-muted">已记录 {observed.length}/3 件会客室物品</p>}
       {hotspot&&<p className="rounded-lg bg-[#382433a1] p-3 text-xs leading-6 text-[#f2d2b5]" data-testid="yuesha-hotspot-text">
         {hotspot==='seal'?'蜡封上的月纹，与旧公寓钥匙的纹样有些相似。月纱没有立即回答你的疑问。':
