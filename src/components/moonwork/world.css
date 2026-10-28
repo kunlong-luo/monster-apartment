@@ -166,6 +166,7 @@
    silhouettes and color-led presentation instead of a magnified triptych. */
 .mw-worker-portrait{
   isolation:isolate;
+  background-size:cover;
   background:
     radial-gradient(ellipse at 50% 72%,#a5dfef24,transparent 57%),
     radial-gradient(ellipse at 50% 43%,#617b8d40,transparent 73%),
