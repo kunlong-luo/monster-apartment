@@ -145,3 +145,19 @@
 @media(max-width:700px){
   .mw-gothic-scene{background-position:25% center}
 }
+
+/* Individually approved transparent portraits replace—not overlay—the
+   early low-detail worker triptych once production art is supplied. */
+.mw-worker-portrait[data-art-source="painted-transparent"] {
+  background:radial-gradient(ellipse at 50% 65%,#a6855360,transparent 65%),
+    linear-gradient(160deg,#394353,#15273b 80%);
+}
+.mw-worker-original-art {
+  position:absolute;
+  inset:0;
+  object-fit:contain;
+  object-position:50% 100%;
+  filter:drop-shadow(0 10px 14px #080c18a9);
+}
+.mw-worker-role{max-width:calc(100% - 18px);white-space:normal;text-align:right}
+@media(max-width:620px){.mw-worker-role{font-size:10px;padding:4px 6px}}
