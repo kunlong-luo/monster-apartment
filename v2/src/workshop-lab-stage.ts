@@ -51,7 +51,7 @@ export async function mountWorkshopLab(
   const observer=new ResizeObserver(resize);
   observer.observe(element);resize();
   const art=makeRasterArt();
-  const {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait}=
+  const {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings}=
     await loadWorkshopPaintedArt(assetBase);
   element.dataset.backdropSource=backdropSource;
   element.dataset.machineArt=kilnArtReview&&paintedDetail.well&&paintedDetail.garden
@@ -72,6 +72,9 @@ export async function mountWorkshopLab(
   // 8 different bitmap pose frames per creature, assembled once and reused.
   element.dataset.renderer='pixi-webgl-bitmap';
   element.dataset.workerFrames='8';
+  element.dataset.workerArt=Object.keys(workerPaintings).length===3?'painted-transparent':'hi-dpi-transparent-fallback';
+  const workerFrames=(id:keyof typeof art.workers)=>workerPaintings[id]
+    ?Array.from({length:8},()=>workerPaintings[id]!) :art.workers[id];
   // Immutable foundation: ground, numbered plaques and borders are built
   // exactly once. Only machine-dependent floor tint/opacity changes on sync.
   const foundation=new Container();app.stage.addChild(foundation);
@@ -253,7 +256,7 @@ export async function mountWorkshopLab(
       caption.position.set(32,65);stage.addChild(caption);
       for(const [n,id] of (['brook','fern','cinder'] as const).entries()){
         const x=220+n*220;
-        const sprite=new AnimatedSprite(art.workers[id]);
+        const sprite=new AnimatedSprite(workerFrames(id));
         sprite.anchor.set(.5,1);sprite.position.set(x,169);
         sprite.width=94;sprite.height=94;
         sprite.animationSpeed=.11+n*.015;
@@ -332,7 +335,7 @@ export async function mountWorkshopLab(
         stage.addChild(overlay);
       }
       if(machine.worker){
-        const actor=new AnimatedSprite(art.workers[machine.worker]);
+        const actor=new AnimatedSprite(workerFrames(machine.worker));
         actor.anchor.set(.5,1);
         actor.position.set(x+CELL*.77,y+CELL*.94);
         actor.width=CELL*.60;actor.height=CELL*.60;
