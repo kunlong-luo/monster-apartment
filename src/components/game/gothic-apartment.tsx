@@ -15,6 +15,7 @@ import {useGothicMotion} from '@/lib/game/gothic-motion';
 import {GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
 import {GothicRoomDoors} from './gothic-room-doors';
 import {GothicRoomDrawer} from './gothic-room-drawer';
+import {YueshaPrivateRoom} from './yuesha-private-room';
 import './gothic-apartment.css';
 import './gothic-polish.css';
 const KEY='monster-apartment:cozy:v1';
@@ -52,7 +53,14 @@ export function GothicApartment(){
   const {reduced:reducedMotion}=useGothicMotion();
   const [notices,setNotices]=useState(false);
   const [witchOpen,setWitchOpen]=useState(false);
+  const [witchRoom,setWitchRoom]=useState(false);
   const [feedback,setFeedback]=useState<{id:number;text:string}|null>(null);
+  useEffect(()=>{
+    // Character cards can open the same in-scene room without adding an eighth route.
+    if(new URLSearchParams(window.location.search).get('visit')==='yuesha'){
+      setWitchRoom(true);setWitchOpen(true);
+    }
+  },[]);
   useEffect(()=>{
     if(!ready)return;
     try{
@@ -136,7 +144,7 @@ export function GothicApartment(){
       </div>
     </header>
     <GothicRoomDoors world={world} selected={selected} onChoose={choose}/>
-    <button className="ga-witch" type="button" onClick={()=>{setSelected(null);setWitchOpen(true);}}
+    <button className="ga-witch" type="button" onClick={()=>{setSelected(null);setWitchRoom(false);setWitchOpen(true);}}
       aria-label="与女主人月纱交流" data-tooltip="月纱 · 女主人"/>
     <div className="ga-witch-title" aria-hidden="true">月纱 <small>暗夜公寓的女主人</small></div>
     <section className="ga-lower" aria-label="房间交互及经营动态">
@@ -153,7 +161,14 @@ export function GothicApartment(){
     </div>}
     <AnimatePresence mode="wait">
     {witchOpen&&<GothicModal key={"moonveil"} title="与月纱交谈" closeLabel="关闭月纱对话"
-      onClose={()=>setWitchOpen(false)} wide>
+      onClose={()=>{setWitchOpen(false);setWitchRoom(false);}} wide>
+      {witchRoom?<div className="min-w-0 flex-1 space-y-3">
+        <button type="button" onClick={()=>setWitchRoom(false)}
+          className="min-h-9 rounded-full border border-gothic-brass/60 bg-gothic-panel/80 px-3 text-xs hover:border-gothic-glow">
+          ← 返回月纱对话
+        </button>
+        <YueshaPrivateRoom/>
+      </div>:<>
       <div className="relative hidden min-h-[215px] w-[120px] shrink-0 overflow-hidden rounded-md border border-gothic-brass/60 bg-gothic-panel sm:block">
         <Image src={moonveilBust} alt="月纱的绘制肖像" fill unoptimized sizes="130px"
           className="object-cover object-[48%_45%]"/>
@@ -163,8 +178,10 @@ export function GothicApartment(){
         <h2 className="text-xl font-semibold leading-snug text-gothic-ivory sm:text-2xl">今夜的公寓，如何了？</h2>
         <p className="text-sm leading-7 text-gothic-muted">“已经住进 {goal.guests} 位邻居了。每扇门后都有属于自己的故事……要不要再去看看？”</p>
         <p className="text-xs leading-relaxed text-gothic-muted">幸福度 {goal.happiness} / 100 · 预计每日收入 +{cozyDailyIncome(world).total} ✦</p>
+        <button type="button" onClick={()=>setWitchRoom(true)} data-testid="visit-yuesha-room"
+          className="mt-2 inline-flex min-h-10 items-center rounded-lg border border-gothic-brass bg-gothic-wine/80 px-4 py-2 text-sm text-gothic-ivory hover:border-gothic-glow">拜访月纱会客室</button>
         <GothicPanelLink href="/orders/">查看月纱委托 ›</GothicPanelLink>
-      </div>
+      </div></>}
     </GothicModal>}
     </AnimatePresence>
     {notices&&<div className="absolute right-3 top-[72px] z-20 w-[min(350px,92vw)] rounded-xl border border-gothic-brass/75 bg-gothic-panel/95 p-4 text-gothic-ivory shadow-[0_15px_44px_#000c] backdrop-blur-xl"

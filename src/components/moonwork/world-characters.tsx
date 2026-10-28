@@ -6,6 +6,7 @@ import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import {WORKERS,MACHINES} from '../../../v2/src/workshop-engine';
 import type {WorkshopState,WorkerId} from '../../../v2/src/workshop-engine';
 import {WorkerArtwork} from './worker-artwork';
+import {CharacterLifePortrait} from '@/components/game/character-life-portrait';
 const ids=['brook','fern','cinder'] as const;
 /** Original per-worker transparent portrait with the same identity as the
  * animated factory actor; no low-resolution three-column image crop. */
@@ -42,6 +43,7 @@ export function Characters({s}:{s:WorkshopState}){
             <p className="mw-worker-assignment">{working
               ?'正在 '+String(plot+1).padStart(2,'0')+' 号工位 · '+MACHINES[s.tiles[plot]!.craft].zh
               :'目前待派工'}</p>
+            <CharacterLifePortrait id={id}/>
             <Link href={'/workshop/?worker='+id} className={WORLD_LINK_CLASS+' mt-auto w-full max-[620px]:px-2 max-[620px]:text-[11px]'}
               aria-label={'安排'+w.zh+'到工坊'}>前往工坊安排岗位 ↗</Link>
           </div>
@@ -57,7 +59,11 @@ export function Characters({s}:{s:WorkshopState}){
         <h2>月纱 · 28 岁月夜魔女</h2>
         <p>她的委托从真实库存扣除晶核，并与普通订单竞争交付资源。
           {s.patron?'当前委托状态：'+s.patron.status:'首张正式订单完成后解锁。'}</p>
-        <Link className={WORLD_LINK_CLASS} href="/orders/">进入委托大厅 ↗</Link>
+        <CharacterLifePortrait id="yuesha"/>
+        <div className="flex flex-wrap gap-2">
+          <Link className={WORLD_LINK_CLASS} href="/apartment/?visit=yuesha">拜访月纱会客室 ↗</Link>
+          <Link className={WORLD_LINK_CLASS} href="/orders/">进入委托大厅 ↗</Link>
+        </div>
       </div>
     </section>
   </>;
