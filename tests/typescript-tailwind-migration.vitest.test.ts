@@ -216,7 +216,11 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(bridge).toContain('export type WorkshopSelectionListener');
     expect(runtime).toContain('onSelectionChange?.({');
     expect(client).toContain('mountWorkshopGame(root, base, onSelectionChange)');
-    expect(client).toContain('WorkshopSelectionSnapshot');
+    // Selection now lives in a typed Zustand state module instead of a
+    // duplicated React component-local snapshot.
+    const state=read('src/lib/moonwork/world-state.ts');
+    expect(state).toContain('WorkshopSelectionSnapshot');
+    expect(client).toContain('useMoonworkState(state=>state.selection)');
     expect(runtime).not.toContain('moonwork:controls-change');
     expect(client).not.toContain('moonwork:controls-change');
     for(const field of ['chosenWorker','chosenMachine','movingFrom','selectedPlot']){
