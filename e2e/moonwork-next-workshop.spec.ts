@@ -365,3 +365,34 @@ test('gothic workshop renders an optional guest as a real portrait cameo',async(
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-patron-art','painted-medallion',{timeout:25_000});
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')!).patron.status)).toBe('offered');
 });
+
+
+test('Dexie restores the same V2 world after the localStorage key is lost', async ({page}) => {
+  test.setTimeout(90_000);
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+  await expect.poll(()=>page.evaluate(async()=>{
+    const db = await new Promise<IDBDatabase>((resolve,reject)=>{
+      const request=indexedDB.open('moonwork-local-v1');
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>reject(request.error);
+    });
+    try{
+      return await new Promise<number|null>((resolve,reject)=>{
+        const transaction=db.transaction('saves','readonly');
+        const request=transaction.objectStore('saves').get('monster-apartment:workshop-v2-lab');
+        request.onsuccess=()=>resolve(request.result?.payload?.day??null);
+        request.onerror=()=>reject(request.error);
+      });
+    }finally{db.close();}
+  }),{timeout:15_000}).toBe(2);
+  await page.evaluate(()=>localStorage.removeItem('monster-apartment:workshop-v2-lab'));
+  await page.reload();
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+  expect(await page.evaluate(()=>JSON.parse(
+    localStorage.getItem('monster-apartment:workshop-v2-lab')||'{}').version)).toBe(2);
+});
+
