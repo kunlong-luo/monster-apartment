@@ -32,7 +32,7 @@ function WorkerPainting({id,index,label}:{
     aria-label={label+'的彩色奇幻角色绘景'}
     data-art-source={painted?'painted-transparent':'triptych-fallback'}
     style={{
-      backgroundImage:'url('+workerTriptych.src+')',
+      backgroundImage:painted?'none':'url('+workerTriptych.src+')',
       backgroundPosition:index===0?'0% center':index===1?'50% center':'100% center',
     }}>
     {painted&&<Image src={painted} fill unoptimized sizes="(max-width:620px) 42vw, 350px"
