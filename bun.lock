@@ -6,7 +6,7 @@
       "name": "monster-apartment",
       "dependencies": {
         "dexie": "4.4.7",
-        "lucide-react": "^1.63.0",
+        "lucide-react": "1.63.0",
         "motion": "14.6.0",
         "next": "16.4.2",
         "react": "19.3.1",
