@@ -8,7 +8,8 @@ test('character card can be summoned, forged and equipped without altering the f
   await page.getByTestId('summon-preview-brook-tide').click();
   await expect(page.getByTestId('summon-featured-portrait')).toHaveAttribute('data-tier','1');
   await expect(page.getByTestId('collection-tickets')).toHaveText('3');
-  await expect(page.getByTestId('collection-odds')).toContainText('神话·月蚀 1%');
+  await expect(page.getByTestId('collection-odds')).toContainText('神话·月蚀');
+  await expect(page.getByTestId('collection-odds')).toContainText('1.00%');
   await page.evaluate(()=>{
     const original=window.crypto.getRandomValues.bind(window.crypto);
     Object.defineProperty(window.crypto,'getRandomValues',{configurable:true,

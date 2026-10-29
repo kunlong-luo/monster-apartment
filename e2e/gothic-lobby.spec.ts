@@ -239,3 +239,25 @@ test('hidden tabs suspend candle animation and resume when visible again',async(
   });
   await expect(lighting).toHaveAttribute('data-motion','ambient');
 });
+
+test('cinematic lobby maintains one usable dock and compact context panels on a phone',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/');
+  const dock=page.getByRole('navigation',{name:'主要游戏功能'});
+  await expect(dock.getByRole('link')).toHaveCount(7);
+  await expect(page.getByTestId('gothic-eclipse-feature')).toBeVisible();
+  await expect(page.getByTestId('gothic-character-room')).toBeVisible();
+  await expect(page.getByRole('button',{name:'委托消息'})).toHaveCount(1);
+  const spill=await page.evaluate(()=>({
+    horizontal:document.documentElement.scrollWidth-innerWidth,
+    vertical:document.documentElement.scrollHeight-innerHeight,
+  }));
+  expect(spill.horizontal).toBeLessThanOrEqual(2);
+  expect(spill.vertical).toBeLessThanOrEqual(2);
+  await page.getByRole('button',{name:'与月纱交谈'}).click();
+  await expect(page.getByRole('dialog',{name:'与月纱交谈'})).toBeVisible();
+  await page.getByRole('button',{name:'关闭面板'}).click();
+  await page.getByTestId('gothic-eclipse-feature').click();
+  await expect(page).toHaveURL(/\/characters\/?(?:#summon)?$/);
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
+});
