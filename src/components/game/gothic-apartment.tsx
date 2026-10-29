@@ -152,8 +152,8 @@ export function GothicApartment(){
     <GothicSceneIllumination variant="apartment" paused={paused||reducedMotion}/>
     <GothicAtmosphere paused={paused||reducedMotion}/>
     <header className="absolute inset-x-0 top-0 z-[5] flex min-h-[56px] items-start gap-1.5 bg-[linear-gradient(#08060ad3,transparent)] px-2 py-2.5 sm:gap-3 sm:px-6" aria-label="公寓资源与操作">
-      <Link className="flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border border-gothic-brass/70 bg-gothic-panel/80 px-2.5 text-gothic-ivory backdrop-blur-md transition-colors hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow sm:px-3"
-        href="/" aria-label="返回大厅">⌂ <span className="hidden text-sm sm:inline">夜色公寓</span></Link>
+      <span className="flex min-h-9 shrink-0 items-center rounded-full border border-gothic-brass/50 bg-gothic-panel/80 px-3 text-xs text-gothic-ivory"
+        data-testid="game-location" aria-label="当前位置：大厅 / 公寓">公寓 · 经营住客</span>
       <div className="ml-auto flex items-start gap-1 sm:gap-2" aria-label="公寓真实存档">
         <GothicResourcePill symbol="☾" amount={cozyDay(world.tick)} label="公寓天数"/>
         <GothicResourcePill symbol="✦" amount={world.coins} label="星币" testId="ga-coins"/>

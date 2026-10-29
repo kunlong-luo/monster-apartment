@@ -1,18 +1,16 @@
 import {describe,it,expect} from 'vitest';
-import {CANONICAL_GAME_NAV,WORLD_NAV} from '../src/components/moonwork/world-navigation';
-
-describe('game navigation stays navigable across all seven pages',()=>{
-  it('provides all seven unique destinations and a real route back to the lobby',()=>{
-    expect(CANONICAL_GAME_NAV).toHaveLength(7);
+import {CANONICAL_GAME_NAV,WORLD_NAV,destinationByHref} from '../src/components/moonwork/world-navigation';
+describe('one unambiguous route registry for all seven game scenes',()=>{
+  it('contains exactly seven unique routes with matching names and roles',()=>{
+    expect(WORLD_NAV).toBe(CANONICAL_GAME_NAV);
     expect(WORLD_NAV).toHaveLength(7);
-    expect(WORLD_NAV.map(item=>item.href)).toEqual(
-      CANONICAL_GAME_NAV.map(item=>item.href)
-    );
-    expect(new Set(WORLD_NAV.map(item=>item.href)).size).toBe(7);
-    expect(WORLD_NAV.find(item=>item.id==='lobby')).toMatchObject({href:'/',full:'大厅'});
+    expect(new Set(WORLD_NAV.map(x=>x.href)).size).toBe(7);
+    expect(WORLD_NAV.find(x=>x.id==='lobby')).toMatchObject({href:'/',full:'大厅'});
+    expect(WORLD_NAV.every(x=>x.purpose.length>=8)).toBe(true);
   });
-  it('keeps the workshop dock distinct from the town-building workshop portal',()=>{
-    expect(WORLD_NAV.find(item=>item.id==='workshop')?.full).toBe('工坊');
-    expect(WORLD_NAV.find(item=>item.id==='town')?.full).toBe('月光街');
+  it('does not confuse a street market with the entire game map',()=>{
+    expect(destinationByHref('/town/')).toMatchObject({id:'town',full:'月光街'});
+    expect(destinationByHref('/workshop/')).toMatchObject({id:'workshop',full:'工坊'});
+    expect(destinationByHref('/unknown/')).toBeUndefined();
   });
 });

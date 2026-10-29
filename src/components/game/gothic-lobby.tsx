@@ -14,17 +14,12 @@ import {GothicAtmosphere} from './gothic-atmosphere';
 import {GothicSceneIllumination} from './gothic-scene-illumination';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 import {GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
+import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 import './gothic-lobby.css';
 import './gothic-polish.css';
 
-type Panel='profile'|'bond'|'updates'|'menu'|null;
-const links=[
-  {href:'/apartment/',icon:'♜',label:'公寓',description:'经营住客与房间'},
-  {href:'/characters/',icon:'♟',label:'角色',description:'查看工匠与角色'},
-  {href:'/orders/',icon:'❦',label:'委托',description:'月纱的特别委托'},
-  {href:'/town/',icon:'⚜',label:'探索',description:'月光街'},
-  {href:'/warehouse/',icon:'♧',label:'仓库',description:'兑换生产材料'},
-];
+type Panel='profile'|'bond'|'updates'|null;
+
 export function GothicLobby(){
   const saved=useWorkshopWorld();
   const world=useMemo(()=>saved??newWorkshop(),[saved]);
@@ -99,8 +94,6 @@ export function GothicLobby(){
         <GothicIconButton label="委托消息" data-tooltip="委托消息" onClick={()=>setOpen('updates')}>✉</GothicIconButton>
         <GothicIconButton label="切换动态特效" data-tooltip="切换动态特效" pressed={reducedMotion}
           onClick={toggleMotion}>⚜</GothicIconButton>
-        <GothicIconButton label="全部功能" data-tooltip="全部功能" expanded={panel==='menu'}
-          onClick={()=>setOpen('menu')}>☰</GothicIconButton>
       </div>
     </header>
 
@@ -115,17 +108,7 @@ export function GothicLobby(){
       </button>
     </aside>
 
-    <nav className="absolute right-2 top-[28%] z-[3] hidden justify-items-center gap-3 sm:right-5 sm:grid sm:gap-5" aria-label="快捷功能">
-      {[
-        {href:'/orders/',icon:'❦',label:'任务'},
-        {href:'/workshop/',icon:'⚒',label:'工坊'},
-        {href:'/town/',icon:'⚜',label:'街区'}
-      ].map(item=><Link href={item.href} key={item.href} data-tooltip={item.label}
-        className="group grid min-w-10 justify-items-center gap-1 text-[10px] tracking-[.12em] text-gothic-ivory drop-shadow-[0_3px_7px_#000] transition-transform duration-200 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none">
-        <span aria-hidden="true" className="grid size-8 sm:size-10 place-items-center rounded-[10px] border border-gothic-brass/65 bg-[linear-gradient(145deg,#49303ccc,#140d18ed)] text-[20px] sm:text-[21px] text-gothic-gold shadow-[inset_0_1px_#ffe9ac28,0_6px_15px_#0008] transition-[border-color,box-shadow] group-hover:border-gothic-glow group-hover:shadow-[0_0_18px_#d8a87445]">{item.icon}</span>
-        <span>{item.label}</span>
-      </Link>)}
-    </nav>
+
 
     <button type="button" className="gothic-lobby__character-hit absolute z-[1] border-0! bg-transparent! inset-[15%_46%_16%_20%] max-[700px]:inset-[22%_27%_24%_25%] cursor-pointer focus-visible:outline-2 focus-visible:outline-gothic-glow"
       onClick={talk} aria-label="与月纱互动" data-tooltip="与月纱互动"/>
@@ -136,7 +119,7 @@ export function GothicLobby(){
       <span className="shrink-0 text-base text-gothic-gold" aria-hidden="true">{orderReady?'✦':'◇'}</span>
       <span className="grid min-w-0 flex-1 gap-1.5">
         <span className="truncate font-medium tracking-[.045em]">
-          {orderReady?'主线 · 晶核已备齐':'主线 · 交付 '+orderStock+' / '+orderTarget+' 晶核'}
+          {orderReady?'委托 · 备齐晶核，查看交期':'当前目标 · 生产晶核 '+orderStock+' / '+orderTarget}
         </span>
         <span role="progressbar" aria-label="晶核收集进度"
           aria-valuemin={0} aria-valuemax={orderTarget}
@@ -150,10 +133,11 @@ export function GothicLobby(){
       <span className="shrink-0 text-lg leading-none text-gothic-gold transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden="true">›</span>
     </Link>
 
-    <GothicDock items={links} label="主要游戏功能" compact/>
+    <GothicDock items={WORLD_NAV.map(n=>({href:n.href,icon:n.glyph,label:n.label,ariaLabel:n.full,description:n.purpose}))}
+      label="主要游戏功能" activeHref="/" compact/>
 
     <AnimatePresence mode="wait">
-    {panel&&<GothicModal key={panel} title={panel==='bond'?'与月纱交谈':panel==='menu'?'所有功能':panel==='profile'?'玩家资料':'委托消息'}
+    {panel&&<GothicModal key={panel} title={panel==='bond'?'与月纱交谈':panel==='profile'?'玩家资料':'委托消息'}
       onClose={close} wide={panel==='bond'}>
       {panel==='bond'&&<>
         <div className="relative hidden min-h-[210px] w-[125px] shrink-0 overflow-hidden rounded-md border border-gothic-brass/50 bg-gothic-panel sm:block">
@@ -185,19 +169,7 @@ export function GothicLobby(){
         <p className="text-sm leading-7 text-gothic-muted">库存 {world.warehouse.core} 枚 · 成功奖励 {world.order.reward} 星币。</p>
         <GothicPanelLink href="/orders/">管理委托 ›</GothicPanelLink>
       </div>}
-      {panel==='menu'&&<div className="min-w-0 flex-1 space-y-3 pr-5">
-        <span className="text-[10px] tracking-widest text-gothic-gold">ALL DESTINATIONS</span>
-        <h2 className="text-2xl font-semibold">公寓地图</h2>
-        <div className="grid grid-cols-2 gap-2">
-          {[...links,{href:'/workshop/',icon:'⚒',label:'晶核工坊',description:'生产与派工'}]
-            .map(item=><Link href={item.href} key={item.href} onClick={close}
-              className="flex min-h-20 flex-col gap-1 rounded-md border border-gothic-brass/60 bg-gothic-panel/70 p-2.5 text-gothic-ivory transition-colors hover:border-gothic-glow hover:bg-gothic-wine/60 focus-visible:outline-2 focus-visible:outline-gothic-glow">
-              <b className="text-2xl font-normal leading-none text-gothic-gold">{item.icon}</b>
-              <span className="text-xs font-medium">{item.label}</span>
-              <small className="text-[10px] leading-snug text-gothic-muted">{item.description}</small>
-            </Link>)}
-        </div>
-      </div>}
+
     </GothicModal>}
     </AnimatePresence>
 

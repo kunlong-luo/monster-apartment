@@ -14,7 +14,6 @@ import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
 import {WorkshopControls} from './workshop-controls';
 import {newWorkshop,workshopRank} from '../../../v2/src/workshop-engine';
-import type {WorkerId} from '../../../v2/src/workshop-engine';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import yueshaBust from '../../../public/art/yuesha-bust-v3.webp';
@@ -144,11 +143,8 @@ export function WorkshopClient() {
         } else {
           gameController.current = controller;
           setRuntimeReady(true);
-          // Character gallery links include ?worker=... . Honor the request
-          // only after Pixi has mounted and can receive assignment actions.
-          const requested=new URLSearchParams(window.location.search).get('worker');
-          if(requested==='brook'||requested==='fern'||requested==='cinder')
-            controller.dispatch({type:'choose-worker',worker:requested as WorkerId});
+          // Pixi owns the initial ?worker= selection and publishes it during
+          // mount. Dispatching again here toggled it OFF (double-selection bug).
           dispose = () => {
             if(gameController.current===controller) gameController.current=null;
             controller.destroy();
@@ -214,29 +210,11 @@ export function WorkshopClient() {
             </div>
           </div>
 
-          {/* Upgraded Gothic navigation gates */}
-          <nav className="workshop-nav-gates" aria-label="游戏场景导航">
-            <Link
-              href="/"
-              className="gothic-nav-btn world-gate"
-              data-testid="v2-return-lobby"
-              aria-label="返回大厅"
-              data-tooltip="返回哥特公寓主大厅"
-            >
-              <span className="gothic-nav-glyph" aria-hidden="true">⌂</span>
-              <span>返回大厅 ↗</span>
-            </Link>
-            <Link
-              href="/town/"
-              className="gothic-nav-btn world-gate"
-              data-testid="v2-world-gate"
-              aria-label="返回月光街，进入其他游戏场景"
-              data-tooltip="前往月光街世界地图"
-            >
-              <span className="gothic-nav-glyph" aria-hidden="true">🧭</span>
-              <span>月光街 · 世界地图 ↗</span>
-            </Link>
-          </nav>
+          <div className="hidden min-w-0 max-w-[31vw] flex-col justify-center gap-1 text-xs text-gothic-ivory lg:flex"
+            data-testid="game-location">
+            <span className="text-gothic-gold">大厅 / 工坊</span>
+            <span className="truncate text-[11px] text-gothic-muted">建造设备 · 派工 · 生产晶核</span>
+          </div>
 
           <div className="top-stats">
             <div
@@ -385,7 +363,7 @@ export function WorkshopClient() {
                   setError('无法写入新存档，请检查浏览器存储权限。');
                 }
               }}>确认重新开始</button>
-              <Link href="/town/" className="rounded-lg border border-gothic-brass/60 px-4 py-2 text-sm text-gothic-ivory">返回月光街</Link>
+              <Link href="/" className="rounded-lg border border-gothic-brass/60 px-4 py-2 text-sm text-gothic-ivory">返回大厅</Link>
             </div>
             {error && <p className="mt-3 text-sm text-red-200" role="alert">{error}</p>}
           </div>
