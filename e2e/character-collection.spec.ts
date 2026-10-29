@@ -3,6 +3,10 @@ test('character card can be summoned, forged and equipped without altering the f
   test.setTimeout(90_000);
   await page.goto('/characters/');
   await expect(page.getByTestId('character-collection')).toBeVisible();
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
+  await expect(page.getByTestId('summon-preview-yuesha-eclipse')).toHaveAttribute('aria-pressed','true');
+  await page.getByTestId('summon-preview-brook-tide').click();
+  await expect(page.getByTestId('summon-featured-portrait')).toHaveAttribute('data-tier','1');
   await expect(page.getByTestId('collection-tickets')).toHaveText('3');
   await expect(page.getByTestId('collection-odds')).toContainText('神话·月蚀 1%');
   await page.evaluate(()=>{
@@ -69,4 +73,16 @@ test('red eclipse reveal is visibly mythic and respects reduced motion',async({p
   await expect(page.getByTestId('life-potential-yuesha')).toContainText('5 阶');
   await page.getByTestId('collection-reveal-close').click();
   await expect(page.getByTestId('adornment-tier-yuesha').first()).toBeVisible();
+});
+
+test('summon scene matches cinematic layout without horizontal overflow on 390px',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/characters/#summon');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
+  await expect(page.getByTestId('collection-summon')).toBeVisible();
+  await expect(page.getByTestId('summon-preview-yuesha-eclipse')).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  await page.getByTestId('summon-preview-yuesha-eclipse').click();
+  await expect(page.getByTestId('summon-featured-portrait')).toHaveAttribute('data-tier','5');
+  await expect(page.getByTestId('collection-odds')).toContainText('1.00%');
 });

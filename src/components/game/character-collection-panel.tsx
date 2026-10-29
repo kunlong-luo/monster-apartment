@@ -5,6 +5,7 @@ import {CharacterAdornment} from '@/components/game/character-adornment';
 import {CharacterSummonReveal} from '@/components/game/character-summon-reveal';
 import Image from 'next/image';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
+import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import {WorkerArtwork} from '@/components/moonwork/worker-artwork';
 import {useCharacterLife} from '@/lib/game/character-life-store';
 import {commitCollection,useCharacterCollection} from '@/lib/game/character-collection-store';
@@ -31,6 +32,7 @@ export function CharacterCollectionPanel({completed}:{completed:number}){
   const life=useCharacterLife();
   const {status,collection}=useCharacterCollection();
   const [chosen,setChosen]=useState<CardKey|null>(null);
+  const [featured,setFeatured]=useState<CardKey>('yuesha-eclipse');
   const [notice,setNotice]=useState('');
   const [reveal,setReveal]=useState<{card:CardKey;duplicate:boolean}|null>(null);
   const summonButton=useRef<HTMLButtonElement>(null);
@@ -44,12 +46,15 @@ export function CharacterCollectionPanel({completed}:{completed:number}){
     CHARACTER_CARDS.find(card=>collection.draws.includes(card.key));
   const selectedId=selectedCard?.character??null;
   const ownedCount=new Set(collection.draws).size;
+  const feature=CHARACTER_CARDS.find(card=>card.key===featured)!;
+  const featureOwned=collection.draws.includes(feature.key);
   const summon=()=>{
     const roll=window.crypto.getRandomValues(new Uint32Array(1))[0]/4294967296;
     const result=commitCollection({type:'summon',earned,roll});
     if(result.status==='applied'&&result.card){
       const card=CHARACTER_CARDS.find(c=>c.key===result.card)!;
       setChosen(result.card);
+      setFeatured(result.card);
       setReveal({card:result.card,duplicate:collection.draws.includes(result.card)});
       setNotice('召唤成功：'+card.title+'。'+
         (collection.draws.includes(result.card)?'重复契约已化为更多锻造碎片。':'新契约已加入图鉴。'));
@@ -67,35 +72,69 @@ export function CharacterCollectionPanel({completed}:{completed:number}){
       '已装备'+FORGE_RECIPES.find(item=>item.id===id)!.name+'，档案属性已更新。':
       '无法装备：请选择已收录角色并确认装备已打造。');
   };
-  return <section className="mb-4 min-w-0 space-y-3 rounded-xl border border-[#d9ad795e] bg-[#160d19ef] p-3 shadow-[inset_0_1px_#fff1cb18] sm:p-4"
-    data-testid="character-collection">
-    <header className="space-y-1">
-      <p className="text-[10px] tracking-[.16em] text-[#d5aa80]">MOONLIT CONTRACTS · 人物收藏</p>
-      <h2 className="text-xl font-semibold text-[#ffe4bd]">月影契约 · 人物召唤</h2>
-      <p className="text-xs leading-5 text-[#d8baa7]">四位住客都有自己的房间和故事；抽取的是他们的珍藏契约卡，不会锁住剧情人物。</p>
+  return <section id="summon" className="gothic-summon-shell mb-4 min-w-0 space-y-4 rounded-xl border border-[#c4a1777c] bg-[#100910e8] p-3 sm:p-5"
+    data-testid="character-collection" aria-label="月影契约召唤">
+    <header className="gothic-summon-heading">
+      <span className="text-[10px] tracking-[.21em] text-[#e3b37a]">MOONLIT COVENANT · 契约召唤</span>
+      <h2 className="text-2xl font-semibold tracking-[.13em] text-[#ffe5c0] sm:text-3xl">神话 · 月蚀</h2>
+      <p className="text-xs leading-5 text-[#dfc0aa]">收集人物契约，揭晓她们的故事。所有卡池均使用真实概率；选择预览不影响抽取结果。</p>
     </header>
     {status!=='ok'&&<p role="alert" data-testid="collection-storage-error"
       className="rounded-lg border border-red-400/60 bg-red-950/35 p-3 text-xs text-red-100">
       {status==='corrupt'?'检测到收藏存档损坏，已停止写入。原始数据完整保留。':
         '当前浏览器无法保存收藏记录，抽取和打造已停用。'}
     </p>}
-    <div className="grid grid-cols-3 gap-2 rounded-lg bg-[#2b1a2c] p-2 text-center text-xs">
-      <div><span className="block text-[#c7a788]">可召唤</span><strong className="text-lg tabular-nums text-[#ffe6b3]" data-testid="collection-tickets">{available}</strong></div>
-      <div><span className="block text-[#c7a788]">已收录</span><strong className="text-lg tabular-nums text-[#ffe6b3]" data-testid="collection-owned">{ownedCount} / 5</strong></div>
-      <div><span className="block text-[#c7a788]">锻造碎片</span><strong className="text-lg tabular-nums text-[#ffe6b3]" data-testid="collection-shards">{collection.shards}</strong></div>
+    <div className="gothic-summon-stage" data-testid="gothic-summon-stage">
+      <nav className="gothic-summon-banners" aria-label="预览五张人物契约">
+        {CHARACTER_CARDS.slice().reverse().map(card=><button key={card.key} type="button"
+          data-testid={'summon-preview-'+card.key}
+          aria-pressed={featured===card.key}
+          onClick={()=>setFeatured(card.key)}
+          className="gothic-summon-banner" data-tier={card.tier}>
+          <Portrait id={card.character}/>
+          <span className="gothic-summon-banner-copy"><strong>{card.title}</strong>
+            <small>{card.rarity} · {card.weight}%</small></span>
+        </button>)}
+      </nav>
+      <div className="gothic-summon-hero" data-testid="summon-featured-portrait" data-tier={feature.tier}>
+        <div className="gothic-summon-hero-moon" aria-hidden="true">☾</div>
+        {feature.character==='yuesha'?
+          <Image src={moonveilBust} unoptimized alt="月纱的现有肖像绘景"
+            fill sizes="(max-width:700px) 80vw, 480px" className="gothic-summon-hero-image object-cover object-top"/>:
+          <div className="gothic-summon-worker"><WorkerArtwork id={feature.character} name={CHARACTER_PROFILES[feature.character].name}/></div>}
+        <div className="gothic-summon-hero-copy" aria-live="polite">
+          <span>月光契约 · {feature.rarity}</span>
+          <strong>{feature.title}</strong>
+          <small>{featureOwned?'已收录 · 可查看人物属性':'尚未收录 · 召唤概率 '+feature.weight+'%'}</small>
+        </div>
+      </div>
+      <div className="gothic-summon-sidebar">
+        <p className="text-[10px] tracking-[.17em] text-[#e3be9a]">MOONLIT CONTRACT</p>
+        <h3 className="text-xl font-semibold text-[#ffe1ba]">月影契约</h3>
+        <p className="text-xs text-[#dec3ac]">预览：{feature.title}</p>
+        <div className="grid grid-cols-3 gap-1 rounded-lg border border-[#ad795459] bg-[#21121d] p-2 text-center text-[10px]">
+          <div><span className="block text-[#cfad8d]">可召唤</span><strong className="text-lg text-[#ffe8c7]" data-testid="collection-tickets">{available}</strong></div>
+          <div><span className="block text-[#cfad8d]">已收录</span><strong className="text-lg text-[#ffe8c7]" data-testid="collection-owned">{ownedCount} / 5</strong></div>
+          <div><span className="block text-[#cfad8d]">锻造碎片</span><strong className="text-lg text-[#ffe8c7]" data-testid="collection-shards">{collection.shards}</strong></div>
+        </div>
+        <div className="gothic-summon-odds" data-testid="collection-odds">
+          <h4>召唤概率公示</h4>
+          {CHARACTER_CARDS.slice().reverse().map(card=><div key={card.key} className="gothic-summon-odd-row" data-tier={card.tier}>
+            <span>{card.rarity}</span><span>{card.weight.toFixed(2)}%</span>
+          </div>)}
+          <small>选择预览不会改变概率；无保底及概率提升。</small>
+        </div>
+        <button ref={summonButton} type="button" data-testid="collection-summon"
+          disabled={status!=='ok'||life.status!=='ok'||available<1||Boolean(reveal)}
+          onClick={summon}
+          className="gothic-summon-primary min-h-12 w-full px-4 text-sm font-bold text-[#ffeed5] disabled:cursor-not-allowed disabled:opacity-40">
+          ✦ 单次召唤 · 消耗 1 张
+        </button>
+        <p className="text-[11px] leading-5 text-[#d5b49b]">
+          首次赠送 3 张；每拜访一位新住客、每完成一单工坊委托，各得 1 张。无付费入口。
+        </p>
+      </div>
     </div>
-    <button ref={summonButton} type="button" data-testid="collection-summon"
-      disabled={status!=='ok'||life.status!=='ok'||available<1||Boolean(reveal)}
-      onClick={summon}
-      className="min-h-12 w-full rounded-lg border border-[#e7b36c] bg-[linear-gradient(100deg,#6c2844,#4a203d,#8a4543)] px-4 text-sm font-bold text-[#ffefd1] shadow-[0_5px_18px_#19040c80] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
-      ☽ 召唤契约 · 消耗 1 张
-    </button>
-    <p className="text-[11px] leading-5 text-[#bd9e89]">
-      首次赠送 3 张；每拜访一位新住客、每完成一单工坊委托，各获得 1 张。无付费入口。
-    </p>
-    <p className="text-[10px] leading-5 text-[#ad9588]" data-testid="collection-odds">
-      公告概率：普通 46% · 稀有 31% · 史诗 17% · 传说 5% · <span className="text-[#ff8293]">神话·月蚀 1%</span>
-    </p>
     <AnimatePresence>
       {reveal&&<CharacterSummonReveal key={reveal.card}
         cardKey={reveal.card} duplicate={reveal.duplicate} onClose={dismissReveal}/>}

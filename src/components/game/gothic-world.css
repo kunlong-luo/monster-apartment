@@ -29,3 +29,93 @@ button):focus-visible{outline:2px solid #ffdda2;outline-offset:2px}.mw.mw-gothic
   .mw.mw-gothic .mw-town-portal strong{font-size:10px}
   .mw.mw-gothic .mw-portal-glyph{font-size:15px}
 }
+
+/* V3.25 cinematic gallery. The screenshot is a design reference, never a
+ * flattened click-map underneath actual form controls. */
+.mw.mw-gothic[data-area="characters"] .mw-main.mw-main--summon{
+  left:50%;right:auto;transform:translateX(-50%);
+  width:min(calc(100vw - 38px),1370px);max-width:none;
+  padding:15px 20px 40px;backdrop-filter:none;
+  background:linear-gradient(145deg,#100b16ee,#160b17f5);
+  border:1px solid #d6a97b70;
+}
+.gothic-summon-shell{font-family:Georgia,"Noto Serif SC","Songti SC",serif}
+.gothic-summon-heading{display:grid;gap:4px;text-align:center;margin:3px 0 10px}
+.gothic-summon-stage{
+  display:grid;grid-template-columns:minmax(148px,.85fr) minmax(260px,2.25fr) minmax(216px,1.05fr);
+  gap:12px;align-items:stretch;min-height:410px;
+}
+.gothic-summon-banners{display:grid;grid-template-rows:repeat(5,minmax(70px,1fr));gap:8px;min-width:0}
+.gothic-summon-banner{
+  min-width:0;display:flex;align-items:center;gap:8px;text-align:left;
+  border:1px solid #ae8b68a1;background:linear-gradient(90deg,#27121ff2,#140c17f2);
+  border-radius:4px;padding:7px;
+  color:#e9d3bf;box-shadow:inset 0 0 0 1px #d5a46f25;
+  transition:box-shadow .2s,border-color .2s;
+}
+.gothic-summon-banner[data-tier="5"]{border-color:#a93154;background:linear-gradient(110deg,#461025,#1b0b18)}
+.gothic-summon-banner[aria-pressed="true"]{border-color:#ffdfae;box-shadow:0 0 0 2px #b78d5980,0 0 21px #a8194869}
+.gothic-summon-banner .relative{width:54px;height:54px;flex:none}
+.gothic-summon-banner-copy{min-width:0;display:grid;gap:5px;font-size:11px}
+.gothic-summon-banner-copy strong{font-size:clamp(11px,1.05vw,16px);line-height:1.4;color:#f7dbb5}
+.gothic-summon-banner-copy small{color:#bfa38f}
+.gothic-summon-hero{
+  position:relative;overflow:hidden;min-width:0;min-height:400px;
+  border:1px solid #c49b699c;border-radius:7px;
+  background:radial-gradient(ellipse at 53% 31%,#70434e,#200d20 66%,#0c0812);
+  box-shadow:inset 0 0 0 3px #efc38f18,0 12px 48px #000a;
+}
+.gothic-summon-hero[data-tier="5"]{border-color:#e0586d;box-shadow:inset 0 0 0 2px #f59cba33,0 0 36px #a21a4847}
+.gothic-summon-hero-moon{position:absolute;top:0;right:9%;font-size:150px;color:#e99c9b2c;pointer-events:none}
+.gothic-summon-hero-image{filter:saturate(1.08);object-position:50% 24%}
+.gothic-summon-worker{position:absolute;inset:8% 13% 14%;display:grid;place-items:center;overflow:hidden}
+.gothic-summon-worker :is(img,canvas){max-width:100%;max-height:100%;object-fit:contain}
+.gothic-summon-hero-copy{
+  position:absolute;bottom:0;left:0;right:0;display:grid;gap:6px;
+  padding:32px 15px 17px;background:linear-gradient(transparent,#130713d8 37%,#0f0716ee);
+  text-align:center;color:#ffe5c6;text-shadow:0 2px 7px #000;
+}
+.gothic-summon-hero-copy span{font-size:11px;letter-spacing:.2em;color:#ffd1d6}
+.gothic-summon-hero-copy strong{font-size:clamp(24px,2.6vw,40px);font-weight:500}
+.gothic-summon-hero-copy small{font-size:11px;color:#e3c1ab}
+.gothic-summon-sidebar{
+  display:flex;flex-direction:column;gap:12px;min-width:0;
+  border:1px solid #bb946c6a;background:linear-gradient(180deg,#1c121de8,#100c17ed);
+  padding:13px;
+}
+.gothic-summon-odds{display:grid;gap:8px;border-top:1px solid #d3a56c69;padding-top:11px}
+.gothic-summon-odds h4{font-size:13px;color:#f5d5a9}
+.gothic-summon-odd-row{display:flex;justify-content:space-between;gap:6px;border-bottom:1px solid #9b745c31;padding-bottom:4px;font-size:12px;color:#cab3a5}
+.gothic-summon-odd-row[data-tier="5"]{color:#ff8fa0}
+.gothic-summon-odd-row[data-tier="4"]{color:#f7cc8c}
+.gothic-summon-odd-row[data-tier="3"]{color:#d5adee}
+.gothic-summon-odds small{font-size:10px;color:#bda18c;line-height:1.5}
+.gothic-summon-primary{
+  border:1px solid #ffc7a6;border-radius:6px;
+  background:linear-gradient(135deg,#6b1834,#a3354b,#65162d);
+  box-shadow:inset 0 1px #ffe3b564,0 8px 24px #5e112b77;
+}
+.gothic-summon-primary:is(:hover,:focus-visible):not(:disabled){filter:brightness(1.16)}
+@media(max-width:1000px){
+  .gothic-summon-stage{grid-template-columns:minmax(140px,.95fr) minmax(240px,1.6fr);min-height:0}
+  .gothic-summon-sidebar{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,1fr);gap:10px}
+  .gothic-summon-sidebar>p{grid-column:1/-1}
+  .gothic-summon-sidebar .gothic-summon-odds{grid-column:2;grid-row:1/span 4}
+}
+@media(max-width:700px){
+  .mw.mw-gothic[data-area="characters"] .mw-main.mw-main--summon{
+    top:95px!important;bottom:70px!important;left:6px;right:6px;
+    transform:none;width:calc(100vw - 12px);padding:10px 8px 22px;
+  }
+  .gothic-summon-heading h2{font-size:23px}
+  .gothic-summon-stage{display:flex;flex-direction:column;gap:9px}
+  .gothic-summon-banners{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
+  .gothic-summon-banner{min-width:158px;max-width:172px;scroll-snap-align:start}
+  .gothic-summon-banner .relative{width:44px;height:44px}
+  .gothic-summon-hero{min-height:310px}
+  .gothic-summon-sidebar{display:flex;gap:9px}
+  .gothic-summon-sidebar .gothic-summon-odds{grid-column:auto;grid-row:auto}
+}
+@media(prefers-reduced-motion:reduce){
+  .gothic-summon-banner,.gothic-summon-primary{transition:none!important}
+}
