@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {projectCoverAnchor,roomProjectedHotspotPosition,roomHotspotPosition} from '../src/core/room-stage-layout';
+import {projectCoverAnchor,roomProjectedHotspotPosition,roomHotspotPosition,roomSpotIsReachable} from '../src/core/room-stage-layout';
 import {roomSceneFocus} from '../src/core/room-scene-focus';
 import art from '../public/art/rooms/manifest.json';
 
@@ -31,6 +31,16 @@ describe('V3.11 background cover projection and shared focus coordinates',()=>{
       for(const other of pixels.slice(0,i))
         expect(Math.hypot(point[0]-other[0],point[1]-other[1])).toBeGreaterThanOrEqual(44);
     }
+  });
+  it('retains truthful anchors and exposes a fallback for narrow screens',()=>{
+    const ledger=projectCoverAnchor([0.77,0.815],{width:320,height:315});
+    const tea=projectCoverAnchor([0.535,0.72],{width:320,height:315});
+    expect(roomSpotIsReachable(ledger,{width:320,height:315})).toBe(false);
+    expect(roomSpotIsReachable(tea,{width:320,height:315})).toBe(true);
+    expect(roomSpotIsReachable(ledger,{width:390,height:315})).toBe(false);
+    const normalLedger=projectCoverAnchor([0.77,0.815],{width:390,height:315});
+    expect(roomSpotIsReachable(normalLedger,{width:390,height:315})).toBe(true);
+    expect(roomSpotIsReachable(normalLedger,{width:0,height:315})).toBe(false);
   });
   it('rejects invalid dimensions rather than dividing by zero',()=>{
     expect(()=>projectCoverAnchor([0.5,0.5],{width:0,height:315})).toThrow();

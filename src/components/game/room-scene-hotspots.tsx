@@ -1,12 +1,13 @@
 'use client';
 
+import {useId,useState} from 'react';
 import type {CSSProperties} from 'react';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 
 /** Percentages refer to the scenic layer, not the whole screen.
  * Different layouts prevent object markers covering resident portraits. */
-import {roomProjectedHotspotPosition} from '@/core/room-stage-layout';
+import {roomProjectedHotspotPosition,roomSpotIsReachable} from '@/core/room-stage-layout';
 import type {RoomStageSize} from '@/core/room-stage-layout';
 export type {SceneSpot} from '@/core/room-stage-layout';
 export type SceneHotspotItem<T extends string=string>={id:T;label:string};
@@ -29,10 +30,15 @@ export function RoomSceneHotspots<T extends string>({
   const {reduced:gameReduced}=useGothicMotion();
   const reducedMotion=Boolean(systemReduced||gameReduced);
   const known=items.filter(item=>observed.includes(item.id)).length;
+  const [showOffscreen,setShowOffscreen]=useState(false);
+  const offscreenMenuId=useId();
+  const offscreen=stageSize?items.filter((item,index)=>
+    !roomSpotIsReachable(roomProjectedHotspotPosition(roomId??'',item.id,stageSize,index),stageSize)):[];
   return <div className="pointer-events-none absolute inset-0 z-[4]" data-hotspot-layout="object-id" aria-label={characterName+'的房间物件'}>
     {items.map((item,index)=>{
       const discovered=observed.includes(item.id);
       const point=roomProjectedHotspotPosition(roomId??'',item.id,stageSize,index);
+      if(stageSize&&!roomSpotIsReachable(point,stageSize))return null;
       return <button type="button" key={item.id}
         aria-label={item.label}
         aria-pressed={selected===item.id}
@@ -56,6 +62,24 @@ export function RoomSceneHotspots<T extends string>({
         </span>
       </button>;
     })}
+    {offscreen.length>0&&<div className="pointer-events-auto absolute right-3 top-3 z-[15] flex max-w-[66%] flex-col items-end gap-2"
+      data-testid="room-offscreen-objects">
+      <button type="button" aria-controls={offscreenMenuId} aria-expanded={showOffscreen}
+        onClick={()=>setShowOffscreen(open=>!open)}
+        data-testid="room-offscreen-toggle"
+        className="min-h-11 rounded-full border border-[#d9b384c9] bg-[#1c1126e3] px-3 py-2 text-[11px] text-[#ffdfb2] shadow-[0_5px_18px_#000a] hover:bg-[#372339] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffdfb2]"
+      >⌕ 画面外物件 · {offscreen.length}</button>
+      {showOffscreen&&<div id={offscreenMenuId} role="group" aria-label="画面外可调查物件"
+        className="flex max-w-[230px] flex-col gap-1 rounded-xl border border-[#d9b3848c] bg-[#1a1023f2] p-2 shadow-[0_8px_22px_#000a]">
+        {offscreen.map(item=><button type="button" key={item.id} aria-label={item.label}
+          aria-pressed={selected===item.id}
+          data-testid={'scene-object-'+item.id}
+          data-marker-layout="offscreen"
+          onClick={()=>{onInspect(item.id);setShowOffscreen(false);}}
+          className="min-h-11 rounded-lg border border-[#bba17c7a] bg-[#312034e6] px-3 py-2 text-left text-xs text-[#ffe3c5] hover:border-[#ffe0b0] focus-visible:outline-2 focus-visible:outline-[#ffe0b0]"
+        >{observed.includes(item.id)?'✦ ': '⌕ '}{item.label}</button>)}
+      </div>}
+    </div>}
     <AnimatePresence mode="wait">
       {selected&&description&&<motion.div key={selected}
         role="status" aria-live="polite" data-testid="scene-discovery"

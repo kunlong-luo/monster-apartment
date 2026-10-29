@@ -46,6 +46,18 @@ export function projectCoverAnchor(anchor:ArtworkAnchor,size:RoomStageSize):Scen
     `${Math.round(screen/length*10000)/100}%`;
   return {left:percent(screenX,size.width),top:percent(screenY,size.height)};
 }
+/** True only when an entire 44px interactive marker is visible.
+ * Offscreen props stay discoverable via a discreet keyboard/touch fallback,
+ * never by lying about where a physical object is painted. */
+export function roomSpotIsReachable(spot:SceneSpot,stage:RoomStageSize,markerSize=44):boolean{
+  if(!(stage.width>0&&stage.height>0&&markerSize>0))return false;
+  const x=Number.parseFloat(spot.left)/100*stage.width;
+  const y=Number.parseFloat(spot.top)/100*stage.height;
+  const half=markerSize/2;
+  return Number.isFinite(x)&&Number.isFinite(y)&&
+    x>=half&&x<=stage.width-half&&y>=half&&y<=stage.height-half;
+}
+
 /** Production art uses physical object anchors. Concept scenes never inherit
  * the new painting's coordinates and retain their existing hotspot behavior. */
 export function roomProjectedHotspotPosition(roomId:string,itemId:string,size:RoomStageSize|null,index=0):SceneSpot{
