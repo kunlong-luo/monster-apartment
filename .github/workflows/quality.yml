@@ -25,7 +25,10 @@ jobs:
         with:
           path: .next/cache
           key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-      - run: pnpm install --frozen-lockfile
+      # The repository tracks bun.lock, not pnpm-lock.yaml. Install the
+      # exact locked dependencies rather than running pnpm against a missing lock.
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
       - run: pnpm check:stable-deps
       - run: pnpm audit:room-art
       - run: pnpm typecheck
@@ -71,7 +74,10 @@ jobs:
         with:
           path: .next/cache
           key: nextjs-e2e-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-      - run: pnpm install --frozen-lockfile
+      # The repository tracks bun.lock, not pnpm-lock.yaml. Install the
+      # exact locked dependencies rather than running pnpm against a missing lock.
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
       - run: npm --prefix v2 install --no-audit --no-fund
       - run: google-chrome --version
       - name: Use existing system font fallback
@@ -106,7 +112,10 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 12.13.0
-      - run: pnpm install --frozen-lockfile
+      # The repository tracks bun.lock, not pnpm-lock.yaml. Install the
+      # exact locked dependencies rather than running pnpm against a missing lock.
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
       - run: pnpm build
       - run: npm --prefix v2 install --no-audit --no-fund
       - run: npm --prefix v2 run build

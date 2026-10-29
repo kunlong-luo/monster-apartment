@@ -43,42 +43,34 @@ export function WorkshopControls({
 }) {
   const [activeTab, setActiveTab] = useState<'devices' | 'materials' | 'products'>('devices');
   const [logFilter, setLogFilter] = useState<'all' | 'output' | 'alert'>('all');
-  const [autoAssigned, setAutoAssigned] = useState(false);
+  const [activeConsole,setActiveConsole]=useState<'equipment'|'roster'|'logs'>('roster');
 
-  // Auto-assign helper: finds empty machines and places available workers
-  const handleAutoAssign = () => {
-    setAutoAssigned(true);
-    setTimeout(() => setAutoAssigned(false), 1200);
-
-    // Auto-match workers to compatible vacant slots
-    for (const wId of workers) {
-      const alreadyPlaced = world.tiles.some(t => t?.worker === wId);
-      if (!alreadyPlaced) {
-        onAction({type: 'choose-worker', worker: wId});
-        break;
-      }
-    }
+  // This action only selects a worker. The actual assignment happens when
+  // the player clicks a machine on the canvas; never claim it auto-assigned.
+  const selectAvailableWorker=()=>{
+    const available=workers.find(id=>!world.tiles.some(tile=>tile?.worker===id));
+    if(available)onAction({type:'choose-worker',worker:available});
   };
 
   // Build live production log entries from world state and reports
   const report = world.last;
   const logs = [
     {
-      time: '14:28',
+      time: '本班次',
       type: 'output',
       icon: '◆',
       text: report?.cores && report.cores > 0 ? `生产完成：获得 精制晶核 x${report.cores}` : '晶核熔炉等待原料输入中',
       tone: 'good',
     },
     {
-      time: '14:25',
+      time: '本班次',
       type: 'output',
       icon: '🌿',
       text: report?.fiber && report.fiber > 0 ? `温室培育产出：获得 孢子纤维 x${report.fiber}` : '银叶苗床持续光合作用',
       tone: 'good',
     },
     {
-      time: '14:22',
+      time: '本班次',
       type: 'output',
       icon: '💧',
       text: report?.water && report.water > 0 ? `水汽泵抽提：产出 清水 x${report.water}` : '月井地下水脉充盈',
@@ -86,7 +78,7 @@ export function WorkshopControls({
     },
     ...(report?.blocked && report.blocked.length > 0
       ? report.blocked.map((b, idx) => ({
-          time: `14:1${9 - idx}`,
+          time: `异常 ${idx+1}`,
           type: 'alert',
           icon: '⚠',
           text: b.includes(':water') ? '银叶苗床告警：水汽供应不足，需靠近水泵' : '夜光熔炉告警：原料短缺，需两份孢子炼核',
@@ -94,7 +86,7 @@ export function WorkshopControls({
         }))
       : [
           {
-            time: '14:15',
+            time: '本班次',
             type: 'all',
             icon: '✦',
             text: world.completed > 0 ? `契约达成结算：工坊总交付 ${world.completed} 单` : '工坊处于第一生产周期，排班稳定',
@@ -108,9 +100,17 @@ export function WorkshopControls({
   );
 
   return (
-    <section className="console gothic-console-3col" aria-label="工坊底部综合调度控制台">
+    <section className="console gothic-console-3col" aria-label="工坊底部综合调度控制台"
+      data-testid="workshop-console" data-mobile-panel={activeConsole}>
+      <nav className="workshop-console-tabs" aria-label="工坊调度栏目">
+        {([{id:'equipment',label:'设备'},{id:'roster',label:'派工'},{id:'logs',label:'生产'}] as const)
+          .map(tab=><button type="button" key={tab.id}
+            data-testid={'console-tab-'+tab.id} aria-pressed={activeConsole===tab.id}
+            onClick={()=>setActiveConsole(tab.id)}
+            className={activeConsole===tab.id?'is-active':''}>{tab.label}</button>)}
+      </nav>
       {/* 栏目 1：设备库与建设卡片 */}
-      <div className="console-panel gothic-panel-col gothic-panel-equipment">
+      <div className="console-panel gothic-panel-col gothic-panel-equipment" data-testid="console-equipment">
         <div className="panel-head flex items-center justify-between border-b border-gothic-brass/35 pb-2">
           <div className="flex items-center gap-1">
             <button
@@ -151,7 +151,7 @@ export function WorkshopControls({
         </div>
 
         {activeTab === 'devices' && (
-          <div id="catalog" className="options mt-2 grid grid-cols-3 gap-2">
+          <div id="catalog" className="options workshop-machine-grid mt-2 grid grid-cols-3 gap-2">
             {machines.map((id) => {
               const info = MACHINES[id];
               const isSelected = chosenMachine === id;
@@ -185,14 +185,14 @@ export function WorkshopControls({
                       sizes="120px"
                     />
                     <span className="absolute left-1 top-1 rounded bg-black/75 px-1 py-0.5 text-[8px] font-bold text-gothic-gold">
-                      Lv.1
+                      已建 {countOnField}
                     </span>
                     <span
                       className={`absolute right-1 top-1 rounded px-1 py-0.5 text-[8px] font-bold ${
                         isWorking ? 'bg-emerald-950/85 text-emerald-300' : 'bg-amber-950/85 text-amber-300'
                       }`}
                     >
-                      {isWorking ? '生产中' : '未就绪'}
+                      {isWorking ? '已建造' : '未建造'}
                     </span>
                   </div>
 
@@ -268,25 +268,21 @@ export function WorkshopControls({
       </div>
 
       {/* 栏目 2：工匠派工管理 */}
-      <div className="console-panel gothic-panel-col gothic-panel-roster">
+      <div className="console-panel gothic-panel-col gothic-panel-roster" data-testid="console-roster">
         <div className="panel-head flex items-center justify-between border-b border-gothic-brass/35 pb-2">
           <div className="flex items-center gap-1.5">
             <span className="text-xs font-bold text-gothic-ivory">⚙ 工匠派工</span>
           </div>
-          <button
-            type="button"
-            onClick={handleAutoAssign}
-            className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold transition-all ${
-              autoAssigned
-                ? 'border-emerald-400 bg-emerald-950/80 text-emerald-200'
-                : 'border-gothic-brass/60 bg-gothic-panel/80 text-gothic-ivory hover:border-gothic-glow'
-            }`}
-          >
-            <span>{autoAssigned ? '✓ 已匹配' : '自动分配'}</span>
+          <button type="button" onClick={selectAvailableWorker}
+            disabled={!workers.some(id=>!world.tiles.some(tile=>tile?.worker===id))}
+            data-testid="workshop-pick-idle-worker"
+            className="min-h-9 shrink-0 rounded-full border border-gothic-brass/60 bg-gothic-panel/80 px-3 text-xs font-semibold text-gothic-ivory hover:border-gothic-glow disabled:opacity-45">
+            选择空闲工匠
           </button>
         </div>
 
-        <div id="actions" className="options mt-2 flex flex-col gap-1.5">
+        <p className="workshop-roster-hint">选择工匠后，点击场景中的设备完成派工；换岗也按此操作。</p>
+        <div id="actions" className="options workshop-worker-list mt-2" role="group" aria-label="三名工匠的当前岗位">
           {workers.map((id) => {
             const profile = WORKERS[id];
             const occupied = world.tiles.findIndex((tile) => tile?.worker === id);
@@ -302,19 +298,19 @@ export function WorkshopControls({
                 onClick={() => onAction({type:'choose-worker',worker:id})}
                 aria-pressed={isSelected}
                 aria-label={'选择工匠 ' + profile.zh}
-                className={`worker group flex items-center justify-between rounded-xl border p-1.5 text-gothic-ivory transition-all hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none ${
+                className={`worker group flex items-center justify-between rounded-xl border p-2.5 text-gothic-ivory transition-all hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none ${
                   isSelected
                     ? 'active border-gothic-glow bg-gothic-wine/90 shadow-[0_0_14px_rgba(240,197,136,0.3)]'
                     : 'border-gothic-brass/55 bg-gothic-panel/80 hover:bg-gothic-wine/40'
                 }`}
               >
                 {/* Avatar & Role Info */}
-                <div className="flex items-center gap-2">
+                <div className="worker-identity flex min-w-0 items-center gap-3">
                   <span className="worker-miniature block size-9 shrink-0 overflow-hidden rounded-full border border-gothic-brass/70 bg-[#22374a] shadow-inner">
                     <WorkerArtwork id={id} name={profile.zh} compact />
                   </span>
-                  <div className="text-left">
-                    <div className="flex items-center gap-1.5">
+                  <div className="min-w-0 text-left">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       <strong className="text-xs font-bold text-gothic-ivory">{profile.zh}</strong>
                       <span className="rounded bg-black/50 px-1 py-0.2 text-[9px] text-gothic-muted">
                         Lv.30
@@ -327,7 +323,7 @@ export function WorkshopControls({
                 </div>
 
                 {/* Status Tag & Operation Button */}
-                <div className="flex items-center gap-2">
+                <div className="worker-status flex shrink-0 items-center gap-2">
                   <span
                     className={`rounded-full px-2 py-0.5 text-[9px] font-bold ${
                       occupied >= 0
@@ -348,7 +344,7 @@ export function WorkshopControls({
       </div>
 
       {/* 栏目 3：实时生产日志与快捷行动 */}
-      <div className="console-panel gothic-panel-col gothic-panel-logs">
+      <div className="console-panel gothic-panel-col gothic-panel-logs" data-testid="console-logs">
         <div className="panel-head flex items-center justify-between border-b border-gothic-brass/35 pb-2">
           <div className="flex items-center gap-1.5">
             <span className="text-xs font-bold text-gothic-ivory">📜 生产日志</span>
@@ -385,7 +381,7 @@ export function WorkshopControls({
         </div>
 
         {/* Live Timeline List */}
-        <div className="options mt-1.5 flex h-[108px] flex-col gap-1 overflow-y-auto pr-0.5 scrollbar-thin">
+        <div className="options workshop-log-list mt-2 flex min-h-0 flex-col gap-1 overflow-y-auto pr-0.5 scrollbar-thin">
           {filteredLogs.map((item, idx) => (
             <div
               key={idx}

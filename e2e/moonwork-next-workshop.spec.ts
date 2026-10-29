@@ -397,3 +397,46 @@ test('Dexie restores the same V2 world after the localStorage key is lost', asyn
     localStorage.getItem('monster-apartment:workshop-v2-lab')||'{}').version)).toBe(2);
 });
 
+
+test('workshop roster remains legible and operable at desktop and phone widths',async({page})=>{
+  test.setTimeout(90_000);
+  for(const size of [{width:1440,height:900},{width:390,height:844},{width:320,height:700}]){
+    await page.setViewportSize(size);
+    await page.goto('/workshop/');
+    await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:30000});
+    const console=page.getByTestId('workshop-console');
+    await expect(console).toBeVisible();
+    if(size.width<=900)await page.getByTestId('console-tab-roster').click();
+    const roster=page.getByTestId('console-roster');
+    await expect(roster).toBeVisible();
+    const workers=['brook','fern','cinder'].map(id=>page.getByTestId('v2-worker-'+id));
+    for(const worker of workers)await expect(worker).toBeVisible();
+    const measurements=await page.evaluate(()=>{
+      const list=document.querySelector('#actions');
+      const buttons=[...document.querySelectorAll('#actions > button')];
+      const panel=document.querySelector('[data-testid="console-roster"]');
+      const bounds=buttons.map(button=>button.getBoundingClientRect());
+      return {
+        display:list?getComputedStyle(list).display:'',
+        column:getComputedStyle(list!).flexDirection,
+        rowOverlap:bounds.some((box,index)=>index>0&&box.top<bounds[index-1].bottom-1),
+        horizontalOverflow:bounds.some(box=>box.right>window.innerWidth+1||box.left<0),
+        panelWidth:panel?.getBoundingClientRect().width,
+        widths:bounds.map(box=>box.width),
+      };
+    });
+    expect(measurements.display).toBe('grid');
+    expect(measurements.rowOverlap).toBe(false);
+    expect(measurements.horizontalOverflow).toBe(false);
+    expect(measurements.widths.every(width=>width>0)).toBe(true);
+    if(size.width<=900){
+      await page.getByTestId('console-tab-equipment').click();
+      await expect(page.getByTestId('console-equipment')).toBeVisible();
+      await page.getByTestId('console-tab-logs').click();
+      await expect(page.getByTestId('v2-shift')).toBeVisible();
+      await page.getByTestId('console-tab-roster').click();
+    }
+    await page.getByTestId('workshop-pick-idle-worker').click();
+    await expect(page.getByTestId('v2-worker-fern')).toHaveAttribute('aria-pressed','true');
+  }
+});
