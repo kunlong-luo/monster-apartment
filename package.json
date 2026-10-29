@@ -13,7 +13,8 @@
     "test": "vitest run",
     "e2e": "playwright test",
     "check:stable-deps": "node scripts/check-stable-dependencies.mjs",
-    "audit:room-art": "node scripts/audit-room-art.mjs"
+    "audit:room-art": "node scripts/audit-room-art.mjs",
+    "art:review": "node scripts/prepare-room-background.mjs"
   },
   "dependencies": {
     "motion": "14.6.0",
