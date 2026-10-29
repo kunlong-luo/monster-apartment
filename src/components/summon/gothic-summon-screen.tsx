@@ -59,7 +59,6 @@ export function GothicSummonScreen() {
   const [showGalleryTab, setShowGalleryTab] = useState(false);
 
   // Featured character for preview
-  const [featuredCardKey, setFeaturedCardKey] = useState<'yuesha-eclipse' | 'brook-tide'>('yuesha-eclipse');
 
   const workshop=useWorkshopWorld();
   const life=useCharacterLife();

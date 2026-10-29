@@ -245,6 +245,10 @@ export function CharacterCollectionPanel({ completed }: { completed: number }) {
       data-testid="character-collection"
       aria-label="月影契约召唤"
     >
+      <Link href="/characters/#summon-screen" data-testid="open-cinematic-summon"
+        className="mb-2 flex min-h-11 w-full items-center justify-center rounded-lg border border-[#f4bb80] bg-[linear-gradient(100deg,#7a193a,#2c1025)] px-4 text-sm font-semibold text-[#ffebd7] hover:brightness-110">
+        ☾ 进入全屏契约召唤 · 单抽、十连与真实保底
+      </Link>
       {/* ------------------------------------------------------------- */}
       {/* 1. TOP HEADER & CURRENCY BAR (1:1 with Screenshot)            */}
       {/* ------------------------------------------------------------- */}
