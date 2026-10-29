@@ -37,7 +37,8 @@ export function RoomSceneBackdrop({id}:{id:CharacterId}){
   // All four concept scenes have independent, environment-only vector art.
   // They are NOT the unreviewed future WebP production backgrounds.
   const fallbackCrop=art.composition==='architecture-crop';
-  const source=roomPublicAssetPath(art.backgroundStatus==='production'
+  const backgroundProduction=art.backgroundStatus==='production';
+  const source=roomPublicAssetPath(backgroundProduction
     ?art.productionAssets.background:art.conceptPreview);
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
@@ -50,7 +51,9 @@ export function RoomSceneBackdrop({id}:{id:CharacterId}){
         sizes={fallbackCrop?'(max-width:1024px) 180vw, 1750px':'(max-width:1024px) 94vw, 850px'}
         className={fallbackCrop?'object-cover object-right':'object-cover object-[18%_43%]'} />
     </div>
-    <div className={'absolute inset-0 '+ambience.veil}/>
+    <div className={'absolute inset-0 '+(backgroundProduction
+      ?'bg-[linear-gradient(90deg,#130b1a4a_0%,transparent_55%,#130b1a56_100%)]'
+      :ambience.veil)}/>
     <div className={'absolute inset-0 '+ambience.moon}/>
     <div className={'private-room__moonshaft absolute inset-0 mix-blend-screen '+(still?'private-room__still':'')}/>
     <div className={'private-room__motes absolute inset-0 '+(still?'private-room__still':'')}/>
