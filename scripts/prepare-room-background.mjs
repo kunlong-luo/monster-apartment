@@ -74,8 +74,8 @@ export function buildReviewHtml({room,anchors,sourceWidth,sourceHeight}){
     '<meta name="viewport" content="width=device-width,initial-scale=1">'+
     '<title>'+safeTitle+' · 美术候选审核</title><style>'+
     'body{margin:20px;background:#130e18;color:#ffddaa;font:14px system-ui}'+
-    'main{display:flex;flex-wrap:wrap;gap:24px;align-items:start}section{max-width:100%}'+
-    '.scene{position:relative;max-width:100%;background-image:url("./background-candidate.webp");'+
+    'main{display:flex;flex-wrap:wrap;gap:24px;align-items:start}section{max-width:100%;overflow-x:auto}'+
+    '.scene{position:relative;flex-shrink:0;background-image:url("./background-candidate.webp");'+
     'background-size:cover;background-position:center;overflow:hidden;border:1px solid #b19a76;border-radius:10px}'+
     '.marker{position:absolute;display:grid;place-items:center;transform:translate(-50%,-50%);'+
     'min-width:44px;height:44px;border-radius:40px;background:#332038df;border:2px solid #ffd198;'+
