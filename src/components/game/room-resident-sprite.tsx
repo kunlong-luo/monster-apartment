@@ -47,13 +47,19 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
       initial={false}
       animate={performerMotion}
       transition={reduced?{duration:0}:pose==='idle'?{duration:7,ease:'easeInOut',repeat:Infinity}:{duration:.48,ease:'easeOut'}}>
-      {previewPoseUrl
-        ?<Image src={previewPoseUrl} alt={name+'的本地透明立绘候选'} fill unoptimized draggable={false}
-          sizes="(max-width:640px) 49vw, 410px" className="object-contain object-bottom drop-shadow-[0_12px_22px_#000b]"/>
-        :production
-        ?<Image src={roomPublicAssetPath(frame)} alt={name+'在会客室中'} fill unoptimized draggable={false}
-          sizes="(max-width:640px) 49vw, 410px"
-          className="object-contain object-bottom drop-shadow-[0_12px_22px_#000b]"/>
+      {previewPoseUrl||production
+        ?<AnimatePresence initial={false} mode="sync">
+          <motion.div key={previewPoseUrl??frame} data-testid="room-portrait-frame"
+            className="pointer-events-none absolute inset-0"
+            initial={reduced?false:{opacity:0}}
+            animate={{opacity:1}} exit={{opacity:0}}
+            transition={{duration:reduced?0:.24,ease:'easeOut'}}>
+            <Image src={previewPoseUrl??roomPublicAssetPath(frame)}
+              alt={previewPoseUrl?name+'的本地透明立绘候选':name+'在会客室中'}
+              fill unoptimized draggable={false} sizes="(max-width:640px) 49vw, 410px"
+              className="object-contain object-bottom drop-shadow-[0_12px_22px_#000b]"/>
+          </motion.div>
+        </AnimatePresence>
         :id==='yuesha'
         ?<Image src={moonveilBust} alt={name+'在会客室中'} fill unoptimized draggable={false}
           sizes="(max-width:640px) 49vw, 410px"

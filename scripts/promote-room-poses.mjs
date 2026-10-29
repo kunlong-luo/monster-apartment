@@ -80,15 +80,20 @@ function main(argv){
     mkdirSync(dir,{recursive:true});
     for(const pose of ROOM_POSES){
       const dest=join(dir,pose+'.webp');
-      copyFileSync(paths[pose],dest,constants.COPYFILE_EXCL);
+      try{
+        copyFileSync(paths[pose],dest,constants.COPYFILE_EXCL);
+      }catch(error){
+        if(existsSync(dest))unlinkSync(dest);
+        throw error;
+      }
       created.push(dest);
     }
     writeFileSync(proofPath,JSON.stringify(approved,null,2)+'\n',{flag:'wx'});
     created.push(proofPath);
     entry.residentStatus='production';
     entry.composition=entry.backgroundStatus==='production'?'separated':'layered-concept';
-    writeFileSync(manifestPath,JSON.stringify(manifest,null,2)+'\n');
     wroteManifest=true;
+    writeFileSync(manifestPath,JSON.stringify(manifest,null,2)+'\n');
     const checked=spawnSync(process.execPath,[join(root,'scripts/audit-room-art.mjs')],
       {cwd:root,encoding:'utf8'});
     if(checked.status!==0)throw new Error('Room art audit failed:\n'+(checked.stderr||checked.stdout));
