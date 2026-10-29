@@ -14,6 +14,7 @@ describe('Moonsha HUD keeps real state rather than hard-coded visual prototype v
   });
   it('does not misrepresent concept art as production artwork',()=>{
     expect(ROOM_ART_MANIFEST.yuesha.backgroundStatus).toBe('concept');
-    expect(ROOM_ART_MANIFEST.yuesha.composition).toBe('embedded-resident');
+    expect(ROOM_ART_MANIFEST.yuesha.composition).toBe('layered-concept');
+    expect(ROOM_ART_MANIFEST.yuesha.layout).toBe('concept');
   });
 });
