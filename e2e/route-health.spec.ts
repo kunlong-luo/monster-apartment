@@ -63,7 +63,7 @@ test('all seven destinations use one active dock, not duplicate scene menus',asy
     const dock=page.getByRole('navigation',{name:entry.path==='/'?'主要游戏功能':
       entry.path==='/apartment/'?'公寓世界导航':'月光工坊世界'});
     await expect(dock.getByRole('link')).toHaveCount(7);
-    await expect(dock.getByRole('link',{name:entry.active})).toHaveAttribute('aria-current','page');
+    await expect(dock.getByRole('link',{name:entry.active,exact:true})).toHaveAttribute('aria-current','page');
     if(entry.test==='moonwork-world'){
       await expect(page.getByTestId('game-page-purpose')).not.toBeEmpty();
       await expect(page.getByTestId('game-location')).toContainText('大厅 /');

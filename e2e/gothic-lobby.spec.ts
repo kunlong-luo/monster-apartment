@@ -170,7 +170,7 @@ test('workshop provides a direct and safe return to the main lobby',async({page}
   test.setTimeout(90_000);
   await page.goto('/workshop/');
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:30000});
-  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'大厅'}).click();
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'大厅',exact:true}).click();
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   const image=page.getByTestId('gothic-lobby-painting-image');
   await expect(image).toHaveJSProperty('complete',true);

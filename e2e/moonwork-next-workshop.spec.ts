@@ -334,7 +334,7 @@ test('factory honors system and in-game reduced motion while preserving gameplay
     window.dispatchEvent(new Event('monster-apartment:motion-changed'));
   });
   await expect(stage).toHaveAttribute('data-motion-state','running');
-  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'大厅'}).click();
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'大厅',exact:true}).click();
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await page.goBack();
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-foundation-tiles','15',{timeout:25_000});
@@ -362,7 +362,7 @@ test('gothic workshop renders an optional guest as a real portrait cameo',async(
   await expect(stage).toHaveAttribute('data-patron-visible','true');
   await expect(stage).toHaveAttribute('data-patron-art','painted-medallion');
   await expect(stage).toHaveAttribute('data-patron-frames','0');
-  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'大厅'}).click();
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'大厅',exact:true}).click();
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await page.goBack();
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-patron-art','painted-medallion',{timeout:25_000});
