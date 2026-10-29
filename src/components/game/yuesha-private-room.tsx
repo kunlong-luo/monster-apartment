@@ -1,5 +1,6 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
+import {useRoomStageSize} from './use-room-stage-size';
 import {yueshaAfterChoice} from '@/core/character-life';
 import {roomInvestigationConclusion} from '@/core/room-investigation';
 import type {YueshaChoice} from '@/core/character-life';
@@ -19,6 +20,7 @@ import {roomSceneReaction,yueshaRoomEasterEgg} from '@/core/room-scene-reactions
 type Hotspot='seal'|'tea'|'ledger';
 export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:number}){
   const stageRef=useRef<HTMLDivElement>(null);
+  const stageSize=useRoomStageSize(stageRef);
   const [hotspot,setHotspot]=useState<Hotspot|null>(null);
   const [reaction,setReaction]=useState('');
   const [pose,setPose]=useState<RoomPose>('idle');
@@ -55,8 +57,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     <div className="relative h-[clamp(315px,57vh,640px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]" data-testid="yuesha-room-stage" ref={stageRef}>
       <RoomSceneBackdrop id="yuesha"/>
       <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={pose}/>
-      <RoomSceneFocus id="yuesha" item={hotspot} pose={pose}/>
-      <RoomSceneHotspots characterName="月纱" roomId="yuesha"
+      <RoomSceneFocus id="yuesha" item={hotspot} pose={pose} stageSize={stageSize}/>
+      <RoomSceneHotspots characterName="月纱" roomId="yuesha" stageSize={stageSize}
         items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}
         selected={hotspot} observed={observed} onInspect={inspect}
         description={hotspot==='seal'?'蜡封上的月纹，与旧公寓钥匙的纹样有些相似。月纱没有立即回答你的疑问。':

@@ -4,18 +4,19 @@ import type {CSSProperties} from 'react';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import type {CharacterId,RoomObjectId} from '@/core/character-life';
 import type {RoomPose} from '@/core/room-performance';
+import type {RoomStageSize} from '@/core/room-stage-layout';
 import {roomSceneFocus} from '@/core/room-scene-focus';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 
 /** Non-interactive scene acting cue. It never replaces real physical props,
  * blocks touch targets, or transforms/rasterizes the background painting. */
-export function RoomSceneFocus({id,item,pose}:{
-  id:CharacterId;item:RoomObjectId|null;pose:RoomPose;
+export function RoomSceneFocus({id,item,pose,stageSize=null}:{
+  id:CharacterId;item:RoomObjectId|null;pose:RoomPose;stageSize?:RoomStageSize|null;
 }){
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
   const still=Boolean(systemReduced||gameReduced);
-  const style=item?roomSceneFocus(id,item,pose):null;
+  const style=item?roomSceneFocus(id,item,pose,stageSize):null;
   return <div data-testid="room-focus-layer"
     className="pointer-events-none absolute inset-0 z-[3] overflow-hidden" aria-hidden="true">
     <AnimatePresence mode="wait">

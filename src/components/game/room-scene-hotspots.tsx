@@ -6,14 +6,15 @@ import {useGothicMotion} from '@/lib/game/gothic-motion';
 
 /** Percentages refer to the scenic layer, not the whole screen.
  * Different layouts prevent object markers covering resident portraits. */
-import {roomHotspotPosition} from '@/core/room-stage-layout';
+import {roomProjectedHotspotPosition} from '@/core/room-stage-layout';
+import type {RoomStageSize} from '@/core/room-stage-layout';
 export type {SceneSpot} from '@/core/room-stage-layout';
 export type SceneHotspotItem<T extends string=string>={id:T;label:string};
 
 /** Minimal 44px markers preserve scene detail; accessible names and the
  * discovery panel supply labels on touch and keyboard. */
 export function RoomSceneHotspots<T extends string>({
-  items,observed,selected,onInspect,characterName,roomId,description,
+  items,observed,selected,onInspect,characterName,roomId,description,stageSize=null,
 }:{
   items:readonly SceneHotspotItem<T>[];
   observed:readonly string[];
@@ -22,6 +23,7 @@ export function RoomSceneHotspots<T extends string>({
   characterName:string;
   roomId?:string;
   description?:string;
+  stageSize?:RoomStageSize|null;
 }){
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
@@ -30,7 +32,7 @@ export function RoomSceneHotspots<T extends string>({
   return <div className="pointer-events-none absolute inset-0 z-[4]" data-hotspot-layout="object-id" aria-label={characterName+'的房间物件'}>
     {items.map((item,index)=>{
       const discovered=observed.includes(item.id);
-      const point=roomHotspotPosition(roomId??'',item.id,index);
+      const point=roomProjectedHotspotPosition(roomId??'',item.id,stageSize,index);
       return <button type="button" key={item.id}
         aria-label={item.label}
         aria-pressed={selected===item.id}

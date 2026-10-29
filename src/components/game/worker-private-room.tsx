@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import {useEffect,useRef,useState} from 'react';
+import {useRoomStageSize} from './use-room-stage-size';
 import {CHARACTER_PROFILES,WORKER_DIALOGUES} from '@/core/character-life';
 import type {WorkerCharacterId,RoomObjectId,WorkerChoice} from '@/core/character-life';
 import {commitCharacterLife,useCharacterLife} from '@/lib/game/character-life-store';
@@ -28,6 +29,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
   id:WorkerCharacterId;onClose:()=>void;working:boolean;
 }){
   const stageRef=useRef<HTMLDivElement>(null);
+  const stageSize=useRoomStageSize(stageRef);
   const profile=CHARACTER_PROFILES[id];
   const scene=WORKER_DIALOGUES[id];
   const palette=SCENE_PALETTES[id];
@@ -73,8 +75,8 @@ export function WorkerPrivateRoom({id,onClose,working}:{
         aria-label={profile.name+'的房间概念场景'} ref={stageRef}>
         <RoomSceneBackdrop id={id}/>
         <RoomResidentSprite id={id} name={profile.name} working={working} reaction={reaction} pose={pose}/>
-        <RoomSceneFocus id={id} item={selectedItem} pose={pose}/>
-        <RoomSceneHotspots characterName={profile.name} roomId={id} items={scene.objects}
+        <RoomSceneFocus id={id} item={selectedItem} pose={pose} stageSize={stageSize}/>
+        <RoomSceneHotspots characterName={profile.name} roomId={id} items={scene.objects} stageSize={stageSize}
           observed={observed} selected={selectedItem} onInspect={inspect}
           description={scene.objects.find(item=>item.id===selectedItem)?.text}/>
         {theater&&!working&&<RoomDialogueTheater key={theater.id} name={profile.name}
