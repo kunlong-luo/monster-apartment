@@ -144,7 +144,11 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     const sceneCSS=read('src/components/moonwork/world.css');
     const overrides=read('src/components/game/gothic-world.css');
     expect(characters).toContain("className={WORLD_LINK_CLASS+' mt-auto");
-    expect(orders).toContain("className={WORLD_LINK_CLASS+' shrink-0'}");
+    // Commission room keeps only actionable destinations, not a second
+    // global-navigation copy of "返回工坊".
+    expect(orders).toContain('<WorkshopLink>前往工坊调整产线</WorkshopLink>');
+    expect(orders).toContain('className={WORLD_LINK_CLASS} href="/warehouse/"');
+    expect(orders).not.toContain('>返回工坊 ↗</Link>');
     expect(warehouse).toContain("className={WORLD_LINK_CLASS+' shrink-0'}");
     for(const selector of ['.mw-worker-action','.mw-hero-shortcut','.mw-action-button']){
       expect(sceneCSS).not.toContain(selector);
