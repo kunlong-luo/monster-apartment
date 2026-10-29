@@ -137,3 +137,132 @@
 @media(prefers-reduced-motion:reduce){
  .gothic-dock--world a{transition:none!important}
 }
+
+
+/* V3.26 district screens: replace the old slate-blue mini dashboards with
+ * moon-red, ink and engraved gold surfaces. Real scene art remains visible. */
+.mw-gothic--red-gold .mw-world-brand{
+  position:absolute;z-index:5;top:13px;left:clamp(12px,2vw,31px);
+  display:flex;align-items:center;gap:10px;
+  border-left:2px solid #d8ad74;
+  padding:6px 12px 6px 9px;
+  color:#fbe0b3;font-family:Georgia,"Songti SC",serif;
+  font-size:clamp(18px,1.8vw,27px);
+  letter-spacing:.12em;text-shadow:0 3px 11px #000;
+  background:linear-gradient(90deg,#1a0b18d9,transparent);
+}
+.mw-gothic--red-gold .mw-world-brand span{color:#e9ba84;font-size:21px}
+.mw-gothic--red-gold .mw-world-brand small{
+  font:normal 9px Georgia,serif;
+  letter-spacing:.17em;color:#d0a380;
+}
+.mw-gothic--red-gold .mw-gothic-shadow{
+  background:linear-gradient(180deg,#09050be8 0%,transparent 26%,transparent 68%,#09050bea 100%),
+    linear-gradient(90deg,#120711b8,transparent 40%,#160818c9 82%,#09060dd9)!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold:not(.mw-main--summon){
+  right:clamp(12px,2.6vw,43px);
+  width:clamp(365px,43vw,730px);
+  max-width:calc(100vw - 36px);
+}
+.mw-gothic--red-gold .mw-main--red-gold{
+  border:1px solid #d4a473a8!important;
+  border-radius:8px!important;
+  background:linear-gradient(155deg,#281221f5,#140b18f4 58%,#1a0d1bf5)!important;
+  box-shadow:inset 0 1px #ffe4b14d,inset 0 0 0 2px #bd85562d,0 15px 53px #000d!important;
+  backdrop-filter:blur(8px);
+}
+.mw-gothic--red-gold .mw-main--red-gold [data-testid="game-location"]{
+  font-size:10px!important;color:#d9b08e!important;
+  letter-spacing:.15em;border-bottom:1px solid #c798664b;
+  padding-bottom:9px;
+}
+.mw-gothic--red-gold .mw-main--red-gold>h1{
+  color:#ffe0ad!important;
+  text-shadow:0 2px 12px #ad4c5859;
+  letter-spacing:.14em!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold [data-testid="game-page-purpose"]{
+  color:#e1bfaa!important;line-height:1.65;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-eyebrow{
+  color:#dda977!important;letter-spacing:.13em!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-big{
+  color:#ffdbb0!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-meter{
+  border:1px solid #ab715d!important;background:#1a0d16!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-meter i{
+  background:linear-gradient(90deg,#ae3553,#f6c88c)!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold :is(.mw-town-scene,.mw-town-resident,.mw-market,
+ .mw-market-offer,.mw-worker-card,.mw-art-gallery-intro,.mw-witch-banner,.mw-world-art-hero){
+  border-color:#c69d71b0!important;border-radius:7px!important;
+  box-shadow:inset 0 1px #f8ce9a2f,0 13px 36px #0009!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold :is(.mw-market,.mw-market-offer,.mw-town-resident,
+ .mw-worker-card,.mw-art-gallery-intro,.mw-witch-banner){
+  background:linear-gradient(135deg,#341b2bef,#1b101d 82%)!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-worker-portrait{
+  background:radial-gradient(ellipse at 54% 57%,#ac7a795c,transparent 60%),
+    linear-gradient(160deg,#3c2437,#201322)!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-worker-portrait--fern{
+  background:radial-gradient(ellipse at 50% 60%,#7cbd8880,transparent 63%),
+    linear-gradient(150deg,#342b37,#171321)!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-worker-portrait--cinder{
+  background:radial-gradient(ellipse at 50% 60%,#eea36f67,transparent 67%),
+    linear-gradient(150deg,#48252e,#1d121c)!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold :is(.mw-worker-details,
+ .mw-market-detail,.mw-market-header) p{
+  color:#dfc3ac;
+}
+.mw-gothic--red-gold .mw-main--red-gold :is(.mw-world-art-hero,.mw-town-scene){
+  background-color:#25121f!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-world-art-hero:after{
+  background:linear-gradient(95deg,#1b0a1cf2,#35152a9c 63%,#1a0d1bbb)!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-town-scrim{
+  background:linear-gradient(180deg,#160919b3,transparent 40%,#170b19db 93%)!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-town-portal{
+  border-color:#e3b58c!important;border-radius:6px!important;
+  background:linear-gradient(145deg,#4f1e37ed,#1c1024f0)!important;
+  box-shadow:inset 0 1px #f5dcbf51,0 7px 17px #090309b8!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-town-portal:is(:hover,:focus-visible){
+  background:linear-gradient(#6e2842,#2e142a)!important;
+}
+.mw-gothic--red-gold .mw-main--red-gold :is(button,a):focus-visible{
+  outline-color:#ffe1b4;outline-offset:2px;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-market-ticket{
+  border-color:#daa76d;background:#4a2339;color:#ffdfb2;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-market-icon{
+  border-color:#dda66d;background:#3f1930;
+}
+.mw-gothic--red-gold .mw-main--red-gold .mw-risk-choice{
+  border-color:#ca9f6b;background:linear-gradient(145deg,#452237,#201425);
+}
+@media(max-width:700px){
+  .mw-gothic--red-gold .mw-world-brand{top:7px;font-size:17px;padding:3px 7px}
+  .mw-gothic--red-gold .mw-world-brand small{display:none}
+  .mw-gothic--red-gold .mw-main--red-gold:not(.mw-main--summon){
+    left:8px;right:8px;transform:none;
+    width:calc(100vw - 16px);max-width:none;
+    top:44%;bottom:78px;padding:12px;
+  }
+  .mw-gothic--red-gold[data-area="orders"] .mw-main--red-gold,
+  .mw-gothic--red-gold[data-area="warehouse"] .mw-main--red-gold{
+    top:104px!important;
+  }
+  .mw-gothic--red-gold .mw-main--red-gold{backdrop-filter:none}
+  .mw-gothic--red-gold .mw-town-portals{gap:5px}
+}
