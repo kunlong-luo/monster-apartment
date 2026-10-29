@@ -96,3 +96,37 @@ test('optional in-game HD review only uses an ephemeral local preview',async({pa
   await expect(backdrop).toHaveAttribute('data-local-preview','false');
   await expect(backdrop.locator('img')).toHaveAttribute('src',/concept-scene[.]svg$/);
 });
+
+test('transparent portrait review rejects baked CG and previews alpha-only frames without saving',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/apartment/?roomArtReview=1');
+  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
+  await page.getByTestId('visit-yuesha-room').click();
+  await expect(page.getByTestId('room-pose-review')).toBeVisible();
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-local-pose-preview','false');
+  await page.getByTestId('room-pose-upload-idle').setInputFiles('public/art/yuesha-bust-v3.webp');
+  await expect(page.getByTestId('room-pose-review-error')).toBeVisible();
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-local-pose-preview','false');
+
+  const base64=await page.evaluate(async()=>{
+    const canvas=document.createElement('canvas');
+    canvas.width=1024;canvas.height=1024;
+    const ctx=canvas.getContext('2d');
+    if(!ctx)throw Error('No canvas available');
+    ctx.fillStyle='#cfa6eb';
+    ctx.fillRect(280,190,460,710);
+    const blob=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(x=>x?resolve(x):reject(Error('WebP export failed')),'image/webp',.88));
+    const bytes=new Uint8Array(await blob.arrayBuffer());
+    let binary='';for(const byte of bytes)binary+=String.fromCharCode(byte);
+    return btoa(binary);
+  });
+  await page.getByTestId('room-pose-upload-idle').setInputFiles({
+    name:'idle.webp',mimeType:'image/webp',buffer:Buffer.from(base64,'base64'),
+  });
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-local-pose-preview','true');
+  await expect(page.getByTestId('room-resident-present-yuesha').locator('img'))
+    .toHaveAttribute('src',/^blob:/);
+  await page.getByTestId('room-pose-reset').click();
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-local-pose-preview','false');
+  await expect(page.getByTestId('room-pose-review')).toContainText('0/4');
+});

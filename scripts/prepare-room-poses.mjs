@@ -72,7 +72,7 @@ export function portraitReviewHtml({room}){
     'const c=document.createElement("canvas");c.width=64;c.height=64;const x=c.getContext("2d",{willReadFrequently:true});'+
     'x.drawImage(img,0,0,64,64);const a=x.getImageData(0,0,64,64).data;let opaque=0,transparent=0;'+
     'for(let i=3;i<a.length;i+=4){if(a[i]>230)opaque++;if(a[i]<16)transparent++}'+
-    'const corners=[3,255,4035,16383];'+
+    'const corners=[3,255,16131,16383];'+
     'const cornerClear=corners.every(i=>a[i]<=32);'+
     'document.querySelector("#checks").textContent=pose+" · "+img.width+"×"+img.height+'+
     '" · 实测透明率 "+(transparent/4096*100).toFixed(1)+"% · 实测不透明率 "+(opaque/4096*100).toFixed(1)+"% · 四角透明 "+(cornerClear?"通过":"失败");}'+

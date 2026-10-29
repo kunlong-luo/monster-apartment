@@ -10,15 +10,19 @@ const POSES=[
 ] as const satisfies readonly {id:RoomPose;label:string}[];
 type Dimensions={width:number;height:number};
 /** Review-only uploads live in memory; URLs never touch the story or save store. */
-export function RoomPosePreviewControls({onChange,onSelect}:{
+export function RoomPosePreviewControls({onChange,onSelect,onReset}:{
   onChange:(pose:RoomPose,url:string|null)=>void;
   onSelect:(pose:RoomPose)=>void;
+  onReset:()=>void;
 }){
   const urls=useRef<Partial<Record<RoomPose,string>>>({});
   const dimensions=useRef<Partial<Record<RoomPose,Dimensions>>>({});
   const [loaded,setLoaded]=useState<readonly RoomPose[]>([]);
   const [error,setError]=useState('');
-  useEffect(()=>()=>{Object.values(urls.current).forEach(url=>{if(url)URL.revokeObjectURL(url);});},[]);
+  useEffect(()=>{
+    const retainedUrls=urls.current;
+    return ()=>Object.values(retainedUrls).forEach(url=>{if(url)URL.revokeObjectURL(url);});
+  },[]);
   const upload=async(pose:RoomPose,event:ChangeEvent<HTMLInputElement>)=>{
     const input=event.currentTarget;
     const file=input.files?.[0];input.value='';
@@ -56,7 +60,8 @@ export function RoomPosePreviewControls({onChange,onSelect}:{
       const url=urls.current[id];
       if(url){onChange(id,null);URL.revokeObjectURL(url);}
     }
-    urls.current={};dimensions.current={};setLoaded([]);setError('');
+    for(const {id} of POSES)delete urls.current[id];
+    dimensions.current={};setLoaded([]);setError('');onReset();
   };
   return <section className="mt-1 border-t border-[#d9ad8752] pt-2" data-testid="room-pose-review">
     <span className="block text-[#ffd298]">透明人物候选 · 四姿态 {loaded.length}/4</span>

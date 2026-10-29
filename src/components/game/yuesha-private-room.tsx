@@ -112,7 +112,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
         {reviewError&&<span role="alert" className="text-[#ffb3b9]">{reviewError}</span>}
         <RoomPosePreviewControls
           onChange={(selected,url)=>setPreviewPoseUrls(previous=>({...previous,[selected]:url??undefined}))}
-          onSelect={setReviewPose}/>
+          onSelect={setReviewPose} onReset={()=>setReviewPose(null)}/>
       </div>}
       <div className="pointer-events-none absolute top-9 left-3 max-w-[52%] space-y-1 text-shadow-md">
         <h3 className="text-lg text-[#ffe3bd] sm:text-2xl">月纱的契约会客室</h3>
