@@ -6,7 +6,7 @@ import {GothicDock} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 import {useCharacterLife} from '@/lib/game/character-life-store';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
-import {claimProgressTickets,gachaSaveStatus,GACHA_CHARACTERS} from '@/lib/summon/gacha-engine';
+import {claimProgressTickets,claimTrialTicket,gachaSaveStatus,GACHA_CHARACTERS} from '@/lib/summon/gacha-engine';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useGacha } from '@/lib/summon/use-gacha';
@@ -534,7 +534,8 @@ export function GothicSummonScreen() {
 
       {showTrial && (
         <CharacterTrialModal
-          onRewardClaimed={() => setShowTrial(false)}
+          onRewardClaimed={()=>{claimTrialTicket();setShowTrial(false);}}
+          alreadyClaimed={state.claimedProgressRewards.includes(-1)}
           onClose={() => setShowTrial(false)}
         />
       )}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import {useGothicMotion} from '@/lib/game/gothic-motion';
 import Image from 'next/image';
 import {
   History,
@@ -205,10 +206,10 @@ export function PoolDetailsModal({
               2. <strong>十连保底</strong>：单次进行十连召唤时，必定获得至少 1 名 SR 精英或以上品质的角色。
             </p>
             <p>
-              3. <strong>本期限定 UP</strong>：在「神话·月蚀」卡池中，当获得 SSR 角色时，有 50% 概率为本期限定 UP 角色「月纱 · 神话·月蚀」。
+              3. <strong>保底分配</strong>：常规神话概率 1%、传说 5%；触发 90 抽保底时神话与传说各占 50%。五个主题共用概率，不存在额外限时概率提升。
             </p>
             <p>
-              4. <strong>住客名册联动</strong>：首次抽中的契约角色将自动办理入住手续，并同步收录至公寓住客图鉴与工作调度中心。
+              4. <strong>人物收藏联动</strong>：五种契约同步收藏和装备系统；原有四名住客房间保持独立，不会凭空生成工坊住客。
             </p>
           </section>
         </div>
@@ -407,9 +408,11 @@ export function CharacterArchiveModal({ onClose }: { onClose: () => void }) {
 export function CharacterTrialModal({
   onRewardClaimed,
   onClose,
+  alreadyClaimed=false,
 }: {
   onRewardClaimed: () => void;
   onClose: () => void;
+  alreadyClaimed?: boolean;
 }) {
   const [battleState, setBattleState] = useState<'intro' | 'action' | 'cleared'>('intro');
 
@@ -422,7 +425,7 @@ export function CharacterTrialModal({
       <div className="relative flex max-h-[90vh] w-full max-w-xl flex-col items-center rounded-2xl border border-[#d4aa70] bg-[#180e18] p-6 text-center shadow-[0_20px_60px_#000000f0] text-[#f4ddc5]">
         <h3 className="text-xl font-serif font-bold text-[#ffe6c2] flex items-center gap-2">
           <Swords className="size-5 text-[#ffc66e]" />
-          <span>角色技能实战试玩</span>
+          <span>角色技能展示</span>
         </h3>
         <p className="mt-1 text-xs text-[#d6b08f]">
           体验限定角色「月纱 · 神话·月蚀」的终极契约权能
@@ -442,7 +445,7 @@ export function CharacterTrialModal({
               目标：模拟击溃迷雾深处的「暗蚀阴影」，检验月影秘术的范围破坏力。
             </p>
             <div className="rounded-lg border border-[#7a5438] bg-[#271424] p-3 text-xs text-[#ffdca8]">
-              试玩首通奖励：<strong>契约信物 x 1</strong>
+              技能演示首通奖励：<strong>契约信物 x 1</strong>
             </div>
             <button
               type="button"
@@ -461,7 +464,7 @@ export function CharacterTrialModal({
           <div className="my-10 space-y-3 animate-pulse">
             <div className="text-4xl text-[#ff3366]">✦ ☾ ✦</div>
             <h4 className="text-lg font-bold text-[#ffe5be]">月华破晓，暗蚀归于无形！</h4>
-            <p className="text-xs text-[#d8b58f]">暴击伤害：99,999+ (弱点破除)</p>
+            <p className="text-xs text-[#d8b58f]">这是月蚀魔法的演示效果，尚不是正式战斗系统。</p>
           </div>
         )}
 
@@ -472,17 +475,18 @@ export function CharacterTrialModal({
               <span>演习胜利！</span>
             </div>
             <p className="text-xs text-[#eed2b6]">
-              恭喜！你已完美领会月纱的战斗节奏。首通契约奖励已发放至你的行囊。
+              技能演示已结束。{alreadyClaimed?'本次首通奖励此前已领取。':'点击下方按钮领取一次首通契约奖励。'}
             </p>
             <button
               type="button"
+              disabled={alreadyClaimed}
               onClick={() => {
                 onRewardClaimed();
                 onClose();
               }}
-              className="min-h-10 rounded-lg border border-[#c49a62] bg-[#2e1929] px-6 py-2 text-xs font-semibold text-[#ffe3bd] hover:bg-[#48223d]"
+              className="min-h-10 rounded-lg border border-[#c49a62] bg-[#2e1929] px-6 py-2 text-xs font-semibold text-[#ffe3bd] hover:bg-[#48223d] disabled:opacity-50"
             >
-              领取 1 张契约信物并返回
+              {alreadyClaimed?'首通奖励已领取':'领取 1 张契约信物并返回'}
             </button>
           </div>
         )}
@@ -608,6 +612,7 @@ export function UtilityModal({
   type: 'bag' | 'mail' | 'notice' | 'settings';
   onClose: () => void;
 }) {
+  const {reduced,toggle}=useGothicMotion();
   const getHeader = () => {
     switch (type) {
       case 'bag':
@@ -672,9 +677,9 @@ export function UtilityModal({
           {type === 'mail' && (
             <div className="space-y-2">
               <div className="rounded-lg border border-[#7a5438] bg-[#241322] p-3">
-                <strong className="block text-[#ffdca8]">【全服邮件】月光契约更新赠礼</strong>
-                <span className="text-[10px] text-[#aa8669]">发件人：月纱 · 契约大厅</span>
-                <p className="mt-1">感谢诸位对怪物的关照，特附赠契约信物。已自动存入余额。</p>
+                <strong className="block text-[#ffdca8]">当前没有待领取的新邮件</strong>
+                <span className="text-[10px] text-[#aa8669]">本地单机存档</span>
+                <p className="mt-1">游戏尚未接入在线邮件服务，不会显示虚构的系统赠礼。</p>
               </div>
             </div>
           )}
@@ -682,9 +687,9 @@ export function UtilityModal({
           {type === 'notice' && (
             <div className="space-y-2">
               <div className="rounded-lg border border-[#7a5438] bg-[#241322] p-3">
-                <strong className="block text-[#ffdca8]">「神话·月蚀」限定角色卡池开启！</strong>
+                <strong className="block text-[#ffdca8]">「神话·月蚀」契约主题已开放</strong>
                 <p className="mt-1 text-[11px] text-[#d6b08f]">
-                  活动时间：2024/10/24 05:00 - 2024/11/13 04:59。限定角色「月纱」出现概率大幅提升！
+                  当前长期开放：神话基础概率为 1.00%，主题间不提供虚假的概率加成或过期倒计时。
                 </p>
               </div>
             </div>
@@ -693,13 +698,10 @@ export function UtilityModal({
           {type === 'settings' && (
             <div className="space-y-3">
               <label className="flex items-center justify-between rounded-lg border border-[#7a5438] bg-[#241322] p-3">
-                <span>月蚀召唤仪式动画</span>
-                <input type="checkbox" defaultChecked className="accent-[#d97706]" />
+                <span>减少月蚀召唤仪式动画</span>
+                <input type="checkbox" checked={reduced} onChange={toggle} className="accent-[#d97706]" />
               </label>
-              <label className="flex items-center justify-between rounded-lg border border-[#7a5438] bg-[#241322] p-3">
-                <span>哥特背景音效</span>
-                <input type="checkbox" defaultChecked className="accent-[#d97706]" />
-              </label>
+              <p className="rounded-lg border border-[#7a5438] bg-[#241322] p-3 text-[#c9a786]">正式音效尚未实现，不提供无效音效开关。</p>
             </div>
           )}
         </div>

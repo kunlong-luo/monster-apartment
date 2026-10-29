@@ -150,6 +150,15 @@ export function claimProgressTickets(completed:number,visited:number):number{
   return grant;
 }
 
+/** Grant the skill showcase prize at most once per saved collection. */
+export function claimTrialTicket():boolean{
+  if(typeof window==='undefined'||gachaSaveStatus()!=='ok')return false;
+  const state=readGachaState();
+  if(state.claimedProgressRewards.includes(-1))return false;
+  saveGachaState({...state,tickets:state.tickets+1,
+    claimedProgressRewards:[...state.claimedProgressRewards,-1]});
+  return true;
+}
 export function readGachaState(): GachaState {
   if (typeof window === 'undefined') return INITIAL_GACHA_STATE;
   try {
