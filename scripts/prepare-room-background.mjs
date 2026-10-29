@@ -1,6 +1,7 @@
 import {readFileSync,copyFileSync,mkdirSync,writeFileSync,statSync,existsSync} from 'node:fs';
 import {resolve,join,dirname,extname} from 'node:path';
 import {pathToFileURL} from 'node:url';
+import {createHash} from 'node:crypto';
 
 const root=resolve(import.meta.dirname,'..');
 const ids=['yuesha','brook','fern','cinder'];
@@ -120,6 +121,10 @@ function run(argv){
   writeFileSync(join(output,'review-status.DRAFT.json'),JSON.stringify({
     room,asset:'background-candidate.webp',status:'needs-visual-review',
     image:{...dimensions,bytes:bytes.length},objectAnchors:anchors,
+    assetSha256:createHash('sha256').update(bytes).digest('hex'),
+    sourceType:'',sourceReference:'',generationResolution:null,
+    original:false,commercialUse:false,humanVisualReview:false,
+    reviewedAt:'',visualReview:{'desktop-1200x675':false,'mobile-390x315':false,'compact-320x315':false},
     reviewer:'',reviewNotes:'',noBakedUI:null,noBakedCharacterInBackground:null,
     rightsConfirmed:false,approved:false,
   },null,2)+'\n');

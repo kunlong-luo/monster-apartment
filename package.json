@@ -14,7 +14,8 @@
     "e2e": "playwright test",
     "check:stable-deps": "node scripts/check-stable-dependencies.mjs",
     "audit:room-art": "node scripts/audit-room-art.mjs",
-    "art:review": "node scripts/prepare-room-background.mjs"
+    "art:review": "node scripts/prepare-room-background.mjs",
+    "art:promote": "node scripts/promote-room-background.mjs"
   },
   "dependencies": {
     "motion": "14.6.0",

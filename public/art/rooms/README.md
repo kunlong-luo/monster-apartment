@@ -15,3 +15,5 @@
 `pnpm audit:room-art` 在 CI 中执行文件头、尺寸、Alpha 标志、路径与分阶段审核检查；Alpha 标志只能证明文件声称有透明通道，无法证明边缘真的干净，须人工查看。热点仍由 `src/core/room-stage-layout.ts` 控制，换背景后需逐个核对桌面与 390px 移动端。详见 `docs/v3/30-ROOM-ART-STAGED-ADMISSION.md`。
 
 V3.11 正式绘景需要在 manifest 中配置 `objectAnchors`（归一化 x/y），再由 `projectCoverAnchor` 计算响应式热点位置，详见 `docs/v3/31-ROOM-HD-RESPONSIVE-PROJECTION.md`。
+
+V3.13：经人工审核的背景可通过 `pnpm art:promote` 原子式晋级，审查 SHA-256、真实来源、三个画幅签署和画作 16:9；失败回滚。详见 `docs/v3/34-HUMAN-APPROVED-ART-PROMOTION.md`。

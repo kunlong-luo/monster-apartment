@@ -1,5 +1,6 @@
 import {readFileSync,existsSync} from 'node:fs';
 import {resolve,dirname,join} from 'node:path';
+import {createHash} from 'node:crypto';
 
 const root=resolve(import.meta.dirname,'..');
 const manifest=JSON.parse(readFileSync(join(root,'public/art/rooms/manifest.json'),'utf8'));
@@ -84,6 +85,19 @@ for(const id of ids){
       points.push([px,py]);
     }
     checkWebP(room.background,{alpha:false,minW:1920,minH:1080});
+    const candidateBytes=readFileSync(join(root,room.background));
+    const candidateSha=createHash('sha256').update(candidateBytes).digest('hex');
+    const provenancePath=join(dirname(join(root,room.background)),'provenance.json');
+    assert(existsSync(provenancePath),'missing background review '+id);
+    const approved=JSON.parse(readFileSync(provenancePath,'utf8'));
+    assert(approved.backgroundSha256===candidateSha,'approved SHA-256 differs from actual image '+id);
+    assert(approved.dimensions?.width/approved.dimensions?.height>1.77&&
+      approved.dimensions?.width/approved.dimensions?.height<1.78,
+      'background must use reviewed 16:9 composition '+id);
+    assert(approved.sourceReference&&approved.sourceType&&approved.reviewedAt&&
+      approved.reviewScreens?.includes('mobile-390x315')&&
+      approved.reviewScreens?.includes('desktop-1200x675'),
+      'missing source reference or responsive manual review '+id);
     backgrounds++;
   }
   if(actorProduction){
