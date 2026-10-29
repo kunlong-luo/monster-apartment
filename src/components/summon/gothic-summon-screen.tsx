@@ -615,17 +615,10 @@ export function GothicSummonScreen() {
                       }`}
                     >
                       <div className="size-10 overflow-hidden rounded bg-[#1e0f1d] border border-[#a87c50]">
-                        <Image
-                          src={
-                            card.character === 'yuesha'
-                              ? '/art/yuesha-avatar-v3.webp'
-                              : '/art/lobby-hero-v3.webp'
-                          }
-                          alt={card.title}
-                          width={40}
-                          height={40}
-                          className="object-cover"
-                        />
+                        {card.character === 'yuesha'
+                          ?<Image src="/art/yuesha-avatar-v3.webp" alt={card.title}
+                            width={40} height={40} className="size-full object-cover"/>
+                          :<WorkerArtwork id={card.character} name={card.title} compact/>}
                       </div>
                       <div>
                         <strong className="block text-sm text-[#ffe5be]">{card.title}</strong>
