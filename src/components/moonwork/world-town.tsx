@@ -6,7 +6,7 @@ import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import {workshopRank,TOWN_MARKET,townMarketAvailable,TOWN_RESIDENTS,residentForDay,residentRequestStock,residentRequestAvailable} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
-import {WorkshopLink,Action} from './world-primitives';
+import {Action} from './world-primitives';
 
 export function Town({s}:{s:WorkshopState}){
   const rank=workshopRank(s.completed);
@@ -113,10 +113,5 @@ export function Town({s}:{s:WorkshopState}){
         })}
       </div>
     </section>
-    <div className="mw-town-next">
-      <Link href="/characters/" className={WORLD_LINK_CLASS}>查看工匠配置 ↗</Link>
-      <Link href="/orders/" className={WORLD_LINK_CLASS}>确认订单缺口 ↗</Link>
-      <WorkshopLink>返回工坊投产 ↗</WorkshopLink>
-    </div>
   </>;
 }

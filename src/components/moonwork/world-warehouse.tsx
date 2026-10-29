@@ -6,7 +6,7 @@ import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import kilnPainted from '../../../v2/art/kiln-art-review.avif';
 import {PATRON_IMPORT_PRICE} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
-import {Panel,Action,WorkshopLink} from './world-primitives';
+import {Panel,Action} from './world-primitives';
 
 /** Inventory rows are UI primitives, not hand-maintained CSS selectors. */
 function WarehouseStockLine({label,amount}:{label:string;amount:number}){
@@ -43,8 +43,6 @@ export function Warehouse({s}:{s:WorkshopState}){
     <Panel title="☽ 月夜商人采购">
       <p>采购一枚晶核需要 ✦{PATRON_IMPORT_PRICE}，直接扣除真实星币并增加共享仓库库存。仅在月纱委托有效期内可购买。</p>
       {canBuy?<Action type="import">付费采购 +1 晶核</Action>:<p>当前无法采购：尚未解锁访客、委托结束或余额不足。</p>}
-      <div className="flex flex-wrap items-center gap-2"><WorkshopLink>回工坊继续生产</WorkshopLink>
-        <Link className={WORLD_LINK_CLASS} href="/orders/">查看订单需求 ↗</Link></div>
     </Panel>
     </div>
   </>;

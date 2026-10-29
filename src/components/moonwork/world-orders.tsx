@@ -21,7 +21,6 @@ export function Orders({s}:{s:WorkshopState}){
         <p>你的订单和月纱契约使用同一份晶核库存。
           高额订单可以多赚星币，也可能抢走本该留给居民的材料。</p>
       </div>
-      <Link href="/workshop/" className={WORLD_LINK_CLASS+' shrink-0'}>返回工坊 ↗</Link>
     </section>
     <div className="mw-grid mw-columns mt-2.5 grid grid-cols-1 gap-2.5">
     <Panel title="◇ 正式委托">
