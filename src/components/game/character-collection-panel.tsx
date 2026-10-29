@@ -48,6 +48,7 @@ import { CHARACTER_PROFILES } from '@/core/character-life';
 import {
   GACHA_POOLS,
   GACHA_CHARACTERS,
+  claimTrialTicket,
   type SummonableCharacter,
   type SummonRecord,
 } from '@/lib/summon/gacha-engine';
@@ -681,7 +682,11 @@ export function CharacterCollectionPanel({ completed }: { completed: number }) {
       {showArchive && <CharacterArchiveModal onClose={() => setShowArchive(false)} />}
       {showTrial && (
         <CharacterTrialModal
-          onRewardClaimed={() => setNotice('试玩完成！已领取 1 张契约信物。')}
+          onRewardClaimed={() => {
+            const claimed = claimTrialTicket();
+            if (claimed) setNotice('试玩完成！已领取 1 张契约信物。');
+            return claimed;
+          }}
           onClose={() => setShowTrial(false)}
         />
       )}
