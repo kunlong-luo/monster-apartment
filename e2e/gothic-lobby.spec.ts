@@ -258,6 +258,6 @@ test('cinematic lobby maintains one usable dock and compact context panels on a 
   await expect(page.getByRole('dialog',{name:'与月纱交谈'})).toBeVisible();
   await page.getByRole('button',{name:'关闭面板'}).click();
   await page.getByTestId('gothic-eclipse-feature').click();
-  await expect(page).toHaveURL(/\/characters\/?(?:#summon)?$/);
+  await expect(page).toHaveURL(/\/characters\/?#summon-screen$/);
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
 });

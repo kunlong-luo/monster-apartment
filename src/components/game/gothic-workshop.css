@@ -7,6 +7,9 @@
 .gothic-workshop-shell {
   position: relative;
   isolation: isolate;
+  /* Reserve the actual navigation dock footprint before positioning the console. */
+  --workshop-dock-clearance: 108px;
+  --workshop-stage-gap: 14px;
   min-height: 100dvh;
   overflow: hidden;
   color: #fae5c8;
@@ -1109,13 +1112,13 @@
    time on narrow screens instead of shrinking three rows into 180px. */
 .gothic-workshop-shell #root.lab.gothic-workshop .console.gothic-console-3col{
   height:clamp(232px,30dvh,290px);
-  bottom:calc(max(8px,env(safe-area-inset-bottom)) + 65px);
+  bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-dock-clearance));
   grid-template-columns:minmax(0,1.15fr) minmax(285px,1fr) minmax(0,1fr);
   gap:12px;
   align-items:stretch;
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .middle{
-  bottom:calc(max(8px,env(safe-area-inset-bottom)) + 78px + clamp(232px,30dvh,290px));
+  bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-dock-clearance) + var(--workshop-stage-gap) + clamp(232px,30dvh,290px));
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .console .console-panel{
   flex:initial;min-width:0;min-height:0;max-width:none;
@@ -1175,14 +1178,14 @@
 }
 @media(max-width:900px){
   .gothic-workshop-shell #root.lab.gothic-workshop .console.gothic-console-3col{
-    bottom:calc(max(8px,env(safe-area-inset-bottom)) + 62px);
+    bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-dock-clearance));
     left:8px;right:8px;
     height:clamp(240px,40dvh,340px);
     display:flex;flex-direction:column;gap:8px;
     padding:0;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .middle{
-    bottom:calc(max(8px,env(safe-area-inset-bottom)) + 74px + clamp(240px,40dvh,340px));
+    bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-dock-clearance) + var(--workshop-stage-gap) + clamp(240px,40dvh,340px));
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .workshop-console-tabs{
     display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;flex-shrink:0;
@@ -1216,7 +1219,7 @@
   grid-template-rows:minmax(0,1fr) auto;
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .middle{
-  bottom:calc(max(8px,env(safe-area-inset-bottom)) + 78px + clamp(275px,33dvh,325px));
+  bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-dock-clearance) + var(--workshop-stage-gap) + clamp(275px,33dvh,325px));
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .console .console-panel{grid-row:1}
 .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions{
@@ -1234,9 +1237,14 @@
     gap:8px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .middle{
-    bottom:calc(max(8px,env(safe-area-inset-bottom)) + 74px + clamp(300px,45dvh,385px));
+    bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-dock-clearance) + var(--workshop-stage-gap) + clamp(300px,45dvh,385px));
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions{
     flex:0 0 auto;width:100%;min-height:54px;grid-row:auto;
   }
+}
+
+/* On small phones the dock hides its descriptions and uses compact icons. */
+@media(max-width:767px){
+  .gothic-workshop-shell{--workshop-dock-clearance:84px}
 }
