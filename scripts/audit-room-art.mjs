@@ -101,10 +101,34 @@ for(const id of ids){
     backgrounds++;
   }
   if(actorProduction){
-    for(const pose of room.poses)checkWebP(pose,{alpha:true,minW:1000,minH:1000});
+    const widths=[],hashes=new Set();
+    const portraitReview=join(dirname(join(root,room.background)),'portrait-provenance.json');
+    assert(existsSync(portraitReview),'missing independent portrait provenance '+id);
+    const proof=JSON.parse(readFileSync(portraitReview,'utf8'));
+    assert(proof.original===true&&proof.commercialUse===true&&
+      proof.sameFootAnchor===true&&proof.transparentEdgesReviewed===true&&
+      proof.noBakedBackgroundInResident===true&&proof.identityConsistent===true&&
+      typeof proof.reviewer==='string'&&proof.reviewer.trim().length>2&&
+      typeof proof.reviewNotes==='string'&&proof.reviewNotes.trim().length>=24,
+      'independent portrait visual/rights review incomplete '+id);
+    for(let i=0;i<room.poses.length;i++){
+      const file=room.poses[i];
+      checkWebP(file,{alpha:true,minW:1000,minH:1000});
+      const bytes=readFileSync(join(root,file));
+      const digest=createHash('sha256').update(bytes).digest('hex');
+      assert(!hashes.has(digest),'duplicated portrait pose '+id+'/'+poses[i]);
+      hashes.add(digest);
+      assert(proof.frames?.[poses[i]]?.sha256===digest,
+        'portrait content changed since human review '+id+'/'+poses[i]);
+      const frame=proof.frames[poses[i]];
+      assert(Number.isInteger(frame.width)&&Number.isInteger(frame.height),
+        'reviewed pose dimensions missing '+id+'/'+poses[i]);
+      widths.push(frame.width+'x'+frame.height);
+    }
+    assert(new Set(widths).size===1,'portrait poses require one consistent canvas '+id);
     residents++;
   }
-  if(bgProduction||actorProduction){
+  if(bgProduction){
     const provenance=join(dirname(join(root,room.background)),'provenance.json');
     assert(existsSync(provenance),'missing provenance '+id);
     const rights=JSON.parse(readFileSync(provenance,'utf8'));
@@ -114,9 +138,6 @@ for(const id of ids){
       'rights and manual visual review incomplete '+id);
     if(bgProduction)assert(rights.noBakedUI===true&&rights.noBakedCharacterInBackground===true,
       'background visual review incomplete '+id);
-    if(actorProduction)assert(rights.noBakedBackgroundInResident===true&&
-      rights.sameFootAnchor===true&&rights.transparentEdgesReviewed===true,
-      'resident visual review incomplete '+id);
   }
 }
 console.log('Room art: '+backgrounds+'/4 production backgrounds, '+residents+

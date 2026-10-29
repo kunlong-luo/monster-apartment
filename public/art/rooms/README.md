@@ -17,3 +17,5 @@
 V3.11 正式绘景需要在 manifest 中配置 `objectAnchors`（归一化 x/y），再由 `projectCoverAnchor` 计算响应式热点位置，详见 `docs/v3/31-ROOM-HD-RESPONSIVE-PROJECTION.md`。
 
 V3.13：经人工审核的背景可通过 `pnpm art:promote` 原子式晋级，审查 SHA-256、真实来源、三个画幅签署和画作 16:9；失败回滚。详见 `docs/v3/34-HUMAN-APPROVED-ART-PROMOTION.md`。
+
+V3.14：人物四姿态可用 `pnpm art:poses --room yuesha --source DIR --out REVIEW` 打包检查，正式角色单独要求 `portrait-provenance.json`，不再复用背景审核结论。详见 `docs/v3/35-TRANSPARENT-POSE-ART-PIPELINE.md`。
