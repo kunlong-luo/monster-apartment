@@ -42,7 +42,8 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
     </div>:embedded?<span className="sr-only" data-testid={'room-resident-embedded-'+id}>
       {name}已绘制在概念背景中，暂不重复叠加不透明立绘
     </span>:<motion.div data-testid={'room-resident-present-'+id}
-      className="absolute right-[2%] bottom-0 h-[94%] w-[49%] max-w-[410px] origin-bottom"
+      className={'absolute bottom-0 h-[94%] w-[49%] max-w-[410px] origin-bottom '+
+        (art.backgroundStatus==='production'?'left-[2%]':'right-[2%]')}
       initial={false}
       animate={performerMotion}
       transition={reduced?{duration:0}:pose==='idle'?{duration:7,ease:'easeInOut',repeat:Infinity}:{duration:.48,ease:'easeOut'}}>
@@ -61,7 +62,8 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
         initial={reduced?false:{opacity:0,y:8}}
         animate={{opacity:1,y:0}} exit={{opacity:0}}
         transition={{duration:reduced?0:.24}}
-        className="absolute right-[3%] bottom-[8%] z-[3] max-w-[43%] rounded-lg border border-[#f8d1a58a] bg-[#25131edb] px-2.5 py-2 text-[11px] leading-5 text-[#ffe3c2] shadow-[0_7px_22px_#0009] backdrop-blur-sm"
+        className={'absolute bottom-[8%] z-[3] max-w-[43%] rounded-lg border border-[#f8d1a58a] bg-[#25131edb] px-2.5 py-2 text-[11px] leading-5 text-[#ffe3c2] shadow-[0_7px_22px_#0009] backdrop-blur-sm '+
+          (art.backgroundStatus==='production'?'left-[3%]':'right-[3%]')}
       >{reaction}</motion.p>}
     </AnimatePresence>
   </div>;
