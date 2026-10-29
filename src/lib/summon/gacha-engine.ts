@@ -25,177 +25,23 @@ export interface SummonableCharacter {
 }
 
 export const GACHA_CHARACTERS: readonly SummonableCharacter[] = [
-  // SSR Mythic (1.00%)
-  {
-    id: 'yuesha-eclipse',
-    name: '月纱',
-    title: '月纱 · 神话·月蚀',
-    epithet: '神话 · 月蚀',
-    rarity: 'SSR-Mythic',
-    rarityZh: 'SSR 神话',
-    rate: 1.0,
-    avatar: '/art/yuesha-avatar-v3.webp',
-    quote: '沉入永夜吧—— 这一次，换我来拥抱你。',
-    bio: '血月之夜苏醒的高阶魔女，掌控着古老契约与月影秘术。看似冷漠疏离，实则深切眷顾着公寓中的每位住客。',
-    isUp: true,
-    baseCardKey: 'yuesha-eclipse',
-  },
-  // SSR Legend (5.00%)
-  {
-    id: 'damian-nocturne',
-    name: '达米安',
-    title: '达米安 · 暗夜执事',
-    epithet: '传说 · 执事',
-    rarity: 'SSR-Legend',
-    rarityZh: 'SSR 传说',
-    rate: 2.0,
-    avatar: '/art/yuesha-bust-v3.webp',
-    quote: '只要您的一声令下，黑夜将为您扫除一切阻碍。',
-    bio: '血族世家的纯血执事，以无可挑剔的礼仪与冷酷精准的剑术守护庄园。',
-    isUp: true,
-  },
-  {
-    id: 'victoria-rose',
-    name: '维多利亚',
-    title: '维多利亚 · 荆棘蔷薇',
-    epithet: '传说 · 蔷薇',
-    rarity: 'SSR-Legend',
-    rarityZh: 'SSR 传说',
-    rate: 1.5,
-    avatar: '/art/lobby-hero-v3.webp',
-    quote: '带刺的蔷薇，只在最危险的夜色里盛放。',
-    bio: '暗夜商会的铁腕掌舵人，擅长在贵族与教会的博弈中谋取最丰厚的回报。',
-    isUp: true,
-  },
-  {
-    id: 'yuesha-vow',
-    name: '月纱',
-    title: '月纱 · 月下誓约',
-    epithet: '传说 · 誓约',
-    rarity: 'SSR-Legend',
-    rarityZh: 'SSR 传说',
-    rate: 1.5,
-    avatar: '/art/yuesha-portrait-v3.webp',
-    quote: '契约已成，星月为证。无论黎明何时到来，我都将守候在此。',
-    bio: '与旅人初遇时的月纱，手中握着泛黄的羊皮卷，眼中藏着重塑街区的决心。',
-    baseCardKey: 'yuesha-vow',
-  },
-  // SR Elite (17.00%)
-  {
-    id: 'elena-doll',
-    name: '艾莲娜',
-    title: '艾莲娜 · 绯红魔偶',
-    epithet: '精英 · 魔偶',
-    rarity: 'SR',
-    rarityZh: 'SR 精英',
-    rate: 6.0,
-    avatar: '/art/yuesha-bust-v3.webp',
-    quote: '齿轮咔嗒咔嗒转动，你听到提线人偶的心跳了吗？',
-    bio: '沉迷于机械心智的天才发条人偶师，总把工坊的废料组装成会唱歌的八音盒。',
-    isUp: true,
-  },
-  {
-    id: 'seraphina-nun',
-    name: '塞拉菲娜',
-    title: '塞拉菲娜 · 圣银修女',
-    epithet: '精英 · 圣银',
-    rarity: 'SR',
-    rarityZh: 'SR 精英',
-    rate: 5.5,
-    avatar: '/art/yuesha-portrait-v3.webp',
-    quote: '我在此祷告，愿圣洁的银焰烧尽一切纠缠你的梦魇。',
-    bio: '背弃狂热教会、潜入怪物街区的年轻修女，暗中为受伤的非人住民疗伤。',
-    isUp: true,
-  },
-  {
-    id: 'cinder-ember',
-    name: '炽角',
-    title: '炽角 · 炉火余烬',
-    epithet: '精英 · 锻造',
-    rarity: 'SR',
-    rarityZh: 'SR 精英',
-    rate: 5.5,
-    avatar: '/art/lobby-hero-v3.webp',
-    quote: '炉膛里的火还热着！有什么坏掉的铁家伙，统统拿来！',
-    bio: '工坊的锻造大师，对每一块晶核的纯度与金属配比有着偏执的严苛要求。',
-    baseCardKey: 'cinder-ember',
-  },
-  // R Rare (31.00%)
-  {
-    id: 'fern-spring',
-    name: '青枝',
-    title: '青枝 · 春芽誓约',
-    epithet: '稀有 · 园艺',
-    rarity: 'R',
-    rarityZh: 'R 稀有',
-    rate: 11.0,
-    avatar: '/art/lobby-hero-v3.webp',
-    quote: '植物是不会说谎的。只要给它们时间，枯木也能吐出新芽。',
-    bio: '悉心照料温室月光植物的园艺师，能够听懂根系在土壤中的细微低语。',
-    baseCardKey: 'fern-spring',
-  },
-  {
-    id: 'moran-raven',
-    name: '莫兰',
-    title: '莫兰 · 幽影渡鸦',
-    epithet: '稀有 · 信使',
-    rarity: 'R',
-    rarityZh: 'R 稀有',
-    rate: 10.0,
-    avatar: '/art/yuesha-avatar-v3.webp',
-    quote: '夜空中的风会带走所有秘密，只要你付得起相应的代价。',
-    bio: '穿梭于公寓高耸塔尖之间的渡鸦使者，传递着来自远方城邦的隐秘信件。',
-  },
-  {
-    id: 'rena-alchemist',
-    name: '蕾娜',
-    title: '蕾娜 · 秘药学者',
-    epithet: '稀有 · 炼金',
-    rarity: 'R',
-    rarityZh: 'R 稀有',
-    rate: 10.0,
-    avatar: '/art/yuesha-bust-v3.webp',
-    quote: '小心那管泛着紫光的试剂，滴上一滴就能让整杯红茶沸腾。',
-    bio: '热衷于尝试古怪药剂调配的青年炼金学者，工坊药水的主要供应商。',
-  },
-  // N Common (46.00%)
-  {
-    id: 'brook-tide',
-    name: '泉泡',
-    title: '泉泡 · 潮汐来信',
-    epithet: '常规 · 水汽',
-    rarity: 'N',
-    rarityZh: 'N 常规',
-    rate: 20.0,
-    avatar: '/art/lobby-hero-v3.webp',
-    quote: '咕噜咕噜！水汽管道今天一切正常，我把压力控制得刚刚好！',
-    bio: '活泼好动的水灵工匠，负责公寓与工坊的供水及蒸汽平衡。',
-    baseCardKey: 'brook-tide',
-  },
-  {
-    id: 'wisp-lantern',
-    name: '萤灯精怪',
-    title: '萤灯精怪 · 幽微荧火',
-    epithet: '常规 · 光灵',
-    rarity: 'N',
-    rarityZh: 'N 常规',
-    rate: 13.0,
-    avatar: '/art/yuesha-avatar-v3.webp',
-    quote: '照亮脚下的石阶……不要走散咯。',
-    bio: '寄宿在老旧路灯里的夜行精怪，在浓雾漫卷的夜里为归家者引路。',
-  },
-  {
-    id: 'gear-guard',
-    name: '发条工兵',
-    title: '发条工兵 · 坚固守御',
-    epithet: '常规 · 发条',
-    rarity: 'N',
-    rarityZh: 'N 常规',
-    rate: 13.0,
-    avatar: '/art/yuesha-bust-v3.webp',
-    quote: '巡逻路线：一号走廊至钟楼。指令执行中……',
-    bio: '忠实可靠的发条哨兵，二十四小时不知疲倦地维护着公寓的安全秩序。',
-  },
+  { id:'yuesha-eclipse',name:'月纱',title:'月纱 · 神话·月蚀',epithet:'神话 · 月蚀',
+    rarity:'SSR-Mythic',rarityZh:'SSR 神话',rate:1,avatar:'/art/yuesha-avatar-v3.webp',
+    quote:'沉入永夜吧—— 这一次，换我来拥抱你。',
+    bio:'月夜魔女的珍藏契约，拥有红色神话品阶。',baseCardKey:'yuesha-eclipse' },
+  { id:'yuesha-vow',name:'月纱',title:'月纱 · 月下誓约',epithet:'传说 · 誓约',
+    rarity:'SSR-Legend',rarityZh:'SSR 传说',rate:5,avatar:'/art/yuesha-portrait-v3.webp',
+    quote:'契约已成，星月为证。',bio:'月纱与旅人相遇时的誓约。',
+    baseCardKey:'yuesha-vow' },
+  { id:'cinder-ember',name:'炽角',title:'炽角 · 炉火余烬',epithet:'史诗 · 锻造',
+    rarity:'SR',rarityZh:'SR 精英',rate:17,avatar:'/art/lobby-hero-v3.webp',
+    quote:'炉膛里的火还热着！',bio:'工坊的晶核锻造大师。',baseCardKey:'cinder-ember' },
+  { id:'fern-spring',name:'青枝',title:'青枝 · 春芽誓约',epithet:'稀有 · 园艺',
+    rarity:'R',rarityZh:'R 稀有',rate:31,avatar:'/art/lobby-hero-v3.webp',
+    quote:'植物是不会说谎的。',bio:'能听懂植物低语的园艺师。',baseCardKey:'fern-spring' },
+  { id:'brook-tide',name:'泉泡',title:'泉泡 · 潮汐来信',epithet:'普通 · 水汽',
+    rarity:'N',rarityZh:'N 常规',rate:46,avatar:'/art/lobby-hero-v3.webp',
+    quote:'水汽管道今天一切正常！',bio:'活泼的水汽工匠。',baseCardKey:'brook-tide' },
 ];
 
 export interface SummonRecord {
@@ -223,67 +69,29 @@ export interface GachaPool {
   avatar: string;
 }
 
+/** Five distinct visual themes share one disclosed probability table. Neither
+ * dates nor rate-ups are simulated without an actual event backend. */
 export const GACHA_POOLS: readonly GachaPool[] = [
-  {
-    id: 'mythic-eclipse',
-    name: '「神话·月蚀」',
-    badge: '概率提升',
-    subname: '月纱 · 概率提升',
-    remainingDays: 20,
-    bgQuote: '「……你也想，成为我的所有物吗？」',
-    bannerTitle: '神话 · 月蚀',
-    bannerSub: '当月光被吞噬，唯有你仍在我眼中。',
-    dateRange: '2024/10/24 05:00 - 2024/11/13 04:59',
-    avatar: '/art/yuesha-avatar-v3.webp',
-  },
-  {
-    id: 'red-moon-invitation',
-    name: '「红月之邀」',
-    badge: '限定复刻',
-    subname: '限定角色复刻',
-    remainingDays: 14,
-    bgQuote: '「猩红的晚宴已准备就绪，我的伯爵阁下。」',
-    bannerTitle: '红月 · 晚宴之邀',
-    bannerSub: '摇曳的烛光下，谁在轻嗅玫瑰的芬芳。',
-    dateRange: '2024/10/24 05:00 - 2024/11/07 04:59',
-    avatar: '/art/yuesha-bust-v3.webp',
-  },
-  {
-    id: 'eternal-struggle',
-    name: '「永夜挣扎」',
-    badge: '常驻',
-    subname: '常驻召唤',
-    remainingDays: 99,
-    bgQuote: '「在无尽长夜中摸索前行，每一抹微光都是恩赐。」',
-    bannerTitle: '永夜 · 宿命回响',
-    bannerSub: '经典契约角色全天候常驻，随时回应你的呼唤。',
-    dateRange: '长期开放',
-    avatar: '/art/yuesha-portrait-v3.webp',
-  },
-  {
-    id: 'bond-echo',
-    name: '「羁绊回响」',
-    badge: '自选UP',
-    subname: '自选UP',
-    remainingDays: 28,
-    bgQuote: '「你心底最思念的身影，终将在月下凝现。」',
-    bannerTitle: '羁绊 · 命定共鸣',
-    bannerSub: '指定心愿角色，享受翻倍概率共鸣。',
-    dateRange: '2024/10/24 05:00 - 2024/11/21 04:59',
-    avatar: '/art/lobby-hero-v3.webp',
-  },
-  {
-    id: 'memory-remnant',
-    name: '「记忆残章」',
-    badge: '剧情',
-    subname: '剧情卡池',
-    remainingDays: 35,
-    bgQuote: '「翻开泛黄的古卷，尘封的历史再次苏醒。」',
-    bannerTitle: '残章 · 溯洄旧梦',
-    bannerSub: '重温那些决定公寓命运的古老契约篇章。',
-    dateRange: '2024/10/24 05:00 - 2024/11/28 04:59',
-    avatar: '/art/yuesha-bust-v3.webp',
-  },
+  {id:'mythic-eclipse',name:'神话 · 月蚀',badge:'常驻',subname:'月纱 · 红色神话',
+    remainingDays:0,bgQuote:'月影之下，古老的誓约苏醒。',
+    bannerTitle:'神话 · 月蚀',bannerSub:'当月光被吞噬，唯有你仍在我眼中。',
+    dateRange:'长期开放 · 基础神话概率 1%',avatar:'/art/yuesha-avatar-v3.webp'},
+  {id:'red-moon-invitation',name:'红月之邀',badge:'主题',subname:'红月契约展示',
+    remainingDays:0,bgQuote:'沉入永夜吧——换我来拥抱你。',
+    bannerTitle:'红月 · 晚宴之邀',bannerSub:'玫瑰为夜色而盛放。',
+    dateRange:'长期开放 · 概率同主池',avatar:'/art/yuesha-bust-v3.webp'},
+  {id:'eternal-struggle',name:'永夜挣扎',badge:'常驻',subname:'住客契约',
+    remainingDays:0,bgQuote:'每一抹微光都是恩赐。',
+    bannerTitle:'永夜 · 宿命回响',bannerSub:'相遇的故事仍在继续。',
+    dateRange:'长期开放 · 概率同主池',avatar:'/art/yuesha-portrait-v3.webp'},
+  {id:'bond-echo',name:'羁绊回响',badge:'主题',subname:'羁绊故事',
+    remainingDays:0,bgQuote:'月光仍记得你的声音。',
+    bannerTitle:'羁绊 · 命定共鸣',bannerSub:'重温每一份相遇。',
+    dateRange:'长期开放 · 无自选概率提升',avatar:'/art/lobby-hero-v3.webp'},
+  {id:'memory-remnant',name:'记忆残章',badge:'剧情',subname:'记忆与故事',
+    remainingDays:0,bgQuote:'尘封的记忆再次苏醒。',
+    bannerTitle:'残章 · 溯洄旧梦',bannerSub:'故事中的角色，仍会回应呼唤。',
+    dateRange:'长期开放 · 概率同主池',avatar:'/art/yuesha-bust-v3.webp'},
 ];
 
 export interface GachaState {
@@ -302,60 +110,39 @@ export interface GachaState {
 export const GACHA_STATE_KEY = 'monster-apartment:gacha-v2';
 const GACHA_EVENT = 'monster-apartment:gacha-updated';
 
+/** New accounts begin at the actual first-time grant, not screenshot mock data. */
 export const INITIAL_GACHA_STATE: GachaState = {
-  version: 2,
-  tickets: 12,
-  crystals: 8450,
-  moonstones: 320,
-  pityCountdown: 48,
-  totalSummons: 42,
-  history: [
-    {
-      id: 'init-1',
-      timestamp: Date.now() - 3600 * 1000 * 5,
-      poolId: 'mythic-eclipse',
-      poolName: '「神话·月蚀」',
-      characterId: 'cinder-ember',
-      name: '炽角',
-      title: '炽角 · 炉火余烬',
-      rarity: 'SR',
-      rarityZh: 'SR 精英',
-    },
-    {
-      id: 'init-2',
-      timestamp: Date.now() - 3600 * 1000 * 3,
-      poolId: 'mythic-eclipse',
-      poolName: '「神话·月蚀」',
-      characterId: 'fern-spring',
-      name: '青枝',
-      title: '青枝 · 春芽誓约',
-      rarity: 'R',
-      rarityZh: 'R 稀有',
-    },
-    {
-      id: 'init-3',
-      timestamp: Date.now() - 3600 * 1000 * 1,
-      poolId: 'mythic-eclipse',
-      poolName: '「神话·月蚀」',
-      characterId: 'brook-tide',
-      name: '泉泡',
-      title: '泉泡 · 潮汐来信',
-      rarity: 'N',
-      rarityZh: 'N 常规',
-    },
-  ],
-  ownedIds: ['brook-tide', 'fern-spring', 'cinder-ember', 'moran-raven', 'gear-guard'],
-  claimedProgressRewards: [],
-  activePoolId: 'mythic-eclipse',
+  version:2,tickets:3,crystals:0,moonstones:0,
+  pityCountdown:90,totalSummons:0,history:[],ownedIds:[],
+  claimedProgressRewards:[],activePoolId:'mythic-eclipse',
 };
-
+export function validGachaState(value:unknown):value is GachaState{
+  if(!value||typeof value!=='object')return false;
+  const s=value as Partial<GachaState>;
+  return s.version===2 &&
+    [s.tickets,s.crystals,s.moonstones,s.pityCountdown,s.totalSummons]
+      .every(n=>Number.isSafeInteger(n)&&Number(n)>=0) &&
+    Number(s.pityCountdown)>=1 && Number(s.pityCountdown)<=90 &&
+    Array.isArray(s.history) && s.history.length<=100 &&
+    Array.isArray(s.ownedIds) && s.ownedIds.every(id=>typeof id==='string') &&
+    Array.isArray(s.claimedProgressRewards) &&
+    GACHA_POOLS.some(p=>p.id===s.activePoolId);
+}
+export function gachaSaveStatus(): 'ok'|'corrupt'|'unavailable'{
+  if(typeof window==='undefined')return 'unavailable';
+  try {
+    const raw=window.localStorage.getItem(GACHA_STATE_KEY);
+    if(raw===null)return 'ok';
+    return validGachaState(JSON.parse(raw))?'ok':'corrupt';
+  } catch {return 'unavailable';}
+}
 export function readGachaState(): GachaState {
   if (typeof window === 'undefined') return INITIAL_GACHA_STATE;
   try {
     const raw = window.localStorage.getItem(GACHA_STATE_KEY);
     if (!raw) return INITIAL_GACHA_STATE;
     const parsed = JSON.parse(raw);
-    if (parsed && parsed.version === 2 && typeof parsed.tickets === 'number') {
+    if (validGachaState(parsed)) {
       return parsed as GachaState;
     }
   } catch {
@@ -440,6 +227,11 @@ export function executeSummon(
   count: 1 | 10,
   poolId: string = 'mythic-eclipse'
 ): { success: boolean; characters: SummonableCharacter[]; error?: string; newState?: GachaState } {
+  if(gachaSaveStatus()!=='ok')return {success:false,characters:[],error:'召唤存档不可读取；为保护已有进度，操作已停止。'};
+  let currentCollection:ReturnType<typeof decodeCollection>;
+  try{currentCollection=decodeCollection(window.localStorage.getItem(COLLECTION_KEY));}
+  catch{return {success:false,characters:[],error:'收藏存档不可读取，无法安全召唤。'};}
+  if(currentCollection.status!=='ok')return {success:false,characters:[],error:'角色收藏存档已损坏或不可用；不会消耗资源。'};
   const current = readGachaState();
   const pool = GACHA_POOLS.find((p) => p.id === poolId) || GACHA_POOLS[0];
 
@@ -506,46 +298,34 @@ export function executeSummon(
     ownedIds: updatedOwned,
   };
 
-  saveGachaState(nextState);
-
-  // Sync to character collection storage so legacy e2e tests & resident collections stay in lockstep
-  syncToCollectionStorage(results);
-
+  // A single RNG result owns the visual reveal AND the collected card. Never
+  // pre-pull an unrelated item, and never consume tickets on an error.
+  const collection=currentCollection.collection;
+  const draws=collection.draws.slice();
+  let shards=collection.shards;
+  for(const character of results){
+    if(!character.baseCardKey)continue;
+    const card=character.baseCardKey;
+    const duplicate=draws.includes(card);
+    draws.push(card);
+    const tier=card==='yuesha-eclipse'?5:card==='yuesha-vow'?4:
+      card==='cinder-ember'?3:card==='fern-spring'?2:1;
+    shards+=1+(duplicate?tier:0);
+  }
+  try {
+    const previous=window.localStorage.getItem(GACHA_STATE_KEY);
+    window.localStorage.setItem(COLLECTION_KEY,JSON.stringify({...collection,draws,shards}));
+    try {window.localStorage.setItem(GACHA_STATE_KEY,JSON.stringify(nextState));}
+    catch(error){
+      window.localStorage.setItem(COLLECTION_KEY,JSON.stringify(collection));
+      if(previous===null)window.localStorage.removeItem(GACHA_STATE_KEY);
+      throw error;
+    }
+    window.dispatchEvent(new Event('monster-apartment:collection-updated'));
+    window.dispatchEvent(new Event(GACHA_EVENT));
+  } catch {
+    return {success:false,characters:[],error:'本地存储写入失败；未确认召唤，请检查浏览器存储空间。'};
+  }
   return { success: true, characters: results, newState: nextState };
 }
 
-/**
- * Sync cards into monster-apartment:character-collection:v1
- */
-function syncToCollectionStorage(pulled: SummonableCharacter[]): void {
-  if (typeof window === 'undefined') return;
-  try {
-    const raw = window.localStorage.getItem(COLLECTION_KEY);
-    const decoded = decodeCollection(raw);
-    if (decoded.status === 'ok') {
-      const col = decoded.collection;
-      const newDraws = [...col.draws];
-      let addShards = 0;
-
-      for (const char of pulled) {
-        if (char.baseCardKey) {
-          const isDupe = newDraws.includes(char.baseCardKey);
-          newDraws.push(char.baseCardKey);
-          addShards += 1 + (isDupe ? 2 : 0);
-        } else {
-          addShards += char.rarity.startsWith('SSR') ? 5 : char.rarity === 'SR' ? 3 : 1;
-        }
-      }
-
-      const updatedCol = {
-        ...col,
-        draws: newDraws,
-        shards: col.shards + addShards,
-      };
-      window.localStorage.setItem(COLLECTION_KEY, JSON.stringify(updatedCol));
-      window.dispatchEvent(new Event('monster-apartment:collection-updated'));
-    }
-  } catch {
-    /* safely ignore storage sync errors */
-  }
-}
