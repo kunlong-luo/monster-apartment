@@ -74,3 +74,25 @@ test('mobile cinematic performance scrolls into view and exits without closing t
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
   await expect(page.getByTestId('room-dialogue-theater')).toHaveCount(0);
 });
+
+test('optional in-game HD review only uses an ephemeral local preview',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/apartment/');
+  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
+  await page.getByTestId('visit-yuesha-room').click();
+  await expect(page.getByTestId('room-art-local-file')).toHaveCount(0);
+
+  await page.goto('/apartment/?roomArtReview=1');
+  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
+  await page.getByTestId('visit-yuesha-room').click();
+  await expect(page.getByTestId('room-art-local-review')).toBeVisible();
+  const backdrop=page.getByTestId('room-scene-backdrop');
+  await expect(backdrop).toHaveAttribute('data-local-preview','false');
+  await page.getByTestId('room-art-local-file').setInputFiles('public/art/yuesha-bust-v3.webp');
+  await expect(backdrop).toHaveAttribute('data-local-preview','true');
+  await expect(backdrop.locator('img')).toHaveAttribute('src',/^blob:/);
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-render-mode','separate');
+  await page.getByTestId('room-art-local-reset').click();
+  await expect(backdrop).toHaveAttribute('data-local-preview','false');
+  await expect(backdrop.locator('img')).toHaveAttribute('src',/yuesha\\/concept-scene\\.svg/);
+});
