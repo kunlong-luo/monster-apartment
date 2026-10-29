@@ -2,7 +2,7 @@
 import {useState} from 'react';
 import {ABILITY_GROUPS,ABILITY_LABELS,CHARACTER_PROFILES} from '@/core/character-life';
 import type {CharacterId} from '@/core/character-life';
-import {characterAbilities,FORGE_RECIPES} from '@/core/character-collection';
+import {characterAbilities,characterPotentialTier,FORGE_RECIPES} from '@/core/character-collection';
 import {useCharacterCollection} from '@/lib/game/character-collection-store';
 
 export function CharacterLifePortrait({id,activity}:{id:CharacterId;activity?:string}){
@@ -10,6 +10,7 @@ export function CharacterLifePortrait({id,activity}:{id:CharacterId;activity?:st
   const actor=CHARACTER_PROFILES[id];
   const {status,collection}=useCharacterCollection();
   const abilities=status==='ok'?characterAbilities(id,collection):actor.abilities;
+  const potential=status==='ok'?characterPotentialTier(id,collection):0;
   const equipped=status==='ok'?Object.values(collection.equipped[id]??{}):[];
   return <section className="rounded-xl border border-[#ae885f7d] bg-[#170e1ccf] p-3 text-[#f4dec5]" data-testid={'life-profile-'+id}>
     <div className="flex flex-wrap items-center justify-between gap-2">
@@ -19,6 +20,9 @@ export function CharacterLifePortrait({id,activity}:{id:CharacterId;activity?:st
         data-testid={'life-expand-'+id}>{expanded?'收起能力':'查看完整档案'}</button>
     </div>
     <p className="mt-2 text-xs leading-6 text-[#e4d0bd]">{actor.description}</p>
+    {potential>0&&<p className="mt-1 text-[11px] text-[#ffca9f]" data-testid={'life-potential-'+id}>
+      契约品阶潜力：{potential} 阶 · 擅长能力 +{potential*2}
+    </p>}
     {equipped.length>0&&<p className="mt-1 text-[11px] text-[#ffd5ae]" data-testid={'life-equipped-'+id}>
       已装备：{equipped.map(item=>FORGE_RECIPES.find(r=>r.id===item)?.name).filter(Boolean).join(' · ')}
     </p>}
@@ -42,7 +46,7 @@ export function CharacterLifePortrait({id,activity}:{id:CharacterId;activity?:st
       </div>)}
       <p className="text-xs leading-5 text-[#cfb69e]">喜欢：{actor.likes}。心愿：{actor.goal}。</p>
       <p className="text-xs leading-5 text-[#cfb69e]">担忧：{actor.fear}。</p>
-      <p className="text-[10px] leading-5 text-[#b99e88]">数值已包含装备与首饰的实时属性加成；尚未接入工坊产能或训练加成。</p>
+      <p className="text-[10px] leading-5 text-[#b99e88]">数值包含已收录最高品阶的潜力加成，以及首饰与装备的实际属性加成；尚未接入工坊产能与训练。</p>
     </div>}
   </section>;
 }

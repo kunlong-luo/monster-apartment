@@ -24,7 +24,8 @@ test('character card can be summoned, forged and equipped without altering the f
   await expect(page.getByTestId('collection-feedback')).toContainText('泉泡已装备月纹吊坠');
   await expect(page.getByTestId('life-equipped-brook')).toContainText('月纹吊坠');
   await page.getByTestId('life-expand-brook').click();
-  await expect(page.getByTestId('life-profile-brook')).toContainText('+6');
+  await expect(page.getByTestId('life-profile-brook')).toContainText('+8');
+  await expect(page.getByTestId('life-potential-brook')).toContainText('1 阶');
   await page.reload();
   await expect(page.getByTestId('collection-card-brook-tide')).toContainText('已收录');
   await expect(page.getByTestId('life-equipped-brook')).toContainText('月纹吊坠');

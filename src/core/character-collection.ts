@@ -97,14 +97,23 @@ export function equipEquipment(s:CollectionState,character:CharacterId,id:GearId
   equipped[character]={...equipped[character],[recipe.slot]:id};
   return {...s,equipped};
 }
+/** The best collected form determines potential, not the count of duplicates. */
+export function characterPotentialTier(id:CharacterId,s:CollectionState):number{
+  return CHARACTER_CARDS.reduce((best,card)=>
+    card.character===id&&s.draws.includes(card.key)?Math.max(best,card.tier):best,0);
+}
 export function characterAbilities(id:CharacterId,s:CollectionState):Abilities{
-  const base=CHARACTER_PROFILES[id].abilities;
-  const result={...base};
+  const profile=CHARACTER_PROFILES[id];
+  const result={...profile.abilities};
+  const tier=characterPotentialTier(id,s);
+  // Higher rarities improve only a character's established strengths.
+  // The 20 attributes keep their original 1..100 scale and story identity.
+  for(const key of profile.strengths)result[key]=Math.min(100,result[key]+tier*2);
   for(const gearId of Object.values(s.equipped[id]??{})){
     const recipe=FORGE_RECIPES.find(x=>x.id===gearId);
     if(recipe)for(const [ability,amount] of Object.entries(recipe.bonus)){
       const key=ability as AbilityKey;
-      result[key]=Math.min(100,base[key]+(result[key]-base[key])+Number(amount));
+      result[key]=Math.min(100,result[key]+Number(amount));
     }
   }
   return result;

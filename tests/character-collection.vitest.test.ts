@@ -1,6 +1,6 @@
 import {describe,it,expect} from 'vitest';
 import {CHARACTER_CARDS,FORGE_RECIPES,availableContracts,cardFromRoll,characterAbilities,
-  earnedContracts,equipEquipment,forgeEquipment,newCharacterCollection,summonCharacter,
+  earnedContracts,equipEquipment,forgeEquipment,newCharacterCollection,summonCharacter,characterPotentialTier,
   validCharacterCollection} from '../src/core/character-collection';
 import {decodeCollection} from '../src/lib/game/character-collection-store';
 describe('character collection - contract summons, forging and safe saves',()=>{
@@ -35,9 +35,10 @@ describe('character collection - contract summons, forging and safe saves',()=>{
     expect(equipEquipment(forged,'fern','moon-pendant')).toBe(forged);
     const equipped=equipEquipment(forged,'brook','moon-pendant');
     expect(equipped.equipped.brook?.jewelry).toBe('moon-pendant');
-    expect(characterAbilities('brook',equipped).spirit).toBe(91);
+    expect(characterAbilities('brook',equipped).spirit).toBe(93);
     expect(characterAbilities('brook',equipped).wisdom).toBe(61);
     expect(characterAbilities('fern',equipped).spirit).toBe(77);
+    expect(characterPotentialTier('brook',equipped)).toBe(1);
     expect(validCharacterCollection(equipped)).toBe(true);
   });
   it('blocks altered, corrupt or future collection saves without resetting lore',()=>{
@@ -49,5 +50,14 @@ describe('character collection - contract summons, forging and safe saves',()=>{
     expect(validCharacterCollection({...s,equipped:{stranger:{equipment:'swift-boots'}}})).toBe(false);
     expect(FORGE_RECIPES.map(r=>r.slot)).toContain('jewelry');
     expect(FORGE_RECIPES.map(r=>r.slot)).toContain('equipment');
+  });
+  it('higher collected rarity actually grants stronger potential without modifying other actors',()=>{
+    const low=summonCharacter(newCharacterCollection(),3,0);
+    const mythic=summonCharacter(newCharacterCollection(),3,.999);
+    expect(characterPotentialTier('brook',low)).toBe(1);
+    expect(characterPotentialTier('yuesha',mythic)).toBe(5);
+    expect(characterAbilities('yuesha',mythic).wisdom).toBe(96);
+    expect(characterAbilities('yuesha',mythic).strength).toBe(32);
+    expect(characterAbilities('brook',mythic).spirit).toBe(85);
   });
 });
