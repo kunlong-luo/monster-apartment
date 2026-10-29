@@ -1,0 +1,33 @@
+{
+  "referenceDate": "2026-10-29",
+  "project": "怪物公寓",
+  "originalAssetsStorage": "/游戏调研/怪物公寓/项目文档/UI重制/2026-10-29-哥特黑金参考",
+  "originalPngsCommittedToGithub": false,
+  "files": [
+    {
+      "path": "references/01-lobby.png",
+      "sizeBytes": 2990963,
+      "width": 1672,
+      "height": 941,
+      "sha256": "bce1e9cfd047edae29e206eaf4890222c69033459f9ce0e502388ceee25b48ef",
+      "status": "reference"
+    },
+    {
+      "path": "references/02-summon.png",
+      "sizeBytes": 2726560,
+      "width": 1672,
+      "height": 941,
+      "sha256": "8181b3a5ee911f3b1ebc9724411c5220935aa4f850086d0e44334c82dbad46d2",
+      "status": "reference"
+    },
+    {
+      "path": "references/03-eclipse-cg-candidate.png",
+      "sizeBytes": 1178948,
+      "width": 830,
+      "height": 736,
+      "sha256": "1def5132e33c7067ff9452e8f49cc2fb8eaf50a4d14fb69350366bdb20636f77",
+      "status": "unapproved-concept"
+    }
+  ],
+  "githubPreview": "layout-map.svg"
+}

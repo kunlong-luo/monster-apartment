@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 640" role="img" aria-labelledby="title desc">
+<title id="title">怪物公寓 · 大厅与契约召唤界面信息架构</title>
+<desc id="desc">黑金酒红色的两张布局图。左：大厅的左任务、中人物、右互动、底部七导航。右：卡池预览、中人物、右概率召唤。</desc>
+<defs>
+<linearGradient id="night" x2="1" y2="1"><stop stop-color="#261124"/><stop offset="1" stop-color="#09060d"/></linearGradient>
+<linearGradient id="wine" x2="0" x1="0" y2="1" y1="0"><stop stop-color="#731b37"/><stop offset="1" stop-color="#320d24"/></linearGradient>
+<linearGradient id="hero" x2="1" y2="0"><stop stop-color="#321a35"/><stop offset=".56" stop-color="#713048"/><stop offset="1" stop-color="#1d1226"/></linearGradient>
+</defs>
+<rect width="1240" height="640" fill="#0d0813"/>
+<g font-family="'Noto Serif SC',serif" fill="#f6daba">
+<text x="28" y="29" font-size="23">怪物公寓 · 黑金月蚀 UI</text>
+<text x="29" y="50" font-size="12" fill="#cca981">Implementation Layout / original PNG screenshots are in Project documents</text>
+</g>
+<g stroke="#bd9061" stroke-width="1.3">
+<rect x="20" y="72" width="590" height="490" rx="10" fill="url(#night)"/>
+<rect x="635" y="72" width="585" height="490" rx="10" fill="url(#night)"/>
+<rect x="33" y="89" width="155" height="45" rx="4" fill="url(#wine)"/><rect x="197" y="89" width="275" height="45" rx="4" fill="#170d17"/>
+<rect x="33" y="150" width="185" height="140" rx="4" fill="#241423"/>
+<rect x="33" y="298" width="185" height="91" rx="4" fill="#46102b" stroke="#e64c64"/>
+<rect x="33" y="397" width="185" height="65" rx="4" fill="#241423"/>
+<rect x="230" y="150" width="248" height="312" rx="8" fill="url(#hero)"/>
+<rect x="487" y="173" width="108" height="100" rx="5" fill="#2a1727"/>
+<rect x="487" y="284" width="108" height="100" rx="5" fill="#2a1727"/>
+<rect x="32" y="482" width="564" height="65" rx="6" fill="#150c16"/>
+<rect x="649" y="89" width="150" height="45" rx="4" fill="url(#wine)"/>
+<rect x="807" y="89" width="399" height="45" rx="4" fill="#170d17"/>
+<rect x="649" y="150" width="139" height="310" rx="4" fill="#20101d"/>
+<rect x="798" y="150" width="262" height="310" rx="7" fill="url(#hero)"/>
+<rect x="1070" y="150" width="136" height="310" rx="4" fill="#211223"/>
+<rect x="650" y="482" width="556" height="65" rx="6" fill="#150c16"/>
+</g>
+<g font-size="15" fill="#ffe1ba" font-family="'Noto Serif SC',serif" text-anchor="middle">
+<text x="110" y="117">游戏标题</text><text x="335" y="117">真实存档资源</text>
+<text x="125" y="205">主线任务</text><text x="125" y="233" font-size="11" fill="#b99986">晶核进度</text>
+<text x="125" y="337">神话 · 月蚀</text><text x="125" y="360" font-size="11">真实 1% 概率</text>
+<text x="125" y="430">今日委托</text>
+<text x="354" y="255" font-size="32" fill="#ffe3cf">☾</text><text x="354" y="301">月纱人物主视觉</text><text x="354" y="326" font-size="11">独立绘景 · 不叠截图 UI</text>
+<text x="540" y="219">交谈</text><text x="540" y="330">私室</text>
+<text x="314" y="520">唯一七路由导航 · 大厅 / 公寓 / 工坊 / 角色 / 委托 / 探索 / 仓库</text>
+<text x="725" y="116">契约页面</text><text x="1000" y="116">真实收藏资源</text>
+<text x="718" y="180">五张契约预览</text>
+<text x="718" y="245" font-size="12">红色月蚀</text><text x="718" y="301" font-size="12">传说 / 史诗</text><text x="718" y="357" font-size="12">稀有 / 普通</text>
+<text x="929" y="240" font-size="33" fill="#ff92a6">☾</text><text x="929" y="295">角色收藏大图</text><text x="929" y="320" font-size="11">切换只影响预览</text>
+<text x="1138" y="210">概率公示</text><text x="1138" y="285" font-size="12">46/31/17/5/1</text><text x="1138" y="378">单次召唤</text>
+<text x="935" y="519">七页面不增加重复导航 · 召唤结果与真实存档同步</text>
+</g>
+<g font-family="'Noto Serif SC',serif" fill="#cfa67d" font-size="14"><text x="28" y="593">01 大厅 · Cinematic Lobby</text><text x="643" y="593">02 契约召唤 · Moonlit Summoning</text></g>
+</svg>
