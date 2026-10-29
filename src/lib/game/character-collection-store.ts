@@ -1,8 +1,8 @@
 'use client';
 import {useSyncExternalStore} from 'react';
-import {equipEquipment,forgeEquipment,newCharacterCollection,summonCharacter,validCharacterCollection} from '@/core/character-collection';
-import type {CardKey,CollectionState,GearId} from '@/core/character-collection';
-import type {CharacterId} from '@/core/character-life';
+import {equipEquipment,forgeEquipment,newCharacterCollection,summonCharacter,validCharacterCollection} from '../../core/character-collection';
+import type {CardKey,CollectionState,GearId} from '../../core/character-collection';
+import type {CharacterId} from '../../core/character-life';
 
 export const COLLECTION_KEY='monster-apartment:character-collection:v1';
 const EVENT='monster-apartment:collection-updated';
