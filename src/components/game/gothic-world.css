@@ -132,3 +132,82 @@ button):focus-visible{outline:2px solid #ffdda2;outline-offset:2px}.mw.mw-gothic
 @media(prefers-reduced-motion:reduce){
   .gothic-summon-banner,.gothic-summon-primary{transition:none!important}
 }
+
+/* Human guild roster: character composition first, controls second. */
+.mw.mw-gothic[data-area="characters"] .mw-art-gallery-intro{
+  min-height:0;border-color:#d4a27391;
+  background:linear-gradient(116deg,#3c1529ed,#1b0d1bec 64%,#100b17f2);
+  box-shadow:inset 0 1px #ffdcaa40,0 14px 35px #000a;
+}
+.mw.mw-gothic[data-area="characters"] .mw-art-gallery-intro h2{
+  font-size:clamp(22px,2.3vw,33px);color:#ffe4bb;
+}
+.mw.mw-gothic[data-area="characters"] .mw-art-gallery-intro p{
+  color:#e5cbaf;max-width:850px;font-size:13px;
+}
+.mw-persona-quick-nav{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:11px;margin-top:13px;color:#f3d4a9;font-size:12px;
+}
+.mw-persona-summon-link{
+  display:inline-flex;align-items:center;justify-content:center;min-height:44px;
+  padding:9px 23px;border:1px solid #efba84;border-radius:7px;
+  color:#fff1d9!important;text-decoration:none!important;
+  font-size:13px;font-weight:700;
+  background:linear-gradient(125deg,#8e2041,#531631);
+  box-shadow:inset 0 1px #ffdda960,0 5px 16px #71193288;
+}
+.mw-persona-summon-link:hover{filter:brightness(1.13)}
+.mw.mw-gothic[data-area="characters"] .mw-worker-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.3vw,22px);
+}
+.mw.mw-gothic[data-area="characters"] .mw-worker-card{
+  min-width:0;display:flex;flex-direction:column;
+  border:1px solid #c39768a8;border-radius:11px;
+  background:linear-gradient(155deg,#2d1928fa,#140e19f7 65%,#201320f9);
+  box-shadow:inset 0 1px #ffd5a53c,0 13px 33px #000a;
+}
+.mw.mw-gothic[data-area="characters"] .mw-worker-card.on-duty{border-color:#e1bd7ca8}
+.mw.mw-gothic[data-area="characters"] .mw-worker-portrait{
+  height:clamp(245px,28vw,385px);min-height:245px;
+  border:0;border-bottom:1px solid #bc8b62a1;
+  background:radial-gradient(ellipse at 50% 36%,#a76b7061,transparent 59%),
+    linear-gradient(130deg,#2f172a,#0c111c 85%);
+}
+.mw.mw-gothic[data-area="characters"] .mw-worker-portrait--brook{
+  background:radial-gradient(ellipse at 50% 37%,#57b7d244,transparent 63%),linear-gradient(145deg,#18334b,#101321);
+}
+.mw.mw-gothic[data-area="characters"] .mw-worker-portrait--fern{
+  background:radial-gradient(ellipse at 50% 37%,#8dc68a46,transparent 62%),linear-gradient(145deg,#1b3b33,#131a1f);
+}
+.mw.mw-gothic[data-area="characters"] .mw-worker-portrait--cinder{
+  background:radial-gradient(ellipse at 50% 39%,#da825b4b,transparent 61%),linear-gradient(145deg,#492334,#1b131d);
+}
+.mw.mw-gothic[data-area="characters"] .mw-worker-portrait:before{
+  content:"";pointer-events:none;position:absolute;z-index:1;inset:11px;border:1px solid #e7b9855d;
+}
+.mw.mw-gothic[data-area="characters"] .mw-worker-portrait > .worker-artwork{padding:2% 5% 4%}
+.mw.mw-gothic[data-area="characters"] .mw-worker-role{
+  border-color:#e1b685ad;background:#2b1527e8;color:#ffddb4;
+  border-radius:5px;padding:7px 11px;letter-spacing:.1em;
+}
+.mw.mw-gothic[data-area="characters"] .mw-worker-details{padding:clamp(12px,1.4vw,20px)}
+.mw.mw-gothic[data-area="characters"] .mw-worker-details h2{color:#ffe0ac;font-size:clamp(22px,2vw,30px)}
+.mw.mw-gothic[data-area="characters"] .mw-worker-job{color:#e2ad8f}
+.mw.mw-gothic[data-area="characters"] .mw-worker-assignment{padding:5px 0 9px;color:#e9d7c6}
+.worker-artwork--compact canvas{transform:scale(1.47);transform-origin:50% 36%}
+@media(max-width:1050px){
+  .mw.mw-gothic[data-area="characters"] .mw-worker-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .mw.mw-gothic[data-area="characters"] .mw-worker-grid{grid-template-columns:1fr}
+  .mw.mw-gothic[data-area="characters"] .mw-worker-card{display:flex;flex-direction:column}
+  .mw.mw-gothic[data-area="characters"] .mw-worker-portrait{height:300px;min-height:300px;border-right:0}
+  .mw.mw-gothic[data-area="characters"] .mw-worker-details{padding:14px}
+  .mw.mw-gothic[data-area="characters"] .mw-art-gallery-intro{padding:15px!important}
+  .mw-persona-quick-nav{align-items:stretch}
+  .mw-persona-summon-link{width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  .mw.mw-gothic[data-area="characters"] .mw-worker-card{transition:none!important}
+}

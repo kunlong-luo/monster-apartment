@@ -7,7 +7,7 @@ import {WORKERS,MACHINES} from '../../../v2/src/workshop-engine';
 import type {WorkshopState,WorkerId} from '../../../v2/src/workshop-engine';
 import {WorkerArtwork} from './worker-artwork';
 import {CharacterLifePortrait} from '@/components/game/character-life-portrait';
-import {CharacterCollectionPanel} from '@/components/game/character-collection-panel';
+import {useCharacterCollection} from '@/lib/game/character-collection-store';
 import {CharacterAdornment} from '@/components/game/character-adornment';
 import {RoomInvestigationJournal} from '@/components/game/room-investigation-journal';
 import {RoomMemoryGallery} from '@/components/game/room-memory-gallery';
@@ -28,15 +28,18 @@ function WorkerPainting({id,label,working}:{
 }
 
 export function Characters({s,onVisit}:{s:WorkshopState;onVisit:(id:WorkerId)=>void}){
+  const {status,collection}=useCharacterCollection();
+  const collectedCount=new Set(collection.draws).size;
   return <>
-    <CharacterCollectionPanel completed={s.completed}/>
     <section className="mw-art-gallery-intro mt-6" data-testid="character-gallery-header">
       <span className="mw-eyebrow">WORKER ROSTER · THE PEOPLE OF MOONLIGHT WORKSHOP</span>
       <h2>四位成年人物，各有自己的契约与秘密。</h2>
-      <p>召唤人物契约，打造首饰与装备，查看二十项属性；拜访房间则能发现线索、改变对话。</p>
+      <p>月纱、泉泡、青枝与炽角均为成年人物。召唤契约提升人物潜力，打造装备后提升属性；拜访私人房间可以发现新的故事线索。</p>
+      <div className="mw-persona-quick-nav">
+        <span data-testid="gallery-collected-count">{status==='ok'?'已收录人物契约 '+collectedCount+'/5':'人物收藏存档需要处理'}</span>
+        <Link href="/characters/#summon-screen" data-testid="open-cinematic-summon" className="mw-persona-summon-link">✦ 进入契约召唤</Link>
+      </div>
     </section>
-    <RoomInvestigationJournal/>
-    <RoomMemoryGallery/>
     <div className="mw-worker-grid" data-testid="painted-worker-gallery">
       {ids.map((id:WorkerId,i)=>{
         const w=WORKERS[id];const plot=s.tiles.findIndex(t=>t?.worker===id);
@@ -63,6 +66,8 @@ export function Characters({s,onVisit}:{s:WorkshopState;onVisit:(id:WorkerId)=>v
         </section>;
       })}
     </div>
+    <RoomInvestigationJournal/>
+    <RoomMemoryGallery/>
     <section className="mw-witch-banner">
       <div className="mw-witch-painting">
         <Image src={moonveilPortrait} fill unoptimized sizes="150px"
