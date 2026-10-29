@@ -7,6 +7,7 @@ import {WORKERS,MACHINES} from '../../../v2/src/workshop-engine';
 import type {WorkshopState,WorkerId} from '../../../v2/src/workshop-engine';
 import {WorkerArtwork} from './worker-artwork';
 import {CharacterLifePortrait} from '@/components/game/character-life-portrait';
+import {CharacterCollectionPanel} from '@/components/game/character-collection-panel';
 import {RoomInvestigationJournal} from '@/components/game/room-investigation-journal';
 import {RoomMemoryGallery} from '@/components/game/room-memory-gallery';
 const ids=['brook','fern','cinder'] as const;
@@ -28,9 +29,10 @@ export function Characters({s,onVisit}:{s:WorkshopState;onVisit:(id:WorkerId)=>v
   return <>
     <section className="mw-art-gallery-intro" data-testid="character-gallery-header">
       <span className="mw-eyebrow">WORKER ROSTER · THE PEOPLE OF MOONLIGHT WORKSHOP</span>
-      <h2>真正的工匠，在真正的岗位工作。</h2>
-      <p>每位工匠只对应一个岗位。查看当前派工，再进入工坊改变水汽、孢子和晶核的生产效率。</p>
+      <h2>四位人物，各有自己的契约与秘密。</h2>
+      <p>召唤人物契约，打造首饰与装备，查看二十项属性；拜访房间则能发现线索、改变对话。</p>
     </section>
+    <CharacterCollectionPanel completed={s.completed}/>
     <RoomInvestigationJournal/>
     <RoomMemoryGallery/>
     <div className="mw-worker-grid" data-testid="painted-worker-gallery">
