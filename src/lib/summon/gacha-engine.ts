@@ -4,8 +4,8 @@
  * pity counter, currency exchange, history logging, and apartment resident sync.
  */
 
-import type { CardKey } from '@/core/character-collection';
-import { COLLECTION_KEY, decodeCollection } from '@/lib/game/character-collection-store';
+import type { CardKey } from '../../core/character-collection';
+import { COLLECTION_KEY, decodeCollection } from '../game/character-collection-store';
 
 export type GachaRarity = 'SSR-Mythic' | 'SSR-Legend' | 'SR' | 'R' | 'N';
 
@@ -136,6 +136,20 @@ export function gachaSaveStatus(): 'ok'|'corrupt'|'unavailable'{
     return validGachaState(JSON.parse(raw))?'ok':'corrupt';
   } catch {return 'unavailable';}
 }
+/** Earn additional summon tickets from real workshop completions and first-time
+ * character visits; safe to call on every React render, no double awards. */
+export function claimProgressTickets(completed:number,visited:number):number{
+  if(typeof window==='undefined'||gachaSaveStatus()!=='ok')return 0;
+  if(!Number.isSafeInteger(completed)||completed<0||!Number.isSafeInteger(visited)||visited<0)return 0;
+  const eligible=Math.min(1000,completed+Math.min(4,visited));
+  const current=readGachaState();
+  const credited=Math.max(0,...current.claimedProgressRewards.filter(n=>Number.isSafeInteger(n)));
+  if(eligible<=credited)return 0;
+  const grant=eligible-credited;
+  saveGachaState({...current,tickets:current.tickets+grant,claimedProgressRewards:[eligible]});
+  return grant;
+}
+
 export function readGachaState(): GachaState {
   if (typeof window === 'undefined') return INITIAL_GACHA_STATE;
   try {
