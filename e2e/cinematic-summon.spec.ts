@@ -11,6 +11,18 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await expect(page.getByTestId('collection-tickets')).toHaveText('3');
   await expect(page.getByTestId('collection-odds')).toContainText('1.00%');
   await expect(page.getByTestId('collection-odds')).toContainText('46.00%');
+  await expect(page.getByTestId('summon-owned-progress')).toHaveText('收集进度 0/5');
+  const pools=page.locator('.summon-pool-item');
+  await expect(pools).toHaveCount(5);
+  await expect(pools.filter({hasText:'神话 · 月蚀'})).toHaveAttribute('aria-pressed','true');
+  await pools.filter({hasText:'红月之邀'}).click();
+  await expect(pools.filter({hasText:'红月之邀'})).toHaveAttribute('aria-pressed','true');
+  await expect(pools.filter({hasText:'神话 · 月蚀'})).toHaveAttribute('aria-pressed','false');
+  await expect(page.getByRole('heading',{name:'红月 · 晚宴之邀'})).toBeVisible();
+  await page.reload();
+  await expect(pools.filter({hasText:'红月之邀'})).toHaveAttribute('aria-pressed','true');
+  const ids=await page.getByTestId('summon-available-card').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-character-id')));
+  expect(ids).toEqual(['yuesha-eclipse','yuesha-vow','cinder-ember','fern-spring','brook-tide']);
   await expect(page.getByText('2024/10/24')).toHaveCount(0);
   await page.getByTestId('collection-summon').click();
   await expect(page.getByTestId('collection-reveal')).toBeVisible();
@@ -24,6 +36,7 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   expect(saved.history).toHaveLength(1);
   expect(saved.history[0].characterId).toBe(saved.draws[0]);
   expect(saved.shards).toBeGreaterThanOrEqual(1);
+  await expect(page.getByTestId('summon-owned-progress')).toHaveText('收集进度 1/5');
   await page.reload();
   await expect(page.getByTestId('collection-tickets')).toHaveText('2');
   await page.getByRole('button',{name:'召唤记录'}).click();

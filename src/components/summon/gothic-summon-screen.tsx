@@ -40,6 +40,7 @@ export function GothicSummonScreen() {
   } = useGacha();
 
   const { collection } = useCharacterCollection();
+  const ownedCharacters = GACHA_CHARACTERS.filter(c => c.baseCardKey && collection.draws.includes(c.baseCardKey));
 
   // Active pool object
   const currentPool = GACHA_POOLS.find((p) => p.id === activePoolId) || GACHA_POOLS[0];
@@ -109,7 +110,7 @@ export function GothicSummonScreen() {
       {/* ------------------------------------------------------------- */}
       {/* 1. TOP HEADER BAR                                             */}
       {/* ------------------------------------------------------------- */}
-      <header className="relative z-20 flex h-14 sm:h-16 w-full items-center justify-between px-3 sm:px-6 bg-gradient-to-b from-[#120713cc] to-transparent">
+      <header className="summon-cinematic-header relative z-20 flex h-14 sm:h-16 w-full items-center justify-between px-3 sm:px-6 bg-gradient-to-b from-[#120713cc] to-transparent">
         {/* Logo */}
         <div className="flex items-center gap-2">
           <span className="text-xl sm:text-2xl text-[#f3ca88]">❦</span>
@@ -126,7 +127,7 @@ export function GothicSummonScreen() {
         {/* Center-Right Currencies */}
         <div className="flex items-center gap-2 sm:gap-4">
           {/* Contract Tickets */}
-          <div
+          <button type="button" aria-label="查看契约信物来源"
             onClick={() => setShowReplenish(true)}
             className="flex cursor-pointer items-center gap-1.5 rounded-full border border-[#b88c5888] bg-[#22101ecc] px-2.5 py-1 text-xs text-[#ffe1bc] shadow-md hover:border-[#ffd699]"
           >
@@ -137,10 +138,10 @@ export function GothicSummonScreen() {
             <span className="flex size-4 items-center justify-center rounded-full bg-[#462135] text-[10px] text-[#ffc66e]">
               +
             </span>
-          </div>
+          </button>
 
           {/* Blood Crystals */}
-          <div
+          <button type="button" aria-label="查看血晶来源"
             onClick={() => setShowReplenish(true)}
             className="flex cursor-pointer items-center gap-1.5 rounded-full border border-[#b88c5888] bg-[#22101ecc] px-2.5 py-1 text-xs text-[#ffe1bc] shadow-md hover:border-[#ffd699]"
           >
@@ -151,10 +152,10 @@ export function GothicSummonScreen() {
             <span className="flex size-4 items-center justify-center rounded-full bg-[#462135] text-[10px] text-[#ffc66e]">
               +
             </span>
-          </div>
+          </button>
 
           {/* Moonstones */}
-          <div
+          <button type="button" aria-label="查看月光石来源"
             onClick={() => setShowReplenish(true)}
             className="flex cursor-pointer items-center gap-1.5 rounded-full border border-[#b88c5888] bg-[#22101ecc] px-2.5 py-1 text-xs text-[#ffe1bc] shadow-md hover:border-[#ffd699]"
           >
@@ -163,7 +164,7 @@ export function GothicSummonScreen() {
             <span className="flex size-4 items-center justify-center rounded-full bg-[#462135] text-[10px] text-[#ffc66e]">
               +
             </span>
-          </div>
+          </button>
 
           {/* Top-Right Utility Icons */}
           <div className="flex items-center gap-1.5 sm:gap-2 border-l border-[#805a4155] pl-2 sm:pl-3">
@@ -182,7 +183,6 @@ export function GothicSummonScreen() {
               className="relative flex size-8 items-center justify-center rounded-lg border border-[#7e5539] bg-[#23121fcc] text-sm text-[#eed0b2] hover:border-[#ffd699] hover:bg-[#3f1f35]"
             >
               ✉️
-              <span className="absolute -top-1 -right-1 size-2 rounded-full bg-[#ff3355]" />
             </button>
             <button
               type="button"
@@ -191,7 +191,6 @@ export function GothicSummonScreen() {
               className="relative flex size-8 items-center justify-center rounded-lg border border-[#7e5539] bg-[#23121fcc] text-sm text-[#eed0b2] hover:border-[#ffd699] hover:bg-[#3f1f35]"
             >
               📢
-              <span className="absolute -top-1 -right-1 size-2 rounded-full bg-[#ff3355]" />
             </button>
             <button
               type="button"
@@ -222,6 +221,7 @@ export function GothicSummonScreen() {
               <button
                 key={pool.id}
                 type="button"
+                aria-pressed={isActive}
                 onClick={() => setActivePoolId(pool.id)}
                 className={`summon-pool-item group relative flex min-h-14 w-44 shrink-0 items-center gap-2.5 rounded-md border p-2 text-left transition-all duration-300 lg:h-20 lg:w-full ${
                   isActive
@@ -471,19 +471,19 @@ export function GothicSummonScreen() {
           {/* Collection Progress */}
           <div className="rounded-xl border border-[#8b614088] bg-[#1c0d1bb8] p-2.5 text-xs">
             <div className="flex justify-between items-center text-[10px] text-[#e0bfa3]">
-              <span>收集进度 {state.ownedIds.length}/{GACHA_CHARACTERS.length}</span>
+              <span data-testid="summon-owned-progress">收集进度 {ownedCharacters.length}/{GACHA_CHARACTERS.length}</span>
               <button
                 type="button"
                 onClick={() => setShowReplenish(true)}
                 className="text-[#ffc66e] hover:underline"
               >
-                🎁 下个奖励 &gt;
+                🎫 契约资源来源 &gt;
               </button>
             </div>
             <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-[#120713]">
               <div
                 className="h-full bg-gradient-to-r from-[#d97706] to-[#dc2626]"
-                style={{ width: `${Math.min(100, (state.ownedIds.length / GACHA_CHARACTERS.length) * 100)}%` }}
+                style={{ width: `${Math.min(100, (ownedCharacters.length / GACHA_CHARACTERS.length) * 100)}%` }}
               />
             </div>
           </div>
@@ -492,26 +492,20 @@ export function GothicSummonScreen() {
           <div className="mt-2">
             <span className="block text-[10px] text-[#cca585] mb-1">可收录契约</span>
             <div className="flex items-center justify-between gap-1">
-              {[
-                { name: '月纱', avatar: '/art/yuesha-avatar-v3.webp', isUp: false },
-                { name: '达米安', avatar: '/art/yuesha-bust-v3.webp', isUp: false },
-                { name: '艾莲娜', avatar: '/art/yuesha-portrait-v3.webp', isUp: false },
-                { name: '塞拉菲娜', avatar: '/art/lobby-hero-v3.webp', isUp: false },
-                { name: '维多利亚', avatar: '/art/yuesha-avatar-v3.webp', isUp: false },
-              ].map((c, i) => (
-                <div
-                  key={i}
-                  title={c.name}
+              {GACHA_CHARACTERS.map(character => (
+                <button type="button" key={character.id}
+                  data-testid="summon-available-card" data-character-id={character.id}
+                  title={character.title} aria-label={`查看契约档案：${character.title}`}
                   onClick={() => setShowArchive(true)}
-                  className="relative size-10 cursor-pointer overflow-hidden rounded-full border border-[#b88c58] hover:scale-110 transition"
-                >
-                  <Image src={c.avatar} alt={c.name} fill className="object-cover object-top" />
-                  {c.isUp && (
-                    <span className="absolute bottom-0 right-0 rounded bg-[#ff2244] px-1 text-[8px] font-bold text-white leading-none">
-                      UP
+                  className="relative size-10 shrink-0 overflow-hidden rounded-full border border-[#b88c58] bg-[#2a1023] text-xs font-bold text-[#f6d5aa] transition hover:border-[#ffe3b3] hover:scale-105">
+                  {character.id.startsWith('yuesha-') ? (
+                    <Image src={character.avatar} alt="" fill sizes="40px" className="object-cover object-top" />
+                  ) : (
+                    <span aria-hidden="true" className="grid h-full w-full place-items-center bg-[radial-gradient(circle_at_50%_20%,#6b364e,#1c0e1c)]">
+                      {character.name.slice(0,1)}
                     </span>
                   )}
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -574,6 +568,7 @@ export function GothicSummonScreen() {
         <div
           role="dialog"
           aria-modal="true"
+          aria-label="角色契约图鉴与装备锻造"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-md"
         >
           <div className="relative flex max-h-[90vh] w-full max-w-4xl flex-col rounded-2xl border border-[#c49a62] bg-[#1a0f19] p-5 shadow-[0_15px_50px_#000000ee] text-[#f2dac2]">
