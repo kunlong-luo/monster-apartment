@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { AnimatePresence } from 'motion/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   Ticket,
   Droplets,

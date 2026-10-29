@@ -117,7 +117,7 @@ export function GothicLobby(){
           data-testid="gothic-main-quest-progress"
           className="gothic-lobby__progress"><span style={{width:orderProgress+'%'}}/></span>
       </Link>
-      <Link href="/characters/#summon"
+      <Link href="/characters/#summon-screen"
         className="gothic-lobby__mission-card gothic-lobby__mission-card--eclipse"
         data-testid="gothic-eclipse-feature" aria-label="查看红色神话月蚀契约召唤">
         <span className="gothic-lobby__card-kicker">✦ 月夜契约 · 角色收藏</span>
