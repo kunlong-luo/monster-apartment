@@ -1,0 +1,470 @@
+{
+  "project": "怪物公寓 / Monster Apartment",
+  "archive_date": "2026-10-29",
+  "source": "Accessible conversation image-generation and candidate artifacts",
+  "archive_policy": "Original PNGs are preserved, never promoted to game production without separate visual review.",
+  "not_included": "Assets from older sessions inaccessible to the current container; repository existing public art not recopied.",
+  "total_files": 33,
+  "counts": {
+    "artboard": 9,
+    "character-sheet": 10,
+    "collection-cg": 5,
+    "scene": 2,
+    "room-background": 1,
+    "review": 2,
+    "rejected-review": 1,
+    "previous-package": 3
+  },
+  "images": [
+    {
+      "path": "artwork/characters/yuesha/concepts/01_a_clean_high_detail_character_concept_illustratio.png",
+      "source_filename": "a_clean_high_detail_character_concept_illustratio.png",
+      "kind": "artboard",
+      "review_status": "concept",
+      "size_bytes": 3248125,
+      "sha256": "541d00fa790998c5450cbb8878c8481ac5bd674a9829b2569dd266491b9c466f",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/02_a_clean_high_resolution_illustration_composite_la.png",
+      "source_filename": "a_clean_high_resolution_illustration_composite_la.png",
+      "kind": "character-sheet",
+      "review_status": "concept",
+      "size_bytes": 3205738,
+      "sha256": "1eb79fc36ae2d41465ef097654672bc446d9f3f6250602abbbb6afd1af04d852",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/03_a_detailed_high_quality_character_art_sheet_spr.png",
+      "source_filename": "a_detailed_high_quality_character_art_sheet_spr.png",
+      "kind": "character-sheet",
+      "review_status": "concept",
+      "size_bytes": 3369246,
+      "sha256": "6c1470b546513050f6e36d466d6a5922677d935772ae15668893f516fbf1da7f",
+      "dimensions_px": [
+        1672,
+        940
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/04_a_detailed_high_quality_character_illustration_sh.png",
+      "source_filename": "a_detailed_high_quality_character_illustration_sh.png",
+      "kind": "character-sheet",
+      "review_status": "concept",
+      "size_bytes": 2864366,
+      "sha256": "f15268312b7cb28e5e9a9db940eafe04f310c2e617e911187af9f4cf2c321720",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/05_a_detailed_high_resolution_anime_cg_style_collage.png",
+      "source_filename": "a_detailed_high_resolution_anime_cg_style_collage.png",
+      "kind": "character-sheet",
+      "review_status": "concept",
+      "size_bytes": 3339631,
+      "sha256": "6bf789442030e3879302d64801b2c9d9ecf38807e2cdc22ef4f8d5b9281dc75f",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/06_a_high_detail_polished_anime_style_character_illu.png",
+      "source_filename": "a_high_detail_polished_anime_style_character_illu.png",
+      "kind": "character-sheet",
+      "review_status": "concept",
+      "size_bytes": 3199457,
+      "sha256": "0204814454cd3d0c1d22ca957bc4209fa05f4a935c3b37531f3ec53925a016c8",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/07_a_high_quality_anime_illustration_character_sheet.png",
+      "source_filename": "a_high_quality_anime_illustration_character_sheet.png",
+      "kind": "character-sheet",
+      "review_status": "concept",
+      "size_bytes": 3311535,
+      "sha256": "27c300b28fb4adc40a3fbc0e19ade5fd4e193b2ebe62ad5fd33edf6801654942",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/08_a_high_quality_anime_illustration_composite_artboa.png",
+      "source_filename": "a_high_quality_anime_illustration_composite_artboa.png",
+      "kind": "artboard",
+      "review_status": "concept",
+      "size_bytes": 3355042,
+      "sha256": "c1cb5b60cc336563e01f9070a396c84c94c3d1721d79cc1354354e7f9c2f6b46",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/09_a_high_quality_anime_visual_novel_style_composite.png",
+      "source_filename": "a_high_quality_anime_visual_novel_style_composite.png",
+      "kind": "artboard",
+      "review_status": "concept",
+      "size_bytes": 3350944,
+      "sha256": "5b13231924235f7ff773f837f731e39a8a935340afb8c8fc63632e19145bdf6c",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/10_a_high_quality_fantasy_anime_character_sheet_compo.png",
+      "source_filename": "a_high_quality_fantasy_anime_character_sheet_compo.png",
+      "kind": "artboard",
+      "review_status": "concept",
+      "size_bytes": 3121618,
+      "sha256": "a827cc1234f341ecbe45c07de52eee488aa82cb7ae67e4dde4038819f7ac69d2",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/11_a_high_quality_transparent_background_png_collage.png",
+      "source_filename": "a_high_quality_transparent_background_png_collage.png",
+      "kind": "character-sheet",
+      "review_status": "concept",
+      "size_bytes": 3367478,
+      "sha256": "23a9515a493942b4181fbd08e82d780274800d8a7cdad10b8eee8776aef4a3d4",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/12_a_high_resolution_character_illustration_sheet_p.png",
+      "source_filename": "a_high_resolution_character_illustration_sheet_p.png",
+      "kind": "artboard",
+      "review_status": "concept",
+      "size_bytes": 3278939,
+      "sha256": "a17fa6d138170727f9a177e0d40368d4ffcf79deb7ac57fc80cdfeb1ff4a2f17",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/13_a_high_resolution_character_sheet_cutout_sticker.png",
+      "source_filename": "a_high_resolution_character_sheet_cutout_sticker.png",
+      "kind": "character-sheet",
+      "review_status": "concept",
+      "size_bytes": 3362995,
+      "sha256": "41de4aa0622de868dccfd26675ef1d6ec2d5f66bc51f62d08d20942bddb420be",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/collection-cg/yuesha/candidates/14_a_highly_detailed_anime_style_fantasy_interior_sce.png",
+      "source_filename": "a_highly_detailed_anime_style_fantasy_interior_sce.png",
+      "kind": "collection-cg",
+      "review_status": "candidate",
+      "size_bytes": 3155994,
+      "sha256": "01ceafd1f37d2f503b063f0b70fea03e749ced3e4c7674d678265c4e08fd6e55",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/rooms/yuesha/concepts/15_a_highly_detailed_atmospheric_gothic_fantasy_stud.png",
+      "source_filename": "a_highly_detailed_atmospheric_gothic_fantasy_stud.png",
+      "kind": "scene",
+      "review_status": "concept",
+      "size_bytes": 2741917,
+      "sha256": "fb97d1ed786fa7c99b3c7dfbabc55fe7cfaa720978c813aabd00e25c241fccb0",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGB",
+      "notes": "Independent or candidate environment painting; unreviewed."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/16_a_highly_detailed_cinematic_anime_style_fantasy.png",
+      "source_filename": "a_highly_detailed_cinematic_anime_style_fantasy.png",
+      "kind": "artboard",
+      "review_status": "concept",
+      "size_bytes": 3378318,
+      "sha256": "332fcec9be296611fa3aa6257391c1553b471bf2a4c377b797e2144a83bd44c9",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/17_a_highly_detailed_soft_glamour_anime_style_illus.png",
+      "source_filename": "a_highly_detailed_soft_glamour_anime_style_illus.png",
+      "kind": "artboard",
+      "review_status": "concept",
+      "size_bytes": 3185351,
+      "sha256": "bd3b0a11929362b524e14dc1f63cf9ac7fdf6a816e20614adb10b3df11f1a474",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/18_a_polished_anime_style_character_sheet_illustrat.png",
+      "source_filename": "a_polished_anime_style_character_sheet_illustrat.png",
+      "kind": "character-sheet",
+      "review_status": "concept",
+      "size_bytes": 3196236,
+      "sha256": "6ef970844a949f22ce3d10f4de509890c04c40d868fbac10c278e112aa2efb72",
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/collection-cg/yuesha/candidates/19_a_richly_detailed_atmospheric_fantasy_illustratio.png",
+      "source_filename": "a_richly_detailed_atmospheric_fantasy_illustratio.png",
+      "kind": "collection-cg",
+      "review_status": "candidate",
+      "size_bytes": 3161311,
+      "sha256": "abd5b2e1a442c4d2296611200f106f2d88ae71f22f1fd715154d32c4d4092610",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/rooms/yuesha/concepts/20_a_richly_detailed_fantasy_gothic_interior_scene_at.png",
+      "source_filename": "a_richly_detailed_fantasy_gothic_interior_scene_at.png",
+      "kind": "scene",
+      "review_status": "concept",
+      "size_bytes": 3265218,
+      "sha256": "ef00c504d30809f8eba5dc187b0e2e56215d28dfbb521bd5066d2d168b14e448",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "Independent or candidate environment painting; unreviewed."
+    },
+    {
+      "path": "artwork/collection-cg/yuesha/candidates/21_a_richly_detailed_high_resolution_anime_cgi_styl.png",
+      "source_filename": "a_richly_detailed_high_resolution_anime_cgi_styl.png",
+      "kind": "collection-cg",
+      "review_status": "candidate",
+      "size_bytes": 3176909,
+      "sha256": "8dafd0c36d40e6f323d7f7eca01dba0ce116ebcc91649cf32a73474268ded407",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/collection-cg/yuesha/candidates/22_a_wide_high_detail_cinematic_fantasy_illustratio.png",
+      "source_filename": "a_wide_high_detail_cinematic_fantasy_illustratio.png",
+      "kind": "collection-cg",
+      "review_status": "candidate",
+      "size_bytes": 3256750,
+      "sha256": "8c48ff6906339e31319d7e5b51fbdf5e041b032153d4c0efd366265c1f5b34fb",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/23_a_wide_high_quality_collage_asset_sheet_illustrat.png",
+      "source_filename": "a_wide_high_quality_collage_asset_sheet_illustrat.png",
+      "kind": "artboard",
+      "review_status": "concept",
+      "size_bytes": 3267449,
+      "sha256": "1376333ab85ff2f25c3879683e5b5fe535c9b7ff630c0c027ad2c3f3a40950e7",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/collection-cg/yuesha/candidates/24_a_wide_polished_high_detail_anime_style_fantasy.png",
+      "source_filename": "a_wide_polished_high_detail_anime_style_fantasy.png",
+      "kind": "collection-cg",
+      "review_status": "candidate",
+      "size_bytes": 3182186,
+      "sha256": "b9db5b3982575cc29995a21cdeb1c79c896f3d6fc2ef6339e9fb447b0fad404e",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/25_wide_high_detail_anime_illustration_on_a_transpar.png",
+      "source_filename": "wide_high_detail_anime_illustration_on_a_transpar.png",
+      "kind": "character-sheet",
+      "review_status": "concept",
+      "size_bytes": 3321161,
+      "sha256": "086cb63ea8d21514f192edbe694148e170385b523459d7698817500982b91b9a",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/characters/yuesha/concepts/26_wide_high_resolution_anime_character_concept_shee.png",
+      "source_filename": "wide_high_resolution_anime_character_concept_shee.png",
+      "kind": "artboard",
+      "review_status": "concept",
+      "size_bytes": 3360734,
+      "sha256": "c3b69d21944c93ebbdb1c227785b826336563f0f7bd72431c2c92388bc3e3148",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "image_mode": "RGBA",
+      "notes": "ChatGPT generation; original unmodified. Not admitted as production art."
+    },
+    {
+      "path": "artwork/rooms/yuesha/candidates/background-upscaled-2560x1440.webp",
+      "source_filename": "yuesha-contract-room-hd-candidate.webp",
+      "kind": "room-background",
+      "review_status": "candidate",
+      "size_bytes": 732302,
+      "sha256": "d0cf59430d010d5f63b99dbc2405995d34a8458bc4145f862df15f579e3ce441",
+      "dimensions_px": [
+        2560,
+        1440
+      ],
+      "image_mode": "RGB",
+      "notes": "Upscaled from a smaller generated image; not native 2560px detail."
+    },
+    {
+      "path": "artwork/rooms/yuesha/reviews/hotspot-review-v310.png",
+      "source_filename": "yuesha-room-candidate-hotspot-review.png",
+      "kind": "review",
+      "review_status": "candidate",
+      "size_bytes": 1693780,
+      "sha256": "1e21ae8ccbe8d960559617a3efe20e82046c8b9d5d13f0073f9a6209ed5d95a7",
+      "dimensions_px": [
+        1640,
+        780
+      ],
+      "image_mode": "RGB",
+      "notes": "Review/QA output; not production."
+    },
+    {
+      "path": "artwork/rooms/yuesha/reviews/hotspot-review-v311.png",
+      "source_filename": "yuesha-v311-hd-hotspot-review.png",
+      "kind": "review",
+      "review_status": "candidate",
+      "size_bytes": 1649379,
+      "sha256": "e537399e064d76a71e612028925f10340f4a4cf9d882c6e06b829d0a184d9e5a",
+      "dimensions_px": [
+        1640,
+        740
+      ],
+      "image_mode": "RGB",
+      "notes": "Review/QA output; not production."
+    },
+    {
+      "path": "artwork/characters/yuesha/rejected/portrait-preflight.png",
+      "source_filename": "monster-apartment-v315-portrait-preflight.png",
+      "kind": "rejected-review",
+      "review_status": "rejected",
+      "size_bytes": 441204,
+      "sha256": "f5b3fa55311df8ab5a3719bf302122b801f5f9a9ad1bafad96d4ab7efd547145",
+      "dimensions_px": [
+        1200,
+        760
+      ],
+      "image_mode": "RGB",
+      "notes": "Review/QA output; not production."
+    },
+    {
+      "path": "artwork/packages/monster-apartment-v311-yuesha-candidate.zip",
+      "source_filename": "monster-apartment-v311-yuesha-candidate.zip",
+      "kind": "previous-package",
+      "review_status": "reference-only",
+      "size_bytes": 2373810,
+      "sha256": "d6bdeea467bd0fa9eba2a2fd55a37cbe112cdb0b1d8a3180402824e811bfc1d3",
+      "dimensions_px": null,
+      "notes": "Previously delivered candidate or rejected review package."
+    },
+    {
+      "path": "artwork/packages/monster-apartment-v313-art-candidates.zip",
+      "source_filename": "monster-apartment-v313-art-candidates.zip",
+      "kind": "previous-package",
+      "review_status": "reference-only",
+      "size_bytes": 1131423,
+      "sha256": "2f3cfcfd04b8ddfe3c59dfe683fed0b275e1ab25cd1b7fee2997c69a11954a87",
+      "dimensions_px": null,
+      "notes": "Previously delivered candidate or rejected review package."
+    },
+    {
+      "path": "artwork/packages/monster-apartment-v315-rejected-pose-candidates.zip",
+      "source_filename": "monster-apartment-v315-rejected-pose-candidates.zip",
+      "kind": "previous-package",
+      "review_status": "reference-only",
+      "size_bytes": 4485339,
+      "sha256": "7dd41a3fea55e5f2433259ca75b7431eb6ad3f0070686b8d353d8ddea24ac429",
+      "dimensions_px": null,
+      "notes": "Previously delivered candidate or rejected review package."
+    }
+  ]
+}
