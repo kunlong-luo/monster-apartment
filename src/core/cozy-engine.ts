@@ -30,19 +30,19 @@ export type CozyResident = {
 };
 export const COZY_RESIDENTS: readonly CozyResident[] = [
   { id:'seedling', favorite:'nest', decor:'plant', likes:'fern-hare',
-    zh:'芽核', en:'Seedcore', bioZh:'喜欢晒太阳，正在找一个可以种花的家。', bioEn:'Dreams of a sunny home for little plants.' },
+    zh:'芽音', en:'Yaen', bioZh:'23岁的成年植艺学徒，想把月光街的每一扇窗都变成花园。', bioEn:'Dreams of a sunny home for little plants.' },
   { id:'dewdrop', favorite:'bath', decor:'books', likes:'seedling',
-    zh:'露珠灵', en:'Dewdrop', bioZh:'每天都想泡澡，还会给邻居讲睡前故事。', bioEn:'Loves a warm bath and bedtime stories.' },
+    zh:'澜歌', en:'Langa', bioZh:'26岁的成年水系术师，研究古老水脉，也喜欢夜间读书。', bioEn:'Loves a warm bath and bedtime stories.' },
   { id:'lantern-beetle', favorite:'workshop', decor:'lamp', likes:'dewdrop',
-    zh:'灯甲虫', en:'Lanternbeetle', bioZh:'一到晚上就点灯工作，最怕有人把灯关了。',
+    zh:'洛灯', en:'Loden', bioZh:'31岁的成年月灯技师，负责让街区的灯火长明。',
     bioEn:'Works late into the night under a golden lamp.' },
   { id:'fern-hare', favorite:'greenhouse', decor:'plant', likes:'seedling',
-    zh:'蕨尾兔', en:'Fernhare', bioZh:'带着一袋种子来，希望在楼里交个朋友。', bioEn:'Carries seeds and hopes to find a friend.' },
+    zh:'苓蕨', en:'Lingjue', bioZh:'24岁的成年草药信使，擅长旅行记录与稀有种子培育。', bioEn:'Carries seeds and hopes to find a friend.' },
   { id:'moon-scout', favorite:'workshop', decor:'books', likes:'lantern-beetle',
-    zh:'月影雀', en:'Moonscout', bioZh:'爱收集小故事，会在深夜悄悄看书。', bioEn:'Collects stories and reads by moonlight.' },
+    zh:'夜翎', en:'Yeling', bioZh:'27岁的成年夜行书记官，记录月光街的灯火和秘密。', bioEn:'Collects stories and reads by moonlight.' },
 ];
 export const ROOM_DETAILS:Record<HomeType,{ zh:string; en:string; icon:string; cost:number }> = {
-  nest:{zh:'软绵卧室',en:'Cozy bedroom',icon:'🛏',cost:30},
+  nest:{zh:'私人卧室',en:'Private bedroom',icon:'🛏',cost:30},
   bath:{zh:'水汽浴室',en:'Warm bath',icon:'🛁',cost:34},
   workshop:{zh:'灯火工坊',en:'Lamp workshop',icon:'🛠',cost:38},
   greenhouse:{zh:'屋顶花房',en:'Plant room',icon:'🌿',cost:34},
@@ -98,8 +98,8 @@ export function newCozyGame():CozyState {
     known:['seedling','dewdrop','lantern-beetle'],
     bonds:{},seen:[],lastIncome:0,
     journal:[{key:'welcome',tick:0,kind:'story',
-      zh:'欢迎来到月光街！芽核抱着小盆栽，成为公寓的第一位住户。试试为下一位访客建个家吧。',
-      en:'Welcome to Moonlight Street! Seedcore has moved in with a little plant. Build a home for your next visitor.'}],
+      zh:'欢迎来到月光街！芽音抱着小盆栽，成为公寓的第一位住户。试试为下一位访客建个家吧。',
+      en:'Welcome to Moonlight Street! Yaen has moved in with a little plant. Build a home for your next visitor.'}],
   };
 }
 /** Residents form a household, not six isolated rent-generating tiles.
@@ -180,17 +180,17 @@ const COMMISSION_SERIES:readonly {
   zh:string;en:string;storyZh:string;storyEn:string;
 }[]=[
   {id:'teatime',resident:'dewdrop',home:'bath',decor:'books',friend:'seedling',
-    zh:'露珠灵的睡前读书会',en:"Dewdrop's Story Hour",
-    storyZh:'露珠灵想在暖暖的浴室里和芽核交换故事。',storyEn:'Dewdrop wants to share stories with Seedcore in the warm bath.'},
+    zh:'澜歌的睡前读书会',en:"Langa's Story Hour",
+    storyZh:'澜歌想在暖暖的浴室里和芽音交换故事。',storyEn:'Langa wants to share stories with Yaen in the warm bath.'},
   {id:'lanterns',resident:'lantern-beetle',home:'workshop',decor:'lamp',friend:'dewdrop',
-    zh:'灯甲虫的夜光修理铺',en:"Lanternbeetle's Night Workshop",
-    storyZh:'灯甲虫想修好整条街的灯，也希望露珠灵来看看。',storyEn:'Lanternbeetle wants to mend street lamps with a friendly visit from Dewdrop.'},
+    zh:'洛灯的夜光修理铺',en:"Loden's Night Workshop",
+    storyZh:'洛灯想修好整条街的灯，也希望澜歌来看看。',storyEn:'Loden wants to mend street lamps with a friendly visit from Langa.'},
   {id:'garden',resident:'fern-hare',home:'greenhouse',decor:'plant',friend:'seedling',
-    zh:'蕨尾兔的窗边种子会',en:"Fernhare's Window Garden",
-    storyZh:'蕨尾兔想让芽核看到第一批开花的种子。',storyEn:'Fernhare hopes Seedcore will see the first seeds bloom.'},
+    zh:'苓蕨的窗边种子会',en:"Lingjue's Window Garden",
+    storyZh:'苓蕨想让芽音看到第一批开花的种子。',storyEn:'Lingjue hopes Yaen will see the first seeds bloom.'},
   {id:'stories',resident:'moon-scout',home:'workshop',decor:'books',friend:'lantern-beetle',
-    zh:'月影雀的月下故事集',en:"Moonscout's Moonlit Stories",
-    storyZh:'月影雀要在工作室记下灯甲虫的夜班故事。',storyEn:'Moonscout wants to record Lanternbeetle’s night-shift tales.'},
+    zh:'夜翎的月下故事集',en:"Yeling's Moonlit Stories",
+    storyZh:'夜翎要在工作室记下洛灯的夜班故事。',storyEn:'Yeling wants to record Loden’s night-shift tales.'},
 ];
 const commissionAwardKey=(id:CozyCommissionId)=>'commission-award-'+id;
 export function cozyReputation(state:CozyState):number {
@@ -232,16 +232,16 @@ export const cozyCareUsedToday=(state:CozyState):boolean=>
 export const cozyCareBoost=(state:CozyState,id:SpiritId):number=>
   state.seen.includes(cozyCareKey(state.tick,id))?11:0;
 const COZY_CARE_SCENES:Partial<Record<SpiritId,{zh:string;en:string}>>={
-  seedling:{zh:'你帮芽核扶正长歪的枝叶。它开心地递给你一粒会发光的种子。',
-    en:'You straighten Seedcore’s crooked leaves. It offers you a glowing seed.'},
-  dewdrop:{zh:'你帮露珠灵调好了浴室的水温。它咕噜一声，吹出一串彩色泡泡。',
-    en:'You warm Dewdrop’s bath to just the right temperature. It blows rainbow bubbles.'},
-  'lantern-beetle':{zh:'你和灯甲虫一起装好坏掉的小灯。窗边亮起一颗温暖的星星。',
-    en:'You help Lanternbeetle repair its tiny lamp. A warm star lights up the window.'},
-  'fern-hare':{zh:'你替蕨尾兔抱稳一篮种子。它用耳朵轻轻碰了碰你的手。',
-    en:'You hold Fernhare’s seed basket. Its soft ear brushes your hand in thanks.'},
-  'moon-scout':{zh:'你帮月影雀把散落的故事页按顺序排好，它在扉页为你画了一颗月亮。',
-    en:'You sort Moonscout’s loose story pages. It draws a little moon on the first page.'},
+  seedling:{zh:'你帮芽音扶正长歪的枝叶。它开心地递给你一粒会发光的种子。',
+    en:'You straighten Yaen’s crooked leaves. It offers you a glowing seed.'},
+  dewdrop:{zh:'你帮澜歌调好了浴室的水温。它咕噜一声，吹出一串彩色泡泡。',
+    en:'You warm Langa’s bath to just the right temperature. It blows rainbow bubbles.'},
+  'lantern-beetle':{zh:'你和洛灯一起装好坏掉的小灯。窗边亮起一颗温暖的星星。',
+    en:'You help Loden repair its tiny lamp. A warm star lights up the window.'},
+  'fern-hare':{zh:'你替苓蕨抱稳一篮种子。它用耳朵轻轻碰了碰你的手。',
+    en:'You hold Lingjue’s seed basket. Its soft ear brushes your hand in thanks.'},
+  'moon-scout':{zh:'你帮夜翎把散落的故事页按顺序排好，它在扉页为你画了一颗月亮。',
+    en:'You sort Yeling’s loose story pages. It draws a little moon on the first page.'},
   'pebble-crab':{zh:'你替卵石蟹找回了掉进地板缝的小石子。它举起两只钳子庆祝。',
     en:'You retrieve Pebblecrab’s favorite pebble. It waves both claws in celebration.'},
   'whisper-cat':{zh:'你在窗台放了软垫，谧语猫终于安心地蜷起尾巴。',
@@ -486,14 +486,14 @@ export function advanceCozy(state:CozyState):CozyState {
     if(tick===TICKS_PER_DAY){
       next={...next,known:[...next.known,'fern-hare']};
       next=event(next,'visitor-fern','arrival',
-        '叮咚！蕨尾兔带着一袋种子站在门外：「这里还有能种花的房间吗？」',
-        'Ding-dong! Fernhare has arrived with seeds. "Is there room to grow flowers?"');
+        '叮咚！苓蕨带着一袋种子站在门外：「这里还有能种花的房间吗？」',
+        'Ding-dong! Lingjue has arrived with seeds. "Is there room to grow flowers?"');
     }
     if(tick===TICKS_PER_DAY*3){
       next={...next,known:[...next.known,'moon-scout']};
       next=event(next,'visitor-moon','arrival',
-        '月影雀来访了：「听说这里有会发光的窗户，我想把故事写下来。」',
-        'Moonscout arrives. "I heard your windows glow. I want to write down their stories."');
+        '夜翎来访了：「听说这里有会发光的窗户，我想把故事写下来。」',
+        'Yeling arrives. "I heard your windows glow. I want to write down their stories."');
     }
   }
   // Story surprises arise in actual built rooms once life has begun.

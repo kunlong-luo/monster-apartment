@@ -64,13 +64,13 @@ describe('A single cozy apartment building loop',()=>{
     expect(adjacent(4,1)).toBe(false);
     let game=moveInCozy(buildCozyRoom(base,2,'bath'),2,'dewdrop');
     game=moveInCozy(buildCozyRoom(game,5,'greenhouse'),5,'fern-hare');
-    // Fernhare becomes available after the first morning.
+    // Lingjue becomes available after the first morning.
     expect(game.rooms[5]?.resident).toBeNull();
     game=day(game);
     game=moveInCozy(game,5,'fern-hare');
     expect(game.rooms[5]?.resident).toBe('fern-hare');
     game=day(game,2);
-    expect(game.journal.some(e=>e.key.includes('friends')&&e.zh.includes('芽核'))).toBe(true);
+    expect(game.journal.some(e=>e.key.includes('friends')&&e.zh.includes('芽音'))).toBe(true);
     expect(Object.values(game.bonds).some(n=>n>=2)).toBe(true);
   });
   it('morning rent and new visitors arrive with daily activities and no clicks',()=>{
@@ -282,7 +282,7 @@ describe('A single cozy apartment building loop',()=>{
     game=advanceCozy(game);
     expect(game.tick).toBe(MAX_TICKS*2);
     expect(game.journal.at(-1)?.key).toBe('commission-close-2');
-    expect(game.journal.at(-1)?.zh).toContain('露珠灵的睡前读书会圆满完成');
+    expect(game.journal.at(-1)?.zh).toContain('澜歌的睡前读书会圆满完成');
     expect(game.coins).toBeGreaterThan(previous+24);
     expect(cozyReputation(game)).toBe(1);
     expect(cozyDailyIncome(game).patrons).toBe(1);
@@ -297,7 +297,7 @@ describe('A single cozy apartment building loop',()=>{
     game=moveInCozy(buildCozyRoom(game,2,'bath'),2,'dewdrop');
     game=decorateCozy(game,2,'books');
     expect(cozyCommission(game)?.completed).toBe(2);
-    // Move Dewdrop away before a visit; room and decor stay valid but the
+    // Move Langa away before a visit; room and decor stay valid but the
     // relationship condition never matures.
     game=relocateCozyResident(buildCozyRoom(game,0,'bath'),2,0);
     while(game.tick<MAX_TICKS*2)game=advanceCozy(game);
@@ -354,7 +354,7 @@ describe('A single cozy apartment building loop',()=>{
     expect(cozyCareBoost(helped,'seedling')).toBe(11);
     expect(residentHappiness(helped,'seedling')).toBe(Math.min(100,happy+11));
     expect(cozyCareUsedToday(helped)).toBe(true);
-    expect(helped.journal.at(-1)?.zh).toContain('帮芽核扶正长歪的枝叶');
+    expect(helped.journal.at(-1)?.zh).toContain('陪芽音整理花房育苗架');
     expect(careForCozyResident(helped,'seedling')).toBe(helped);
     expect(careForCozyResident(helped,'dewdrop')).toBe(helped);
     const tomorrow=day(helped);

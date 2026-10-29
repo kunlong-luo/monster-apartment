@@ -11,11 +11,11 @@ test('the new gothic apartment uses the existing real housing economy',async({pa
   await page.getByTestId('ga-build-bath').click();
   await expect(page.getByTestId('ga-coins')).toHaveText('71');
   await page.getByTestId('ga-welcome-dewdrop').click();
-  await expect(page.getByTestId('ga-room-2')).toContainText('露珠灵');
+  await expect(page.getByTestId('ga-room-2')).toContainText('澜歌');
   await page.getByTestId('ga-decor-books').click();
   await expect(page.getByTestId('ga-coins')).toHaveText('59');
   await page.reload();
-  await expect(page.getByTestId('ga-room-2')).toContainText('露珠灵');
+  await expect(page.getByTestId('ga-room-2')).toContainText('澜歌');
   await expect(page.getByTestId('ga-coins')).toHaveText('59');
 });
 
@@ -103,10 +103,10 @@ test('another open tab receives housing progress without overwriting a newer sav
     expect(shared.rooms[2]?.type).toBe('bath');
     await second.getByTestId('ga-room-2').click();
     await second.getByTestId('ga-welcome-dewdrop').click();
-    await expect(second.getByTestId('ga-room-2')).toContainText('露珠灵');
-    await expect(page.getByTestId('ga-room-2')).toContainText('露珠灵',{timeout:10000});
+    await expect(second.getByTestId('ga-room-2')).toContainText('澜歌');
+    await expect(page.getByTestId('ga-room-2')).toContainText('澜歌',{timeout:10000});
     await page.reload();
-    await expect(page.getByTestId('ga-room-2')).toContainText('露珠灵');
+    await expect(page.getByTestId('ga-room-2')).toContainText('澜歌');
   }finally{
     await second.close();
   }
