@@ -61,11 +61,35 @@ export function GothicApartment(){
   useEffect(()=>{
     if(!ready)return;
     try{
-      // Guard the original save before the first write, just like the new workshop.
-      if(invalidCozySave(localStorage.getItem(KEY)))return;
-      localStorage.setItem(KEY,JSON.stringify(world));
+      // Never overwrite a corrupt save. An unchanged snapshot also must not
+      // echo a cross-tab storage event back to the browser's shared storage.
+      const current=localStorage.getItem(KEY);
+      if(invalidCozySave(current))return;
+      const next=JSON.stringify(world);
+      if(current!==next)localStorage.setItem(KEY,next);
     }catch{/* Storage can be unavailable; play remains possible in memory. */}
   },[ready,world]);
+  useEffect(()=>{
+    if(!ready)return;
+    const onStorage=(event:StorageEvent)=>{
+      if(event.storageArea!==window.localStorage||
+        (event.key!==KEY&&event.key!==null))return;
+      try{
+        const raw=window.localStorage.getItem(KEY);
+        if(invalidCozySave(raw)){
+          // A remote bad write is never replaced with an empty apartment.
+          setCorruptSave(true);
+          return;
+        }
+        setWorld(raw?resumeCozySave(JSON.parse(raw) as CozyState):newCozyGame());
+        setCorruptSave(false);
+      }catch{
+        // A storage-read failure is not evidence that the save was deleted.
+      }
+    };
+    window.addEventListener('storage',onStorage);
+    return ()=>window.removeEventListener('storage',onStorage);
+  },[ready]);
   useEffect(()=>{
     // Do not let the day clock penalize players who are reading dialogue,
     // inspecting room actions, or switching away from the browser tab.

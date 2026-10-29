@@ -12,6 +12,12 @@ function subscribeReducedMotion(callback:()=>void){
 }
 const browserReducedMotion=()=>window.matchMedia(REDUCED_MOTION).matches;
 const serverReducedMotion=()=>false;
+const subscribeVisibility=(callback:()=>void)=>{
+  document.addEventListener('visibilitychange',callback);
+  return ()=>document.removeEventListener('visibilitychange',callback);
+};
+const browserHidden=()=>document.visibilityState!=='visible';
+const serverHidden=()=>false;
 
 /** Atmospheric lighting stays separate from the full-resolution painting.
  * The entire layer is decorative, hit-test transparent and motion-aware. */
@@ -27,7 +33,10 @@ export function GothicSceneIllumination({
   const prefersReduced=useSyncExternalStore(
     subscribeReducedMotion,browserReducedMotion,serverReducedMotion
   );
-  const still=Boolean(paused||reduced||prefersReduced);
+  // Motion's infinite candle keyframes must not keep animating a hidden tab.
+  // Pixi's ticker and the apartment economy already independently respect visibility.
+  const pageHidden=useSyncExternalStore(subscribeVisibility,browserHidden,serverHidden);
+  const still=Boolean(paused||reduced||prefersReduced||pageHidden);
   const left=still?{opacity:.37,scale:1}:{opacity:[.32,.52,.32],scale:[1,1.035,1]};
   const right=still?{opacity:.31,scale:1}:{opacity:[.29,.46,.29],scale:[1,1.025,1]};
   return <div aria-hidden="true" data-testid="gothic-scene-illumination"

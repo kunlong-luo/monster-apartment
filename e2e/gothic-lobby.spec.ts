@@ -219,3 +219,19 @@ test('main quest reflects saved stock and presents readable progress',async({pag
   await quest.click();
   await expect(page).toHaveURL(/\/orders\/?$/);
 });
+
+test('hidden tabs suspend candle animation and resume when visible again',async({page})=>{
+  await page.goto('/');
+  const lighting=page.getByTestId('gothic-scene-illumination');
+  await expect(lighting).toHaveAttribute('data-motion','ambient');
+  await page.evaluate(()=>{
+    Object.defineProperty(document,'visibilityState',{configurable:true,get:()=> 'hidden'});
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await expect(lighting).toHaveAttribute('data-motion','still');
+  await page.evaluate(()=>{
+    delete (document as Document&{visibilityState?:DocumentVisibilityState}).visibilityState;
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await expect(lighting).toHaveAttribute('data-motion','ambient');
+});

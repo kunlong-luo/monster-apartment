@@ -4,12 +4,12 @@ import './globals.css';
 import {GothicRouteTransition} from '@/components/game/gothic-route-transition';
 
 export const metadata: Metadata = {
-  title: '灵核公寓 · Spirit Core Residence',
-  description: '在月光街亲手建造三层小公寓，迎接奇幻灵核住户，布置家具，经营房租，发现邻居间的小故事。',
-  applicationName: 'Spirit Core Residence',
+  title: '怪物公寓 · Monster Apartment',
+  description: '走进月光街的怪物公寓，拜访独立角色房间、探索隐藏线索、经营晶核工坊，逐步揭开月纱与住客的故事。',
+  applicationName: 'Monster Apartment',
   openGraph: {
-    title: '灵核公寓 · Spirit Core Residence',
-    description: '在月光街亲手建造三层小公寓，迎接奇幻灵核住户，布置家具，经营房租，发现邻居间的小故事。',
+    title: '怪物公寓 · Monster Apartment',
+    description: '经营晶核工坊、探索月光街、拜访怪物公寓住客的独立房间，收集记忆与故事。',
   },
 };
 

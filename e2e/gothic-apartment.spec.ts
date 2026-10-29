@@ -84,3 +84,42 @@ test('apartment never silently destroys an unreadable existing player save',asyn
   await expect(page.getByTestId('gothic-apartment')).toBeVisible();
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'{}'))).toHaveProperty('version');
 });
+
+test('another open tab receives housing progress without overwriting a newer save',async({page,context})=>{
+  test.setTimeout(90000);
+  await page.goto('/apartment/');
+  const second=await context.newPage();
+  await second.goto('/apartment/');
+  try{
+    await page.getByRole('button',{name:'暂停公寓时间'}).click();
+    await second.getByRole('button',{name:'暂停公寓时间'}).click();
+    await page.getByTestId('ga-room-2').click();
+    await page.getByTestId('ga-build-bath').click();
+    await expect(page.getByTestId('ga-coins')).toHaveText('71');
+    await expect(second.getByTestId('ga-coins')).toHaveText('71',{timeout:10000});
+    const shared=await second.evaluate(()=>
+      JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'null')
+    );
+    expect(shared.rooms[2]?.type).toBe('bath');
+    await second.getByTestId('ga-room-2').click();
+    await second.getByTestId('ga-welcome-dewdrop').click();
+    await expect(second.getByTestId('ga-room-2')).toContainText('露珠灵');
+    await expect(page.getByTestId('ga-room-2')).toContainText('露珠灵',{timeout:10000});
+    await page.reload();
+    await expect(page.getByTestId('ga-room-2')).toContainText('露珠灵');
+  }finally{
+    await second.close();
+  }
+});
+
+test('external corrupted apartment saves are not silently repaired by another tab',async({page,context})=>{
+  await page.goto('/apartment/');
+  const second=await context.newPage();
+  await second.goto('/apartment/');
+  try{
+    await second.evaluate(()=>localStorage.setItem('monster-apartment:cozy:v1','{invalid-cross-tab'));
+    await expect(page.getByRole('alertdialog',{name:'公寓存档需要处理'})).toBeVisible();
+    expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:cozy:v1')))
+      .toBe('{invalid-cross-tab');
+  }finally{await second.close();}
+});
