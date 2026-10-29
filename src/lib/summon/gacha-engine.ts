@@ -146,8 +146,7 @@ export function claimProgressTickets(completed:number,visited:number):number{
   const credited=Math.max(0,...current.claimedProgressRewards.filter(n=>Number.isSafeInteger(n)));
   if(eligible<=credited)return 0;
   const grant=eligible-credited;
-  saveGachaState({...current,tickets:current.tickets+grant,claimedProgressRewards:[eligible]});
-  return grant;
+  return saveGachaState({...current,tickets:current.tickets+grant,claimedProgressRewards:[eligible]}) ? grant : 0;
 }
 
 /** Grant the skill showcase prize at most once per saved collection. */
@@ -155,9 +154,8 @@ export function claimTrialTicket():boolean{
   if(typeof window==='undefined'||gachaSaveStatus()!=='ok')return false;
   const state=readGachaState();
   if(state.claimedProgressRewards.includes(-1))return false;
-  saveGachaState({...state,tickets:state.tickets+1,
+  return saveGachaState({...state,tickets:state.tickets+1,
     claimedProgressRewards:[...state.claimedProgressRewards,-1]});
-  return true;
 }
 export function readGachaState(): GachaState {
   if (typeof window === 'undefined') return INITIAL_GACHA_STATE;
@@ -174,14 +172,16 @@ export function readGachaState(): GachaState {
   return INITIAL_GACHA_STATE;
 }
 
-export function saveGachaState(state: GachaState): void {
-  if (typeof window === 'undefined') return;
+export function saveGachaState(state: GachaState): boolean {
+  if (typeof window === 'undefined') return false;
   try {
     window.localStorage.setItem(GACHA_STATE_KEY, JSON.stringify(state));
-    window.dispatchEvent(new Event(GACHA_EVENT));
   } catch {
-    /* non-blocking */
+    return false;
   }
+  try { window.dispatchEvent(new Event(GACHA_EVENT)); }
+  catch { /* The save succeeded even if a UI observer failed. */ }
+  return true;
 }
 
 /**

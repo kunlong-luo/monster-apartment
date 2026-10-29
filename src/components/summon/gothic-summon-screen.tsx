@@ -540,7 +540,7 @@ export function GothicSummonScreen() {
 
       {showTrial && (
         <CharacterTrialModal
-          onRewardClaimed={()=>{claimTrialTicket();setShowTrial(false);}}
+          onRewardClaimed={()=>claimTrialTicket()}
           alreadyClaimed={state.claimedProgressRewards.includes(-1)}
           onClose={() => setShowTrial(false)}
         />

@@ -410,11 +410,12 @@ export function CharacterTrialModal({
   onClose,
   alreadyClaimed=false,
 }: {
-  onRewardClaimed: () => void;
+  onRewardClaimed: () => boolean;
   onClose: () => void;
   alreadyClaimed?: boolean;
 }) {
   const [battleState, setBattleState] = useState<'intro' | 'action' | 'cleared'>('intro');
+  const [rewardError, setRewardError] = useState('');
 
   return (
     <div
@@ -481,13 +482,14 @@ export function CharacterTrialModal({
               type="button"
               disabled={alreadyClaimed}
               onClick={() => {
-                onRewardClaimed();
-                onClose();
+                if(onRewardClaimed())onClose();
+                else setRewardError("奖励未能写入存档，请检查浏览器存储空间后重试。");
               }}
               className="min-h-10 rounded-lg border border-[#c49a62] bg-[#2e1929] px-6 py-2 text-xs font-semibold text-[#ffe3bd] hover:bg-[#48223d] disabled:opacity-50"
             >
               {alreadyClaimed?'首通奖励已领取':'领取 1 张契约信物并返回'}
             </button>
+            {rewardError && <p role="alert" className="text-xs text-rose-300">{rewardError}</p>}
           </div>
         )}
 

@@ -1,6 +1,6 @@
 import {afterEach,beforeEach,describe,expect,it,vi} from 'vitest';
 import {GACHA_STATE_KEY,INITIAL_GACHA_STATE,claimProgressTickets,executeSummon,
-  readGachaState,rollSingleGacha} from '../src/lib/summon/gacha-engine';
+  readGachaState,rollSingleGacha,claimTrialTicket} from '../src/lib/summon/gacha-engine';
 import {COLLECTION_KEY} from '../src/lib/game/character-collection-store';
 
 const saved=new Map<string,string>();
@@ -55,6 +55,18 @@ describe('a faithful functional summoning screen',()=>{
     expect(readGachaState().tickets).toBe(8);
     expect(claimProgressTickets(3,4)).toBe(2);
     expect(readGachaState().tickets).toBe(10);
+  });
+  it('does not claim a reward if local storage rejects the write',()=>{
+    vi.spyOn(window.localStorage,'setItem').mockImplementation(()=>{throw Error('quota exceeded');});
+    expect(claimTrialTicket()).toBe(false);
+    expect(claimProgressTickets(2,1)).toBe(0);
+    expect(readGachaState().tickets).toBe(3);
+    expect(saved.has(GACHA_STATE_KEY)).toBe(false);
+  });
+  it('only grants the first skill showcase reward once',()=>{
+    expect(claimTrialTicket()).toBe(true);
+    expect(claimTrialTicket()).toBe(false);
+    expect(readGachaState().tickets).toBe(4);
   });
   it('keeps the stated base rarity thresholds, with an explicit 90-pull pity',()=>{
     expect(rollSingleGacha(INITIAL_GACHA_STATE,'mythic-eclipse').character.rarity).toBe('N');
