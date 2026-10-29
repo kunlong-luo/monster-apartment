@@ -18,7 +18,7 @@ describe('V3.11 background cover projection and shared focus coordinates',()=>{
   });
   it('keeps all three candidate props reachable with 44px phone touch targets',()=>{
     const markers=Object.values(art.rooms.yuesha.objectAnchors).map(point=>
-      projectCoverAnchor(point as readonly [number,number],{width:390,height:315}));
+      projectCoverAnchor([point[0],point[1]],{width:390,height:315}));
     const pixels=markers.map(point=>[
       Number.parseFloat(point.left)/100*390,
       Number.parseFloat(point.top)/100*315,
