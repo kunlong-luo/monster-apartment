@@ -126,6 +126,15 @@ test('transparent portrait review rejects baked CG and previews alpha-only frame
   await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-local-pose-preview','true');
   await expect(page.getByTestId('room-resident-present-yuesha').locator('img'))
     .toHaveAttribute('src',/^blob:/);
+  const retiringUrl=await page.getByTestId('room-resident-present-yuesha').locator('img').getAttribute('src');
+  expect(retiringUrl).toMatch(/^blob:/);
+  await page.getByTestId('room-pose-upload-idle').setInputFiles({
+    name:'idle.webp',mimeType:'image/webp',buffer:Buffer.from(base64,'base64'),
+  });
+  // Exiting old frame remains alive throughout its 240ms fade.
+  expect(await page.evaluate(async url=>{if(!url)return false;try{return (await fetch(url)).ok;}catch{return false;}},retiringUrl)).toBe(true);
+  await page.waitForTimeout(600);
+  expect(await page.evaluate(async url=>{if(!url)return false;try{return (await fetch(url)).ok;}catch{return false;}},retiringUrl)).toBe(false);
   await page.getByTestId('room-pose-reset').click();
   await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-local-pose-preview','false');
   await expect(page.getByTestId('room-pose-review')).toContainText('0/4');

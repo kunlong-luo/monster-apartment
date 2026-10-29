@@ -87,12 +87,9 @@ async function main(argv){
     mkdirSync(dir,{recursive:true});
     for(const pose of ROOM_POSES){
       const dest=join(dir,pose+'.webp');
-      try{
-        copyFileSync(paths[pose],dest,constants.COPYFILE_EXCL);
-      }catch(error){
-        if(existsSync(dest))unlinkSync(dest);
-        throw error;
-      }
+      // COPYFILE_EXCL may fail because a concurrent process added dest.
+      // Never delete that other process's file on an unsuccessful copy.
+      copyFileSync(paths[pose],dest,constants.COPYFILE_EXCL);
       created.push(dest);
     }
     writeFileSync(proofPath,JSON.stringify(approved,null,2)+'\n',{flag:'wx'});

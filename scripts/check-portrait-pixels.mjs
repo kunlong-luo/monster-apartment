@@ -35,16 +35,47 @@ export function inspectAlphaMask(mask,width,height){
     edgeContacts:contacts,passesPixelPreflight:true,
   };
 }
+/** Reject visually indistinguishable frames even if a few pixels were altered
+ * to create different SHA-256 hashes. A small facial change is not a distinct
+ * full-body pose; genuine new body shapes must survive this comparison. */
+export function comparePosePixels(first,second){
+  if(!first?.alpha||!second?.alpha||!first?.tone||!second?.tone||
+    first.alpha.length!==second.alpha.length||first.tone.length!==second.tone.length||
+    first.alpha.length!==first.tone.length||first.alpha.length===0)
+    throw new Error('Invalid pose comparison arrays');
+  let alphaDiff=0,toneDiff=0,visible=0;
+  for(let i=0;i<first.alpha.length;i++){
+    alphaDiff+=Math.abs(first.alpha[i]-second.alpha[i]);
+    if(first.alpha[i]>32&&second.alpha[i]>32){
+      toneDiff+=Math.abs(first.tone[i]-second.tone[i]);
+      visible++;
+    }
+  }
+  return {
+    alphaDifference:Math.round(alphaDiff/first.alpha.length/255*10000)/10000,
+    toneDifference:visible?Math.round(toneDiff/visible/255*10000)/10000:0,
+  };
+}
+export function assertDistinctPosePixels(samples){
+  const poses=Object.keys(samples);
+  for(let i=0;i<poses.length;i++)for(let j=i+1;j<poses.length;j++){
+    const metrics=comparePosePixels(samples[poses[i]],samples[poses[j]]);
+    if(metrics.alphaDifference<.018&&metrics.toneDifference<.035)
+      throw new Error('Visually near-duplicate character poses: '+poses[i]+' / '+poses[j]+
+        ' ('+JSON.stringify(metrics)+')');
+  }
+}
+
 /** Real Chromium WebP decoding and image-data reading; checks actual transparency,
  * not just a VP8X alpha bit. No URLs, uploads, or network requests. */
 export async function checkPosePixels(assets){
   const browser=await chromium.launch({headless:true});
   try{
     const page=await browser.newPage();
-    const report={};
+    const report={},samples={};
     for(const [pose,bytes] of Object.entries(assets)){
       const base64=bytes.toString('base64');
-      const mask=await page.evaluate(async encoded=>{
+      const sample=await page.evaluate(async encoded=>{
         const img=new Image();
         img.src='data:image/webp;base64,'+encoded;
         await img.decode();
@@ -55,11 +86,16 @@ export async function checkPosePixels(assets){
         context.clearRect(0,0,128,128);
         context.drawImage(img,0,0,128,128);
         const pixels=context.getImageData(0,0,128,128).data;
-        return Array.from({length:128*128},(_,i)=>pixels[i*4+3]);
+        return {
+          alpha:Array.from({length:128*128},(_,i)=>pixels[i*4+3]),
+          tone:Array.from({length:128*128},(_,i)=>Math.round(
+            pixels[i*4]*.299+pixels[i*4+1]*.587+pixels[i*4+2]*.114)),
+        };
       },base64);
-      try{report[pose]=inspectAlphaMask(mask,128,128);}
+      try{report[pose]=inspectAlphaMask(sample.alpha,128,128);samples[pose]=sample;}
       catch(err){throw new Error(pose+': '+err.message);}
     }
+    assertDistinctPosePixels(samples);
     return report;
   }finally{await browser.close();}
 }

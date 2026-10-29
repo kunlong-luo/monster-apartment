@@ -17,12 +17,31 @@ export function RoomPosePreviewControls({onChange,onSelect,onReset}:{
 }){
   const urls=useRef<Partial<Record<RoomPose,string>>>({});
   const dimensions=useRef<Partial<Record<RoomPose,Dimensions>>>({});
+  // Hold displaced object URLs until their 240ms exit animation finishes.
+  // Immediate revoke used to break the departing frame on slow mobile devices.
+  const retired=useRef(new Set<string>());
+  const releaseTimers=useRef(new Set<ReturnType<typeof setTimeout>>());
   const [loaded,setLoaded]=useState<readonly RoomPose[]>([]);
   const [error,setError]=useState('');
   useEffect(()=>{
     const retainedUrls=urls.current;
-    return ()=>Object.values(retainedUrls).forEach(url=>{if(url)URL.revokeObjectURL(url);});
+    const staleUrls=retired.current;
+    const pendingTimers=releaseTimers.current;
+    return ()=>{
+      for(const timer of pendingTimers)clearTimeout(timer);
+      for(const url of Object.values(retainedUrls))if(url)URL.revokeObjectURL(url);
+      for(const url of staleUrls)URL.revokeObjectURL(url);
+    };
   },[]);
+  const releaseAfterTransition=(url:string)=>{
+    retired.current.add(url);
+    const timer=setTimeout(()=>{
+      retired.current.delete(url);
+      releaseTimers.current.delete(timer);
+      URL.revokeObjectURL(url);
+    },500);
+    releaseTimers.current.add(timer);
+  };
   const upload=async(pose:RoomPose,event:ChangeEvent<HTMLInputElement>)=>{
     const input=event.currentTarget;
     const file=input.files?.[0];input.value='';
@@ -49,7 +68,7 @@ export function RoomPosePreviewControls({onChange,onSelect,onReset}:{
       urls.current[pose]=url;
       dimensions.current[pose]={width:bitmap.width,height:bitmap.height};
       onChange(pose,url);onSelect(pose);
-      if(old)URL.revokeObjectURL(old);
+      if(old)releaseAfterTransition(old);
       setLoaded(current=>current.includes(pose)?current:[...current,pose]);
       setError('');
     }catch(err){setError(err instanceof Error?err.message:'无法读取透明人物素材。');}
@@ -58,7 +77,7 @@ export function RoomPosePreviewControls({onChange,onSelect,onReset}:{
   const clear=()=>{
     for(const {id} of POSES){
       const url=urls.current[id];
-      if(url){onChange(id,null);URL.revokeObjectURL(url);}
+      if(url){onChange(id,null);releaseAfterTransition(url);}
     }
     for(const {id} of POSES)delete urls.current[id];
     dimensions.current={};setLoaded([]);setError('');onReset();
