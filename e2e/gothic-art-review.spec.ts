@@ -36,8 +36,8 @@ test('Pixi 2D atmosphere is optional and respects reduced-motion preference',asy
   await page.goto('/');
   await expect(page.getByTestId('gothic-pixi-atmosphere')).toBeAttached();
   await expect(page.getByTestId('gothic-pixi-atmosphere').locator('canvas')).toHaveCount(0);
-  await page.getByRole('button',{name:'全部功能'}).click();
-  await expect(page.getByRole('dialog',{name:'所有功能'})).toBeVisible();
+  await page.getByRole('button',{name:'委托消息'}).click();
+  await expect(page.getByRole('dialog',{name:'委托消息'})).toBeVisible();
   await page.getByRole('button',{name:'关闭面板'}).click();
   await page.goto('/apartment/');
   await expect(page.getByTestId('gothic-pixi-atmosphere')).toBeAttached();

@@ -45,3 +45,29 @@ test('seven production routes boot with interactive game surfaces',async({page})
     }
   }
 });
+
+test('all seven destinations use one active dock, not duplicate scene menus',async({page})=>{
+  test.setTimeout(150_000);
+  const pages=[
+    {path:'/',active:'大厅',test:'gothic-lobby'},
+    {path:'/apartment/',active:'暗夜公寓',test:'gothic-apartment'},
+    {path:'/workshop/',active:'工坊',test:'next-workshop-shell'},
+    {path:'/characters/',active:'角色图鉴',test:'moonwork-world'},
+    {path:'/orders/',active:'委托大厅',test:'moonwork-world'},
+    {path:'/town/',active:'月光街',test:'moonwork-world'},
+    {path:'/warehouse/',active:'魔法仓库',test:'moonwork-world'},
+  ];
+  for(const entry of pages){
+    await page.goto(entry.path);
+    await expect(page.getByTestId(entry.test)).toBeVisible({timeout:20000});
+    const dock=page.getByRole('navigation',{name:entry.path==='/'?'主要游戏功能':
+      entry.path==='/apartment/'?'公寓世界导航':'月光工坊世界'});
+    await expect(dock.getByRole('link')).toHaveCount(7);
+    await expect(dock.getByRole('link',{name:entry.active})).toHaveAttribute('aria-current','page');
+    if(entry.test==='moonwork-world'){
+      await expect(page.getByTestId('game-page-purpose')).not.toBeEmpty();
+      await expect(page.getByTestId('game-location')).toContainText('大厅 /');
+    }
+  }
+  await expect(page.getByRole('navigation',{name:'快捷功能'})).toHaveCount(0);
+});

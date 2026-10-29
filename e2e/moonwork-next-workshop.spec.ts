@@ -25,7 +25,7 @@ test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',asy
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'工坊'})).toHaveAttribute('aria-current','page');
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-day')).toHaveText('2');
-  await page.getByTestId('v2-world-gate').click();
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'月光街'}).click();
   await expect(page).toHaveURL(/\/town\/?$/,{timeout:15_000});
   await expect(page.getByTestId('world-day')).toHaveText('2');
   await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'工坊',exact:true}).click();
@@ -33,7 +33,7 @@ test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',asy
   await expect(page.getByTestId('v2-day')).toHaveText('2');
   await expect(page.getByTestId('v2-stage').locator('canvas')).toHaveCount(1);
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-machine-art','all-painted-machine-reviews');
-  await page.getByTestId('v2-world-gate').click();
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'月光街'}).click();
   await expect(page.getByTestId('world-day')).toHaveText('2');
   expect(errors).toEqual([]);
 });
@@ -45,12 +45,15 @@ test('Next workshop remains playable on a 390px phone viewport',async({page})=>{
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
   await expect(page.getByTestId('v2-world-nav')).toBeVisible();
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
+  await page.getByTestId('console-tab-equipment').click();
   await expect(page.getByTestId('v2-build-well')).toBeVisible();
+  await page.getByTestId('console-tab-roster').click();
   await expect(page.getByTestId('v2-worker-fern')).toBeVisible();
+  await page.getByTestId('console-tab-logs').click();
   await expect(page.getByTestId('v2-shift')).toBeVisible();
   await page.getByTestId('v2-shift').click();
   await expect(page.getByTestId('v2-day')).toHaveText('2');
-  await page.getByTestId('v2-world-gate').click();
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'月光街'}).click();
   await expect(page.getByTestId('world-day')).toHaveText('2',{timeout:15_000});
 });
 
@@ -331,7 +334,7 @@ test('factory honors system and in-game reduced motion while preserving gameplay
     window.dispatchEvent(new Event('monster-apartment:motion-changed'));
   });
   await expect(stage).toHaveAttribute('data-motion-state','running');
-  await page.getByTestId('v2-return-lobby').click();
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'大厅'}).click();
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await page.goBack();
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-foundation-tiles','15',{timeout:25_000});
@@ -359,7 +362,7 @@ test('gothic workshop renders an optional guest as a real portrait cameo',async(
   await expect(stage).toHaveAttribute('data-patron-visible','true');
   await expect(stage).toHaveAttribute('data-patron-art','painted-medallion');
   await expect(stage).toHaveAttribute('data-patron-frames','0');
-  await page.getByTestId('v2-return-lobby').click();
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'大厅'}).click();
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await page.goBack();
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-patron-art','painted-medallion',{timeout:25_000});

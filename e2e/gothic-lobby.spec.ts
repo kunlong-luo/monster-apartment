@@ -4,8 +4,8 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
-  await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link')).toHaveCount(5);
-  await expect(page.getByRole('navigation',{name:'快捷功能'}).getByRole('link')).toHaveCount(3);
+  await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link')).toHaveCount(7);
+  await expect(page.getByRole('navigation',{name:'快捷功能'})).toHaveCount(0);
   await expect(page.getByTestId('lobby-coins')).toHaveText('100');
   // Lobby uses the compact HUD; ordinary destinations remain fully labeled.
   const dockLinks=page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link');
@@ -22,7 +22,7 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   await page.getByRole('button',{name:'关闭面板'}).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await page.getByRole('navigation',{name:'主要游戏功能'})
-    .getByRole('link',{name:/公寓 ·/}).click();
+    .getByRole('link',{name:/公寓/}).click();
   await expect(page).toHaveURL(/\/apartment\/?$/);
   await expect(page.getByTestId('gothic-apartment')).toBeVisible();
   await expect(page.getByTestId('ga-room-2')).toBeVisible();
@@ -45,9 +45,8 @@ test('lobby reflects a real shared workshop save without inventing currency',asy
   await page.getByRole('button',{name:'接受月纱的特别委托'}).click();
   await expect(page.getByRole('status')).toContainText('契约已经成立');
   await page.getByRole('button',{name:'关闭面板'}).click();
-  await page.getByRole('button',{name:'全部功能'}).click();
-  await expect(page.getByRole('dialog',{name:'所有功能'})).toBeVisible();
-  await page.getByRole('dialog',{name:'所有功能'}).getByRole('link',{name:/晶核工坊/}).click();
+  await page.getByRole('navigation',{name:'主要游戏功能'})
+    .getByRole('link',{name:'工坊'}).click();
   await expect(page).toHaveURL(/\/workshop\/?$/);
 });
 
@@ -63,21 +62,21 @@ test('small screens fit the lobby without page scroll',async({page})=>{
   expect(overflow.y).toBeLessThanOrEqual(1);
 });
 
-test('Tailwind modal traps focus and returns focus when dismissed',async({page})=>{
+test('information modal traps focus without a duplicated route menu',async({page})=>{
   await page.goto('/');
-  const menu=page.getByRole('button',{name:'全部功能'});
-  await menu.click();
-  const dialog=page.getByRole('dialog',{name:'所有功能'});
+  const trigger=page.getByRole('button',{name:'委托消息'});
+  await trigger.click();
+  const dialog=page.getByRole('dialog',{name:'委托消息'});
   await expect(dialog).toBeVisible();
   await expect(dialog).toBeFocused();
-  await expect(dialog.getByRole('link')).toHaveCount(6);
+  await expect(dialog.getByRole('link')).toHaveCount(1);
   await page.keyboard.press('Shift+Tab');
-  await expect(dialog.getByRole('link',{name:/晶核工坊/})).toBeFocused();
+  await expect(dialog.getByRole('link',{name:/管理委托/})).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(dialog.getByRole('button',{name:'关闭面板'})).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
-  await expect(menu).toBeFocused();
+  await expect(trigger).toBeFocused();
 });
 
 test('motion preference survives routes and suppresses Pixi particles',async({page})=>{
@@ -88,7 +87,7 @@ test('motion preference survives routes and suppresses Pixi particles',async({pa
   await expect.poll(()=>page.evaluate(()=>
     localStorage.getItem('monster-apartment:gothic-motion-reduced'))).toBe('1');
   await page.getByRole('navigation',{name:'主要游戏功能'})
-    .getByRole('link',{name:/公寓 ·/}).click();
+    .getByRole('link',{name:/公寓/}).click();
   await expect(page.getByTestId('gothic-pixi-atmosphere').locator('canvas')).toHaveCount(0);
   await expect(page.getByTestId('gothic-apartment')).toHaveClass(/ga--still/);
   await page.getByRole('navigation',{name:'公寓世界导航'}).getByRole('link',{name:'大厅',exact:true}).click();
@@ -110,7 +109,7 @@ test('returning from workshop retains the sharp full-resolution lobby painting',
   expect(original.width).toBeGreaterThan(0);
   expect(original.height).toBeGreaterThan(0);
   expect(original.src).toContain('lobby-hero');
-  await page.getByRole('navigation',{name:'快捷功能'}).getByRole('link',{name:'工坊'}).click();
+  await page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link',{name:'工坊'}).click();
   await expect(page).toHaveURL(/\/workshop\/?$/);
   await expect(page.getByTestId('v2-stage')).toBeVisible();
   // The workshop dock leads to world areas; browser Back also restores the
@@ -128,7 +127,7 @@ test('returning from workshop retains the sharp full-resolution lobby painting',
   expect(returned.transform).toBe('none');
   await expect(page.getByTestId('gothic-scene-illumination')).toBeAttached();
   await page.getByRole('navigation',{name:'主要游戏功能'})
-    .getByRole('link',{name:/公寓 ·/}).click();
+    .getByRole('link',{name:/公寓/}).click();
   await expect(page.getByTestId('gothic-apartment')).toBeVisible();
   await page.getByRole('navigation',{name:'公寓世界导航'})
     .getByRole('link',{name:'大厅',exact:true}).click();
@@ -147,7 +146,7 @@ test('scene links transition safely with reduced motion and keep full-size image
   const lobby=page.getByTestId('gothic-lobby-painting-image');
   await lobby.evaluate((img:HTMLImageElement)=>img.decode());
   await page.getByRole('navigation',{name:'主要游戏功能'})
-    .getByRole('link',{name:/公寓 ·/}).click();
+    .getByRole('link',{name:/公寓/}).click();
   await expect(page.getByTestId('gothic-apartment')).toBeVisible();
   await expect(page.getByTestId('gothic-scene-illumination')).toHaveAttribute('data-variant','apartment');
   await expect(curtain).toHaveAttribute('data-phase','idle',{timeout:5000});
@@ -161,7 +160,7 @@ test('scene links transition safely with reduced motion and keep full-size image
   await page.getByRole('button',{name:'切换动态特效'}).click();
   await expect(page.getByRole('button',{name:'切换动态特效'})).toHaveAttribute('aria-pressed','true');
   await page.getByRole('navigation',{name:'主要游戏功能'})
-    .getByRole('link',{name:/公寓 ·/}).click();
+    .getByRole('link',{name:/公寓/}).click();
   await expect(page.getByTestId('gothic-apartment')).toBeVisible();
   await expect(curtain).toHaveAttribute('data-phase','idle');
   await expect(curtain).toHaveCSS('opacity','0');
@@ -171,7 +170,7 @@ test('workshop provides a direct and safe return to the main lobby',async({page}
   test.setTimeout(90_000);
   await page.goto('/workshop/');
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:30000});
-  await page.getByTestId('v2-return-lobby').click();
+  await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'大厅'}).click();
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   const image=page.getByTestId('gothic-lobby-painting-image');
   await expect(image).toHaveJSProperty('complete',true);
@@ -182,8 +181,8 @@ test('workshop provides a direct and safe return to the main lobby',async({page}
 test('cancelled links do not dim the scene or navigate',async({page})=>{
   await page.goto('/');
   // Ensure React has hydrated before injecting a test-only link.
-  await page.getByRole('button',{name:'全部功能'}).click();
-  await expect(page.getByRole('dialog',{name:'所有功能'})).toBeVisible();
+  await page.getByRole('button',{name:'委托消息'}).click();
+  await expect(page.getByRole('dialog',{name:'委托消息'})).toBeVisible();
   await page.getByRole('button',{name:'关闭面板'}).click();
   const result=await page.evaluate(()=>{
     const anchor=document.createElement('a');
