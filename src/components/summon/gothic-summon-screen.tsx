@@ -1,6 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import {GothicDock} from '@/components/game/gothic-hud';
+import {WORLD_NAV} from '@/components/moonwork/world-navigation';
+import {useCharacterLife} from '@/lib/game/character-life-store';
+import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
+import {claimProgressTickets,gachaSaveStatus,GACHA_CHARACTERS} from '@/lib/summon/gacha-engine';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useGacha } from '@/lib/summon/use-gacha';
@@ -11,7 +16,6 @@ import {
   PoolDetailsModal,
   CharacterArchiveModal,
   CharacterTrialModal,
-  CurrencyReplenishModal,
   UtilityModal,
 } from './summon-dialogs';
 import { useCharacterCollection, commitCollection } from '@/lib/game/character-collection-store';
@@ -23,9 +27,6 @@ export function GothicSummonScreen() {
     activePoolId,
     setActivePoolId,
     summon,
-    replenishTickets,
-    replenishCrystals,
-    replenishMoonstones,
   } = useGacha();
 
   const { collection } = useCharacterCollection();
@@ -59,46 +60,33 @@ export function GothicSummonScreen() {
   // Featured character for preview
   const [featuredCardKey, setFeaturedCardKey] = useState<'yuesha-eclipse' | 'brook-tide'>('yuesha-eclipse');
 
-  // Handle single pull
-  const handleSingleSummon = () => {
+  const workshop=useWorkshopWorld();
+  const life=useCharacterLife();
+  const saveStatus=gachaSaveStatus();
+  useEffect(()=>{
+    if(workshop&&life.status==='ok')
+      claimProgressTickets(workshop.completed,life.progress.visited.length);
+  },[workshop?.completed,life.status,life.progress.visited.length]);
+  const performSummon=(count:1|10)=>{
     setSummonError('');
-    // Also trigger standard collection commit if available
-    const roll = window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
-    commitCollection({ type: 'summon', earned: 9999, roll });
-
-    const res = summon(1);
-    if (res.success && res.characters.length > 0) {
-      setRitualModal({ open: true, characters: res.characters });
-    } else if (res.error) {
-      setSummonError(res.error);
-    }
+    const result=summon(count);
+    if(result.success&&result.characters.length)
+      setRitualModal({open:true,characters:result.characters});
+    else setSummonError(result.error??'召唤未完成，请检查资源。');
   };
-
-  // Handle 10-pull
-  const handleTenSummon = () => {
-    setSummonError('');
-    for (let i = 0; i < 10; i++) {
-      const roll = window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
-      commitCollection({ type: 'summon', earned: 9999, roll });
-    }
-    const res = summon(10);
-    if (res.success && res.characters.length > 0) {
-      setRitualModal({ open: true, characters: res.characters });
-    } else if (res.error) {
-      setSummonError(res.error);
-    }
-  };
+  const handleSingleSummon=()=>performSummon(1);
+  const handleTenSummon=()=>performSummon(10);
 
   return (
     <div
       data-testid="character-collection"
-      className="relative flex h-dvh w-full flex-col overflow-hidden bg-[#0c050b] font-serif text-[#f4ddc5] select-none"
+      className="summon-cinematic relative flex h-dvh w-full flex-col overflow-hidden bg-[#0c050b] font-serif text-[#f4ddc5]"
     >
       {/* 1:1 High Resolution Gothic Scene Background */}
       <div
         className="pointer-events-none absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: 'url(/assets/aistudio/Gothic_Moonlit_Summoning_Screen_8181b3a5.png)',
+          backgroundImage: 'url(/art/lobby-hero-v3.webp)',
         }}
         aria-hidden="true"
       />
@@ -213,12 +201,12 @@ export function GothicSummonScreen() {
       {/* ------------------------------------------------------------- */}
       <main
         data-testid="gothic-summon-stage"
-        className="relative z-10 flex flex-1 w-full min-h-0 items-stretch justify-between px-2 sm:px-6 py-1 overflow-hidden"
+        className="summon-cinematic-main relative z-10 flex flex-1 w-full min-h-0 flex-col lg:flex-row items-stretch justify-between px-2 sm:px-4 py-1 overflow-hidden"
       >
         {/* ----------------------------------------------------------- */}
         {/* LEFT COLUMN: 5 GACHA POOLS TABS                             */}
         {/* ----------------------------------------------------------- */}
-        <aside className="hidden lg:flex w-56 xl:w-64 flex-col justify-center gap-2.5 py-4 z-20">
+        <aside className="summon-cinematic-pools relative flex w-full shrink-0 flex-row gap-2 overflow-x-auto py-1 lg:w-56 lg:flex-col lg:justify-center lg:gap-2 lg:overflow-visible lg:py-4 xl:w-64 z-20">
           {GACHA_POOLS.map((pool) => {
             const isActive = pool.id === activePoolId;
             return (
@@ -226,7 +214,7 @@ export function GothicSummonScreen() {
                 key={pool.id}
                 type="button"
                 onClick={() => setActivePoolId(pool.id)}
-                className={`group relative flex h-16 w-full items-center gap-2.5 rounded-xl border p-2 text-left transition-all duration-300 ${
+                className={`summon-pool-item group relative flex min-h-14 w-44 shrink-0 items-center gap-2.5 rounded-md border p-2 text-left transition-all duration-300 lg:h-20 lg:w-full ${
                   isActive
                     ? 'border-[#ffcf7a] bg-gradient-to-r from-[#4d1629dd] via-[#2f1124dd] to-[#1a0a19bb] shadow-[0_0_20px_#cc204666] scale-[1.03]'
                     : 'border-[#734f3788] bg-[#1a0c18a8] hover:border-[#d9a86a] hover:bg-[#281324cc]'
@@ -256,7 +244,7 @@ export function GothicSummonScreen() {
                   </div>
                   <span className="block text-[10px] text-[#bda088] truncate">{pool.subname}</span>
                   <span className="mt-0.5 inline-block rounded bg-[#691428] px-1.5 py-0.2 text-[9px] text-[#ffbacb]">
-                    剩余 {pool.remainingDays} 天
+                    {pool.badge}
                   </span>
                 </div>
 
@@ -268,44 +256,27 @@ export function GothicSummonScreen() {
             );
           })}
 
-          {/* Hidden compatibility buttons for E2E tests */}
-          <div className="hidden" aria-hidden="true">
-            <button
-              data-testid="summon-preview-yuesha-eclipse"
-              aria-pressed={featuredCardKey === 'yuesha-eclipse'}
-              onClick={() => setFeaturedCardKey('yuesha-eclipse')}
-            >
-              月纱·神话·月蚀
-            </button>
-            <button
-              data-testid="summon-preview-brook-tide"
-              aria-pressed={featuredCardKey === 'brook-tide'}
-              onClick={() => setFeaturedCardKey('brook-tide')}
-            >
-              泉泡·潮汐来信
-            </button>
-            <span
-              data-testid="summon-featured-portrait"
-              data-tier={featuredCardKey === 'yuesha-eclipse' ? '5' : '1'}
-            />
-          </div>
+
         </aside>
 
         {/* ----------------------------------------------------------- */}
         {/* CENTER STAGE: HEROINE, TITLE, QUOTE & SUMMON BUTTONS       */}
         {/* ----------------------------------------------------------- */}
-        <section className="relative flex flex-1 flex-col items-center justify-between px-2 sm:px-4 py-2 z-10">
+        <section className="summon-cinematic-center relative flex min-w-0 flex-1 flex-col items-center justify-between px-2 sm:px-4 py-2 z-10">
+          <div className="summon-cinematic-character pointer-events-none absolute inset-0 z-[-1]" data-testid="summon-featured-portrait" data-tier="5" aria-hidden="true">
+            <Image src="/art/yuesha-bust-v3.webp" alt="" fill unoptimized sizes="(max-width:900px) 65vw,700px" className="object-contain object-bottom opacity-95"/>
+          </div>
           {/* Interactive Heroine Dialogue Bubble */}
-          <div
+          <button type="button" aria-label="与月纱对话，切换台词"
             onClick={() => setQuoteIndex((prev) => (prev + 1) % quotes.length)}
             className="cursor-pointer self-end mr-4 sm:mr-16 mt-2 rounded-2xl border border-[#c99f6b88] bg-[#1d0b1aee] px-4 py-2.5 text-xs text-[#ffeed5] shadow-[0_8px_30px_#000000bb] backdrop-blur-md transition hover:scale-105"
           >
             <p className="italic font-serif leading-relaxed">{quotes[quoteIndex]}</p>
             <span className="block text-right text-[9px] text-[#bfa084]">—— 月纱 ☾</span>
-          </div>
+          </button>
 
           {/* Central Title Typography */}
-          <div className="text-center my-auto">
+          <div className="summon-cinematic-title text-center my-auto">
             <div className="inline-block">
               <span className="text-[10px] tracking-[.3em] text-[#dca66e] uppercase">
                 ✦ MYTHIC LUNAR ECLIPSE ✦
@@ -319,7 +290,7 @@ export function GothicSummonScreen() {
 
               {/* Event Pill & Details Button */}
               <div className="mt-3 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-[#ad7a4f77] bg-[#230f1fd8] px-4 py-1 text-[11px] text-[#f5d9bd]">
-                <span>限定角色「月纱」出现概率提升 ·</span>
+                <span>公开概率 · 无额外概率提升 ·</span>
                 <span className="text-[#c9a786]">{currentPool.dateRange}</span>
                 <button
                   type="button"
@@ -331,7 +302,8 @@ export function GothicSummonScreen() {
               </div>
             </div>
 
-            {/* Error Message if insufficient currency */}
+            {saveStatus!=='ok'&&<p role="alert" data-testid="summon-save-error" className="rounded border border-red-500 bg-[#3f1228] p-2 text-xs">召唤存档异常，已停止抽取以保护进度。</p>}
+          {/* Error Message if insufficient currency */}
             {summonError && (
               <div className="mt-2 text-xs font-semibold text-[#ff5577] bg-black/60 px-3 py-1 rounded-full">
                 ⚠️ {summonError}
@@ -356,6 +328,7 @@ export function GothicSummonScreen() {
               <button
                 type="button"
                 data-testid="collection-summon"
+                disabled={saveStatus!=='ok'||ritualModal.open}
                 onClick={handleSingleSummon}
                 className="group relative flex min-h-12 sm:min-h-14 flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-[#e5c38e] bg-gradient-to-b from-[#f9f2e4] to-[#ded0b6] px-4 py-2 text-black shadow-[0_6px_20px_#00000099] hover:brightness-105 active:scale-95 transition"
               >
@@ -373,6 +346,8 @@ export function GothicSummonScreen() {
               <button
                 type="button"
                 onClick={handleTenSummon}
+                data-testid="collection-summon-ten"
+                disabled={saveStatus!=='ok'||ritualModal.open}
                 className="group relative flex min-h-12 sm:min-h-14 flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-[#f5b86b] bg-gradient-to-r from-[#9b1834] via-[#b61d40] to-[#7f1128] px-4 py-2 text-[#fff3db] shadow-[0_6px_25px_#9b1834aa] hover:brightness-110 active:scale-95 transition"
               >
                 <div className="text-left">
@@ -407,7 +382,7 @@ export function GothicSummonScreen() {
         {/* ----------------------------------------------------------- */}
         {/* RIGHT COLUMN: SSR CARD SHOWCASE & PROBABILITIES             */}
         {/* ----------------------------------------------------------- */}
-        <aside className="hidden xl:flex w-72 flex-col justify-between py-3 z-20 overflow-y-auto">
+        <aside className="summon-cinematic-sidebar relative flex w-full flex-col gap-3 overflow-y-auto py-2 lg:w-64 lg:shrink-0 xl:w-72 z-20">
           {/* Framed SSR Card */}
           <div className="relative flex flex-col rounded-2xl border-2 border-[#d4aa70] bg-[#1a0b18e0] p-3 shadow-[0_10px_30px_#000000cc]">
             {/* SSR badge */}
@@ -418,7 +393,7 @@ export function GothicSummonScreen() {
             {/* Card Portrait */}
             <div className="relative h-44 w-full overflow-hidden rounded-xl border border-[#e2b57866] bg-[#22101e]">
               <Image
-                src="/assets/aistudio/Gothic_Moonlit_Summoning_Screen_8181b3a5.png"
+                src="/art/yuesha-portrait-v3.webp"
                 alt="月纱"
                 fill
                 className="object-cover object-[55%_25%]"
@@ -483,7 +458,7 @@ export function GothicSummonScreen() {
           {/* Collection Progress */}
           <div className="rounded-xl border border-[#8b614088] bg-[#1c0d1bb8] p-2.5 text-xs">
             <div className="flex justify-between items-center text-[10px] text-[#e0bfa3]">
-              <span>收集进度 {state.ownedIds.length}/60</span>
+              <span>收集进度 {state.ownedIds.length}/{GACHA_CHARACTERS.length}</span>
               <button
                 type="button"
                 onClick={() => setShowReplenish(true)}
@@ -495,17 +470,17 @@ export function GothicSummonScreen() {
             <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-[#120713]">
               <div
                 className="h-full bg-gradient-to-r from-[#d97706] to-[#dc2626]"
-                style={{ width: `${Math.min(100, (state.ownedIds.length / 60) * 100)}%` }}
+                style={{ width: `${Math.min(100, (state.ownedIds.length / GACHA_CHARACTERS.length) * 100)}%` }}
               />
             </div>
           </div>
 
           {/* Featured UP Characters Avatar Chips */}
           <div className="mt-2">
-            <span className="block text-[10px] text-[#cca585] mb-1">本期概率提升角色</span>
+            <span className="block text-[10px] text-[#cca585] mb-1">可收录契约</span>
             <div className="flex items-center justify-between gap-1">
               {[
-                { name: '月纱', avatar: '/art/yuesha-avatar-v3.webp', isUp: true },
+                { name: '月纱', avatar: '/art/yuesha-avatar-v3.webp', isUp: false },
                 { name: '达米安', avatar: '/art/yuesha-bust-v3.webp', isUp: false },
                 { name: '艾莲娜', avatar: '/art/yuesha-portrait-v3.webp', isUp: false },
                 { name: '塞拉菲娜', avatar: '/art/lobby-hero-v3.webp', isUp: false },
@@ -530,98 +505,11 @@ export function GothicSummonScreen() {
         </aside>
       </main>
 
-      {/* ------------------------------------------------------------- */}
-      {/* 3. BOTTOM GOTHIC GLOBAL DOCK (1:1 with 7 canonical routes)    */}
-      {/* ------------------------------------------------------------- */}
-      <footer className="relative z-20 flex h-16 sm:h-20 w-full items-center justify-between px-3 sm:px-8 bg-gradient-to-t from-[#0e040f] via-[#160817e0] to-transparent border-t border-[#805a4144]">
-        {/* Left Profile Avatar */}
-        <Link
-          href="/"
-          className="flex items-center gap-2 group hover:opacity-90"
-          title="返回主页大厅"
-        >
-          <div className="relative size-10 sm:size-12 overflow-hidden rounded-full border-2 border-[#ffdb9b] shadow-[0_0_15px_#ffd70066]">
-            <Image
-              src="/art/yuesha-avatar-v3.webp"
-              alt="主角"
-              fill
-              className="object-cover object-top"
-            />
-          </div>
-        </Link>
-
-        {/* Global Navigation Items mapped to canonical routes */}
-        <nav className="flex flex-1 items-center justify-center gap-1 sm:gap-4 max-w-4xl">
-          <Link
-            href="/"
-            className="flex flex-col items-center justify-center px-2 py-1 text-center transition hover:scale-105"
-          >
-            <span className="text-sm sm:text-base text-[#cfad8d]">⌂</span>
-            <span className="text-[10px] sm:text-xs text-[#ddc1a7]">主页</span>
-            <span className="text-[8px] text-[#93755c] uppercase">HOME</span>
-          </Link>
-
-          <button
-            type="button"
-            onClick={() => setShowGalleryTab(!showGalleryTab)}
-            className="flex flex-col items-center justify-center px-2 py-1 text-center transition hover:scale-105"
-          >
-            <span className="text-sm sm:text-base text-[#cfad8d]">♟</span>
-            <span className="text-[10px] sm:text-xs text-[#ddc1a7]">
-              {showGalleryTab ? '契约' : '图鉴'}
-            </span>
-            <span className="text-[8px] text-[#93755c] uppercase">GALLERY</span>
-          </button>
-
-          <Link
-            href="/apartment/"
-            className="flex flex-col items-center justify-center px-2 py-1 text-center transition hover:scale-105"
-          >
-            <span className="text-sm sm:text-base text-[#cfad8d]">♜</span>
-            <span className="text-[10px] sm:text-xs text-[#ddc1a7]">宿舍</span>
-            <span className="text-[8px] text-[#93755c] uppercase">DORMITORY</span>
-          </Link>
-
-          {/* ACTIVE 契约召唤 ITEM */}
-          <div className="relative flex flex-col items-center justify-center px-3 sm:px-6 py-1 text-center rounded-xl border border-[#ffdb9b] bg-gradient-to-b from-[#6b142c] to-[#360814] shadow-[0_0_20px_#cc204680] scale-105">
-            <span className="text-base sm:text-lg text-[#ffd700] animate-pulse">☾</span>
-            <span className="text-xs sm:text-sm font-extrabold text-[#ffeec9] tracking-wider">
-              契约召唤
-            </span>
-            <span className="text-[8px] font-bold text-[#ffbacb] uppercase tracking-widest">
-              SUMMON
-            </span>
-          </div>
-
-          <Link
-            href="/orders/"
-            className="flex flex-col items-center justify-center px-2 py-1 text-center transition hover:scale-105"
-          >
-            <span className="text-sm sm:text-base text-[#cfad8d]">❦</span>
-            <span className="text-[10px] sm:text-xs text-[#ddc1a7]">委托</span>
-            <span className="text-[8px] text-[#93755c] uppercase">STORY</span>
-          </Link>
-
-          <Link
-            href="/workshop/"
-            className="flex flex-col items-center justify-center px-2 py-1 text-center transition hover:scale-105"
-          >
-            <span className="text-sm sm:text-base text-[#cfad8d]">⚒</span>
-            <span className="text-[10px] sm:text-xs text-[#ddc1a7]">工坊</span>
-            <span className="text-[8px] text-[#93755c] uppercase">WORKSHOP</span>
-          </Link>
-
-          <Link
-            href="/warehouse/"
-            className="flex flex-col items-center justify-center px-2 py-1 text-center transition hover:scale-105"
-          >
-            <span className="text-sm sm:text-base text-[#cfad8d]">♧</span>
-            <span className="text-[10px] sm:text-xs text-[#ddc1a7]">仓库</span>
-            <span className="text-[8px] text-[#93755c] uppercase">WAREHOUSE</span>
-          </Link>
-        </nav>
-      </footer>
-
+      {/* One canonical global dock; the summon scene is a mode of the Character route. */}
+      <GothicDock label="月影契约世界导航" activeHref="/characters/" className="gothic-dock--world summon-cinematic-dock"
+        items={WORLD_NAV.map(n=>({href:n.href,icon:n.glyph,
+          label:n.id==='characters'?'契约召唤':n.label,
+          ariaLabel:n.id==='characters'?'契约召唤':n.full,description:n.purpose}))}/>
       {/* ------------------------------------------------------------- */}
       {/* 4. MODALS & DIALOGS                                           */}
       {/* ------------------------------------------------------------- */}
@@ -645,19 +533,23 @@ export function GothicSummonScreen() {
 
       {showTrial && (
         <CharacterTrialModal
-          onRewardClaimed={() => replenishTickets(1)}
+          onRewardClaimed={() => setShowTrial(false)}
           onClose={() => setShowTrial(false)}
         />
       )}
 
-      {showReplenish && (
-        <CurrencyReplenishModal
-          onAddTickets={replenishTickets}
-          onAddCrystals={replenishCrystals}
-          onAddMoonstones={replenishMoonstones}
-          onClose={() => setShowReplenish(false)}
-        />
-      )}
+      {showReplenish&&<div role="dialog" aria-modal="true" aria-label="契约资源来源"
+        className="fixed inset-0 z-[90] grid place-items-center bg-black/85 p-4">
+        <section className="w-full max-w-sm rounded-xl border border-[#e6b478] bg-[#211020] p-5 text-sm text-[#ffe0bb]">
+          <h3 className="text-lg font-semibold">契约资源获取</h3>
+          <p className="my-3 leading-7">初始赠送 3 张召唤券。首次拜访角色房间及完成工坊委托可获得额外召唤券，奖励按真实存档计算。</p>
+          <div className="flex gap-2">
+            <Link className="rounded border border-[#c99b64] px-3 py-2" href="/workshop/">前往工坊</Link>
+            <Link className="rounded border border-[#c99b64] px-3 py-2" href="/characters/">拜访角色</Link>
+            <button onClick={()=>setShowReplenish(false)} className="ml-auto rounded border border-[#c99b64] px-3 py-2">关闭</button>
+          </div>
+        </section>
+      </div>}
 
       {utilityModal && (
         <UtilityModal type={utilityModal} onClose={() => setUtilityModal(null)} />
