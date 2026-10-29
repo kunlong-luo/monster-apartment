@@ -17,7 +17,7 @@ export function CharacterAdornment({id,compact=false}:{id:CharacterId;compact?:b
   const tier=characterPotentialTier(id,collection);
   if(equipped.length===0&&tier===0)return null;
   const all=equipped.map(item=>FORGE_RECIPES.find(recipe=>recipe.id===item)?.name).filter(Boolean).join('、');
-  return <span className={'pointer-events-none absolute bottom-1 right-1 z-[5] flex items-end gap-1 '+(compact?'scale-90 origin-bottom-right':'')}
+  return <span className={'pointer-events-none absolute top-1 right-1 z-[5] flex items-end gap-1 '+(compact?'scale-[.58] origin-top-right':'')}
     data-testid={'character-adornment-'+id} aria-label={'已获得契约 '+tier+' 阶'+(all?'；已装备'+all:'')}>
     {equipped.map(gearId=>{
       const Icon=icons[gearId];

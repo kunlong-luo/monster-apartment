@@ -1,5 +1,6 @@
 'use client';
 import {useEffect,useRef} from 'react';
+import {createPortal} from 'react-dom';
 import Image from 'next/image';
 import {motion,useReducedMotion} from 'motion/react';
 import {CHARACTER_CARDS,characterPotentialTier} from '@/core/character-collection';
@@ -37,7 +38,7 @@ export function CharacterSummonReveal({cardKey,duplicate,onClose}:{
     window.addEventListener('keydown',key);
     return ()=>window.removeEventListener('keydown',key);
   },[onClose]);
-  return <motion.div role="dialog" aria-modal="true" aria-label="契约召唤结果"
+  return createPortal(<motion.div role="dialog" aria-modal="true" aria-label="契约召唤结果"
     data-testid="collection-reveal" data-rarity={card.rarity} data-motion={still?'still':'animated'}
     initial={still?false:{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
     transition={{duration:still?0:.25}}
@@ -79,5 +80,5 @@ export function CharacterSummonReveal({cardKey,duplicate,onClose}:{
         收下契约 · 返回图鉴
       </button>
     </motion.div>
-  </motion.div>;
+  </motion.div>,document.body);
 }
