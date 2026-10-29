@@ -2,6 +2,7 @@
 import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import type {ChangeEvent} from 'react';
 import {useRoomStageSize} from './use-room-stage-size';
+import {RoomPosePreviewControls} from './room-pose-preview-controls';
 import {yueshaAfterChoice} from '@/core/character-life';
 import {roomInvestigationConclusion} from '@/core/room-investigation';
 import type {YueshaChoice} from '@/core/character-life';
@@ -27,6 +28,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
   const stageSize=useRoomStageSize(stageRef);
   const artReviewEnabled=useSyncExternalStore(subscribeReviewMode,reviewClientSnapshot,reviewServerSnapshot);
   const [previewUrl,setPreviewUrl]=useState<string|null>(null);
+  const [previewPoseUrls,setPreviewPoseUrls]=useState<Partial<Record<RoomPose,string>>>({});
+  const [reviewPose,setReviewPose]=useState<RoomPose|null>(null);
   const [reviewError,setReviewError]=useState('');
   const imageUrlRef=useRef<string|null>(null);
   useEffect(()=>{
@@ -56,6 +59,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
   const [pose,setPose]=useState<RoomPose>('idle');
   const [theater,setTheater]=useState<RoomConversationTopic|null>(null);
   const [feedback,setFeedback]=useState('');
+  const shownPose=artReviewEnabled&&reviewPose?reviewPose:pose;
   const {status,progress}=useCharacterLife();
   const choice=progress.decisions['yuesha-first-visit'];
   const observed=progress.observations?.yuesha??[];
@@ -86,7 +90,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     <div className="min-w-0 space-y-2">
     <div className="relative h-[clamp(315px,57vh,640px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]" data-testid="yuesha-room-stage" ref={stageRef}>
       <RoomSceneBackdrop id="yuesha" previewUrl={previewUrl}/>
-      <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={pose} previewBackground={Boolean(previewUrl)}/>
+      <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={shownPose} previewBackground={Boolean(previewUrl)} previewPoseUrl={artReviewEnabled?previewPoseUrls[shownPose]??null:null}/>
       <RoomSceneFocus id="yuesha" item={hotspot} pose={pose} stageSize={stageSize} preview={Boolean(previewUrl)}/>
       <RoomSceneHotspots characterName="月纱" roomId="yuesha" stageSize={stageSize} preview={Boolean(previewUrl)}
         items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}
@@ -106,6 +110,9 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
         {previewUrl&&<button type="button" data-testid="room-art-local-reset" onClick={clearLocalArt}
           className="min-h-9 rounded border border-[#d6b98b90] px-2 text-left hover:bg-[#533444]">恢复原概念背景</button>}
         {reviewError&&<span role="alert" className="text-[#ffb3b9]">{reviewError}</span>}
+        <RoomPosePreviewControls
+          onChange={(selected,url)=>setPreviewPoseUrls(previous=>({...previous,[selected]:url??undefined}))}
+          onSelect={setReviewPose}/>
       </div>}
       <div className="pointer-events-none absolute top-9 left-3 max-w-[52%] space-y-1 text-shadow-md">
         <h3 className="text-lg text-[#ffe3bd] sm:text-2xl">月纱的契约会客室</h3>

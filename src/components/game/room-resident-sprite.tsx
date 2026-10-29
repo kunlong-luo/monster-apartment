@@ -11,8 +11,8 @@ import {ROOM_ART_MANIFEST,roomPublicAssetPath} from '@/core/room-art-manifest';
 
 /** The resident is independently animated; background pixels are never scaled.
  * A worker on shift is never duplicated in their private room. */
-export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle',previewBackground=false}:{
-  id:CharacterId;name:string;working?:boolean;reaction?:string;pose?:RoomPose;previewBackground?:boolean;
+export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle',previewBackground=false,previewPoseUrl=null}:{
+  id:CharacterId;name:string;working?:boolean;reaction?:string;pose?:RoomPose;previewBackground?:boolean;previewPoseUrl?:string|null;
 }){
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
@@ -33,7 +33,7 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
   ];
   return <div className="pointer-events-none absolute inset-0 z-[2]"
     data-testid="room-resident-layer" data-art-quality={art.residentStatus} data-pose={away?"away":pose}
-    data-render-mode={away?'away':embedded?'embedded':'separate'}>
+    data-render-mode={away?'away':embedded?'embedded':'separate'} data-local-pose-preview={Boolean(previewPoseUrl)}>
     {away?<div data-testid={'room-resident-away-'+id}
       className="absolute right-[5%] bottom-[27%] w-[45%] max-w-56 rounded-lg border border-[#efd4aa66] bg-[#170e19e8] p-3 text-center shadow-[0_9px_25px_#000a]">
       <span aria-hidden="true" className="block text-2xl text-[#f5cc8a]">✉</span>
@@ -47,7 +47,10 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
       initial={false}
       animate={performerMotion}
       transition={reduced?{duration:0}:pose==='idle'?{duration:7,ease:'easeInOut',repeat:Infinity}:{duration:.48,ease:'easeOut'}}>
-      {production
+      {previewPoseUrl
+        ?<Image src={previewPoseUrl} alt={name+'的本地透明立绘候选'} fill unoptimized draggable={false}
+          sizes="(max-width:640px) 49vw, 410px" className="object-contain object-bottom drop-shadow-[0_12px_22px_#000b]"/>
+        :production
         ?<Image src={roomPublicAssetPath(frame)} alt={name+'在会客室中'} fill unoptimized draggable={false}
           sizes="(max-width:640px) 49vw, 410px"
           className="object-contain object-bottom drop-shadow-[0_12px_22px_#000b]"/>
