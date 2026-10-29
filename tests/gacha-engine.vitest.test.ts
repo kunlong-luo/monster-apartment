@@ -57,11 +57,11 @@ describe('a faithful functional summoning screen',()=>{
     expect(readGachaState().tickets).toBe(10);
   });
   it('keeps the stated base rarity thresholds, with an explicit 90-pull pity',()=>{
-    expect(rollSingleGacha(INITIAL_GACHA_STATE).character.rarity).toBe('N');
+    expect(rollSingleGacha(INITIAL_GACHA_STATE,'mythic-eclipse').character.rarity).toBe('N');
     vi.spyOn(Math,'random').mockReturnValue(0);
-    expect(rollSingleGacha(INITIAL_GACHA_STATE).character.rarity).toBe('SSR-Mythic');
+    expect(rollSingleGacha(INITIAL_GACHA_STATE,'mythic-eclipse').character.rarity).toBe('SSR-Mythic');
     const pity={...INITIAL_GACHA_STATE,pityCountdown:1};
-    expect(rollSingleGacha(pity).character.rarity.startsWith('SSR')).toBe(true);
-    expect(rollSingleGacha(pity).nextPity).toBe(90);
+    expect(rollSingleGacha(pity,'mythic-eclipse').character.rarity.startsWith('SSR')).toBe(true);
+    expect(rollSingleGacha(pity,'mythic-eclipse').nextPity).toBe(90);
   });
 });
