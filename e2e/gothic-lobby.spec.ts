@@ -215,8 +215,9 @@ test('main quest reflects saved stock and presents readable progress',async({pag
   expect(max).toBeGreaterThan(0);
   expect(now).toBeGreaterThanOrEqual(0);
   expect(now).toBeLessThanOrEqual(max);
+  await expect(quest).toHaveAttribute('href',/workshop/);
   await quest.click();
-  await expect(page).toHaveURL(/\/orders\/?$/);
+  await expect(page).toHaveURL(/\/workshop\/?$/);
 });
 
 test('hidden tabs suspend candle animation and resume when visible again',async({page})=>{

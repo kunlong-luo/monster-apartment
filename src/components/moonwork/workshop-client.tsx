@@ -343,6 +343,7 @@ export function WorkshopClient() {
           icon: item.glyph,
           label: item.label,
           ariaLabel: item.full,
+          description: item.purpose,
         }))}
       />
 

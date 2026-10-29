@@ -114,12 +114,14 @@ export function GothicLobby(){
       onClick={talk} aria-label="与月纱互动" data-tooltip="与月纱互动"/>
     <div className="gothic-lobby__character-caption pointer-events-none absolute z-[1] bottom-[clamp(106px,16vh,158px)] left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5 text-[#f6d9b8] [text-shadow:0_3px_12px_#000]" aria-hidden="true"><span className="text-[13px] tracking-[.23em]">月纱</span><small className="text-[10px] text-[#d0b298]">暗夜公寓的女主人</small></div>
 
-    <Link href="/orders/" aria-label="查看当前主线任务" data-testid="gothic-main-quest"
+    <Link href={orderReady?'/orders/':'/workshop/'}
+      aria-label={orderReady?'晶核已备齐，查看委托交期':'晶核不足，前往工坊生产'}
+      data-testid="gothic-main-quest"
       className="group absolute bottom-[86px] left-3 z-[3] flex w-[min(310px,68vw)] items-center gap-2 rounded-lg border border-gothic-brass/55 border-l-2 border-l-gothic-gold/90 bg-[linear-gradient(105deg,#231625e8,#211622c7)] px-3 py-2.5 text-[11px] leading-snug text-gothic-ivory shadow-[0_5px_16px_#0009,inset_0_1px_#ffe0a21c] transition-[border-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-gothic-glow hover:shadow-[0_7px_20px_#000a,0_0_14px_#edc99023] focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none sm:bottom-[106px] sm:left-6">
       <span className="shrink-0 text-base text-gothic-gold" aria-hidden="true">{orderReady?'✦':'◇'}</span>
       <span className="grid min-w-0 flex-1 gap-1.5">
         <span className="truncate font-medium tracking-[.045em]">
-          {orderReady?'委托 · 备齐晶核，查看交期':'当前目标 · 生产晶核 '+orderStock+' / '+orderTarget}
+          {orderReady?'晶核已备齐 · 去委托查看交期':'去工坊生产 · 晶核 '+orderStock+' / '+orderTarget}
         </span>
         <span role="progressbar" aria-label="晶核收集进度"
           aria-valuemin={0} aria-valuemax={orderTarget}
