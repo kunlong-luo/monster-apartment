@@ -49,6 +49,7 @@ test('Next workshop remains playable on a 390px phone viewport',async({page})=>{
   await expect(page.getByTestId('v2-build-well')).toBeVisible();
   await page.getByTestId('console-tab-roster').click();
   await expect(page.getByTestId('v2-worker-fern')).toBeVisible();
+  await expect(page.getByTestId('v2-shift')).toBeVisible();
   await page.getByTestId('console-tab-logs').click();
   await expect(page.getByTestId('v2-shift')).toBeVisible();
   await page.getByTestId('v2-shift').click();
@@ -439,8 +440,17 @@ test('workshop roster remains legible and operable at desktop and phone widths',
       await expect(page.getByTestId('v2-shift')).toBeVisible();
       await page.getByTestId('console-tab-roster').click();
     }
-    await page.getByTestId('workshop-pick-idle-worker').click();
-    await expect(page.getByTestId('v2-worker-brook')).toHaveAttribute('aria-pressed','true');
+    if(size.width===1440){
+      await page.getByTestId('workshop-auto-assign').click();
+      await expect.poll(()=>page.evaluate(()=>{
+        const raw=localStorage.getItem('monster-apartment:workshop-v2-lab');
+        const tiles=raw?JSON.parse(raw).tiles:[];
+        return [tiles[5]?.worker,tiles[7]?.worker];
+      })).toEqual(['brook','fern']);
+      await expect(page.getByTestId('v2-status')).toContainText('已一键派工 2 位工匠');
+    }else{
+      await expect(page.getByTestId('workshop-auto-assign')).toBeDisabled();
+    }
   }
 });
 
@@ -451,4 +461,24 @@ test('worker gallery deep link selects the requested artisan instead of ignoring
   await expect(page.getByTestId('v2-worker-cinder')).toHaveAttribute('aria-pressed','true');
   await expect(page.getByTestId('next-workshop-shell')).not.toContainText('SparkPrairie');
   await expect(page.getByTestId('next-workshop-shell')).not.toContainText('Lv.60');
+});
+
+test('single tap fills two matching jobs; production is accessible from roster on a phone',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+  await expect(page.getByTestId('console-roster')).toBeVisible();
+  await expect(page.getByTestId('v2-shift')).toBeVisible();
+  await expect(page.getByTestId('v2-worker-brook')).toContainText('空闲');
+  await page.getByTestId('workshop-auto-assign').click();
+  await expect(page.getByTestId('v2-worker-brook')).toContainText('水汽泵');
+  await expect(page.getByTestId('v2-worker-fern')).toContainText('孢子温室');
+  await expect(page.getByTestId('v2-worker-cinder')).toContainText('空闲');
+  await expect(page.getByTestId('workshop-auto-assign')).toBeDisabled();
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+  await page.reload();
+  await expect(page.getByTestId('v2-worker-brook')).toContainText('水汽泵');
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
 });

@@ -3,7 +3,7 @@
 import {useState} from 'react';
 import Image from 'next/image';
 import {WorkerArtwork} from './worker-artwork';
-import {WORKERS, MACHINES} from '../../../v2/src/workshop-engine';
+import {WORKERS, MACHINES, autoAssignWorkers} from '../../../v2/src/workshop-engine';
 import type {WorkshopState, Machine, Craft, WorkerId} from '../../../v2/src/workshop-engine';
 import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
 import wellArt from '../../../v2/art/well-art-review.avif';
@@ -45,12 +45,10 @@ export function WorkshopControls({
   const [logFilter, setLogFilter] = useState<'all' | 'output' | 'alert'>('all');
   const [activeConsole,setActiveConsole]=useState<'equipment'|'roster'|'logs'>('roster');
 
-  // This action only selects a worker. The actual assignment happens when
-  // the player clicks a machine on the canvas; never claim it auto-assigned.
-  const selectAvailableWorker=()=>{
-    const available=workers.find(id=>!world.tiles.some(tile=>tile?.worker===id));
-    if(available)onAction({type:'choose-worker',worker:available});
-  };
+  // This is a real production-state action, not an imitation of assignment.
+  const suggested=autoAssignWorkers(world);
+  const assignableCount=suggested.tiles.filter((tile,index)=>
+    tile?.worker!==null && tile?.worker!==world.tiles[index]?.worker).length;
 
   // Build live production log entries from world state and reports
   const report = world.last;
@@ -275,15 +273,15 @@ export function WorkshopControls({
           <div className="flex items-center gap-1.5">
             <span className="text-xs font-bold text-gothic-ivory">⚙ 工匠派工</span>
           </div>
-          <button type="button" onClick={selectAvailableWorker}
-            disabled={!workers.some(id=>!world.tiles.some(tile=>tile?.worker===id))}
-            data-testid="workshop-pick-idle-worker"
+          <button type="button" onClick={()=>onAction({type:'auto-assign'})}
+            disabled={assignableCount===0}
+            data-testid="workshop-auto-assign"
             className="min-h-9 shrink-0 rounded-full border border-gothic-brass/60 bg-gothic-panel/80 px-3 text-xs font-semibold text-gothic-ivory hover:border-gothic-glow disabled:opacity-45">
-            选择空闲工匠
+            一键派工{assignableCount>0?' · '+assignableCount+' 人':''}
           </button>
         </div>
 
-        <p className="workshop-roster-hint">选择工匠后，点击场景中的设备完成派工；换岗也按此操作。</p>
+        <p className="workshop-roster-hint">一键派工只补技能匹配的空岗位，不改变原有安排；点人物可手动换岗。</p>
         <div id="actions" className="options workshop-worker-list mt-2" role="group" aria-label="三名工匠的当前岗位">
           {workers.map((id) => {
             const profile = WORKERS[id];
@@ -314,8 +312,8 @@ export function WorkshopControls({
                   <div className="min-w-0 text-left">
                     <div className="flex flex-wrap items-center gap-1.5">
                       <strong className="text-xs font-bold text-gothic-ivory">{profile.zh}</strong>
-                      <span className="rounded bg-black/50 px-1 py-0.2 text-[9px] text-gothic-muted">
-                        Lv.30
+                      <span className="rounded bg-black/50 px-1 py-0.5 text-[9px] text-gothic-muted">
+                        {({water:'水汽',plant:'植培',fire:'炼核'} as const)[profile.skill]}
                       </span>
                     </div>
                     <small className="block text-[10px] text-gothic-gold">
@@ -333,7 +331,7 @@ export function WorkshopControls({
                         : 'border border-amber-500/50 bg-amber-950/80 text-amber-300'
                     }`}
                   >
-                    {occupied >= 0 ? '工作中' : '空闲中'}
+                    {occupied >= 0 ? '已派工' : '空闲'}
                   </span>
                   <span className="rounded-md border border-gothic-brass/50 bg-black/40 px-2 py-1 text-[10px] font-semibold text-gothic-ivory transition-colors group-hover:border-gothic-glow group-hover:text-gothic-glow">
                     {occupied >= 0 ? '换岗' : '派工'}
@@ -408,36 +406,21 @@ export function WorkshopControls({
           ))}
         </div>
 
-        {/* Production Shift & Move Actions */}
-        <div className="main-actions mt-2 flex items-center gap-2">
-          <button
-            type="button"
-            id="move"
-            data-testid="v2-move"
-            onClick={() => onAction({type:'toggle-move'})}
-            disabled={!selectedTile && !isMoving}
-            aria-pressed={isMoving}
-            aria-label="移动机器设备"
-            className={`move-btn flex-1 rounded-lg border px-2.5 py-1.5 text-center text-xs font-bold transition-all ${
-              isMoving
-                ? 'active border-gothic-glow bg-gothic-wine/90 text-gothic-glow shadow-[0_0_12px_rgba(240,197,136,0.3)]'
-                : 'border-gothic-brass/70 bg-gothic-panel/90 text-gothic-ivory hover:border-gothic-glow hover:bg-gothic-wine/50 disabled:cursor-not-allowed disabled:opacity-40'
-            }`}
-          >
-            <span>{isMoving ? '再选空格搬移' : '⚡ 调度机器 ↗'}</span>
-          </button>
-
-          <button
-            type="button"
-            id="shift"
-            data-testid="v2-shift"
-            onClick={() => onAction({type:'shift'})}
-            aria-label="开始一天生产轮班"
-            className="shift-btn flex-[1.4] rounded-lg border border-gothic-gold/80 bg-gradient-to-r from-gothic-gold via-[#e2b06e] to-gothic-brass px-3 py-1.5 text-center text-xs font-extrabold text-ink-950 shadow-md transition-all hover:brightness-110 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none"
-          >
-            <span>▶ 开始生产轮班</span>
-          </button>
-        </div>
+      </div>
+      {/* One persistent action row: starting a shift never requires switching
+          to the production-log tab. Moving equipment appears only if selected. */}
+      <div className="workshop-console-actions" data-testid="workshop-quick-actions">
+        {(selectedTile||isMoving)&&<button type="button" id="move" data-testid="v2-move"
+          onClick={()=>onAction({type:'toggle-move'})} aria-pressed={isMoving}
+          aria-label="移动机器设备"
+          className="min-h-11 shrink-0 rounded-lg border border-gothic-brass/70 bg-gothic-panel/90 px-3 text-xs font-bold text-gothic-ivory hover:border-gothic-glow">
+          {isMoving?'取消移动':'移动设备'}
+        </button>}
+        <button type="button" id="shift" data-testid="v2-shift"
+          onClick={()=>onAction({type:'shift'})} aria-label="开始一天生产轮班"
+          className="shift-btn min-h-11 flex-1 rounded-lg border border-gothic-gold/80 bg-gradient-to-r from-gothic-gold via-[#e2b06e] to-gothic-brass px-4 text-sm font-extrabold text-ink-950 shadow-md transition-all hover:brightness-110 focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none">
+          ▶ 开始生产轮班
+        </button>
       </div>
     </section>
   );

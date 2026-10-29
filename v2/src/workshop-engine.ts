@@ -85,6 +85,19 @@ export function assignWorker(s:WorkshopState,id:WorkerId,index:number):WorkshopS
   tiles[index]!.worker=id;
   return {...s,tiles};
 }
+/** One tap fills vacant matching machines without changing existing assignments,
+ * creating equipment, spending coins, or moving the layout. The simulated
+ * workshop state is the only source of truth for both UI and Pixi runtime. */
+export function autoAssignWorkers(s:WorkshopState):WorkshopState {
+  let next=s;
+  for(const id of ['brook','fern','cinder'] as const){
+    if(next.tiles.some(tile=>tile?.worker===id))continue;
+    const index=next.tiles.findIndex(tile=>tile!==null && tile.worker===null &&
+      MACHINES[tile.craft].skill===WORKERS[id].skill);
+    if(index>=0)next=assignWorker(next,id,index);
+  }
+  return next;
+}
 export function unassignWorker(s:WorkshopState,id:WorkerId):WorkshopState {
   if(!WORKERS[id])return s;
   const tiles=s.tiles.map(t=>t?.worker===id?{...t,worker:null}:t);

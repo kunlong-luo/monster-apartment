@@ -1,5 +1,5 @@
 import { WORKERS, MACHINES, newWorkshop, validWorkshop,
-  placeMachine, moveMachine, salvageMachine, machineSalvageRefund, assignWorker, runShift, acceptPatronCommission,
+  placeMachine, moveMachine, salvageMachine, machineSalvageRefund, assignWorker, autoAssignWorkers, runShift, acceptPatronCommission,
   upgradeMachine, forecastPatronCommission, importPatronCore, PATRON_IMPORT_PRICE,
   PREMIUM_ORDER_PENALTY, STANDARD_ORDER_PENALTY } from './workshop-engine';
 import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
@@ -163,6 +163,18 @@ function dispatch(action:WorkshopAction):void{
       acceptPatron();break;
     case 'import-patron-core':
       buyPatronCore();break;
+    case 'auto-assign':{
+    const next=autoAssignWorkers(world);
+    if(next===world){
+      message='已派工的岗位保持不变；没有技能匹配的空闲设备。';
+      effect='normal';render();break;
+    }
+    const assigned=next.tiles.filter((tile,index)=>tile?.worker&&tile.worker!==world.tiles[index]?.worker);
+    const names=assigned.map(tile=>WORKERS[tile!.worker!].zh).join('、');
+    clearChoice();selectedPlot=null;
+    apply(next,'已一键派工 '+assigned.length+' 位工匠：'+names+'。可直接开始生产轮班。','good');
+    render();break;
+    }
     case 'choose-worker':{
     const id=action.worker;
     const selected=chosenWorker===id;clearChoice();

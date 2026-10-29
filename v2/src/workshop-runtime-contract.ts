@@ -17,6 +17,7 @@ export type WorkshopSelectionListener=
  * Saved WorkshopState and all current DOM test IDs remain unchanged. */
 export type WorkshopAction=
   |{type:'choose-worker';worker:WorkerId}
+  |{type:'auto-assign'}
   |{type:'choose-machine';machine:Craft}
   |{type:'toggle-move'}
   |{type:'salvage'}
