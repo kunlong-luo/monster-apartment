@@ -25,11 +25,11 @@ export function inspectPoseAlpha(data:Uint8ClampedArray,width:number,height:numb
   if(xMax<xMin||yMax<yMin)return invalid('缺少有效人物轮廓',transparent,opaque);
   const heightSpan=yMax-yMin+1,widthSpan=xMax-xMin+1;
   const leftRatio=Array.from({length:heightSpan},(_,n)=>data[((yMin+n)*width+xMin)*4+3]>32?1:0)
-    .reduce((a,b)=>a+b,0)/heightSpan;
+    .reduce<number>((a,b)=>a+b,0)/heightSpan;
   const rightRatio=Array.from({length:heightSpan},(_,n)=>data[((yMin+n)*width+xMax)*4+3]>32?1:0)
-    .reduce((a,b)=>a+b,0)/heightSpan;
+    .reduce<number>((a,b)=>a+b,0)/heightSpan;
   const topRatio=Array.from({length:widthSpan},(_,n)=>data[(yMin*width+xMin+n)*4+3]>32?1:0)
-    .reduce((a,b)=>a+b,0)/widthSpan;
+    .reduce<number>((a,b)=>a+b,0)/widthSpan;
   if(leftRatio>.24||rightRatio>.24||topRatio>.4)
     return invalid('人物轮廓碰到裁切边：可能有断发、断手或拼贴裁切',transparent,opaque);
   return {ok:true,reason:'',transparent,opaque};
