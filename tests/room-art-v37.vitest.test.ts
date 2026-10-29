@@ -4,7 +4,7 @@ import {roomHotspotPosition} from '../src/core/room-stage-layout';
 import {ROOM_ART_MANIFEST,roomPublicAssetPath} from '../src/core/room-art-manifest';
 import {CHARACTER_ROOM_OBJECTS} from '../src/core/character-life';
 
-describe('V3.7 independent art admission and stable hotspot IDs',()=>{
+describe('V3.9 staged background/resident admission and stable hotspot IDs',()=>{
   it('keeps all temporary backdrops explicitly labelled and prevents repeated baked residents',()=>{
     for(const id of ['yuesha','brook','fern','cinder'] as const){
       expect(ROOM_ART_MANIFEST[id].composition).toBe('layered-concept');
@@ -13,10 +13,14 @@ describe('V3.7 independent art admission and stable hotspot IDs',()=>{
       expect(svg).not.toMatch(/<image\\b|<text\\b/);
     }
     const entry=JSON.parse(readFileSync('public/art/rooms/manifest.json','utf8'));
-    expect(entry.version).toBe(1);
+    expect(entry.version).toBe(2);
     for(const id of Object.keys(ROOM_ART_MANIFEST) as (keyof typeof ROOM_ART_MANIFEST)[]){
       const art=ROOM_ART_MANIFEST[id];
       expect(art.backgroundStatus).toBe('concept');
+      expect(art.residentStatus).toBe('concept');
+      expect(entry.rooms[id]).not.toHaveProperty('status');
+      expect(entry.rooms[id].backgroundStatus).toBe('concept');
+      expect(entry.rooms[id].residentStatus).toBe('concept');
       expect(art.layout).toBe('concept');
       expect(entry.rooms[id].poses.length).toBe(4);
     }

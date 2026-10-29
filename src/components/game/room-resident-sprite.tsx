@@ -32,7 +32,7 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
     {idle:0,attentive:1,warm:2,guarded:3}[pose]
   ];
   return <div className="pointer-events-none absolute inset-0 z-[2]"
-    data-testid="room-resident-layer" data-pose={away?"away":pose}
+    data-testid="room-resident-layer" data-art-quality={art.residentStatus} data-pose={away?"away":pose}
     data-render-mode={away?'away':embedded?'embedded':'separate'}>
     {away?<div data-testid={'room-resident-away-'+id}
       className="absolute right-[5%] bottom-[27%] w-[45%] max-w-56 rounded-lg border border-[#efd4aa66] bg-[#170e19e8] p-3 text-center shadow-[0_9px_25px_#000a]">

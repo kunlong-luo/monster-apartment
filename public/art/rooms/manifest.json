@@ -1,8 +1,7 @@
 {
-  "version": 1,
+  "version": 2,
   "rooms": {
     "yuesha": {
-      "status": "concept",
       "composition": "layered-concept",
       "background": "public/art/rooms/yuesha/background.webp",
       "poses": [
@@ -12,10 +11,11 @@
         "public/art/rooms/yuesha/poses/guarded.webp"
       ],
       "layout": "concept",
-      "conceptPreview": "public/art/rooms/yuesha/concept-scene.svg"
+      "conceptPreview": "public/art/rooms/yuesha/concept-scene.svg",
+      "backgroundStatus": "concept",
+      "residentStatus": "concept"
     },
     "brook": {
-      "status": "concept",
       "composition": "layered-concept",
       "background": "public/art/rooms/brook/background.webp",
       "poses": [
@@ -25,10 +25,11 @@
         "public/art/rooms/brook/poses/guarded.webp"
       ],
       "layout": "concept",
-      "conceptPreview": "public/art/rooms/brook/concept-scene.svg"
+      "conceptPreview": "public/art/rooms/brook/concept-scene.svg",
+      "backgroundStatus": "concept",
+      "residentStatus": "concept"
     },
     "fern": {
-      "status": "concept",
       "composition": "layered-concept",
       "background": "public/art/rooms/fern/background.webp",
       "poses": [
@@ -38,10 +39,11 @@
         "public/art/rooms/fern/poses/guarded.webp"
       ],
       "layout": "concept",
-      "conceptPreview": "public/art/rooms/fern/concept-scene.svg"
+      "conceptPreview": "public/art/rooms/fern/concept-scene.svg",
+      "backgroundStatus": "concept",
+      "residentStatus": "concept"
     },
     "cinder": {
-      "status": "concept",
       "composition": "layered-concept",
       "background": "public/art/rooms/cinder/background.webp",
       "poses": [
@@ -51,7 +53,9 @@
         "public/art/rooms/cinder/poses/guarded.webp"
       ],
       "layout": "concept",
-      "conceptPreview": "public/art/rooms/cinder/concept-scene.svg"
+      "conceptPreview": "public/art/rooms/cinder/concept-scene.svg",
+      "backgroundStatus": "concept",
+      "residentStatus": "concept"
     }
   }
 }

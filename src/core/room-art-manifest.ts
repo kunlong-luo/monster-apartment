@@ -19,8 +19,8 @@ function info(id:CharacterId):RoomArtInfo{
   const source=input.rooms[id];
   return {
     id,
-    backgroundStatus:source.status as RoomArtStatus,
-    residentStatus:source.status as RoomArtStatus,
+    backgroundStatus:source.backgroundStatus as RoomArtStatus,
+    residentStatus:source.residentStatus as RoomArtStatus,
     composition:source.composition as RoomComposition,
     conceptPreview:source.conceptPreview,
     layout:source.layout as 'concept'|'reviewed',
@@ -40,7 +40,7 @@ export const ROOM_ART_MANIFEST={
   cinder:info('cinder'),
 } satisfies Readonly<Record<CharacterId,RoomArtInfo>>;
 
-/** Paths are used only when art status=production AND the audit has passed.
+/** Paths are used for individual production layers only after their own audit passes.
  * Next config supplies the prefix on static GitHub Pages exports. */
 export function roomPublicAssetPath(path:string):string{
   if(!path.startsWith('public/art/rooms/')||path.includes('..'))

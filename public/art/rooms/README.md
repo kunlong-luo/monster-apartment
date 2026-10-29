@@ -1,11 +1,15 @@
-# V3.8 四位人物室内概念环境绘景
+# V3.9 四间独立私室与逐层美术准入
 
-这里的 `<id>/concept-scene.svg` 是独立可玩的 1920×1080 SVG 矢量室内概念稿：
-- `yuesha`：紫金契约会客室，拱窗月光、月纹蜡封、香料茶杯与契约账簿。
-- `brook`：蓝色铜管休息间，真实仪表、水路、挂钩工具箱与夜间铜铃。
-- `fern`：叶影温室，月光玻璃、花期手札、月光花与古旧水脉地图。
-- `cinder`：熔炉修补间，冶炼火光、旧锻锤、蓝图与失败零件匣。
+`{id}/concept-scene.svg` 是四间不同的 1920×1080 无人物室内概念背景；当前可玩，并非最终 CG：
+- `yuesha`：紫金契约会客室；`brook`：蓝色铜管休息间
+- `fern`：叶影温室；`cinder`：炉火修补间
 
-SVG 均不包含烘焙人物、假操作按钮或虚构数值。交互热点仍由 `src/core/room-stage-layout.ts` 显式定义，画面和配饰由游戏 UI 独立叠层。
+`manifest.json` 使用 **version 2**，不再让一项合并状态同时决定背景和角色：
+- `backgroundStatus=concept|production`：背景独立准入；生产背景必须为至少 1920×1080 的无人物 WebP，且 `layout=reviewed`
+- `residentStatus=concept|production`：角色独立准入；正式四姿态 WebP 至少 1000×1000、有 Alpha、同画布与脚点
+- **只有两层都已准入才使用 `composition=separated`**；其他组合使用 `layered-concept`，准确呈现未完成的层
+- `provenance.json` 需由人确认原创性与商业授权，并分别记录背景或人物的视觉检查
 
-**当前所有房间 `status=concept`、`layout=concept`。** 这些绘景是从旧大厅背景复用升级为**各自独立环境**的一步，不代表高清人物/建筑原画和四套透明动画姿态正式完成。 `background.webp` 和 `poses/*.webp` 仍是未来制作路径，不应通过改 JSON 绕开版权、透明性和视觉审核。完整要求：`scripts/audit-room-art.mjs`。
+目前四间仍是 **0/4 正式背景、0/4 正式角色**；`background.webp` 和 `poses/*.webp` 仍是未来资源路径，未生成、未审核之前绝对不能把任一状态改为 `production`。
+
+`pnpm audit:room-art` 在 CI 中执行文件头、尺寸、Alpha 标志、路径与分阶段审核检查；Alpha 标志只能证明文件声称有透明通道，无法证明边缘真的干净，须人工查看。热点仍由 `src/core/room-stage-layout.ts` 控制，换背景后需逐个核对桌面与 390px 移动端。详见 `docs/v3/30-ROOM-ART-STAGED-ADMISSION.md`。
