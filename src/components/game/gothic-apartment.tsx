@@ -143,7 +143,7 @@ export function GothicApartment(){
       setMoving(null);setSelected(index);
     }else setSelected(value=>value===index?null:index);
   };
-  return <main className={reducedMotion?'ga ga--still':'ga'} data-testid="gothic-apartment" aria-label="哥特公寓经营"
+  return <main className={reducedMotion?'ga ga--still ga--red-gold':'ga ga--red-gold'} data-testid="gothic-apartment" aria-label="哥特公寓经营"
     onKeyDown={event=>{if(event.key==='Escape'){setWitchOpen(false);setNotices(false);}}}>
     <div className="ga-backdrop" style={{backgroundImage:'url('+JSON.stringify(lobbyHero.src)+')'}} aria-hidden="true"/>
     <div className="ga-light" aria-hidden="true"/>
@@ -151,7 +151,7 @@ export function GothicApartment(){
     <div className="ga-dust" aria-hidden="true"/>
     <GothicSceneIllumination variant="apartment" paused={paused||reducedMotion}/>
     <GothicAtmosphere paused={paused||reducedMotion}/>
-    <header className="absolute inset-x-0 top-0 z-[5] flex min-h-[56px] items-start gap-1.5 bg-[linear-gradient(#08060ad3,transparent)] px-2 py-2.5 sm:gap-3 sm:px-6" aria-label="公寓资源与操作">
+    <header className="ga-red-gold-header absolute inset-x-0 top-0 z-[5] flex min-h-[56px] items-start gap-1.5 bg-[linear-gradient(#08060ad3,transparent)] px-2 py-2.5 sm:gap-3 sm:px-6" aria-label="公寓资源与操作">
       <span className="flex min-h-9 shrink-0 items-center rounded-full border border-gothic-brass/50 bg-gothic-panel/80 px-3 text-xs text-gothic-ivory"
         data-testid="game-location" aria-label="当前位置：大厅 / 公寓">公寓 · 经营住客</span>
       <div className="ml-auto flex items-start gap-1 sm:gap-2" aria-label="公寓真实存档">
@@ -221,7 +221,7 @@ export function GothicApartment(){
         </div>
       </div>
     </div>}
-    <GothicDock label="公寓世界导航" activeHref="/apartment/"
+    <GothicDock label="公寓世界导航" activeHref="/apartment/" className="gothic-dock--world"
       items={WORLD_NAV.map(n => ({ href: n.href, icon: n.glyph, label: n.label, ariaLabel: n.full,description:n.purpose }))}/>
   </main>;
 }

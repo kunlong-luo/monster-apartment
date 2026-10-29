@@ -172,7 +172,7 @@ export function WorkshopClient() {
     <div
       ref={host}
       data-testid="next-workshop-shell"
-      className="gothic-workshop-shell relative isolate min-h-dvh overflow-hidden"
+      className="gothic-workshop-shell gothic-workshop-shell--red-gold relative isolate min-h-dvh overflow-hidden"
     >
       <main id="root" className="lab gothic-workshop" data-react-controls="true"
         data-runtime-ready={runtimeReady?'true':'false'}
@@ -338,6 +338,7 @@ export function WorkshopClient() {
         label="月光工坊世界"
         activeHref="/workshop/"
         testId="v2-world-nav"
+        className="gothic-dock--world"
         items={WORLD_NAV.map((item) => ({
           href: item.href,
           icon: item.glyph,

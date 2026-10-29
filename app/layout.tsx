@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import './globals.css';
+import '@/components/game/gothic-red-gold.css';
 import {GothicRouteTransition} from '@/components/game/gothic-route-transition';
 
 export const metadata: Metadata = {
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#181629',
+  themeColor: '#160a17',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
