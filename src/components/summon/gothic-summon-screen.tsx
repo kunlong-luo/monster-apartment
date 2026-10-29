@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import './summon-screen.css';
 import {GothicDock} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 import {useCharacterLife} from '@/lib/game/character-life-store';
@@ -62,7 +63,8 @@ export function GothicSummonScreen() {
 
   const workshop=useWorkshopWorld();
   const life=useCharacterLife();
-  const saveStatus=gachaSaveStatus();
+  const [saveStatus,setSaveStatus]=useState<'ok'|'corrupt'|'unavailable'>('unavailable');
+  useEffect(()=>{setSaveStatus(gachaSaveStatus());},[state]);
   useEffect(()=>{
     if(workshop&&life.status==='ok')
       claimProgressTickets(workshop.completed,life.progress.visited.length);
