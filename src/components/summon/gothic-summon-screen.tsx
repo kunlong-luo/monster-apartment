@@ -437,6 +437,10 @@ export function GothicSummonScreen() {
                 🔍 查看档案
               </button>
             </div>
+            <button type="button" onClick={()=>setShowGalleryTab(true)}
+              className="mt-2 min-h-9 w-full rounded border border-[#b98b61] bg-[#31192b] px-3 text-xs font-semibold text-[#f7d8b2] hover:bg-[#51233a]">
+              查看已收录契约、首饰和装备
+            </button>
           </div>
 
           {/* Official Gacha Probability Table */}
@@ -515,8 +519,8 @@ export function GothicSummonScreen() {
       </main>
 
       {/* One canonical global dock; the summon scene is a mode of the Character route. */}
-      <GothicDock label="月影契约世界导航" activeHref="/characters/" className="gothic-dock--world summon-cinematic-dock"
-        items={WORLD_NAV.map(n=>({href:n.href,icon:n.glyph,
+      <GothicDock label="月影契约世界导航" activeHref="/characters/#summon-screen" className="gothic-dock--world summon-cinematic-dock"
+        items={WORLD_NAV.map(n=>({href:n.id==='characters'?'/characters/#summon-screen':n.href,icon:n.glyph,
           label:n.id==='characters'?'契约召唤':n.label,
           ariaLabel:n.id==='characters'?'契约召唤':n.full,description:n.purpose}))}/>
       {/* ------------------------------------------------------------- */}
