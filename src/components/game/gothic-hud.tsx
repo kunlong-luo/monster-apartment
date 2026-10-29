@@ -9,13 +9,34 @@ import {useGothicMotion} from '@/lib/game/gothic-motion';
  * These replace bespoke, page-scoped button/dock styles; the canvas and
  * atmospheric layers remain the responsibility of PixiJS / scene CSS.
  */
+import {
+  Home,
+  Building2,
+  Hammer,
+  Sparkles,
+  Scroll,
+  Compass,
+  Package,
+} from 'lucide-react';
+
 export type GothicDestination={
   href:string;
-  icon:string;
+  icon:string|ReactNode;
   label:string;
   description?:string;
   ariaLabel?:string;
 };
+
+function getCanonicalDockIcon(href: string, fallback?: ReactNode) {
+  if (href === '/' || href === '') return <Home className="size-4 sm:size-5" />;
+  if (href.includes('apartment')) return <Building2 className="size-4 sm:size-5" />;
+  if (href.includes('workshop')) return <Hammer className="size-4 sm:size-5" />;
+  if (href.includes('characters')) return <Sparkles className="size-4 sm:size-5" />;
+  if (href.includes('orders')) return <Scroll className="size-4 sm:size-5" />;
+  if (href.includes('town')) return <Compass className="size-4 sm:size-5" />;
+  if (href.includes('warehouse')) return <Package className="size-4 sm:size-5" />;
+  return typeof fallback === 'string' ? <span>{fallback}</span> : fallback;
+}
 
 const iconButtonStyle=[
   'grid size-9 shrink-0 place-items-center overflow-hidden rounded-full border',
@@ -116,35 +137,51 @@ export function GothicDock({
   testId?:string;
   compact?:boolean;
 }){
-  const cinematic=className.includes('gothic-dock--cinematic');
   return <nav data-testid={testId} aria-label={label} className={
-    'absolute bottom-[max(8px,env(safe-area-inset-bottom))] left-1/2 z-[10] '+
-    'flex w-max max-w-[calc(100vw-12px)] -translate-x-1/2 items-center justify-center gap-1 sm:gap-3.5 '+
-    'rounded-2xl border border-gothic-brass/45 bg-[linear-gradient(180deg,#1e1223e6,#100915f0)] '+
-    'px-1.5 py-1.5 shadow-[0_12px_32px_#000a,inset_0_1px_#ffe0a220] backdrop-blur-md sm:px-3 sm:py-2 '+className
+    'gothic-dock-bar absolute bottom-[max(8px,env(safe-area-inset-bottom))] left-1/2 z-[20] '+
+    'flex w-[calc(100vw-16px)] max-w-[1400px] -translate-x-1/2 items-center justify-between gap-1 '+
+    'rounded-2xl border border-gothic-brass/55 bg-[linear-gradient(180deg,#1c101de8,#0d0813f5)] '+
+    'p-1.5 shadow-[0_12px_36px_#000c,inset_0_1px_#ffe0a228] backdrop-blur-xl sm:p-2 '+className
   }>
-    {items.map(item=><Link key={item.href} href={item.href}
-      aria-label={item.ariaLabel??(item.description?item.label+' · '+item.description:item.label)}
-      aria-current={activeHref===item.href?'page':undefined}
-      data-tooltip={item.description || item.label}
-      className={
-        'group flex min-w-9 flex-col items-center gap-0.5 text-[9px] sm:min-w-10 sm:gap-1 sm:text-[11px] tracking-[.06em] sm:tracking-[.12em] '+
-        'text-gothic-ivory drop-shadow-[0_2px_6px_#000] transition-transform duration-200 '+
-        'hover:-translate-y-0.5 active:translate-y-0 active:scale-[.97] '+
-        'focus-visible:outline-2 focus-visible:outline-gothic-glow '+
-        'motion-reduce:transform-none motion-reduce:transition-none '+
-        (activeHref===item.href?'text-gothic-glow font-bold':'')
-      }>
-      <span aria-hidden="true" className={
-        'grid size-8 sm:size-10 place-items-center rounded-[10px] border '+
-        'bg-[linear-gradient(145deg,#49303ccc,#140d18ed)] text-[20px] sm:text-[21px] text-gothic-gold '+
-        'shadow-[inset_0_1px_#ffe9ac28,0_6px_15px_#0008] transition-[border-color,box-shadow,background-color] '+
-        'group-hover:border-gothic-glow group-hover:shadow-[0_0_18px_#d8a87445] '+
-        (activeHref===item.href?'border-gothic-glow bg-gothic-wine text-gothic-glow shadow-[0_0_18px_#d8a87466]':'border-gothic-brass/65')
-      }>{item.icon}</span>
-      <span className="gothic-dock__label">{item.label}</span>
-      {cinematic&&<span className="gothic-dock__subtitle" aria-hidden="true">{item.description}</span>}
-    </Link>)}
+    {items.map(item => {
+      const isActive = activeHref === item.href;
+      return (
+        <Link
+          key={item.href}
+          href={item.href}
+          aria-label={item.ariaLabel ?? (item.description ? item.label + ' · ' + item.description : item.label)}
+          aria-current={isActive ? 'page' : undefined}
+          data-tooltip={item.description || item.label}
+          className={
+            'group flex flex-1 min-w-0 flex-col items-center justify-center rounded-xl py-1 px-0.5 sm:px-1 '+
+            'transition-all duration-200 border '+
+            (isActive
+              ? 'border-[#ff4d6d] bg-gradient-to-b from-[#6e1430] to-[#390d1c] text-[#fff0f2] shadow-[0_0_20px_#e11d4866]'
+              : 'border-transparent text-[#e8cbb0] hover:border-[#a67c5255] hover:bg-[#251322aa]')
+          }
+        >
+          <span
+            aria-hidden="true"
+            className={
+              'flex size-8 sm:size-9 items-center justify-center rounded-lg border transition-colors '+
+              (isActive
+                ? 'border-[#ff758f] bg-[#881738] text-[#ffd699] shadow-[0_0_12px_#ff4d6d88]'
+                : 'border-[#8f694666] bg-[#2d1829aa] text-[#f3ca88] group-hover:border-[#d4aa70]')
+            }
+          >
+            {getCanonicalDockIcon(item.href, item.icon)}
+          </span>
+          <span className="gothic-dock__label mt-1 text-[10px] sm:text-xs font-bold tracking-wider truncate max-w-full">
+            {item.label}
+          </span>
+          {item.description && (
+            <span className="gothic-dock__subtitle hidden md:block text-[9px] text-[#c9a68c] truncate max-w-full opacity-80" aria-hidden="true">
+              {item.description}
+            </span>
+          )}
+        </Link>
+      );
+    })}
   </nav>;
 }
 

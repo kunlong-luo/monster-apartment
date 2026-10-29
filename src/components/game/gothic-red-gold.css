@@ -10,41 +10,58 @@
   --moon-ui-text:#f7dfc3;
   --moon-ui-muted:#d6b99f;
 }
-.gothic-dock--world{
+.gothic-dock--world,
+.gothic-dock-bar{
   border:1px solid #c69c70a6!important;
-  border-radius:12px!important;
-  background:linear-gradient(180deg,#21111feF,#0f0914fa)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#1d111ef2,#0d0813f8)!important;
   box-shadow:0 -8px 28px #050206b8,inset 0 1px 0 #ffe3bb35,0 0 0 1px #140c17!important;
+  backdrop-filter:blur(16px)!important;
 }
-.gothic-dock--world a{
+.gothic-dock--world a,
+.gothic-dock-bar a{
   position:relative;min-width:0;
   border-right:1px solid #98725136;
   color:var(--moon-ui-text)!important;
 }
-.gothic-dock--world a:last-child{border-right:0}
-.gothic-dock--world a>span:first-child{
+.gothic-dock--world a:last-child,
+.gothic-dock-bar a:last-child{border-right:0}
+.gothic-dock--world a>span:first-child,
+.gothic-dock-bar a>span:first-child{
   border-color:#ac845f78!important;
   background:linear-gradient(135deg,#361e32d9,#190e1dec)!important;
   color:#f0c78d!important;
   box-shadow:inset 0 1px #eecf9d32,0 3px 9px #0007!important;
 }
-.gothic-dock--world a[aria-current="page"]{
+.gothic-dock--world a[aria-current="page"],
+.gothic-dock-bar a[aria-current="page"]{
   color:#fff4e2!important;
+  background:linear-gradient(150deg,#771c3b,#391324)!important;
+  border:1px solid #e87a7f!important;
+  border-radius:11px!important;
+  box-shadow:0 0 20px #bd245c6b,inset 0 1px #ffd3b75c!important;
   text-shadow:0 0 10px #e6b68d80;
 }
-.gothic-dock--world a[aria-current="page"]>span:first-child{
+.gothic-dock--world a[aria-current="page"]>span:first-child,
+.gothic-dock-bar a[aria-current="page"]>span:first-child{
   border-color:#e87a7f!important;
   color:#ffe0df!important;
-  background:linear-gradient(150deg,#771c3b,#391324)!important;
+  background:linear-gradient(150deg,#8e2046,#46162d)!important;
   box-shadow:0 0 16px #bd245c6b,inset 0 1px #ffd3b75c!important;
 }
 .gothic-dock--world a:hover>span:first-child,
-.gothic-dock--world a:focus-visible>span:first-child{border-color:#ffe3b0!important}
+.gothic-dock--world a:focus-visible>span:first-child,
+.gothic-dock-bar a:hover>span:first-child,
+.gothic-dock-bar a:focus-visible>span:first-child{border-color:#ffe3b0!important}
 @media(max-width:480px){
-  .gothic-dock--world{gap:1px!important;padding:5px 4px!important}
-  .gothic-dock--world a{min-width:0!important}
-  .gothic-dock--world a>span:first-child{width:30px!important;height:30px!important;font-size:19px!important}
-  .gothic-dock--world a .gothic-dock__label{font-size:9px!important;letter-spacing:0!important}
+  .gothic-dock--world,
+  .gothic-dock-bar{gap:1px!important;padding:4px 3px!important}
+  .gothic-dock--world a,
+  .gothic-dock-bar a{min-width:0!important;min-height:50px!important}
+  .gothic-dock--world a>span:first-child,
+  .gothic-dock-bar a>span:first-child{width:28px!important;height:28px!important}
+  .gothic-dock--world a .gothic-dock__label,
+  .gothic-dock-bar a .gothic-dock__label{font-size:9px!important;letter-spacing:0!important}
 }
 
 /* Apartments: real architectural doors on the left, real room mechanics on the right. */

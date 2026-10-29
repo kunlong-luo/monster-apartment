@@ -145,7 +145,7 @@
   border:1px solid #e25f63;border-radius:11px;box-shadow:0 0 21px #dc254850;
 }
 .gothic-lobby .gothic-dock--cinematic a>span:first-child{
-  border:none;background:transparent;font-size:28px;box-shadow:none;height:32px;width:auto;
+  font-size:20px;
 }
 .gothic-lobby .gothic-dock--cinematic .gothic-dock__label{font-size:clamp(11px,1.2vw,16px);font-weight:600;letter-spacing:.14em}
 .gothic-lobby .gothic-dock--cinematic .gothic-dock__subtitle{

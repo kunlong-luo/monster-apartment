@@ -29,12 +29,12 @@ function WorkerPainting({id,label,working}:{
 
 export function Characters({s,onVisit}:{s:WorkshopState;onVisit:(id:WorkerId)=>void}){
   return <>
-    <section className="mw-art-gallery-intro" data-testid="character-gallery-header">
+    <CharacterCollectionPanel completed={s.completed}/>
+    <section className="mw-art-gallery-intro mt-6" data-testid="character-gallery-header">
       <span className="mw-eyebrow">WORKER ROSTER · THE PEOPLE OF MOONLIGHT WORKSHOP</span>
       <h2>四位人物，各有自己的契约与秘密。</h2>
       <p>召唤人物契约，打造首饰与装备，查看二十项属性；拜访房间则能发现线索、改变对话。</p>
     </section>
-    <CharacterCollectionPanel completed={s.completed}/>
     <RoomInvestigationJournal/>
     <RoomMemoryGallery/>
     <div className="mw-worker-grid" data-testid="painted-worker-gallery">

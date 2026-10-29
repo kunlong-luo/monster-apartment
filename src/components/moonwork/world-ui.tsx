@@ -40,10 +40,10 @@ export function MoonworkWorld({area}:{area:WorldArea}){
       items={WORLD_NAV.map(n=>({href:n.href,icon:n.glyph,label:n.label,ariaLabel:n.full,description:n.purpose}))}/>
 
     <div className={'mw-main mw-main--red-gold '+(area==='characters'?'mw-main--summon ':'')+'absolute top-[85px] right-[clamp(12px,2.4vw,42px)] bottom-[94px] z-[4] min-h-0 w-[clamp(330px,35vw,540px)] max-w-[calc(100vw-42px)] overflow-x-hidden overflow-y-auto overscroll-contain rounded-[18px] border border-[#b9946877] bg-[linear-gradient(135deg,#241721ed,#160f19e8_48%,#1e161bdc)] px-5 pt-[18px] pb-[25px] shadow-[0_18px_70px_#08040bc9,inset_0_1px_#f5e3c933] backdrop-blur-[17px] [scrollbar-color:#ab8258_#231521] [scrollbar-width:thin] max-[700px]:top-[44%] max-[700px]:right-[10px] max-[700px]:bottom-[80px] max-[700px]:left-[10px] max-[700px]:w-auto max-[700px]:max-w-none max-[700px]:rounded-[13px] max-[700px]:px-[13px] max-[700px]:pt-[13px] max-[700px]:pb-[19px]'}>
-      <p className="mw-eyebrow font-serif text-[10px] tracking-[.14em] text-[#bc9e7e] uppercase"
+      <p className={'mw-eyebrow font-serif text-[10px] tracking-[.14em] text-[#bc9e7e] uppercase '+(area==='characters'?'sr-only':'')}
         data-testid="game-location">大厅 / {title}</p>
-      <h1 className="my-[3px] text-[clamp(23px,2.5vw,34px)] leading-[1.2] tracking-[.12em] text-[#ffdeb1] max-[700px]:text-[21px]">{title}</h1>
-      <p data-testid="game-page-purpose" className="mb-4 text-xs leading-relaxed text-[#e4c9a8]">{section.purpose}</p>
+      <h1 className={'my-[3px] text-[clamp(23px,2.5vw,34px)] leading-[1.2] tracking-[.12em] text-[#ffdeb1] max-[700px]:text-[21px] '+(area==='characters'?'sr-only':'')}>{title}</h1>
+      <p data-testid="game-page-purpose" className={'mb-4 text-xs leading-relaxed text-[#e4c9a8] '+(area==='characters'?'sr-only':'')}>{section.purpose}</p>
       {!s?<Panel title="尚无可用的 V2 工坊存档">
         <p>月光街还没有记录你的生产旅程。进入工坊，摆放设备、安排工匠并完成第一张委托；这些场景会自动呈现你的经营成果。</p>
         <WorkshopLink>进入工坊开始经营</WorkshopLink>
