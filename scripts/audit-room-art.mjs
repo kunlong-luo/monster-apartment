@@ -108,6 +108,8 @@ for(const id of ids){
     assert(proof.original===true&&proof.commercialUse===true&&
       proof.sameFootAnchor===true&&proof.transparentEdgesReviewed===true&&
       proof.noBakedBackgroundInResident===true&&proof.identityConsistent===true&&
+      proof.rightsConfirmed===true&&proof.sourceReference&&proof.sourceType&&proof.reviewedAt&&
+      poses.every(p=>proof.poseReview?.[p]===true)&&
       typeof proof.reviewer==='string'&&proof.reviewer.trim().length>2&&
       typeof proof.reviewNotes==='string'&&proof.reviewNotes.trim().length>=24,
       'independent portrait visual/rights review incomplete '+id);
@@ -121,6 +123,7 @@ for(const id of ids){
       assert(proof.frames?.[poses[i]]?.sha256===digest,
         'portrait content changed since human review '+id+'/'+poses[i]);
       const frame=proof.frames[poses[i]];
+      assert(frame.bytes===bytes.length,'reviewed pose size changed '+id+'/'+poses[i]);
       assert(Number.isInteger(frame.width)&&Number.isInteger(frame.height),
         'reviewed pose dimensions missing '+id+'/'+poses[i]);
       widths.push(frame.width+'x'+frame.height);

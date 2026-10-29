@@ -16,7 +16,8 @@
     "audit:room-art": "node scripts/audit-room-art.mjs",
     "art:review": "node scripts/prepare-room-background.mjs",
     "art:promote": "node scripts/promote-room-background.mjs",
-    "art:poses": "node scripts/prepare-room-poses.mjs"
+    "art:poses": "node scripts/prepare-room-poses.mjs",
+    "art:promote-poses": "node scripts/promote-room-poses.mjs"
   },
   "dependencies": {
     "motion": "14.6.0",
