@@ -437,6 +437,6 @@ test('workshop roster remains legible and operable at desktop and phone widths',
       await page.getByTestId('console-tab-roster').click();
     }
     await page.getByTestId('workshop-pick-idle-worker').click();
-    await expect(page.getByTestId('v2-worker-fern')).toHaveAttribute('aria-pressed','true');
+    await expect(page.getByTestId('v2-worker-brook')).toHaveAttribute('aria-pressed','true');
   }
 });
