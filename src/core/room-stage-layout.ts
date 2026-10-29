@@ -8,7 +8,7 @@ const ROOM_SPOTS:Readonly<Record<string,Readonly<Record<string,SceneSpot>>>>={
   yuesha:{
     seal:{left:'39%',top:'75%'},
     tea:{left:'13%',top:'76%'},
-    ledger:{left:'47%',top:'79%'},
+    ledger:{left:'60%',top:'55%'},
   },
   brook:{
     toolbox:{left:'14%',top:'70%'},

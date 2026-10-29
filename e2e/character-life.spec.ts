@@ -82,7 +82,7 @@ test('Brook, Fern and Cinder have unique rooms and persisted personal choices',a
     const dialog=page.getByRole('dialog',{name:'拜访'+person.name+'的房间'});
     await expect(dialog).toBeVisible();
     await expect(page.getByTestId('worker-private-room-'+person.id)).toContainText(person.name);
-    await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-composition','architecture-crop');
+    await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-composition','layered-concept');
     await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-render-mode','separate');
     await page.screenshot({path:'test-results/room-'+person.id+'-desktop.png'});
     await dialog.getByTestId('scene-object-'+person.objects[0]).click();
