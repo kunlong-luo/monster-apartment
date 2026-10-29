@@ -1,6 +1,6 @@
 {
-  "summary":  "Implementation plan for fixing the Moonlight Workshop layout overlaps and standardizing menu button dimensions across all canonical game pages.",
-  "updatedAt":  "2026-10-29T07:03:00.864864689Z",
+  "summary":  "实现《怪物公寓》契约召唤界面的 1:1 像素级复原与全功能系统，包含五大卡池切换、单抽/十连召唤仪式与十连翻牌结算、保底机制与抽卡记录、角色档案与试玩、概率公示与收集奖励，并与公寓住客名册和工坊经济深度联动。",
+  "updatedAt":  "2026-10-29T10:11:46.031776899Z",
   "requestFeedback":  true,
   "userFacing":  true
 }
