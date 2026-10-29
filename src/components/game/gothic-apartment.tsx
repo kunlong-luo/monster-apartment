@@ -221,7 +221,7 @@ export function GothicApartment(){
         </div>
       </div>
     </div>}
-    <GothicDock label="暗夜公寓世界导航" activeHref="/apartment/"
+    <GothicDock label="公寓世界导航" activeHref="/apartment/"
       items={WORLD_NAV.map(n => ({ href: n.href, icon: n.glyph, label: n.label, ariaLabel: n.full }))}/>
   </main>;
 }

@@ -122,7 +122,7 @@ export function GothicLobby(){
         {href:'/town/',icon:'⚜',label:'街区'}
       ].map(item=><Link href={item.href} key={item.href} data-tooltip={item.label}
         className="group grid min-w-10 justify-items-center gap-1 text-[10px] tracking-[.12em] text-gothic-ivory drop-shadow-[0_3px_7px_#000] transition-transform duration-200 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none">
-        <span aria-hidden="true" className="grid size-9 place-items-center rounded-[10px] border border-gothic-brass/65 bg-[linear-gradient(145deg,#49303ccc,#140d18ed)] text-[21px] text-gothic-gold shadow-[inset_0_1px_#ffe9ac28,0_6px_15px_#0008] transition-[border-color,box-shadow] group-hover:border-gothic-glow group-hover:shadow-[0_0_18px_#d8a87445] sm:size-10">{item.icon}</span>
+        <span aria-hidden="true" className="grid size-8 sm:size-10 place-items-center rounded-[10px] border border-gothic-brass/65 bg-[linear-gradient(145deg,#49303ccc,#140d18ed)] text-[20px] sm:text-[21px] text-gothic-gold shadow-[inset_0_1px_#ffe9ac28,0_6px_15px_#0008] transition-[border-color,box-shadow] group-hover:border-gothic-glow group-hover:shadow-[0_0_18px_#d8a87445]">{item.icon}</span>
         <span>{item.label}</span>
       </Link>)}
     </nav>

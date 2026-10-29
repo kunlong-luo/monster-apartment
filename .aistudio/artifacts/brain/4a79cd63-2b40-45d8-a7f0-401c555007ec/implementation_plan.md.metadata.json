@@ -1,6 +1,6 @@
 {
-  "summary":  "Implementation plan for unifying the navigation menu buttons across all non-lobby routes (/town/, /orders/, /characters/, /warehouse/, /workshop/, /apartment/) using a standardized GothicDock floating navigation bar with uniform sizing, spacing, active highlights, and canonical Gothic glyphs (♜ 公寓, ♟ 角色, ❦ 委托, ⚜ 探索, ♧ 仓库).",
-  "updatedAt":  "2026-10-28T14:23:08.242804455Z",
+  "summary":  "Implementation plan for fixing the Moonlight Workshop layout overlaps and standardizing menu button dimensions across all canonical game pages.",
+  "updatedAt":  "2026-10-29T07:03:00.864864689Z",
   "requestFeedback":  true,
   "userFacing":  true
 }

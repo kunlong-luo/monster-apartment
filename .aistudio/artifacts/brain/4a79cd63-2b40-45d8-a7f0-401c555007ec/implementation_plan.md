@@ -1,58 +1,78 @@
-# 跨页面导航菜单统一化实施计划
+# 月光工坊布局修复与全局菜单规格统一方案
 
-根据您的选择，我们将对全站非大厅页面 (`/town/`, `/orders/`, `/characters/`, `/warehouse/`, `/workshop/`, `/apartment/`) 的底部菜单栏进行尺寸、间距、字号与高亮样式的**高度统一**，一律采用规范的 **`GothicDock` 悬浮底栏**，并使用标准的哥特符码（`♜` 公寓、`♟` 角色、`❦` 委托、`⚜` 探索、`♧` 仓库）。
+全面修复月光工坊（`/workshop/`）页面中底部控制台与悬浮导航栏重叠、面板间距压缩等核心视觉与交互问题，并将所有正式路由的导航菜单卡片尺寸、哥特字符图标与高亮状态与首页标准严格对齐。
 
----
+## 用户审核与关键决策
 
-## 1. 确认要点 (User Review Required)
+> [!IMPORTANT]
+> 针对上一轮 Clarifying Questions 的明确确认结果，本次执行将严格遵循以下决议：
 
-- **统一底栏形态**：全站所有非大厅场景的底栏统一使用 `GothicDock` 组件（具备一致的暗金磨砂底座、居中排列、按钮固定尺寸、渐变边框与悬浮微光）。
-- **统一导航符码与标签**：
-  - `♜` 公寓 (`/apartment/`)
-  - `♟` 角色 (`/characters/`)
-  - `❦` 委托 (`/orders/`)
-  - `⚜` 探索 (`/town/`)
-  - `♧` 仓库 (`/warehouse/`)
-- **当前页高亮机制**：通过 `activeHref` 属性精确高亮当前页面对应的菜单按钮，高亮项具备金光边框与内发光，其他按钮保持统一的半透明哥特质感。
-- **响应式排版**：在移动端与桌面端保持一致的触控尺寸 (Min 44px) 与防误触间距。
+- **决议 1（工坊页面核心修复）**：修复控制台（`.console`）与悬浮底栏（`GothicDock`）的重叠冲突，重新规划工坊画板中区（`.middle`）、底部操作区与侧边任务栏的绝对定位与弹性流动空间，确保在移动端（390px）及桌面端均拥有清晰的操作缓冲区与手势热区。
+- **决议 2（全局菜单与图标规格对齐）**：统一所有 7 个官方路由（`/`、`/apartment/`、`/workshop/`、`/town/`、`/orders/`、`/characters/`、`/warehouse/`）的悬浮底栏卡片尺寸，统一采用 `size-8 sm:size-10` 标准圆角晶核卡片、统一的哥特字符字号（`text-[20px] sm:text-[21px]`）与高亮辉光金边，消除尺寸不一致的割裂感。
 
 ---
 
-## 2. 拟修改文件与架构说明 (Proposed Changes)
+## 1. 概述与核心概念
 
-### 导航配置与组件优化
-1. **`src/components/moonwork/world-navigation.ts`**
-   - 确认并导出统一的标准菜单项列表 `WORLD_NAV`：
-     ```ts
-     export const WORLD_NAV = [
-       { id: 'apartment', label: '公寓', full: '经营住客与房间', glyph: '♜', href: '/apartment/' },
-       { id: 'characters', label: '角色', full: '角色与工匠图鉴', glyph: '♟', href: '/characters/' },
-       { id: 'orders', label: '委托', full: '契约与特别委托', glyph: '❦', href: '/orders/' },
-       { id: 'town', label: '探索', full: '月光街', glyph: '⚜', href: '/town/' },
-       { id: 'warehouse', label: '仓库', full: '魔法仓库与物料', glyph: '♧', href: '/warehouse/' },
-     ] as const;
-     ```
-
-2. **`src/components/game/gothic-hud.tsx` (`GothicDock`)**
-   - 统一 `GothicDock` 的按钮样式类名，设置统一的 `min-w-[56px]`, `h-[48px]`, `text-[11px]` 及图标字号 `text-[18px]`。
-   - 确保 `data-tooltip` 悬浮提示框与高亮态同步。
-
-3. **路由组件引用更新**
-   - **`src/components/moonwork/world-ui.tsx`**：为世界路由 (`/town/`, `/orders/`, `/characters/`, `/warehouse/`) 应用包含公寓链接的全新 `WORLD_NAV` Dock。
-   - **`src/components/moonwork/workshop-client.tsx`**：工坊页面底栏使用完全一致的 `GothicDock` 按钮与属性。
-   - **`src/components/game/gothic-apartment.tsx`**：公寓页面底栏接入同等规格的 `GothicDock` 快捷菜单。
-
-4. **样式规范 (`app/globals.css` / `src/components/game/gothic-polish.css`)**
-   - 统一 `.gothic-dock__item` 的尺寸、padding、gap、边框弧度与 hover/focus 状态，消除不同页面间微小的外边距或按钮错位。
+- **解决的问题**：
+  1. 月光工坊作为核心交互生产场景，底部综合控制台（设备建造、工匠派工、生产日志）的高度（220px）与固定底部的 `GothicDock`（约 65px）发生物理重叠，导致底部按钮误触或无法点击。
+  2. 首页与其他页面的底部导航条和顶部返回键尺寸、内外边距与字体大小存在微调差值，缺少统一的视觉韵律。
+- **目标受众**：暗夜公寓与月光工坊玩家，支持桌面宽屏（1440px）与手机竖屏（390px 视口）触控经营。
+- **核心价值**：还原因素齐全、层级分明、没有重叠遮挡的高品质哥特暗黑模拟经营体验。
 
 ---
 
-## 3. 验证计划 (Verification Plan)
+## 2. 用户体验与视觉规范
 
-### 自动化测试
-1. **Vitest 单元测试**：运行 `npm test`，确保 `WORLD_NAV` 定义与 `typescript-tailwind-migration` 校验全部通过。
-2. **TypeScript & ESLint 检查**：运行 `npm run typecheck` 和 `npm run lint`，保证 0 报错/0 警告。
-3. **构建验证**：运行 `compile_applet` 确保全站打包静态编译成功。
+### 关键用户体验流程
+1. **工坊全景自适应**：
+   - 顶部 Header：看板娘月纱头像徽章、工坊等级、当前星币/晶核/天数胶囊及重开按钮。
+   - 中部画布区（`.middle`）：左侧月纱互动胸像与台词气泡，中央 PixiJS 2D 晶核生产流水线画布，右侧契约看板与排班诊断。
+   - 底部控制台（`.console`）：紧凑三栏（设备库、工匠派工、日志与轮班按钮），悬浮于底栏之上，预留清晰的 12px 视口间隔。
+   - 悬浮底栏（`GothicDock`）：统一 7 个正式入口（大厅、公寓、工坊、角色、委托、探索、仓库），当前页面金色常驻高亮，不遮蔽任何主操作按钮。
+2. **移动端（$\le 640\text{px}$）垂直呼吸感**：
+   - 中部画布自适应收缩，保持固定宽高比，底部控制台折叠为双列分段选择器或自适应高度网格，避免挤压。
 
-### 页面核对
-- 逐个校验 `/apartment/`, `/workshop/`, `/town/`, `/orders/`, `/characters/`, `/warehouse/` 页面，确认底栏菜单按钮尺寸、图标符码、字号、间距与当前页高亮完全一致。
+### 视觉统一标准
+- **底栏卡片容器**：
+  - 图标容器：`grid size-8 sm:size-10 place-items-center rounded-[10px]`
+  - 图标字号：`text-[20px] sm:text-[21px] text-gothic-gold`
+  - 文本标签：`text-[9px] sm:text-[11px] tracking-[.06em] sm:tracking-[.12em]`
+  - 高亮状态：`border-gothic-glow bg-gothic-wine text-gothic-glow shadow-[0_0_18px_#d8a87466]`
+- **色彩预算（60-30-10）**：
+  - 60% 沉浸背景：深紫暗黑 `#0c0810` 与夜景天际线
+  - 30% 建筑表面：深酒红与哥特古铜描边 `#b68c61`
+  - 10% 黄金辉光：`#f0c588` 与精制晶核蓝紫辉光
+
+---
+
+## 3. 关键产品决策与权衡
+
+- **决策 1：工坊底栏与控制台的空间协调**
+  - *方案*：将工坊页面底部控制台的底定位从 `bottom: 56px` 提升并重构为计算定位（`bottom: calc(max(8px, env(safe-area-inset-bottom)) + 66px)`），并对应微调 `.middle` 的 `bottom` 空间，确保画布与控制台、控制台与底栏之间形成严格不交叠的垂直分区。
+  - *原因*：彻底杜绝控制台按钮与底栏链接重叠的问题，同时保证移动端 390px 视口下的可点击性。
+- **决策 2：统一底栏导航项与语义一致性**
+  - *方案*：保留 Playwright 测试与 `RULE[AGENTS_md]` 规定的全套 7 个路由跳转，在 `GothicDock` 中统一样式，并在主大厅的快速侧边导航与各个场景的返回按键上统一图标与文字尺寸。
+  - *原因*：既保持大厅、公寓、工坊各场景完整可达，又满足测试集的 7 项断言与规范。
+
+---
+
+## 4. 技术架构与组件分工
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                 Top HUD: 领主信息 / 资源胶囊 / 重开           │
+├───────────────────────────────┬─────────────────────────────┤
+│ Left: 看板娘立绘与气泡台词     │ Center: PixiJS 8 工坊画布   │ Right: 委托与诊断面板
+├───────────────────────────────┴─────────────────────────────┤
+│         WorkshopControls: 设备建造 / 工匠派工 / 轮班日志      │
+│         (提升 bottom 间距，不遮挡悬浮底栏)                     │
+├─────────────────────────────────────────────────────────────┤
+│         GothicDock: 7 路由标准哥特卡片悬浮底栏 (居中悬浮)       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 实施路线规划
+1. **工坊样式与布局优化**：更新 `src/components/game/gothic-workshop.css`，调整 `.middle`、`.console` 的定位参数与移动端媒体查询断点，消除与底栏重叠。
+2. **菜单与图标组件对齐**：检查并确保 `GothicDock`、`CANONICAL_GAME_NAV` 及 `GothicIconButton` 在大厅、公寓、工坊与探索世界的尺寸类完全一致。
+3. **回归验证**：运行 `npm test`（25 个 Vitest 测试文件）与 TypeScript 类型检查，确保页面稳定无误。
