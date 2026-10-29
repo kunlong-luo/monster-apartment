@@ -10,8 +10,8 @@ const COLORS:Readonly<Record<RoomPose,{center:string;edge:string}>>={
   warm:{center:'rgba(255,211,146,.25)',edge:'rgba(255,200,132,.50)'},
   guarded:{center:'rgba(211,148,244,.24)',edge:'rgba(220,157,240,.48)'},
 };
-export function roomSceneFocus(id:CharacterId,item:RoomObjectId,pose:RoomPose,stageSize:RoomStageSize|null=null){
-  const point=roomProjectedHotspotPosition(id,item,stageSize);
+export function roomSceneFocus(id:CharacterId,item:RoomObjectId,pose:RoomPose,stageSize:RoomStageSize|null=null,preview=false){
+  const point=roomProjectedHotspotPosition(id,item,stageSize,0,preview);
   const color=COLORS[pose];
   return {
     left:point.left,

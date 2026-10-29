@@ -60,9 +60,9 @@ export function roomSpotIsReachable(spot:SceneSpot,stage:RoomStageSize,markerSiz
 
 /** Production art uses physical object anchors. Concept scenes never inherit
  * the new painting's coordinates and retain their existing hotspot behavior. */
-export function roomProjectedHotspotPosition(roomId:string,itemId:string,size:RoomStageSize|null,index=0):SceneSpot{
+export function roomProjectedHotspotPosition(roomId:string,itemId:string,size:RoomStageSize|null,index=0,preview=false):SceneSpot{
   const entry=(roomArtwork.rooms as unknown as Record<string,ArtEntry>)[roomId];
-  const anchor=entry?.backgroundStatus==='production'?entry.objectAnchors?.[itemId]:undefined;
+  const anchor=(entry?.backgroundStatus==='production'||preview)?entry?.objectAnchors?.[itemId]:undefined;
   return anchor&&size?.width&&size.height
     ?projectCoverAnchor(anchor,size)
     :roomHotspotPosition(roomId,itemId,index);

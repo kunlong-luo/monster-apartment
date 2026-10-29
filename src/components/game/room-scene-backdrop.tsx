@@ -31,27 +31,29 @@ const ROOM_AMBIENCE={
   },
 } as const;
 
-export function RoomSceneBackdrop({id}:{id:CharacterId}){
+export function RoomSceneBackdrop({id,previewUrl=null}:{id:CharacterId;previewUrl?:string|null}){
   const ambience=ROOM_AMBIENCE[id];
   const art=ROOM_ART_MANIFEST[id];
   // All four concept scenes have independent, environment-only vector art.
   // They are NOT the unreviewed future WebP production backgrounds.
-  const fallbackCrop=art.composition==='architecture-crop';
+  const fallbackCrop=art.composition==='architecture-crop'&&!previewUrl;
   const backgroundProduction=art.backgroundStatus==='production';
-  const source=roomPublicAssetPath(backgroundProduction
+  const showHD=backgroundProduction||Boolean(previewUrl);
+  const source=previewUrl??roomPublicAssetPath(backgroundProduction
     ?art.productionAssets.background:art.conceptPreview);
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
   const still=Boolean(systemReduced||gameReduced);
   return <div data-testid="room-scene-backdrop" data-scene-id={id} data-art-quality={art.backgroundStatus} data-composition={art.composition}
+    data-local-preview={previewUrl?'true':'false'}
     className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
     <div data-testid="room-background-frame"
       className={fallbackCrop?'absolute inset-y-0 -left-[112%] w-[215%]':'absolute inset-0'}>
       <Image src={source} alt="" fill unoptimized priority={id==='yuesha'}
         sizes={fallbackCrop?'(max-width:1024px) 180vw, 1750px':'(max-width:1024px) 94vw, 850px'}
-        className={fallbackCrop?'object-cover object-right':backgroundProduction?'object-cover object-center':'object-cover object-[18%_43%]'} />
+        className={fallbackCrop?'object-cover object-right':(backgroundProduction||previewUrl)?'object-cover object-center':'object-cover object-[18%_43%]'} />
     </div>
-    <div className={'absolute inset-0 '+(backgroundProduction
+    <div className={'absolute inset-0 '+(showHD
       ?'bg-[linear-gradient(90deg,#130b1a4a_0%,transparent_55%,#130b1a56_100%)]'
       :ambience.veil)}/>
     <div className={'absolute inset-0 '+ambience.moon}/>

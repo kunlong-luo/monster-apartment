@@ -42,6 +42,13 @@ describe('V3.11 background cover projection and shared focus coordinates',()=>{
     expect(roomSpotIsReachable(normalLedger,{width:390,height:315})).toBe(true);
     expect(roomSpotIsReachable(normalLedger,{width:0,height:315})).toBe(false);
   });
+  it('can project the candidate background while production art remains disabled',()=>{
+    const size={width:390,height:315};
+    expect(roomProjectedHotspotPosition('yuesha','seal',size,0,false))
+      .toEqual(roomHotspotPosition('yuesha','seal'));
+    expect(roomProjectedHotspotPosition('yuesha','seal',size,0,true))
+      .toEqual(projectCoverAnchor([.6,.815],size));
+  });
   it('rejects invalid dimensions rather than dividing by zero',()=>{
     expect(()=>projectCoverAnchor([0.5,0.5],{width:0,height:315})).toThrow();
   });

@@ -15,7 +15,7 @@ export type SceneHotspotItem<T extends string=string>={id:T;label:string};
 /** Minimal 44px markers preserve scene detail; accessible names and the
  * discovery panel supply labels on touch and keyboard. */
 export function RoomSceneHotspots<T extends string>({
-  items,observed,selected,onInspect,characterName,roomId,description,stageSize=null,
+  items,observed,selected,onInspect,characterName,roomId,description,stageSize=null,preview=false,
 }:{
   items:readonly SceneHotspotItem<T>[];
   observed:readonly string[];
@@ -25,6 +25,7 @@ export function RoomSceneHotspots<T extends string>({
   roomId?:string;
   description?:string;
   stageSize?:RoomStageSize|null;
+  preview?:boolean;
 }){
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
@@ -33,11 +34,11 @@ export function RoomSceneHotspots<T extends string>({
   const [showOffscreen,setShowOffscreen]=useState(false);
   const offscreenMenuId=useId();
   const offscreen=stageSize?items.filter((item,index)=>
-    !roomSpotIsReachable(roomProjectedHotspotPosition(roomId??'',item.id,stageSize,index),stageSize)):[];
+    !roomSpotIsReachable(roomProjectedHotspotPosition(roomId??'',item.id,stageSize,index,preview),stageSize)):[];
   return <div className="pointer-events-none absolute inset-0 z-[4]" data-hotspot-layout="object-id" aria-label={characterName+'的房间物件'}>
     {items.map((item,index)=>{
       const discovered=observed.includes(item.id);
-      const point=roomProjectedHotspotPosition(roomId??'',item.id,stageSize,index);
+      const point=roomProjectedHotspotPosition(roomId??'',item.id,stageSize,index,preview);
       if(stageSize&&!roomSpotIsReachable(point,stageSize))return null;
       return <button type="button" key={item.id}
         aria-label={item.label}

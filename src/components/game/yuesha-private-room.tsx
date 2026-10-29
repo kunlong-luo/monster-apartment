@@ -1,5 +1,6 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
+import type {ChangeEvent} from 'react';
 import {useRoomStageSize} from './use-room-stage-size';
 import {yueshaAfterChoice} from '@/core/character-life';
 import {roomInvestigationConclusion} from '@/core/room-investigation';
@@ -21,6 +22,33 @@ type Hotspot='seal'|'tea'|'ledger';
 export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:number}){
   const stageRef=useRef<HTMLDivElement>(null);
   const stageSize=useRoomStageSize(stageRef);
+  const [artReviewEnabled,setArtReviewEnabled]=useState(false);
+  const [previewUrl,setPreviewUrl]=useState<string|null>(null);
+  const [reviewError,setReviewError]=useState('');
+  const imageUrlRef=useRef<string|null>(null);
+  useEffect(()=>{
+    setArtReviewEnabled(new URLSearchParams(window.location.search).get('roomArtReview')==='1');
+    return ()=>{if(imageUrlRef.current)URL.revokeObjectURL(imageUrlRef.current);};
+  },[]);
+  const previewLocalArt=(event:ChangeEvent<HTMLInputElement>)=>{
+    const file=event.target.files?.[0];
+    if(!file)return;
+    if(file.type!=='image/webp'||file.size>10*1024*1024){
+      setReviewError('请选择 10 MB 以下的 WebP 文件。');
+      return;
+    }
+    const url=URL.createObjectURL(file);
+    if(imageUrlRef.current)URL.revokeObjectURL(imageUrlRef.current);
+    imageUrlRef.current=url;
+    setPreviewUrl(url);
+    setReviewError('');
+  };
+  const clearLocalArt=()=>{
+    if(imageUrlRef.current)URL.revokeObjectURL(imageUrlRef.current);
+    imageUrlRef.current=null;
+    setPreviewUrl(null);
+    setReviewError('');
+  };
   const [hotspot,setHotspot]=useState<Hotspot|null>(null);
   const [reaction,setReaction]=useState('');
   const [pose,setPose]=useState<RoomPose>('idle');
@@ -55,10 +83,10 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,2.1fr)_minmax(300px,.9fr)] lg:items-start">
     <div className="min-w-0 space-y-2">
     <div className="relative h-[clamp(315px,57vh,640px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]" data-testid="yuesha-room-stage" ref={stageRef}>
-      <RoomSceneBackdrop id="yuesha"/>
-      <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={pose}/>
-      <RoomSceneFocus id="yuesha" item={hotspot} pose={pose} stageSize={stageSize}/>
-      <RoomSceneHotspots characterName="月纱" roomId="yuesha" stageSize={stageSize}
+      <RoomSceneBackdrop id="yuesha" previewUrl={previewUrl}/>
+      <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={pose} previewBackground={Boolean(previewUrl)}/>
+      <RoomSceneFocus id="yuesha" item={hotspot} pose={pose} stageSize={stageSize} preview={Boolean(previewUrl)}/>
+      <RoomSceneHotspots characterName="月纱" roomId="yuesha" stageSize={stageSize} preview={Boolean(previewUrl)}
         items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}
         selected={hotspot} observed={observed} onInspect={inspect}
         description={hotspot==='seal'?'蜡封上的月纹，与旧公寓钥匙的纹样有些相似。月纱没有立即回答你的疑问。':
@@ -66,6 +94,17 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
           hotspot==='ledger'?'账簿封面有多年前的磨损痕迹。里面记着什么，目前还不能公开。':undefined}/>
       {theater&&<RoomDialogueTheater key={theater.id} name="月纱" title={theater.title}
         response={theater.response} onClose={()=>{setTheater(null);setPose('idle');}}/>}
+      {artReviewEnabled&&<div data-testid="room-art-local-review" 
+        className="absolute right-2 top-2 z-[30] flex max-w-[min(74%,240px)] flex-col gap-1 rounded-lg border border-[#e9ba7d9e] bg-[#170d21f0] p-2 text-[11px] text-[#ffe5c9] shadow-lg">
+        <span className="text-[#ffd298]">仅本机预览 · 不会发布或保存</span>
+        <label htmlFor="yuesha-local-art-file" className="text-[#ffe5c9]">查看高清背景 WebP</label>
+        <input id="yuesha-local-art-file" data-testid="room-art-local-file"
+          type="file" accept="image/webp" onChange={previewLocalArt}
+          className="block w-full min-w-0 text-[10px] file:mr-1 file:rounded file:border-0 file:bg-[#5c3949] file:px-2 file:py-1 file:text-[#ffead5]"/>
+        {previewUrl&&<button type="button" data-testid="room-art-local-reset" onClick={clearLocalArt}
+          className="min-h-9 rounded border border-[#d6b98b90] px-2 text-left hover:bg-[#533444]">恢复原概念背景</button>}
+        {reviewError&&<span role="alert" className="text-[#ffb3b9]">{reviewError}</span>}
+      </div>}
       <div className="pointer-events-none absolute top-9 left-3 max-w-[52%] space-y-1 text-shadow-md">
         <h3 className="text-lg text-[#ffe3bd] sm:text-2xl">月纱的契约会客室</h3>
         <p className="text-[11px] leading-5 text-[#e4c7ab]">月纹、旧契约和一杯香料茶</p>
