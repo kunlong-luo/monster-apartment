@@ -230,7 +230,7 @@ test('hidden tabs suspend candle animation and resume when visible again',async(
   });
   await expect(lighting).toHaveAttribute('data-motion','still');
   await page.evaluate(()=>{
-    delete (document as Document&{visibilityState?:DocumentVisibilityState}).visibilityState;
+    Reflect.deleteProperty(document,'visibilityState');
     document.dispatchEvent(new Event('visibilitychange'));
   });
   await expect(lighting).toHaveAttribute('data-motion','ambient');
