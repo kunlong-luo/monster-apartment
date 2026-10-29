@@ -23,6 +23,10 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await expect(pools.filter({hasText:'红月之邀'})).toHaveAttribute('aria-pressed','true');
   const ids=await page.getByTestId('summon-available-card').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-character-id')));
   expect(ids).toEqual(['yuesha-eclipse','yuesha-vow','cinder-ember','fern-spring','brook-tide']);
+  for(const id of ['cinder-ember','fern-spring','brook-tide']){
+    await expect(page.locator(`[data-character-id="${id}"] [data-art-source]`))
+      .toHaveAttribute('data-art-source',/painted-transparent|hi-dpi-transparent/);
+  }
   await expect(page.getByText('2024/10/24')).toHaveCount(0);
   await page.getByTestId('collection-summon').click();
   await expect(page.getByTestId('collection-reveal')).toBeVisible();

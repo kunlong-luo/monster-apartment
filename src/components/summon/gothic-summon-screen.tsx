@@ -3,6 +3,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import './summon-screen.css';
 import {GothicDock} from '@/components/game/gothic-hud';
+import {WorkerArtwork} from '@/components/moonwork/worker-artwork';
 import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 import {useCharacterLife} from '@/lib/game/character-life-store';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
@@ -21,6 +22,12 @@ import {
 } from './summon-dialogs';
 import { useCharacterCollection, commitCollection } from '@/lib/game/character-collection-store';
 import { CHARACTER_CARDS, FORGE_RECIPES } from '@/core/character-collection';
+
+const SUMMON_WORKER_ART: Record<string,'cinder'|'fern'|'brook'> = {
+  'cinder-ember':'cinder',
+  'fern-spring':'fern',
+  'brook-tide':'brook',
+};
 
 function observeGachaSave(callback:()=>void){
   const event=()=>callback();
@@ -502,9 +509,7 @@ export function GothicSummonScreen() {
                   {character.id.startsWith('yuesha-') ? (
                     <Image src={character.avatar} alt="" fill sizes="40px" className="object-cover object-top" />
                   ) : (
-                    <span aria-hidden="true" className="grid h-full w-full place-items-center bg-[radial-gradient(circle_at_50%_20%,#6b364e,#1c0e1c)]">
-                      {character.name.slice(0,1)}
-                    </span>
+                    <WorkerArtwork id={SUMMON_WORKER_ART[character.id]} name={character.name} compact />
                   )}
                 </button>
               ))}
