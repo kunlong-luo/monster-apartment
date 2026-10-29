@@ -440,3 +440,12 @@ test('workshop roster remains legible and operable at desktop and phone widths',
     await expect(page.getByTestId('v2-worker-brook')).toHaveAttribute('aria-pressed','true');
   }
 });
+
+test('worker gallery deep link selects the requested artisan instead of ignoring it',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/workshop/?worker=cinder');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:30000});
+  await expect(page.getByTestId('v2-worker-cinder')).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByTestId('next-workshop-shell')).not.toContainText('SparkPrairie');
+  await expect(page.getByTestId('next-workshop-shell')).not.toContainText('Lv.60');
+});

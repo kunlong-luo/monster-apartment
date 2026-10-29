@@ -54,6 +54,8 @@ export function WorkshopControls({
 
   // Build live production log entries from world state and reports
   const report = world.last;
+  const waterStock=world.tiles.reduce((total,tile)=>total+(tile?.craft==='well'?(tile.stored??0):0),0);
+  const fiberStock=world.tiles.reduce((total,tile)=>total+(tile?.craft==='garden'?(tile.stored??0):0),0);
   const logs = [
     {
       time: '本班次',
@@ -236,7 +238,7 @@ export function WorkshopControls({
                   <p className="text-[10px] text-gothic-muted">由水汽泵持续凝结，用于温室灌溉</p>
                 </div>
               </div>
-              <span className="font-bold text-gothic-gold">库存充盈</span>
+              <span className="shrink-0 font-bold tabular-nums text-gothic-gold">储量 {waterStock}</span>
             </div>
             <div className="flex items-center justify-between rounded-lg border border-gothic-brass/40 bg-black/30 p-2">
               <div className="flex items-center gap-2">
@@ -246,7 +248,7 @@ export function WorkshopControls({
                   <p className="text-[10px] text-gothic-muted">由银叶苗床培育，熔炉炼核必需原料</p>
                 </div>
               </div>
-              <span className="font-bold text-gothic-gold">自给自足</span>
+              <span className="shrink-0 font-bold tabular-nums text-gothic-gold">储量 {fiberStock}</span>
             </div>
           </div>
         )}

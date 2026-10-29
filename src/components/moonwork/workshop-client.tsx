@@ -13,7 +13,8 @@ import {WorkshopContractPanel} from './workshop-contract-panel';
 import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
 import {WorkshopControls} from './workshop-controls';
-import {newWorkshop} from '../../../v2/src/workshop-engine';
+import {newWorkshop,workshopRank} from '../../../v2/src/workshop-engine';
+import type {WorkerId} from '../../../v2/src/workshop-engine';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import yueshaBust from '../../../public/art/yuesha-bust-v3.webp';
@@ -88,6 +89,7 @@ export function WorkshopClient() {
   const [speechIndex, setSpeechIndex] = useState(0);
   const savedWorld = useWorkshopWorld();
   const world = savedWorld ?? newWorkshop();
+  const rank=workshopRank(world.completed);
 
   const selection=useMoonworkState(state=>state.selection);
   const setSelection=useMoonworkState(state=>state.setSelection);
@@ -142,6 +144,11 @@ export function WorkshopClient() {
         } else {
           gameController.current = controller;
           setRuntimeReady(true);
+          // Character gallery links include ?worker=... . Honor the request
+          // only after Pixi has mounted and can receive assignment actions.
+          const requested=new URLSearchParams(window.location.search).get('worker');
+          if(requested==='brook'||requested==='fern'||requested==='cinder')
+            controller.dispatch({type:'choose-worker',worker:requested as WorkerId});
           dispose = () => {
             if(gameController.current===controller) gameController.current=null;
             controller.destroy();
@@ -191,16 +198,10 @@ export function WorkshopClient() {
               </div>
               <div className="flex flex-col text-left">
                 <div className="flex items-center gap-1.5 leading-none">
-                  <span className="text-[10px] sm:text-[11px] font-bold text-[#f0c588]">Lv.60</span>
-                  <span className="text-[11px] sm:text-xs font-semibold text-[#f9eedb]">SparkPrairie</span>
+                  <span className="text-[10px] sm:text-[11px] font-bold text-[#f0c588]">{rank.zh}</span>
+                  <span className="text-[11px] sm:text-xs font-semibold text-[#f9eedb]">月光工坊</span>
                 </div>
-                <div className="mt-1 flex items-center gap-1">
-                  <span className="text-[8px] sm:text-[9px] font-medium text-[#c8a982]">EXP</span>
-                  <div className="h-1.5 w-12 sm:w-16 overflow-hidden rounded-full bg-[#2a1727]">
-                    <div className="h-full w-[72%] rounded-full bg-gradient-to-r from-[#b68c61] to-[#e4ad58]" />
-                  </div>
-                  <span className="text-[8px] text-[#e0cfbe]/70">72%</span>
-                </div>
+                <span className="mt-1 text-[10px] text-[#e0cfbe]/80">已完成 {world.completed} 单委托</span>
               </div>
             </div>
 
@@ -208,7 +209,7 @@ export function WorkshopClient() {
               <span aria-hidden="true" className="star-sigil">⚜</span>
               <div className="logo-text">
                 <strong>月光工坊</strong>
-                <small className="workshop-tagline">Lv.3 暗夜工坊</small>
+                <small className="workshop-tagline">{rank.zh} · 月光工坊</small>
               </div>
             </div>
           </div>
