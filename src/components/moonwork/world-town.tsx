@@ -1,6 +1,5 @@
 'use client';
 import Link from 'next/link';
-import {WORLD_LINK_CLASS} from './world-primitives';
 import Image from 'next/image';
 import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
