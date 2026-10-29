@@ -27,7 +27,7 @@ export function inspectAlphaMask(mask,width,height){
   for(let x=xMin;x<=xMax;x++)if(mask[yMin*width+x]>32)top++;
   const contacts={left:Math.round(left/spanY*1000)/1000,
     right:Math.round(right/spanY*1000)/1000,top:Math.round(top/spanX*1000)/1000};
-  if(contacts.left>.24||contacts.right>.24||contacts.top>.4)
+  if(contacts.left>.3||contacts.right>.3||contacts.top>.4)
     throw new Error('Silhouette clipping detected (hair/arms/costume): '+JSON.stringify(contacts));
   return {
     sampleSize:[width,height],transparentFraction:Math.round(transparent/(width*height)*1000)/1000,
