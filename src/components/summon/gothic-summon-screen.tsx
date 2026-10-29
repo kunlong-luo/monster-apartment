@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import './summon-screen.css';
 import {GothicDock} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from '@/components/moonwork/world-navigation';
@@ -22,6 +22,15 @@ import {
 import { useCharacterCollection, commitCollection } from '@/lib/game/character-collection-store';
 import { CHARACTER_CARDS, FORGE_RECIPES } from '@/core/character-collection';
 
+function observeGachaSave(callback:()=>void){
+  const event=()=>callback();
+  window.addEventListener('storage',event);
+  window.addEventListener('monster-apartment:gacha-updated',event);
+  return ()=>{
+    window.removeEventListener('storage',event);
+    window.removeEventListener('monster-apartment:gacha-updated',event);
+  };
+}
 export function GothicSummonScreen() {
   const {
     state,
@@ -62,12 +71,11 @@ export function GothicSummonScreen() {
 
   const workshop=useWorkshopWorld();
   const life=useCharacterLife();
-  const [saveStatus,setSaveStatus]=useState<'ok'|'corrupt'|'unavailable'>('unavailable');
-  useEffect(()=>{setSaveStatus(gachaSaveStatus());},[state]);
+  const saveStatus=useSyncExternalStore(observeGachaSave,gachaSaveStatus,()=> 'unavailable');
   useEffect(()=>{
     if(workshop&&life.status==='ok')
       claimProgressTickets(workshop.completed,life.progress.visited.length);
-  },[workshop?.completed,life.status,life.progress.visited.length]);
+  },[workshop,life.status,life.progress.visited.length]);
   const performSummon=(count:1|10)=>{
     setSummonError('');
     const result=summon(count);
