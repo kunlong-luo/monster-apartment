@@ -51,3 +51,27 @@ test('zero resources cannot mint cards; phone can access the real banners and ac
     .toBeNull();
   await expect(page.getByRole('navigation',{name:'月影契约世界导航'}).getByRole('link')).toHaveCount(7);
 });
+
+test('desktop composition preserves the screenshot three-zone balance at 1648px',async({page})=>{
+  await page.setViewportSize({width:1648,height:928});
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:25000});
+  const proportions=await page.evaluate(()=>{
+    const width=(selector:string)=>document.querySelector(selector)?.getBoundingClientRect().width??0;
+    return {
+      left:width('.summon-cinematic-pools'),
+      center:width('.summon-cinematic-center'),
+      right:width('.summon-cinematic-sidebar'),
+      viewport:innerWidth,
+      overflow:document.documentElement.scrollWidth-innerWidth,
+      columns:getComputedStyle(document.querySelector('.summon-cinematic-sidebar')!).gridTemplateColumns
+    };
+  });
+  expect(proportions.left/proportions.viewport).toBeGreaterThan(.16);
+  expect(proportions.left/proportions.viewport).toBeLessThan(.21);
+  expect(proportions.center/proportions.viewport).toBeGreaterThan(.39);
+  expect(proportions.right/proportions.viewport).toBeGreaterThan(.26);
+  expect(proportions.right/proportions.viewport).toBeLessThan(.32);
+  expect(proportions.columns.split(' ').length).toBe(2);
+  expect(proportions.overflow).toBeLessThanOrEqual(2);
+});
