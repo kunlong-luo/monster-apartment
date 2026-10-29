@@ -2,12 +2,13 @@ import type {CharacterId} from './character-life';
 import input from '../../public/art/rooms/manifest.json';
 
 export type RoomArtStatus='concept'|'production';
-export type RoomComposition='embedded-resident'|'architecture-crop'|'separated';
+export type RoomComposition='embedded-resident'|'architecture-crop'|'layered-concept'|'separated';
 export type RoomArtInfo={
   id:CharacterId;
   backgroundStatus:RoomArtStatus;
   residentStatus:RoomArtStatus;
   composition:RoomComposition;
+  conceptPreview:string;
   layout:'concept'|'reviewed';
   backgroundLayer:'static-painted';
   residentLayer:'separate-actor';
@@ -21,6 +22,7 @@ function info(id:CharacterId):RoomArtInfo{
     backgroundStatus:source.status as RoomArtStatus,
     residentStatus:source.status as RoomArtStatus,
     composition:source.composition as RoomComposition,
+    conceptPreview:source.conceptPreview,
     layout:source.layout as 'concept'|'reviewed',
     backgroundLayer:'static-painted',
     residentLayer:'separate-actor',

@@ -38,8 +38,9 @@ test('mobile Moonsha visit still supports scenic inspection and return',async({p
   await page.getByTestId('visit-yuesha-room').click();
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
   await expect(page.getByTestId('room-scene-backdrop')).toBeVisible();
-  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-render-mode','embedded');
-  await expect(page.getByTestId('room-resident-present-yuesha')).toHaveCount(0);
+  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-composition','layered-concept');
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-render-mode','separate');
+  await expect(page.getByTestId('room-resident-present-yuesha')).toHaveCount(1);
   await page.screenshot({path:'test-results/room-yuesha-mobile.png'});
   await page.getByTestId('scene-object-seal').click();
   await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-object-id','seal');

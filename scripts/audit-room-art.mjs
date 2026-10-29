@@ -35,11 +35,18 @@ for(const id of ids){
   const room=manifest.rooms?.[id];
   assert(room,'missing '+id);
   assert(['concept','production'].includes(room.status),'invalid status '+id);
-  assert(['embedded-resident','architecture-crop','separated'].includes(room.composition),'composition '+id);
+  assert(['embedded-resident','architecture-crop','layered-concept','separated'].includes(room.composition),'composition '+id);
   assert(room.background==='public/art/rooms/'+id+'/background.webp','background path '+id);
   assert(JSON.stringify(room.poses)===JSON.stringify(poses.map(p=>'public/art/rooms/'+id+'/poses/'+p+'.webp')),'poses '+id);
   if(room.status==='concept'){
-    assert(room.composition!=='separated','concept cannot claim separated original art '+id);
+    assert(room.composition==='layered-concept','room must have independently composed concept layers '+id);
+    assert(room.conceptPreview==='public/art/rooms/'+id+'/concept-scene.svg','preview path '+id);
+    const preview=join(root,room.conceptPreview);
+    assert(existsSync(preview),'missing independent scene '+id);
+    const source=readFileSync(preview,'utf8');
+    assert(source.includes('viewBox="0 0 1920 1080"'),'concept scene must be 1920x1080 '+id);
+    assert(!/<image\b|<text\b|foreignObject|<script\b|https?:\/\//i.test(source.replace('http://www.w3.org/2000/svg','')),
+      'scene must not embed characters, UI text or remote media '+id);
     continue;
   }
   assert(room.composition==='separated','production must use separate assets '+id);

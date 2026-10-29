@@ -3,7 +3,7 @@
   "rooms": {
     "yuesha": {
       "status": "concept",
-      "composition": "embedded-resident",
+      "composition": "layered-concept",
       "background": "public/art/rooms/yuesha/background.webp",
       "poses": [
         "public/art/rooms/yuesha/poses/idle.webp",
@@ -11,11 +11,12 @@
         "public/art/rooms/yuesha/poses/warm.webp",
         "public/art/rooms/yuesha/poses/guarded.webp"
       ],
-      "layout": "concept"
+      "layout": "concept",
+      "conceptPreview": "public/art/rooms/yuesha/concept-scene.svg"
     },
     "brook": {
       "status": "concept",
-      "composition": "architecture-crop",
+      "composition": "layered-concept",
       "background": "public/art/rooms/brook/background.webp",
       "poses": [
         "public/art/rooms/brook/poses/idle.webp",
@@ -23,11 +24,12 @@
         "public/art/rooms/brook/poses/warm.webp",
         "public/art/rooms/brook/poses/guarded.webp"
       ],
-      "layout": "concept"
+      "layout": "concept",
+      "conceptPreview": "public/art/rooms/brook/concept-scene.svg"
     },
     "fern": {
       "status": "concept",
-      "composition": "architecture-crop",
+      "composition": "layered-concept",
       "background": "public/art/rooms/fern/background.webp",
       "poses": [
         "public/art/rooms/fern/poses/idle.webp",
@@ -35,11 +37,12 @@
         "public/art/rooms/fern/poses/warm.webp",
         "public/art/rooms/fern/poses/guarded.webp"
       ],
-      "layout": "concept"
+      "layout": "concept",
+      "conceptPreview": "public/art/rooms/fern/concept-scene.svg"
     },
     "cinder": {
       "status": "concept",
-      "composition": "architecture-crop",
+      "composition": "layered-concept",
       "background": "public/art/rooms/cinder/background.webp",
       "poses": [
         "public/art/rooms/cinder/poses/idle.webp",
@@ -47,7 +50,8 @@
         "public/art/rooms/cinder/poses/warm.webp",
         "public/art/rooms/cinder/poses/guarded.webp"
       ],
-      "layout": "concept"
+      "layout": "concept",
+      "conceptPreview": "public/art/rooms/cinder/concept-scene.svg"
     }
   }
 }

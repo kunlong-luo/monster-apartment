@@ -24,8 +24,8 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
     {x:2,y:1,rotate:.7};
   const art=ROOM_ART_MANIFEST[id];
   const away=working&&id!=='yuesha';
-  // The temporary Moonsha room painting already includes Moonsha.
-  // Keep her one painted appearance until a verified transparent actor ships.
+  // Never duplicate a painted resident; the current four room scenes are
+  // actor-free concept artwork and can use their own separately composited resident.
   const embedded=!away&&art.composition==='embedded-resident';
   const production=art.residentStatus==='production';
   const frame=art.productionAssets.residentFrames[
@@ -53,7 +53,7 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
         :id==='yuesha'
         ?<Image src={moonveilBust} alt={name+'在会客室中'} fill unoptimized draggable={false}
           sizes="(max-width:640px) 49vw, 410px"
-          className="object-contain object-bottom drop-shadow-[0_12px_22px_#000b]"/>
+          className="object-contain object-bottom drop-shadow-[0_12px_22px_#000b] [mask-image:radial-gradient(ellipse_52%_70%_at_55%_54%,black_48%,transparent_100%)]"/>
         :<WorkerArtwork id={id as WorkerCharacterId} name={name}/>}
     </motion.div>}
     <AnimatePresence mode="wait">

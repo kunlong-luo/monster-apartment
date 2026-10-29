@@ -6,9 +6,11 @@ import {CHARACTER_ROOM_OBJECTS} from '../src/core/character-life';
 
 describe('V3.7 independent art admission and stable hotspot IDs',()=>{
   it('keeps all temporary backdrops explicitly labelled and prevents repeated baked residents',()=>{
-    expect(ROOM_ART_MANIFEST.yuesha.composition).toBe('embedded-resident');
-    for(const id of ['brook','fern','cinder'] as const){
-      expect(ROOM_ART_MANIFEST[id].composition).toBe('architecture-crop');
+    for(const id of ['yuesha','brook','fern','cinder'] as const){
+      expect(ROOM_ART_MANIFEST[id].composition).toBe('layered-concept');
+      const svg=readFileSync(ROOM_ART_MANIFEST[id].conceptPreview,'utf8');
+      expect(svg).toContain('viewBox="0 0 1920 1080"');
+      expect(svg).not.toMatch(/<image\\b|<text\\b/);
     }
     const entry=JSON.parse(readFileSync('public/art/rooms/manifest.json','utf8'));
     expect(entry.version).toBe(1);

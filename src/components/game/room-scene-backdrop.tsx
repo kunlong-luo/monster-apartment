@@ -4,7 +4,6 @@ import Image from 'next/image';
 import {useReducedMotion} from 'motion/react';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 import {ROOM_ART_MANIFEST,roomPublicAssetPath} from '@/core/room-art-manifest';
-import moonlitPainting from '../../../public/art/lobby-hero-v3.webp';
 import type {CharacterId} from '@/core/character-life';
 
 /** Background and lighting never move the original painting: no image resampling
@@ -35,8 +34,11 @@ const ROOM_AMBIENCE={
 export function RoomSceneBackdrop({id}:{id:CharacterId}){
   const ambience=ROOM_AMBIENCE[id];
   const art=ROOM_ART_MANIFEST[id];
+  // All four concept scenes have independent, environment-only vector art.
+  // They are NOT the unreviewed future WebP production backgrounds.
   const fallbackCrop=art.composition==='architecture-crop';
-  const source=art.backgroundStatus==='production'?roomPublicAssetPath(art.productionAssets.background):moonlitPainting;
+  const source=roomPublicAssetPath(art.backgroundStatus==='production'
+    ?art.productionAssets.background:art.conceptPreview);
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
   const still=Boolean(systemReduced||gameReduced);
@@ -46,7 +48,7 @@ export function RoomSceneBackdrop({id}:{id:CharacterId}){
       className={fallbackCrop?'absolute inset-y-0 -left-[112%] w-[215%]':'absolute inset-0'}>
       <Image src={source} alt="" fill unoptimized priority={id==='yuesha'}
         sizes={fallbackCrop?'(max-width:1024px) 180vw, 1750px':'(max-width:1024px) 94vw, 850px'}
-        className={fallbackCrop?'object-cover object-right':'object-cover object-[45%_43%]'}/>
+        className={fallbackCrop?'object-cover object-right':'object-cover object-[45%_43%]'} />
     </div>
     <div className={'absolute inset-0 '+ambience.veil}/>
     <div className={'absolute inset-0 '+ambience.moon}/>
