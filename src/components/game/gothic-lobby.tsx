@@ -78,7 +78,13 @@ export function GothicLobby(){
 
     <GothicAtmosphere paused={reducedMotion}/>
 
-    <header className="absolute inset-x-0 top-0 z-[4] grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-x-2 px-3 pt-3 sm:px-5 max-[840px]:grid-cols-[minmax(0,1fr)_auto]" aria-label="玩家与资源">
+    <div className="gothic-lobby__brand" aria-label="怪物公寓 · MONSTER APARTMENT">
+      <span aria-hidden="true" className="gothic-lobby__brand-flourish">❦</span>
+      <strong>怪物公寓</strong>
+      <small>MONSTER APARTMENT</small>
+    </div>
+
+    <header className="gothic-lobby__topbar absolute inset-x-0 top-0 z-[4] grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-x-2 px-3 pt-3 sm:px-5 max-[840px]:grid-cols-[minmax(0,1fr)_auto]" aria-label="玩家与资源">
       <button type="button" className="flex min-h-12 w-max max-w-full items-center gap-2.5 bg-transparent text-left text-gothic-ivory focus-visible:outline-2 focus-visible:outline-gothic-glow"
         onClick={()=>setOpen('profile')} aria-label="打开玩家资料" aria-expanded={panel==='profile'}>
         <span className="gothic-lobby__avatar relative block size-[clamp(44px,4.4vw,73px)] shrink-0 overflow-hidden rounded-full border-2 border-[#e8c690] bg-[#362232] shadow-[0_0_0_3px_#171015bb,0_2px_18px_#0009]"><Image src={moonveilAvatar} alt="" fill unoptimized
@@ -97,46 +103,57 @@ export function GothicLobby(){
       </div>
     </header>
 
-    <aside className="absolute left-3 top-[17%] z-[2] flex max-w-[min(245px,37vw)] flex-col items-start gap-1.5 border-l border-gothic-gold/70 bg-[linear-gradient(90deg,#180d1dc7,transparent)] px-3 py-2.5 text-shadow-[0_2px_12px_#000] sm:left-6 sm:gap-2 sm:py-3"
-      aria-label="剧情焦点">
-      <span className="text-[9px] tracking-[.18em] text-gothic-muted">MOONLIGHT APARTMENT</span>
-      <strong className="text-base leading-snug font-semibold tracking-wide text-gothic-ivory drop-shadow-[0_2px_8px_#000] sm:text-xl">月纱 · 夜色邀约</strong>
-      <small className="hidden text-[11px] leading-relaxed text-gothic-muted sm:block">夜幕降临，她在大厅等你。</small>
-      <button type="button" onClick={talk} aria-label="与月纱交谈"
-        className="mt-1 rounded border border-gothic-brass/80 bg-[linear-gradient(125deg,#704b39c9,#25151fdb)] px-3 py-2 text-[11px] text-gothic-ivory shadow-[inset_0_1px_#ffdda831,0_4px_12px_#0008] transition-[border-color,transform] hover:translate-x-1 hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none">
-        开启对话 <span className="pl-2" aria-hidden="true">›</span>
-      </button>
-    </aside>
-
-
-
-    <button type="button" className="gothic-lobby__character-hit absolute z-[1] border-0! bg-transparent! inset-[15%_46%_16%_20%] max-[700px]:inset-[22%_27%_24%_25%] cursor-pointer focus-visible:outline-2 focus-visible:outline-gothic-glow"
-      onClick={talk} aria-label="与月纱互动" data-tooltip="与月纱互动"/>
-    <div className="gothic-lobby__character-caption pointer-events-none absolute z-[1] bottom-[clamp(106px,16vh,158px)] left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5 text-[#f6d9b8] [text-shadow:0_3px_12px_#000]" aria-hidden="true"><span className="text-[13px] tracking-[.23em]">月纱</span><small className="text-[10px] text-[#d0b298]">暗夜公寓的女主人</small></div>
-
-    <Link href={orderReady?'/orders/':'/workshop/'}
-      aria-label={orderReady?'晶核已备齐，查看委托交期':'晶核不足，前往工坊生产'}
-      data-testid="gothic-main-quest"
-      className="group absolute bottom-[86px] left-3 z-[3] flex w-[min(310px,68vw)] items-center gap-2 rounded-lg border border-gothic-brass/55 border-l-2 border-l-gothic-gold/90 bg-[linear-gradient(105deg,#231625e8,#211622c7)] px-3 py-2.5 text-[11px] leading-snug text-gothic-ivory shadow-[0_5px_16px_#0009,inset_0_1px_#ffe0a21c] transition-[border-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-gothic-glow hover:shadow-[0_7px_20px_#000a,0_0_14px_#edc99023] focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none sm:bottom-[106px] sm:left-6">
-      <span className="shrink-0 text-base text-gothic-gold" aria-hidden="true">{orderReady?'✦':'◇'}</span>
-      <span className="grid min-w-0 flex-1 gap-1.5">
-        <span className="truncate font-medium tracking-[.045em]">
-          {orderReady?'晶核已备齐 · 去委托查看交期':'去工坊生产 · 晶核 '+orderStock+' / '+orderTarget}
+    <section className="gothic-lobby__mission-rail" aria-label="当前主线与契约活动">
+      <Link href={orderReady?'/orders/':'/workshop/'}
+        aria-label={orderReady?'晶核已备齐，查看委托交期':'晶核不足，前往工坊生产'}
+        data-testid="gothic-main-quest" className="gothic-lobby__mission-card gothic-lobby__mission-card--quest">
+        <span className="gothic-lobby__card-kicker">✧ 主线 · 月影之约 <span aria-hidden="true">❯</span></span>
+        <strong>{orderReady?'晶核已备齐 · 去委托核对交期':'与月纱一起筹备第一批晶核'}</strong>
+        <span className="gothic-lobby__mission-detail">
+          {orderReady?'下一步：确认交付和奖励':'去工坊生产 · 晶核 '+orderStock+' / '+orderTarget}
         </span>
         <span role="progressbar" aria-label="晶核收集进度"
           aria-valuemin={0} aria-valuemax={orderTarget}
           aria-valuenow={Math.min(orderStock,orderTarget)}
           data-testid="gothic-main-quest-progress"
-          className="block h-[3px] w-full overflow-hidden rounded-full bg-[#8e6b5357]">
-          <span className={'block h-full rounded-full transition-[width] duration-300 motion-reduce:transition-none '+(orderReady?'bg-[#abe1b5]':'bg-[#edc990]')}
-            style={{width:orderProgress+'%'}}/>
-        </span>
-      </span>
-      <span className="shrink-0 text-lg leading-none text-gothic-gold transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden="true">›</span>
-    </Link>
+          className="gothic-lobby__progress"><span style={{width:orderProgress+'%'}}/></span>
+      </Link>
+      <Link href="/characters/#summon"
+        className="gothic-lobby__mission-card gothic-lobby__mission-card--eclipse"
+        data-testid="gothic-eclipse-feature" aria-label="查看红色神话月蚀契约召唤">
+        <span className="gothic-lobby__card-kicker">✦ 月夜契约 · 角色收藏</span>
+        <strong>神话 · 月蚀</strong>
+        <span className="gothic-lobby__mission-detail">月纱的红色珍藏契约 · 实际概率 1%</span>
+        <span className="gothic-lobby__card-rune" aria-hidden="true">☾</span>
+      </Link>
+      <button type="button" onClick={()=>setOpen('updates')} className="gothic-lobby__mission-card gothic-lobby__updates-card"
+        data-testid="gothic-commission-status">
+        <span className="gothic-lobby__card-kicker">✉ 新消息 · 本日委托</span>
+        <strong>待交付晶核 {Math.max(0,orderTarget-orderStock)} 枚</strong>
+        <span className="gothic-lobby__mission-detail">第 {world.day} 天 · 截止第 {world.order.due} 天</span>
+      </button>
+    </section>
+
+
+
+    <button type="button" className="gothic-lobby__character-hit absolute z-[1] border-0! bg-transparent! inset-[15%_46%_16%_20%] max-[700px]:inset-[22%_27%_24%_25%] cursor-pointer focus-visible:outline-2 focus-visible:outline-gothic-glow"
+      onClick={talk} aria-label="与月纱互动" data-tooltip="与月纱互动"/>
+    <aside className="gothic-lobby__character-actions" aria-label="月纱人物互动">
+      <button type="button" onClick={talk} data-testid="gothic-character-talk">
+        <Image src={moonveilAvatar} alt="" width={62} height={62} unoptimized/>
+        <span>月纱<small>与她交谈</small></span>
+      </button>
+      <Link href="/apartment/?visit=yuesha" data-testid="gothic-character-room">
+        <span aria-hidden="true" className="gothic-lobby__action-glyph">♜</span>
+        <span>拜访房间<small>探索她的秘密</small></span>
+      </Link>
+    </aside>
+    <div className="gothic-lobby__character-caption pointer-events-none absolute z-[1] bottom-[clamp(106px,16vh,158px)] left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5 text-[#f6d9b8] [text-shadow:0_3px_12px_#000]" aria-hidden="true"><span className="text-[13px] tracking-[.23em]">月纱</span><small className="text-[10px] text-[#d0b298]">暗夜公寓的女主人</small></div>
+
+
 
     <GothicDock items={WORLD_NAV.map(n=>({href:n.href,icon:n.glyph,label:n.label,ariaLabel:n.full,description:n.purpose}))}
-      label="主要游戏功能" activeHref="/" compact/>
+      label="主要游戏功能" activeHref="/" compact className="gothic-dock--cinematic"/>
 
     <AnimatePresence mode="wait">
     {panel&&<GothicModal key={panel} title={panel==='bond'?'与月纱交谈':panel==='profile'?'玩家资料':'委托消息'}

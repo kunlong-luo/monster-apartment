@@ -10,7 +10,11 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   // Lobby uses the compact HUD; ordinary destinations remain fully labeled.
   const dockLinks=page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link');
   const dockSize=await dockLinks.first().evaluate(el=>el.getBoundingClientRect().width);
-  expect(dockSize).toBeLessThanOrEqual(64);
+  expect(dockSize).toBeGreaterThan(70);
+  expect(dockSize).toBeLessThan(280);
+  await expect(page.getByTestId('gothic-eclipse-feature')).toBeVisible();
+  await expect(page.getByTestId('gothic-commission-status')).toContainText('待交付');
+  await expect(page.getByTestId('gothic-character-room')).toHaveAttribute('href',/visit=yuesha/);
   const size=await page.evaluate(()=>({
     width:document.documentElement.scrollWidth-innerWidth,
     height:document.documentElement.scrollHeight-innerHeight,

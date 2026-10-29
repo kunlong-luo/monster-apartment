@@ -48,3 +48,144 @@
 @media(max-width:700px){
   .gothic-lobby__painting img{object-position:25% center}
 }
+
+/* V3.25: Gothic UI reference 01 — decorative photo stage stays independent of
+ * all controls; no screenshot baked under click targets and no mock currencies. */
+.gothic-lobby{--ui-gold:#f0cf9b;--ui-red:#aa2147}
+.gothic-lobby__brand{
+  position:absolute;z-index:6;top:12px;left:20px;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;min-width:225px;
+  padding:3px 25px 8px;color:#ffdfaa;
+  border-bottom:1px solid #daa96993;
+  background:linear-gradient(90deg,transparent,#140b16a8 20%,#140b16a8 80%,transparent);
+  text-shadow:0 3px 9px #000,0 0 20px #fdc87266;
+}
+.gothic-lobby__brand strong{font-size:clamp(25px,2.8vw,42px);font-weight:600;line-height:1.22;letter-spacing:.11em}
+.gothic-lobby__brand small{font-size:9px;letter-spacing:.28em}
+.gothic-lobby__brand-flourish{position:absolute;top:9px;left:5px;font-size:19px;color:#ce9676}
+.gothic-lobby__topbar{padding-left:clamp(265px,25vw,385px)!important}
+.gothic-lobby__mission-rail{
+  position:absolute;z-index:3;left:clamp(12px,1.6vw,28px);
+  top:clamp(155px,18vh,205px);
+  width:clamp(270px,28vw,415px);
+  display:flex;flex-direction:column;gap:10px;
+  max-height:calc(100dvh - 285px);overflow-y:auto;
+  scrollbar-width:thin;overscroll-behavior:contain;
+}
+.gothic-lobby__mission-card{
+  position:relative;overflow:hidden;flex-shrink:0;
+  display:flex;flex-direction:column;gap:8px;width:100%;
+  text-align:left;line-height:1.45;padding:14px 17px;
+  min-height:101px;border:1px solid #d1a36c;
+  border-radius:3px;
+  color:#f9dfb9!important;
+  background:linear-gradient(135deg,#1a101be8,#110a17ea 86%);
+  box-shadow:inset 0 0 0 2px #bc855433,0 10px 30px #0009;
+  text-shadow:0 2px 7px #000b;
+  transition:border-color .2s,box-shadow .2s;
+}
+.gothic-lobby__mission-card::before{
+  content:"✦";position:absolute;top:3px;left:5px;font-size:9px;
+  color:#f2d5aa7d;pointer-events:none
+}
+.gothic-lobby__mission-card:is(:hover,:focus-visible){
+  border-color:#ffdfb0;box-shadow:inset 0 0 0 2px #d7ad5a66,0 0 24px #a6645f55
+}
+.gothic-lobby__card-kicker{font-size:clamp(12px,1vw,16px);color:#ffdba7;letter-spacing:.09em}
+.gothic-lobby__card-kicker span{float:right}
+.gothic-lobby__mission-card strong{font-size:clamp(12px,1.2vw,17px);font-weight:500}
+.gothic-lobby__mission-detail{font-size:clamp(10px,.82vw,12px);color:#d6bca2}
+.gothic-lobby__progress{height:6px;border-radius:6px;border:1px solid #ac846b;background:#100b13;}
+.gothic-lobby__progress>span{display:block;height:100%;background:linear-gradient(90deg,#b77753,#f4d599);box-shadow:0 0 9px #fdc66d70}
+.gothic-lobby__mission-card--eclipse{
+  min-height:155px;background:
+    radial-gradient(ellipse at 83% 54%,#b31c3c8c,transparent 55%),
+    linear-gradient(130deg,#341020f5,#1a0a1aee 85%);
+  border-color:#d56570;
+}
+.gothic-lobby__mission-card--eclipse strong{
+  font-size:clamp(25px,3vw,39px);
+  color:#ffd9de;letter-spacing:.07em;text-shadow:0 0 15px #f22f6f8c,0 2px 5px #000;
+}
+.gothic-lobby__card-rune{position:absolute;right:9px;bottom:-17px;font-size:103px;line-height:1;color:#e06a7b35;pointer-events:none}
+.gothic-lobby__updates-card{min-height:94px;background:#120d18ec}
+.gothic-lobby__character-actions{
+  position:absolute;z-index:3;right:clamp(11px,1.8vw,33px);top:28%;
+  width:clamp(98px,10vw,158px);display:grid;gap:12px;
+}
+.gothic-lobby__character-actions :is(a,button){
+  min-height:105px;padding:10px 6px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  border:1px solid #dfb675!important;border-radius:5px;
+  color:#ffe1bb!important;background:linear-gradient(130deg,#25101def,#120b17ef);
+  box-shadow:inset 0 0 0 2px #a77b5840,0 9px 24px #000a;
+  font-size:clamp(11px,1.05vw,15px);
+  text-align:center;text-decoration:none;
+}
+.gothic-lobby__character-actions :is(a,button):hover{border-color:#ffe4b3!important;background:#402235ed}
+.gothic-lobby__character-actions img{width:49px;height:49px;border-radius:50%;object-fit:cover;border:1px solid #e7b87a}
+.gothic-lobby__character-actions small{display:block;font-size:10px;color:#c8a58c}
+.gothic-lobby__action-glyph{font-size:38px;color:#f3c289;line-height:1}
+.gothic-lobby__character-caption{display:none!important}
+.gothic-lobby .gothic-dock--cinematic{
+  bottom:max(8px,env(safe-area-inset-bottom))!important;
+  width:calc(100vw - 26px)!important;max-width:1750px!important;
+  border-radius:14px;padding:7px 10px;gap:2px;
+  background:linear-gradient(180deg,#170e16ef,#0b0710f6)!important;
+  border-color:#c79b687f;box-shadow:inset 0 1px #f2d2a538,0 0 0 2px #0a0610dc,0 -9px 30px #000b;
+}
+.gothic-lobby .gothic-dock--cinematic a{
+  flex:1;min-width:0;min-height:71px;
+  border-right:1px solid #997c584d;gap:3px;justify-content:center;
+}
+.gothic-lobby .gothic-dock--cinematic a:last-child{border-right:0}
+.gothic-lobby .gothic-dock--cinematic a[aria-current="page"]{
+  color:#ffedf0!important;
+  background:linear-gradient(145deg,#6b102cbd,#3b1227ac);
+  border:1px solid #e25f63;border-radius:11px;box-shadow:0 0 21px #dc254850;
+}
+.gothic-lobby .gothic-dock--cinematic a>span:first-child{
+  border:none;background:transparent;font-size:28px;box-shadow:none;height:32px;width:auto;
+}
+.gothic-lobby .gothic-dock--cinematic .gothic-dock__label{font-size:clamp(11px,1.2vw,16px);font-weight:600;letter-spacing:.14em}
+.gothic-lobby .gothic-dock--cinematic .gothic-dock__subtitle{
+  display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:#c9a68c;font-size:10px;letter-spacing:0;
+}
+@media(max-width:900px){
+  .gothic-lobby__brand{top:5px;left:8px;min-width:130px;padding:2px 10px}
+  .gothic-lobby__brand strong{font-size:23px}
+  .gothic-lobby__brand small{font-size:7px}
+  .gothic-lobby__brand-flourish{display:none}
+  .gothic-lobby__topbar{top:54px!important;padding-left:10px!important}
+  .gothic-lobby__mission-rail{top:165px;left:10px;width:min(270px,53vw);max-height:calc(100dvh - 280px)}
+  .gothic-lobby__character-actions{top:31%;right:10px;width:94px}
+  .gothic-lobby__character-actions :is(a,button){min-height:87px}
+  .gothic-lobby .gothic-dock--cinematic .gothic-dock__subtitle{display:none}
+}
+@media(max-width:600px){
+  .gothic-lobby__topbar{top:45px!important}
+  .gothic-lobby__mission-rail{top:151px;left:7px;width:min(61vw,248px);gap:7px;max-height:calc(100dvh - 245px)}
+  .gothic-lobby__mission-card{padding:9px 10px;min-height:67px;gap:4px}
+  .gothic-lobby__mission-card--eclipse{min-height:91px}
+  .gothic-lobby__mission-card--eclipse strong{font-size:22px}
+  .gothic-lobby__updates-card{min-height:65px}
+  .gothic-lobby__card-kicker{font-size:11px}
+  .gothic-lobby__character-actions{right:6px;top:36%;width:84px;gap:7px}
+  .gothic-lobby__character-actions :is(a,button){min-height:68px;font-size:10px;padding:6px 4px}
+  .gothic-lobby__character-actions img{width:33px;height:33px}
+  .gothic-lobby__character-actions small{font-size:9px}
+  .gothic-lobby__action-glyph{font-size:25px}
+  .gothic-lobby .gothic-dock--cinematic{width:calc(100vw - 8px)!important;padding:3px!important;gap:0}
+  .gothic-lobby .gothic-dock--cinematic a{min-height:55px}
+  .gothic-lobby .gothic-dock--cinematic a>span:first-child{font-size:19px;height:24px}
+  .gothic-lobby .gothic-dock--cinematic .gothic-dock__label{font-size:9px;letter-spacing:0}
+}
+@media(max-height:650px){
+  .gothic-lobby__mission-rail{max-height:calc(100dvh - 210px);top:111px}
+  .gothic-lobby__topbar{top:40px!important}
+  .gothic-lobby .gothic-dock--cinematic a{min-height:48px}
+}
+@media(prefers-reduced-motion:reduce){
+  .gothic-lobby__mission-card,.gothic-lobby__character-actions :is(a,button){transition:none!important}
+}

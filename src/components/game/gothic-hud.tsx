@@ -116,6 +116,7 @@ export function GothicDock({
   testId?:string;
   compact?:boolean;
 }){
+  const cinematic=className.includes('gothic-dock--cinematic');
   return <nav data-testid={testId} aria-label={label} className={
     'absolute bottom-[max(8px,env(safe-area-inset-bottom))] left-1/2 z-[10] '+
     'flex w-max max-w-[calc(100vw-12px)] -translate-x-1/2 items-center justify-center gap-1 sm:gap-3.5 '+
@@ -141,7 +142,8 @@ export function GothicDock({
         'group-hover:border-gothic-glow group-hover:shadow-[0_0_18px_#d8a87445] '+
         (activeHref===item.href?'border-gothic-glow bg-gothic-wine text-gothic-glow shadow-[0_0_18px_#d8a87466]':'border-gothic-brass/65')
       }>{item.icon}</span>
-      <span>{item.label}</span>
+      <span className="gothic-dock__label">{item.label}</span>
+      {cinematic&&<span className="gothic-dock__subtitle" aria-hidden="true">{item.description}</span>}
     </Link>)}
   </nav>;
 }
