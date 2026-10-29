@@ -222,6 +222,7 @@ export function GothicSummonScreen() {
                 key={pool.id}
                 type="button"
                 aria-pressed={isActive}
+                disabled={saveStatus!=='ok'}
                 onClick={() => setActivePoolId(pool.id)}
                 className={`summon-pool-item group relative flex min-h-14 w-44 shrink-0 items-center gap-2.5 rounded-md border p-2 text-left transition-all duration-300 lg:h-20 lg:w-full ${
                   isActive

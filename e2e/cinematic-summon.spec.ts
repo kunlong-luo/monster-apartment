@@ -88,3 +88,22 @@ test('desktop composition preserves the screenshot three-zone balance at 1648px'
   expect(proportions.columns.split(' ').length).toBe(2);
   expect(proportions.overflow).toBeLessThanOrEqual(2);
 });
+
+test('switching pools preserves current currency and never overwrites a corrupt save',async({page})=>{
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
+  await page.evaluate(()=>{
+    localStorage.setItem('monster-apartment:gacha-v2',JSON.stringify({
+      version:2,tickets:11,crystals:0,moonstones:0,pityCountdown:90,
+      totalSummons:0,history:[],ownedIds:[],claimedProgressRewards:[],
+      activePoolId:'mythic-eclipse'
+    }));
+  });
+  await page.locator('.summon-pool-item').filter({hasText:'红月之邀'}).click();
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!).tickets)).toBe(11);
+  await page.evaluate(()=>localStorage.setItem('monster-apartment:gacha-v2','{corrupt save'));
+  await page.reload();
+  await expect(page.getByTestId('summon-save-error')).toBeVisible();
+  await expect(page.locator('.summon-pool-item').first()).toBeDisabled();
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:gacha-v2'))).toBe('{corrupt save');
+});

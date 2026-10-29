@@ -6,6 +6,9 @@ import {
   INITIAL_GACHA_STATE,
   type GachaState,
   saveGachaState,
+  readGachaState,
+  gachaSaveStatus,
+  GACHA_POOLS,
   executeSummon,
   type SummonableCharacter,
 } from './gacha-engine';
@@ -58,9 +61,14 @@ export function useGacha(): {
     return INITIAL_GACHA_STATE;
   }, [raw]);
 
+  // Never write a stale React snapshot over newer resources or a corrupt save.
+  const updateCurrent = (update: (current: GachaState) => GachaState) => {
+    if (typeof window === 'undefined' || gachaSaveStatus() !== 'ok') return;
+    saveGachaState(update(readGachaState()));
+  };
   const setActivePoolId = (id: string) => {
-    const next = { ...state, activePoolId: id };
-    saveGachaState(next);
+    if (!GACHA_POOLS.some(pool => pool.id === id)) return;
+    updateCurrent(current => ({...current, activePoolId: id}));
   };
 
   const summon = (count: 1 | 10) => {
@@ -68,18 +76,18 @@ export function useGacha(): {
   };
 
   const replenishTickets = (amount: number) => {
-    const next = { ...state, tickets: state.tickets + amount };
-    saveGachaState(next);
+    if (!Number.isSafeInteger(amount) || amount <= 0) return;
+    updateCurrent(current => ({...current, tickets: current.tickets + amount}));
   };
 
   const replenishCrystals = (amount: number) => {
-    const next = { ...state, crystals: state.crystals + amount };
-    saveGachaState(next);
+    if (!Number.isSafeInteger(amount) || amount <= 0) return;
+    updateCurrent(current => ({...current, crystals: current.crystals + amount}));
   };
 
   const replenishMoonstones = (amount: number) => {
-    const next = { ...state, moonstones: state.moonstones + amount };
-    saveGachaState(next);
+    if (!Number.isSafeInteger(amount) || amount <= 0) return;
+    updateCurrent(current => ({...current, moonstones: current.moonstones + amount}));
   };
 
   return {
