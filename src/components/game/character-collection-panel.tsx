@@ -1,5 +1,8 @@
 'use client';
-import {useState} from 'react';
+import {useRef,useState} from 'react';
+import {AnimatePresence} from 'motion/react';
+import {CharacterAdornment} from '@/components/game/character-adornment';
+import {CharacterSummonReveal} from '@/components/game/character-summon-reveal';
 import Image from 'next/image';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import {WorkerArtwork} from '@/components/moonwork/worker-artwork';
@@ -14,6 +17,7 @@ function Portrait({id}:{id:'yuesha'|'brook'|'fern'|'cinder'}){
     {id==='yuesha'?<Image src={moonveilPortrait} alt="" fill unoptimized sizes="64px"
       className="object-cover object-top"/>:
       <WorkerArtwork id={id} name={CHARACTER_PROFILES[id].name} compact/>}
+    <CharacterAdornment id={id} compact/>
   </span>;
 }
 const colors:Record<string,string>={
@@ -28,6 +32,12 @@ export function CharacterCollectionPanel({completed}:{completed:number}){
   const {status,collection}=useCharacterCollection();
   const [chosen,setChosen]=useState<CardKey|null>(null);
   const [notice,setNotice]=useState('');
+  const [reveal,setReveal]=useState<{card:CardKey;duplicate:boolean}|null>(null);
+  const summonButton=useRef<HTMLButtonElement>(null);
+  const dismissReveal=()=>{
+    setReveal(null);
+    window.requestAnimationFrame(()=>summonButton.current?.focus());
+  };
   const earned=earnedContracts(completed,life.status==='ok'?life.progress.visited.length:0);
   const available=availableContracts(collection,earned);
   const selectedCard=CHARACTER_CARDS.find(card=>card.key===chosen&&collection.draws.includes(card.key))??
@@ -40,6 +50,7 @@ export function CharacterCollectionPanel({completed}:{completed:number}){
     if(result.status==='applied'&&result.card){
       const card=CHARACTER_CARDS.find(c=>c.key===result.card)!;
       setChosen(result.card);
+      setReveal({card:result.card,duplicate:collection.draws.includes(result.card)});
       setNotice('召唤成功：'+card.title+'。'+
         (collection.draws.includes(result.card)?'重复契约已化为更多锻造碎片。':'新契约已加入图鉴。'));
     }else setNotice(result.status==='duplicate'?'当前契约券已用完。':'收藏存档不可写入，请检查存储权限和历史数据。');
@@ -73,8 +84,8 @@ export function CharacterCollectionPanel({completed}:{completed:number}){
       <div><span className="block text-[#c7a788]">已收录</span><strong className="text-lg tabular-nums text-[#ffe6b3]" data-testid="collection-owned">{ownedCount} / 5</strong></div>
       <div><span className="block text-[#c7a788]">锻造碎片</span><strong className="text-lg tabular-nums text-[#ffe6b3]" data-testid="collection-shards">{collection.shards}</strong></div>
     </div>
-    <button type="button" data-testid="collection-summon"
-      disabled={status!=='ok'||life.status!=='ok'||available<1}
+    <button ref={summonButton} type="button" data-testid="collection-summon"
+      disabled={status!=='ok'||life.status!=='ok'||available<1||Boolean(reveal)}
       onClick={summon}
       className="min-h-12 w-full rounded-lg border border-[#e7b36c] bg-[linear-gradient(100deg,#6c2844,#4a203d,#8a4543)] px-4 text-sm font-bold text-[#ffefd1] shadow-[0_5px_18px_#19040c80] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
       ☽ 召唤契约 · 消耗 1 张
@@ -85,6 +96,10 @@ export function CharacterCollectionPanel({completed}:{completed:number}){
     <p className="text-[10px] leading-5 text-[#ad9588]" data-testid="collection-odds">
       公告概率：普通 46% · 稀有 31% · 史诗 17% · 传说 5% · <span className="text-[#ff8293]">神话·月蚀 1%</span>
     </p>
+    <AnimatePresence>
+      {reveal&&<CharacterSummonReveal key={reveal.card}
+        cardKey={reveal.card} duplicate={reveal.duplicate} onClose={dismissReveal}/>}
+    </AnimatePresence>
     {notice&&<p role="status" data-testid="collection-feedback"
       className="rounded-lg border border-[#c09b727e] bg-[#41283a] p-2 text-xs leading-5 text-[#ffe7c9]">{notice}</p>}
     <div>

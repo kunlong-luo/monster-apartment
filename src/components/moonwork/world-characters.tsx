@@ -8,6 +8,7 @@ import type {WorkshopState,WorkerId} from '../../../v2/src/workshop-engine';
 import {WorkerArtwork} from './worker-artwork';
 import {CharacterLifePortrait} from '@/components/game/character-life-portrait';
 import {CharacterCollectionPanel} from '@/components/game/character-collection-panel';
+import {CharacterAdornment} from '@/components/game/character-adornment';
 import {RoomInvestigationJournal} from '@/components/game/room-investigation-journal';
 import {RoomMemoryGallery} from '@/components/game/room-memory-gallery';
 const ids=['brook','fern','cinder'] as const;
@@ -19,6 +20,7 @@ function WorkerPainting({id,label,working}:{
   return <div className={'mw-worker-portrait mw-worker-portrait--'+id}
     data-art-source="transparent-worker">
     <WorkerArtwork id={id} name={label} frame={working?2:0}/>
+    <CharacterAdornment id={id}/>
     <span className="mw-worker-role">
       {id==='brook'?'水汽匠':id==='fern'?'园艺师':'晶核锻造师'}
     </span>
@@ -65,6 +67,7 @@ export function Characters({s,onVisit}:{s:WorkshopState;onVisit:(id:WorkerId)=>v
       <div className="mw-witch-painting">
         <Image src={moonveilPortrait} fill unoptimized sizes="150px"
           alt="成年魔女商人月纱的绘制立绘"/>
+        <CharacterAdornment id="yuesha" compact/>
       </div>
       <div><p className="mw-eyebrow">MOONLIT COMMISSIONS · THE MERCHANT</p>
         <h2>月纱 · 28 岁月夜魔女</h2>

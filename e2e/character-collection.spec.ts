@@ -14,15 +14,23 @@ test('character card can be summoned, forged and equipped without altering the f
       }});
   });
   await page.getByTestId('collection-summon').click();
+  await expect(page.getByTestId('collection-reveal')).toBeVisible();
+  await expect(page.getByTestId('collection-reveal')).toHaveAttribute('data-rarity','普通');
+  await expect(page.getByTestId('collection-reveal-name')).toContainText('泉泡');
+  await page.getByTestId('collection-reveal-close').click();
   await expect(page.getByTestId('collection-card-brook-tide')).toContainText('已收录');
   await expect(page.getByTestId('collection-shards')).toHaveText('1');
   await page.getByTestId('collection-summon').click();
+  await expect(page.getByTestId('collection-reveal')).toContainText('重复契约');
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('collection-reveal')).toHaveCount(0);
   await expect(page.getByTestId('collection-shards')).toHaveText('3');
   await page.getByTestId('collection-gear-moon-pendant').click();
   await expect(page.getByTestId('collection-shards')).toHaveText('1');
   await page.getByTestId('collection-gear-moon-pendant').click();
   await expect(page.getByTestId('collection-feedback')).toContainText('泉泡已装备月纹吊坠');
   await expect(page.getByTestId('life-equipped-brook')).toContainText('月纹吊坠');
+  await expect(page.getByTestId('adornment-brook-moon-pendant').first()).toBeVisible();
   await page.getByTestId('life-expand-brook').click();
   await expect(page.getByTestId('life-profile-brook')).toContainText('+8');
   await expect(page.getByTestId('life-potential-brook')).toContainText('1 阶');
@@ -40,4 +48,25 @@ test('corrupt collections are preserved and cannot consume summons',async({page}
   await expect(page.getByTestId('collection-summon')).toBeDisabled();
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:character-collection:v1')))
     .toBe('{bad-original');
+});
+
+test('red eclipse reveal is visibly mythic and respects reduced motion',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/characters/');
+  await expect(page.getByTestId('character-collection')).toBeVisible();
+  await page.evaluate(()=>{
+    localStorage.setItem('monster-apartment:gothic-motion-reduced','1');
+    Object.defineProperty(window.crypto,'getRandomValues',{configurable:true,value:(a:Uint32Array)=>{
+      a[0]=4294967295;return a;
+    }});
+  });
+  await page.getByTestId('collection-summon').click();
+  const reveal=page.getByTestId('collection-reveal');
+  await expect(reveal).toBeVisible();
+  await expect(reveal).toHaveAttribute('data-rarity','神话·月蚀');
+  await expect(reveal).toHaveAttribute('data-motion','still');
+  await expect(page.getByTestId('collection-reveal-rarity')).toContainText('红色');
+  await expect(page.getByTestId('life-potential-yuesha')).toContainText('5 阶');
+  await page.getByTestId('collection-reveal-close').click();
+  await expect(page.getByTestId('adornment-tier-yuesha').first()).toBeVisible();
 });
