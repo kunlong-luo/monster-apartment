@@ -1,4 +1,5 @@
 import {Texture} from 'pixi.js';
+import type {WorkerId} from './workshop-model';
 
 /** Painted Pixi texture loader. A high-detail WebP is the primary backdrop;
  * older AVIF and procedural textures remain nonfatal codec fallbacks. */
@@ -11,7 +12,7 @@ export async function loadWorkshopPaintedArt(assetBase:string){
   let patronPortrait:Texture|null=null;
   // Legacy worker WebP assets were pet-shaped. Do not reload them into the
   // human-form roster or stage; only distinct verified humanoid CG may return.
-  const workerPaintings={};
+  const workerPaintings:Partial<Record<WorkerId,Texture>>={};
   const paintedDetail:Partial<Record<'well'|'garden',Texture>>={};
   try{
     const image=new Image();

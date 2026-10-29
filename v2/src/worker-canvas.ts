@@ -82,7 +82,7 @@ export function drawHumanoid(id:WorkerId,frame:number):HTMLCanvasElement {
       body:'#527961',hem:'#b4dca5',gold:'#dfbf89',boot:'#24392e'}
     :{hair:'#381d2d',shine:'#b55b57',skin:'#e4b598',cloak:'#351827',
       body:'#873d47',hem:'#ea9b78',gold:'#e9b16d',boot:'#29212b'};
-  const shape=(points:number[],fill:string,stroke:string,width=1.4)=>{
+  const shape=(points:number[],fill:string|CanvasGradient,stroke:string,width=1.4)=>{
     g.beginPath();g.moveTo(points[0],points[1]);
     for(let i=2;i<points.length;i+=2)g.lineTo(points[i],points[i+1]);
     g.closePath();g.fillStyle=fill;g.fill();g.strokeStyle=stroke;g.lineWidth=width;g.stroke();
@@ -110,7 +110,7 @@ export function drawHumanoid(id:WorkerId,frame:number):HTMLCanvasElement {
   coat.addColorStop(0,palette.hem);coat.addColorStop(.25,palette.body);
   coat.addColorStop(1,palette.cloak);
   shape([56,79,72,70,96,70,113,80,107,102,112,133,83,138,54,133,62,101],
-    coat as unknown as string,palette.gold,1.6);
+    coat,palette.gold,1.6);
   shape([65,107,101,107,111,132,82,138,55,132],
     palette.cloak,palette.hem,1.1);
   // Side arms have elbows, forearms and separate hands.
