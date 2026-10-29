@@ -9,7 +9,7 @@ test('mobile workshop machine states follow real staffing and supply',async({pag
   const canvas=stage.locator('canvas');
   await expect(canvas).toBeVisible({timeout:25_000});
   await expect(stage).toHaveAttribute('data-machine-states',/5:idle;7:idle/);
-  await expect(stage).toHaveAttribute('data-worker-art',/transparent/);
+  await expect(stage).toHaveAttribute('data-worker-art','hi-dpi-transparent-humanoid');
 
   await page.getByTestId('v2-worker-fern').click();
   const box=await canvas.boundingBox();

@@ -72,10 +72,10 @@ export async function mountWorkshopLab(
   app.stage.addChild(backdrop);
   app.stage.addChild(new Graphics().rect(0,0,W,H)
     .fill({color:0x101e2c,alpha:painted?.25:0}));
-  // 8 different bitmap pose frames per creature, assembled once and reused.
+  // Eight distinct human-form pose frames per adult craftsperson, assembled once.
   element.dataset.renderer='pixi-webgl-bitmap';
   element.dataset.workerFrames='8';
-  element.dataset.workerArt=Object.keys(workerPaintings).length===3?'painted-transparent':'hi-dpi-transparent-fallback';
+  element.dataset.workerArt=Object.keys(workerPaintings).length===3?'painted-transparent-humanoid':'hi-dpi-transparent-humanoid';
   // Immutable foundation: ground, numbered plaques and borders are built
   // exactly once. Only machine-dependent floor tint/opacity changes on sync.
   const foundation=new Container();app.stage.addChild(foundation);

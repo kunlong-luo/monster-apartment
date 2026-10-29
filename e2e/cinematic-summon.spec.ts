@@ -25,7 +25,9 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   expect(ids).toEqual(['yuesha-eclipse','yuesha-vow','cinder-ember','fern-spring','brook-tide']);
   for(const id of ['cinder-ember','fern-spring','brook-tide']){
     await expect(page.locator(`[data-character-id="${id}"] [data-art-source]`))
-      .toHaveAttribute('data-art-source',/painted-transparent|hi-dpi-transparent/);
+      .toHaveAttribute('data-art-source','hi-dpi-transparent-human');
+    await expect(page.locator(`[data-character-id="${id}"] [data-figure-kind]`))
+      .toHaveAttribute('data-figure-kind','humanoid');
   }
   await expect(page.getByText('2024/10/24')).toHaveCount(0);
   await page.getByTestId('collection-summon').click();

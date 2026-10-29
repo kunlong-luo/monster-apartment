@@ -1,14 +1,14 @@
 import { Texture } from 'pixi.js';
 import type { Craft, WorkerId } from './workshop-engine';
 
-/** Authored Canvas2D bitmap textures. 8 independently painted poses per
- * creature, cached as GPU textures. This is a transitional raster art pass
+/** Author-drawn Canvas2D transparent human-figure textures. Eight poses
+ * per adult guild member, cached as GPU textures. This is a transitional raster art pass
  * (not the eventual commissioned character sprite sheets). Crucially, the
  * gameplay stage never draws SVG silhouettes or recolors DOM circles.
  */
 type Ctx=CanvasRenderingContext2D;
 const PI=Math.PI;
-import {drawCreature,cvs,oval,curve,shade,leaf,glint,fleckNoise} from './worker-canvas';
+import {drawHumanoid,cvs,oval,curve,shade,leaf,glint,fleckNoise} from './worker-canvas';
 function pipe(g:Ctx,x:number,y:number,x2:number,y2:number,width=13){
   curve(g,[x,y,x2,y2],'#2b3444',width+7);
   curve(g,[x,y,x2,y2],'#ac967b',width);
@@ -123,7 +123,7 @@ export function makeRasterArt(){
   const workers={} as Record<WorkerId,Texture[]>;
   const machines={} as Record<Craft,Texture>;
   for(const id of ['brook','fern','cinder'] as const){
-    workers[id]=Array.from({length:8},(_,i)=>Texture.from(drawCreature(id,i)));
+    workers[id]=Array.from({length:8},(_,i)=>Texture.from(drawHumanoid(id,i)));
   }
   for(const kind of ['well','garden','kiln'] as const){
     machines[kind]=Texture.from(drawMachine(kind));

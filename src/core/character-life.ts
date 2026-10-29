@@ -36,8 +36,8 @@ export const CHARACTER_PROFILES:Readonly<Record<CharacterId,Profile>>={
       empathy:63,communication:88,affinity:72,leadership:69,dexterity:66,aesthetics:83},
   },
   brook:{
-    id:'brook',name:'泉泡',title:'水灵工匠 · 水汽调谐',rarity:'剧情人物',
-    description:'热情又容易紧张的水灵，习惯照顾大家，却还不太会说“不”。',
+    id:'brook',name:'泉泡',title:'水系术师 · 水汽调谐',rarity:'剧情人物',
+    description:'成年水系术师，身穿深蓝铜饰工装，热情又容易紧张，习惯照顾大家，却还不太会说“不”。',
     traits:['热心','容易紧张','乐于助人','偶尔粗心'],likes:'水泡、铜铃、小工具盒',
     fear:'同伴觉得自己不可靠',goal:'让工坊的水汽供应稳定，并学会安心休息',
     strengths:['spirit','vitality','perception','empathy'],
@@ -47,8 +47,8 @@ export const CHARACTER_PROFILES:Readonly<Record<CharacterId,Profile>>={
       empathy:82,communication:61,affinity:83,leadership:43,dexterity:66,aesthetics:62},
   },
   fern:{
-    id:'fern',name:'青枝',title:'温室园艺师 · 月光植物',rarity:'剧情人物',
-    description:'温柔、安静却有明确原则的园艺师，比任何人都在意水脉与植物。',
+    id:'fern',name:'青枝',title:'精灵植物学家 · 月光温室',rarity:'剧情人物',
+    description:'成年精灵植物学家，披着翠绿月纱与藤叶披肩，温柔、安静却有明确原则。',
     traits:['耐心','敏锐','温柔而坚定','注重生态'],likes:'花期记录、植物压花、微光玻璃',
     fear:'新的工业计划再次伤害水脉',goal:'让月光花园恢复自然循环',
     strengths:['perception','focus','creativity','empathy'],
@@ -58,8 +58,8 @@ export const CHARACTER_PROFILES:Readonly<Record<CharacterId,Profile>>={
       empathy:87,communication:57,affinity:62,leadership:58,dexterity:75,aesthetics:88},
   },
   cinder:{
-    id:'cinder',name:'炽角',title:'晶核锻造师 · 熔炉维护',rarity:'剧情人物',
-    description:'干劲十足的锻造师，嘴硬心软，正在学习可靠性比最高产量更重要。',
+    id:'cinder',name:'炽角',title:'赤金锻造师 · 熔炉维护',rarity:'剧情人物',
+    description:'成年赤金锻造师，头饰是金属铸角而非怪物兽角；独立好胜，正在学习可靠性比最高产量更重要。',
     traits:['豪爽','骄傲','直率','行动派'],likes:'老炉铭牌、锻锤、失败零件',
     fear:'自己造出的机器让同伴受伤',goal:'造出长久、安全、值得自豪的工坊',
     strengths:['strength','physique','endurance','creativity'],

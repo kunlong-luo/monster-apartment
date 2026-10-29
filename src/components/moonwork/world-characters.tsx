@@ -18,11 +18,11 @@ function WorkerPainting({id,label,working}:{
   id:WorkerId;label:string;working:boolean;
 }){
   return <div className={'mw-worker-portrait mw-worker-portrait--'+id}
-    data-art-source="transparent-worker">
+    data-figure-kind="humanoid" data-art-source="transparent-human">
     <WorkerArtwork id={id} name={label} frame={working?2:0}/>
     <CharacterAdornment id={id}/>
     <span className="mw-worker-role">
-      {id==='brook'?'水汽匠':id==='fern'?'园艺师':'晶核锻造师'}
+      {id==='brook'?'水系术师':id==='fern'?'精灵植物学家':'赤金锻造师'}
     </span>
   </div>;
 }
@@ -32,7 +32,7 @@ export function Characters({s,onVisit}:{s:WorkshopState;onVisit:(id:WorkerId)=>v
     <CharacterCollectionPanel completed={s.completed}/>
     <section className="mw-art-gallery-intro mt-6" data-testid="character-gallery-header">
       <span className="mw-eyebrow">WORKER ROSTER · THE PEOPLE OF MOONLIGHT WORKSHOP</span>
-      <h2>四位人物，各有自己的契约与秘密。</h2>
+      <h2>四位成年人物，各有自己的契约与秘密。</h2>
       <p>召唤人物契约，打造首饰与装备，查看二十项属性；拜访房间则能发现线索、改变对话。</p>
     </section>
     <RoomInvestigationJournal/>

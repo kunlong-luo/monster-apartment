@@ -36,19 +36,21 @@ export function glint(g:Ctx,x:number,y:number,r:number,color:string){
   grad.addColorStop(0,color);grad.addColorStop(.32,color);grad.addColorStop(1,'#00000000');
   g.fillStyle=grad;g.beginPath();g.arc(x,y,r,0,PI*2);g.fill();g.restore();
 }
-function face(g:Ctx,eyeY:number,spacing:number,blink:boolean,nose:string){
-  g.fillStyle='#292e42';
+function face(g:Ctx,blink:boolean){
+  // Adult facial proportions: narrow eyes, defined brow, nose bridge and lips.
+  curve(g,[72,47,78,45],'#4b3444',1.3);
+  curve(g,[89,45,95,47],'#4b3444',1.3);
   if(blink){
-    curve(g,[77-spacing,eyeY+2,83-spacing,eyeY+3,88-spacing,eyeY+1],'#303148',3);
-    curve(g,[78+spacing,eyeY+2,84+spacing,eyeY+3,89+spacing,eyeY+1],'#303148',3);
+    curve(g,[73,50,79,51],'#493044',1.25);
+    curve(g,[88,51,94,50],'#493044',1.25);
   }else{
-    oval(g,83-spacing,eyeY,5.7,8.4,'#292d3f');
-    oval(g,83+spacing,eyeY,5.7,8.4,'#292d3f');
-    oval(g,81-spacing,eyeY-3,2.15,3,'#fff9e7');
-    oval(g,81+spacing,eyeY-3,2.15,3,'#fff9e7');
+    oval(g,77,51,2.4,1.7,'#364354');
+    oval(g,90,51,2.4,1.7,'#364354');
+    oval(g,76.4,50.6,.75,.65,'#fff8eb');
+    oval(g,89.4,50.6,.75,.65,'#fff8eb');
   }
-  oval(g,83,eyeY+10,3,2.6,nose);
-  curve(g,[78,eyeY+15,83,eyeY+18,89,eyeY+15],'#815c67',2);
+  curve(g,[83,52,82.2,58,84,59],'#bd8b80',1.1);
+  curve(g,[79,64,83.5,65,88,63.8],'#ae6875',1.35);
 }
 export function fleckNoise(g:Ctx,seed:number,region:{x:number;y:number;w:number;h:number},count:number,alpha=.09){
   // deterministic raster speckles = canvas texture, not vector sprites.
@@ -61,86 +63,123 @@ export function fleckNoise(g:Ctx,seed:number,region:{x:number;y:number;w:number;
   }
   g.restore();
 }
-export function drawCreature(id:WorkerId,frame:number):HTMLCanvasElement {
-  // Keep the fallback alpha-backed; render at 3x intrinsic resolution so
-  // scaled Pixi worker figures stay antialiased on high-DPI displays.
-  // Production-grade painted sprites (if available) replace these frames.
+/** Human-form, alpha-backed transitional poses for the three adult guild
+ * members. Keep the stable WorkerId/save model and eight Pixi frames, but
+ * never render the former jelly, plant-ball or beetle pet silhouettes.
+ * Final high-detail portrait sheets are a separate art deliverable. */
+export function drawHumanoid(id:WorkerId,frame:number):HTMLCanvasElement {
   const ratio=3;
   const {canvas,g}=cvs(166*ratio,166*ratio);
   g.scale(ratio,ratio);
-  const p=frame%8,t=p/8*PI*2;
-  const bob=Math.sin(t)*2.7;
-  const work=Math.max(0,Math.sin(t));
-  // No flat circles: colored bounce lights, shadows, silhouette branches.
-  oval(g,83,144,42,9,'#0b162338');
-  g.save();g.translate(0,bob);
+  const t=(frame%8)/8*PI*2;
+  const sway=Math.sin(t)*1.2;
+  const gesture=Math.max(0,Math.sin(t));
+  const palette=id==='brook'
+    ?{hair:'#25435c',shine:'#75d4e5',skin:'#eecbb6',cloak:'#133b52',
+      body:'#317e99',hem:'#a9ebee',gold:'#ebc895',boot:'#17344c'}
+    :id==='fern'
+    ?{hair:'#393b36',shine:'#c1a07b',skin:'#ead2b2',cloak:'#244138',
+      body:'#527961',hem:'#b4dca5',gold:'#dfbf89',boot:'#24392e'}
+    :{hair:'#381d2d',shine:'#b55b57',skin:'#e4b598',cloak:'#351827',
+      body:'#873d47',hem:'#ea9b78',gold:'#e9b16d',boot:'#29212b'};
+  const shape=(points:number[],fill:string,stroke:string,width=1.4)=>{
+    g.beginPath();g.moveTo(points[0],points[1]);
+    for(let i=2;i<points.length;i+=2)g.lineTo(points[i],points[i+1]);
+    g.closePath();g.fillStyle=fill;g.fill();g.strokeStyle=stroke;g.lineWidth=width;g.stroke();
+  };
+  const ellipse=(x:number,y:number,rx:number,ry:number,fill:string)=>oval(g,x,y,rx,ry,fill);
+  // Feet and grounded shadow: unmistakable two-legged, upright human anatomy.
+  ellipse(82,156,29,4,'#080d1b57');
+  g.save();g.translate(0,sway);
+  // Flowing coat and hair behind the silhouette.
+  shape([60,70,48,80,42,127,57,144,83,132,109,144,125,126,115,78,103,69],
+    palette.cloak,'#b798704d',1);
+  shape([64,35,54,45,51,78,58,111,71,104,69,58,102,56,111,110,117,78,110,46,99,35],
+    palette.hair,palette.shine,1.25);
+  // Two separate legs, boots and knees, instead of a spherical creature body.
+  g.fillStyle=palette.skin;g.beginPath();g.roundRect(66,117,11,30,4);g.fill();
+  g.beginPath();g.roundRect(91,117,11,30,4);g.fill();
+  g.fillStyle=palette.boot;g.beginPath();g.roundRect(63,139,15,15,3);g.fill();
+  g.beginPath();g.roundRect(90,139,15,15,3);g.fill();
+  shape([64,150,78,150,82,155,60,155],palette.boot,palette.gold,1);
+  shape([90,150,105,150,111,155,89,155],palette.boot,palette.gold,1);
+  curve(g,[67,142,76,142],palette.gold,1.3);
+  curve(g,[93,142,103,142],palette.gold,1.3);
+  // Ankle-to-knee garment with separate upper body and narrower human waist.
+  const coat=g.createLinearGradient(55,73,116,133);
+  coat.addColorStop(0,palette.hem);coat.addColorStop(.25,palette.body);
+  coat.addColorStop(1,palette.cloak);
+  shape([56,79,72,70,96,70,113,80,107,102,112,133,83,138,54,133,62,101],
+    coat as unknown as string,palette.gold,1.6);
+  shape([65,107,101,107,111,132,82,138,55,132],
+    palette.cloak,palette.hem,1.1);
+  // Side arms have elbows, forearms and separate hands.
+  curve(g,[56,79,46,92,43,113],palette.body,11);
+  curve(g,[110,79,121,92,122+4*gesture,112-5*gesture],palette.body,11);
+  curve(g,[56,79,47,91,45,106],palette.gold,1.8);
+  curve(g,[110,79,120,91,121+4*gesture,106-5*gesture],palette.gold,1.8);
+  ellipse(43,116,6,7,palette.skin);
+  ellipse(122+4*gesture,115-5*gesture,6,7,palette.skin);
+  // Human bust, tailored shoulders, waist belt and embroidered uniform.
+  shape([55,80,69,69,98,69,112,80,104,110,63,110],
+    palette.body,palette.gold,1.5);
+  shape([75,70,83,86,91,70],palette.skin,palette.gold,1);
+  curve(g,[62,101,103,101],palette.gold,3.5);
+  ellipse(84,102,4.8,3,palette.gold);
+  curve(g,[84,86,84,98],palette.hem,1.6);
+  curve(g,[75,80,84,86,93,80],palette.gold,1.5);
+  // Neck and an adult human face framed by side locks.
+  g.fillStyle=palette.skin;g.beginPath();g.roundRect(78,62,12,14,4);g.fill();
+  ellipse(83,48,15.5,20,palette.skin);
+  ellipse(66,51,2.1,4.3,palette.skin);
+  ellipse(100,51,2.1,4.3,palette.skin);
+  face(g,frame%8===4);
+  // Forehead fringe and asymmetric loose strands.
+  shape([66,41,66,29,76,23,94,23,104,32,102,43,92,39,88,32,75,38],
+    palette.hair,palette.shine,1.1);
+  shape([66,37,60,54,62,88,68,90,71,65,71,46],
+    palette.hair,palette.shine,1);
+  shape([98,36,104,53,105,88,99,88,94,59,95,41],
+    palette.hair,palette.shine,1);
+  curve(g,[74,28,85,25,96,30],palette.shine,1.7);
+  // Job silhouette and props: water tuning, horticulture, metalwork.
   if(id==='brook'){
-    // Water courier: pointed crest, translucent ear fins, jelly-like body.
-    leaf(g,53,91,-.48,14,51,'#7dc4d2','#c3f6ec');
-    leaf(g,115,93,.45,14,51,'#68b9d5','#b4ebf7');
-    const wave=new Path2D();
-    wave.moveTo(78,32);wave.bezierCurveTo(66,54,35,78,44,109);
-    wave.bezierCurveTo(48,140,105,144,120,116);
-    wave.bezierCurveTo(139,87,98,54,78,32);wave.closePath();
-    g.fillStyle=shade(g,77,85,70,'#e3fbf4','#2f86b6');g.fill(wave);
-    g.strokeStyle='#d1f4f4';g.lineWidth=4;g.stroke(wave);
-    oval(g,75,101,44,29,'#b1e7ed88');
-    glint(g,60,57,23,'#defeff');
-    curve(g,[50,104,59,109,68,109,78,104],'#f3fcff99',4);
-    // Crest wave moves as fluid, not an identical scaled frame.
-    g.beginPath();g.moveTo(65,45);
-    g.quadraticCurveTo(64+8*work,11,85,14);
-    g.quadraticCurveTo(102,24,99,41);
-    g.strokeStyle='#b3edfb';g.lineWidth=8;g.lineCap='round';g.stroke();
-    oval(g,39,106,9,8,'#5abbd3');oval(g,124,107-4*work,10,7,'#6fcbd9');
-    face(g,93,20,p===4,'#f6c7d0');
-    fleckNoise(g,100,[].length?{x:0,y:0,w:0,h:0}:{x:49,y:56,w:70,h:61},95,.09);
+    // Flowing ponytail, brass gauge and aqua gemstone on a human uniform.
+    shape([99,34,117,45,125,76,115,91,108,77,111,54],
+      palette.hair,palette.shine,1.3);
+    curve(g,[60,92,69,113,65,131],palette.hem,2);
+    ellipse(124+4*gesture,111-5*gesture,10,11,'#255e74');
+    ellipse(124+4*gesture,111-5*gesture,7,8,'#a6e7e4');
+    ellipse(124+4*gesture,111-5*gesture,3,3,'#256b88');
+    curve(g,[123,112,127,107],palette.gold,1.2);
+    glint(g,125,109,14,'#d5fbf6');
   }else if(id==='fern'){
-    // Floral artisan: leaf crown and heavy scarf apron, asymmetric silhouette.
-    leaf(g,81,47,-.52,28,53,'#5ea96d','#a9e4a4');
-    leaf(g,87,47,.66,27,44,'#b0d780','#e8f2a5');
-    const body=new Path2D();
-    body.moveTo(83,39);body.bezierCurveTo(51,41,31,68,38,101);
-    body.bezierCurveTo(44,137,120,142,130,105);
-    body.bezierCurveTo(141,70,121,42,83,39);body.closePath();
-    g.fillStyle=shade(g,86,75,79,'#f4eebf','#699b65');g.fill(body);
-    g.strokeStyle='#365c58';g.lineWidth=4;g.stroke(body);
-    leaf(g,53,87,-.95,13,32,'#a8d58e','#d4f2b4');
-    leaf(g,120,89,.83,13,33,'#78ba81','#c4ebbc');
-    g.beginPath();g.moveTo(57,115);g.quadraticCurveTo(86,130,113,112);
-    g.lineTo(108,135);g.quadraticCurveTo(84,143,62,134);g.closePath();
-    g.fillStyle='#f0b59a';g.fill();g.strokeStyle='#b97877';g.lineWidth=2;g.stroke();
-    oval(g,55,121,10,7,'#b9bd79');oval(g,115,119-3*work,9,7,'#d2d5a4');
-    face(g,91,20,p===5,'#bb8b81');
-    oval(g,53,104,7,4,'#e5b6a4aa');oval(g,112,104,7,4,'#e5b6a4aa');
-    fleckNoise(g,215,{x:43,y:66,w:80,h:58},90,.07);
+    // Elven herbalist: delicate crown, cloak trim and leaf tome.
+    leaf(g,72,31,-.8,7,15,'#91bb73','#dde4a8');
+    leaf(g,94,30,.7,7,15,'#b2d08a','#e6e9a7');
+    curve(g,[53,85,62,119,57,135],palette.hem,2);
+    curve(g,[108,86,102,117,110,133],palette.hem,2);
+    shape([114+4*gesture,108-5*gesture,137,104,137,126,114,129],
+      '#386454',palette.gold,1.2);
+    curve(g,[118,112,134,109],palette.hem,1.3);
+    leaf(g,125,110,.45,7,20,'#99c98d','#e2e9ae');
   }else{
-    // Ember smith: angular charcoal-gold horned beetle, welding eyewear.
-    leaf(g,60,66,-.58,24,43,'#3e4155','#eeaf65');
-    leaf(g,108,67,.58,24,43,'#404353','#eca968');
-    g.beginPath();g.moveTo(43,88);
-    g.bezierCurveTo(40,57,56,45,81,43);
-    g.bezierCurveTo(113,43,130,59,126,101);
-    g.bezierCurveTo(121,142,43,142,43,88);g.closePath();
-    g.fillStyle=shade(g,72,76,79,'#b77f68','#302d46');g.fill();
-    g.lineWidth=4;g.strokeStyle='#e2a376';g.stroke();
-    glint(g,83,92,40,'#f09a4c');
-    // Hammer moves through actual pose frames.
-    const hammerX=120+8*Math.cos(t);
-    g.save();g.translate(hammerX,98-10*work);g.rotate(-.3+work*.38);
-    g.fillStyle='#ad8266';g.fillRect(-3,-9,7,34);
-    g.fillStyle='#b4b5ad';g.fillRect(-17,-16,33,13);
-    g.fillStyle='#f6ddb0';g.fillRect(-15,-15,25,3);g.restore();
-    g.fillStyle='#d1ab79';g.beginPath();g.roundRect(47,79,75,22,10);g.fill();
-    g.fillStyle='#3c3e4d';g.beginPath();g.roundRect(49,82,30,16,6);g.fill();
-    g.beginPath();g.roundRect(89,82,30,16,6);g.fill();
-    oval(g,64,89,8,6,'#ffc986');oval(g,103,89,8,6,'#ffc986');
-    oval(g,61,87,3,2,'#fff1c4');oval(g,100,87,3,2,'#fff1c4');
-    curve(g,[79,90,89,90],'#7a584e',4);
-    curve(g,[78,109,85,113,92,109],'#ffddb6',2.5);
-    oval(g,57,118,11,7,'#b78260');oval(g,113,121-3*work,10,7,'#ba825d');
-    fleckNoise(g,937,{x:48,y:101,w:70,h:26},55,.11);
+    // Smith: metal horn-shaped head jewelry (not animal horns),
+    // leather apron, oversized protective gauntlet and working hammer.
+    shape([63,31,57,14,72,24,75,32],palette.gold,'#774b43',1);
+    shape([94,31,109,14,104,37,98,35],palette.gold,'#774b43',1);
+    shape([69,99,98,99,106,137,65,137],
+      '#553342',palette.gold,2);
+    curve(g,[73,108,94,108],palette.hem,1);
+    ellipse(53,82,12,7,'#ac7359');ellipse(114,82,12,7,'#ac7359');
+    curve(g,[122,114,125,87],palette.gold,4);
+    g.save();g.translate(126,84-4*gesture);g.rotate(-.14+gesture*.2);
+    g.fillStyle='#76737d';g.beginPath();g.roundRect(-12,-8,26,14,3);g.fill();
+    g.strokeStyle=palette.gold;g.lineWidth=1.5;g.stroke();
+    curve(g,[-9,-5,9,-5],'#f9d9b8',1.2);g.restore();
+    glint(g,102,100,15,'#f5a16d');
   }
+  fleckNoise(g,id==='brook'?107:id==='fern'?319:881,{x:53,y:78,w:60,h:56},70,.055);
   g.restore();
   return canvas;
 }
