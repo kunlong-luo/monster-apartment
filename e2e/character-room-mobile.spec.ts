@@ -11,6 +11,8 @@ test('mobile personal suites keep hotspots inside the scene and close naturally'
     await page.getByTestId('visit-worker-room-'+room.id).click();
     const dialog=page.getByRole('dialog',{name:'拜访'+room.name+'的房间'});
     await expect(dialog).toBeVisible();
+    await expect(dialog.getByTestId('room-scene-backdrop').locator('img'))
+      .toHaveAttribute('src',new RegExp(room.id+'/concept-scene\\.svg'));
     await page.screenshot({path:'test-results/room-'+room.id+'-mobile.png'});
     const scene=page.getByLabel(room.name+'的房间概念场景');
     const sceneBox=await scene.boundingBox();

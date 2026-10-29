@@ -10,10 +10,11 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   const bounds=await chamber.boundingBox();
   expect(bounds?.width).toBeGreaterThan(1040);
   await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-scene-id','yuesha');
-  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-composition','embedded-resident');
-  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-render-mode','embedded');
-  await expect(page.getByTestId('room-resident-embedded-yuesha')).toHaveCount(1);
-  await expect(page.getByTestId('room-resident-present-yuesha')).toHaveCount(0);
+  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-composition','layered-concept');
+  await expect(page.getByTestId('room-scene-backdrop').locator('img')).toHaveAttribute('src',/yuesha\/concept-scene\.svg/);
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-render-mode','separate');
+  await expect(page.getByTestId('room-resident-embedded-yuesha')).toHaveCount(0);
+  await expect(page.getByTestId('room-resident-present-yuesha')).toHaveCount(1);
   await page.screenshot({path:'test-results/room-yuesha-desktop.png'});
   await expect(page.getByTestId('life-profile-yuesha')).toContainText('谨慎而机敏');
   const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'{}').coins);
