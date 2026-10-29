@@ -97,7 +97,6 @@ export function GothicLobby(){
         <GothicResourcePill symbol="☾" amount={world.day} label="生产日"/>
       </div>
       <div className="flex justify-end gap-1.5 pt-1 max-[840px]:col-start-2 max-[840px]:row-start-1">
-        <GothicIconButton label="委托消息" data-tooltip="委托消息" onClick={()=>setOpen('updates')}>✉</GothicIconButton>
         <GothicIconButton label="切换动态特效" data-tooltip="切换动态特效" pressed={reducedMotion}
           onClick={toggleMotion}>⚜</GothicIconButton>
       </div>
@@ -126,7 +125,8 @@ export function GothicLobby(){
         <span className="gothic-lobby__mission-detail">月纱的红色珍藏契约 · 实际概率 1%</span>
         <span className="gothic-lobby__card-rune" aria-hidden="true">☾</span>
       </Link>
-      <button type="button" onClick={()=>setOpen('updates')} className="gothic-lobby__mission-card gothic-lobby__updates-card"
+      <button type="button" onClick={()=>setOpen('updates')} aria-label="委托消息"
+        className="gothic-lobby__mission-card gothic-lobby__updates-card"
         data-testid="gothic-commission-status">
         <span className="gothic-lobby__card-kicker">✉ 新消息 · 本日委托</span>
         <strong>待交付晶核 {Math.max(0,orderTarget-orderStock)} 枚</strong>
@@ -139,7 +139,7 @@ export function GothicLobby(){
     <button type="button" className="gothic-lobby__character-hit absolute z-[1] border-0! bg-transparent! inset-[15%_46%_16%_20%] max-[700px]:inset-[22%_27%_24%_25%] cursor-pointer focus-visible:outline-2 focus-visible:outline-gothic-glow"
       onClick={talk} aria-label="与月纱互动" data-tooltip="与月纱互动"/>
     <aside className="gothic-lobby__character-actions" aria-label="月纱人物互动">
-      <button type="button" onClick={talk} data-testid="gothic-character-talk">
+      <button type="button" onClick={talk} aria-label="与月纱交谈" data-testid="gothic-character-talk">
         <Image src={moonveilAvatar} alt="" width={62} height={62} unoptimized/>
         <span>月纱<small>与她交谈</small></span>
       </button>
