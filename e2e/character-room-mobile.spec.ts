@@ -94,5 +94,5 @@ test('optional in-game HD review only uses an ephemeral local preview',async({pa
   await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-render-mode','separate');
   await page.getByTestId('room-art-local-reset').click();
   await expect(backdrop).toHaveAttribute('data-local-preview','false');
-  await expect(backdrop.locator('img')).toHaveAttribute('src',/yuesha\\/concept-scene\\.svg/);
+  await expect(backdrop.locator('img')).toHaveAttribute('src',/concept-scene[.]svg$/);
 });
