@@ -1,5 +1,5 @@
 'use client';
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import type {ChangeEvent} from 'react';
 import {useRoomStageSize} from './use-room-stage-size';
 import {yueshaAfterChoice} from '@/core/character-life';
@@ -19,15 +19,17 @@ import type {RoomPose} from '@/core/room-performance';
 import type {RoomConversationTopic} from '@/core/room-conversations';
 import {roomSceneReaction,yueshaRoomEasterEgg} from '@/core/room-scene-reactions';
 type Hotspot='seal'|'tea'|'ledger';
+function subscribeReviewMode(){return ()=>{};}
+function reviewClientSnapshot(){return typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('roomArtReview')==='1';}
+function reviewServerSnapshot(){return false;}
 export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:number}){
   const stageRef=useRef<HTMLDivElement>(null);
   const stageSize=useRoomStageSize(stageRef);
-  const [artReviewEnabled,setArtReviewEnabled]=useState(false);
+  const artReviewEnabled=useSyncExternalStore(subscribeReviewMode,reviewClientSnapshot,reviewServerSnapshot);
   const [previewUrl,setPreviewUrl]=useState<string|null>(null);
   const [reviewError,setReviewError]=useState('');
   const imageUrlRef=useRef<string|null>(null);
   useEffect(()=>{
-    setArtReviewEnabled(new URLSearchParams(window.location.search).get('roomArtReview')==='1');
     return ()=>{if(imageUrlRef.current)URL.revokeObjectURL(imageUrlRef.current);};
   },[]);
   const previewLocalArt=(event:ChangeEvent<HTMLInputElement>)=>{
