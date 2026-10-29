@@ -1,6 +1,7 @@
 import type {CharacterId,RoomObjectId} from './character-life';
 import type {RoomPose} from './room-performance';
-import {roomHotspotPosition} from './room-stage-layout';
+import {roomProjectedHotspotPosition} from './room-stage-layout';
+import type {RoomStageSize} from './room-stage-layout';
 
 /** Localized lighting follows a real scene prop instead of zooming the painting. */
 const COLORS:Readonly<Record<RoomPose,{center:string;edge:string}>>={
@@ -9,8 +10,8 @@ const COLORS:Readonly<Record<RoomPose,{center:string;edge:string}>>={
   warm:{center:'rgba(255,211,146,.25)',edge:'rgba(255,200,132,.50)'},
   guarded:{center:'rgba(211,148,244,.24)',edge:'rgba(220,157,240,.48)'},
 };
-export function roomSceneFocus(id:CharacterId,item:RoomObjectId,pose:RoomPose){
-  const point=roomHotspotPosition(id,item);
+export function roomSceneFocus(id:CharacterId,item:RoomObjectId,pose:RoomPose,stageSize:RoomStageSize|null=null){
+  const point=roomProjectedHotspotPosition(id,item,stageSize);
   const color=COLORS[pose];
   return {
     left:point.left,

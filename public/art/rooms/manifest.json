@@ -13,7 +13,21 @@
       "layout": "concept",
       "conceptPreview": "public/art/rooms/yuesha/concept-scene.svg",
       "backgroundStatus": "concept",
-      "residentStatus": "concept"
+      "residentStatus": "concept",
+      "objectAnchors": {
+        "seal": [
+          0.6,
+          0.815
+        ],
+        "tea": [
+          0.535,
+          0.72
+        ],
+        "ledger": [
+          0.77,
+          0.815
+        ]
+      }
     },
     "brook": {
       "composition": "layered-concept",

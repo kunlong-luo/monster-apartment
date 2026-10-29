@@ -49,7 +49,7 @@ export function RoomSceneBackdrop({id}:{id:CharacterId}){
       className={fallbackCrop?'absolute inset-y-0 -left-[112%] w-[215%]':'absolute inset-0'}>
       <Image src={source} alt="" fill unoptimized priority={id==='yuesha'}
         sizes={fallbackCrop?'(max-width:1024px) 180vw, 1750px':'(max-width:1024px) 94vw, 850px'}
-        className={fallbackCrop?'object-cover object-right':'object-cover object-[18%_43%]'} />
+        className={fallbackCrop?'object-cover object-right':backgroundProduction?'object-cover object-center':'object-cover object-[18%_43%]'} />
     </div>
     <div className={'absolute inset-0 '+(backgroundProduction
       ?'bg-[linear-gradient(90deg,#130b1a4a_0%,transparent_55%,#130b1a56_100%)]'

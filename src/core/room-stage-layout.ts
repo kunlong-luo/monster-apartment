@@ -1,9 +1,14 @@
+import roomArtwork from '../../public/art/rooms/manifest.json';
+
 export type SceneSpot={left:`${number}%`;top:`${number}%`};
+export type RoomStageSize={width:number;height:number};
+type ArtworkAnchor=readonly [number,number];
+type ArtEntry={backgroundStatus:string;objectAnchors?:Record<string,ArtworkAnchor>};
+
 const DEFAULT_SPOTS:readonly SceneSpot[]=[
   {left:'12%',top:'36%'},{left:'28%',top:'68%'},{left:'43%',top:'25%'},
 ] as const;
-/** Anchors belong to identifiable objects, not their array order.
- * Production artwork still requires a separate visual alignment review. */
+/** Existing concept anchors remain stable until a reviewed HD artwork is admitted. */
 const ROOM_SPOTS:Readonly<Record<string,Readonly<Record<string,SceneSpot>>>>={
   yuesha:{
     seal:{left:'39%',top:'75%'},
@@ -29,7 +34,27 @@ const ROOM_SPOTS:Readonly<Record<string,Readonly<Record<string,SceneSpot>>>>={
 export function roomHotspotPosition(roomId:string,itemId:string,index=0):SceneSpot{
   return ROOM_SPOTS[roomId]?.[itemId]??DEFAULT_SPOTS[index%DEFAULT_SPOTS.length];
 }
-/** Backward-compatible ordered view for previews and existing callers. */
+/** Maps normalized artwork coordinates through object-fit:cover and
+ * object-position:center. Lighting and touch targets use identical math. */
+export function projectCoverAnchor(anchor:ArtworkAnchor,size:RoomStageSize):SceneSpot{
+  if(!(size.width>0&&size.height>0))throw new Error('Invalid room stage size');
+  const scale=Math.max(size.width/16,size.height/9);
+  const drawnWidth=16*scale,drawnHeight=9*scale;
+  const screenX=(size.width-drawnWidth)/2+anchor[0]*drawnWidth;
+  const screenY=(size.height-drawnHeight)/2+anchor[1]*drawnHeight;
+  const percent=(screen:number,length:number):`${number}%`=>
+    `${Math.round(screen/length*10000)/100}%`;
+  return {left:percent(screenX,size.width),top:percent(screenY,size.height)};
+}
+/** Production art uses physical object anchors. Concept scenes never inherit
+ * the new painting's coordinates and retain their existing hotspot behavior. */
+export function roomProjectedHotspotPosition(roomId:string,itemId:string,size:RoomStageSize|null,index=0):SceneSpot{
+  const entry=(roomArtwork.rooms as Record<string,ArtEntry>)[roomId];
+  const anchor=entry?.backgroundStatus==='production'?entry.objectAnchors?.[itemId]:undefined;
+  return anchor&&size?.width&&size.height
+    ?projectCoverAnchor(anchor,size)
+    :roomHotspotPosition(roomId,itemId,index);
+}
 export function roomHotspotPositions(roomId:string):readonly SceneSpot[]{
   return Object.values(ROOM_SPOTS[roomId]??{}).length
     ?Object.values(ROOM_SPOTS[roomId])
