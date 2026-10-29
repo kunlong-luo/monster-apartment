@@ -237,7 +237,7 @@ const COZY_CARE_SCENES:Partial<Record<SpiritId,{zh:string;en:string}>>={
   dewdrop:{zh:'你和澜歌一起校对古水脉图，她终于找出水温异常的原因。',
     en:'You warm Langa’s bath to just the right temperature. She traces the thermal anomaly on the water map.'},
   'lantern-beetle':{zh:'你和洛灯一起校准旧月灯的齿轮，走廊重新亮起暖光。',
-    en:'You help Loden tune a lantern's brass gears. A warm star lights up the window.'},
+    en:"You help Loden tune a lantern\u0027s brass gears. A warm star lights up the window."},
   'fern-hare':{zh:'你帮苓蕨收好旅行时带回的药草，她赠给你一份珍稀花种。',
     en:'You hold Lingjue’s seed basket. She gifts you a packet of rare seeds.'},
   'moon-scout':{zh:'你帮夜翎整理夜巡记录，她在扉页认真写下致谢。',
