@@ -3,6 +3,7 @@ import {resolve,join,extname,basename} from 'node:path';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {webpDimensions} from './prepare-room-background.mjs';
+import {checkPosePixels} from './check-portrait-pixels.mjs';
 
 const root=resolve(import.meta.dirname,'..');
 export const ROOM_POSES=['idle','attentive','warm','guarded'];
@@ -79,7 +80,7 @@ export function portraitReviewHtml({room}){
     'for(const button of document.querySelectorAll("button[data-pose]"))button.onclick=()=>void inspect(button.dataset.pose);void inspect("idle");'+
     '</script></html>';
 }
-function main(argv){
+async function main(argv){
   const {room,source,out}=parseArgs(argv);
   const dir=resolve(source),target=resolve(out);
   if(existsSync(join(target,'review-status.DRAFT.json')))
@@ -92,6 +93,7 @@ function main(argv){
     data[pose]=readFileSync(file);sources[pose]=file;
   }
   const frames=inspectPoseAssets(data);
+  const pixelReport=await checkPosePixels(data);
   mkdirSync(join(target,'poses'),{recursive:true});
   for(const pose of ROOM_POSES)copyFileSync(sources[pose],join(target,'poses',pose+'.webp'));
   copyFileSync(join(root,'public/art/rooms',room,'concept-scene.svg'),join(target,'concept-scene.svg'));
@@ -101,11 +103,11 @@ function main(argv){
     sourceType:'',sourceReference:'',rightsConfirmed:false,commercialUse:false,original:false,
     reviewer:'',reviewNotes:'',reviewedAt:'',sameFootAnchor:false,transparentEdgesReviewed:false,
     noBakedBackgroundInResident:false,identityConsistent:false,
-    poseReview:{idle:false,attentive:false,warm:false,guarded:false},frames,
+    poseReview:{idle:false,attentive:false,warm:false,guarded:false},frames,pixelReport,
   },null,2)+'\n');
   console.log('Portrait review prepared: '+join(target,'review.html'));
   console.log('No production manifest or player save changed.');
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
-  try{main(process.argv.slice(2));}catch(e){console.error(e.message);process.exitCode=1;}
+  main(process.argv.slice(2)).catch(e=>{console.error(e.message);process.exitCode=1;});
 }

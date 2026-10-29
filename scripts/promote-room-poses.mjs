@@ -3,6 +3,7 @@ import {resolve,join} from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 import {ROOM_POSES,inspectPoseAssets} from './prepare-room-poses.mjs';
+import {checkPosePixels} from './check-portrait-pixels.mjs';
 const root=resolve(import.meta.dirname,'..');
 const ROOMS=['yuesha','brook','fern','cinder'];
 export function verifyPortraitApproval({room,review,assets}){
@@ -54,7 +55,7 @@ function parseArgs(argv){
     throw new Error('Use --room yuesha --source poses-dir --approval signed-review.json');
   return args;
 }
-function main(argv){
+async function main(argv){
   const {room,source,approval}=parseArgs(argv);
   const paths=Object.fromEntries(ROOM_POSES.map(p=>[p,join(resolve(source),p+'.webp')]));
   if(Object.values(paths).some(path=>!existsSync(path)||!statSync(path).isFile()))
@@ -63,6 +64,12 @@ function main(argv){
   const assets=Object.fromEntries(ROOM_POSES.map(p=>[p,readFileSync(paths[p])]));
   const review=JSON.parse(readFileSync(resolve(approval),'utf8'));
   const approved=verifyPortraitApproval({room,review,assets});
+  const pixelReport=await checkPosePixels(assets);
+  for(const pose of ROOM_POSES){
+    if(review.pixelReport?.[pose]?.passesPixelPreflight!==true)
+      throw new Error('Reviewed pixel-preflight record missing for '+pose);
+  }
+  approved.pixelReport=pixelReport;
   const manifestPath=join(root,'public/art/rooms/manifest.json');
   const original=readFileSync(manifestPath);
   const manifest=JSON.parse(original.toString('utf8')),entry=manifest.rooms[room];
@@ -107,6 +114,5 @@ function main(argv){
   }
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
-  try{main(process.argv.slice(2));}
-  catch(error){console.error('Portrait promotion: '+error.message);process.exitCode=1;}
+  main(process.argv.slice(2)).catch(error=>{console.error('Portrait promotion: '+error.message);process.exitCode=1;});
 }

@@ -114,7 +114,7 @@ test('transparent portrait review rejects baked CG and previews alpha-only frame
     const ctx=canvas.getContext('2d');
     if(!ctx)throw Error('No canvas available');
     ctx.fillStyle='#cfa6eb';
-    ctx.fillRect(280,190,460,710);
+    ctx.beginPath();ctx.ellipse(512,520,225,355,0,0,Math.PI*2);ctx.fill();
     const blob=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(x=>x?resolve(x):reject(Error('WebP export failed')),'image/webp',.88));
     const bytes=new Uint8Array(await blob.arrayBuffer());
     let binary='';for(const byte of bytes)binary+=String.fromCharCode(byte);

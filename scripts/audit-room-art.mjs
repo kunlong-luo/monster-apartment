@@ -109,6 +109,7 @@ for(const id of ids){
       proof.sameFootAnchor===true&&proof.transparentEdgesReviewed===true&&
       proof.noBakedBackgroundInResident===true&&proof.identityConsistent===true&&
       proof.rightsConfirmed===true&&proof.sourceReference&&proof.sourceType&&proof.reviewedAt&&
+      poses.every(p=>proof.pixelReport?.[p]?.passesPixelPreflight===true)&&
       poses.every(p=>proof.poseReview?.[p]===true)&&
       typeof proof.reviewer==='string'&&proof.reviewer.trim().length>2&&
       typeof proof.reviewNotes==='string'&&proof.reviewNotes.trim().length>=24,
