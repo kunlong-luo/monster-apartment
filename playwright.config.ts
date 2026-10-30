@@ -12,6 +12,12 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
   use: {
     baseURL,
+    // Existing tests exercise a returning player who has already entered the
+    // lobby. Dedicated welcome tests override storageState with an empty store.
+    storageState: {
+      cookies: [],
+      origins: [{origin:baseURL,localStorage:[{name:'monster-apartment:welcome-entered:v1',value:'1'}]}],
+    },
     trace: 'on-first-retry',
   },
   projects: [{ name: 'chromium', use: {

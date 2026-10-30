@@ -1,3 +1,3 @@
-import {GothicLobby} from '@/components/game/gothic-lobby';
+import {GothicEntry} from '@/components/game/gothic-entry';
 
-export default function HomePage(){return <GothicLobby/>;}
+export default function HomePage(){return <GothicEntry/>;}
