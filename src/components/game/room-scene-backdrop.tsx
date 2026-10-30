@@ -7,6 +7,7 @@ import {ROOM_ART_MANIFEST,roomPublicAssetPath} from '@/core/room-art-manifest';
 import {roomStoryLightTone} from '@/core/room-performance';
 import type {RoomPose} from '@/core/room-performance';
 import {usePageVisibility} from '@/lib/game/use-page-visibility';
+import './gothic-polish.css';
 import type {CharacterId} from '@/core/character-life';
 
 /** Background and lighting never move the original painting: no image resampling
