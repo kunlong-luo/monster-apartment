@@ -1,4 +1,18 @@
 import {chromium} from '@playwright/test';
+/** Match the local 64px pose preview's geometry check at 128px accuracy.
+ * This checks registration, not anatomy or human artistic approval. */
+export function poseFootAnchorsAlign(first,second){
+  return Math.abs(first.x-second.x)<=.10&&Math.abs(first.y-second.y)<=.035;
+}
+export function assertConsistentPoseFootAnchors(reviews){
+  const frames=Object.entries(reviews);
+  for(let i=0;i<frames.length;i++)for(let j=i+1;j<frames.length;j++){
+    const [first,a]=frames[i],[second,b]=frames[j];
+    if(!a?.footAnchor||!b?.footAnchor||
+      !poseFootAnchorsAlign(a.footAnchor,b.footAnchor))
+      throw new Error('Pose foot anchor mismatch: '+first+' / '+second);
+  }
+}
 export function inspectAlphaMask(mask,width,height){
   if(mask.length!==width*height||width<2||height<2)
     throw new Error('Invalid decoded alpha grid');
@@ -29,7 +43,17 @@ export function inspectAlphaMask(mask,width,height){
     right:Math.round(right/spanY*1000)/1000,top:Math.round(top/spanX*1000)/1000};
   if(contacts.left>.3||contacts.right>.3||contacts.top>.4)
     throw new Error('Silhouette clipping detected (hair/arms/costume): '+JSON.stringify(contacts));
+  const bandStart=Math.max(0,yMax-Math.max(2,Math.round(height*.045)));
+  let weightedX=0,weight=0;
+  for(let y=bandStart;y<=yMax;y++)for(let x=0;x<width;x++){
+    const coverage=mask[y*width+x];
+    if(coverage<=32)continue;
+    weightedX+=x*coverage;weight+=coverage;
+  }
+  if(!weight)throw new Error('No lower silhouette foot anchor');
+  const footAnchor={x:weightedX/weight/(width-1),y:yMax/(height-1)};
   return {
+    footAnchor,
     sampleSize:[width,height],transparentFraction:Math.round(transparent/(width*height)*1000)/1000,
     opaqueFraction:Math.round(opaque/(width*height)*1000)/1000,
     edgeContacts:contacts,passesPixelPreflight:true,
@@ -96,6 +120,7 @@ export async function checkPosePixels(assets){
       catch(err){throw new Error(pose+': '+err.message);}
     }
     assertDistinctPosePixels(samples);
+    assertConsistentPoseFootAnchors(report);
     return report;
   }finally{await browser.close();}
 }

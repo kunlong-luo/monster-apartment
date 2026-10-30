@@ -1,3 +1,26 @@
+export type PoseFootAnchor={x:number;y:number};
+export function poseFootAnchorsAlign(a:PoseFootAnchor,b:PoseFootAnchor){
+  return Math.abs(a.x-b.x)<=.10&&Math.abs(a.y-b.y)<=.035;
+}
+/** A transparent image still has a painted lower silhouette; that point should
+ * stay registered between moods, even if the arms and torso change. */
+export function sampledPoseFootAnchor(
+  alpha:Uint8Array|Uint8ClampedArray,width:number,height:number,
+  lowerY:number,
+):PoseFootAnchor{
+  if(alpha.length!==width*height||width<2||height<2||lowerY<0||lowerY>=height)
+    throw new Error('Invalid visible silhouette for foot anchor');
+  const start=Math.max(0,lowerY-Math.max(2,Math.round(height*.045)));
+  let weightedX=0,weight=0;
+  for(let y=start;y<=lowerY;y++)for(let x=0;x<width;x++){
+    const coverage=alpha[y*width+x];
+    if(coverage<=32)continue;
+    weightedX+=x*coverage;weight+=coverage;
+  }
+  if(!weight)throw new Error('No visible lower silhouette');
+  return {x:weightedX/weight/(width-1),y:lowerY/(height-1)};
+}
+
 /** Actual decoded RGBA screening. This rejects crops that touch a bounding-box edge
  * along a long, artificially straight line. A human still judges anatomy/art. */
 export function inspectPoseAlpha(data:Uint8ClampedArray,width:number,height:number){
@@ -32,5 +55,9 @@ export function inspectPoseAlpha(data:Uint8ClampedArray,width:number,height:numb
     .reduce<number>((a,b)=>a+b,0)/widthSpan;
   if(leftRatio>.3||rightRatio>.3||topRatio>.4)
     return invalid('人物轮廓碰到裁切边：可能有断发、断手或拼贴裁切',transparent,opaque);
-  return {ok:true,reason:'',transparent,opaque};
+  const alpha=new Uint8Array(width*height);
+  for(let i=0;i<alpha.length;i++)alpha[i]=data[i*4+3];
+  return {ok:true,reason:'',transparent,opaque,
+    footAnchor:sampledPoseFootAnchor(alpha,width,height,yMax)};
+
 }
