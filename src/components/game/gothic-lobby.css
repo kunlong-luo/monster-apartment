@@ -215,3 +215,26 @@
   .gothic-lobby__contract-faces{gap:4px}
   .gothic-lobby__contract-face{width:27px;height:27px;border-radius:5px}
 }
+
+/* V3.55: retain the original full-screen gothic reference composition.
+ * Make the right rail feel like restrained corner HUD, not two large cards.
+ * Do not change the painting layer, center stage or seven destinations. */
+@media(min-width:901px){
+  .gothic-lobby__character-actions{width:clamp(98px,8.6vw,134px);gap:9px}
+  .gothic-lobby__character-actions :is(a,button){
+    min-height:80px;padding:9px 5px;gap:3px;
+    border-color:#cda878ad!important;
+    background:linear-gradient(155deg,#21111ddc,#120c17e7);
+    box-shadow:inset 0 1px #edcb9a2c,0 8px 18px #0008;
+    font-size:12px;
+  }
+  .gothic-lobby__character-actions img{width:43px;height:43px}
+  .gothic-lobby__action-glyph{font-size:28px}
+}
+.gothic-lobby__mission-card{
+  border-color:#bd9266c7;
+  box-shadow:inset 0 1px #f2d9a02b,0 10px 26px #0009;
+}
+.gothic-lobby__character-actions :is(a,button):focus-visible{
+  outline:2px solid #ffe4b5;outline-offset:3px;
+}
