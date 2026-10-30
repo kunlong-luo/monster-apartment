@@ -242,6 +242,7 @@ export function GothicSummonScreen() {
         <aside className="summon-cinematic-pools relative flex w-full shrink-0 flex-row gap-2 overflow-x-auto py-1 lg:w-56 lg:flex-col lg:justify-center lg:gap-2 lg:overflow-visible lg:py-4 xl:w-64 z-20">
           {GACHA_POOLS.map((pool) => {
             const isActive = pool.id === activePoolId;
+            const workerPreview = featuredWorkers[pool.id] ?? null;
             return (
               <button
                 key={pool.id}
@@ -257,8 +258,8 @@ export function GothicSummonScreen() {
               >
                 {/* Same real character identity on pool tile and main spotlight. */}
                 <div className="relative size-12 shrink-0 overflow-hidden rounded-lg border border-[#e2b57855]">
-                  {featuredWorkers[pool.id] ? (
-                    <WorkerArtwork id={featuredWorkers[pool.id]} name={pool.subname} compact/>
+                  {workerPreview ? (
+                    <WorkerArtwork id={workerPreview} name={pool.subname} compact/>
                   ) : (
                     <Image src={pool.avatar} alt={pool.name} fill sizes="48px"
                       className="object-cover object-top"/>
