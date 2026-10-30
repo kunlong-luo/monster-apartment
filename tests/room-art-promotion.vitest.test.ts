@@ -1,9 +1,10 @@
 import {describe,expect,it} from 'vitest';
 import {readFileSync} from 'node:fs';
 import {sha256,verifyRoomApproval} from '../scripts/promote-room-background.mjs';
-import roomManifest from '../public/art/rooms/manifest.json';
 const bytes=readFileSync('public/art/yuesha-bust-v3.webp');
-const anchors=roomManifest.rooms.yuesha.objectAnchors;
+// Review fixture coordinates are safe for real 44px square targets.
+// The legacy concept manifest anchors are not production-review approved.
+const anchors={seal:[.56,.35],tea:[.65,.5],ledger:[.78,.7]};
 const approval={
   approved:true,humanVisualReview:true,room:'yuesha',
   asset:'background-candidate.webp',assetSha256:sha256(bytes),
