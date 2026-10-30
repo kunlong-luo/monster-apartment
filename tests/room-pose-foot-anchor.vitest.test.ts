@@ -14,6 +14,7 @@ describe('V3.53 human portrait registered foot anchors',()=>{
     const a=sample(30,30),b=sample(31,30);
     const browser=inspectPoseAlpha(a.rgba,64,64);
     expect(browser.ok).toBe(true);
+    if(!browser.ok)throw Error(browser.reason);
     const offline=inspectAlphaMask(a.alpha,64,64);
     expect(browser.footAnchor.x).toBeCloseTo(offline.footAnchor.x,5);
     expect(browser.footAnchor.y).toBeCloseTo(offline.footAnchor.y,5);

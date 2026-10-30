@@ -21,10 +21,14 @@ export function sampledPoseFootAnchor(
   return {x:weightedX/weight/(width-1),y:lowerY/(height-1)};
 }
 
+export type PoseAlphaInspection=
+  |{ok:false;reason:string;transparent:number;opaque:number}
+  |{ok:true;reason:'';transparent:number;opaque:number;footAnchor:PoseFootAnchor};
 /** Actual decoded RGBA screening. This rejects crops that touch a bounding-box edge
  * along a long, artificially straight line. A human still judges anatomy/art. */
-export function inspectPoseAlpha(data:Uint8ClampedArray,width:number,height:number){
-  const invalid=(reason:string,transparent=0,opaque=0)=>({ok:false,reason,transparent,opaque});
+export function inspectPoseAlpha(data:Uint8ClampedArray,width:number,height:number):PoseAlphaInspection{
+  const invalid=(reason:string,transparent=0,opaque=0):PoseAlphaInspection=>
+    ({ok:false,reason,transparent,opaque});
   if(width<2||height<2||data.length!==width*height*4)
     return invalid('像素采样尺寸不合法');
   let transparent=0,opaque=0,xMin=width,xMax=-1,yMin=height,yMax=-1;
