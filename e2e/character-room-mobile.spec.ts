@@ -161,6 +161,13 @@ test('transparent portrait review rejects baked CG and previews alpha-only frame
   await page.getByTestId('room-pose-upload-idle').setInputFiles({
     name:'idle.webp',mimeType:'image/webp',buffer:Buffer.from(base64,'base64'),
   });
+  // The same art uploaded as a different pose is not four distinct poses.
+  await page.getByTestId('room-pose-upload-attentive').setInputFiles({
+    name:'attentive.webp',mimeType:'image/webp',buffer:Buffer.from(base64,'base64'),
+  });
+  await expect(page.getByTestId('room-pose-review-error')).toContainText('几乎相同');
+  await expect(page.getByTestId('room-pose-review')).toContainText('1/4');
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-pose','idle');
   // Exiting old frame remains alive throughout its 240ms fade.
   expect(await page.evaluate(async url=>{if(!url)return false;try{return (await fetch(url)).ok;}catch{return false;}},retiringUrl)).toBe(true);
   await page.waitForTimeout(600);
