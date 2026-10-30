@@ -14,7 +14,7 @@ import {RoomSceneFocus} from './room-scene-focus';
 import {RoomConversationTopics} from './room-conversation-topics';
 import {YueshaMemoryShelf} from './yuesha-memory-shelf';
 import {RoomDialogueTheater} from './room-dialogue-theater';
-import {roomObjectPose,roomTopicPose} from '@/core/room-performance';
+import {dialogueBeats,roomDialogueBeatPose,roomObjectPose,roomTopicPose} from '@/core/room-performance';
 import type {RoomPose} from '@/core/room-performance';
 import type {RoomConversationTopic} from '@/core/room-conversations';
 import {roomSceneReaction,yueshaRoomEasterEgg} from '@/core/room-scene-reactions';
@@ -104,7 +104,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     </div>
     <RoomConversationTopics id="yuesha" observed={observed}
       onSpeak={topic=>{
-        setPose(roomTopicPose('yuesha',topic.id));
+        const base=roomTopicPose('yuesha',topic.id);
+          setPose(roomDialogueBeatPose(base,0,dialogueBeats(topic.response).length));
         setReaction('“原来你也在意这段往事。”月纱微笑着看向你。');
         setTheater(topic);
         stageRef.current?.scrollIntoView({block:'center',behavior:'auto'});

@@ -14,7 +14,7 @@ import {RoomResidentSprite} from './room-resident-sprite';
 import {RoomSceneFocus} from './room-scene-focus';
 import {RoomConversationTopics} from './room-conversation-topics';
 import {RoomDialogueTheater} from './room-dialogue-theater';
-import {roomObjectPose,roomTopicPose} from '@/core/room-performance';
+import {dialogueBeats,roomDialogueBeatPose,roomObjectPose,roomTopicPose} from '@/core/room-performance';
 import type {RoomPose} from '@/core/room-performance';
 import type {RoomConversationTopic} from '@/core/room-conversations';
 import {roomSceneReaction} from '@/core/room-scene-reactions';
@@ -121,7 +121,8 @@ export function WorkerPrivateRoom({id,onClose,working}:{
       </section>
       <RoomConversationTopics id={id} observed={observed} working={working}
         onSpeak={topic=>{
-          setPose(roomTopicPose(id,topic.id));
+          const base=roomTopicPose(id,topic.id);
+          setPose(roomDialogueBeatPose(base,0,dialogueBeats(topic.response).length));
           setReaction('你们谈起了与这间房有关的往事。');
           setTheater(topic);
           stageRef.current?.scrollIntoView({block:'center',behavior:'auto'});
