@@ -23,3 +23,6 @@
 
 ## 继续定位百分比高度问题（桌面几何回归）
 最新截图检查仍记录 `omen.bottom≈814px`、`copy.top≈643px`，说明普通 `position:absolute` 并未可靠锁定动效层。为避免其他容器布局或 Motion 阶段退出影响，把**仅仪式期间**的法阵、文字、进度条改为固定视口坐标布局；正式结果页仍是原 V3.70 布局。测试额外验证演出图层 computed position 为 fixed，再判定实际元素无重叠。
+
+## 修复根因：Portal 解绑页面变换容器
+之前调整容器高度与 fixed 像素仍无法保证 omen 元素在文字上方；检查发现全屏模态层原本嵌在游戏界面的有变换/裁剪祖先内，`position:fixed` 的参照与预期视口发生偏差。改为与已有 `CharacterSummonReveal` 一致，调用 React `createPortal` 挂载到 `document.body`。通过 `useSyncExternalStore` 处理 SSR 与初次 hydration 的一致性，弹层挂载后恢复聚焦；动画仍只读取已抽到的真实结果。

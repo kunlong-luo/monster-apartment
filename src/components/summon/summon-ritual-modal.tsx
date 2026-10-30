@@ -1,6 +1,7 @@
 'use client';
 
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
+import {createPortal} from 'react-dom';
 import type {KeyboardEvent} from 'react';
 import {useReducedMotion} from 'motion/react';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
@@ -11,6 +12,8 @@ import {SummonResultStage} from './summon-result-stage';
 import './summon-result.css';
 import './summon-ritual-cinematic.css';
 
+// Portals have no server-side root. Preserve the same first hydration output.
+const watchPortal=()=>()=>{};
 interface SummonRitualModalProps {
   characters:SummonableCharacter[];
   onClose:()=>void;
@@ -23,23 +26,25 @@ interface SummonRitualModalProps {
 export function SummonRitualModal({characters,onClose,onSummonAgain,onViewCollection}:SummonRitualModalProps){
   const [phase,setPhase]=useState<RitualPhase>('charge');
   const ref=useRef<HTMLDivElement>(null);
+  const portalReady=useSyncExternalStore(watchPortal,()=>true,()=>false);
   const prefersReduced=useReducedMotion();
   const gameMotion=useGothicMotion();
   const still=Boolean(prefersReduced||gameMotion.reduced);
   const hasMythicSSR=characters.some(c=>c.rarity==='SSR-Mythic');
   const hasAnySSR=characters.some(c=>c.rarity==='SSR-Mythic'||c.rarity==='SSR-Legend');
   useEffect(()=>{
+    if(!portalReady)return;
     const previous=document.activeElement;
     ref.current?.focus();
     return ()=>{if(previous instanceof HTMLElement&&previous.isConnected)previous.focus();};
-  },[]);
+  },[portalReady]);
   useEffect(()=>{
-    if(phase==='reveal')return;
+    if(!portalReady||phase==='reveal')return;
     // A reduced-motion user never waits for any cinematic segment.
     const timer=window.setTimeout(()=>setPhase(nextRitualPhase(phase)),
       still?0:phase==='omen'&&hasAnySSR?1250:RITUAL_PHASE_DURATION[phase]);
     return ()=>window.clearTimeout(timer);
-  },[phase,still,hasAnySSR]);
+  },[phase,still,hasAnySSR,portalReady]);
   const handleKeyDown=(event:KeyboardEvent<HTMLDivElement>)=>{
     if(event.key==='Escape'){event.preventDefault();onClose();return;}
     if(event.key!=='Tab')return;
@@ -52,7 +57,8 @@ export function SummonRitualModal({characters,onClose,onSummonAgain,onViewCollec
       event.preventDefault();first.focus();
     }
   };
-  return <div ref={ref} tabIndex={-1} role="dialog" aria-modal="true"
+  if(!portalReady)return null;
+  return createPortal(<div ref={ref} tabIndex={-1} role="dialog" aria-modal="true"
     aria-label="契约召唤结果" onKeyDown={handleKeyDown}
     data-testid="collection-reveal" data-ritual-phase={phase}
     data-rarity={hasMythicSSR?'神话·月蚀':characters[0]?.rarityZh??'普通'}
@@ -64,5 +70,5 @@ export function SummonRitualModal({characters,onClose,onSummonAgain,onViewCollec
         onClose={onClose} onSummonAgain={onSummonAgain} onViewCollection={onViewCollection}/>:
       <SummonRitualSequence phase={phase} characters={characters} still={still}
         onSkip={()=>setPhase('reveal')}/>}
-  </div>;
+  </div>,document.body);
 }
