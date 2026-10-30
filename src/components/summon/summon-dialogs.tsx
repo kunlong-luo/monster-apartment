@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 import Image from 'next/image';
+import moonveilAvatar from '../../../public/art/yuesha-avatar-v3.webp';
 import {
   History,
   Scroll,
@@ -262,7 +263,7 @@ export function CharacterTrialModal({
           <div className="my-6 space-y-4">
             <div className="relative mx-auto size-32 overflow-hidden rounded-full border-2 border-[#ffdb9b] shadow-[0_0_30px_#cc2046]">
               <Image
-                src="/art/yuesha-avatar-v3.webp"
+                src={moonveilAvatar}
                 alt="月纱"
                 fill
                 className="object-cover object-top"

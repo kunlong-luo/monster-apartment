@@ -9,6 +9,10 @@ test('fresh visitor sees a full-screen welcome and enters the real saved lobby',
   await expect(page.getByTestId('gothic-welcome')).toBeVisible();
   await expect(page.getByTestId('game-release')).toContainText('V3.60');
   await expect(page.getByTestId('welcome-heroine-lineup').locator('img')).toHaveCount(4);
+  for(const image of await page.getByTestId('welcome-heroine-lineup').locator('img').all()){
+    await expect.poll(()=>image.evaluate((img:HTMLImageElement)=>
+      img.complete&&img.naturalWidth>0)).toBe(true);
+  }
   await page.screenshot({path:'test-results/welcome-desktop.png',animations:'disabled'});
   await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',1920);
   await expect(page.getByTestId('gothic-welcome')).toHaveAttribute('data-cover-status','integrated-beauty-beasts-cover');
@@ -32,6 +36,8 @@ test('phone welcome preserves touch target and does not scroll',async({page})=>{
   await expect(start).toBeVisible();
   await expect(page.getByTestId('game-release')).toContainText('V3.60');
   await expect(page.getByTestId('welcome-heroine-lineup')).toBeVisible();
+  await expect(page.getByTestId('welcome-cover-image'))
+    .toHaveJSProperty('loading','eager');
   await page.screenshot({path:'test-results/welcome-mobile.png',animations:'disabled'});
   const source=page.locator('.gothic-welcome__painting source');
   await expect(source).toHaveAttribute('media','(max-width:700px)');

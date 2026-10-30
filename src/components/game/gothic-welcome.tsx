@@ -28,9 +28,11 @@ export function GothicWelcome({onEnter}:{onEnter:()=>void}){
   const returning=useSyncExternalStore(subscribeExistingSave,readExistingSave,()=>false);
   return <main className="gothic-welcome" data-testid="gothic-welcome"
     aria-label="美女与野兽 · 游戏欢迎页" data-cover-status="integrated-beauty-beasts-cover">
+    <link rel="preload" as="image" href={coverMobile.src} media="(max-width:700px)"/>
+    <link rel="preload" as="image" href={coverDesktop.src} media="(min-width:701px)"/>
     <picture className="gothic-welcome__painting" aria-hidden="true">
       <source media="(max-width:700px)" srcSet={coverMobile.src}/>
-      <Image src={coverDesktop} alt="" fill priority unoptimized sizes="100vw"
+      <Image src={coverDesktop} alt="" fill loading="eager" fetchPriority="high" unoptimized sizes="100vw"
         data-testid="welcome-cover-image" className="object-cover"/>
     </picture>
     <div className="gothic-welcome__shade" aria-hidden="true"/>
@@ -49,6 +51,7 @@ export function GothicWelcome({onEnter}:{onEnter:()=>void}){
         {([['yuesha','月纱'],['brook','泉泡'],['fern','青枝'],['cinder','炽角']] as const)
           .map(([id,name])=><span className="gothic-welcome__cast-member" key={id}>
             <Image src={HEROINE_FACE_ART[id]} alt={name} width={44} height={44} sizes="44px"
+              loading="eager"
               className="gothic-welcome__cast-portrait"/>
             <small>{name}</small>
           </span>)}

@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   ...(staticExport ? { basePath: '/monster-apartment', trailingSlash: true } : {}),
   // Turbopack is the default engine for dev and build in Next 16.
   reactStrictMode: true,
+  // Pages serves files only: never emit /_next/image optimizer requests.
+  // Dev/standalone can still use the ordinary image optimizer.
+  images: {unoptimized: staticExport},
   poweredByHeader: false,
   // Playwright uses 127.0.0.1 while the Next dev server binds 0.0.0.0.
   // Next 16 blocks cross-origin dev chunks/HMR unless this host is trusted.

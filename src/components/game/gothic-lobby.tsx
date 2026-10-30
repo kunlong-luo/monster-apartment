@@ -143,7 +143,7 @@ export function GothicLobby(){
         <div className="gothic-lobby__contract-faces" aria-hidden="true">
           {(['yuesha','brook','fern','cinder'] as const).map(id=>
             <span key={id} className="gothic-lobby__contract-face">
-              <Image src={HEROINE_FACE_ART[id]} alt="" width={39} height={39} sizes="39px"/>
+              <Image src={HEROINE_FACE_ART[id]} alt="" width={39} height={39} sizes="39px" loading="eager"/>
             </span>)}
           <span className="gothic-lobby__contract-arrow">❯</span>
         </div>

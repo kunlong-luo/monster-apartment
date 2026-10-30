@@ -28,6 +28,7 @@ import { CHARACTER_CARDS, FORGE_RECIPES } from '@/core/character-collection';
 import type {CharacterId} from '@/core/character-life';
 import {COVENANT_BEASTS} from '@/lib/summon/covenant-beasts';
 import {GAME_UI_RELEASE} from '@/core/game-release';
+import {siteAssetUrl} from '@/lib/game/site-asset-url';
 
 function observeGachaSave(callback:()=>void){
   const event=()=>callback();
@@ -301,12 +302,12 @@ export function GothicSummonScreen() {
             data-testid="summon-featured-portrait" data-featured-character={featuredWorker??'yuesha'}
             data-tier={featuredTier} aria-hidden="true">
             {featuredWorker ? (
-              <Image src={HEROINE_FACE_ART[featuredWorker]} alt="" fill
+              <Image src={HEROINE_FACE_ART[featuredWorker]} alt="" fill loading="eager"
                 sizes="(max-width:900px) 90vw, (max-width:1449px) 50vw, 770px"
                 className="summon-cinematic-heroine-image"
                 data-portrait-source="dedicated-heroine"/>
             ) : (
-              <Image src={moonveilBust} alt="" fill unoptimized
+              <Image src={moonveilBust} alt="" fill loading="eager" unoptimized
                 sizes="(max-width:900px) 65vw,700px"
                 className="object-contain object-bottom opacity-95"/>
             )}
@@ -434,6 +435,7 @@ export function GothicSummonScreen() {
                 src={featuredWorker?HEROINE_FACE_ART[featuredWorker]:moonveilPortrait}
                 alt={featuredName}
                 fill
+                loading="eager"
                 unoptimized
                 sizes="(max-width:1023px) 50vw,240px"
                 className="object-cover object-[55%_25%]"
@@ -526,7 +528,7 @@ export function GothicSummonScreen() {
                   title={character.title} aria-label={`查看契约档案：${character.title}`}
                   onClick={() => setShowGalleryTab(true)}
                   className="relative size-10 shrink-0 overflow-hidden rounded-full border border-[#b88c58] bg-[#2a1023] text-xs font-bold text-[#f6d5aa] transition hover:border-[#ffe3b3] hover:scale-105">
-                  <Image src={getCardFace(character.id)??character.avatar} alt=""
+                  <Image src={getCardFace(character.id)??siteAssetUrl(character.avatar)} alt=""
                     fill sizes="40px" className="object-cover object-top"
                     data-portrait-source="dedicated-heroin-face"/>
                 </button>

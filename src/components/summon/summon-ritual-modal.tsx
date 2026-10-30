@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import {getCardFace} from './heroine-portrait-assets';
+import {siteAssetUrl} from '@/lib/game/site-asset-url';
 import type { SummonableCharacter } from '@/lib/summon/gacha-engine';
 
 interface SummonRitualModalProps {
@@ -177,7 +178,7 @@ export function SummonRitualModal({ characters, onClose, onSummonAgain, onViewCo
 
                       {/* Character Artwork */}
                       <div className="relative my-auto flex h-36 sm:h-44 w-full items-center justify-center overflow-hidden rounded-lg">
-                        <Image src={getCardFace(char.id)??char.avatar} alt={char.name} fill
+                        <Image src={getCardFace(char.id)??siteAssetUrl(char.avatar)} alt={char.name} fill
                           sizes="200px" className="object-cover object-top filter brightness-105"
                           data-portrait-source="dedicated-heroin-face"/>
                         <div className="absolute inset-0 bg-gradient-to-t from-[#140b15] via-transparent to-transparent" />

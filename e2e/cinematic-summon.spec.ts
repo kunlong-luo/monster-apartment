@@ -13,6 +13,9 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   const backgroundSrc=await paintedBackground.getAttribute('src');
   expect(backgroundSrc).toContain('lobby-hero');
   await page.screenshot({path:'test-results/summon-desktop.png',animations:'disabled'});
+  const featuredCardImage=page.getByTestId('summon-featured-card').locator('img').first();
+  await expect.poll(()=>featuredCardImage.evaluate((img:HTMLImageElement)=>
+    img.complete&&img.naturalWidth>0)).toBe(true);
   await expect(page.getByTestId('summon-featured-card')).toHaveAttribute('data-card-character','yuesha');
   await expect(page.getByTestId('summon-featured-card-tier')).toHaveText('SSR 神话');
   await expect(page.getByTestId('summon-featured-odds')).toContainText('1.00%');
