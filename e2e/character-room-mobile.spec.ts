@@ -115,7 +115,7 @@ test('optional in-game HD review only uses an ephemeral local preview',async({pa
   const backdrop=page.getByTestId('room-scene-backdrop');
   await expect(backdrop).toHaveAttribute('data-local-preview','false');
   await page.getByTestId('room-art-local-file').setInputFiles('public/art/yuesha-bust-v3.webp');
-  await expect(page.getByRole('alert')).toContainText('背景候选须至少');
+  await expect(page.getByTestId('room-art-local-review').getByRole('alert')).toContainText('背景候选须至少');
   await expect(backdrop).toHaveAttribute('data-local-preview','false');
   await page.getByTestId('room-art-local-file').setInputFiles(await reviewBackgroundCandidate(page));
   await expect(backdrop).toHaveAttribute('data-local-preview','true');
@@ -211,7 +211,7 @@ test('all three worker rooms can review local background and reject nontranspare
     await review.getByTestId('room-art-local-reset').click();
     await expect(backdrop).toHaveAttribute('data-local-preview','false');
     await expect(backdrop.locator('img')).toHaveAttribute('src',/concept-scene[.]svg$/);
-    await page.keyboard.press('Escape');
+    await page.getByRole('button',{name:'离开'+({brook:'泉泡',fern:'青枝',cinder:'炽角'} as const)[id]+'的房间'}).click();
     await expect(room).toHaveCount(0);
   }
   await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
