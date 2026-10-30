@@ -1,0 +1,68 @@
+name: Gameplay Browser Review
+
+# Expensive browser testing is optional during early development.
+# Trigger manually for targeted smoke or milestone/full visual acceptance.
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: Browser test scope
+        type: choice
+        options:
+          - smoke
+          - full
+        default: smoke
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gameplay-browser-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: '1'
+  PLAYWRIGHT_USE_SYSTEM_CHROME: '1'
+
+jobs:
+  browser-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.13.0
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: npm --prefix v2 install --no-audit --no-fund
+      - run: google-chrome --version
+      - name: Check system font fallback
+        run: fc-match "sans-serif"
+      - name: Fast route/browser smoke
+        if: ${{ inputs.suite == 'smoke' }}
+        run: pnpm exec playwright test e2e/route-health.spec.ts --workers=1 --retries=0
+      - name: Full gameplay/visual regression (milestone)
+        if: ${{ inputs.suite == 'full' }}
+        run: pnpm e2e
+      - name: Upload milestone screenshots
+        if: ${{ always() && inputs.suite == 'full' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: gothic-game-art-review
+          path: |
+            test-results/welcome-desktop.png
+            test-results/welcome-mobile.png
+            test-results/summon-desktop.png
+            test-results/summon-mobile.png
+            test-results/gothic-lobby-desktop.png
+            test-results/gothic-lobby-mobile.png
+            test-results/gothic-apartment-desktop.png
+            test-results/gothic-apartment-mobile.png
+            test-results/room-*-desktop.png
+            test-results/room-*-mobile.png
+          if-no-files-found: warn
+          retention-days: 14

@@ -1,4 +1,6 @@
 name: Quality
+# Fast pre-release gate: types/lint/unit + Pixi build + Next static export.
+# Full browser suites run separately on demand via Gameplay Browser Review.
 on:
   push:
     branches: [main]
@@ -34,7 +36,6 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test
-      - run: pnpm build
 
   pixi-v2-scaffold:
     runs-on: ubuntu-latest
@@ -58,52 +59,6 @@ jobs:
       - run: test -s v2/dist/assets/well-art-review.avif
       - run: test -s v2/dist/assets/garden-art-review.avif
 
-  e2e:
-    runs-on: ubuntu-latest
-    env:
-      PLAYWRIGHT_USE_SYSTEM_CHROME: '1'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .node-version
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 12.13.0
-      - uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: nextjs-e2e-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-      # The repository tracks bun.lock, not pnpm-lock.yaml. Install the
-      # exact locked dependencies rather than running pnpm against a missing lock.
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
-      - run: npm --prefix v2 install --no-audit --no-fund
-      - run: google-chrome --version
-      - name: Use existing system font fallback
-        run: fc-match "sans-serif"
-      - name: Verify all seven pages boot before gameplay flows
-        run: pnpm exec playwright test e2e/route-health.spec.ts --workers=1 --retries=0
-      - run: pnpm e2e
-      - name: Upload gameplay art review screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: gothic-game-art-review
-          path: |
-            test-results/welcome-desktop.png
-            test-results/welcome-mobile.png
-            test-results/summon-desktop.png
-            test-results/summon-mobile.png
-            test-results/gothic-lobby-desktop.png
-            test-results/gothic-lobby-mobile.png
-            test-results/gothic-apartment-desktop.png
-            test-results/gothic-apartment-mobile.png
-            test-results/room-*-desktop.png
-            test-results/room-*-mobile.png
-          if-no-files-found: warn
-          retention-days: 14
-
   static-export:
     runs-on: ubuntu-latest
     env:
@@ -122,15 +77,5 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: pnpm build
       - run: node scripts/audit-exported-images.mjs
-      - run: npm --prefix v2 install --no-audit --no-fund
-      - run: npm --prefix v2 run build
       - run: test -f out/index.html
       - run: test -s out/apartment/index.html && test -s out/town/index.html && test -s out/orders/index.html && test -s out/characters/index.html && test -s out/warehouse/index.html && test -s out/workshop/index.html
-      - run: test -s v2/dist/assets/workshop-runtime.js
-      - run: test -s v2/dist/assets/noto-sans-sc.woff2
-      - run: test -s v2/dist/assets/moon-workshop.avif
-      - run: test -s v2/dist/assets/moonveil-portrait.avif
-      - run: test -s v2/dist/assets/moonstone-floor.avif
-      - run: test -s v2/dist/assets/kiln-art-review.avif
-      - run: test -s v2/dist/assets/well-art-review.avif
-      - run: test -s v2/dist/assets/garden-art-review.avif
