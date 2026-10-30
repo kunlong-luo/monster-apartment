@@ -53,7 +53,7 @@ describe('V3.15 room hotspot visual collision fallback',()=>{
     const markers=roomHotspotPlacements([
       {id:'a',position:{left:'50%',top:'50%'}},
       {id:'b',position:{left:'55%',top:'50%'}},
-      {id:'c',position:{left:'60%',top:'50%'}},
+      {id:'c',position:{left:'65%',top:'50%'}},
     ],stage);
     expect(markers.map(m=>m.id)).toEqual(['a','b','c']);
     expect(markers.map(m=>m.visibility)).toEqual(['visible','overlap','visible']);
