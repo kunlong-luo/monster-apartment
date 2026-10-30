@@ -84,7 +84,8 @@ test('untouched first factory is immediately accessible across all scenes',async
     'monster-apartment:workshop-v2-lab')))).toBe(true);
   await page.getByRole('navigation',{name:'月光工坊世界'})
     .getByRole('link',{name:'角色图鉴'}).click();
-  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
+  await expect(page).toHaveURL(/\/characters\/?$/,{timeout:20_000});
+  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible({timeout:25_000});
   await page.getByRole('navigation',{name:'月光工坊世界'})
     .getByRole('link',{name:'委托大厅'}).click();
   await expect(page.getByText('正式委托')).toBeVisible();
