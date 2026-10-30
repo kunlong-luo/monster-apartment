@@ -78,6 +78,10 @@ test('three distinct worker portraits are transparent and consistent across gall
     }else await expect(artwork.locator('img')).toBeVisible();
     await expect(card.locator('.mw-worker-portrait')).not.toHaveCSS('background-size','300% 100%');
   }
+  const faces=await page.locator('[data-testid^="worker-card-"] .worker-artwork')
+    .evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-face-morphology')));
+  expect(new Set(faces).size).toBe(3);
+  expect(faces).toEqual(['heart-wide-almond','diamond-cat-freckles','square-heavy-brow-scar']);
   await page.getByTestId('worker-card-brook').getByRole('link').click();
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
   for(const id of ['brook','fern','cinder'] as const){

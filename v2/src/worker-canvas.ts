@@ -36,21 +36,104 @@ export function glint(g:Ctx,x:number,y:number,r:number,color:string){
   grad.addColorStop(0,color);grad.addColorStop(.32,color);grad.addColorStop(1,'#00000000');
   g.fillStyle=grad;g.beginPath();g.arc(x,y,r,0,PI*2);g.fill();g.restore();
 }
-function face(g:Ctx,blink:boolean){
-  // Adult facial proportions: narrow eyes, defined brow, nose bridge and lips.
-  curve(g,[72,47,78,45],'#4b3444',1.3);
-  curve(g,[89,45,95,47],'#4b3444',1.3);
-  if(blink){
-    curve(g,[73,50,79,51],'#493044',1.25);
-    curve(g,[88,51,94,50],'#493044',1.25);
+/** These are three different facial constructions, not a uniform head
+ * recolored for each worker. Painted production CG will supersede this art. */
+export const WORKER_FACE_MORPHOLOGY={
+  brook:'heart-wide-almond',
+  fern:'diamond-cat-freckles',
+  cinder:'square-heavy-brow-scar',
+} as const satisfies Record<WorkerId,string>;
+
+function face(g:Ctx,id:WorkerId,blink:boolean,skin:string){
+  g.save();
+  g.beginPath();
+  if(id==='brook'){
+    // Wide temples, soft heart-shaped cheeks, narrow chin.
+    g.moveTo(83,29);
+    g.bezierCurveTo(68,26,65,35,67,48);
+    g.bezierCurveTo(69,58,78,67,83,70);
+    g.bezierCurveTo(89,66,99,56,100,46);
+    g.bezierCurveTo(101,35,94,28,83,29);
+  }else if(id==='fern'){
+    // Diamond face with angular cheekbones and a pointed elf chin.
+    g.moveTo(83,29);
+    g.bezierCurveTo(70,28,66,37,66,46);
+    g.lineTo(70,55);g.lineTo(83,71);
+    g.lineTo(97,55);g.lineTo(100,46);
+    g.bezierCurveTo(99,36,94,29,83,29);
   }else{
-    oval(g,77,51,2.4,1.7,'#364354');
-    oval(g,90,51,2.4,1.7,'#364354');
-    oval(g,76.4,50.6,.75,.65,'#fff8eb');
-    oval(g,89.4,50.6,.75,.65,'#fff8eb');
+    // Wide jaw and flatter chin, deliberately unlike Brook or Fern.
+    g.moveTo(83,28);
+    g.bezierCurveTo(71,28,66,35,66,45);
+    g.lineTo(69,58);g.lineTo(74,68);
+    g.quadraticCurveTo(83,73,93,68);
+    g.lineTo(98,58);g.lineTo(100,46);
+    g.bezierCurveTo(101,35,95,28,83,28);
   }
-  curve(g,[83,52,82.2,58,84,59],'#bd8b80',1.1);
-  curve(g,[79,64,83.5,65,88,63.8],'#ae6875',1.35);
+  g.closePath();g.fillStyle=skin;g.fill();
+  g.strokeStyle='#a66e646b';g.lineWidth=1;g.stroke();
+  if(id==='fern'){
+    // Long pointed ears and slightly wider cheekbones.
+    g.beginPath();g.moveTo(67,50);g.lineTo(58,42);g.quadraticCurveTo(59,55,69,57);
+    g.closePath();g.fillStyle=skin;g.fill();
+    g.beginPath();g.moveTo(99,50);g.lineTo(108,42);g.quadraticCurveTo(108,56,97,57);
+    g.closePath();g.fill();
+    // Slanted cat eyes with extended outer corners.
+    curve(g,[70,49,75,46,81,48],'#483346',1.8);
+    curve(g,[86,48,92,46,98,49],'#483346',1.8);
+    if(blink){
+      curve(g,[71,51,80,50],'#423242',1.3);
+      curve(g,[87,50,96,51],'#423242',1.3);
+    }else{
+      g.fillStyle='#f7f4e3';
+      g.beginPath();g.moveTo(71,51);g.lineTo(81,49);g.lineTo(79,54);g.lineTo(74,54);g.closePath();g.fill();
+      g.beginPath();g.moveTo(87,49);g.lineTo(97,51);g.lineTo(94,54);g.lineTo(89,54);g.closePath();g.fill();
+      oval(g,77,51.5,1.8,2,'#366e4a');oval(g,91,51.5,1.8,2,'#366e4a');
+    }
+    curve(g,[83,52,80.7,59,83.5,59.5],'#ad7c70',1);
+    curve(g,[78.5,63,83,64.7,88,62.6],'#9e5860',1.6);
+    for(const [x,y] of [[72,59],[75,61],[94,59],[91,61]]){
+      oval(g,x,y,.5,.5,'#ab7772');
+    }
+  }else if(id==='cinder'){
+    // Heavier straight brows and narrow eyes, broad straight nose, brow scar.
+    curve(g,[71,45,80,45],'#382630',2.3);
+    curve(g,[87,45,96,45],'#382630',2.3);
+    if(blink){
+      curve(g,[73,51,79,50],'#392a35',1.5);
+      curve(g,[88,50,94,51],'#392a35',1.5);
+    }else{
+      curve(g,[72,51,79,51],'#4b303a',2.1);
+      curve(g,[88,51,95,51],'#4b303a',2.1);
+      oval(g,76.5,51,1.9,1.4,'#6c4237');
+      oval(g,91,51,1.9,1.4,'#6c4237');
+      oval(g,76,50.5,.6,.6,'#ffe9cc');
+      oval(g,90.5,50.5,.6,.6,'#ffe9cc');
+    }
+    curve(g,[83,51,83,59,86,60],'#a16b5c',1.5);
+    curve(g,[77,64,83,65.4,90,63.7],'#913d4d',1.9);
+    curve(g,[69,41,73,44],'#efb39a',2);
+  }else{
+    // Larger almond eyes, soft arched brows and a fuller lower lip.
+    curve(g,[69,47,78,44],'#6b4c54',1.4);
+    curve(g,[88,44,98,47],'#6b4c54',1.4);
+    if(blink){
+      curve(g,[70,51,81,51],'#48404e',1.4);
+      curve(g,[86,51,98,51],'#48404e',1.4);
+    }else{
+      oval(g,76,51,5.3,2.6,'#faf6e9');
+      oval(g,92,51,5.3,2.6,'#faf6e9');
+      oval(g,76,51,2.4,2.1,'#4c8c9b');
+      oval(g,92,51,2.4,2.1,'#4c8c9b');
+      oval(g,75.5,50.4,.8,.7,'#ffffff');
+      oval(g,91.5,50.4,.8,.7,'#ffffff');
+    }
+    curve(g,[83,53,82,57.5,84,58],'#b47f70',.95);
+    curve(g,[78.5,63,83,66,88.5,63],'#ab6471',2);
+    oval(g,72,58,3.5,1.7,'#e89d9a50');
+    oval(g,95,58,3.5,1.7,'#e89d9a50');
+  }
+  g.restore();
 }
 export function fleckNoise(g:Ctx,seed:number,region:{x:number;y:number;w:number;h:number},count:number,alpha=.09){
   // deterministic raster speckles = canvas texture, not vector sprites.
@@ -130,10 +213,7 @@ export function drawHumanoid(id:WorkerId,frame:number):HTMLCanvasElement {
   curve(g,[75,80,84,86,93,80],palette.gold,1.5);
   // Neck and an adult human face framed by side locks.
   g.fillStyle=palette.skin;g.beginPath();g.roundRect(78,62,12,14,4);g.fill();
-  ellipse(83,48,15.5,20,palette.skin);
-  ellipse(66,51,2.1,4.3,palette.skin);
-  ellipse(100,51,2.1,4.3,palette.skin);
-  face(g,frame%8===4);
+  face(g,id,frame%8===4,palette.skin);
   // Forehead fringe and asymmetric loose strands.
   shape([66,41,66,29,76,23,94,23,104,32,102,43,92,39,88,32,75,38],
     palette.hair,palette.shine,1.1);
