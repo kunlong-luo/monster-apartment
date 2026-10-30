@@ -46,6 +46,26 @@ test('canonical summon archive forges and equips a real item without a duplicate
   await expect(page.getByTestId('gallery-collected-count')).toContainText('1/5');
 });
 
+test('an acquired heroine can be visited directly from the real collection, then return',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
+  await page.evaluate(()=>localStorage.setItem('monster-apartment:character-collection:v1',JSON.stringify({
+    version:1,draws:['brook-tide'],shards:1,inventory:[],equipped:{}
+  })));
+  await page.reload();
+  await page.getByRole('button',{name:'查看已收录契约、首饰和装备'}).click();
+  const archive=page.getByRole('dialog',{name:'角色契约图鉴与装备锻造'});
+  await expect(archive.getByTestId('collection-visit-brook-tide')).toBeVisible();
+  await expect(archive.getByTestId('collection-visit-cinder-ember')).toHaveCount(0);
+  await archive.getByTestId('collection-visit-brook-tide').click();
+  await expect(page).toHaveURL(/\/characters\/\?visit=brook$/);
+  await expect(page.getByTestId('worker-private-room-brook')).toBeVisible();
+  await page.getByRole('button',{name:'离开泉泡的房间'}).click();
+  await expect(page).toHaveURL(/\/characters\/$/);
+  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
+});
+
 test('corrupt collections remain untouched and cannot award cards',async({page})=>{
   await page.goto('/characters/#summon-screen');
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();

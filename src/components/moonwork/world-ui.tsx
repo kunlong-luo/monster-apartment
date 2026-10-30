@@ -21,6 +21,23 @@ export function MoonworkWorld({area}:{area:WorldArea}){
   const s=useWorkshopWorld();
   const [visiting,setVisiting]=useState<WorkerCharacterId|null>(null);
   useEffect(()=>{void ensureWorkshopWorld();},[]);
+  // Let an acquired card deep-link to its EXISTING private room.
+  // Only accept known worker ids; no new top-level route or save format.
+  useEffect(()=>{
+    if(area!=='characters')return;
+    const target=new URLSearchParams(window.location.search).get('visit');
+    if(target!=='brook'&&target!=='fern'&&target!=='cinder')return;
+    const frame=window.requestAnimationFrame(()=>setVisiting(target));
+    return ()=>window.cancelAnimationFrame(frame);
+  },[area]);
+  const closeVisit=()=>{
+    setVisiting(null);
+    if(area!=='characters')return;
+    const url=new URL(window.location.href);
+    if(!url.searchParams.has('visit'))return;
+    url.searchParams.delete('visit');
+    window.history.replaceState(window.history.state,'',url.pathname+url.search+url.hash);
+  };
   const section=WORLD_NAV.find(destination=>destination.id===area)!;
   const title=section.full;
   return <main className="mw mw-gothic mw-gothic--red-gold relative isolate h-dvh min-h-[560px] overflow-hidden bg-[#100910] font-serif text-[#f3dcc2] max-[700px]:min-h-0" data-testid="moonwork-world" data-area={area}>
@@ -51,7 +68,7 @@ export function MoonworkWorld({area}:{area:WorldArea}){
     </div>
     {area==='characters'&&s&&visiting&&<WorkerPrivateRoom id={visiting}
       working={s.tiles.some(tile=>tile?.worker===visiting)}
-      onClose={()=>setVisiting(null)}/>}
+      onClose={closeVisit}/>}
     <footer className="mw-footer absolute bottom-2.5 left-0 z-[2] border-0 bg-transparent px-[15px] py-1 text-left text-[9px] text-[#ac8e78] max-[700px]:hidden">✦ 夜色公寓 · 你的选择影响每一位住客</footer>
   </main>;
 }

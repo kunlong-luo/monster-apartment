@@ -635,11 +635,18 @@ export function GothicSummonScreen() {
                         <Image src={HEROINE_FACE_ART[card.character]} alt={card.title}
                           width={40} height={40} className="size-full object-cover"/>
                       </div>
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <strong className="block text-sm text-[#ffe5be]">{card.title}</strong>
                         <span className="text-[10px] text-[#caa789]">
                           {owned ? '已收录' : '待收录 · ' + card.rarity}
                         </span>
+                        {owned&&<Link
+                          data-testid={'collection-visit-'+card.key}
+                          href={card.character==='yuesha'?'/apartment/?visit=yuesha':
+                            '/characters/?visit='+card.character}
+                          className="mt-2 inline-flex min-h-9 items-center rounded border border-[#d2a874] bg-[#5a2440] px-3 py-1.5 text-[11px] text-[#ffe4c3] hover:brightness-125">
+                          拜访私人房间 ↗
+                        </Link>}
                       </div>
                     </div>
                   );
