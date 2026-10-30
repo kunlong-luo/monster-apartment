@@ -186,7 +186,7 @@ test('painted worker roster and scene art load as real gameplay destinations',as
   for(const id of ['brook','fern','cinder']){
     const art=page.getByTestId('worker-card-'+id).getByRole('img');
     await expect(art).toBeVisible();
-    await expect(art).toHaveAttribute('data-art-source',/transparent/);
+    await expect(art).toHaveAttribute('data-art-source','dedicated-heroine-face');
     await expect(page.getByTestId('worker-card-'+id)
       .getByRole('link',{name:/安排.+到工坊/})).toBeVisible();
   }

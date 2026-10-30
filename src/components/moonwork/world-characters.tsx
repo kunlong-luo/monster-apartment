@@ -5,7 +5,7 @@ import Image from 'next/image';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import {WORKERS,MACHINES} from '../../../v2/src/workshop-engine';
 import type {WorkshopState,WorkerId} from '../../../v2/src/workshop-engine';
-import {WorkerArtwork} from './worker-artwork';
+import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import {CharacterLifePortrait} from '@/components/game/character-life-portrait';
 import {useCharacterCollection} from '@/lib/game/character-collection-store';
 import {CHARACTER_CARDS} from '@/core/character-collection';
@@ -13,15 +13,23 @@ import {CharacterAdornment} from '@/components/game/character-adornment';
 import {RoomInvestigationJournal} from '@/components/game/room-investigation-journal';
 import {RoomMemoryGallery} from '@/components/game/room-memory-gallery';
 const ids=['brook','fern','cinder'] as const;
-/** Original per-worker transparent portrait with the same identity as the
- * animated factory actor; no low-resolution three-column image crop. */
+const faces={
+  brook:'heart-wide-almond',fern:'diamond-cat-freckles',cinder:'square-heavy-brow-scar',
+} as const;
+/** Large-format adult-heroine gallery art. The separate Pixi workshop actor
+ * remains a functional animated worker until real per-character sprites arrive. */
 function WorkerPainting({id,label,working}:{
   id:WorkerId;label:string;working:boolean;
 }){
   return <div className={'mw-worker-portrait mw-worker-portrait--'+id}
-    data-figure-kind="humanoid" data-art-source="transparent-human">
-    <WorkerArtwork id={id} name={label} frame={working?2:0}/>
+    data-figure-kind="humanoid" data-art-source="dedicated-heroine-portrait">
+    <Image src={HEROINE_FACE_ART[id]} fill
+      sizes="(max-width:700px) 92vw, (max-width:1050px) 47vw, 31vw"
+      alt={label+'的独立人像绘景'}
+      className="mw-worker-portrait-photo" data-art-source="dedicated-heroine-face"
+      data-face-morphology={faces[id]}/>
     <CharacterAdornment id={id}/>
+    {working&&<span className="mw-worker-on-duty" aria-label="正在工坊值班">值班中</span>}
     <span className="mw-worker-role">
       {id==='brook'?'水系术师':id==='fern'?'精灵植物学家':'赤金锻造师'}
     </span>
