@@ -63,7 +63,12 @@ export function GothicSummonScreen() {
   const featuredName=featuredWorker==='brook'?'泉泡':featuredWorker==='fern'?'青枝':featuredWorker==='cinder'?'炽角':'月纱';
   const featuredBeast=COVENANT_BEASTS[featuredWorker??'yuesha'];
   const featuredTier=featuredWorker==='cinder'?3:featuredWorker==='fern'?2:featuredWorker==='brook'?1:5;
-  const featuredCardTier=featuredTier>=5?'SSR':featuredTier>=3?'SR':'R';
+  // Use the actual gacha catalog grade, not a guessed label from potential
+  // tier. Brook is N, not R; visual themes never change draw weights.
+  const featuredCardKey=featuredWorker==='brook'?'brook-tide':
+    featuredWorker==='fern'?'fern-spring':
+    featuredWorker==='cinder'?'cinder-ember':'yuesha-eclipse';
+  const featuredCard=GACHA_CHARACTERS.find(c=>c.id===featuredCardKey)??GACHA_CHARACTERS[0];
   const otherQuotes={
     brook:['「听见了吗？水脉正在向我们讲述故事。」','「银月下的霜狼，从来不会忘记归途。」'],
     fern:['「荆棘守护的花，总有自己的绽放时刻。」','「跟我去看看真正的月光温室。」'],
@@ -413,13 +418,13 @@ export function GothicSummonScreen() {
         {/* RIGHT COLUMN: SSR CARD SHOWCASE & PROBABILITIES             */}
         {/* ----------------------------------------------------------- */}
         <aside className="summon-cinematic-sidebar relative flex w-full flex-col gap-3 overflow-y-auto py-2 lg:w-64 lg:shrink-0 xl:w-72 z-20">
-          {/* Framed SSR Card */}
+          {/* Featured card; a visual theme is not a drop-rate boost. */}
           <div data-testid="summon-featured-card" data-card-character={featuredWorker??'yuesha'}
             className="relative flex flex-col rounded-lg border border-[#d4aa7080] bg-[#1a0b18e0] p-3 shadow-[0_10px_30px_#000000aa]">
-            {/* SSR badge */}
+            {/* Grounded actual catalog grade. */}
             <div data-testid="summon-featured-card-tier"
               className="absolute top-2 left-2 z-10 rounded border border-[#ffe5bd88] bg-[#a96839] px-2 py-0.5 text-[10px] font-bold tracking-[.15em] text-[#fff0ce]">
-              {featuredCardTier}
+              {featuredCard.rarityZh}
             </div>
 
             {/* Card Portrait */}
@@ -438,14 +443,18 @@ export function GothicSummonScreen() {
             <div className="mt-2">
               <div className="flex items-baseline justify-between">
                 <h3 className="text-base font-semibold text-[#ffe6c2]">{featuredName} ☾</h3>
-                <span className="text-[10px] text-[#e8c099]">✦ {featuredCardTier} · {featuredBeast.name}</span>
+                <span className="text-[10px] text-[#e8c099]">✦ {featuredBeast.name}</span>
               </div>
               <p className="mt-1 text-[10px] text-[#c9a786] italic leading-tight">
                 {visibleQuotes[quoteIndex % visibleQuotes.length]}
               </p>
             </div>
 
-            {/* Quick Actions */}
+            <p className="mt-2 text-[10px] leading-5 text-[#c9ae8d]" data-testid="summon-featured-odds">
+              基础获取概率 {featuredCard.rate.toFixed(2)}% · 主题不额外加成
+            </p>
+
+            {/* Quick Actions */
             <div className="mt-2.5 text-xs">
               {featuredWorker ? (
                 <Link href={'/characters/?visit='+featuredWorker}
@@ -474,21 +483,15 @@ export function GothicSummonScreen() {
           >
             <h4 className="font-bold text-[#ffdca8] text-[11px] mb-1">召唤概率公示</h4>
             <div className="space-y-0.5 text-[10px]">
-              <div className="flex justify-between text-[#ff7585]">
-                <span>SSR 神话</span> <strong>1.00%</strong>
-              </div>
-              <div className="flex justify-between text-[#ffd700]">
-                <span>SSR 传说</span> <strong>5.00%</strong>
-              </div>
-              <div className="flex justify-between text-[#c084fc]">
-                <span>SR 精英</span> <strong>17.00%</strong>
-              </div>
-              <div className="flex justify-between text-[#93c5fd]">
-                <span>R 稀有</span> <strong>31.00%</strong>
-              </div>
-              <div className="flex justify-between text-[#cbd5e1]">
-                <span>N 常规</span> <strong>46.00%</strong>
-              </div>
+              {GACHA_CHARACTERS.map((character,index)=>(
+                <div key={character.id} data-testid={'summon-odds-'+character.id}
+                  className={'flex justify-between '+(
+                    ['text-[#ff7585]','text-[#ffd700]','text-[#c084fc]',
+                      'text-[#93c5fd]','text-[#cbd5e1]'][index]??'text-[#e4d2c4]')}>
+                  <span>{character.rarityZh}</span>
+                  <strong>{character.rate.toFixed(2)}%</strong>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -512,7 +515,7 @@ export function GothicSummonScreen() {
             </div>
           </div>
 
-          {/* Featured UP Characters Avatar Chips */}
+          {/* Collectable portraits; visual themes have no UP. */}
           <div className="mt-2">
             <span className="block text-[10px] text-[#cca585] mb-1">可收录契约</span>
             <div className="flex items-center justify-between gap-1">

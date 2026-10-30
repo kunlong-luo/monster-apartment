@@ -12,6 +12,8 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   const backgroundSrc=await paintedBackground.getAttribute('src');
   expect(backgroundSrc).toContain('lobby-hero');
   await expect(page.getByTestId('summon-featured-card')).toHaveAttribute('data-card-character','yuesha');
+  await expect(page.getByTestId('summon-featured-card-tier')).toHaveText('SSR 神话');
+  await expect(page.getByTestId('summon-featured-odds')).toContainText('1.00%');
   await expect(page.getByTestId('summon-yuesha-trial')).toBeVisible();
   await expect(page.getByTestId('summon-featured-room-link')).toHaveCount(0);
   await expect(page.getByRole('button',{name:'卡池详情'})).toHaveCount(0);
@@ -23,6 +25,16 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await expect(page.getByTestId('collection-tickets')).toHaveText('3');
   await expect(page.getByTestId('collection-odds')).toContainText('1.00%');
   await expect(page.getByTestId('collection-odds')).toContainText('46.00%');
+  for(const [id,rarity,rate] of [
+    ['yuesha-eclipse','SSR 神话','1.00%'],
+    ['yuesha-vow','SSR 传说','5.00%'],
+    ['cinder-ember','SR 精英','17.00%'],
+    ['fern-spring','R 稀有','31.00%'],
+    ['brook-tide','N 常规','46.00%'],
+  ] as const){
+    await expect(page.getByTestId('summon-odds-'+id)).toContainText(rarity);
+    await expect(page.getByTestId('summon-odds-'+id)).toContainText(rate);
+  }
   await expect(page.getByTestId('summon-owned-progress')).toHaveText('收集进度 0/5');
   await page.getByTestId('summon-available-card').first().click();
   const archive=page.getByRole('dialog',{name:'角色契约图鉴与装备锻造'});
@@ -40,10 +52,10 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await expect(pools.filter({hasText:'红月之邀'})).toHaveAttribute('aria-pressed','true');
   await expect(pools.filter({hasText:'神话 · 月蚀'})).toHaveAttribute('aria-pressed','false');
   await expect(page.getByRole('heading',{name:'红月 · 晚宴之邀'})).toBeVisible();
-  for(const [label,hero,tier,beast] of [
-    ['赤焰工坊','cinder','3','赤焰熔炉铠兽'],
-    ['荆棘回响','fern','2','荆棘花木奇美拉'],
-    ['潮汐来信','brook','1','皎月霜狼'],
+  for(const [label,hero,tier,beast,rarity,rate] of [
+    ['赤焰工坊','cinder','3','赤焰熔炉铠兽','SR 精英','17.00%'],
+    ['荆棘回响','fern','2','荆棘花木奇美拉','R 稀有','31.00%'],
+    ['潮汐来信','brook','1','皎月霜狼','N 常规','46.00%'],
   ] as const){
     await pools.filter({hasText:label}).click();
     const featured=page.getByTestId('summon-featured-portrait');
@@ -53,6 +65,8 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
     await expect(page.getByTestId('summon-featured-room-link')).toHaveAttribute('href',new RegExp('visit='+hero));
     await expect(page.getByTestId('summon-yuesha-trial')).toHaveCount(0);
     await expect(page.getByTestId('summon-featured-card')).toContainText(beast);
+    await expect(page.getByTestId('summon-featured-card-tier')).toHaveText(rarity);
+    await expect(page.getByTestId('summon-featured-odds')).toContainText(rate);
     await expect(page.locator('.summon-cinematic-title')).toContainText(beast);
     const image=featured.locator('img[data-portrait-source="dedicated-heroine"]');
     await expect(image).toBeVisible();
