@@ -25,7 +25,7 @@ export function useRoomArtLocalPreview(){
   useEffect(()=>{
     return ()=>{if(backgroundRef.current)URL.revokeObjectURL(backgroundRef.current);};
   },[]);
-  const uploadBackground=(event:ChangeEvent<HTMLInputElement>)=>{
+  const uploadBackground=async(event:ChangeEvent<HTMLInputElement>)=>{
     const input=event.currentTarget;
     const file=input.files?.[0];
     input.value='';
@@ -34,11 +34,23 @@ export function useRoomArtLocalPreview(){
       setError('请选择不超过 10 MB 的 WebP 室内背景候选。');
       return;
     }
-    const next=URL.createObjectURL(file);
-    if(backgroundRef.current)URL.revokeObjectURL(backgroundRef.current);
-    backgroundRef.current=next;
-    setBackgroundUrl(next);
-    setError('');
+    let bitmap:ImageBitmap|undefined;
+    try{
+      bitmap=await createImageBitmap(file);
+      if(bitmap.width<1920||bitmap.height<1080||
+        Math.abs(bitmap.width/bitmap.height-16/9)>.01)
+        throw new Error('背景候选须至少 1920×1080，画幅必须是 16:9。');
+      // The user may compare unapproved images here, but never promote them.
+      const next=URL.createObjectURL(file);
+      if(backgroundRef.current)URL.revokeObjectURL(backgroundRef.current);
+      backgroundRef.current=next;
+      setBackgroundUrl(next);
+      setError('');
+    }catch(err){
+      setError(err instanceof Error?err.message:'无法读取 WebP 背景候选。');
+    }finally{
+      bitmap?.close();
+    }
   };
   const resetBackground=()=>{
     if(backgroundRef.current)URL.revokeObjectURL(backgroundRef.current);
