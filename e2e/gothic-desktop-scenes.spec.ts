@@ -55,3 +55,28 @@ test('PC apartment doors and town portals use structured icons without clipping'
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/desktop-town-v368.png',animations:'disabled'});
 });
+
+test('four PC private suites render independent portrait layers without changing scene hotspots',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/characters/');
+  for(const id of ['brook','fern','cinder'] as const){
+    await page.getByTestId('visit-worker-room-'+id).click();
+    const stage=page.getByTestId('worker-room-stage');
+    await expect(stage).toBeVisible();
+    await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-art-quality','concept');
+    const portrait=page.getByTestId('room-portrait-cameo-'+id).locator('img');
+    await expect(portrait).toBeVisible();
+    await expect.poll(()=>portrait.evaluate(img=>img instanceof HTMLImageElement&&img.complete&&img.naturalWidth>0)).toBe(true);
+    await expect(stage.locator('[data-marker-layout="compact"]')).toHaveCount(3);
+    await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
+    await page.screenshot({path:'test-results/desktop-room-'+id+'-v369.png',animations:'disabled'});
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('worker-private-room-'+id)).toHaveCount(0);
+  }
+  await page.goto('/apartment/?visit=yuesha');
+  await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-art-quality','concept');
+  await expect(page.getByTestId('room-resident-present-yuesha').locator('img')).toBeVisible();
+  await page.screenshot({path:'test-results/desktop-room-yuesha-v369.png',animations:'disabled'});
+});

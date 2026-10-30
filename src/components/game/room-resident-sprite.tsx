@@ -4,7 +4,7 @@ import Image from 'next/image';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import type {CharacterId,WorkerCharacterId} from '@/core/character-life';
-import {WorkerArtwork} from '@/components/moonwork/worker-artwork';
+import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import type {RoomPose} from '@/core/room-performance';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 import {ROOM_ART_MANIFEST,roomPublicAssetPath} from '@/core/room-art-manifest';
@@ -18,6 +18,8 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
   const {reduced:gameReduced}=useGothicMotion();
   const reduced=Boolean(systemReduced||gameReduced);
   const art=ROOM_ART_MANIFEST[id];
+  // The concept display uses distinct approved face crops for worker identities.
+  // They are not full-body sprites or transparent production poses.
   // A candidate performer may be inspected while their real worker remains on
   // shift, but only while the ephemeral local WebP review URL exists.
   const reviewPerformer=Boolean(previewPoseUrl);
@@ -71,7 +73,16 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
         ?<Image src={moonveilBust} alt={name+'在会客室中'} fill unoptimized draggable={false}
           sizes="(max-width:640px) 49vw, 410px"
           className="object-contain object-bottom drop-shadow-[0_12px_22px_#000b] [mask-image:radial-gradient(ellipse_52%_70%_at_55%_54%,black_48%,transparent_100%)]"/>
-        :<WorkerArtwork id={id as WorkerCharacterId} name={name}/>}
+        :<div className="room-portrait-cameo absolute inset-x-0 bottom-[3%] top-[22%]"
+          data-testid={'room-portrait-cameo-'+id}
+          data-art-source="distinct-approved-face-crop-not-production-sprite">
+          <div aria-hidden="true" className="pointer-events-none absolute inset-[5%_8%_8%] rounded-full bg-[radial-gradient(ellipse_at_center,#e8c18a28_0%,#b58a8950_30%,transparent_70%)] blur-[22px]"/>
+          <Image src={HEROINE_FACE_ART[id as WorkerCharacterId]}
+            alt={name+'的独立精绘肖像（正式透明立绘待制作）'}
+            fill unoptimized draggable={false}
+            sizes="(max-width:640px) 48vw, (max-width:1100px) 38vw, 410px"
+            className="object-cover object-[center_20%] [mask-image:radial-gradient(ellipse_58%_66%_at_50%_43%,black_55%,transparent_94%)] drop-shadow-[0_10px_24px_#000a]"/>
+        </div>}}
     </motion.div>}
     <AnimatePresence mode="wait">
       {!away&&reaction&&<motion.p key={reaction} data-testid="room-resident-reaction"

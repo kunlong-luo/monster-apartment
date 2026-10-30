@@ -1,6 +1,7 @@
 'use client';
 
 import {useId,useState} from 'react';
+import {Check,Search,ListFilter,Sparkles} from 'lucide-react';
 import type {CSSProperties} from 'react';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
@@ -59,8 +60,8 @@ export function RoomSceneHotspots<T extends string>({
               ?'border-[#d3ab71c4] bg-[#201521c9] text-[#f9d8a3] hover:border-[#ffe0aa]'
               :'border-[#d7af80b0] bg-[#201521ad] text-[#f5e1cd] hover:border-[#ffe0aa] hover:bg-[#4c2c3bd9]')}
       >
-        <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center rounded-full border border-[#daba8f65] bg-[#3c2834a6] text-sm text-[#f5d3a7]">
-          {discovered?'✦':'⌕'}
+        <span aria-hidden="true" className="grid size-6 shrink-0 place-items-center rounded-full border border-[#daba8f65] bg-[#3c2834a6] text-[#f5d3a7]">
+          {discovered?<Check size={13} strokeWidth={1.75}/>:<Search size={13} strokeWidth={1.75}/>}
         </span>
         <span aria-hidden="true"
           className="pointer-events-none invisible absolute top-[calc(100%+4px)] left-1/2 z-20 w-max max-w-40 -translate-x-1/2 rounded-md border border-[#e2bc8c7a] bg-[#1b1322ef] px-2 py-1 text-[11px] leading-5 text-[#ffe1bb] opacity-0 shadow-[0_8px_22px_#000a] transition-opacity duration-150 sm:group-hover:visible sm:group-hover:opacity-100 sm:group-focus-visible:visible sm:group-focus-visible:opacity-100">
@@ -74,7 +75,7 @@ export function RoomSceneHotspots<T extends string>({
         onClick={()=>setShowOffscreen(open=>!open)}
         data-testid="room-offscreen-toggle"
         className="min-h-11 rounded-full border border-[#d9b384c9] bg-[#1c1126e3] px-3 py-2 text-[11px] text-[#ffdfb2] shadow-[0_5px_18px_#000a] hover:bg-[#372339] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffdfb2]"
-      >⌕ {hasOverlap?'更多调查物件':'画面外物件'} · {inaccessible.length}</button>
+      ><span className="inline-flex items-center gap-1.5"><ListFilter aria-hidden="true" size={15} strokeWidth={1.6}/>{hasOverlap?'更多调查物件':'画面外物件'} · {inaccessible.length}</span></button>
       {showOffscreen&&<div id={offscreenMenuId} role="group" aria-label={hasOverlap?'画面外或重叠的可调查物件':'画面外可调查物件'}
         className="flex max-w-[230px] flex-col gap-1 rounded-xl border border-[#d9b3848c] bg-[#1a1023f2] p-2 shadow-[0_8px_22px_#000a]">
         {inaccessible.map(item=><button type="button" key={item.id} aria-label={item.label}
@@ -83,7 +84,7 @@ export function RoomSceneHotspots<T extends string>({
           data-marker-layout="offscreen"
           onClick={()=>{onInspect(item.id);setShowOffscreen(false);}}
           className="min-h-11 rounded-lg border border-[#bba17c7a] bg-[#312034e6] px-3 py-2 text-left text-xs text-[#ffe3c5] hover:border-[#ffe0b0] focus-visible:outline-2 focus-visible:outline-[#ffe0b0]"
-        >{observed.includes(item.id)?'✦ ': '⌕ '}{item.label}</button>)}
+        ><span className="inline-flex items-center gap-2">{observed.includes(item.id)?<Check aria-hidden="true" size={14}/>:<Search aria-hidden="true" size={14}/>} {item.label}</span></button>)}
       </div>}
     </div>}
     <AnimatePresence mode="wait">
@@ -94,7 +95,7 @@ export function RoomSceneHotspots<T extends string>({
         exit={reducedMotion?{opacity:0}:{opacity:0,y:7}}
         transition={{duration:reducedMotion?0:.2}}
         className="pointer-events-none absolute bottom-12 left-[5%] right-[5%] z-[9] max-w-[min(80%,560px)] rounded-lg border border-[#e7bb8e9e] bg-[#1b1124e9] px-3 py-2 text-[11px] leading-5 text-[#ffe0bf] shadow-[0_6px_24px_#000a] backdrop-blur-md">
-        <span className="mr-1 text-[#ffc980]">✧</span>{description}
+        <Sparkles aria-hidden="true" size={14} strokeWidth={1.5} className="mr-1 inline text-[#ffc980]"/>{description}
       </motion.div>}
     </AnimatePresence>
     <span className="pointer-events-none absolute bottom-2 left-3 rounded-full border border-[#c79b7258] bg-[#160f1ad5] px-2.5 py-1 text-[10px] text-[#f1c99f]">
