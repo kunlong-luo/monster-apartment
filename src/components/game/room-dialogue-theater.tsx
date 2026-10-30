@@ -50,11 +50,11 @@ export function RoomDialogueTheater({name,title,response,onClose,basePose='warm'
         setIndex(beats.length-1);
       }
     }}
-    className="pointer-events-auto absolute inset-0 z-[16] flex flex-col justify-end overflow-hidden bg-[linear-gradient(180deg,transparent_0%,#0c071422_38%,#0b0618e7_82%,#090415f7_100%)] p-3 text-[#ffe7cf] sm:p-6">
+    className="pointer-events-auto absolute inset-0 z-[16] flex flex-col justify-end overflow-hidden bg-[linear-gradient(180deg,#0d08111f_0%,transparent_28%,#0c07147a_55%,#080511f5_100%)] p-4 text-[#ffe7cf] sm:p-7">
     <header className="absolute inset-x-3 top-3 flex items-start justify-between gap-4 sm:inset-x-6 sm:top-6">
-      <div className="max-w-[65%] rounded-lg border border-[#c99e7350] bg-[#1a1020b9] px-2 py-1 shadow-[0_6px_22px_#0007] sm:px-3 sm:py-2">
-        <span className="text-[10px] tracking-[.18em] text-[#ffcc94]">MOONLIT MEMORY</span>
-        <h3 className="mt-1 text-sm text-[#ffe4be] sm:text-lg">{title}</h3>
+      <div className="max-w-[62%] border-l border-[#dbb27f80] pl-3 text-shadow-md">
+        <span className="text-[9px] tracking-[.2em] text-[#ffcc94]">MOONLIT MEMORY</span>
+        <h3 className="mt-1 font-serif text-base tracking-wide text-[#ffe4be] sm:text-xl">{title}</h3>
       </div>
       <button type="button" onClick={onClose} data-testid="room-theater-close"
         className="min-h-11 rounded-lg border border-[#e9ba8a84] bg-[#261725ed] px-3 text-xs hover:border-[#ffe0b5] focus-visible:outline-2 focus-visible:outline-[#ffe0b5]">
@@ -69,7 +69,7 @@ export function RoomDialogueTheater({name,title,response,onClose,basePose='warm'
           initial={still?false:{opacity:0,y:7}}
           animate={{opacity:1,y:0}} exit={still?{opacity:0}:{opacity:0,y:-5}}
           transition={{duration:still?0:.27}}
-          className="mt-2 min-h-16 rounded-lg border border-[#ddb4846c] bg-[#180c1be8] px-3 py-3 text-sm leading-7 shadow-[0_12px_38px_#000b] sm:px-5 sm:text-base">
+          className="mt-3 min-h-16 border-l-2 border-[#edc6989c] bg-[linear-gradient(90deg,#190f1bd9,#190f1b40)] px-4 py-3 font-serif text-[15px] leading-8 tracking-[.015em] text-[#fff0dd] text-shadow-md sm:px-5 sm:text-lg">
           {displayed}
         </motion.p>
       </AnimatePresence>

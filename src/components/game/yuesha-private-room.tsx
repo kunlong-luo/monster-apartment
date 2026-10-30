@@ -54,10 +54,10 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     setFeedback('已重温这段收录的记忆。');
     stageRef.current?.scrollIntoView({block:'center',behavior:'auto'});
   };
-  return <div className="min-w-0 flex-1 space-y-3" data-testid="yuesha-private-room">
-    <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,2.1fr)_minmax(300px,.9fr)] lg:items-start">
+  return <div className="min-w-0 flex-1 space-y-2" data-testid="yuesha-private-room" data-room-layout="scenic-left-rail-right">
+    <div data-testid="room-scenic-layout" className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,2.2fr)_minmax(280px,.9fr)] lg:items-start">
     <div className="min-w-0 space-y-2">
-    <div className="relative h-[clamp(315px,57vh,640px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]" data-testid="yuesha-room-stage" ref={stageRef}>
+    <div className="relative h-[clamp(390px,68dvh,720px)] overflow-hidden rounded-xl border border-[#b993688c] bg-[#171020] shadow-[0_16px_48px_#0009,inset_0_1px_#e9cfa523]" data-testid="yuesha-room-stage" ref={stageRef}>
       <RoomSceneBackdrop id="yuesha" previewUrl={artReview.backgroundUrl}
         cinematicPose={theater?pose:null}/>
       <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)} previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>
@@ -71,15 +71,16 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       {theater&&<RoomDialogueTheater key={theater.id} name="月纱" title={theater.title}
         response={theater.response} basePose={roomTopicPose('yuesha',theater.id)}
         onBeatPose={setPose} onClose={()=>{setTheater(null);setPose('idle');}}/>}
-      <div className="pointer-events-none absolute top-9 left-3 max-w-[52%] space-y-1 text-shadow-md">
-        <h3 className="text-lg text-[#ffe3bd] sm:text-2xl">月纱的契约会客室</h3>
-        <p className="text-[11px] leading-5 text-[#e4c7ab]">月纹、旧契约和一杯香料茶</p>
-      </div>
+      <header className="pointer-events-none absolute left-4 top-4 z-[5] max-w-[52%] text-shadow-md sm:left-6 sm:top-6">
+        <span className="text-[9px] font-medium uppercase tracking-[.24em] text-[#e7c294]">PRIVATE SUITE / 月纱</span>
+        <h3 className="mt-2 font-serif text-xl leading-tight tracking-[.04em] text-[#ffe7c5] sm:text-2xl">契约会客室</h3>
+        <p className="mt-2 hidden text-xs leading-6 text-[#ead3bf] sm:block">月纹、旧契约和一杯香料茶</p>
+      </header>
     </div>
       <RoomArtLocalPreviewPanel id="yuesha" name="月纱" review={artReview}/>
-    <p className="text-[10px] text-[#bda089]">轻触场景中的月纹物件，寻找契约背后的记忆；人物演出与线索分别反馈。</p>
+
     </div>
-    <div className="min-w-0 space-y-3 rounded-xl border border-[#a980655e] bg-[linear-gradient(165deg,#2b1824a8,#160f19df)] p-3 shadow-[inset_0_1px_#f9d9a624] lg:max-h-[min(68vh,670px)] lg:overflow-y-auto lg:pr-2 [scrollbar-color:#a67f67_#281822] [scrollbar-width:thin]">
+    <div data-testid="room-story-rail" className="min-w-0 space-y-4 rounded-xl border border-[#b38d6860] bg-[linear-gradient(170deg,#261724ed,#140d18f2)] p-3 shadow-[inset_0_1px_#f4d6ad20] lg:max-h-[min(68dvh,720px)] lg:overflow-y-auto lg:pr-3 [scrollbar-color:#95755d_#25151f] [scrollbar-width:thin]">
     <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[#ad89644a] bg-[#211520b8] px-3 py-2 text-xs" data-testid="yuesha-living-state">
       <span>今夜心情：{happiness>=70?'安心':'牵挂邻居'}</span>
       <span>公寓现住 {guests} 位邻居</span>
@@ -103,7 +104,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       {choice&&<p className="text-[11px] text-[#f0c58e]">已记录的观点：{choice==='transparent'?'透明公开优先':'稳健交付优先'}。这是人物故事选择，不会直接修改订单和仓库。</p>}
       {feedback&&<p role="status" className="text-xs text-[#ebc79c]">{feedback}</p>}
     </div>
-    <RoomConversationTopics id="yuesha" observed={observed}
+    <RoomConversationTopics id="yuesha" observed={observed} cinematicActive={Boolean(theater)}
       onSpeak={topic=>{
         const base=roomTopicPose('yuesha',topic.id);
           setPose(roomDialogueBeatPose(base,0,dialogueBeats(topic.response).length));
@@ -131,6 +132,9 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     </div>
     </div>
     <YueshaMemoryShelf progress={progress} onRevisit={revisit}/>
-    <CharacterLifePortrait id="yuesha"/>
+    <details data-testid="room-character-archive" className="group rounded-lg border border-[#ad885f50] bg-[#170e1ae6] px-3 py-2.5">
+      <summary className="cursor-pointer select-none py-1 text-xs tracking-[.1em] text-[#e8c99e] focus-visible:outline-2 focus-visible:outline-[#e8c99e]">人物档案与能力 <span className="ml-2 text-[#a68b76] group-open:hidden">· 展开查看</span></summary>
+      <div className="mt-3"><CharacterLifePortrait id="yuesha"/></div>
+    </details>
   </div>;
 }

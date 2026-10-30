@@ -64,17 +64,10 @@ export function WorkerPrivateRoom({id,onClose,working}:{
   const shownPose=artReview.enabled&&artReview.selectedPose?artReview.selectedPose:pose;
 
   return <GothicModal title={'拜访'+profile.name+'的房间'} closeLabel={'离开'+profile.name+'的房间'} onClose={onClose} wide immersive>
-    <div data-testid={'worker-private-room-'+id} className="min-w-0 w-full space-y-3">
-      <header className="flex items-center justify-between gap-2 pr-8">
-        <div>
-          <p className="text-[10px] tracking-[.2em] text-gothic-gold">MOONLIGHT APARTMENT · PRIVATE SUITE</p>
-          <h2 className="mt-1 text-xl text-gothic-ivory">{profile.name} · {scene.roomName}</h2>
-          <p className="mt-1 max-w-[52ch] text-[11px] leading-5 text-gothic-muted">{scene.roomSummary}</p>
-        </div>
-      </header>
-      <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(300px,1fr)] lg:items-start">
+    <div data-testid={'worker-private-room-'+id} data-room-layout="scenic-left-rail-right" className="min-w-0 w-full space-y-2">
+      <div data-testid="room-scenic-layout" className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,2.2fr)_minmax(280px,.9fr)] lg:items-start">
       <div className="min-w-0 space-y-2">
-      <div className={'relative h-[clamp(270px,53vh,565px)] overflow-hidden rounded-xl border border-gothic-brass/65 bg-[#120f1c]'}
+      <div data-testid="worker-room-stage" className="relative h-[clamp(390px,68dvh,720px)] overflow-hidden rounded-xl border border-[#b993688c] bg-[#120f1c] shadow-[0_16px_48px_#0009,inset_0_1px_#e9cfa523]"
         aria-label={profile.name+'的房间概念场景'} ref={stageRef}>
         <RoomSceneBackdrop id={id} previewUrl={artReview.backgroundUrl}
           cinematicPose={theater&&!working?pose:null}/>
@@ -89,16 +82,19 @@ export function WorkerPrivateRoom({id,onClose,working}:{
           title={theater.title} response={theater.response}
           basePose={roomTopicPose(id,theater.id)} onBeatPose={setPose}
           onClose={()=>{setTheater(null);setPose('idle');}}/>}
-        <div className="pointer-events-none absolute bottom-3 left-3 z-[1] max-w-[47%] space-y-2">
-          <span className={'inline-block rounded-full border bg-[#14101acc] px-3 py-1 text-[10px] '+palette.ribbon}>{palette.roomDetail}</span>
-          <p className="text-[11px] leading-5 text-[#f5ddc3]">{working?'正在工坊值守 · 屋内留着便条':'暂时休息 · 可以聊聊天'}</p>
+        <header className="pointer-events-none absolute left-4 top-4 z-[5] max-w-[min(54%,340px)] text-shadow-md sm:left-6 sm:top-6">
+          <span className="text-[9px] font-medium uppercase tracking-[.24em] text-[#e7c294]">PRIVATE SUITE / {profile.name}</span>
+          <h2 className="mt-2 font-serif text-xl leading-tight tracking-[.04em] text-[#ffe7c5] sm:text-2xl">{scene.roomName}</h2>
+          <p className="mt-2 hidden max-w-[29ch] text-xs leading-6 text-[#ead3bf] sm:block">{scene.roomSummary}</p>
+        </header>
+        <div className="pointer-events-none absolute bottom-3 left-3 z-[1] max-w-[48%] sm:bottom-5 sm:left-5">
+          <p className={'inline-block rounded border border-[#cba77b77] bg-[#180e1cc9] px-2.5 py-1.5 text-[10px] leading-4 '+palette.ribbon}>{working?'工坊值守 · 留言中':palette.roomDetail}</p>
         </div>
       </div>
       <RoomArtLocalPreviewPanel id={id} name={profile.name} review={artReview}
         warning="当前仍使用概念版调查热点坐标；新背景的物件定位须在仓库外单独标注并审核，不能据此预览判断正式热点。"/>
-      <p className="text-[10px] leading-5 text-gothic-muted">轻触物件寻找房间线索。角色演出独立于环境，工匠值守时仅保留便条。</p>
       </div>
-      <div className="min-w-0 space-y-3 lg:max-h-[min(62vh,580px)] lg:overflow-y-auto lg:pr-2 [scrollbar-color:#a67f67_#281822] [scrollbar-width:thin]">
+      <div data-testid="room-story-rail" className="min-w-0 space-y-4 rounded-xl border border-[#b38d6860] bg-[linear-gradient(170deg,#261724ed,#140d18f2)] p-3 shadow-[inset_0_1px_#f4d6ad20] lg:max-h-[min(68dvh,720px)] lg:overflow-y-auto lg:pr-3 [scrollbar-color:#95755d_#25151f] [scrollbar-width:thin]">
       {status!=='ok'&&<p role="alert" className="rounded-lg border border-rose-300/50 p-3 text-xs text-rose-200">
         {status==='corrupt'?'人物存档无法读取；已保留原记录，不会覆盖。':'浏览器暂时无法保存人物拜访记录。'}</p>}
       <section className="space-y-2" aria-label={profile.name+'的交谈'}>
@@ -120,7 +116,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
           >{item.label}</button>)}
         </div>}
       </section>
-      <RoomConversationTopics id={id} observed={observed} working={working}
+      <RoomConversationTopics id={id} observed={observed} working={working} cinematicActive={Boolean(theater)}
         onSpeak={topic=>{
           const base=roomTopicPose(id,topic.id);
           setPose(roomDialogueBeatPose(base,0,dialogueBeats(topic.response).length));
@@ -138,7 +134,10 @@ export function WorkerPrivateRoom({id,onClose,working}:{
       </section>
       </div>
       </div>
-      <CharacterLifePortrait id={id} activity={working?'在工坊工作':'目前休息中'}/>
+      <details data-testid="room-character-archive" className="group rounded-lg border border-[#ad885f50] bg-[#170e1ae6] px-3 py-2.5">
+        <summary className="cursor-pointer select-none py-1 text-xs tracking-[.1em] text-[#e8c99e] focus-visible:outline-2 focus-visible:outline-[#e8c99e]">人物档案与能力 <span className="ml-2 text-[#a68b76] group-open:hidden">· 展开查看</span></summary>
+        <div className="mt-3"><CharacterLifePortrait id={id} activity={working?'在工坊工作':'目前休息中'}/></div>
+      </details>
     </div>
   </GothicModal>;
 }
