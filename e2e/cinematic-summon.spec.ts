@@ -62,6 +62,14 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await expect(page.getByText('2024/10/24')).toHaveCount(0);
   await page.getByTestId('collection-summon').click();
   await expect(page.getByTestId('collection-reveal')).toBeVisible();
+  await page.getByRole('button',{name:/跳过仪式/}).click();
+  await expect(page.getByTestId('collection-reveal-view-collection')).toBeVisible();
+  await expect(page.getByRole('button',{name:/再抽十次/})).toHaveCount(0);
+  await page.getByTestId('collection-reveal-view-collection').click();
+  const collected=page.getByRole('dialog',{name:'角色契约图鉴与装备锻造'});
+  await expect(collected).toBeVisible();
+  await expect(collected.locator('[data-testid^="collection-card-"]')).toHaveCount(5);
+  await collected.getByRole('button',{name:'返回契约大厅'}).click();
   const saved=await page.evaluate(()=>{
     const g=JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')||'null');
     const c=JSON.parse(localStorage.getItem('monster-apartment:character-collection:v1')||'null');
@@ -78,6 +86,37 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await page.getByRole('button',{name:'召唤记录'}).click();
   await expect(page.getByRole('dialog').last()).toContainText('契约召唤历史记录');
 });
+test('ten-pull card backs can be revealed from keyboard, and collection is accessible afterwards',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
+  await page.evaluate(()=>{
+    const key='monster-apartment:gacha-v2';
+    localStorage.setItem(key,JSON.stringify({
+      version:2,tickets:10,crystals:0,moonstones:0,pityCountdown:90,
+      totalSummons:0,history:[],ownedIds:[],claimedProgressRewards:[],
+      activePoolId:'mythic-eclipse'
+    }));
+  });
+  await page.reload();
+  await page.getByTestId('collection-summon-ten').click();
+  await expect(page.getByTestId('collection-reveal')).toBeVisible();
+  await page.getByRole('button',{name:/跳过仪式/}).click();
+  const first=page.getByRole('button',{name:'翻开第 1 张契约卡'});
+  await expect(first).toBeVisible();
+  await first.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('button',{name:/已揭晓：/})).toHaveCount(1);
+  await page.getByRole('button',{name:'全部翻开'}).click();
+  await expect(page.getByTestId('collection-reveal-view-collection')).toBeVisible();
+  await expect(page.getByRole('button',{name:/再抽十次/})).toHaveCount(0);
+  await page.getByTestId('collection-reveal-view-collection').click();
+  await expect(page.getByRole('dialog',{name:'角色契约图鉴与装备锻造'})).toBeVisible();
+  const state=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!));
+  expect(state.tickets).toBe(0);
+  expect(state.totalSummons).toBe(10);
+});
+
 test('zero resources cannot mint cards; phone can access the real banners and action',async({page})=>{
   test.setTimeout(90_000);
   await page.setViewportSize({width:390,height:844});

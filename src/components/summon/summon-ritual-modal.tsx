@@ -9,9 +9,10 @@ interface SummonRitualModalProps {
   characters: SummonableCharacter[];
   onClose: () => void;
   onSummonAgain?: () => void;
+  onViewCollection?: () => void;
 }
 
-export function SummonRitualModal({ characters, onClose, onSummonAgain }: SummonRitualModalProps) {
+export function SummonRitualModal({ characters, onClose, onSummonAgain, onViewCollection }: SummonRitualModalProps) {
   const [phase, setPhase] = useState<'ritual' | 'reveal'>('ritual');
   const [revealedIndices, setRevealedIndices] = useState<number[]>([]);
   const isMulti = characters.length > 1;
@@ -37,6 +38,7 @@ export function SummonRitualModal({ characters, onClose, onSummonAgain }: Summon
   };
 
   const hasMythicSSR = characters.some((c) => c.rarity === 'SSR-Mythic');
+  const allRevealed = !isMulti || revealedIndices.length === characters.length;
 
   return (
     <div
@@ -115,10 +117,12 @@ export function SummonRitualModal({ characters, onClose, onSummonAgain }: Summon
               const isSR = char.rarity === 'SR';
 
               return (
-                <div
+                <button type="button"
                   key={index}
-                  onClick={() => toggleReveal(index)}
-                  className={`group relative flex h-72 sm:h-80 w-full cursor-pointer flex-col overflow-hidden rounded-xl border transition-all duration-300 hover:scale-[1.02] ${
+                  aria-label={isRevealed?`已揭晓：${char.title}`:`翻开第 ${index+1} 张契约卡`}
+                  aria-disabled={isRevealed}
+                  onClick={() => {if(!isRevealed)toggleReveal(index);}}
+                  className={`group relative flex h-72 sm:h-80 w-full cursor-pointer flex-col overflow-hidden rounded-xl border text-left transition-all duration-300 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffe5b2] ${
                     isRevealed
                       ? isSSR
                         ? 'border-[#ffc060] bg-gradient-to-b from-[#401222] via-[#240e1b] to-[#120713] shadow-[0_0_25px_#ff406080]'
@@ -193,7 +197,7 @@ export function SummonRitualModal({ characters, onClose, onSummonAgain }: Summon
                       </div>
                     </div>
                   )}
-                </div>
+                </button>
               );
             })}
           </div>
@@ -210,7 +214,7 @@ export function SummonRitualModal({ characters, onClose, onSummonAgain }: Summon
               </button>
             )}
 
-            {onSummonAgain && (
+            {allRevealed && onSummonAgain && (
               <button
                 type="button"
                 onClick={() => {
@@ -223,6 +227,13 @@ export function SummonRitualModal({ characters, onClose, onSummonAgain }: Summon
                 再抽十次 (🎫x10)
               </button>
             )}
+
+            {allRevealed&&onViewCollection&&<button type="button"
+              data-testid="collection-reveal-view-collection"
+              onClick={onViewCollection}
+              className="min-h-11 rounded-lg border border-[#f5bf81] bg-gradient-to-r from-[#82314a] to-[#4a203b] px-5 py-2 text-xs font-semibold text-[#fff0d8] hover:brightness-110">
+              查看获得的契约与装备
+            </button>}
 
             <button
               type="button"

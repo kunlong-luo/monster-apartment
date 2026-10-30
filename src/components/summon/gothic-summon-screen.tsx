@@ -548,7 +548,12 @@ export function GothicSummonScreen() {
         <SummonRitualModal
           characters={ritualModal.characters}
           onClose={() => setRitualModal({ open: false, characters: [] })}
-          onSummonAgain={handleTenSummon}
+          onSummonAgain={state.tickets+Math.floor(state.crystals/160)>=10
+            &&collectionStatus==='ok'&&saveStatus==='ok'?handleTenSummon:undefined}
+          onViewCollection={()=>{
+            setRitualModal({open:false,characters:[]});
+            setShowGalleryTab(true);
+          }}
         />
       )}
 
