@@ -259,6 +259,9 @@ test('on-duty worker stays away in gameplay while local art review may inspect a
     if(!ctx)throw Error('No 2D context');
     ctx.fillStyle='#dfbcf1';
     ctx.beginPath();ctx.ellipse(512,520,230,345,0,0,Math.PI*2);ctx.fill();
+    // A perfect ellipse has a long bounding edge and correctly fails the
+    // existing portrait crop test. Add two tiny silhouette details.
+    ctx.fillRect(233,498,65,32);ctx.fillRect(728,498,65,32);
     const blob=await new Promise<Blob>((resolve,reject)=>
       canvas.toBlob(file=>file?resolve(file):reject(Error('WebP export failed')),'image/webp',.9));
     const bytes=new Uint8Array(await blob.arrayBuffer());
@@ -268,6 +271,8 @@ test('on-duty worker stays away in gameplay while local art review may inspect a
   await review.getByTestId('room-pose-upload-idle').setInputFiles({
     name:'idle.webp',mimeType:'image/webp',buffer:Buffer.from(base64,'base64'),
   });
+  await expect(review.getByTestId('room-pose-review')).toContainText('1/4');
+  await expect(review.getByTestId('room-pose-review-error')).toHaveCount(0);
   await expect(layer).toHaveAttribute('data-render-mode','separate');
   await expect(layer).toHaveAttribute('data-review-performer','true');
   await expect(room.getByTestId('room-resident-present-brook')).toBeVisible();
@@ -306,6 +311,8 @@ test('reduced-motion story lighting stays still while dialogue completes in one 
 });
 
 test('worker room uses its own cinematic light palette without blocking prop hotspots',async({page})=>{
+  test.setTimeout(90_000);
+  await page.emulateMedia({reducedMotion:'reduce'});
   await page.setViewportSize({width:390,height:844});
   await page.goto('/characters/');
   await page.getByTestId('visit-worker-room-fern').click();
@@ -315,5 +322,51 @@ test('worker room uses its own cinematic light palette without blocking prop hot
   await expect(room.getByTestId('room-story-light')).toHaveAttribute('data-story-light','warm');
   await room.getByTestId('room-theater-close').click();
   await expect(room.getByTestId('room-story-light')).toHaveAttribute('data-story-light','ambient');
+  // The same physical prop may live in the accessible overflow menu when
+  // the narrow stage crop makes its 44px hotspot overlap another.
+  if(await room.getByTestId('scene-object-herbarium').count()===0)
+    await room.getByTestId('room-offscreen-toggle').click();
   await expect(room.getByTestId('scene-object-herbarium')).toBeVisible();
+});
+
+test('reference-aligned private suite keeps the full painting dominant with a quiet right rail',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/characters/');
+  await page.getByTestId('visit-worker-room-fern').click();
+  const room=page.getByTestId('worker-private-room-fern');
+  await expect(room).toHaveAttribute('data-room-layout','scenic-left-rail-right');
+  const stage=room.getByTestId('worker-room-stage');
+  const rail=room.getByTestId('room-story-rail');
+  const stageRect=await stage.boundingBox(),railRect=await rail.boundingBox();
+  expect(stageRect&&railRect).toBeTruthy();
+  if(!stageRect||!railRect)throw Error('Scene grid did not render');
+  expect(stageRect.width/railRect.width).toBeGreaterThan(1.9);
+  expect(stageRect.height).toBeGreaterThan(550);
+  await expect(room.getByTestId('room-character-archive')).not.toHaveAttribute('open','');
+  await room.getByTestId('room-character-archive').locator('summary').click();
+  await expect(room.getByTestId('room-character-archive')).toHaveAttribute('open','');
+  await room.getByTestId('room-topic-fern-plant').click();
+  await expect(room.getByTestId('room-topic-response-fern')).toContainText('正在场景中演出');
+  await expect(room.getByTestId('room-topic-response-fern')).not.toContainText('植物不会说话');
+  await room.getByTestId('room-theater-close').click();
+  await expect(room.getByTestId('room-topic-response-fern')).toContainText('植物不会说话');
+});
+
+test('narrow suite keeps the scenic room first and never overflows horizontally',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/characters/');
+  await page.getByTestId('visit-worker-room-cinder').click();
+  const room=page.getByTestId('worker-private-room-cinder');
+  await expect(room.getByTestId('worker-room-stage')).toBeVisible();
+  await expect(room.getByTestId('room-story-rail')).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth))
+    .toBeLessThanOrEqual(390);
+  const stage=await room.getByTestId('worker-room-stage').boundingBox();
+  const rail=await room.getByTestId('room-story-rail').boundingBox();
+  expect(stage&&rail).toBeTruthy();
+  if(!stage||!rail)throw Error('Missing scenic stage or rail');
+  expect(stage.y).toBeLessThan(rail.y);
+  expect(stage.height).toBeGreaterThanOrEqual(380);
 });
