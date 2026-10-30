@@ -78,5 +78,6 @@ test('four PC private suites render independent portrait layers without changing
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
   await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-art-quality','concept');
   await expect(page.getByTestId('room-resident-present-yuesha').locator('img')).toBeVisible();
+  await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/desktop-room-yuesha-v369.png',animations:'disabled'});
 });
