@@ -191,6 +191,15 @@ export function SummonRitualModal({ characters, onClose, onSummonAgain, onViewCo
                         >
                           {char.title}
                         </h4>
+                        <p data-testid="collection-reveal-award"
+                          className="mt-1 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[10px] leading-4">
+                          <span className={char.firstAcquired?'font-semibold text-[#ffda92]':'text-[#b8d6e5]'}>
+                            {char.firstAcquired?'✦ 首次收录':'重复契约'}
+                          </span>
+                          <span className="tabular-nums text-[#f1d3a8]">
+                            +{char.awardedShards??0} 锻造碎片
+                          </span>
+                        </p>
                         <p className="mt-0.5 text-[10px] text-[#e0bfa3] line-clamp-2 italic">
                           "{char.quote}"
                         </p>

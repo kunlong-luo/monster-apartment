@@ -64,6 +64,8 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await expect(page.getByTestId('collection-reveal')).toBeVisible();
   // Wait for the optional ritual animation; it may have completed already.
   await expect(page.getByTestId('collection-reveal-view-collection')).toBeVisible();
+  await expect(page.getByTestId('collection-reveal-award')).toContainText('首次收录');
+  await expect(page.getByTestId('collection-reveal-award')).toContainText('+1 锻造碎片');
   await expect(page.getByRole('button',{name:/再抽十次/})).toHaveCount(0);
   await page.getByTestId('collection-reveal-view-collection').click();
   const collected=page.getByRole('dialog',{name:'角色契约图鉴与装备锻造'});
@@ -109,6 +111,11 @@ test('ten-pull card backs can be revealed from keyboard, and collection is acces
   await expect(page.getByRole('button',{name:/已揭晓：/})).toHaveCount(1);
   await page.getByRole('button',{name:'全部翻开'}).click();
   await expect(page.getByTestId('collection-reveal-view-collection')).toBeVisible();
+  await expect(page.getByTestId('collection-reveal-award')).toHaveCount(10);
+  expect(await page.getByTestId('collection-reveal-award')
+    .filter({hasText:'首次收录'}).count()).toBeGreaterThanOrEqual(1);
+  expect(await page.getByTestId('collection-reveal-award')
+    .filter({hasText:'重复契约'}).count()).toBeGreaterThanOrEqual(5);
   await expect(page.getByRole('button',{name:/再抽十次/})).toHaveCount(0);
   await page.getByTestId('collection-reveal-view-collection').click();
   await expect(page.getByRole('dialog',{name:'角色契约图鉴与装备锻造'})).toBeVisible();
