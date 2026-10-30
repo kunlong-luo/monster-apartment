@@ -46,10 +46,10 @@
   background:radial-gradient(ellipse 68% 70% at 50% 46%,#ad4e5d5c,transparent 70%);
 }
 .summon-cinematic-quote{
-  max-width:min(315px,85%);min-height:54px;
-  text-align:center;
-  background:linear-gradient(115deg,#241020ed,#130816d0)!important;
-  border-radius:3px!important;
+  max-width:min(280px,48%);min-height:48px;
+  text-align:left;
+  background:linear-gradient(115deg,#1b0d1bbe,#130915c2)!important;
+  border-radius:4px!important;
 }
 .summon-cinematic-title{
   position:relative;
@@ -60,7 +60,7 @@
   background:linear-gradient(90deg,transparent,#1c0919a8 16%,#190b18aa 84%,transparent);
 }
 .summon-cinematic-title h2{
-  font-size:clamp(34px,4.4vw,76px)!important;
+  font-size:clamp(30px,3.6vw,58px)!important;
   color:#ffe1c4!important;
   font-weight:600!important;
   letter-spacing:.12em!important;
@@ -94,7 +94,7 @@
 @media(min-width:1024px){
  .summon-cinematic-main{overflow:hidden!important}
  .summon-cinematic-center{min-width:320px}
- .summon-cinematic-quote{margin-top:clamp(30px,8vh,110px)!important}
+ .summon-cinematic-quote{margin-top:clamp(16px,4vh,52px)!important}
  .summon-cinematic-title{margin-top:auto!important;margin-bottom:15px!important}
  .summon-cinematic-character img{object-position:50% 18%;transform:none;filter:none}
 }
@@ -122,7 +122,7 @@
  .summon-cinematic-header>div:last-child>div{flex-shrink:0}
  .summon-cinematic-center{min-height:500px}
  .summon-cinematic-character{opacity:.87}
- .summon-cinematic-quote{margin-right:0!important;margin-top:4px!important;max-width:83%;font-size:10px!important}
+ .summon-cinematic-quote{margin-right:0!important;margin-top:4px!important;max-width:64%;font-size:10px!important}
  .summon-cinematic-title{margin-top:auto!important;padding:8px 4px}
  .summon-cinematic-title h2{font-size:33px!important}
  .summon-cinematic-title>div>div{padding:5px!important}

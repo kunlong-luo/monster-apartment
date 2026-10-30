@@ -12,6 +12,12 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   const backgroundSrc=await paintedBackground.getAttribute('src');
   expect(backgroundSrc).toContain('lobby-hero');
   await expect(page.getByTestId('summon-featured-card')).toHaveAttribute('data-card-character','yuesha');
+  await expect(page.getByTestId('summon-yuesha-trial')).toBeVisible();
+  await expect(page.getByTestId('summon-featured-room-link')).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'卡池详情'})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'查看详情'})).toHaveCount(1);
+  await expect(page.getByRole('button',{name:'查看档案'})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'查看已收录契约、首饰和装备'})).toHaveCount(1);
   const dock=page.getByRole('navigation',{name:'月影契约世界导航'});
   await expect(dock.getByRole('link')).toHaveCount(7);
   await expect(page.getByTestId('collection-tickets')).toHaveText('3');
@@ -44,6 +50,8 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
     await expect(featured).toHaveAttribute('data-featured-character',hero);
     await expect(featured).toHaveAttribute('data-tier',tier);
     await expect(page.getByTestId('summon-featured-card')).toHaveAttribute('data-card-character',hero);
+    await expect(page.getByTestId('summon-featured-room-link')).toHaveAttribute('href',new RegExp('visit='+hero));
+    await expect(page.getByTestId('summon-yuesha-trial')).toHaveCount(0);
     await expect(page.getByTestId('summon-featured-card')).toContainText(beast);
     await expect(page.locator('.summon-cinematic-title')).toContainText(beast);
     const image=featured.locator('img[data-portrait-source="dedicated-heroine"]');

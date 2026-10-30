@@ -309,7 +309,7 @@ export function GothicSummonScreen() {
           {/* Interactive Heroine Dialogue Bubble */}
           <button type="button" aria-label={'与'+featuredName+'对话，切换台词'}
             onClick={() => setQuoteIndex(prev => prev + 1)}
-            className="cursor-pointer self-end mr-4 sm:mr-16 mt-2 rounded-2xl border border-[#c99f6b88] bg-[#1d0b1aee] px-4 py-2.5 text-xs text-[#ffeed5] shadow-[0_8px_30px_#000000bb] backdrop-blur-md transition hover:scale-105"
+            className="summon-cinematic-quote relative z-[2] cursor-pointer self-end mr-1 mt-2 rounded border border-[#c99f6b77] px-3 py-2 text-[11px] text-[#ffeed5] shadow-[0_8px_22px_#0009] transition-colors hover:border-[#ffe0b5] focus-visible:outline-2 focus-visible:outline-[#ffe0b5] motion-reduce:transition-none"
           >
             <p className="italic font-serif leading-relaxed">{visibleQuotes[quoteIndex % visibleQuotes.length]}</p>
             <span className="block text-right text-[9px] text-[#bfa084]">—— {featuredName} ☾</span>
@@ -400,15 +400,6 @@ export function GothicSummonScreen() {
                 </div>
               </button>
 
-              {/* Pool Details Button */}
-              <button
-                type="button"
-                onClick={() => setShowDetails(true)}
-                className="flex flex-col items-center justify-center rounded-xl border border-[#9b6e45] bg-[#241120cc] px-3 sm:px-4 py-2 text-xs text-[#ffdcb0] hover:border-[#f3ce8a] hover:bg-[#381a32] shadow-md transition"
-              >
-                <span className="text-base sm:text-lg">📜</span>
-                <span className="text-[10px] sm:text-xs font-semibold">卡池详情</span>
-              </button>
             </div>
 
             {/* Pity Indicator */}
@@ -456,24 +447,23 @@ export function GothicSummonScreen() {
             </div>
 
             {/* Quick Actions */}
-            <div className="mt-2.5 grid grid-cols-2 gap-2 text-xs">
-              <button
-                type="button"
-                onClick={() => setShowTrial(true)}
-                className="rounded-lg border border-[#e5ba79] bg-[#3a1d30] py-1 text-center font-bold text-[#ffe2be] hover:bg-[#522542]"
-              >
-                ▷ 月纱技能试玩
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowGalleryTab(true)}
-                className="rounded-lg border border-[#a67c52] bg-[#221220] py-1 text-center font-bold text-[#e0bfa3] hover:bg-[#341b30]"
-              >
-                🔍 查看档案
-              </button>
+            <div className="mt-2.5 text-xs">
+              {featuredWorker ? (
+                <Link href={'/characters/?visit='+featuredWorker}
+                  data-testid="summon-featured-room-link"
+                  className="flex min-h-10 w-full items-center justify-center rounded border border-[#c69d6f80] bg-[#2d1a2cbb] px-2 py-2 text-center font-medium text-[#ffe2be] transition-colors hover:border-[#f4d8b0] hover:bg-[#44304a] focus-visible:outline-2 focus-visible:outline-[#ffe0b5]">
+                  拜访{featuredName}的房间
+                </Link>
+              ) : (
+                <button type="button" onClick={() => setShowTrial(true)}
+                  data-testid="summon-yuesha-trial"
+                  className="min-h-10 w-full rounded border border-[#c69d6f80] bg-[#2d1a2cbb] px-2 py-2 font-medium text-[#ffe2be] transition-colors hover:border-[#f4d8b0] hover:bg-[#44304a] focus-visible:outline-2 focus-visible:outline-[#ffe0b5]">
+                  月纱技能试玩
+                </button>
+              )}
             </div>
             <button type="button" onClick={()=>setShowGalleryTab(true)}
-              className="mt-2 min-h-9 w-full rounded border border-[#b98b61] bg-[#31192b] px-3 text-xs font-semibold text-[#f7d8b2] hover:bg-[#51233a]">
+              className="mt-2 min-h-11 w-full rounded border border-[#b98b6188] bg-[#261725b8] px-2.5 py-2 text-[11px] font-medium leading-5 text-[#f7d8b2] transition-colors hover:border-[#f8d9b1] hover:bg-[#3d2737] focus-visible:outline-2 focus-visible:outline-[#ffe0b5]">
               查看已收录契约、首饰和装备
             </button>
           </div>
