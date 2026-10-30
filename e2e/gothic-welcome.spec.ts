@@ -38,6 +38,11 @@ test('phone welcome preserves touch target and does not scroll',async({page})=>{
   await expect(page.getByTestId('welcome-heroine-lineup')).toBeVisible();
   await expect(page.getByTestId('welcome-cover-image'))
     .toHaveJSProperty('loading','eager');
+  await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',900);
+  for(const image of await page.getByTestId('welcome-heroine-lineup').locator('img').all()){
+    await expect.poll(()=>image.evaluate((img:HTMLImageElement)=>
+      img.complete&&img.naturalWidth>0)).toBe(true);
+  }
   await page.screenshot({path:'test-results/welcome-mobile.png',animations:'disabled'});
   const source=page.locator('.gothic-welcome__painting source');
   await expect(source).toHaveAttribute('media','(max-width:700px)');

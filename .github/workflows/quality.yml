@@ -121,6 +121,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
       - run: pnpm build
+      - run: node scripts/audit-exported-images.mjs
       - run: npm --prefix v2 install --no-audit --no-fund
       - run: npm --prefix v2 run build
       - run: test -f out/index.html

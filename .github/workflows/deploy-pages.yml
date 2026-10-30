@@ -43,6 +43,7 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: pnpm audit:room-art
       - run: pnpm build
+      - run: node scripts/audit-exported-images.mjs
       - run: test -f out/index.html
       - run: test -s out/apartment/index.html && test -s out/town/index.html && test -s out/orders/index.html && test -s out/characters/index.html && test -s out/warehouse/index.html && test -s out/workshop/index.html
       - run: npm --prefix v2 install --no-audit --no-fund

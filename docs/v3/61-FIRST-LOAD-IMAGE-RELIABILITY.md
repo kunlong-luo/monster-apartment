@@ -14,3 +14,6 @@
 
 ## 影响范围
 不改七条路由、存档键、抽卡概率或原始图像文件。不把图像请求失败简单用渐变/SVG遮盖。上线依然以 Quality 和 GitHub Pages 同 SHA 都通过为准。
+
+## 构建与发布新硬门槛
+`scripts/audit-exported-images.mjs` 读取七条路由静态导出 HTML 中的 `img`、`source`、`link as=image`，拒绝无 basePath 的本地图片、需要 `/_next/image` 后端的优化请求和未实际输出的图片文件。Quality 静态导出任务与 Pages 正式发布任务都必须通过。动态客户端图片仍由 Playwright 检查真实解码。
