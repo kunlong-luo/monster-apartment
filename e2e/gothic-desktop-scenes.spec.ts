@@ -23,8 +23,13 @@ test('PC workshop roster is readable and has one real button per worker',async({
   expect(lastWorker).not.toBeNull();
   expect(roster).not.toBeNull();
   expect(lastWorker!.y+lastWorker!.height).toBeLessThanOrEqual(roster!.y+roster!.height-5);
+  const crewPositions=await page.locator('#actions.options > button').evaluateAll(buttons=>
+    buttons.map(button=>({x:button.getBoundingClientRect().x,y:button.getBoundingClientRect().y})));
+  expect(crewPositions[0].x).toBeLessThan(crewPositions[1].x);
+  expect(crewPositions[1].x).toBeLessThan(crewPositions[2].x);
+  expect(Math.abs(crewPositions[0].y-crewPositions[2].y)).toBeLessThan(3);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-workshop-v367.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-workshop-v368.png',animations:'disabled'});
 });
 test('PC apartment doors and town portals use structured icons without clipping',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
@@ -35,7 +40,7 @@ test('PC apartment doors and town portals use structured icons without clipping'
   await page.getByTestId('ga-room-0').click();
   await expect(page.getByTestId('ga-room-drawer')).toBeVisible();
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-apartment-v367.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-apartment-v368.png',animations:'disabled'});
   await page.goto('/town/');
   await expect(page.getByTestId('moonlit-town-scene')).toBeVisible();
   await expect(page.locator('.mw-town-portal svg')).toHaveCount(3);
@@ -48,5 +53,5 @@ test('PC apartment doors and town portals use structured icons without clipping'
       (image as HTMLImageElement).complete&&(image as HTMLImageElement).naturalWidth>0
     ))).toBe(true);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-town-v367.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-town-v368.png',animations:'disabled'});
 });

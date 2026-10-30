@@ -7,7 +7,7 @@ test('fresh visitor sees a full-screen welcome and enters the real saved lobby',
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
   await expect(page.getByTestId('gothic-welcome')).toBeVisible();
-  await expect(page.getByTestId('game-release')).toContainText('V3.67');
+  await expect(page.getByTestId('game-release')).toContainText('V3.68');
   await expect(page.getByTestId('welcome-heroine-lineup').locator('img')).toHaveCount(4);
   for(const image of await page.getByTestId('welcome-heroine-lineup').locator('img').all()){
     await expect.poll(()=>image.evaluate((img:HTMLImageElement)=>
@@ -34,7 +34,7 @@ test('phone welcome preserves touch target and does not scroll',async({page})=>{
   await page.goto('/');
   const start=page.getByTestId('welcome-enter');
   await expect(start).toBeVisible();
-  await expect(page.getByTestId('game-release')).toContainText('V3.67');
+  await expect(page.getByTestId('game-release')).toContainText('V3.68');
   await expect(page.getByTestId('welcome-heroine-lineup')).toBeVisible();
   await expect(page.getByTestId('welcome-cover-image'))
     .toHaveJSProperty('loading','eager');

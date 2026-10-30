@@ -494,3 +494,60 @@
     gap:8px;
   }
 }
+
+/* V3.68 PC crew portraits: the third worker must never hide below the
+   console edge. Three distinct clickable character cards use one ROW. */
+@media(min-width:1100px){
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:7px!important;
+    margin-top:7px!important;
+    align-items:start;align-content:start;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options>button{
+    display:flex!important;flex-direction:column!important;
+    align-items:center!important;justify-content:flex-start!important;
+    width:100%!important;min-width:0;min-height:125px!important;
+    padding:8px 3px 6px!important;gap:5px!important;
+    border:1px solid #b3916c80!important;border-radius:9px!important;
+    background:linear-gradient(160deg,#30202ddf,#1b121eea)!important;
+    box-shadow:inset 0 1px #ebcb9b24,0 4px 12px #0007!important;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options>button:is(:hover,:focus-visible,[aria-pressed="true"]){
+    background:linear-gradient(160deg,#503047f4,#271827f2)!important;
+    border-color:#f0c796!important;
+    box-shadow:inset 0 1px #f9d5a05b,0 0 18px #a0586442!important;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-identity{
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+    gap:4px!important;min-width:0;width:100%;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-identity>div{
+    width:100%;min-width:0;text-align:center;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-identity>div>div{
+    justify-content:center;gap:3px;flex-wrap:wrap;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-miniature{
+    display:block;width:43px;height:43px;flex:none;
+    border-radius:50%;border-color:#d4b08a9b;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-identity strong{
+    font-size:11px;white-space:nowrap;line-height:1.2;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-identity small{
+    display:block;font-size:10px;line-height:1.3;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap!important;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-status{
+    display:flex;align-items:center;justify-content:center;gap:0;
+    flex:0 0 auto;width:100%;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-next{
+    display:none;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-status span:first-child{
+    font-size:9px;padding:2px 7px;
+  }
+}
