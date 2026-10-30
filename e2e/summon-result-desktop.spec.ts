@@ -77,6 +77,8 @@ test('cinematic omen shows exact rarest awarded rarity and never rerolls',async(
   await expect(reveal).toHaveAttribute('data-ritual-phase','seal',{timeout:5000});
   await expect(reveal).toHaveAttribute('data-ritual-phase','omen',{timeout:5000});
   await expect(page.getByTestId('summon-ritual-intro')).toHaveAttribute('data-omen-rarity',/^SSR-/);
+  const ritualViewport=await page.getByTestId('summon-ritual-intro').boundingBox();
+  expect(ritualViewport!.height).toBeGreaterThan(690);
   const omenShape=page.locator('.summon-cinematic-ritual__omen');
   const omenText=page.locator('.summon-cinematic-ritual__copy');
   await expect(omenShape).toBeVisible();

@@ -27,6 +27,7 @@ export function SummonRitualModal({characters,onClose,onSummonAgain,onViewCollec
   const gameMotion=useGothicMotion();
   const still=Boolean(prefersReduced||gameMotion.reduced);
   const hasMythicSSR=characters.some(c=>c.rarity==='SSR-Mythic');
+  const hasAnySSR=characters.some(c=>c.rarity==='SSR-Mythic'||c.rarity==='SSR-Legend');
   useEffect(()=>{
     const previous=document.activeElement;
     ref.current?.focus();
@@ -36,9 +37,9 @@ export function SummonRitualModal({characters,onClose,onSummonAgain,onViewCollec
     if(phase==='reveal')return;
     // A reduced-motion user never waits for any cinematic segment.
     const timer=window.setTimeout(()=>setPhase(nextRitualPhase(phase)),
-      still?0:RITUAL_PHASE_DURATION[phase]);
+      still?0:phase==='omen'&&hasAnySSR?1250:RITUAL_PHASE_DURATION[phase]);
     return ()=>window.clearTimeout(timer);
-  },[phase,still]);
+  },[phase,still,hasAnySSR]);
   const handleKeyDown=(event:KeyboardEvent<HTMLDivElement>)=>{
     if(event.key==='Escape'){event.preventDefault();onClose();return;}
     if(event.key!=='Tab')return;

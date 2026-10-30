@@ -137,3 +137,18 @@
  }
  .summon-cinematic-ritual__footer{bottom:12px;width:calc(100% - 16px)}
 }
+
+/* Definite viewport-sized containing block. Percent height on a centered
+ * auto-sized Grid item formed a circular sizing dependency (and overlapped
+ * cinematic subjects with their subtitles). */
+.summon-reveal-overlay>.summon-cinematic-ritual{
+  height:min(810px,calc(100dvh - 40px));
+  max-height:810px;
+  min-height:0;
+}
+@media(max-width:699px){
+ .summon-reveal-overlay>.summon-cinematic-ritual{
+   height:min(810px,calc(100dvh - 12px));
+   max-height:810px;
+ }
+}
