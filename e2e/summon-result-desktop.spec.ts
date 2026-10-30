@@ -49,7 +49,8 @@ test('PC ten-pull lets the player select every actual card in one cinematic focu
   await expect(page.getByTestId('summon-result-stage')).toHaveAttribute('data-selected-index','9');
   const current=await page.getByTestId('collection-focus-card').getAttribute('data-card-id');
   const owned=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!).history.map((r:{characterId:string})=>r.characterId));
-  expect(current).toBe(owned[0]);
+  // Gacha history stores the ten draws in their original order; index 9 is the last selected card.
+  expect(current).toBe(owned[9]);
   await expect.poll(()=>page.getByTestId('collection-focus-card').locator('img').evaluate(img=>(img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   const box=await page.getByTestId('collection-focus-card').boundingBox();
   expect(box!.height).toBeGreaterThan(350);
