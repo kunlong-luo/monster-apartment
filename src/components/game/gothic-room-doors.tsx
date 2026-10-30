@@ -29,6 +29,7 @@ export function GothicRoomDoors({
           data-testid={'ga-room-'+index}
           aria-label={String(index+1)+'号房 '+(place?ROOM_DETAILS[place.type].zh:'待建造')}
           aria-pressed={selected===index}
+          data-resident={place?.resident??'empty'}
           className={'ga-door relative flex min-h-[49px] items-center gap-[9px] overflow-hidden rounded-[4px_10px_10px_4px] border border-[#a8885b80] bg-[linear-gradient(105deg,#3f2826e3,#1a1019dc_48%,#26141ce8)] py-[7px] pr-2 pl-[11px] text-left text-gothic-ivory shadow-[inset_2px_0_#c8a06c68,inset_0_1px_#f8d8ae30,0_6px_14px_#0503078a] backdrop-blur-[9px] transition-[transform,border-color,background,box-shadow] duration-200 hover:translate-x-1 hover:border-[#f5ca8e] hover:bg-[linear-gradient(100deg,#66402f,#2c1b25df)] focus-visible:translate-x-1 focus-visible:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow aria-pressed:translate-x-1 aria-pressed:border-[#f5ca8e] aria-pressed:bg-[linear-gradient(100deg,#66402f,#2c1b25df)] motion-reduce:transition-none max-[600px]:min-h-[37px] max-[600px]:gap-[3px] max-[600px]:rounded-[3px_6px_6px_3px] max-[600px]:px-[6px] max-[600px]:py-1'+(selected===index?' is-active':'')+(resident?' is-occupied border-l-[3px] border-l-[#dbb17a]':'')}>
           <span className="ga-door-icon grid w-[34px] shrink-0 place-items-center text-[#edbf80] max-[600px]:w-[22px]" aria-hidden="true"><RoomIcon size={20} strokeWidth={1.65}/></span>
           <span className="ga-door-copy grid min-w-0 gap-1">

@@ -8,8 +8,13 @@ test('PC workshop roster is readable and has one real button per worker',async({
   await expect(page.locator('#actions.options > button')).toHaveCount(3);
   await expect(page.locator('#actions.options button button')).toHaveCount(0);
   await expect(page.getByTestId('workshop-auto-assign')).toBeVisible();
+  await expect(page.locator('.worker-miniature img')).toHaveCount(3);
+  await expect.poll(()=>page.locator('.worker-miniature img').evaluateAll(images=>
+    images.every(image=>(image as HTMLImageElement).complete &&
+      (image as HTMLImageElement).naturalWidth>0)
+  )).toBe(true);
   await expect(page.getByTestId('v2-shift')).toBeVisible();
-  await page.screenshot({path:'test-results/desktop-workshop-v365.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-workshop-v366.png',animations:'disabled'});
 });
 test('PC apartment doors and town portals use structured icons without clipping',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
@@ -19,10 +24,12 @@ test('PC apartment doors and town portals use structured icons without clipping'
   await expect(page.locator('.ga-door svg')).toHaveCount(6);
   await page.getByTestId('ga-room-0').click();
   await expect(page.getByTestId('ga-room-drawer')).toBeVisible();
-  await page.screenshot({path:'test-results/desktop-apartment-v365.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-apartment-v366.png',animations:'disabled'});
   await page.goto('/town/');
   await expect(page.getByTestId('moonlit-town-scene')).toBeVisible();
   await expect(page.locator('.mw-town-portal svg')).toHaveCount(3);
   await expect(page.getByTestId('town-resident')).toBeVisible();
-  await page.screenshot({path:'test-results/desktop-town-v365.png',animations:'disabled'});
+  await expect(page.getByTestId('town-painting')).toHaveAttribute('src',/world-cover\.webp/);
+  await expect(page.getByTestId('town-guide-painting')).toHaveAttribute('src',/yuesha-portrait-v3\.webp/);
+  await page.screenshot({path:'test-results/desktop-town-v366.png',animations:'disabled'});
 });

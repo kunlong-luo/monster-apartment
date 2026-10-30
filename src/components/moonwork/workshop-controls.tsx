@@ -4,7 +4,10 @@ import {useState} from 'react';
 import Image from 'next/image';
 import type {ReactNode} from 'react';
 import {Waves,Sprout,Gem,Settings2,ClipboardList,ChevronRight,Play,MoveHorizontal,TriangleAlert} from 'lucide-react';
-import {WorkerArtwork} from './worker-artwork';
+import type {LucideIcon} from 'lucide-react';
+import brookFace from '../../../public/art/beauty-beasts/characters/brook/face.webp';
+import fernFace from '../../../public/art/beauty-beasts/characters/fern/face.webp';
+import cinderFace from '../../../public/art/beauty-beasts/characters/cinder/face.webp';
 import {WORKERS, MACHINES, autoAssignWorkers} from '../../../v2/src/workshop-engine';
 import type {WorkshopState, Machine, Craft, WorkerId} from '../../../v2/src/workshop-engine';
 import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
@@ -14,7 +17,8 @@ import kilnArt from '../../../v2/art/kiln-art-review.avif';
 
 const workers = ['brook', 'fern', 'cinder'] as const;
 const machines = ['well', 'garden', 'kiln'] as const;
-const glyphs: Record<Craft, string> = {well: '◉', garden: '❀', kiln: '⬡'};
+const MACHINE_ICONS:Record<Craft,LucideIcon>={well:Waves,garden:Sprout,kiln:Gem};
+const WORKER_PORTRAITS={brook:brookFace,fern:fernFace,cinder:cinderFace} as const;
 
 const MACHINE_IMAGES = {
   well: wellArt,
@@ -149,7 +153,7 @@ export function WorkshopControls({
               成品 (1)
             </button>
           </div>
-          <span className="text-[10px] text-gothic-muted">✦ 建造与升级</span>
+          <span className="text-[10px] text-gothic-muted">工坊设备</span>
         </div>
 
         {activeTab === 'devices' && (
@@ -158,6 +162,7 @@ export function WorkshopControls({
               const info = MACHINES[id];
               const isSelected = chosenMachine === id;
               const output = MACHINE_OUTPUTS[id];
+              const MachineIcon=MACHINE_ICONS[id];
               const countOnField = world.tiles.filter((t) => t?.craft === id).length;
 
               return (
@@ -196,7 +201,7 @@ export function WorkshopControls({
                       {info.zh}
                     </strong>
                     <span className="text-[11px] text-gothic-gold" aria-hidden="true">
-                      {glyphs[id]}
+                      <MachineIcon aria-hidden="true" size={15} strokeWidth={1.7}/>
                     </span>
                   </div>
 
@@ -300,8 +305,9 @@ export function WorkshopControls({
               >
                 {/* Avatar & Role Info */}
                 <div className="worker-identity flex min-w-0 items-center gap-3">
-                  <span className="worker-miniature block size-9 shrink-0 overflow-hidden rounded-full border border-gothic-brass/70 bg-[#22374a] shadow-inner">
-                    <WorkerArtwork id={id} name={profile.zh} compact />
+                  <span className="worker-miniature relative block size-9 shrink-0 overflow-hidden rounded-full border border-gothic-brass/70 bg-[#22374a] shadow-inner">
+                    <Image src={WORKER_PORTRAITS[id]} alt="" fill sizes="44px"
+                      className="object-cover object-top" draggable={false}/>
                   </span>
                   <div className="min-w-0 text-left">
                     <div className="flex flex-wrap items-center gap-1.5">
