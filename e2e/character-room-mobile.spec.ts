@@ -226,9 +226,15 @@ test('all three worker rooms can review local background and reject nontranspare
 
 test('on-duty worker stays away in gameplay while local art review may inspect a temporary actor',async({page})=>{
   test.setTimeout(90_000);
-  await page.setViewportSize({width:390,height:844});
+  await page.setViewportSize({width:1440,height:900});
   await page.goto('/workshop/');
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:30_000});
+  await page.getByTestId('workshop-auto-assign').click();
+  await expect.poll(()=>page.evaluate(()=>{
+    const saved=localStorage.getItem('monster-apartment:workshop-v2-lab');
+    return saved?JSON.parse(saved).tiles[5]?.worker:null;
+  })).toBe('brook');
+  await page.setViewportSize({width:390,height:844});
   await page.goto('/characters/?roomArtReview=1');
   await page.getByTestId('visit-worker-room-brook').click();
   const room=page.getByTestId('worker-private-room-brook');
