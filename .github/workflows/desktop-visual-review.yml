@@ -10,6 +10,8 @@ on:
       - 'src/components/game/gothic-room-doors.tsx'
       - 'src/components/game/room-resident-sprite.tsx'
       - 'src/components/game/room-scene-hotspots.tsx'
+      - 'src/components/summon/**'
+      - 'e2e/summon-result-desktop.spec.ts'
       - 'public/art/rooms/**'
       - 'src/components/moonwork/workshop-controls.tsx'
       - 'src/components/moonwork/world-ui.tsx'
@@ -47,12 +49,12 @@ jobs:
           fc-match 'Noto Serif SC'
           fc-match ':lang=zh-cn'
       - name: Run four-scene desktop browser smoke
-        run: pnpm exec playwright test e2e/gothic-desktop-hud.spec.ts e2e/gothic-desktop-scenes.spec.ts --workers=1 --retries=0
+        run: pnpm exec playwright test e2e/gothic-desktop-hud.spec.ts e2e/gothic-desktop-scenes.spec.ts e2e/summon-result-desktop.spec.ts --workers=1 --retries=0
       - name: Upload actual PC browser screenshots and failures
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: desktop-v369-screenshots
+          name: desktop-v370-screenshots
           path: |
             test-results/desktop-*.png
             test-results/**/test-failed-*.png

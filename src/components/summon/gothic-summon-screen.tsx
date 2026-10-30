@@ -88,9 +88,8 @@ export function GothicSummonScreen() {
   const visibleQuotes=featuredWorker?otherQuotes[featuredWorker]:quotes;
 
   // Active modals
-  const [ritualModal, setRitualModal] = useState<{ open: boolean; characters: SummonableCharacter[] }>({
-    open: false,
-    characters: [],
+  const [ritualModal, setRitualModal] = useState<{open:boolean;characters:SummonableCharacter[];sequence:number}>({
+    open:false,characters:[],sequence:0,
   });
   const [showHistory, setShowHistory] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
@@ -113,7 +112,7 @@ export function GothicSummonScreen() {
     setSummonError('');
     const result=summon(count);
     if(result.success&&result.characters.length)
-      setRitualModal({open:true,characters:result.characters});
+      setRitualModal(previous=>({open:true,characters:result.characters,sequence:previous.sequence+1}));
     else setSummonError(result.error??'召唤未完成，请检查资源。');
   };
   const handleSingleSummon=()=>performSummon(1);
@@ -549,12 +548,14 @@ export function GothicSummonScreen() {
       {/* ------------------------------------------------------------- */}
       {ritualModal.open && (
         <SummonRitualModal
+          key={ritualModal.sequence}
           characters={ritualModal.characters}
-          onClose={() => setRitualModal({ open: false, characters: [] })}
-          onSummonAgain={state.tickets+Math.floor(state.crystals/160)>=10
-            &&collectionStatus==='ok'&&saveStatus==='ok'?handleTenSummon:undefined}
+          onClose={() => setRitualModal(previous=>({...previous,open:false,characters:[]}))}
+          onSummonAgain={state.tickets+Math.floor(state.crystals/160)>=ritualModal.characters.length
+            &&collectionStatus==='ok'&&saveStatus==='ok'
+            ?()=>performSummon(ritualModal.characters.length===10?10:1):undefined}
           onViewCollection={()=>{
-            setRitualModal({open:false,characters:[]});
+            setRitualModal(previous=>({...previous,open:false,characters:[]}));
             setShowGalleryTab(true);
           }}
         />
