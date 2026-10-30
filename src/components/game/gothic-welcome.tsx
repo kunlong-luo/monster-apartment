@@ -1,8 +1,9 @@
 'use client';
-import {ReliableImage as Image} from '@/components/game/reliable-image';
+import {ReliableImage as Image,retryAssetUrl} from '@/components/game/reliable-image';
 import {useState,useSyncExternalStore} from 'react';
 import coverDesktop from '../../../public/art/beauty-beasts/cover/world-cover.webp';
 import coverMobile from '../../../public/art/beauty-beasts/cover/world-cover-mobile.webp';
+import coverFallback from '../../../public/art/lobby-hero-v2.webp';
 import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import {GAME_UI_RELEASE,GAME_UI_CHAPTER} from '@/core/game-release';
 import './gothic-welcome.css';
@@ -27,7 +28,8 @@ function subscribeExistingSave(callback:()=>void){
 export function GothicWelcome({onEnter}:{onEnter:()=>void}){
   const returning=useSyncExternalStore(subscribeExistingSave,readExistingSave,()=>false);
   // <picture> may select the mobile <source> regardless of an img-src retry.
-  // Retry that source alongside next/image, then fall back to desktop artwork.
+  // Retry that source alongside next/image, then use a third independent
+  // painting if either cover still fails; never re-use the failed mobile URL.
   const [coverFailures,setCoverFailures]=useState(0);
   return <main className="gothic-welcome" data-testid="gothic-welcome"
     aria-label="美女与野兽 · 游戏欢迎页" data-cover-status="integrated-beauty-beasts-cover">
@@ -36,8 +38,8 @@ export function GothicWelcome({onEnter}:{onEnter:()=>void}){
     <picture className="gothic-welcome__painting" aria-hidden="true">
       <source media="(max-width:700px)"
         srcSet={coverFailures===0?coverMobile.src:
-          coverFailures===1?coverMobile.src+'?asset_retry=1':undefined}/>
-      <Image src={coverDesktop} fallbackSrc={coverMobile} alt="" fill loading="eager"
+          coverFailures===1?retryAssetUrl(coverMobile.src,1):undefined}/>
+      <Image src={coverDesktop} fallbackSrc={coverFallback} alt="" fill loading="eager"
         fetchPriority="high" unoptimized sizes="100vw"
         onError={()=>setCoverFailures(n=>Math.min(2,n+1))}
         data-testid="welcome-cover-image" className="object-cover"/>
