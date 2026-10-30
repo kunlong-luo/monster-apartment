@@ -454,7 +454,7 @@ export function GothicSummonScreen() {
               基础获取概率 {featuredCard.rate.toFixed(2)}% · 主题不额外加成
             </p>
 
-            {/* Quick Actions */
+            {/* Quick Actions */}
             <div className="mt-2.5 text-xs">
               {featuredWorker ? (
                 <Link href={'/characters/?visit='+featuredWorker}
