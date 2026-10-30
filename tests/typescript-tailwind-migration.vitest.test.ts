@@ -79,7 +79,9 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(workshop).toContain('moonveilPortrait.src');
     const stage=read('v2/src/workshop-lab-stage.ts');
     const loader=read('v2/src/workshop-painted-art.ts');
-    expect(loader).toContain("new URL('./assets/yuesha-avatar-v3.webp',assetBase)");
+    expect(loader).toContain("loadPaintedTexture(assetBase,'yuesha-avatar-v3.webp')");
+    expect(loader).toContain("new URL('./assets/'+filename,assetBase)");
+    expect(loader).toContain("url.searchParams.set('retry',String(attempt))");
     expect(stage).toContain("'painted-medallion'");
     expect(stage).toContain('portrait.mask=mask');
   });
@@ -208,7 +210,8 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(scene).toContain("document.removeEventListener('visibilitychange',updateMotion)");
     expect(scene).toContain("window.addEventListener(motionEvent,updateMotion)");
     expect(scene).toContain("window.removeEventListener(motionEvent,updateMotion)");
-    expect(loader).toContain("new URL('./assets/lobby-hero-v3.webp',assetBase)");
+    expect(loader).toContain("loadPaintedTexture(assetBase,'lobby-hero-v3.webp')");
+    expect(loader).toContain("new URL('./assets/'+filename,assetBase)");
     expect(loader).toContain("backdropSource='high-res-webp'");
     expect(builder).toContain("'../public/art/lobby-hero-v3.webp'");
   });
