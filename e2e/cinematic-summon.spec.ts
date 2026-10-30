@@ -205,3 +205,21 @@ test('switching pools preserves current currency and never overwrites a corrupt 
   await expect(page.locator('.summon-pool-item').first()).toBeDisabled();
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:gacha-v2'))).toBe('{corrupt save');
 });
+
+test('summon featured-room shortcut opens the real heroine suite without adding a route',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:25_000});
+  await page.locator('.summon-pool-item').filter({hasText:'荆棘回响'}).click();
+  await expect(page.getByTestId('summon-featured-card')).toHaveAttribute('data-card-character','fern');
+  await page.getByTestId('summon-featured-room-link').click();
+  await expect(page).toHaveURL(/\/characters\/?\?visit=fern$/);
+  const privateRoom=page.getByTestId('worker-private-room-fern');
+  await expect(privateRoom).toBeVisible();
+  await expect(privateRoom.getByTestId('room-scene-backdrop')).toHaveAttribute('data-scene-id','fern');
+  await page.getByRole('button',{name:'离开青枝的房间'}).click();
+  await expect(privateRoom).toHaveCount(0);
+  await expect(page).toHaveURL(/\/characters\/?$/);
+  await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
+});
