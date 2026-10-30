@@ -86,6 +86,9 @@ test('optional in-game HD review only uses an ephemeral local preview',async({pa
   await page.getByRole('button',{name:'与女主人月纱交流'}).click();
   await page.getByTestId('visit-yuesha-room').click();
   await expect(page.getByTestId('room-art-local-review')).toBeVisible();
+  await expect(page.getByTestId('room-art-review-toggle')).toHaveAttribute('aria-expanded','false');
+  await page.getByTestId('room-art-review-toggle').click();
+  await expect(page.getByTestId('room-art-review-toggle')).toHaveAttribute('aria-expanded','true');
   const backdrop=page.getByTestId('room-scene-backdrop');
   await expect(backdrop).toHaveAttribute('data-local-preview','false');
   await page.getByTestId('room-art-local-file').setInputFiles('public/art/yuesha-bust-v3.webp');
@@ -102,6 +105,7 @@ test('transparent portrait review rejects baked CG and previews alpha-only frame
   await page.goto('/apartment/?roomArtReview=1');
   await page.getByRole('button',{name:'与女主人月纱交流'}).click();
   await page.getByTestId('visit-yuesha-room').click();
+  await page.getByTestId('room-art-review-toggle').click();
   await expect(page.getByTestId('room-pose-review')).toBeVisible();
   await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-local-pose-preview','false');
   await page.getByTestId('room-pose-upload-idle').setInputFiles('public/art/yuesha-bust-v3.webp');
@@ -138,4 +142,24 @@ test('transparent portrait review rejects baked CG and previews alpha-only frame
   await page.getByTestId('room-pose-reset').click();
   await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-local-pose-preview','false');
   await expect(page.getByTestId('room-pose-review')).toContainText('0/4');
+});
+
+test('compact-height local art preview keeps overlapping prop accessible without blocking the room',async({page})=>{
+  await page.setViewportSize({width:390,height:550});
+  await page.goto('/apartment/?roomArtReview=1');
+  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
+  await page.getByTestId('visit-yuesha-room').click();
+  await page.getByTestId('room-art-review-toggle').click();
+  await page.getByTestId('room-art-local-file').setInputFiles('public/art/yuesha-bust-v3.webp');
+  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-local-preview','true');
+  await page.getByTestId('room-art-review-toggle').click();
+  await expect(page.getByTestId('room-art-review-toggle')).toHaveAttribute('aria-expanded','false');
+  // These 44px hit boxes collide after a 16:9 crop to a 315px-high stage.
+  await expect(page.getByTestId('room-offscreen-toggle')).toContainText('更多调查物件');
+  await expect(page.getByTestId('scene-object-tea')).toHaveCount(0);
+  await page.getByTestId('room-offscreen-toggle').click();
+  await expect(page.getByTestId('scene-object-tea')).toHaveAttribute('data-marker-layout','offscreen');
+  await page.getByTestId('scene-object-tea').click();
+  await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-object-id','tea');
+  await expect(page.getByTestId('scene-discovery')).toContainText('桂皮');
 });
