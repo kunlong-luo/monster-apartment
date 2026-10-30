@@ -2,9 +2,11 @@
 
 import {COZY_RESIDENTS,ROOM_DETAILS,COZY_INCIDENTS} from '@/core/cozy-engine';
 import type {CozyState,HomeType} from '@/core/cozy-engine';
+import {House,Bath,Anvil,Sprout,Plus} from 'lucide-react';
+import type {LucideIcon} from 'lucide-react';
 
-export const ROOM_RUNES:Record<HomeType,string>={
-  nest:'⌂',bath:'◈',workshop:'⚒',greenhouse:'❀'
+export const ROOM_ICONS:Record<HomeType,LucideIcon>={
+  nest:House,bath:Bath,workshop:Anvil,greenhouse:Sprout,
 };
 
 /** Visual/interaction component only: all mutations live in the owning game scene. */
@@ -22,12 +24,13 @@ export function GothicRoomDoors({
         const resident=place?.resident
           ?COZY_RESIDENTS.find(person=>person.id===place.resident)
           :null;
+        const RoomIcon=place?ROOM_ICONS[place.type]:Plus;
         return <button key={index} type="button" onClick={()=>onChoose(index)}
           data-testid={'ga-room-'+index}
           aria-label={String(index+1)+'号房 '+(place?ROOM_DETAILS[place.type].zh:'待建造')}
           aria-pressed={selected===index}
           className={'ga-door relative flex min-h-[49px] items-center gap-[9px] overflow-hidden rounded-[4px_10px_10px_4px] border border-[#a8885b80] bg-[linear-gradient(105deg,#3f2826e3,#1a1019dc_48%,#26141ce8)] py-[7px] pr-2 pl-[11px] text-left text-gothic-ivory shadow-[inset_2px_0_#c8a06c68,inset_0_1px_#f8d8ae30,0_6px_14px_#0503078a] backdrop-blur-[9px] transition-[transform,border-color,background,box-shadow] duration-200 hover:translate-x-1 hover:border-[#f5ca8e] hover:bg-[linear-gradient(100deg,#66402f,#2c1b25df)] focus-visible:translate-x-1 focus-visible:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow aria-pressed:translate-x-1 aria-pressed:border-[#f5ca8e] aria-pressed:bg-[linear-gradient(100deg,#66402f,#2c1b25df)] motion-reduce:transition-none max-[600px]:min-h-[37px] max-[600px]:gap-[3px] max-[600px]:rounded-[3px_6px_6px_3px] max-[600px]:px-[6px] max-[600px]:py-1'+(selected===index?' is-active':'')+(resident?' is-occupied border-l-[3px] border-l-[#dbb17a]':'')}>
-          <span className="ga-door-icon w-[34px] shrink-0 text-center text-[24px] text-[#edbf80] [text-shadow:0_1px_5px_#000,0_0_9px_#d7a0774d] max-[600px]:w-[22px] max-[600px]:text-[17px]" aria-hidden="true">{place?ROOM_RUNES[place.type]:'✧'}</span>
+          <span className="ga-door-icon grid w-[34px] shrink-0 place-items-center text-[#edbf80] max-[600px]:w-[22px]" aria-hidden="true"><RoomIcon size={20} strokeWidth={1.65}/></span>
           <span className="ga-door-copy grid min-w-0 gap-1">
             <strong className="whitespace-nowrap text-[clamp(11px,1vw,13px)] font-medium tracking-[.025em] text-[#fbe2c3] max-[600px]:text-[10px]">{String(index+1).padStart(2,'0')} · {place?ROOM_DETAILS[place.type].zh:'待建造'}</strong>
             <small className="truncate whitespace-nowrap text-[10px] text-[#caae92] max-[600px]:text-[9px]">{resident?'住客 · '+resident.zh:place?'房间空置':'点击修建'}</small>

@@ -229,3 +229,180 @@
     transition:none!important;transform:none!important;
   }
 }
+
+/* V3.65 PC interaction pass: preserve the paintings, make controls a legible
+   in-game control surface rather than three squashed browser panels. */
+@media(min-width:1100px){
+  .gothic-workshop-shell{--workshop-dock-clearance:90px;--workshop-stage-gap:11px}
+  .gothic-workshop-shell #root.lab.gothic-workshop .top{
+    min-height:60px;padding:8px clamp(18px,2vw,32px);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .player-profile-badge{
+    border-color:#bc946a79!important;background:#201221d9!important;
+    box-shadow:inset 0 1px #f9deb239,0 4px 18px #0007!important;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console.gothic-console-3col{
+    height:clamp(310px,36dvh,360px);
+    grid-template-columns:minmax(0,1.04fr) minmax(340px,1.13fr) minmax(245px,.94fr);
+    grid-template-rows:minmax(0,1fr) auto;
+    gap:10px;padding:0;align-items:stretch;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .middle{
+    bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-dock-clearance) + var(--workshop-stage-gap) + clamp(310px,36dvh,360px));
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .console-panel{
+    display:flex;flex-direction:column;min-width:0;min-height:0;
+    padding:10px 12px;border:1px solid #ae8b6a78!important;
+    border-radius:10px;background:linear-gradient(165deg,#241623ec,#140e1be9)!important;
+    box-shadow:inset 0 1px #f3d3a62d,0 8px 24px #0008!important;
+    scrollbar-width:thin;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .panel-head{
+    flex:none;gap:5px;margin-bottom:5px;padding-bottom:7px;
+    border-color:#ab88605d;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .gothic-panel-roster .panel-head{
+    flex-wrap:nowrap;justify-content:space-between;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options{
+    gap:6px;align-content:start;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options>button{
+    min-height:57px;grid-template-columns:minmax(0,1fr) auto;
+    padding:6px 9px;border:1px solid #a88a6e5e!important;
+    border-radius:8px!important;background:#1c121ecf!important;
+    box-shadow:inset 0 1px #e5c99a20!important;
+    transition:background-color .18s,border-color .18s;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options>button:is(:hover,:focus-visible,[aria-pressed="true"]){
+    border-color:#e3bf90!important;background:#402438d9!important;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .worker-miniature{
+    width:38px;height:38px;border-color:#b99a76ac;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .worker-status{
+    display:flex;flex-wrap:nowrap;align-items:center;gap:3px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .worker-next{opacity:.68}
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #catalog.options{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #catalog.options>button{
+    min-width:0;padding:5px;border-radius:8px;
+    border-color:#a68a685d;background:linear-gradient(#281a27,#160f1c);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-roster-hint{
+    margin-bottom:4px;color:#baa690;font-size:10px;line-height:1.35;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-log-list.options{
+    max-height:none;flex:1;min-height:0;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions{
+    min-height:49px;border-color:#a5815973;border-radius:10px;
+    background:linear-gradient(110deg,#251724e9,#160e1be7);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions .shift-btn{
+    min-height:37px;border:1px solid #e7bb88!important;
+    border-radius:7px;background:linear-gradient(120deg,#71243d,#541d37)!important;
+    color:#ffe6bf!important;font-weight:600!important;letter-spacing:.09em;
+    box-shadow:inset 0 1px #f8d6a05a,0 3px 10px #0006!important;
+  }
+  .ga .ga-room-list{
+    top:18%;left:clamp(18px,2.1vw,35px);
+    width:clamp(220px,18vw,260px);max-height:60%;
+  }
+  .ga .ga-doors{
+    display:grid;grid-template-columns:1fr;gap:6px;
+    border:1px solid #aa89655b;border-radius:10px;
+    background:linear-gradient(140deg,#160f19d1,#1b101ce0);
+    padding:8px!important;
+  }
+  .ga .ga-door{
+    min-height:51px;border:1px solid #ac8b6974;
+    border-left:2px solid #a88360;border-radius:7px;
+    background:linear-gradient(110deg,#281b25de,#160f1bd8)!important;
+    box-shadow:inset 0 1px #ffddaa20,0 4px 12px #0006!important;
+    transform:none;
+  }
+  .ga .ga-door:is(:hover,:focus-visible,[aria-pressed="true"]){
+    border-color:#f1c894!important;background:#432b38!important;
+    transform:translateX(2px);
+  }
+  .ga .ga-door-icon{color:#dcb789}
+  .ga .ga-door-copy strong{font-size:12px}
+  .ga .ga-lower{top:26%;right:clamp(18px,2vw,36px);width:clamp(290px,24vw,345px)}
+  .ga .ga-story,.ga .ga-room-drawer{
+    border:1px solid #b698747d!important;border-radius:10px!important;
+    padding:13px 15px;background:linear-gradient(145deg,#231420e9,#150d19e7)!important;
+    box-shadow:inset 0 1px #f6d5aa2a,0 8px 23px #0008!important;
+  }
+  .ga .ga-room-drawer .grid{gap:7px}
+  .ga .ga-room-drawer .grid>button{
+    min-height:61px;padding:8px 9px;border-radius:8px;
+    background:linear-gradient(135deg,#35202bd4,#1b121ddb);
+    border:1px solid #ad906e70;
+  }
+  .ga .ga-room-drawer .grid>button:is(:hover,:focus-visible){
+    border-color:#f1c994;background:#49303b;
+  }
+  .ga .ga-room-drawer .grid>button>span:first-child{
+    line-height:1;color:#e8bc83;
+  }
+  .ga .ga-dismiss{
+    display:grid;place-items:center;border-color:#ad8f6b;
+    background:#23141fd9;color:#dfbd97;
+  }
+  .mw.mw-gothic[data-area="town"] .mw-main--red-gold{
+    width:clamp(455px,39vw,590px);max-width:calc(100vw - 92px);
+    top:78px;bottom:105px;right:clamp(22px,2.4vw,46px);
+    padding:16px 18px 20px;border:1px solid #b595736e!important;
+    border-radius:12px;background:linear-gradient(145deg,#20131ee9,#130d19ec)!important;
+    box-shadow:inset 0 1px #edcda22e,0 14px 40px #0008!important;
+    backdrop-filter:blur(9px);
+  }
+  .mw.mw-gothic[data-area="town"] .mw-town-focus{gap:9px}
+  .mw.mw-gothic[data-area="town"] .mw-town-scene{
+    height:260px;min-height:260px;border:1px solid #b5987280;
+    border-radius:9px!important;box-shadow:0 6px 18px #0008!important;
+  }
+  .mw.mw-gothic[data-area="town"] .mw-town-banner h2{font-size:20px!important}
+  .mw.mw-gothic[data-area="town"] .mw-town-portals{gap:6px!important}
+  .mw.mw-gothic[data-area="town"] .mw-town-portal{
+    min-height:52px;padding:7px 6px!important;border:1px solid #b397707d!important;
+    border-radius:8px!important;background:#211523e6!important;
+    box-shadow:inset 0 1px #f8d9b12c,0 4px 10px #0008!important;
+  }
+  .mw.mw-gothic[data-area="town"] .mw-town-portal:is(:hover,:focus-visible){
+    border-color:#f0cb95!important;background:#452839!important;
+  }
+  .mw.mw-gothic[data-area="town"] .mw-portal-glyph{
+    display:grid;place-items:center;color:#ddbc8c;font-size:0;
+  }
+  .mw.mw-gothic[data-area="town"] .mw-market,
+  .mw.mw-gothic[data-area="town"] .mw-market-offer,
+  .mw.mw-gothic[data-area="town"] .mw-town-resident{
+    border-color:#a58a6d78!important;border-radius:9px!important;
+    background:linear-gradient(145deg,#251823e5,#160f1cdd)!important;
+    box-shadow:inset 0 1px #e8c79b29,0 5px 17px #0007!important;
+  }
+  .mw.mw-gothic[data-area="town"] .mw-town-resident{
+    grid-template-columns:84px minmax(0,1fr);padding:11px!important;gap:10px;
+  }
+  .mw.mw-gothic[data-area="town"] .mw-resident-character{min-height:128px}
+  .mw.mw-gothic[data-area="town"] .mw-market{padding:11px!important;margin-top:12px}
+  .mw.mw-gothic[data-area="town"] .mw-market-offer{
+    align-items:center;padding:9px 11px!important;gap:10px;
+  }
+  .mw.mw-gothic[data-area="town"] .mw-market-icon{
+    flex-basis:32px;width:32px;height:32px;
+    border:1px solid #ac89665d;border-radius:8px;
+    background:#2a1d29;color:#edca99;
+  }
+  .mw.mw-gothic[data-area="town"] .mw-market-offer .mw-market-detail h3{font-size:14px}
+  .mw.mw-gothic[data-area="town"] .mw-market-offer .mw-market-detail p{margin:3px 0;font-size:11px}
+  .mw.mw-gothic[data-area="town"] .mw-market-offer button{
+    border:1px solid #c1a077!important;border-radius:7px!important;
+    background:linear-gradient(125deg,#513146,#30212e)!important;
+    box-shadow:inset 0 1px #f7d6a22c!important;
+  }
+}

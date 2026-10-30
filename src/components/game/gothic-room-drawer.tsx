@@ -1,15 +1,22 @@
 'use client';
-import type {Dispatch,SetStateAction} from 'react';
+import type {Dispatch,SetStateAction,ReactNode} from 'react';
+import {House,Bath,Anvil,Sprout,Lamp,BookOpen,UserRound,Heart,ArrowLeftRight,X} from 'lucide-react';
 import {COZY_RESIDENTS,ROOM_DETAILS,FURNISHINGS,availableResidents,
   buildCozyRoom,moveInCozy,decorateCozy,careForCozyResident,
   cozyCareUsedToday,cozyRescuePreview,resolveCozyIncident,COZY_INCIDENTS} from '@/core/cozy-engine';
 import type {CozyState,HomeType,Furnishing} from '@/core/cozy-engine';
 import {GothicActionButton} from './gothic-hud';
-import {ROOM_RUNES} from './gothic-room-doors';
+
 
 const types:HomeType[]=['nest','bath','workshop','greenhouse'];
 const decors:Furnishing[]=['plant','lamp','books'];
-const furnishingRunes:Record<Furnishing,string>={plant:'❀',lamp:'✧',books:'☷'};
+const icon=(Icon:typeof House):ReactNode=><Icon size={18} strokeWidth={1.65}/>;
+const roomRunes:Record<HomeType,ReactNode>={
+  nest:icon(House),bath:icon(Bath),workshop:icon(Anvil),greenhouse:icon(Sprout),
+};
+const furnishingRunes:Record<Furnishing,ReactNode>={
+  plant:icon(Sprout),lamp:icon(Lamp),books:icon(BookOpen),
+};
 
 /** Context actions and incident rescue decisions, separate from the scene clock. */
 export function GothicRoomDrawer({
@@ -27,13 +34,12 @@ export function GothicRoomDrawer({
   const applicants=availableResidents(world);
   const guest=(id:typeof applicants[number])=>COZY_RESIDENTS.find(p=>p.id===id)!;
   const change=onChange;
-  const roomRunes=ROOM_RUNES;
   return <div className="ga-room-drawer" data-testid="ga-room-drawer">
         <div className="ga-drawer-top"><div>
           <span className="ga-micro">ROOM {String(selected+1).padStart(2,'0')}</span>
           <h2>{room?ROOM_DETAILS[room.type].zh:'布置新房间'}</h2>
         </div><button type="button" className="ga-dismiss" aria-label="关闭房间操作"
-          onClick={()=>{onClose();}}>×</button></div>
+          onClick={()=>{onClose();}}><X aria-hidden="true" size={17} strokeWidth={1.7}/></button></div>
         {!room?<div className="grid grid-cols-2 gap-2 max-[600px]:gap-1.5">
           {types.map(type=><GothicActionButton key={type}
             testId={'ga-build-'+type} disabled={world.coins<ROOM_DETAILS[type].cost}
@@ -43,17 +49,17 @@ export function GothicRoomDrawer({
         </div>:!room.resident?<div className="grid grid-cols-2 gap-2 max-[600px]:gap-1.5">
           {applicants.map(id=><GothicActionButton key={id}
             testId={'ga-welcome-'+id} onClick={()=>change(moveInCozy(world,selected,id))}
-            rune="♟" label={'迎接 '+guest(id).zh} detail={guest(id).bioZh}/>)}
+            rune={icon(UserRound)} label={'迎接 '+guest(id).zh} detail={guest(id).bioZh}/>)}
           {applicants.length===0&&<p className="col-span-2 text-xs leading-relaxed text-gothic-muted">
             住客已经入住其他房间，暂时没有新访客。
           </p>}
         </div>:<div className="grid grid-cols-2 gap-2 max-[600px]:gap-1.5">
-          <GothicActionButton testId="ga-care" rune="♡"
+          <GothicActionButton testId="ga-care" rune={icon(Heart)}
             label={'照顾 '+guest(room.resident).zh}
             detail={cozyCareUsedToday(world)?'今日已照顾':'增进羁绊'}
             disabled={cozyCareUsedToday(world)}
             onClick={()=>change(careForCozyResident(world,room.resident!))}/>
-          <GothicActionButton rune="↔" pressed={moving===selected}
+          <GothicActionButton rune={icon(ArrowLeftRight)} pressed={moving===selected}
             label={moving===selected?'取消搬迁':'搬迁 / 交换'}
             detail="然后点击另一扇已建房门"
             onClick={()=>setMoving(x=>x===selected?null:selected)}/>

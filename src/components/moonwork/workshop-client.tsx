@@ -19,6 +19,7 @@ import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import yueshaBust from '../../../public/art/yuesha-bust-v3.webp';
 import yueshaAvatar from '../../../public/art/yuesha-avatar-v3.webp';
 import Image from 'next/image';
+import {RotateCcw} from 'lucide-react';
 import type {
   WorkshopAction,WorkshopRuntimeController,WorkshopSelectionListener
 } from '../../../v2/src/workshop-runtime-contract';
@@ -214,13 +215,6 @@ export function WorkshopClient() {
               </div>
             </div>
 
-            <div className="logo hidden lg:flex items-center gap-2">
-              <span aria-hidden="true" className="star-sigil">⚜</span>
-              <div className="logo-text">
-                <strong>月光工坊</strong>
-                <small className="workshop-tagline">{rank.zh} · 月光工坊</small>
-              </div>
-            </div>
           </div>
 
           <div className="hidden min-w-0 max-w-[31vw] flex-col justify-center gap-1 text-xs text-gothic-ivory lg:flex"
@@ -268,7 +262,7 @@ export function WorkshopClient() {
               aria-label="重新开始"
               data-tooltip="重新开始工坊"
             >
-              ↻
+              <RotateCcw aria-hidden="true" size={17} strokeWidth={1.7}/>
             </button>
           </div>
         </header>

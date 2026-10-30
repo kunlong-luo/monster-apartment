@@ -2,6 +2,8 @@
 
 import {useState} from 'react';
 import Image from 'next/image';
+import type {ReactNode} from 'react';
+import {Waves,Sprout,Gem,Settings2,ClipboardList,ChevronRight,Play,MoveHorizontal,TriangleAlert} from 'lucide-react';
 import {WorkerArtwork} from './worker-artwork';
 import {WORKERS, MACHINES, autoAssignWorkers} from '../../../v2/src/workshop-engine';
 import type {WorkshopState, Machine, Craft, WorkerId} from '../../../v2/src/workshop-engine';
@@ -20,10 +22,10 @@ const MACHINE_IMAGES = {
   kiln: kilnArt,
 };
 
-const MACHINE_OUTPUTS: Record<Craft, {name: string; icon: string; count: number}> = {
-  well: {name: '清水', icon: '💧', count: 2},
-  garden: {name: '孢子纤维', icon: '🌿', count: 2},
-  kiln: {name: '精制晶核', icon: '◆', count: 1},
+const MACHINE_OUTPUTS: Record<Craft, {name: string; icon: ReactNode; count: number}> = {
+  well: {name: '清水', icon: <Waves size={13} strokeWidth={1.7}/>, count: 2},
+  garden: {name: '孢子纤维', icon: <Sprout size={13} strokeWidth={1.7}/>, count: 2},
+  kiln: {name: '精制晶核', icon: <Gem size={13} strokeWidth={1.7}/>, count: 1},
 };
 
 export function WorkshopControls({
@@ -58,21 +60,21 @@ export function WorkshopControls({
     {
       time: '本班次',
       type: 'output',
-      icon: '◆',
+      icon: <Gem size={13} strokeWidth={1.7}/>,
       text: report?.cores && report.cores > 0 ? `生产完成：获得 精制晶核 x${report.cores}` : '晶核熔炉等待原料输入中',
       tone: 'good',
     },
     {
       time: '本班次',
       type: 'output',
-      icon: '🌿',
+      icon: <Sprout size={13} strokeWidth={1.7}/>,
       text: report?.fiber && report.fiber > 0 ? `温室培育产出：获得 孢子纤维 x${report.fiber}` : '银叶苗床持续光合作用',
       tone: 'good',
     },
     {
       time: '本班次',
       type: 'output',
-      icon: '💧',
+      icon: <Waves size={13} strokeWidth={1.7}/>,
       text: report?.water && report.water > 0 ? `水汽泵抽提：产出 清水 x${report.water}` : '月井地下水脉充盈',
       tone: 'good',
     },
@@ -80,7 +82,7 @@ export function WorkshopControls({
       ? report.blocked.map((b, idx) => ({
           time: `异常 ${idx+1}`,
           type: 'alert',
-          icon: '⚠',
+          icon: <TriangleAlert size={13} strokeWidth={1.7}/>,
           text: b.includes(':water') ? '银叶苗床告警：水汽供应不足，需靠近水泵' : '夜光熔炉告警：原料短缺，需两份孢子炼核',
           tone: 'bad',
         }))
@@ -88,7 +90,7 @@ export function WorkshopControls({
           {
             time: '本班次',
             type: 'all',
-            icon: '✦',
+            icon: <ClipboardList size={13} strokeWidth={1.7}/>,
             text: world.completed > 0 ? `契约达成结算：工坊总交付 ${world.completed} 单` : '工坊处于第一生产周期，排班稳定',
             tone: 'neutral',
           },
@@ -157,7 +159,6 @@ export function WorkshopControls({
               const isSelected = chosenMachine === id;
               const output = MACHINE_OUTPUTS[id];
               const countOnField = world.tiles.filter((t) => t?.craft === id).length;
-              const isWorking = countOnField > 0;
 
               return (
                 <button
@@ -187,13 +188,6 @@ export function WorkshopControls({
                     <span className="absolute left-1 top-1 rounded bg-black/75 px-1 py-0.5 text-[8px] font-bold text-gothic-gold">
                       已建 {countOnField}
                     </span>
-                    <span
-                      className={`absolute right-1 top-1 rounded px-1 py-0.5 text-[8px] font-bold ${
-                        isWorking ? 'bg-emerald-950/85 text-emerald-300' : 'bg-amber-950/85 text-amber-300'
-                      }`}
-                    >
-                      {isWorking ? '已建造' : '未建造'}
-                    </span>
                   </div>
 
                   {/* Info Header */}
@@ -209,7 +203,7 @@ export function WorkshopControls({
                   {/* Production Output & Cost Tag */}
                   <div className="mt-0.5 flex items-center justify-between text-[10px] text-gothic-muted">
                     <span className="truncate">
-                      产出: {output.icon} {output.name}
+                      产出: <span className="inline-flex align-middle text-gothic-gold">{output.icon}</span> {output.name}
                     </span>
                   </div>
 
@@ -217,7 +211,7 @@ export function WorkshopControls({
                   <div className="mt-1 flex items-center justify-between rounded-md bg-black/40 px-1.5 py-0.5 text-[10px]">
                     <span className="tabular-nums text-gothic-gold">✦ {info.cost}</span>
                     <span className="text-[9px] font-bold text-gothic-ivory group-hover:text-gothic-glow">
-                      {isSelected ? '取消选定' : countOnField > 0 ? '添置 +' : '建设 ↗'}
+                      {isSelected ? '取消选定' : countOnField > 0 ? '添置设备' : '建设'}
                     </span>
                   </div>
                 </button>
@@ -230,7 +224,7 @@ export function WorkshopControls({
           <div className="mt-2 space-y-1.5 text-xs text-gothic-muted">
             <div className="flex items-center justify-between rounded-lg border border-gothic-brass/40 bg-black/30 p-2">
               <div className="flex items-center gap-2">
-                <span className="text-base">💧</span>
+                <Waves aria-hidden="true" size={17} strokeWidth={1.7} className="shrink-0 text-gothic-gold"/>
                 <div>
                   <strong className="text-gothic-ivory">地下泉水</strong>
                   <p className="text-[10px] text-gothic-muted">由水汽泵持续凝结，用于温室灌溉</p>
@@ -240,7 +234,7 @@ export function WorkshopControls({
             </div>
             <div className="flex items-center justify-between rounded-lg border border-gothic-brass/40 bg-black/30 p-2">
               <div className="flex items-center gap-2">
-                <span className="text-base">🌿</span>
+                <Sprout aria-hidden="true" size={17} strokeWidth={1.7} className="shrink-0 text-gothic-gold"/>
                 <div>
                   <strong className="text-gothic-ivory">银叶孢子纤维</strong>
                   <p className="text-[10px] text-gothic-muted">由银叶苗床培育，熔炉炼核必需原料</p>
@@ -255,7 +249,7 @@ export function WorkshopControls({
           <div className="mt-2 space-y-1.5 text-xs text-gothic-muted">
             <div className="flex items-center justify-between rounded-lg border border-gothic-brass/40 bg-black/30 p-2">
               <div className="flex items-center gap-2">
-                <span className="text-base">◆</span>
+                <Gem aria-hidden="true" size={17} strokeWidth={1.7} className="shrink-0 text-gothic-gold"/>
                 <div>
                   <strong className="text-gothic-ivory">精制夜光晶核</strong>
                   <p className="text-[10px] text-gothic-muted">用于交付每日委托与月纱魔女特殊契约</p>
@@ -271,7 +265,7 @@ export function WorkshopControls({
       <div className="console-panel gothic-panel-col gothic-panel-roster" data-testid="console-roster">
         <div className="panel-head flex items-center justify-between border-b border-gothic-brass/35 pb-2">
           <div className="flex items-center gap-1.5">
-            <span className="text-xs font-bold text-gothic-ivory">⚙ 工匠派工</span>
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-gothic-ivory"><Settings2 aria-hidden="true" size={15} strokeWidth={1.7}/> 工匠派工</span>
           </div>
           <button type="button" onClick={()=>onAction({type:'auto-assign'})}
             disabled={assignableCount===0}
@@ -333,9 +327,7 @@ export function WorkshopControls({
                   >
                     {occupied >= 0 ? '已派工' : '空闲'}
                   </span>
-                  <span className="rounded-md border border-gothic-brass/50 bg-black/40 px-2 py-1 text-[10px] font-semibold text-gothic-ivory transition-colors group-hover:border-gothic-glow group-hover:text-gothic-glow">
-                    {occupied >= 0 ? '换岗' : '派工'}
-                  </span>
+                  <ChevronRight aria-hidden="true" size={16} strokeWidth={1.7} className="worker-next shrink-0 text-gothic-gold"/>
                 </div>
               </button>
             );
@@ -347,7 +339,7 @@ export function WorkshopControls({
       <div className="console-panel gothic-panel-col gothic-panel-logs" data-testid="console-logs">
         <div className="panel-head flex items-center justify-between border-b border-gothic-brass/35 pb-2">
           <div className="flex items-center gap-1.5">
-            <span className="text-xs font-bold text-gothic-ivory">📜 生产日志</span>
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-gothic-ivory"><ClipboardList aria-hidden="true" size={15} strokeWidth={1.7}/> 生产日志</span>
           </div>
           <div className="flex items-center gap-1">
             <button
@@ -414,12 +406,12 @@ export function WorkshopControls({
           onClick={()=>onAction({type:'toggle-move'})} aria-pressed={isMoving}
           aria-label="移动机器设备"
           className="min-h-11 shrink-0 rounded-lg border border-gothic-brass/70 bg-gothic-panel/90 px-3 text-xs font-bold text-gothic-ivory hover:border-gothic-glow">
-          {isMoving?'取消移动':'移动设备'}
+          <span className="inline-flex items-center gap-1.5"><MoveHorizontal aria-hidden="true" size={15} strokeWidth={1.7}/>{isMoving?'取消移动':'移动设备'}</span>
         </button>}
         <button type="button" id="shift" data-testid="v2-shift"
           onClick={()=>onAction({type:'shift'})} aria-label="开始一天生产轮班"
           className="shift-btn min-h-11 flex-1 rounded-lg border border-gothic-gold/80 bg-gradient-to-r from-gothic-gold via-[#e2b06e] to-gothic-brass px-4 text-sm font-extrabold text-ink-950 shadow-md transition-all hover:brightness-110 focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none">
-          ▶ 开始生产轮班
+          <span className="inline-flex items-center gap-2"><Play aria-hidden="true" size={16} fill="currentColor" strokeWidth={1.5}/>开始生产轮班</span>
         </button>
       </div>
     </section>

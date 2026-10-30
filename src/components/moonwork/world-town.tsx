@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
+import {Anvil,ScrollText,Archive,Waves,Sprout,Gem} from 'lucide-react';
 import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import moonveilPortrait from '../../../v2/art/moonveil-portrait.avif';
 import {workshopRank,TOWN_MARKET,townMarketAvailable,TOWN_RESIDENTS,residentForDay,residentRequestStock,residentRequestAvailable} from '../../../v2/src/workshop-engine';
@@ -10,9 +11,9 @@ import {Action} from './world-primitives';
 export function Town({s}:{s:WorkshopState}){
   const rank=workshopRank(s.completed);
   const offers=[
-    {kind:'water' as const,action:'marketWater' as const,icon:'◈',place:'泉眼补给站'},
-    {kind:'fiber' as const,action:'marketFiber' as const,icon:'❀',place:'孢子植物摊'},
-    {kind:'core' as const,action:'marketCore' as const,icon:'✦',place:'晶核商行'},
+    {kind:'water' as const,action:'marketWater' as const,Icon:Waves,place:'泉眼补给站'},
+    {kind:'fiber' as const,action:'marketFiber' as const,Icon:Sprout,place:'孢子植物摊'},
+    {kind:'core' as const,action:'marketCore' as const,Icon:Gem,place:'晶核商行'},
   ];
   const marketUsed=s.market?.day===s.day;
   const residentKind=residentForDay(s.day);
@@ -34,15 +35,15 @@ export function Town({s}:{s:WorkshopState}){
       </div>
       <nav className="mw-town-portals" aria-label="月光街建筑入口">
         <Link href="/workshop/" aria-label="晶核工坊" className="mw-town-portal">
-          <span className="mw-portal-glyph" aria-hidden="true">⚒</span>
+          <span className="mw-portal-glyph" aria-hidden="true"><Anvil size={23} strokeWidth={1.65}/></span>
           <span><strong>晶核工坊</strong><small>派工 · 生产</small></span>
         </Link>
         <Link href="/orders/" aria-label="月夜委托所" className="mw-town-portal">
-          <span className="mw-portal-glyph" aria-hidden="true">◇</span>
+          <span className="mw-portal-glyph" aria-hidden="true"><ScrollText size={23} strokeWidth={1.65}/></span>
           <span><strong>月夜委托所</strong><small>委托 · 交付</small></span>
         </Link>
         <Link href="/warehouse/" aria-label="物资仓库" className="mw-town-portal">
-          <span className="mw-portal-glyph" aria-hidden="true">⬡</span>
+          <span className="mw-portal-glyph" aria-hidden="true"><Archive size={23} strokeWidth={1.65}/></span>
           <span><strong>物资仓库</strong><small>材料 · 采购</small></span>
         </Link>
       </nav>
@@ -97,7 +98,7 @@ export function Town({s}:{s:WorkshopState}){
             !s.tiles.some(tile=>tile?.craft===(offer.kind==='water'?'well':'garden'));
           return <article key={offer.kind} className={'mw-market-offer mw-offer-'+offer.kind}
             data-testid={'town-offer-'+offer.kind}>
-            <span className="mw-market-icon" aria-hidden="true">{offer.icon}</span>
+            <span className="mw-market-icon" aria-hidden="true"><offer.Icon size={20} strokeWidth={1.6}/></span>
             <div className="mw-market-detail">
               <small>{offer.place}</small>
               <h3>{deal.zh}</h3>

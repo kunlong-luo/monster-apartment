@@ -194,7 +194,7 @@ export function GothicDock({
 export function GothicActionButton({
   rune,label,detail,onClick,disabled,testId,pressed
 }:{
-  rune:string;
+  rune:ReactNode;
   label:string;
   detail:string;
   onClick:()=>void;

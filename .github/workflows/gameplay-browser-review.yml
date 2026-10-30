@@ -44,7 +44,7 @@ jobs:
         run: fc-match "sans-serif"
       - name: Fast route/browser smoke
         if: ${{ inputs.suite == 'smoke' }}
-        run: pnpm exec playwright test e2e/route-health.spec.ts e2e/gothic-desktop-hud.spec.ts --workers=1 --retries=0
+        run: pnpm exec playwright test e2e/route-health.spec.ts e2e/gothic-desktop-hud.spec.ts e2e/gothic-desktop-scenes.spec.ts --workers=1 --retries=0
       - name: Full gameplay/visual regression (milestone)
         if: ${{ inputs.suite == 'full' }}
         run: pnpm e2e
@@ -75,5 +75,8 @@ jobs:
           path: |
             test-results/desktop-lobby-v364.png
             test-results/desktop-summon-v364.png
+            test-results/desktop-workshop-v365.png
+            test-results/desktop-apartment-v365.png
+            test-results/desktop-town-v365.png
           if-no-files-found: ignore
           retention-days: 14

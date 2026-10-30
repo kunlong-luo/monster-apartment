@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
+import {Pause,Play,ScrollText,X} from 'lucide-react';
 import {AnimatePresence} from 'motion/react';
 import {useEffect,useState,useSyncExternalStore} from 'react';
 import moonveil from '../../../public/art/yuesha-avatar-v3.webp';
@@ -162,8 +163,8 @@ export function GothicApartment(){
       </div>
       <div className="flex shrink-0 gap-1 sm:gap-2">
         <GothicIconButton label={paused?'继续公寓时间':'暂停公寓时间'} pressed={paused}
-          onClick={()=>setPaused(x=>!x)}>{paused?'▶':'Ⅱ'}</GothicIconButton>
-        <GothicIconButton label="公寓日志" expanded={notices} onClick={()=>setNotices(x=>!x)}>✉</GothicIconButton>
+          onClick={()=>setPaused(x=>!x)}>{paused?<Play aria-hidden="true" size={16} strokeWidth={1.7}/>:<Pause aria-hidden="true" size={16} strokeWidth={1.7}/>}</GothicIconButton>
+        <GothicIconButton label="公寓日志" expanded={notices} onClick={()=>setNotices(x=>!x)}><ScrollText aria-hidden="true" size={17} strokeWidth={1.7}/></GothicIconButton>
       </div>
     </header>
     <GothicRoomDoors world={world} selected={selected} onChoose={choose}/>
@@ -210,7 +211,7 @@ export function GothicApartment(){
     {notices&&<div className="absolute right-3 top-[72px] z-20 w-[min(350px,92vw)] rounded-xl border border-gothic-brass/75 bg-gothic-panel/95 p-4 text-gothic-ivory shadow-[0_15px_44px_#000c] backdrop-blur-xl"
       role="dialog" aria-label="公寓日志" onKeyDown={event=>{if(event.key==='Escape')setNotices(false);}}>
       <button type="button" aria-label="关闭公寓日志" onClick={()=>setNotices(false)}
-        className="absolute right-2 top-2 grid size-8 place-items-center rounded-full border border-gothic-brass/50 bg-gothic-panel text-xl leading-none hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow">×</button>
+        className="absolute right-2 top-2 grid size-8 place-items-center rounded-full border border-gothic-brass/50 bg-gothic-panel text-xl leading-none hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow"><X aria-hidden="true" size={17}/></button>
       <div className="flex items-start gap-3 pr-4">
         <Image src={moonveil} alt="月纱" width={64} height={75} unoptimized
           className="h-[75px] w-16 shrink-0 rounded-md border border-gothic-brass/50 object-cover"/>
