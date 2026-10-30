@@ -4,7 +4,12 @@ import {inspectAlphaMask,assertConsistentPoseFootAnchors} from '../scripts/check
 function sample(cx:number,cy:number,size=64){
   const rgba=new Uint8ClampedArray(size*size*4),alpha=new Uint8Array(size*size);
   for(let y=0;y<size;y++)for(let x=0;x<size;x++){
-    if(((x-cx)/(size*.20))**2+((y-cy)/(size*.30))**2>1)continue;
+    const body=((x-cx)/(size*.20))**2+((y-cy)/(size*.30))**2<=1;
+    // A human outline has a few projecting fingers/hair strands; unlike a
+    // mathematical ellipse, its min/max X are not long vertical crop lines.
+    const pointedEdge=y===cy&&
+      (x===Math.round(cx-size*.235)||x===Math.round(cx+size*.235));
+    if(!body&&!pointedEdge)continue;
     rgba[(y*size+x)*4+3]=255;alpha[y*size+x]=255;
   }
   return {rgba,alpha};
