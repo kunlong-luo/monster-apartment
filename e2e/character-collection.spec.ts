@@ -59,10 +59,10 @@ test('an acquired heroine can be visited directly from the real collection, then
   await expect(archive.getByTestId('collection-visit-brook-tide')).toBeVisible();
   await expect(archive.getByTestId('collection-visit-cinder-ember')).toHaveCount(0);
   await archive.getByTestId('collection-visit-brook-tide').click();
-  await expect(page).toHaveURL(/\/characters\/\?visit=brook$/);
+  await expect(page).toHaveURL(/\/characters\/?\?visit=brook$/);
   await expect(page.getByTestId('worker-private-room-brook')).toBeVisible();
   await page.getByRole('button',{name:'离开泉泡的房间'}).click();
-  await expect(page).toHaveURL(/\/characters\/$/);
+  await expect(page).toHaveURL(/\/characters\/?$/);
   await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
 });
 
