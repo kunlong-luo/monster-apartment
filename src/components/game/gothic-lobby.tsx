@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import {ArrowUpRight,DoorOpen,WandSparkles} from 'lucide-react';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {AnimatePresence} from 'motion/react';
 import {useMemo,useState} from 'react';
@@ -107,7 +108,7 @@ export function GothicLobby(){
       </div>
       <div className="flex justify-end gap-1.5 pt-1 max-[840px]:col-start-2 max-[840px]:row-start-1">
         <GothicIconButton label="切换动态特效" data-tooltip="切换动态特效" pressed={reducedMotion}
-          onClick={toggleMotion}>⚜</GothicIconButton>
+          onClick={toggleMotion}><WandSparkles aria-hidden="true" size={17} strokeWidth={1.7}/></GothicIconButton>
       </div>
     </header>
 
@@ -115,7 +116,7 @@ export function GothicLobby(){
       <Link href={orderReady?'/orders/':'/workshop/'}
         aria-label={orderReady?'晶核已备齐，查看委托交期':'晶核不足，前往工坊生产'}
         data-testid="gothic-main-quest" className="gothic-lobby__mission-card gothic-lobby__mission-card--quest">
-        <span className="gothic-lobby__card-kicker">✧ 主线 · 月影之约 <span aria-hidden="true">❯</span></span>
+        <span className="gothic-lobby__card-kicker">✧ 主线 · 月影之约 <ArrowUpRight aria-hidden="true" size={15} strokeWidth={1.7}/></span>
         <strong>{orderReady?'晶核已备齐 · 去委托核对交期':'与月纱一起筹备第一批晶核'}</strong>
         <span className="gothic-lobby__mission-detail">
           {orderReady?'下一步：确认交付和奖励':'去工坊生产 · 晶核 '+orderStock+' / '+orderTarget}
@@ -168,7 +169,7 @@ export function GothicLobby(){
         <span>月纱<small>与她交谈</small></span>
       </button>
       <Link href="/apartment/?visit=yuesha" data-testid="gothic-character-room">
-        <span aria-hidden="true" className="gothic-lobby__action-glyph">♜</span>
+        <DoorOpen aria-hidden="true" size={25} strokeWidth={1.55} className="gothic-lobby__action-glyph"/>
         <span>拜访房间<small>探索她的秘密</small></span>
       </Link>
     </aside>

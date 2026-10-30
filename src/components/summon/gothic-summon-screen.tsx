@@ -14,7 +14,7 @@ import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
 import {claimProgressTickets,claimTrialTicket,gachaSaveStatus,GACHA_CHARACTERS} from '@/lib/summon/gacha-engine';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import Link from 'next/link';
-import {Backpack,Droplets,Gem,History,Mail,Megaphone,Settings,Ticket} from 'lucide-react';
+import {AlertTriangle,Backpack,ChevronRight,Droplets,Gem,History,Mail,Megaphone,Search,Settings,Ticket} from 'lucide-react';
 import { useGacha } from '@/lib/summon/use-gacha';
 import { GACHA_POOLS, type SummonableCharacter } from '@/lib/summon/gacha-engine';
 import { SummonRitualModal } from './summon-ritual-modal';
@@ -342,9 +342,9 @@ export function GothicSummonScreen() {
                 <button
                   type="button"
                   onClick={() => setShowDetails(true)}
-                  className="rounded px-1.5 py-0.5 text-[#ffc66e] hover:underline"
+                  className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[#ffc66e] hover:underline"
                 >
-                  查看详情 🔍
+                  查看详情 <Search aria-hidden="true" size={12} strokeWidth={1.8}/>
                 </button>
               </div>
             </div>
@@ -353,7 +353,7 @@ export function GothicSummonScreen() {
           {/* Error Message if insufficient currency */}
             {summonError && (
               <div className="mt-2 text-xs font-semibold text-[#ff5577] bg-black/60 px-3 py-1 rounded-full">
-                ⚠️ {summonError}
+                <AlertTriangle aria-hidden="true" size={13} strokeWidth={1.7} className="mr-1 inline"/> {summonError}
               </div>
             )}
           </div>
@@ -384,7 +384,7 @@ export function GothicSummonScreen() {
                     单次召唤
                   </span>
                   <span className="block text-[10px] font-bold text-[#623a1a]">
-                    🎫 × 1 或 🩸 160
+                    <span className="summon-cinematic-cost"><Ticket aria-hidden="true" size={12} strokeWidth={1.6}/> × 1 <i>或</i> <Droplets aria-hidden="true" size={12} strokeWidth={1.6}/> 160</span>
                   </span>
                 </div>
               </button>
@@ -402,7 +402,7 @@ export function GothicSummonScreen() {
                     十连召唤
                   </span>
                   <span className="block text-[10px] font-bold text-[#ffbacb]">
-                    🎫 × 10 或 🩸 1600
+                    <span className="summon-cinematic-cost"><Ticket aria-hidden="true" size={12} strokeWidth={1.6}/> × 10 <i>或</i> <Droplets aria-hidden="true" size={12} strokeWidth={1.6}/> 1600</span>
                   </span>
                 </div>
               </button>
@@ -508,7 +508,7 @@ export function GothicSummonScreen() {
                 onClick={() => setShowReplenish(true)}
                 className="text-[#ffc66e] hover:underline"
               >
-                🎫 契约资源来源 &gt;
+                <span className="inline-flex items-center gap-1"><Ticket aria-hidden="true" size={12} strokeWidth={1.7}/> 契约资源来源 <ChevronRight aria-hidden="true" size={12}/></span>
               </button>
             </div>
             <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-[#120713]">

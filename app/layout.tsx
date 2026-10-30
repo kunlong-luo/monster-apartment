@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import './globals.css';
 import '@/components/game/gothic-red-gold.css';
+import '@/components/game/gothic-desktop-ui.css';
 import {GothicRouteTransition} from '@/components/game/gothic-route-transition';
 import {GameReleaseNotice} from '@/components/game/game-release-notice';
 

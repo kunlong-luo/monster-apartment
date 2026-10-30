@@ -10,13 +10,16 @@ import {useGothicMotion} from '@/lib/game/gothic-motion';
  * atmospheric layers remain the responsibility of PixiJS / scene CSS.
  */
 import {
-  Home,
-  Building2,
-  Hammer,
-  Sparkles,
-  Scroll,
-  Compass,
-  Package,
+  House,
+  Castle,
+  Anvil,
+  BookOpen,
+  ScrollText,
+  Map,
+  Archive,
+  Coins,
+  Gem,
+  Moon,
 } from 'lucide-react';
 
 export type GothicDestination={
@@ -28,18 +31,18 @@ export type GothicDestination={
 };
 
 function getCanonicalDockIcon(href: string, fallback?: ReactNode) {
-  if (href === '/' || href === '') return <Home className="size-4 sm:size-5" />;
-  if (href.includes('apartment')) return <Building2 className="size-4 sm:size-5" />;
-  if (href.includes('workshop')) return <Hammer className="size-4 sm:size-5" />;
-  if (href.includes('characters')) return <Sparkles className="size-4 sm:size-5" />;
-  if (href.includes('orders')) return <Scroll className="size-4 sm:size-5" />;
-  if (href.includes('town')) return <Compass className="size-4 sm:size-5" />;
-  if (href.includes('warehouse')) return <Package className="size-4 sm:size-5" />;
+  if (href === '/' || href === '') return <House className="size-4 sm:size-[22px]" strokeWidth={1.7}/>;
+  if (href.includes('apartment')) return <Castle className="size-4 sm:size-[22px]" strokeWidth={1.7}/>;
+  if (href.includes('workshop')) return <Anvil className="size-4 sm:size-[22px]" strokeWidth={1.7}/>;
+  if (href.includes('characters')) return <BookOpen className="size-4 sm:size-[22px]" strokeWidth={1.7}/>;
+  if (href.includes('orders')) return <ScrollText className="size-4 sm:size-[22px]" strokeWidth={1.7}/>;
+  if (href.includes('town')) return <Map className="size-4 sm:size-[22px]" strokeWidth={1.7}/>;
+  if (href.includes('warehouse')) return <Archive className="size-4 sm:size-[22px]" strokeWidth={1.7}/>;
   return typeof fallback === 'string' ? <span>{fallback}</span> : fallback;
 }
 
 const iconButtonStyle=[
-  'grid size-9 shrink-0 place-items-center overflow-hidden rounded-full border',
+  'gothic-icon-button grid size-9 shrink-0 place-items-center rounded-full border',
   'border-gothic-brass/65 bg-gothic-panel/85 text-gothic-ivory',
   'text-lg shadow-[inset_0_1px_0_#ffe4b52a,0_5px_18px_#0009]',
   'backdrop-blur-md transition-[transform,background-color,border-color] duration-200',
@@ -111,6 +114,7 @@ export function GothicResourcePill({
 }:{
   symbol:string;amount:string|number;label?:string;testId?:string;
 }){
+  const ResourceIcon=label==='星币'?Coins:label==='晶核'?Gem:label==='生产日'?Moon:null;
   return (
     <span
       data-tooltip={label}
@@ -120,7 +124,7 @@ export function GothicResourcePill({
         'whitespace-nowrap backdrop-blur-lg sm:gap-1.5 sm:px-3'
       }
     >
-      <span className="text-base leading-none text-gothic-gold" aria-hidden="true">{symbol}</span>
+      {ResourceIcon ? <ResourceIcon aria-hidden="true" size={15} strokeWidth={1.7} className="shrink-0 text-gothic-gold"/> : <span className="text-base leading-none text-gothic-gold" aria-hidden="true">{symbol}</span>}
       <strong data-testid={testId} className="font-medium tabular-nums">{amount}</strong>
       {label&&<small className="hidden text-[10px] text-gothic-muted md:inline">{label}</small>}
     </span>
@@ -149,6 +153,7 @@ export function GothicDock({
         <Link
           key={item.href}
           href={item.href}
+          data-destination={item.href}
           aria-label={item.ariaLabel ?? (item.description ? item.label + ' · ' + item.description : item.label)}
           aria-current={isActive ? 'page' : undefined}
           data-tooltip={item.description || item.label}
@@ -163,7 +168,7 @@ export function GothicDock({
           <span
             aria-hidden="true"
             className={
-              'flex size-8 sm:size-9 items-center justify-center rounded-lg border transition-colors '+
+              'gothic-dock__icon flex size-8 sm:size-9 items-center justify-center rounded-lg border transition-colors '+
               (isActive
                 ? 'border-[#ff758f] bg-[#881738] text-[#ffd699] shadow-[0_0_12px_#ff4d6d88]'
                 : 'border-[#8f694666] bg-[#2d1829aa] text-[#f3ca88] group-hover:border-[#d4aa70]')
