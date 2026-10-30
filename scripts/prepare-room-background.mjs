@@ -2,6 +2,8 @@ import {readFileSync,copyFileSync,mkdirSync,writeFileSync,statSync,existsSync} f
 import {resolve,join,dirname,extname} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
+import {coverProjection,validateRoomAnchors} from './room-anchor-review.mjs';
+export {coverProjection} from './room-anchor-review.mjs';
 
 const root=resolve(import.meta.dirname,'..');
 const ids=['yuesha','brook','fern','cinder'];
@@ -29,15 +31,6 @@ export function webpDimensions(bytes){
   }
   throw new Error('Unsupported WebP image kind '+kind);
 }
-export function coverProjection(anchor,width,height){
-  if(!(width>0&&height>0))throw new Error('Invalid stage geometry');
-  const scale=Math.max(width/16,height/9);
-  const drawnWidth=16*scale,drawnHeight=9*scale;
-  const x=(width-drawnWidth)/2+anchor[0]*drawnWidth;
-  const y=(height-drawnHeight)/2+anchor[1]*drawnHeight;
-  const visible=x>=22&&x<=width-22&&y>=22&&y<=height-22;
-  return {x,y,visible};
-}
 function parseArgs(argv){
   const parsed={};
   for(let i=0;i<argv.length;i++){
@@ -49,8 +42,8 @@ function parseArgs(argv){
     if(!name||!value||name in parsed)throw new Error('Invalid or duplicate --'+name);
     parsed[name]=value;
   }
-  if(Object.keys(parsed).some(k=>!['room','source','out'].includes(k)))
-    throw new Error('Allowed flags: --room, --source, --out');
+  if(Object.keys(parsed).some(k=>!['room','source','out','anchors'].includes(k)))
+    throw new Error('Allowed flags: --room, --source, --out, --anchors');
   if(!ids.includes(parsed.room))throw new Error('Use --room yuesha|brook|fern|cinder');
   if(!parsed.source||!parsed.out)throw new Error('Require --source input.webp --out review-folder');
   return parsed;
@@ -89,29 +82,23 @@ export function buildReviewHtml({room,anchors,sourceWidth,sourceHeight}){
     '<main>'+panels+'</main></html>';
 }
 function run(argv){
-  const {room,source,out}=parseArgs(argv);
+  const {room,source,out,anchors:anchorFile}=parseArgs(argv);
   const src=resolve(source),output=resolve(out);
   if(!existsSync(src)||!statSync(src).isFile()||extname(src).toLowerCase()!=='.webp')
     throw new Error('Source must be an existing .webp file');
   if(src===join(output,'background-candidate.webp'))
     throw new Error('Source and destination cannot be the same file');
   const manifest=JSON.parse(readFileSync(join(root,'public/art/rooms/manifest.json'),'utf8'));
-  const anchors=manifest.rooms?.[room]?.objectAnchors;
-  if(!anchors||Object.keys(anchors).length!==3)
-    throw new Error(room+' needs three normalized objectAnchors in manifest before preview');
-  for(const [name,point] of Object.entries(anchors)){
-    if(!Array.isArray(point)||point.length!==2||point.some(x=>!Number.isFinite(x)||x<=0||x>=1))
-      throw new Error('Invalid object anchor '+name);
-  }
+  // A candidate may supply a standalone anchor JSON: never pre-edit production manifest.
+  // The exact reviewed coordinates must be supplied again during promotion.
+  const anchors=validateRoomAnchors(room,anchorFile
+    ?JSON.parse(readFileSync(resolve(anchorFile),'utf8'))
+    :manifest.rooms?.[room]?.objectAnchors);
   const bytes=readFileSync(src);
   const dimensions=webpDimensions(bytes);
   if(dimensions.width<1920||dimensions.height<1080||
       Math.abs(dimensions.width/dimensions.height-16/9)>.01)
     throw new Error('Candidate background must be at least 1920×1080 and 16:9');
-  for(const [name,point] of Object.entries(anchors)){
-    const p=coverProjection(point,390,315);
-    if(!p.visible)throw new Error('390px phone marker unreachable: '+name);
-  }
   if(existsSync(output)&&existsSync(join(output,'background-candidate.webp')))
     throw new Error('Review folder contains a candidate; choose a fresh --out path');
   mkdirSync(output,{recursive:true});
