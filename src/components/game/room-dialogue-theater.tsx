@@ -30,7 +30,9 @@ export function RoomDialogueTheater({name,title,response,onClose,basePose='warm'
   // Keep notifications tied to actual beat changes, not to the callback
   // identity when the parent rerenders for its own story/reaction updates.
   const poseNotification=useRef(onBeatPose);
-  poseNotification.current=onBeatPose;
+  useEffect(()=>{
+    poseNotification.current=onBeatPose;
+  },[onBeatPose]);
   useEffect(()=>{
     poseNotification.current?.(beatPose);
   },[beatPose]);
