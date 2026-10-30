@@ -2,6 +2,9 @@
 
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import './summon-screen.css';
+import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
+import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
+import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import {GothicDock} from '@/components/game/gothic-hud';
 import {HEROINE_FACE_ART,getCardFace} from './heroine-portrait-assets';
 import {WORLD_NAV} from '@/components/moonwork/world-navigation';
@@ -59,6 +62,7 @@ export function GothicSummonScreen() {
   const featuredName=featuredWorker==='brook'?'泉泡':featuredWorker==='fern'?'青枝':featuredWorker==='cinder'?'炽角':'月纱';
   const featuredBeast=COVENANT_BEASTS[featuredWorker??'yuesha'];
   const featuredTier=featuredWorker==='cinder'?3:featuredWorker==='fern'?2:featuredWorker==='brook'?1:5;
+  const featuredCardTier=featuredTier>=5?'SSR':featuredTier>=3?'SR':'R';
   const otherQuotes={
     brook:['「听见了吗？水脉正在向我们讲述故事。」','「银月下的霜狼，从来不会忘记归途。」'],
     fern:['「荆棘守护的花，总有自己的绽放时刻。」','「跟我去看看真正的月光温室。」'],
@@ -111,14 +115,13 @@ export function GothicSummonScreen() {
       data-testid="character-collection"
       className="summon-cinematic relative flex h-dvh w-full flex-col overflow-hidden bg-[#0c050b] font-serif text-[#f4ddc5]"
     >
-      {/* 1:1 High Resolution Gothic Scene Background */}
-      <div
-        className="pointer-events-none absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: 'url(/art/lobby-hero-v3.webp)',
-        }}
-        aria-hidden="true"
-      />
+      {/* Static imports preserve the real Next.js Pages basePath and keep
+          the original painting sharp after client navigation. */}
+      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+        <Image src={lobbyHero} alt="" fill priority unoptimized sizes="100vw"
+          data-testid="summon-background-painting"
+          className="select-none object-cover object-center" draggable={false}/>
+      </div>
 
       {/* Atmospheric dark vignetting overlay */}
       <div
@@ -276,7 +279,7 @@ export function GothicSummonScreen() {
 
                 {/* Active golden border highlight */}
                 {isActive && (
-                  <div className="pointer-events-none absolute inset-0 rounded-xl border-2 border-[#ffd70066] animate-pulse" />
+                  <div className="pointer-events-none absolute inset-0 rounded-md border border-[#ffd7a055]" />
                 )}
               </button>
             );
@@ -298,7 +301,7 @@ export function GothicSummonScreen() {
                 className="summon-cinematic-heroine-image"
                 data-portrait-source="dedicated-heroine"/>
             ) : (
-              <Image src="/art/yuesha-bust-v3.webp" alt="" fill unoptimized
+              <Image src={moonveilBust} alt="" fill unoptimized
                 sizes="(max-width:900px) 65vw,700px"
                 className="object-contain object-bottom opacity-95"/>
             )}
@@ -421,18 +424,22 @@ export function GothicSummonScreen() {
         {/* ----------------------------------------------------------- */}
         <aside className="summon-cinematic-sidebar relative flex w-full flex-col gap-3 overflow-y-auto py-2 lg:w-64 lg:shrink-0 xl:w-72 z-20">
           {/* Framed SSR Card */}
-          <div className="relative flex flex-col rounded-2xl border-2 border-[#d4aa70] bg-[#1a0b18e0] p-3 shadow-[0_10px_30px_#000000cc]">
+          <div data-testid="summon-featured-card" data-card-character={featuredWorker??'yuesha'}
+            className="relative flex flex-col rounded-lg border border-[#d4aa7080] bg-[#1a0b18e0] p-3 shadow-[0_10px_30px_#000000aa]">
             {/* SSR badge */}
-            <div className="absolute top-2 left-2 z-10 rounded bg-gradient-to-r from-[#ffd700] to-[#ff4500] px-2 py-0.5 text-[10px] font-extrabold text-black">
-              SSR
+            <div data-testid="summon-featured-card-tier"
+              className="absolute top-2 left-2 z-10 rounded border border-[#ffe5bd88] bg-[#a96839] px-2 py-0.5 text-[10px] font-bold tracking-[.15em] text-[#fff0ce]">
+              {featuredCardTier}
             </div>
 
             {/* Card Portrait */}
             <div className="relative h-44 w-full overflow-hidden rounded-xl border border-[#e2b57866] bg-[#22101e]">
               <Image
-                src="/art/yuesha-portrait-v3.webp"
-                alt="月纱"
+                src={featuredWorker?HEROINE_FACE_ART[featuredWorker]:moonveilPortrait}
+                alt={featuredName}
                 fill
+                unoptimized
+                sizes="(max-width:1023px) 50vw,240px"
                 className="object-cover object-[55%_25%]"
               />
             </div>
@@ -440,11 +447,11 @@ export function GothicSummonScreen() {
             {/* Card Meta */}
             <div className="mt-2">
               <div className="flex items-baseline justify-between">
-                <h3 className="text-base font-bold text-[#ffe6c2]">月纱 ☾</h3>
-                <span className="text-[10px] text-[#e8c099]">✦ 神话 · 月蚀</span>
+                <h3 className="text-base font-semibold text-[#ffe6c2]">{featuredName} ☾</h3>
+                <span className="text-[10px] text-[#e8c099]">✦ {featuredCardTier} · {featuredBeast.name}</span>
               </div>
               <p className="mt-1 text-[10px] text-[#c9a786] italic leading-tight">
-                沉入永夜吧—— 这一次，换我来拥抱你。
+                {visibleQuotes[quoteIndex % visibleQuotes.length]}
               </p>
             </div>
 
@@ -455,7 +462,7 @@ export function GothicSummonScreen() {
                 onClick={() => setShowTrial(true)}
                 className="rounded-lg border border-[#e5ba79] bg-[#3a1d30] py-1 text-center font-bold text-[#ffe2be] hover:bg-[#522542]"
               >
-                ▷ 角色试玩
+                ▷ 月纱技能试玩
               </button>
               <button
                 type="button"

@@ -6,6 +6,12 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await page.goto('/characters/#summon-screen');
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:25_000});
   await expect(page.getByTestId('summon-featured-portrait')).toBeVisible();
+  const paintedBackground=page.getByTestId('summon-background-painting');
+  await expect(paintedBackground).toBeVisible();
+  await expect.poll(()=>paintedBackground.evaluate((image:HTMLImageElement)=>image.naturalWidth)).toBeGreaterThan(0);
+  const backgroundSrc=await paintedBackground.getAttribute('src');
+  expect(backgroundSrc).toContain('lobby-hero');
+  await expect(page.getByTestId('summon-featured-card')).toHaveAttribute('data-card-character','yuesha');
   const dock=page.getByRole('navigation',{name:'月影契约世界导航'});
   await expect(dock.getByRole('link')).toHaveCount(7);
   await expect(page.getByTestId('collection-tickets')).toHaveText('3');
@@ -37,6 +43,8 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
     const featured=page.getByTestId('summon-featured-portrait');
     await expect(featured).toHaveAttribute('data-featured-character',hero);
     await expect(featured).toHaveAttribute('data-tier',tier);
+    await expect(page.getByTestId('summon-featured-card')).toHaveAttribute('data-card-character',hero);
+    await expect(page.getByTestId('summon-featured-card')).toContainText(beast);
     await expect(page.locator('.summon-cinematic-title')).toContainText(beast);
     const image=featured.locator('img[data-portrait-source="dedicated-heroine"]');
     await expect(image).toBeVisible();
