@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 import {webpDimensions} from './prepare-room-background.mjs';
+import {validateRoomAnchors} from './room-anchor-review.mjs';
 
 const root=resolve(import.meta.dirname,'..');
 const roomIds=['yuesha','brook','fern','cinder'];
@@ -34,6 +35,7 @@ export function verifyRoomApproval({room,review,imageBytes,anchors}){
     throw new Error('Valid reviewedAt ISO time required');
   if(!reviewScreens.every(screen=>review.visualReview?.[screen]===true))
     throw new Error('Desktop, 390px and 320px previews all need visual review');
+  validateRoomAnchors(room,anchors);
   if(JSON.stringify(review.objectAnchors)!==JSON.stringify(anchors))
     throw new Error('Hotspot coordinates have changed since review');
   const dimensions=webpDimensions(imageBytes);
@@ -64,14 +66,14 @@ function parseCli(argv){
     if(!value||key in args)throw new Error('Invalid or repeated --'+key);
     args[key]=value;
   }
-  if(Object.keys(args).some(key=>!['room','source','approval'].includes(key))||
+  if(Object.keys(args).some(key=>!['room','source','approval','anchors'].includes(key))||
     !roomIds.includes(args.room)||!args.source||!args.approval)
     throw new Error('Use --room yuesha --source candidate.webp --approval approved.json');
   return args;
 }
 /** Fail closed, and roll back manifest/assets when the post-promotion audit fails. */
 function main(argv){
-  const {room,source,approval}=parseCli(argv);
+  const {room,source,approval,anchors:anchorFile}=parseCli(argv);
   const candidate=resolve(source),reviewPath=resolve(approval);
   if(extname(candidate).toLowerCase()!=='.webp'||!existsSync(candidate))
     throw new Error('A readable WebP file is required');
@@ -84,13 +86,18 @@ function main(argv){
   const entry=manifest.rooms?.[room];
   if(!entry||entry.backgroundStatus!=='concept'||entry.layout!=='concept')
     throw new Error('Room background is not eligible for first-time promotion');
-  if(!entry.objectAnchors||Object.keys(entry.objectAnchors).length!==3)
-    throw new Error('Reviewable object anchors are required');
-  const provenance=verifyRoomApproval({room,review,imageBytes:bytes,anchors:entry.objectAnchors});
+  // Background and its physical-object coordinates must be reviewed as one unit.
+  // New rooms have no pre-approved coordinates; accept a separately supplied file
+  // only when all three viewport and SHA/signature checks pass.
+  const anchors=validateRoomAnchors(room,anchorFile
+    ?JSON.parse(readFileSync(resolve(anchorFile),'utf8'))
+    :entry.objectAnchors);
+  const provenance=verifyRoomApproval({room,review,imageBytes:bytes,anchors});
   const dest=join(root,'public/art/rooms',room,'background.webp');
   const provenanceFile=join(dirname(dest),'provenance.json');
   if(existsSync(dest)||existsSync(provenanceFile))
     throw new Error('Destination exists; refusing overwrite of a previously reviewed asset');
+  entry.objectAnchors=anchors;
   entry.backgroundStatus='production';
   entry.layout='reviewed';
   entry.composition=entry.residentStatus==='production'?'separated':'layered-concept';
