@@ -31,6 +31,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
   const [previewPoseUrls,setPreviewPoseUrls]=useState<Partial<Record<RoomPose,string>>>({});
   const [reviewPose,setReviewPose]=useState<RoomPose|null>(null);
   const [reviewError,setReviewError]=useState('');
+  const [reviewOpen,setReviewOpen]=useState(false);
   const imageUrlRef=useRef<string|null>(null);
   useEffect(()=>{
     return ()=>{if(imageUrlRef.current)URL.revokeObjectURL(imageUrlRef.current);};
@@ -100,19 +101,30 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
           hotspot==='ledger'?'账簿封面有多年前的磨损痕迹。里面记着什么，目前还不能公开。':undefined}/>
       {theater&&<RoomDialogueTheater key={theater.id} name="月纱" title={theater.title}
         response={theater.response} onClose={()=>{setTheater(null);setPose('idle');}}/>}
-      {artReviewEnabled&&<div data-testid="room-art-local-review" 
-        className="absolute right-2 top-2 z-[30] flex max-w-[min(74%,240px)] flex-col gap-1 rounded-lg border border-[#e9ba7d9e] bg-[#170d21f0] p-2 text-[11px] text-[#ffe5c9] shadow-lg">
-        <span className="text-[#ffd298]">仅本机预览 · 不会发布或保存</span>
-        <label htmlFor="yuesha-local-art-file" className="text-[#ffe5c9]">查看高清背景 WebP</label>
-        <input id="yuesha-local-art-file" data-testid="room-art-local-file"
-          type="file" accept="image/webp" onChange={previewLocalArt}
-          className="block w-full min-w-0 text-[10px] file:mr-1 file:rounded file:border-0 file:bg-[#5c3949] file:px-2 file:py-1 file:text-[#ffead5]"/>
-        {previewUrl&&<button type="button" data-testid="room-art-local-reset" onClick={clearLocalArt}
-          className="min-h-9 rounded border border-[#d6b98b90] px-2 text-left hover:bg-[#533444]">恢复原概念背景</button>}
-        {reviewError&&<span role="alert" className="text-[#ffb3b9]">{reviewError}</span>}
-        <RoomPosePreviewControls
-          onChange={(selected,url)=>setPreviewPoseUrls(previous=>({...previous,[selected]:url??undefined}))}
-          onSelect={setReviewPose} onReset={()=>setReviewPose(null)}/>
+      {artReviewEnabled&&<div data-testid="room-art-local-review"
+        className="absolute bottom-2 right-2 z-[30] w-[min(74%,240px)] rounded-lg border border-[#e9ba7d9e] bg-[#170d21f0] p-2 text-[11px] text-[#ffe5c9] shadow-lg">
+        <button type="button" data-testid="room-art-review-toggle"
+          aria-controls="room-art-review-controls" aria-expanded={reviewOpen}
+          onClick={()=>setReviewOpen(open=>!open)}
+          className="min-h-11 w-full rounded border border-[#d6b98b90] bg-[#3c2438] px-2 text-left text-[#ffd298] hover:bg-[#533444] focus-visible:outline-2 focus-visible:outline-[#ffd298]">
+          {reviewOpen?'收起美术审核':'本地美术审核 · 展开'}
+        </button>
+        <div id="room-art-review-controls" aria-hidden={!reviewOpen}
+          className={reviewOpen
+            ?'mt-2 max-h-[min(42vh,270px)] space-y-1 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin]'
+            :'hidden'}>
+          <span className="block text-[#ffd298]">仅本机预览 · 不会发布或保存</span>
+          <label htmlFor="yuesha-local-art-file" className="block text-[#ffe5c9]">查看高清背景 WebP</label>
+          <input id="yuesha-local-art-file" data-testid="room-art-local-file"
+            type="file" accept="image/webp" onChange={previewLocalArt}
+            className="block w-full min-w-0 text-[10px] file:mr-1 file:rounded file:border-0 file:bg-[#5c3949] file:px-2 file:py-1 file:text-[#ffead5]"/>
+          {previewUrl&&<button type="button" data-testid="room-art-local-reset" onClick={clearLocalArt}
+            className="min-h-9 rounded border border-[#d6b98b90] px-2 text-left hover:bg-[#533444]">恢复原概念背景</button>}
+          {reviewError&&<span role="alert" className="text-[#ffb3b9]">{reviewError}</span>}
+          <RoomPosePreviewControls
+            onChange={(selected,url)=>setPreviewPoseUrls(previous=>({...previous,[selected]:url??undefined}))}
+            onSelect={setReviewPose} onReset={()=>setReviewPose(null)}/>
+        </div>
       </div>}
       <div className="pointer-events-none absolute top-9 left-3 max-w-[52%] space-y-1 text-shadow-md">
         <h3 className="text-lg text-[#ffe3bd] sm:text-2xl">月纱的契约会客室</h3>
