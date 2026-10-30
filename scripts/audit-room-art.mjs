@@ -1,6 +1,7 @@
 import {readFileSync,existsSync} from 'node:fs';
 import {resolve,dirname,join} from 'node:path';
 import {createHash} from 'node:crypto';
+import {validateRoomAnchors} from './room-anchor-review.mjs';
 
 const root=resolve(import.meta.dirname,'..');
 const manifest=JSON.parse(readFileSync(join(root,'public/art/rooms/manifest.json'),'utf8'));
@@ -59,31 +60,10 @@ for(const id of ids){
     'scene must not embed characters, UI text or remote media '+id);
   if(bgProduction){
     assert(room.layout==='reviewed','production background requires reviewed hotspot alignment '+id);
-    const expectedObjects={
-      yuesha:['seal','tea','ledger'],
-      brook:['toolbox','gauge','nightbell'],
-      fern:['herbarium','moonflower','watermap'],
-      cinder:['hammer','blueprint','keepsake'],
-    }[id];
-    const anchors=room.objectAnchors;
-    assert(anchors&&JSON.stringify(Object.keys(anchors).sort())===JSON.stringify([...expectedObjects].sort()),
-      'production artwork must locate each physical prop '+id);
-    const stage={width:390,height:315};
-    const scale=Math.max(stage.width/16,stage.height/9);
-    const drawnWidth=16*scale,drawnHeight=9*scale;
-    const points=[];
-    for(const objectId of expectedObjects){
-      const point=anchors[objectId];
-      assert(Array.isArray(point)&&point.length===2&&point.every(n=>Number.isFinite(n)&&n>0&&n<1),
-        'invalid normalized prop anchor '+id+'/'+objectId);
-      const px=(stage.width-drawnWidth)/2+point[0]*drawnWidth;
-      const py=(stage.height-drawnHeight)/2+point[1]*drawnHeight;
-      assert(px>=22&&px<=stage.width-22&&py>=22&&py<=stage.height-22,
-        'mobile 44px marker clipped '+id+'/'+objectId);
-      for(const other of points)assert(Math.hypot(px-other[0],py-other[1])>=44,
-        'mobile 44px markers overlap '+id+'/'+objectId);
-      points.push([px,py]);
-    }
+    // One geometry policy for candidate review, promotion and release audit.
+    // 44px square buttons must not overlap in either screen dimension.
+    try{validateRoomAnchors(id,room.objectAnchors);}
+    catch(error){throw new Error('Room art audit: '+error.message);}
     checkWebP(room.background,{alpha:false,minW:1920,minH:1080});
     const candidateBytes=readFileSync(join(root,room.background));
     const candidateSha=createHash('sha256').update(candidateBytes).digest('hex');
