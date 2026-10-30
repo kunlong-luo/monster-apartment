@@ -3,6 +3,8 @@ import {useEffect,useRef,useState} from 'react';
 import type {ChangeEvent} from 'react';
 import type {RoomPose} from '@/core/room-performance';
 import {inspectPoseAlpha} from '@/core/room-pose-preview';
+import {poseLooksDuplicated,poseThumbnail} from '@/core/room-pose-comparison';
+import type {PoseThumbnail} from '@/core/room-pose-comparison';
 
 const POSES=[
   {id:'idle',label:'待机'},{id:'attentive',label:'倾听'},
@@ -17,6 +19,7 @@ export function RoomPosePreviewControls({onChange,onSelect,onReset}:{
 }){
   const urls=useRef<Partial<Record<RoomPose,string>>>({});
   const dimensions=useRef<Partial<Record<RoomPose,Dimensions>>>({});
+  const thumbnails=useRef<Partial<Record<RoomPose,PoseThumbnail>>>({});
   // Hold displaced object URLs until their 240ms exit animation finishes.
   // Immediate revoke used to break the departing frame on slow mobile devices.
   const retired=useRef(new Set<string>());
@@ -62,11 +65,19 @@ export function RoomPosePreviewControls({onChange,onSelect,onReset}:{
       const ctx=canvas.getContext('2d',{willReadFrequently:true});
       if(!ctx)throw new Error('浏览器不支持透明度检查。');
       ctx.drawImage(bitmap,0,0,64,64);
-      const analysis=inspectPoseAlpha(ctx.getImageData(0,0,64,64).data,64,64);
+      const pixels=ctx.getImageData(0,0,64,64).data;
+      const analysis=inspectPoseAlpha(pixels,64,64);
       if(!analysis.ok)throw new Error(analysis.reason);
+      const thumbnail=poseThumbnail(pixels,64,64);
+      const nearClone=Object.entries(thumbnails.current).find(([id,other])=>
+        id!==pose&&other&&poseLooksDuplicated(thumbnail,other));
+      if(nearClone)throw new Error('姿态与'+
+        ({idle:'待机',attentive:'倾听',warm:'亲近',guarded:'警觉'} as const)[nearClone[0] as RoomPose]+
+        '几乎相同；请使用真实不同动作的透明立绘。');
       const url=URL.createObjectURL(file),old=urls.current[pose];
       urls.current[pose]=url;
       dimensions.current[pose]={width:bitmap.width,height:bitmap.height};
+      thumbnails.current[pose]=thumbnail;
       onChange(pose,url);onSelect(pose);
       if(old)releaseAfterTransition(old);
       setLoaded(current=>current.includes(pose)?current:[...current,pose]);
@@ -80,11 +91,11 @@ export function RoomPosePreviewControls({onChange,onSelect,onReset}:{
       if(url){onChange(id,null);releaseAfterTransition(url);}
     }
     for(const {id} of POSES)delete urls.current[id];
-    dimensions.current={};setLoaded([]);setError('');onReset();
+    dimensions.current={};thumbnails.current={};setLoaded([]);setError('');onReset();
   };
   return <section className="mt-1 border-t border-[#d9ad8752] pt-2" data-testid="room-pose-review">
     <span className="block text-[#ffd298]">透明人物候选 · 四姿态 {loaded.length}/4</span>
-    <p className="text-[10px] leading-4 text-[#ead2bc]">仅本地预览；要求同画布、四角透明，不能上传带房间的合成 CG。</p>
+    <p className="text-[10px] leading-4 text-[#ead2bc]">仅本地预览；要求同画布、四角透明、真实不同的动作，不能上传带房间的合成 CG。</p>
     <div className="grid grid-cols-2 gap-1">
       {POSES.map(({id,label})=><label key={id} className="min-w-0 rounded border border-[#b18d6d88] bg-[#332138cb] px-1 py-1 text-[10px]">
         <span>{loaded.includes(id)?'✓ ':''}{label}</span>
