@@ -37,7 +37,10 @@ export function validateRoomAnchors(room,anchors){
     if(!projected.visible)
       throw new Error('390px phone marker unreachable: '+room+'/'+id);
     for(const other of seen){
-      if(Math.hypot(projected.x-other.point.x,projected.y-other.point.y)<44)
+      // Markers are 44px squares: diagonal Euclidean distance can exceed 44px
+      // while both X and Y hit-box extents still intersect.
+      if(Math.abs(projected.x-other.point.x)<44&&
+        Math.abs(projected.y-other.point.y)<44)
         throw new Error('390px phone markers overlap: '+room+'/'+id+' and '+other.id);
     }
     seen.push({id,point:projected});
