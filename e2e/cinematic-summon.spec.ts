@@ -215,6 +215,8 @@ test('summon featured-room shortcut opens the real heroine suite without adding 
   await expect(page.getByTestId('summon-featured-card')).toHaveAttribute('data-card-character','fern');
   await page.getByTestId('summon-featured-room-link').click();
   await expect(page).toHaveURL(/\/characters\/?\?visit=fern$/);
+  await expect(page.getByTestId('gothic-summon-stage')).toHaveCount(0);
+  await expect(page.getByTestId('moonwork-world')).toHaveAttribute('data-area','characters');
   const privateRoom=page.getByTestId('worker-private-room-fern');
   await expect(privateRoom).toBeVisible();
   await expect(privateRoom.getByTestId('room-scene-backdrop')).toHaveAttribute('data-scene-id','fern');
