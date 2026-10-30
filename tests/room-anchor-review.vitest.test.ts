@@ -13,8 +13,10 @@ describe('V3.15 pre-production room anchors are reviewed without editing the gam
       const draft=named(room);
       expect(validateRoomAnchors(room,draft)).toBe(draft);
     }
-    expect(validateRoomAnchors('yuesha',manifest.rooms.yuesha.objectAnchors))
-      .toEqual(manifest.rooms.yuesha.objectAnchors);
+    // Old Yuesha concept coordinates were never approved for a new HD image.
+    // Their square 44px hit areas intersect, so promotion must require re-anchoring.
+    expect(()=>validateRoomAnchors('yuesha',manifest.rooms.yuesha.objectAnchors))
+      .toThrow('390px phone markers overlap');
   });
   it('requires exactly the real investigation props for that resident',()=>{
     expect(()=>validateRoomAnchors('brook',named('fern'))).toThrow('Exactly three');
@@ -27,6 +29,10 @@ describe('V3.15 pre-production room anchors are reviewed without editing the gam
     expect(()=>validateRoomAnchors('brook',{...named('brook'),nightbell:[.97,.5]}))
       .toThrow('390px phone marker unreachable');
     expect(()=>validateRoomAnchors('brook',{...named('brook'),gauge:[.565,.355]}))
+      .toThrow('390px phone markers overlap');
+    // Delta x=40px and delta y=40px are >44px diagonally,
+    // but the 44px square buttons still overlap on both axes.
+    expect(()=>validateRoomAnchors('brook',{...named('brook'),gauge:[.56+40/560,.35+40/315]}))
       .toThrow('390px phone markers overlap');
   });
   it('treats 320px as an honest crop, not a reason to falsify object locations',()=>{
