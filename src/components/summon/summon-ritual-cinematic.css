@@ -27,11 +27,10 @@
   width:2px;height:130%;background:linear-gradient(180deg,transparent,#ffe4a9 25%,#fff 50%,#ffe4a9 75%,transparent);
   box-shadow:0 0 21px var(--ritual-accent);animation:summon-cinematic-seam .8s ease-out both}
 .summon-cinematic-ritual__particles{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-.summon-cinematic-ritual__particles i{position:absolute;left:calc(50% + (var(--spark-index) - 7)*6%);top:calc(27% + (var(--spark-index) % 5)*10%);
+.summon-cinematic-ritual__particles i{position:absolute;left:50%;top:50%;
   width:3px;height:3px;border-radius:50%;background:var(--ritual-accent);
   opacity:0;box-shadow:0 0 12px 2px var(--ritual-accent);
-  animation:summon-cinematic-spark 1.8s ease-in-out infinite;
-  animation-delay:calc(var(--spark-index)*-0.17s)}
+  animation:summon-cinematic-spark 1.8s ease-in-out infinite;}
 .summon-cinematic-ritual__omen{position:relative;display:flex;align-items:center;
   justify-content:center;flex-direction:column;gap:10px;min-width:min(85vw,280px);
   width:clamp(200px,25vw,320px);aspect-ratio:1;border-radius:50%;

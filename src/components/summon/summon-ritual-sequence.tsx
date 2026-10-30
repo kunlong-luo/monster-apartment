@@ -27,10 +27,13 @@ export function SummonRitualSequence({characters,phase,still,onSkip}:{
     style={{'--ritual-accent':scene.accent} as React.CSSProperties}>
     <div className="summon-cinematic-ritual__sky" aria-hidden="true"/>
     <div className="summon-cinematic-ritual__particles" aria-hidden="true">
-      {Array.from({length:14},(_,i)=><i key={i} style={{'--spark-index':i} as React.CSSProperties}/>)}
+      {Array.from({length:14},(_,i)=><i key={i} style={{
+        left:`${12+(i*19)%76}%`,top:`${9+(i*13)%73}%`,
+        animationDelay:`${-i*.17}s`,
+      }}/>)}
     </div>
     <div className="summon-cinematic-ritual__art">
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="sync" initial={false}>
         {phase==='charge'&&<motion.div key="charge" className="summon-cinematic-ritual__seal"
           initial={still?false:{opacity:0,scale:.42,rotate:-25}}
           animate={{opacity:1,scale:1,rotate:0}}

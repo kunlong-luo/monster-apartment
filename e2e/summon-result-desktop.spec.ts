@@ -81,7 +81,8 @@ test('cinematic omen shows exact rarest awarded rarity and never rerolls',async(
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/desktop-summon-omen-v371.png',animations:'disabled'});
   await expect(reveal).toHaveAttribute('data-ritual-phase','flip',{timeout:5000});
-  await expect(page.getByTestId('summon-ritual-flip')).toBeVisible();
+  // The flip must actually render before the sequence moves into reveal.
+  await expect(page.getByTestId('summon-ritual-flip')).toBeVisible({timeout:1600});
   await page.screenshot({path:'test-results/desktop-summon-flip-v371.png',animations:'disabled'});
   await expect(reveal).toHaveAttribute('data-ritual-phase','reveal',{timeout:5000});
   const actual=await page.getByTestId('collection-focus-card').getAttribute('data-rarity');

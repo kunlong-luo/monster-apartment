@@ -5,7 +5,7 @@ describe('gacha cinematic is presentation-only and deterministic',()=>{
   it('advances through real scene stages and stops at reveal',()=>{
     expect(RITUAL_PHASES).toEqual(['charge','seal','omen','flip','reveal']);
     expect(RITUAL_PHASES.map(nextRitualPhase)).toEqual(['seal','omen','flip','reveal','reveal']);
-    expect(Object.values(RITUAL_PHASE_DURATION).every(n=>n>=500&&n<=900)).toBe(true);
+    expect(Object.values(RITUAL_PHASE_DURATION).every(n=>n>=500&&n<=1250)).toBe(true);
   });
   it('does not infer rarity from theme or change the result',()=>{
     const records=[{rarity:'N' as const},{rarity:'SSR-Legend' as const},{rarity:'R' as const}];

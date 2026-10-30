@@ -5,7 +5,7 @@ export type RitualPhase='charge'|'seal'|'omen'|'flip'|'reveal';
 export type ActiveRitualPhase=Exclude<RitualPhase,'reveal'>;
 export const RITUAL_PHASES:readonly RitualPhase[]=['charge','seal','omen','flip','reveal'];
 export const RITUAL_PHASE_DURATION:Record<ActiveRitualPhase,number>={
-  charge:620,seal:780,omen:790,flip:820,
+  charge:620,seal:780,omen:790,flip:1150,
 };
 export const RITUAL_RARITY_ORDER:readonly GachaRarity[]=['N','R','SR','SSR-Legend','SSR-Mythic'];
 export const RITUAL_RARITY_SCENE:Record<GachaRarity,{title:string;subtitle:string;accent:string;tone:string}>={
