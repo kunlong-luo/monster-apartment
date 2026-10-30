@@ -28,6 +28,20 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await expect(pools.filter({hasText:'红月之邀'})).toHaveAttribute('aria-pressed','true');
   await expect(pools.filter({hasText:'神话 · 月蚀'})).toHaveAttribute('aria-pressed','false');
   await expect(page.getByRole('heading',{name:'红月 · 晚宴之邀'})).toBeVisible();
+  for(const [label,hero,tier,beast] of [
+    ['赤焰工坊','cinder','3','赤焰熔炉铠兽'],
+    ['荆棘回响','fern','2','荆棘花木奇美拉'],
+    ['潮汐来信','brook','1','皎月霜狼'],
+  ] as const){
+    await pools.filter({hasText:label}).click();
+    const featured=page.getByTestId('summon-featured-portrait');
+    await expect(featured).toHaveAttribute('data-featured-character',hero);
+    await expect(featured).toHaveAttribute('data-tier',tier);
+    await expect(page.locator('.summon-cinematic-title')).toContainText(beast);
+    await expect(featured.locator('.worker-artwork')).toHaveAttribute('data-figure-kind','humanoid');
+    await expect(page.getByTestId('collection-odds')).toContainText('46.00%');
+  }
+  await pools.filter({hasText:'红月之邀'}).click();
   await page.reload();
   await expect(pools.filter({hasText:'红月之邀'})).toHaveAttribute('aria-pressed','true');
   const ids=await page.getByTestId('summon-available-card').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-character-id')));

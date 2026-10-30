@@ -193,3 +193,15 @@
 .covenant-beast-card--frost{--beast-edge:#6c9bb5;--beast-glow:#417caa66;--beast-label:#aed9ed}
 .covenant-beast-card--verdant{--beast-edge:#6a9d77;--beast-glow:#426d486e;--beast-label:#a8d0a4}
 .covenant-beast-card--ember{--beast-edge:#c28d5c;--beast-glow:#b56b2777;--beast-label:#f2c393}
+
+/* Pool theme changes which adult craftswoman is showcased, never the RNG. */
+.summon-cinematic-character--worker{display:flex;justify-content:center;align-items:flex-end;overflow:hidden;opacity:.85}
+.summon-cinematic-character--worker > .worker-artwork{width:min(100%,720px);height:100%;overflow:visible}
+.summon-cinematic-character--worker .worker-artwork canvas{
+  object-fit:contain;object-position:center bottom;transform:scale(1.3);
+  transform-origin:50% 67%;filter:drop-shadow(0 0 36px #c08d6855);
+}
+.summon-cinematic-character[data-featured-character="brook"]{background:radial-gradient(ellipse at 50% 45%,#29658e44,transparent 64%)}
+.summon-cinematic-character[data-featured-character="fern"]{background:radial-gradient(ellipse at 50% 45%,#577b4b55,transparent 65%)}
+.summon-cinematic-character[data-featured-character="cinder"]{background:radial-gradient(ellipse at 50% 45%,#ae422f4d,transparent 62%)}
+@media(max-width:900px){.summon-cinematic-character--worker .worker-artwork canvas{transform:scale(1.13)}}

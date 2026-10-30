@@ -57,6 +57,19 @@ export function GothicSummonScreen() {
   // Active pool object
   const currentPool = GACHA_POOLS.find((p) => p.id === activePoolId) || GACHA_POOLS[0];
 
+  // Theme changes only the story spotlight, never the disclosed roll weights.
+  const featuredWorkers:Partial<Record<string,'brook'|'fern'|'cinder'>>={
+    'eternal-struggle':'cinder','bond-echo':'fern','memory-remnant':'brook',
+  };
+  const featuredWorker=featuredWorkers[activePoolId]??null;
+  const featuredName=featuredWorker==='brook'?'泉泡':featuredWorker==='fern'?'青枝':featuredWorker==='cinder'?'炽角':'月纱';
+  const featuredBeast=COVENANT_BEASTS[featuredWorker??'yuesha'];
+  const featuredTier=featuredWorker==='cinder'?3:featuredWorker==='fern'?2:featuredWorker==='brook'?1:5;
+  const otherQuotes={
+    brook:['「听见了吗？水脉正在向我们讲述故事。」','「银月下的霜狼，从来不会忘记归途。」'],
+    fern:['「荆棘守护的花，总有自己的绽放时刻。」','「跟我去看看真正的月光温室。」'],
+    cinder:['「我的锻锤，不是拿来做装饰的。」','「如果你不怕火，就跟上我的脚步。」'],
+  } as const;
   // Active dialogue line
   const quotes = [
     '「……你也想，成为我的所有物吗？」',
@@ -65,6 +78,7 @@ export function GothicSummonScreen() {
     '「这份契约已烙入灵魂，你无法反悔了。」',
   ];
   const [quoteIndex, setQuoteIndex] = useState(0);
+  const visibleQuotes=featuredWorker?otherQuotes[featuredWorker]:quotes;
 
   // Active modals
   const [ritualModal, setRitualModal] = useState<{ open: boolean; characters: SummonableCharacter[] }>({
@@ -241,15 +255,14 @@ export function GothicSummonScreen() {
                     : 'border-[#734f3788] bg-[#1a0c18a8] hover:border-[#d9a86a] hover:bg-[#281324cc]'
                 }`}
               >
-                {/* Avatar thumb */}
+                {/* Same real character identity on pool tile and main spotlight. */}
                 <div className="relative size-12 shrink-0 overflow-hidden rounded-lg border border-[#e2b57855]">
-                  <Image
-                    src={pool.avatar}
-                    alt={pool.name}
-                    fill
-                    sizes="48px"
-                    className="object-cover object-top"
-                  />
+                  {featuredWorkers[pool.id] ? (
+                    <WorkerArtwork id={featuredWorkers[pool.id]} name={pool.subname} compact/>
+                  ) : (
+                    <Image src={pool.avatar} alt={pool.name} fill sizes="48px"
+                      className="object-cover object-top"/>
+                  )}
                 </div>
 
                 {/* Pool copy */}
@@ -284,23 +297,27 @@ export function GothicSummonScreen() {
         {/* CENTER STAGE: HEROINE, TITLE, QUOTE & SUMMON BUTTONS       */}
         {/* ----------------------------------------------------------- */}
         <section className="summon-cinematic-center relative flex min-w-0 flex-1 flex-col items-center justify-between px-2 sm:px-4 py-2 z-10">
-          <div className="summon-cinematic-character pointer-events-none absolute inset-0 z-[-1]" data-testid="summon-featured-portrait" data-tier="5" aria-hidden="true">
-            <Image src="/art/yuesha-bust-v3.webp" alt="" fill unoptimized sizes="(max-width:900px) 65vw,700px" className="object-contain object-bottom opacity-95"/>
+          <div className={'summon-cinematic-character pointer-events-none absolute inset-0 z-[-1]'+(featuredWorker?' summon-cinematic-character--worker':'')}
+            data-testid="summon-featured-portrait" data-featured-character={featuredWorker??'yuesha'}
+            data-tier={featuredTier} aria-hidden="true">
+            {featuredWorker ? <WorkerArtwork id={featuredWorker} name={featuredName}/> :
+              <Image src="/art/yuesha-bust-v3.webp" alt="" fill unoptimized
+                sizes="(max-width:900px) 65vw,700px" className="object-contain object-bottom opacity-95"/>}
           </div>
           {/* Interactive Heroine Dialogue Bubble */}
-          <button type="button" aria-label="与月纱对话，切换台词"
-            onClick={() => setQuoteIndex((prev) => (prev + 1) % quotes.length)}
+          <button type="button" aria-label={'与'+featuredName+'对话，切换台词'}
+            onClick={() => setQuoteIndex(prev => prev + 1)}
             className="cursor-pointer self-end mr-4 sm:mr-16 mt-2 rounded-2xl border border-[#c99f6b88] bg-[#1d0b1aee] px-4 py-2.5 text-xs text-[#ffeed5] shadow-[0_8px_30px_#000000bb] backdrop-blur-md transition hover:scale-105"
           >
-            <p className="italic font-serif leading-relaxed">{quotes[quoteIndex]}</p>
-            <span className="block text-right text-[9px] text-[#bfa084]">—— 月纱 ☾</span>
+            <p className="italic font-serif leading-relaxed">{visibleQuotes[quoteIndex % visibleQuotes.length]}</p>
+            <span className="block text-right text-[9px] text-[#bfa084]">—— {featuredName} ☾</span>
           </button>
 
           {/* Central Title Typography */}
           <div className="summon-cinematic-title text-center my-auto">
             <div className="inline-block">
               <span className="text-[10px] tracking-[.3em] text-[#dca66e] uppercase">
-                ✦ MYTHIC LUNAR ECLIPSE ✦
+                ✦ {featuredName} · {featuredBeast.name} ✦
               </span>
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-[.18em] text-[#fff0d6] drop-shadow-[0_4px_12px_#000]">
                 {currentPool.bannerTitle}
@@ -311,7 +328,7 @@ export function GothicSummonScreen() {
 
               {/* Event Pill & Details Button */}
               <div className="mt-3 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-[#ad7a4f77] bg-[#230f1fd8] px-4 py-1 text-[11px] text-[#f5d9bd]">
-                <span>公开概率 · 无额外概率提升 ·</span>
+                <span>同池概率 · 无独立 UP ·</span>
                 <span className="text-[#c9a786]">{currentPool.dateRange}</span>
                 <button
                   type="button"
