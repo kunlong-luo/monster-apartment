@@ -7,7 +7,8 @@ test('fresh visitor sees a full-screen welcome and enters the real saved lobby',
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
   await expect(page.getByTestId('gothic-welcome')).toBeVisible();
-  await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',1587);
+  await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',1920);
+  await expect(page.getByTestId('gothic-welcome')).toHaveAttribute('data-cover-status','integrated-beauty-beasts-cover');
   await expect(page.getByTestId('gothic-lobby')).toHaveCount(0);
   const start=page.getByTestId('welcome-enter');
   await expect(start).toHaveText(/开始游戏/);
@@ -26,6 +27,9 @@ test('phone welcome preserves touch target and does not scroll',async({page})=>{
   await page.goto('/');
   const start=page.getByTestId('welcome-enter');
   await expect(start).toBeVisible();
+  const source=page.locator('.gothic-welcome__painting source');
+  await expect(source).toHaveAttribute('media','(max-width:700px)');
+  await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',900);
   const measurement=await page.evaluate(()=>{
     const el=document.querySelector('[data-testid="welcome-enter"]')!;
     const box=el.getBoundingClientRect();

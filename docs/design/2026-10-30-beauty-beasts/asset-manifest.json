@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-10-30",
-  "statusNote": "Production plan only. Do not mark integrated until image binary, validation and code reference all exist in repository.",
+  "statusNote": "P2 cover desktop/mobile actual WebP files integrated. Four standalone heroines and beasts P3/P4 CG are still pending; reference mockups are not production sprites.",
   "availableReferenceOnly": [
     {
       "assetId": "concept-beauty-beasts-cover",
@@ -62,7 +62,8 @@
     "public/art/beauty-beasts/characters/{id}/pose-work.webp",
     "public/art/beauty-beasts/beasts/{beastId}/full.webp",
     "public/art/beauty-beasts/pairings/{id}-bond.webp",
-    "public/art/beauty-beasts/cards/{card-key}.webp"
+    "public/art/beauty-beasts/cards/{card-key}.webp",
+    "public/art/beauty-beasts/cover/world-cover-mobile.webp"
   ],
   "acceptance": {
     "fourDistinctFaces": true,
@@ -73,5 +74,32 @@
     "mobileAndDesktopScreenshots": true,
     "passingCIAndPages": true
   },
-  "productionAssets": []
+  "productionAssets": [
+    {
+      "assetId": "P2-cover-desktop-v1",
+      "status": "integrated",
+      "path": "public/art/beauty-beasts/cover/world-cover.webp",
+      "width": 1920,
+      "height": 1080,
+      "sizeBytes": 203790,
+      "sha256": "69766e9e7be82f757f413bce5227f409c37870b3ad298ecdeb3f28f42cb759d7",
+      "alpha": false,
+      "usage": "GothicWelcome desktop cover",
+      "derivedFrom": "beauty_and_the_beasts_a_crimson_tale.png",
+      "note": "Cropped reference; burned-in UI/text removed from display region by dark presentation zone."
+    },
+    {
+      "assetId": "P2-cover-mobile-v1",
+      "status": "integrated",
+      "path": "public/art/beauty-beasts/cover/world-cover-mobile.webp",
+      "width": 900,
+      "height": 1539,
+      "sizeBytes": 116024,
+      "sha256": "8430ae7cd383fc48ccef03352ca9604bc90ef42c96ee7d86f3cd44cb1a0710e7",
+      "alpha": false,
+      "usage": "GothicWelcome mobile cover",
+      "derivedFrom": "beauty_and_the_beasts_a_crimson_tale.png",
+      "note": "Portrait focus on main character; lower text/UI zone replaced with dark backdrop."
+    }
+  ]
 }

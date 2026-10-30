@@ -1,7 +1,8 @@
 'use client';
 import Image from 'next/image';
 import {useSyncExternalStore} from 'react';
-import existingLobbyArt from '../../../public/art/lobby-hero-v3.webp';
+import coverDesktop from '../../../public/art/beauty-beasts/cover/world-cover.webp';
+import coverMobile from '../../../public/art/beauty-beasts/cover/world-cover-mobile.webp';
 import './gothic-welcome.css';
 
 function readExistingSave(){
@@ -20,15 +21,16 @@ function subscribeExistingSave(callback:()=>void){
   return ()=>window.removeEventListener('storage',onStorage);
 }
 /** Title page contains genuine accessible controls, not a screenshot click-map.
- * Uses already-reviewed local backdrop until the new no-text cover is approved. */
+ * Desktop/mobile cover is in the repository as independent WebP binary files. */
 export function GothicWelcome({onEnter}:{onEnter:()=>void}){
   const returning=useSyncExternalStore(subscribeExistingSave,readExistingSave,()=>false);
   return <main className="gothic-welcome" data-testid="gothic-welcome"
-    aria-label="美女与野兽 · 游戏欢迎页" data-cover-status="approved-lobby-fallback">
-    <div className="gothic-welcome__painting" aria-hidden="true">
-      <Image src={existingLobbyArt} alt="" fill priority unoptimized sizes="100vw"
+    aria-label="美女与野兽 · 游戏欢迎页" data-cover-status="integrated-beauty-beasts-cover">
+    <picture className="gothic-welcome__painting" aria-hidden="true">
+      <source media="(max-width:700px)" srcSet={coverMobile.src}/>
+      <Image src={coverDesktop} alt="" fill priority unoptimized sizes="100vw"
         data-testid="welcome-cover-image" className="object-cover"/>
-    </div>
+    </picture>
     <div className="gothic-welcome__shade" aria-hidden="true"/>
     <div className="gothic-welcome__stars" aria-hidden="true"/>
     <div className="gothic-welcome__frame" aria-hidden="true"/>
