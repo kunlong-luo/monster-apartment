@@ -51,16 +51,16 @@ export function RoomDialogueTheater({name,title,response,onClose,basePose='warm'
       }
     }}
     className="pointer-events-auto absolute inset-0 z-[16] flex flex-col justify-end overflow-hidden bg-[linear-gradient(180deg,#0d08111f_0%,transparent_28%,#0c07147a_55%,#080511f5_100%)] p-4 text-[#ffe7cf] sm:p-7">
-    <header className="absolute inset-x-3 top-3 flex items-start justify-between gap-4 sm:inset-x-6 sm:top-6">
+    <header className="pointer-events-none absolute inset-x-3 top-3 z-[2] flex items-start justify-between gap-4 sm:inset-x-6 sm:top-6">
       <div className="max-w-[62%] border-l border-[#dbb27f80] pl-3 text-shadow-md">
         <span className="text-[9px] tracking-[.2em] text-[#ffcc94]">MOONLIT MEMORY</span>
         <h3 className="mt-1 font-serif text-base tracking-wide text-[#ffe4be] sm:text-xl">{title}</h3>
       </div>
-      <button type="button" onClick={onClose} data-testid="room-theater-close"
-        className="min-h-11 rounded-lg border border-[#e9ba8a84] bg-[#261725ed] px-3 text-xs hover:border-[#ffe0b5] focus-visible:outline-2 focus-visible:outline-[#ffe0b5]">
-        返回房间
-      </button>
     </header>
+    <button type="button" onClick={onClose} data-testid="room-theater-close"
+      className="absolute right-3 top-3 z-[25] min-h-11 rounded-lg border border-[#e9ba8a84] bg-[#261725ed] px-3 text-xs text-[#ffe7cf] shadow-[0_7px_20px_#0008] hover:border-[#ffe0b5] focus-visible:outline-2 focus-visible:outline-[#ffe0b5] sm:right-6 sm:top-6">
+      返回房间
+    </button>
     <div className="mx-auto w-full max-w-[min(100%,670px)]">
       <p className="text-[10px] tracking-[.16em] text-[#f5cb97]">{name} · 私室回忆</p>
       <AnimatePresence mode="wait">

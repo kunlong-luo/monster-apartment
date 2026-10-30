@@ -43,7 +43,10 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-object-id','seal');
   await expect(page.getByTestId('room-topic-yuesha-contract')).toBeEnabled();
   await page.getByTestId('room-topic-yuesha-contract').click();
-  await expect(page.getByTestId('room-topic-response-yuesha')).toContainText('见证人');
+  await expect(page.getByTestId('room-topic-response-yuesha')).toContainText('正在场景中演出');
+  await expect(page.getByTestId('room-dialogue-theater')).toBeVisible();
+  await page.getByTestId('room-theater-skip').click();
+  await expect(page.getByTestId('room-theater-line')).toContainText('见证人');
   await page.reload();
   await page.getByRole('button',{name:'与女主人月纱交流'}).click();
   await page.getByTestId('visit-yuesha-room').click();
