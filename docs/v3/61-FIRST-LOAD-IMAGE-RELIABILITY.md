@@ -20,3 +20,7 @@
 
 ## Pixi 工坊首次贴图修复
 `v2/src/workshop-painted-art.ts` 的首次 WebP/AVIF 加载现在对高清背景、地板、月纱头像和三种机器效果最多尝试两次；第二次请求带短暂 retry 参数以绕过缓存的失败响应。旧 WebP 和 AVIF 兜底沿用；仅最后仍失败时降级到可玩程序场景。修改不触及工坊存档、Pixi 交互或派工经济。E2E 已有 `data-backdrop-source=high-res-webp` 检查，CI 新增七页静态图片路径审计。
+
+## 工坊脚本和字形首访恢复
+- `workshop-client.tsx` 中只因首次网络加载失败的 Pixi runtime 脚本将自动重试一次，重试请求附加 query 参数以避开失败缓存；仍失败才显示错误，绝不自动触碰、清空任何存档。
+- `workshop-lab-stage.ts` 字体预加载首次失败后尝试一次；仍不可用时使用已有系统字形回退继续绘制工坊，而不是直接中断画布挂载。

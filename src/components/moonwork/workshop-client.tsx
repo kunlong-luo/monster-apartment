@@ -40,12 +40,14 @@ function assetRoot() {
   return workshopAssetRoot(window.location.href);
 }
 
-function loadRuntime(base: string) {
+function loadRuntime(base: string, retry=0) {
   if (window.MoonworkRuntime) return Promise.resolve();
   if (window.__moonworkRuntimeLoading) return window.__moonworkRuntimeLoading;
 
   const script = document.createElement('script');
-  script.src = new URL('assets/workshop-runtime.js', base).href;
+  const url = new URL('assets/workshop-runtime.js', base);
+  if(retry)url.searchParams.set('retry',String(retry));
+  script.src = url.href;
   script.async = true;
 
   const loaded = new Promise<void>((resolve, reject) => {
@@ -65,6 +67,17 @@ function loadRuntime(base: string) {
 
   document.head.appendChild(script);
   return window.__moonworkRuntimeLoading;
+}
+
+/** Retry a cold Pages script failure without requiring a full-page refresh.
+ * A successful runtime is always reused, and errors still surface after the
+ * second attempt. Never retries or changes any user save operation. */
+async function loadRuntimeResilient(base:string):Promise<void>{
+  try{await loadRuntime(base);}
+  catch{
+    await new Promise<void>(resolve=>window.setTimeout(resolve,200));
+    await loadRuntime(base,1);
+  }
 }
 
 const ASSISTANT_LINES = [
@@ -131,7 +144,7 @@ export function WorkshopClient() {
     };
 
     void ensureWorkshopWorld()
-      .then(()=>cancelled?Promise.resolve():loadRuntime(base))
+      .then(()=>cancelled?Promise.resolve():loadRuntimeResilient(base))
       .then(async () => {
         if (cancelled) return;
         const runtime = window.MoonworkRuntime;

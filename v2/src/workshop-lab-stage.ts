@@ -39,8 +39,18 @@ export async function mountWorkshopLab(
   const app=new Application();
   await app.init({width:W,height:H,background:'#172233',preference:'webgl',
     antialias:true,resolution:Math.min(window.devicePixelRatio||1,2)});
-  await document.fonts.load('16px "Moonwork CJK"',
-    '月光工坊水汽泵孢子温室晶核熔炉青枝炽角月纱成年魔女');
+  // A transient web-font request must not prevent the first Pixi frame.
+  // Every text label has a system-font fallback via glabel().
+  try{
+    await document.fonts.load('16px "Moonwork CJK"',
+      '月光工坊水汽泵孢子温室晶核熔炉青枝炽角月纱成年魔女');
+  }catch{
+    try{
+      await new Promise<void>(resolve=>setTimeout(resolve,180));
+      await document.fonts.load('16px "Moonwork CJK"',
+        '月光工坊水汽泵孢子温室晶核熔炉青枝炽角月纱成年魔女');
+    }catch{/* Preserve playable CJK labels in Arial/system sans-serif. */}
+  }
   const canvas=app.canvas as HTMLCanvasElement;
   canvas.style.display='block';
   canvas.style.touchAction='manipulation';
