@@ -25,7 +25,7 @@ export function Town({s}:{s:WorkshopState}){
     <div className="mw-town-focus">
     <section className="mw-town-scene" aria-label="月光街的炼金商区" data-testid="moonlit-town-scene">
       <Image src={districtPainting} alt="月光街的契约人物与世界绘景"
-        fill unoptimized sizes="(max-width: 760px) 100vw, 800px"
+        fill unoptimized loading="eager" sizes="(max-width: 760px) 100vw, 800px"
         className="mw-town-painting" data-testid="town-painting"/>
       <div className="mw-town-scrim" aria-hidden="true"/>
       <div className="mw-town-banner">

@@ -29,7 +29,12 @@ test('PC apartment doors and town portals use structured icons without clipping'
   await expect(page.getByTestId('moonlit-town-scene')).toBeVisible();
   await expect(page.locator('.mw-town-portal svg')).toHaveCount(3);
   await expect(page.getByTestId('town-resident')).toBeVisible();
-  await expect(page.getByTestId('town-painting')).toHaveAttribute('src',/world-cover\.webp/);
-  await expect(page.getByTestId('town-guide-painting')).toHaveAttribute('src',/yuesha-portrait-v3\.webp/);
+  // Next.js production/dev asset URLs include a content hash before .webp.
+  await expect(page.getByTestId('town-painting')).toHaveAttribute('src',/world-cover\.[^/]+\.webp/);
+  await expect(page.getByTestId('town-guide-painting')).toHaveAttribute('src',/yuesha-portrait-v3\.[^/]+\.webp/);
+  await expect.poll(()=>page.locator('[data-testid="town-painting"],[data-testid="town-guide-painting"]')
+    .evaluateAll(images=>images.length===2&&images.every(image=>
+      (image as HTMLImageElement).complete&&(image as HTMLImageElement).naturalWidth>0
+    ))).toBe(true);
   await page.screenshot({path:'test-results/desktop-town-v366.png',animations:'disabled'});
 });

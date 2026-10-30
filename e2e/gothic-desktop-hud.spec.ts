@@ -13,8 +13,12 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   expect(Math.abs(box!.x-(1440-box!.width)/2)).toBeLessThan(3);
   await expect(page.getByRole('button',{name:'切换动态特效'}).locator('svg')).toBeVisible();
   await page.screenshot({path:'test-results/desktop-lobby-v366.png',animations:'disabled'});
+  // The canonical Characters destination intentionally opens the gallery.
+  // A hash selects the summon stage without creating an eighth route.
   await dock.getByRole('link',{name:/角色/}).click();
-  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
+  await expect(page.getByTestId('moonwork-world')).toBeVisible();
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:20000});
   const summonDock=page.getByRole('navigation',{name:'月影契约世界导航'});
   await expect(summonDock.locator('svg')).toHaveCount(7);
   await expect(page.getByTestId('collection-summon').locator('svg')).toHaveCount(2);
