@@ -15,3 +15,12 @@
 所有原图均归为概念、候选或 rejected；`public/art/rooms/*` 的现有正式素材准入保持不变，禁止在未经像素与人工美术审核前把这些图标记为 production。
 
 请勿把四角色拼贴 PNG 直接裁成 4 个正式姿态；也不要将经放大的 2560×1440 图宣称为原生高清绘制。
+
+## 2026-10-30 · 月纱会客室空景 A/B 候选
+
+新增到个人文件库 `/游戏调研/怪物公寓/美术归档/2026-10-30/`：
+
+- `yuesha-room-art-candidates-2026-10-30.zip`：两张独立无人物房间候选的 PNG 原稿、1920×1080 WebP **非原生分辨率**审核版、SHA-256、来源与状态记录。
+- `yuesha-room-candidates-side-by-side.jpg`：画面对比。
+
+完整审核流程见 [V3.49 月纱高清空景候选](../docs/v3/49-YUESHA-HD-BACKGROUND-CANDIDATES.md)。这些文件目前**已归档到资料库，但二进制尚未写入 GitHub 源码树**。两种背景均未完成原画人工审查；正式 `room-art` manifest、存档和四姿态人物资源保持不变。
