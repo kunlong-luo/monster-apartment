@@ -27,6 +27,7 @@ import { useCharacterCollection, commitCollection } from '@/lib/game/character-c
 import { CHARACTER_CARDS, FORGE_RECIPES } from '@/core/character-collection';
 import type {CharacterId} from '@/core/character-life';
 import {COVENANT_BEASTS} from '@/lib/summon/covenant-beasts';
+import {GAME_UI_RELEASE} from '@/core/game-release';
 
 function observeGachaSave(callback:()=>void){
   const event=()=>callback();
@@ -147,7 +148,7 @@ export function GothicSummonScreen() {
               怪物公寓
             </h1>
             <span className="block text-[8px] sm:text-[9px] tracking-[.25em] text-[#bca085] uppercase">
-              MONSTER APARTMENT
+              MONSTER APARTMENT · <span data-testid="game-release">{GAME_UI_RELEASE}</span>
             </span>
           </div>
         </div>

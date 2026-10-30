@@ -91,6 +91,10 @@ jobs:
         with:
           name: gothic-game-art-review
           path: |
+            test-results/welcome-desktop.png
+            test-results/welcome-mobile.png
+            test-results/summon-desktop.png
+            test-results/summon-mobile.png
             test-results/gothic-lobby-desktop.png
             test-results/gothic-lobby-mobile.png
             test-results/gothic-apartment-desktop.png

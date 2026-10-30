@@ -18,6 +18,7 @@ import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 import {useGacha} from '@/lib/summon/use-gacha';
 import {useCharacterCollection} from '@/lib/game/character-collection-store';
 import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
+import {GAME_UI_RELEASE} from '@/core/game-release';
 import './gothic-lobby.css';
 import './gothic-polish.css';
 
@@ -88,7 +89,7 @@ export function GothicLobby(){
     <div className="gothic-lobby__brand" aria-label="怪物公寓 · MONSTER APARTMENT">
       <span aria-hidden="true" className="gothic-lobby__brand-flourish">❦</span>
       <strong>怪物公寓</strong>
-      <small>MONSTER APARTMENT</small>
+      <small data-testid="game-release">MONSTER APARTMENT · {GAME_UI_RELEASE}</small>
     </div>
 
     <header className="gothic-lobby__topbar absolute inset-x-0 top-0 z-[4] grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-x-2 px-3 pt-3 sm:px-5 max-[840px]:grid-cols-[minmax(0,1fr)_auto]" aria-label="玩家与资源">
@@ -128,13 +129,15 @@ export function GothicLobby(){
         className="gothic-lobby__mission-card gothic-lobby__mission-card--eclipse"
         data-testid="gothic-eclipse-feature" data-first-contract={firstContract?'true':'false'}
         aria-label={firstContract?'开始第一次契约召唤，收录你的人物卡':'前往契约召唤，收集更多人物'}>
-        <span className="gothic-lobby__card-kicker">✦ {firstContract?'新手目标 · 初次契约':'角色养成 · 契约收藏'}</span>
+        <span className="gothic-lobby__card-kicker">✦ {firstContract?'新手目标 · 初次契约':'角色养成 · 契约收藏'}
+          <small className="gothic-lobby__chapter-mark" aria-hidden="true">{GAME_UI_RELEASE}</small>
+        </span>
         <strong data-testid="lobby-summon-guide-title">
           {collectionStatus!=='ok'?'人物收藏存档需要检查':
             firstContract?'召唤第一位女主':`契约已收录 ${ownedContractCount}/5`}
         </strong>
         <span className="gothic-lobby__mission-detail" data-testid="lobby-summon-guide-detail">
-          {firstContract?`你有 ${gacha.tickets} 张初始召唤券 · 去认识她们`:
+          {firstContract?`你有 ${gacha.tickets} 张初始召唤券 · 点击进入角色召唤`:
             `当前 ${gacha.tickets} 张信物 · 继续召唤与养成`}
         </span>
         <div className="gothic-lobby__contract-faces" aria-hidden="true">

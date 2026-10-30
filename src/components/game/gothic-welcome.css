@@ -83,3 +83,26 @@
   .gothic-welcome__edition{display:none}
 }
 @media(prefers-reduced-motion:reduce){.gothic-welcome *{transition:none!important;animation:none!important}}
+ 
+/* V3.60 first-screen actual four-face lineup; preserves the single CTA. */
+.gothic-welcome__cast{
+  display:flex;justify-content:center;align-items:start;gap:clamp(10px,2.6vw,24px);
+  width:min(96%,380px);margin:0 auto 12px;padding:7px 10px 5px;
+  border-top:1px solid #e4b98772;border-bottom:1px solid #e4b98746;
+  background:linear-gradient(90deg,transparent,#150b1aa3 15%,#150b1aa3 85%,transparent);
+}
+.gothic-welcome__cast-member{
+  display:grid;justify-items:center;gap:3px;min-width:0;
+  color:#f1d5b7;letter-spacing:.07em;
+}
+.gothic-welcome__cast-member small{font-size:10px}
+.gothic-welcome__cast-portrait{
+  display:block;width:44px;height:44px;object-fit:cover;object-position:center 20%;
+  border:1px solid #edc898cf;border-radius:7px;
+  box-shadow:0 0 0 2px #190d18ad,0 5px 13px #000b;
+}
+@media(max-width:700px){
+  .gothic-welcome__cast{margin-bottom:9px;padding:5px 8px;gap:16px}
+  .gothic-welcome__cast-portrait{width:38px;height:38px}
+}
+@media(max-height:610px){.gothic-welcome__cast{display:none}}

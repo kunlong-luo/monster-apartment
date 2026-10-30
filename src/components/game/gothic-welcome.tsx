@@ -3,6 +3,8 @@ import Image from 'next/image';
 import {useSyncExternalStore} from 'react';
 import coverDesktop from '../../../public/art/beauty-beasts/cover/world-cover.webp';
 import coverMobile from '../../../public/art/beauty-beasts/cover/world-cover-mobile.webp';
+import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
+import {GAME_UI_RELEASE,GAME_UI_CHAPTER} from '@/core/game-release';
 import './gothic-welcome.css';
 
 function readExistingSave(){
@@ -43,14 +45,22 @@ export function GothicWelcome({onEnter}:{onEnter:()=>void}){
       <p className="gothic-welcome__subtitle">月蚀将至，黑蔷薇的契约正在苏醒。</p>
       <p className="gothic-welcome__summary">遇见不同命运的女主人，唤醒独一无二的异兽契约。
         在月光街经营、召唤、收藏，并探索她们的秘密。</p>
+      <div className="gothic-welcome__cast" data-testid="welcome-heroine-lineup" aria-label="可结识的四位住客">
+        {([['yuesha','月纱'],['brook','泉泡'],['fern','青枝'],['cinder','炽角']] as const)
+          .map(([id,name])=><span className="gothic-welcome__cast-member" key={id}>
+            <Image src={HEROINE_FACE_ART[id]} alt={name} width={44} height={44} sizes="44px"
+              className="gothic-welcome__cast-portrait"/>
+            <small>{name}</small>
+          </span>)}
+      </div>
       <button type="button" onClick={onEnter} autoFocus
         data-testid="welcome-enter" className="gothic-welcome__enter">
         <span aria-hidden="true">✦</span>{returning?'继续游戏':'开始游戏'}<span aria-hidden="true">✦</span>
       </button>
-      <span className="gothic-welcome__hint">进入大厅后可使用「契约召唤」招募角色 · 自动保存至此浏览器</span>
+      <span className="gothic-welcome__hint">进入大厅后点击左侧「契约召唤」即可体验角色卡池 · 自动保存至此浏览器</span>
     </section>
     <div className="gothic-welcome__edition" aria-hidden="true">
-      <span>MOONLIT DISTRICT</span><small>CHAPTER I · THE CRIMSON COVENANT</small>
+      <span data-testid="game-release">MOONLIT DISTRICT · {GAME_UI_RELEASE}</span><small>{GAME_UI_CHAPTER}</small>
     </div>
   </main>;
 }

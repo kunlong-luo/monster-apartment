@@ -238,3 +238,28 @@
 .gothic-lobby__character-actions :is(a,button):focus-visible{
   outline:2px solid #ffe4b5;outline-offset:3px;
 }
+ 
+/* V3.60: the EXISTING summon entrance gets a visual identity, no new button. */
+.gothic-lobby__mission-card--eclipse{
+  border-color:#e8bd8c!important;
+  background:radial-gradient(ellipse at 82% 54%,#b52c557c,transparent 64%),
+    linear-gradient(124deg,#4c1c37e8,#160d1deb 86%);
+  box-shadow:inset 0 1px #ffe4ad52,0 10px 32px #09030eb8,0 0 18px #b1384b25;
+}
+.gothic-lobby__mission-card--eclipse .gothic-lobby__card-kicker{
+  display:flex;align-items:center;justify-content:space-between;gap:7px;
+}
+.gothic-lobby__chapter-mark{
+  display:inline-block;flex:none;color:#ffe6c8;padding:2px 5px;
+  font-size:9px;letter-spacing:.11em;border:1px solid #d69b8277;background:#56253b99;
+}
+.gothic-lobby__mission-card--eclipse .gothic-lobby__contract-face{
+  transform:none;border-color:#e8c597b7;
+  box-shadow:0 2px 7px #000a,0 0 0 2px #341329a3;
+}
+.gothic-lobby__mission-card--eclipse .gothic-lobby__contract-face:nth-child(even){transform:none}
+@media(min-width:901px){
+  .gothic-lobby__mission-card--eclipse .gothic-lobby__contract-face{
+    width:clamp(40px,3.5vw,55px);height:clamp(40px,3.5vw,55px);
+  }
+}

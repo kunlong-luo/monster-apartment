@@ -6,11 +6,13 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await page.goto('/characters/#summon-screen');
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:25_000});
   await expect(page.getByTestId('summon-featured-portrait')).toBeVisible();
+  await expect(page.getByTestId('game-release')).toContainText('V3.60');
   const paintedBackground=page.getByTestId('summon-background-painting');
   await expect(paintedBackground).toBeVisible();
   await expect.poll(()=>paintedBackground.evaluate((image:HTMLImageElement)=>image.naturalWidth)).toBeGreaterThan(0);
   const backgroundSrc=await paintedBackground.getAttribute('src');
   expect(backgroundSrc).toContain('lobby-hero');
+  await page.screenshot({path:'test-results/summon-desktop.png',animations:'disabled'});
   await expect(page.getByTestId('summon-featured-card')).toHaveAttribute('data-card-character','yuesha');
   await expect(page.getByTestId('summon-featured-card-tier')).toHaveText('SSR 神话');
   await expect(page.getByTestId('summon-featured-odds')).toContainText('1.00%');
@@ -259,6 +261,7 @@ test('320px and 390px summon HUD keeps resource row and core actions in first sc
     for(const element of [header,wallet,controls,pool,summon,ten,dock])
       await expect(element).toBeVisible();
     await expect(dock.getByRole('link')).toHaveCount(7);
+    if(width===390)await page.screenshot({path:'test-results/summon-mobile.png',animations:'disabled'});
     const geometry=await page.evaluate(()=>{
       const box=(selector:string)=>{
         const r=document.querySelector(selector)?.getBoundingClientRect();
