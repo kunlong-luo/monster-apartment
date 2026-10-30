@@ -24,3 +24,9 @@
 - `yuesha-room-candidates-side-by-side.jpg`：画面对比。
 
 完整审核流程见 [V3.49 月纱高清空景候选](../docs/v3/49-YUESHA-HD-BACKGROUND-CANDIDATES.md)。这些文件目前**已归档到资料库，但二进制尚未写入 GitHub 源码树**。两种背景均未完成原画人工审查；正式 `room-art` manifest、存档和四姿态人物资源保持不变。
+
+## 2026-10-30 · 月纱人物参考板（未通过透明立绘审核）
+
+个人文件库增加 `/游戏调研/怪物公寓/美术归档/2026-10-30/yuesha-pose-reference-boards-2026-10-30.zip`。两张“场景＋人物＋表情分镜”只用于整体美术方向，像素采样没有任何真正透明的背景区域，不能作为正式四姿态贴图。包内含 `alpha-preflight-REJECTED.json`，保证不会误标正式素材。详见 [V3.50 房间审核及角色参考](../docs/v3/50-FOUR-ROOM-ART-REVIEW-AND-YUESHA-REFERENCES.md)。
+
+四间房的本地预览能力已接入代码；这一进展不改变 `manifest.json` 的 `concept` 状态。
