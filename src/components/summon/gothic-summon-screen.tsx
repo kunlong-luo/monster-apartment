@@ -3,7 +3,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import './summon-screen.css';
 import {GothicDock} from '@/components/game/gothic-hud';
-import {WorkerArtwork} from '@/components/moonwork/worker-artwork';
 import {HEROINE_FACE_ART,getCardFace} from './heroine-portrait-assets';
 import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 import {useCharacterLife} from '@/lib/game/character-life-store';
@@ -293,9 +292,16 @@ export function GothicSummonScreen() {
           <div className={'summon-cinematic-character pointer-events-none absolute inset-0 z-[-1]'+(featuredWorker?' summon-cinematic-character--worker':'')}
             data-testid="summon-featured-portrait" data-featured-character={featuredWorker??'yuesha'}
             data-tier={featuredTier} aria-hidden="true">
-            {featuredWorker ? <WorkerArtwork id={featuredWorker} name={featuredName}/> :
+            {featuredWorker ? (
+              <Image src={HEROINE_FACE_ART[featuredWorker]} alt="" fill
+                sizes="(max-width:900px) 90vw, (max-width:1449px) 50vw, 770px"
+                className="summon-cinematic-heroine-image"
+                data-portrait-source="dedicated-heroine"/>
+            ) : (
               <Image src="/art/yuesha-bust-v3.webp" alt="" fill unoptimized
-                sizes="(max-width:900px) 65vw,700px" className="object-contain object-bottom opacity-95"/>}
+                sizes="(max-width:900px) 65vw,700px"
+                className="object-contain object-bottom opacity-95"/>
+            )}
           </div>
           {/* Interactive Heroine Dialogue Bubble */}
           <button type="button" aria-label={'与'+featuredName+'对话，切换台词'}

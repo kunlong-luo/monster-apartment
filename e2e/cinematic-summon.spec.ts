@@ -38,7 +38,10 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
     await expect(featured).toHaveAttribute('data-featured-character',hero);
     await expect(featured).toHaveAttribute('data-tier',tier);
     await expect(page.locator('.summon-cinematic-title')).toContainText(beast);
-    await expect(featured.locator('.worker-artwork')).toHaveAttribute('data-figure-kind','humanoid');
+    const image=featured.locator('img[data-portrait-source="dedicated-heroine"]');
+    await expect(image).toBeVisible();
+    await expect.poll(()=>image.evaluate(img=>(img as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0);
     await expect(page.getByTestId('collection-odds')).toContainText('46.00%');
   }
   await pools.filter({hasText:'红月之邀'}).click();
