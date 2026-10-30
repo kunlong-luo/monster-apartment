@@ -3,6 +3,10 @@ test('PC workshop roster is readable and has one real button per worker',async({
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/workshop/');
   await expect(page.getByTestId('workshop-console')).toBeVisible({timeout:30000});
+  // A painted black placeholder is not a successful Pixi game stage.
+  await expect(page.locator('#root.lab.gothic-workshop'))
+    .toHaveAttribute('data-runtime-ready','true',{timeout:30000});
+  await expect(page.locator('#stage canvas')).toBeVisible();
   await expect(page.getByTestId('console-roster')).toBeVisible();
   await expect(page.getByTestId('v2-worker-brook')).toBeVisible();
   await expect(page.locator('#actions.options > button')).toHaveCount(3);
@@ -14,7 +18,13 @@ test('PC workshop roster is readable and has one real button per worker',async({
       (image as HTMLImageElement).naturalWidth>0)
   )).toBe(true);
   await expect(page.getByTestId('v2-shift')).toBeVisible();
-  await page.screenshot({path:'test-results/desktop-workshop-v366.png',animations:'disabled'});
+  const lastWorker=await page.getByTestId('v2-worker-cinder').boundingBox();
+  const roster=await page.getByTestId('console-roster').boundingBox();
+  expect(lastWorker).not.toBeNull();
+  expect(roster).not.toBeNull();
+  expect(lastWorker!.y+lastWorker!.height).toBeLessThanOrEqual(roster!.y+roster!.height-5);
+  await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
+  await page.screenshot({path:'test-results/desktop-workshop-v367.png',animations:'disabled'});
 });
 test('PC apartment doors and town portals use structured icons without clipping',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
@@ -24,7 +34,8 @@ test('PC apartment doors and town portals use structured icons without clipping'
   await expect(page.locator('.ga-door svg')).toHaveCount(6);
   await page.getByTestId('ga-room-0').click();
   await expect(page.getByTestId('ga-room-drawer')).toBeVisible();
-  await page.screenshot({path:'test-results/desktop-apartment-v366.png',animations:'disabled'});
+  await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
+  await page.screenshot({path:'test-results/desktop-apartment-v367.png',animations:'disabled'});
   await page.goto('/town/');
   await expect(page.getByTestId('moonlit-town-scene')).toBeVisible();
   await expect(page.locator('.mw-town-portal svg')).toHaveCount(3);
@@ -36,5 +47,6 @@ test('PC apartment doors and town portals use structured icons without clipping'
     .evaluateAll(images=>images.length===2&&images.every(image=>
       (image as HTMLImageElement).complete&&(image as HTMLImageElement).naturalWidth>0
     ))).toBe(true);
-  await page.screenshot({path:'test-results/desktop-town-v366.png',animations:'disabled'});
+  await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
+  await page.screenshot({path:'test-results/desktop-town-v367.png',animations:'disabled'});
 });

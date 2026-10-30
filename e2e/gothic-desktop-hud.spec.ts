@@ -12,7 +12,8 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   expect(box!.width).toBeLessThan(1100);
   expect(Math.abs(box!.x-(1440-box!.width)/2)).toBeLessThan(3);
   await expect(page.getByRole('button',{name:'切换动态特效'}).locator('svg')).toBeVisible();
-  await page.screenshot({path:'test-results/desktop-lobby-v366.png',animations:'disabled'});
+  await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
+  await page.screenshot({path:'test-results/desktop-lobby-v367.png',animations:'disabled'});
   // The canonical Characters destination intentionally opens the gallery.
   // A hash selects the summon stage without creating an eighth route.
   await dock.getByRole('link',{name:/角色/}).click();
@@ -23,5 +24,6 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   await expect(summonDock.locator('svg')).toHaveCount(7);
   await expect(page.getByTestId('collection-summon').locator('svg')).toHaveCount(2);
   await expect(page.getByTestId('collection-summon-ten').locator('svg')).toHaveCount(2);
-  await page.screenshot({path:'test-results/desktop-summon-v366.png',animations:'disabled'});
+  await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
+  await page.screenshot({path:'test-results/desktop-summon-v367.png',animations:'disabled'});
 });

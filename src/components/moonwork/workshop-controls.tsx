@@ -280,7 +280,7 @@ export function WorkshopControls({
           </button>
         </div>
 
-        <p className="workshop-roster-hint">一键派工只补技能匹配的空岗位，不改变原有安排；点人物可手动换岗。</p>
+        <p className="workshop-roster-hint">自动补齐技能匹配的空岗位；点击工匠可手动换岗。</p>
         <div id="actions" className="options workshop-worker-list mt-2" role="group" aria-label="三名工匠的当前岗位">
           {workers.map((id) => {
             const profile = WORKERS[id];
