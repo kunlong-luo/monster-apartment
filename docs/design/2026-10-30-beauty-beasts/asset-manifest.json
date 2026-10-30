@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-30",
+  "statusNote": "Production plan only. Do not mark integrated until image binary, validation and code reference all exist in repository.",
+  "availableReferenceOnly": [
+    {
+      "assetId": "concept-beauty-beasts-cover",
+      "kind": "cover",
+      "status": "chat-reference-only",
+      "binaryInRepository": false
+    },
+    {
+      "assetId": "concept-welcome-screen",
+      "kind": "welcome-mockup",
+      "status": "chat-reference-only",
+      "binaryInRepository": false
+    },
+    {
+      "assetId": "concept-summon-screen",
+      "kind": "summon-mockup",
+      "status": "chat-reference-only",
+      "binaryInRepository": false
+    }
+  ],
+  "roster": [
+    {
+      "id": "yuesha",
+      "faceProfile": "angular-oval/sharp-cheekbones/narrow-upturned-eyes",
+      "beastId": "eclipse-dragon",
+      "theme": "crimson-black-gold",
+      "requiredStage": "P3/P4"
+    },
+    {
+      "id": "brook",
+      "faceProfile": "heart-shaped/soft-cheekbones/wide-set-almond-eyes",
+      "beastId": "moon-wolf",
+      "theme": "ivory-blue-silver",
+      "requiredStage": "P3/P4"
+    },
+    {
+      "id": "fern",
+      "faceProfile": "diamond-shaped/high-cheekbones/green-cat-eyes/freckles",
+      "beastId": "thorn-chimera",
+      "theme": "rose-copper-green",
+      "requiredStage": "P3/P4"
+    },
+    {
+      "id": "cinder",
+      "faceProfile": "square-oval/broad-jaw/straight-brows/scar",
+      "beastId": "forge-golem",
+      "theme": "ember-black-bronze",
+      "requiredStage": "P3/P4"
+    }
+  ],
+  "plannedPaths": [
+    "public/art/beauty-beasts/cover/world-cover.webp",
+    "public/art/beauty-beasts/ui/logo.webp",
+    "public/art/beauty-beasts/characters/{id}/portrait.webp",
+    "public/art/beauty-beasts/characters/{id}/face.webp",
+    "public/art/beauty-beasts/characters/{id}/pose-idle.webp",
+    "public/art/beauty-beasts/characters/{id}/pose-talk.webp",
+    "public/art/beauty-beasts/characters/{id}/pose-work.webp",
+    "public/art/beauty-beasts/beasts/{beastId}/full.webp",
+    "public/art/beauty-beasts/pairings/{id}-bond.webp",
+    "public/art/beauty-beasts/cards/{card-key}.webp"
+  ],
+  "acceptance": {
+    "fourDistinctFaces": true,
+    "fourDistinctBeastSilhouettes": true,
+    "standaloneLayersNoBakedButtons": true,
+    "alphaForSprites": true,
+    "canonicalGachaProbabilities": true,
+    "mobileAndDesktopScreenshots": true,
+    "passingCIAndPages": true
+  },
+  "productionAssets": []
+}
