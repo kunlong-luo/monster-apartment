@@ -7,7 +7,7 @@ import {useGothicMotion} from '@/lib/game/gothic-motion';
 
 /** Percentages refer to the scenic layer, not the whole screen.
  * Different layouts prevent object markers covering resident portraits. */
-import {roomProjectedHotspotPosition,roomSpotIsReachable} from '@/core/room-stage-layout';
+import {roomProjectedHotspotPosition,roomHotspotPlacements} from '@/core/room-stage-layout';
 import type {RoomStageSize} from '@/core/room-stage-layout';
 export type {SceneSpot} from '@/core/room-stage-layout';
 export type SceneHotspotItem<T extends string=string>={id:T;label:string};
@@ -33,13 +33,18 @@ export function RoomSceneHotspots<T extends string>({
   const known=items.filter(item=>observed.includes(item.id)).length;
   const [showOffscreen,setShowOffscreen]=useState(false);
   const offscreenMenuId=useId();
-  const offscreen=stageSize?items.filter((item,index)=>
-    !roomSpotIsReachable(roomProjectedHotspotPosition(roomId??'',item.id,stageSize,index,preview),stageSize)):[];
+  const placements=roomHotspotPlacements(items.map((item,index)=>({
+    id:item.id,
+    position:roomProjectedHotspotPosition(roomId??'',item.id,stageSize,index,preview),
+  })),stageSize);
+  const inaccessible=items.filter((_,index)=>placements[index].visibility!=='visible');
+  const hasOverlap=placements.some(placement=>placement.visibility==='overlap');
   return <div className="pointer-events-none absolute inset-0 z-[4]" data-hotspot-layout="object-id" aria-label={characterName+'的房间物件'}>
     {items.map((item,index)=>{
       const discovered=observed.includes(item.id);
-      const point=roomProjectedHotspotPosition(roomId??'',item.id,stageSize,index,preview);
-      if(stageSize&&!roomSpotIsReachable(point,stageSize))return null;
+      const placement=placements[index];
+      const point=placement.position;
+      if(placement.visibility!=='visible')return null;
       return <button type="button" key={item.id}
         aria-label={item.label}
         aria-pressed={selected===item.id}
@@ -63,16 +68,16 @@ export function RoomSceneHotspots<T extends string>({
         </span>
       </button>;
     })}
-    {offscreen.length>0&&<div className="pointer-events-auto absolute right-3 top-3 z-[15] flex max-w-[66%] flex-col items-end gap-2"
+    {inaccessible.length>0&&<div className="pointer-events-auto absolute right-3 top-3 z-[15] flex max-w-[66%] flex-col items-end gap-2"
       data-testid="room-offscreen-objects">
       <button type="button" aria-controls={offscreenMenuId} aria-expanded={showOffscreen}
         onClick={()=>setShowOffscreen(open=>!open)}
         data-testid="room-offscreen-toggle"
         className="min-h-11 rounded-full border border-[#d9b384c9] bg-[#1c1126e3] px-3 py-2 text-[11px] text-[#ffdfb2] shadow-[0_5px_18px_#000a] hover:bg-[#372339] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffdfb2]"
-      >⌕ 画面外物件 · {offscreen.length}</button>
-      {showOffscreen&&<div id={offscreenMenuId} role="group" aria-label="画面外可调查物件"
+      >⌕ {hasOverlap?'更多调查物件':'画面外物件'} · {inaccessible.length}</button>
+      {showOffscreen&&<div id={offscreenMenuId} role="group" aria-label={hasOverlap?'画面外或重叠的可调查物件':'画面外可调查物件'}
         className="flex max-w-[230px] flex-col gap-1 rounded-xl border border-[#d9b3848c] bg-[#1a1023f2] p-2 shadow-[0_8px_22px_#000a]">
-        {offscreen.map(item=><button type="button" key={item.id} aria-label={item.label}
+        {inaccessible.map(item=><button type="button" key={item.id} aria-label={item.label}
           aria-pressed={selected===item.id}
           data-testid={'scene-object-'+item.id}
           data-marker-layout="offscreen"
