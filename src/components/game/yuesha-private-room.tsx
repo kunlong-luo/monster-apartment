@@ -1,8 +1,7 @@
 'use client';
-import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
-import type {ChangeEvent} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {useRoomStageSize} from './use-room-stage-size';
-import {RoomPosePreviewControls} from './room-pose-preview-controls';
+import {RoomArtLocalPreviewPanel,useRoomArtLocalPreview} from './room-art-local-preview';
 import {yueshaAfterChoice} from '@/core/character-life';
 import {roomInvestigationConclusion} from '@/core/room-investigation';
 import type {YueshaChoice} from '@/core/character-life';
@@ -20,47 +19,16 @@ import type {RoomPose} from '@/core/room-performance';
 import type {RoomConversationTopic} from '@/core/room-conversations';
 import {roomSceneReaction,yueshaRoomEasterEgg} from '@/core/room-scene-reactions';
 type Hotspot='seal'|'tea'|'ledger';
-function subscribeReviewMode(){return ()=>{};}
-function reviewClientSnapshot(){return typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('roomArtReview')==='1';}
-function reviewServerSnapshot(){return false;}
 export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:number}){
   const stageRef=useRef<HTMLDivElement>(null);
   const stageSize=useRoomStageSize(stageRef);
-  const artReviewEnabled=useSyncExternalStore(subscribeReviewMode,reviewClientSnapshot,reviewServerSnapshot);
-  const [previewUrl,setPreviewUrl]=useState<string|null>(null);
-  const [previewPoseUrls,setPreviewPoseUrls]=useState<Partial<Record<RoomPose,string>>>({});
-  const [reviewPose,setReviewPose]=useState<RoomPose|null>(null);
-  const [reviewError,setReviewError]=useState('');
-  const [reviewOpen,setReviewOpen]=useState(false);
-  const imageUrlRef=useRef<string|null>(null);
-  useEffect(()=>{
-    return ()=>{if(imageUrlRef.current)URL.revokeObjectURL(imageUrlRef.current);};
-  },[]);
-  const previewLocalArt=(event:ChangeEvent<HTMLInputElement>)=>{
-    const file=event.target.files?.[0];
-    if(!file)return;
-    if(file.type!=='image/webp'||file.size>10*1024*1024){
-      setReviewError('请选择 10 MB 以下的 WebP 文件。');
-      return;
-    }
-    const url=URL.createObjectURL(file);
-    if(imageUrlRef.current)URL.revokeObjectURL(imageUrlRef.current);
-    imageUrlRef.current=url;
-    setPreviewUrl(url);
-    setReviewError('');
-  };
-  const clearLocalArt=()=>{
-    if(imageUrlRef.current)URL.revokeObjectURL(imageUrlRef.current);
-    imageUrlRef.current=null;
-    setPreviewUrl(null);
-    setReviewError('');
-  };
+  const artReview=useRoomArtLocalPreview();
   const [hotspot,setHotspot]=useState<Hotspot|null>(null);
   const [reaction,setReaction]=useState('');
   const [pose,setPose]=useState<RoomPose>('idle');
   const [theater,setTheater]=useState<RoomConversationTopic|null>(null);
   const [feedback,setFeedback]=useState('');
-  const shownPose=artReviewEnabled&&reviewPose?reviewPose:pose;
+  const shownPose=artReview.enabled&&artReview.selectedPose?artReview.selectedPose:pose;
   const {status,progress}=useCharacterLife();
   const choice=progress.decisions['yuesha-first-visit'];
   const observed=progress.observations?.yuesha??[];
@@ -90,10 +58,10 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,2.1fr)_minmax(300px,.9fr)] lg:items-start">
     <div className="min-w-0 space-y-2">
     <div className="relative h-[clamp(315px,57vh,640px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]" data-testid="yuesha-room-stage" ref={stageRef}>
-      <RoomSceneBackdrop id="yuesha" previewUrl={previewUrl}/>
-      <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={shownPose} previewBackground={Boolean(previewUrl)} previewPoseUrl={artReviewEnabled?previewPoseUrls[shownPose]??null:null}/>
-      <RoomSceneFocus id="yuesha" item={hotspot} pose={pose} stageSize={stageSize} preview={Boolean(previewUrl)}/>
-      <RoomSceneHotspots characterName="月纱" roomId="yuesha" stageSize={stageSize} preview={Boolean(previewUrl)}
+      <RoomSceneBackdrop id="yuesha" previewUrl={artReview.backgroundUrl}/>
+      <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)} previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>
+      <RoomSceneFocus id="yuesha" item={hotspot} pose={pose} stageSize={stageSize} preview={Boolean(artReview.backgroundUrl)}/>
+      <RoomSceneHotspots characterName="月纱" roomId="yuesha" stageSize={stageSize} preview={Boolean(artReview.backgroundUrl)}
         items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}
         selected={hotspot} observed={observed} onInspect={inspect}
         description={hotspot==='seal'?'蜡封上的月纹，与旧公寓钥匙的纹样有些相似。月纱没有立即回答你的疑问。':
@@ -106,31 +74,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
         <p className="text-[11px] leading-5 text-[#e4c7ab]">月纹、旧契约和一杯香料茶</p>
       </div>
     </div>
-      {artReviewEnabled&&<div data-testid="room-art-local-review"
-        className="w-full max-w-[360px] rounded-lg border border-[#e9ba7d9e] bg-[#170d21f0] p-2 text-[11px] text-[#ffe5c9] shadow-lg">
-        <button type="button" data-testid="room-art-review-toggle"
-          aria-controls="room-art-review-controls" aria-expanded={reviewOpen}
-          onClick={()=>setReviewOpen(open=>!open)}
-          className="min-h-11 w-full rounded border border-[#d6b98b90] bg-[#3c2438] px-2 text-left text-[#ffd298] hover:bg-[#533444] focus-visible:outline-2 focus-visible:outline-[#ffd298]">
-          {reviewOpen?'收起美术审核':'本地美术审核 · 展开'}
-        </button>
-        <div id="room-art-review-controls" aria-hidden={!reviewOpen}
-          className={reviewOpen
-            ?'mt-2 max-h-[min(42vh,270px)] space-y-1 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin]'
-            :'hidden'}>
-          <span className="block text-[#ffd298]">仅本机预览 · 不会发布或保存</span>
-          <label htmlFor="yuesha-local-art-file" className="block text-[#ffe5c9]">查看高清背景 WebP</label>
-          <input id="yuesha-local-art-file" data-testid="room-art-local-file"
-            type="file" accept="image/webp" onChange={previewLocalArt}
-            className="block w-full min-w-0 text-[10px] file:mr-1 file:rounded file:border-0 file:bg-[#5c3949] file:px-2 file:py-1 file:text-[#ffead5]"/>
-          {previewUrl&&<button type="button" data-testid="room-art-local-reset" onClick={clearLocalArt}
-            className="min-h-9 rounded border border-[#d6b98b90] px-2 text-left hover:bg-[#533444]">恢复原概念背景</button>}
-          {reviewError&&<span role="alert" className="text-[#ffb3b9]">{reviewError}</span>}
-          <RoomPosePreviewControls
-            onChange={(selected,url)=>setPreviewPoseUrls(previous=>({...previous,[selected]:url??undefined}))}
-            onSelect={setReviewPose} onReset={()=>setReviewPose(null)}/>
-        </div>
-      </div>}
+      <RoomArtLocalPreviewPanel id="yuesha" name="月纱" review={artReview}/>
     <p className="text-[10px] text-[#bda089]">轻触场景中的月纹物件，寻找契约背后的记忆；人物演出与线索分别反馈。</p>
     </div>
     <div className="min-w-0 space-y-3 rounded-xl border border-[#a980655e] bg-[linear-gradient(165deg,#2b1824a8,#160f19df)] p-3 shadow-[inset_0_1px_#f9d9a624] lg:max-h-[min(68vh,670px)] lg:overflow-y-auto lg:pr-2 [scrollbar-color:#a67f67_#281822] [scrollbar-width:thin]">
