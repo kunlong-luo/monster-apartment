@@ -147,7 +147,8 @@ export function GothicSummonScreen() {
         </div>
 
         {/* Center-Right Currencies */}
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="summon-cinematic-header-controls flex items-center gap-2 sm:gap-4">
+          <div className="summon-cinematic-wallet flex items-center gap-2 sm:gap-4" aria-label="真实契约资源">
           {/* Contract Tickets */}
           <button type="button" aria-label="查看契约信物来源"
             onClick={() => setShowReplenish(true)}
@@ -188,8 +189,9 @@ export function GothicSummonScreen() {
             </span>
           </button>
 
+          </div>
           {/* Top-Right Utility Icons */}
-          <div className="flex items-center gap-1.5 sm:gap-2 border-l border-[#805a4155] pl-2 sm:pl-3">
+          <div className="summon-cinematic-tools flex items-center gap-1.5 border-l border-[#805a4155] pl-2 sm:gap-2 sm:pl-3" aria-label="召唤辅助功能">
             <button
               type="button"
               aria-label="背包"

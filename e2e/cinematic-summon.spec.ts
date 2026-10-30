@@ -225,3 +225,48 @@ test('summon featured-room shortcut opens the real heroine suite without adding 
   await expect(page).toHaveURL(/\/characters\/?$/);
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
 });
+ 
+
+test('320px and 390px summon HUD keeps resource row and core actions in first screen',async({page})=>{
+  test.setTimeout(90_000);
+  for(const [width,height] of [[320,700],[390,844]] as const){
+    await page.setViewportSize({width,height});
+    await page.goto('/characters/#summon-screen');
+    await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:25_000});
+    const header=page.locator('.summon-cinematic-header');
+    const wallet=page.locator('.summon-cinematic-wallet');
+    const controls=page.locator('.summon-cinematic-tools');
+    const pool=page.locator('.summon-cinematic-pools');
+    const summon=page.getByTestId('collection-summon');
+    const ten=page.getByTestId('collection-summon-ten');
+    const dock=page.getByRole('navigation',{name:'月影契约世界导航'});
+    for(const element of [header,wallet,controls,pool,summon,ten,dock])
+      await expect(element).toBeVisible();
+    await expect(dock.getByRole('link')).toHaveCount(7);
+    const geometry=await page.evaluate(()=>{
+      const box=(selector:string)=>{
+        const r=document.querySelector(selector)?.getBoundingClientRect();
+        if(!r)throw Error('Missing UI region '+selector);
+        return {x:r.x,y:r.y,width:r.width,height:r.height,bottom:r.bottom,right:r.right};
+      };
+      return {
+        header:box('.summon-cinematic-header'),
+        wallet:box('.summon-cinematic-wallet'),
+        tools:box('.summon-cinematic-tools'),
+        pools:box('.summon-cinematic-pools'),
+        summon:box('[data-testid="collection-summon"]'),
+        ten:box('[data-testid="collection-summon-ten"]'),
+        dock:box('[aria-label="月影契约世界导航"]'),
+        spill:document.documentElement.scrollWidth-innerWidth,
+      };
+    });
+    expect(geometry.spill).toBeLessThanOrEqual(2);
+    expect(geometry.tools.right).toBeLessThanOrEqual(width+1);
+    expect(geometry.wallet.y).toBeGreaterThan(geometry.tools.y);
+    expect(geometry.pools.y).toBeGreaterThanOrEqual(geometry.header.bottom-2);
+    expect(geometry.summon.bottom).toBeLessThanOrEqual(geometry.dock.y+1);
+    expect(geometry.ten.bottom).toBeLessThanOrEqual(geometry.dock.y+1);
+    await expect(summon).toBeEnabled();
+    await expect(ten).toBeEnabled();
+  }
+});
