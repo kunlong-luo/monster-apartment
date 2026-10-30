@@ -284,3 +284,27 @@ test('cinematic lobby maintains one usable dock and compact context panels on a 
   await expect(page).toHaveURL(/\/characters\/?#summon-screen$/);
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
 });
+
+test('original black-gold reference keeps left quests, central painting, right actions and one bottom dock',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/');
+  const stage=page.locator('.gothic-lobby__painting');
+  const quests=page.locator('.gothic-lobby__mission-rail');
+  const actions=page.locator('.gothic-lobby__character-actions');
+  const dock=page.getByRole('navigation',{name:'主要游戏功能'});
+  await expect(stage).toBeVisible();
+  await expect(quests).toBeVisible();
+  await expect(actions).toBeVisible();
+  const boxes=await Promise.all([stage,quests,actions,dock].map(element=>element.boundingBox()));
+  if(boxes.some(box=>!box))throw new Error('Missing cinematic layout region');
+  const [painting,left,right,bottom]=boxes as NonNullable<typeof boxes[number]>[];
+  expect(painting.width).toBeGreaterThanOrEqual(1438);
+  expect(painting.height).toBeGreaterThanOrEqual(898);
+  expect(left.x+left.width).toBeLessThan(1440*.4);
+  expect(right.x).toBeGreaterThan(1440*.75);
+  expect(right.width).toBeLessThanOrEqual(136);
+  expect(right.x).toBeGreaterThan(left.x+left.width+400);
+  expect(bottom.y+bottom.height).toBeLessThanOrEqual(900);
+  expect(bottom.y).toBeGreaterThan(900*.80);
+  await expect(dock.getByRole('link')).toHaveCount(7);
+});
