@@ -4,6 +4,9 @@ import Image from 'next/image';
 import {useReducedMotion} from 'motion/react';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 import {ROOM_ART_MANIFEST,roomPublicAssetPath} from '@/core/room-art-manifest';
+import {roomStoryLightTone} from '@/core/room-performance';
+import type {RoomPose} from '@/core/room-performance';
+import {usePageVisibility} from '@/lib/game/use-page-visibility';
 import type {CharacterId} from '@/core/character-life';
 
 /** Background and lighting never move the original painting: no image resampling
@@ -31,7 +34,9 @@ const ROOM_AMBIENCE={
   },
 } as const;
 
-export function RoomSceneBackdrop({id,previewUrl=null}:{id:CharacterId;previewUrl?:string|null}){
+export function RoomSceneBackdrop({id,previewUrl=null,cinematicPose=null}:{
+  id:CharacterId;previewUrl?:string|null;cinematicPose?:RoomPose|null;
+}){
   const ambience=ROOM_AMBIENCE[id];
   const art=ROOM_ART_MANIFEST[id];
   // All four concept scenes have independent, environment-only vector art.
@@ -43,7 +48,9 @@ export function RoomSceneBackdrop({id,previewUrl=null}:{id:CharacterId;previewUr
     ?art.productionAssets.background:art.conceptPreview);
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
-  const still=Boolean(systemReduced||gameReduced);
+  const pageVisible=usePageVisibility();
+  const still=Boolean(systemReduced||gameReduced||!pageVisible);
+  const storyLight=roomStoryLightTone(cinematicPose);
   return <div data-testid="room-scene-backdrop" data-scene-id={id} data-art-quality={art.backgroundStatus} data-composition={art.composition}
     data-local-preview={previewUrl?'true':'false'}
     className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
@@ -61,6 +68,13 @@ export function RoomSceneBackdrop({id,previewUrl=null}:{id:CharacterId;previewUr
     <div className={'private-room__motes absolute inset-0 '+(still?'private-room__still':'')}/>
     <div data-testid="room-environment-light"
       className={'private-room__candlelight absolute inset-0 mix-blend-screen motion-reduce:animate-none '+(still?' private-room__still ':' ')+ambience.candle}/>
+    <div data-testid="room-story-light" data-story-light={storyLight}
+      data-motion={still?'still':'playing'}
+      className="private-room__story-light absolute inset-0" aria-hidden="true">
+      <div className="private-room__story-light--attentive absolute inset-0"/>
+      <div className="private-room__story-light--warm absolute inset-0"/>
+      <div className="private-room__story-light--guarded absolute inset-0"/>
+    </div>
     <div className="absolute inset-0 bg-[linear-gradient(0deg,#0f091be5_0%,transparent_29%,transparent_78%,#0c07168c_100%)]"/>
     <div className="absolute inset-[9px] rounded-[8px] border border-[#f5c99124] shadow-[inset_0_0_40px_#f8be6c0e]"/>
   </div>;

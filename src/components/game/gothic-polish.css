@@ -231,3 +231,46 @@
 @media(prefers-reduced-motion:reduce){
   .private-room__moonshaft,.private-room__motes{animation:none!important}
 }
+ 
+/* V3.54: cinematic light is a separate, pointer-transparent environment
+ * overlay. Never animate or blur the source painting, touch targets, or actor. */
+.private-room__story-light{
+  pointer-events:none;
+  --story-focus:#b8c1ff75;
+  --story-warm:#ffce8d68;
+  --story-guard:#9d9ac967;
+}
+[data-scene-id="brook"] .private-room__story-light{
+  --story-focus:#9fe5ff65;--story-warm:#eac29459;--story-guard:#4a9bcc72;
+}
+[data-scene-id="fern"] .private-room__story-light{
+  --story-focus:#b1efce6a;--story-warm:#d8ef9f64;--story-guard:#7ba88c72;
+}
+[data-scene-id="cinder"] .private-room__story-light{
+  --story-focus:#e5bbac60;--story-warm:#ffb26b80;--story-guard:#da806a70;
+}
+.private-room__story-light>div{
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .55s ease-in-out;
+}
+.private-room__story-light--attentive{
+  background:radial-gradient(ellipse 42% 67% at 31% 47%,var(--story-focus),transparent 78%);
+  mix-blend-mode:screen;
+}
+.private-room__story-light--warm{
+  background:radial-gradient(ellipse 47% 72% at 23% 70%,var(--story-warm),transparent 81%);
+  mix-blend-mode:screen;
+}
+.private-room__story-light--guarded{
+  background:
+    radial-gradient(ellipse 52% 67% at 74% 24%,var(--story-guard),transparent 75%),
+    linear-gradient(90deg,#120c1c2e,transparent 48%,#09081944);
+}
+.private-room__story-light[data-story-light="attentive"] .private-room__story-light--attentive{opacity:.67}
+.private-room__story-light[data-story-light="warm"] .private-room__story-light--warm{opacity:.7}
+.private-room__story-light[data-story-light="guarded"] .private-room__story-light--guarded{opacity:.62}
+.private-room__story-light[data-motion="still"]>div{transition:none!important;animation:none!important}
+@media(prefers-reduced-motion:reduce){
+  .private-room__story-light>div{transition:none!important;animation:none!important}
+}

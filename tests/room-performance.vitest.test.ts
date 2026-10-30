@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {dialogueBeatDuration,dialogueBeats,roomDialogueBeatPose,roomObjectPose,roomTopicPose} from '../src/core/room-performance';
+import {dialogueBeatDuration,dialogueBeats,roomDialogueBeatPose,roomObjectPose,roomStoryLightTone,roomTopicPose} from '../src/core/room-performance';
 import {ROOM_ART_MANIFEST} from '../src/core/room-art-manifest';
 
 describe('room performance and clean art slots',()=>{
@@ -29,6 +29,13 @@ describe('room performance and clean art slots',()=>{
     expect(roomDialogueBeatPose('warm',2,4)).toBe('attentive');
     expect(roomDialogueBeatPose('warm',3,4)).toBe('warm');
     expect(roomDialogueBeatPose('guarded',0,1)).toBe('guarded');
+  });
+  it('lights only an active cinematic and maps the same emotional pose',()=>{
+    expect(roomStoryLightTone(null)).toBe('ambient');
+    expect(roomStoryLightTone('idle')).toBe('ambient');
+    expect(roomStoryLightTone(roomDialogueBeatPose('warm',0,2))).toBe('attentive');
+    expect(roomStoryLightTone(roomDialogueBeatPose('warm',1,2))).toBe('warm');
+    expect(roomStoryLightTone(roomDialogueBeatPose('guarded',2,3))).toBe('guarded');
   });
   it('declares only valid future asset paths without pretending CG already ships',()=>{
     expect(Object.keys(ROOM_ART_MANIFEST)).toEqual(['yuesha','brook','fern','cinder']);

@@ -1,16 +1,11 @@
 'use client';
 
-import {useEffect,useMemo,useRef,useState,useSyncExternalStore} from 'react';
+import {useEffect,useMemo,useRef,useState} from 'react';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {dialogueBeatDuration,dialogueBeats,roomDialogueBeatPose} from '@/core/room-performance';
 import type {RoomPose} from '@/core/room-performance';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
-
-const watchVisibility=(notify:()=>void)=>{
-  document.addEventListener('visibilitychange',notify);
-  return ()=>document.removeEventListener('visibilitychange',notify);
-};
-const visible=()=>document.visibilityState==='visible';
+import {usePageVisibility} from '@/lib/game/use-page-visibility';
 
 /** A small auto-advancing cinematic overlay inside the existing room stage.
  * Progress is ephemeral and never interrupts or edits the first-visit save. */
@@ -20,7 +15,7 @@ export function RoomDialogueTheater({name,title,response,onClose,basePose='warm'
 }){
   const beats=useMemo(()=>dialogueBeats(response),[response]);
   const [index,setIndex]=useState(0);
-  const pageVisible=useSyncExternalStore(watchVisibility,visible,()=>true);
+  const pageVisible=usePageVisibility();
   const {reduced:gameReduced}=useGothicMotion();
   const systemReduced=useReducedMotion();
   const still=Boolean(gameReduced||systemReduced);

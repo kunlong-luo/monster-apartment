@@ -95,11 +95,14 @@ test('mobile cinematic performance scrolls into view and exits without closing t
   await expect(page.getByTestId('room-dialogue-theater')).toBeInViewport();
   await expect(page.getByTestId('room-dialogue-theater')).toHaveAttribute('data-beat-pose','attentive');
   await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-pose','attentive');
+  await expect(page.getByTestId('room-story-light')).toHaveAttribute('data-story-light','attentive');
   await page.getByTestId('room-theater-skip').click();
   await expect(page.getByTestId('room-dialogue-theater')).toHaveAttribute('data-beat-pose','warm');
   await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-pose','warm');
+  await expect(page.getByTestId('room-story-light')).toHaveAttribute('data-story-light','warm');
   await page.getByTestId('room-theater-close').click();
   await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-pose','idle');
+  await expect(page.getByTestId('room-story-light')).toHaveAttribute('data-story-light','ambient');
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
   await expect(page.getByTestId('room-dialogue-theater')).toHaveCount(0);
 });
@@ -282,4 +285,35 @@ test('production art preview remains hidden in regular worker rooms',async({page
   await expect(room.getByTestId('room-art-local-review')).toHaveCount(0);
   await expect(room.getByTestId('room-scene-backdrop')).toHaveAttribute('data-art-quality','concept');
   await expect(room.getByTestId('room-resident-layer')).toHaveAttribute('data-art-quality','concept');
+});
+ 
+test('reduced-motion story lighting stays still while dialogue completes in one scene',async({page})=>{
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/apartment/');
+  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
+  await page.getByTestId('visit-yuesha-room').click();
+  await page.getByTestId('room-topic-yuesha-moon').click();
+  const light=page.getByTestId('room-story-light');
+  await expect(light).toHaveAttribute('data-motion','still');
+  await expect(light).toHaveAttribute('data-story-light','warm');
+  await expect(page.getByTestId('room-dialogue-theater')).toHaveAttribute('data-state','finished');
+  await expect(page.getByTestId('room-theater-skip')).toHaveCount(0);
+  expect(await light.locator('.private-room__story-light--warm').evaluate(el=>
+    getComputedStyle(el).transitionDuration)).toBe('0s');
+  await page.getByTestId('room-theater-close').click();
+  await expect(light).toHaveAttribute('data-story-light','ambient');
+});
+
+test('worker room uses its own cinematic light palette without blocking prop hotspots',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/characters/');
+  await page.getByTestId('visit-worker-room-fern').click();
+  const room=page.getByTestId('worker-private-room-fern');
+  await room.getByTestId('room-topic-fern-plant').click();
+  await expect(room.getByTestId('room-dialogue-theater')).toBeVisible();
+  await expect(room.getByTestId('room-story-light')).toHaveAttribute('data-story-light','warm');
+  await room.getByTestId('room-theater-close').click();
+  await expect(room.getByTestId('room-story-light')).toHaveAttribute('data-story-light','ambient');
+  await expect(room.getByTestId('scene-object-herbarium')).toBeVisible();
 });

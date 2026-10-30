@@ -49,3 +49,12 @@ export function roomDialogueBeatPose(base:RoomPose,beat:number,total:number):Roo
   if(total<=1||beat>=total-1)return base;
   return beat%2===0?'attentive':base;
 }
+
+// An ambient cue is deliberately presentational; it never changes save state.
+// Story light is absent outside the cinematic, even if an investigation has
+// left the resident in an attentive/warm/guarded pose.
+export type RoomStoryLightTone='ambient'|'attentive'|'warm'|'guarded';
+export function roomStoryLightTone(pose:RoomPose|null):RoomStoryLightTone{
+  if(pose==='attentive'||pose==='warm'||pose==='guarded')return pose;
+  return 'ambient';
+}

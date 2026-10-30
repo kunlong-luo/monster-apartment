@@ -76,7 +76,8 @@ export function WorkerPrivateRoom({id,onClose,working}:{
       <div className="min-w-0 space-y-2">
       <div className={'relative h-[clamp(270px,53vh,565px)] overflow-hidden rounded-xl border border-gothic-brass/65 bg-[#120f1c]'}
         aria-label={profile.name+'的房间概念场景'} ref={stageRef}>
-        <RoomSceneBackdrop id={id} previewUrl={artReview.backgroundUrl}/>
+        <RoomSceneBackdrop id={id} previewUrl={artReview.backgroundUrl}
+          cinematicPose={theater&&!working?pose:null}/>
         <RoomResidentSprite id={id} name={profile.name} working={working} reaction={reaction}
           pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)}
           previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>

@@ -58,7 +58,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,2.1fr)_minmax(300px,.9fr)] lg:items-start">
     <div className="min-w-0 space-y-2">
     <div className="relative h-[clamp(315px,57vh,640px)] overflow-hidden rounded-xl border border-[#cfaa837c] bg-[#171020]" data-testid="yuesha-room-stage" ref={stageRef}>
-      <RoomSceneBackdrop id="yuesha" previewUrl={artReview.backgroundUrl}/>
+      <RoomSceneBackdrop id="yuesha" previewUrl={artReview.backgroundUrl}
+        cinematicPose={theater?pose:null}/>
       <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)} previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>
       <RoomSceneFocus id="yuesha" item={hotspot} pose={pose} stageSize={stageSize} preview={Boolean(artReview.backgroundUrl)}/>
       <RoomSceneHotspots characterName="月纱" roomId="yuesha" stageSize={stageSize} preview={Boolean(artReview.backgroundUrl)}
