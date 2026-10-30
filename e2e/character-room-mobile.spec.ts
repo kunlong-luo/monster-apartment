@@ -163,3 +163,39 @@ test('compact-height local art preview keeps overlapping prop accessible without
   await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-object-id','tea');
   await expect(page.getByTestId('scene-discovery')).toContainText('桂皮');
 });
+
+test('all three worker rooms can review local background and reject nontransparent CG without publishing',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/characters/?roomArtReview=1');
+  for(const id of ['brook','fern','cinder'] as const){
+    await page.getByTestId('visit-worker-room-'+id).click();
+    const room=page.getByTestId('worker-private-room-'+id);
+    const review=room.getByTestId('room-art-local-review');
+    await expect(review).toHaveAttribute('data-review-room',id);
+    const backdrop=room.getByTestId('room-scene-backdrop');
+    await expect(backdrop).toHaveAttribute('data-local-preview','false');
+    await review.getByTestId('room-art-review-toggle').click();
+    await expect(review.getByText(/概念版调查热点坐标/)).toBeVisible();
+    await review.getByTestId('room-art-local-file').setInputFiles('public/art/yuesha-bust-v3.webp');
+    await expect(backdrop).toHaveAttribute('data-local-preview','true');
+    await expect(backdrop.locator('img')).toHaveAttribute('src',/^blob:/);
+    await review.getByTestId('room-pose-upload-idle').setInputFiles('public/art/yuesha-bust-v3.webp');
+    await expect(review.getByTestId('room-pose-review-error')).toBeVisible();
+    await review.getByTestId('room-art-local-reset').click();
+    await expect(backdrop).toHaveAttribute('data-local-preview','false');
+    await expect(backdrop.locator('img')).toHaveAttribute('src',/concept-scene[.]svg$/);
+    await page.keyboard.press('Escape');
+    await expect(room).toHaveCount(0);
+  }
+  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
+});
+
+test('production art preview remains hidden in regular worker rooms',async({page})=>{
+  await page.goto('/characters/');
+  await page.getByTestId('visit-worker-room-fern').click();
+  const room=page.getByTestId('worker-private-room-fern');
+  await expect(room.getByTestId('room-art-local-review')).toHaveCount(0);
+  await expect(room.getByTestId('room-scene-backdrop')).toHaveAttribute('data-art-quality','concept');
+  await expect(room.getByTestId('room-resident-layer')).toHaveAttribute('data-art-quality','concept');
+});
