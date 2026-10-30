@@ -235,7 +235,9 @@ test('320px and 390px summon HUD keeps resource row and core actions in first sc
     await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:25_000});
     const header=page.locator('.summon-cinematic-header');
     const wallet=page.locator('.summon-cinematic-wallet');
+    await expect(wallet.locator('svg')).toHaveCount(3);
     const controls=page.locator('.summon-cinematic-tools');
+    await expect(controls.locator('svg')).toHaveCount(4);
     const pool=page.locator('.summon-cinematic-pools');
     const summon=page.getByTestId('collection-summon');
     const ten=page.getByTestId('collection-summon-ten');

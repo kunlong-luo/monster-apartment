@@ -13,6 +13,7 @@ import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
 import {claimProgressTickets,claimTrialTicket,gachaSaveStatus,GACHA_CHARACTERS} from '@/lib/summon/gacha-engine';
 import Image from 'next/image';
 import Link from 'next/link';
+import {Backpack,Droplets,Gem,History,Mail,Megaphone,Settings,Ticket} from 'lucide-react';
 import { useGacha } from '@/lib/summon/use-gacha';
 import { GACHA_POOLS, type SummonableCharacter } from '@/lib/summon/gacha-engine';
 import { SummonRitualModal } from './summon-ritual-modal';
@@ -154,7 +155,7 @@ export function GothicSummonScreen() {
             onClick={() => setShowReplenish(true)}
             className="flex cursor-pointer items-center gap-1.5 rounded-full border border-[#b88c5888] bg-[#22101ecc] px-2.5 py-1 text-xs text-[#ffe1bc] shadow-md hover:border-[#ffd699]"
           >
-            <span className="text-sm">🎫</span>
+            <Ticket aria-hidden="true" size={16} strokeWidth={1.6} className="shrink-0 text-[#e8c695]"/>
             <span data-testid="collection-tickets" className="font-semibold text-xs sm:text-sm">
               {state.tickets}
             </span>
@@ -168,7 +169,7 @@ export function GothicSummonScreen() {
             onClick={() => setShowReplenish(true)}
             className="flex cursor-pointer items-center gap-1.5 rounded-full border border-[#b88c5888] bg-[#22101ecc] px-2.5 py-1 text-xs text-[#ffe1bc] shadow-md hover:border-[#ffd699]"
           >
-            <span className="text-sm">🩸</span>
+            <Droplets aria-hidden="true" size={16} strokeWidth={1.6} className="shrink-0 text-[#d58a9c]"/>
             <span className="font-semibold text-xs sm:text-sm">
               {state.crystals.toLocaleString()}
             </span>
@@ -182,7 +183,7 @@ export function GothicSummonScreen() {
             onClick={() => setShowReplenish(true)}
             className="flex cursor-pointer items-center gap-1.5 rounded-full border border-[#b88c5888] bg-[#22101ecc] px-2.5 py-1 text-xs text-[#ffe1bc] shadow-md hover:border-[#ffd699]"
           >
-            <span className="text-sm">💎</span>
+            <Gem aria-hidden="true" size={16} strokeWidth={1.6} className="shrink-0 text-[#c0b8dc]"/>
             <span className="font-semibold text-xs sm:text-sm">{state.moonstones}</span>
             <span className="flex size-4 items-center justify-center rounded-full bg-[#462135] text-[10px] text-[#ffc66e]">
               +
@@ -198,7 +199,7 @@ export function GothicSummonScreen() {
               onClick={() => setUtilityModal('bag')}
               className="flex size-8 items-center justify-center rounded-lg border border-[#7e5539] bg-[#23121fcc] text-sm text-[#eed0b2] hover:border-[#ffd699] hover:bg-[#3f1f35]"
             >
-              🎒
+              <Backpack aria-hidden="true" size={17} strokeWidth={1.6}/>
             </button>
             <button
               type="button"
@@ -206,7 +207,7 @@ export function GothicSummonScreen() {
               onClick={() => setUtilityModal('mail')}
               className="relative flex size-8 items-center justify-center rounded-lg border border-[#7e5539] bg-[#23121fcc] text-sm text-[#eed0b2] hover:border-[#ffd699] hover:bg-[#3f1f35]"
             >
-              ✉️
+              <Mail aria-hidden="true" size={17} strokeWidth={1.6}/>
             </button>
             <button
               type="button"
@@ -214,7 +215,7 @@ export function GothicSummonScreen() {
               onClick={() => setUtilityModal('notice')}
               className="relative flex size-8 items-center justify-center rounded-lg border border-[#7e5539] bg-[#23121fcc] text-sm text-[#eed0b2] hover:border-[#ffd699] hover:bg-[#3f1f35]"
             >
-              📢
+              <Megaphone aria-hidden="true" size={17} strokeWidth={1.6}/>
             </button>
             <button
               type="button"
@@ -222,7 +223,7 @@ export function GothicSummonScreen() {
               onClick={() => setUtilityModal('settings')}
               className="flex size-8 items-center justify-center rounded-lg border border-[#7e5539] bg-[#23121fcc] text-sm text-[#eed0b2] hover:border-[#ffd699] hover:bg-[#3f1f35]"
             >
-              ⚙️
+              <Settings aria-hidden="true" size={17} strokeWidth={1.6}/>
             </button>
           </div>
         </div>
@@ -249,9 +250,9 @@ export function GothicSummonScreen() {
                 aria-pressed={isActive}
                 disabled={saveStatus!=='ok'}
                 onClick={() => setActivePoolId(pool.id)}
-                className={`summon-pool-item group relative flex min-h-14 w-44 shrink-0 items-center gap-2.5 rounded-md border p-2 text-left transition-all duration-300 lg:h-20 lg:w-full ${
+                className={`summon-pool-item group relative flex min-h-14 w-44 shrink-0 items-center gap-2.5 rounded-md border p-2 text-left transition-colors duration-200 lg:h-20 lg:w-full ${
                   isActive
-                    ? 'border-[#ffcf7a] bg-gradient-to-r from-[#4d1629dd] via-[#2f1124dd] to-[#1a0a19bb] shadow-[0_0_20px_#cc204666] scale-[1.03]'
+                    ? 'border-[#ffcf7a] bg-gradient-to-r from-[#4d1629dd] via-[#2f1124dd] to-[#1a0a19bb] shadow-[0_0_14px_#cc204644]'
                     : 'border-[#734f3788] bg-[#1a0c18a8] hover:border-[#d9a86a] hover:bg-[#281324cc]'
                 }`}
               >
@@ -279,10 +280,6 @@ export function GothicSummonScreen() {
                   </span>
                 </div>
 
-                {/* Active golden border highlight */}
-                {isActive && (
-                  <div className="pointer-events-none absolute inset-0 rounded-md border border-[#ffd7a055]" />
-                )}
               </button>
             );
           })}
@@ -362,7 +359,7 @@ export function GothicSummonScreen() {
                 onClick={() => setShowHistory(true)}
                 className="flex flex-col items-center justify-center rounded-xl border border-[#9b6e45] bg-[#241120cc] px-3 sm:px-4 py-2 text-xs text-[#ffdcb0] hover:border-[#f3ce8a] hover:bg-[#381a32] shadow-md transition"
               >
-                <span className="text-base sm:text-lg">🗂</span>
+                <History aria-hidden="true" size={18} strokeWidth={1.6} className="text-[#e6c49c]"/>
                 <span className="text-[10px] sm:text-xs font-semibold">召唤记录</span>
               </button>
 
