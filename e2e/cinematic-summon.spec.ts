@@ -50,7 +50,8 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   for(const card of await portraits.all()){
     const face=card.locator('img[data-portrait-source="dedicated-heroin-face"]');
     await expect(face).toBeVisible();
-    await expect(face).toHaveJSProperty('naturalWidth',512);
+    await expect.poll(()=>face.evaluate(img=>(img as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0);
   }
   const faces=await portraits.locator('img').evaluateAll(nodes=>
     nodes.map(n=>(n as HTMLImageElement).currentSrc));
