@@ -82,7 +82,7 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
             fill unoptimized draggable={false}
             sizes="(max-width:640px) 48vw, (max-width:1100px) 38vw, 410px"
             className="object-cover object-[center_20%] [mask-image:radial-gradient(ellipse_58%_66%_at_50%_43%,black_55%,transparent_94%)] drop-shadow-[0_10px_24px_#000a]"/>
-        </div>}}
+        </div>}
     </motion.div>}
     <AnimatePresence mode="wait">
       {!away&&reaction&&<motion.p key={reaction} data-testid="room-resident-reaction"
