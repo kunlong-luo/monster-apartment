@@ -189,3 +189,29 @@
 @media(prefers-reduced-motion:reduce){
   .gothic-lobby__mission-card,.gothic-lobby__character-actions :is(a,button){transition:none!important}
 }
+
+/* Onboarding reads the real gacha and collection save, not mock currencies. */
+.gothic-lobby__mission-card--eclipse{
+  min-height:163px;gap:5px;border-color:#e5a577;
+  background:radial-gradient(ellipse at 83% 52%,#b31c3c69,transparent 65%),
+    linear-gradient(124deg,#411327ed,#1b101ff2 85%);
+}
+.gothic-lobby__mission-card--eclipse strong{
+  font-size:clamp(20px,2vw,27px);letter-spacing:.06em;color:#ffdfca;text-wrap:balance;
+}
+.gothic-lobby__contract-faces{display:flex;align-items:center;gap:6px;margin-top:3px}
+.gothic-lobby__contract-face{
+  display:block;flex:none;overflow:hidden;width:39px;height:39px;
+  border:1px solid #d9af88;border-radius:8px;
+  box-shadow:inset 0 1px #ffebc744,0 2px 8px #0007;
+  transform:rotate(-2deg);
+}
+.gothic-lobby__contract-face:nth-child(even){transform:rotate(2deg)}
+.gothic-lobby__contract-face img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.gothic-lobby__contract-arrow{margin-left:auto;color:#fbdab2}
+@media(max-width:700px){
+  .gothic-lobby__mission-card--eclipse{min-height:109px}
+  .gothic-lobby__mission-card--eclipse strong{font-size:clamp(16px,4.2vw,21px)}
+  .gothic-lobby__contract-faces{gap:4px}
+  .gothic-lobby__contract-face{width:27px;height:27px;border-radius:5px}
+}

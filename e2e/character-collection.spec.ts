@@ -15,6 +15,8 @@ test('the character gallery centers human residents and opens the real summon sc
     await expect(card).toBeAttached();
     await expect(card.locator('.mw-worker-portrait')).toHaveAttribute('data-figure-kind','humanoid');
     await expect(card.locator('.worker-artwork')).toHaveAttribute('data-art-source','hi-dpi-transparent-human');
+    await expect(card.getByTestId('character-contract-status-'+id))
+      .toHaveText('剧情相识 · 契约待召唤');
   }
   const columns=await gallery.evaluate(node=>getComputedStyle(node).gridTemplateColumns.split(' ').length);
   expect(columns).toBe(3);

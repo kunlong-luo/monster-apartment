@@ -15,6 +15,9 @@ import {GothicSceneIllumination} from './gothic-scene-illumination';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 import {GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
 import {WORLD_NAV} from '@/components/moonwork/world-navigation';
+import {useGacha} from '@/lib/summon/use-gacha';
+import {useCharacterCollection} from '@/lib/game/character-collection-store';
+import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import './gothic-lobby.css';
 import './gothic-polish.css';
 
@@ -28,6 +31,10 @@ export function GothicLobby(){
   const orderProgress=Math.round(Math.min(100,Math.max(0,orderStock/orderTarget*100)));
   const orderReady=orderStock>=orderTarget;
   const [panel,setPanel]=useState<Panel>(null);
+  const {state:gacha}=useGacha();
+  const {collection,status:collectionStatus}=useCharacterCollection();
+  const ownedContractCount=new Set(collection.draws).size;
+  const firstContract=collectionStatus==='ok'&&gacha.totalSummons===0&&collection.draws.length===0;
   const [dialogue,setDialogue]=useState('');
   const {reduced:reducedMotion,toggle:toggleMotion}=useGothicMotion();
   const setOpen=(name:Panel)=>setPanel(existing=>existing===name?null:name);
@@ -119,11 +126,24 @@ export function GothicLobby(){
       </Link>
       <Link href="/characters/#summon-screen"
         className="gothic-lobby__mission-card gothic-lobby__mission-card--eclipse"
-        data-testid="gothic-eclipse-feature" aria-label="查看红色神话月蚀契约召唤">
-        <span className="gothic-lobby__card-kicker">✦ 月夜契约 · 角色收藏</span>
-        <strong>神话 · 月蚀</strong>
-        <span className="gothic-lobby__mission-detail">月纱的红色珍藏契约 · 实际概率 1%</span>
-        <span className="gothic-lobby__card-rune" aria-hidden="true">☾</span>
+        data-testid="gothic-eclipse-feature" data-first-contract={firstContract?'true':'false'}
+        aria-label={firstContract?'开始第一次契约召唤，收录你的人物卡':'前往契约召唤，收集更多人物'}>
+        <span className="gothic-lobby__card-kicker">✦ {firstContract?'新手目标 · 初次契约':'角色养成 · 契约收藏'}</span>
+        <strong data-testid="lobby-summon-guide-title">
+          {collectionStatus!=='ok'?'人物收藏存档需要检查':
+            firstContract?'召唤第一位女主':`契约已收录 ${ownedContractCount}/5`}
+        </strong>
+        <span className="gothic-lobby__mission-detail" data-testid="lobby-summon-guide-detail">
+          {firstContract?`你有 ${gacha.tickets} 张初始召唤券 · 去认识她们`:
+            `当前 ${gacha.tickets} 张信物 · 继续召唤与养成`}
+        </span>
+        <div className="gothic-lobby__contract-faces" aria-hidden="true">
+          {(['yuesha','brook','fern','cinder'] as const).map(id=>
+            <span key={id} className="gothic-lobby__contract-face">
+              <Image src={HEROINE_FACE_ART[id]} alt="" width={39} height={39} sizes="39px"/>
+            </span>)}
+          <span className="gothic-lobby__contract-arrow">❯</span>
+        </div>
       </Link>
       <button type="button" onClick={()=>setOpen('updates')} aria-label="委托消息"
         className="gothic-lobby__mission-card gothic-lobby__updates-card"

@@ -13,6 +13,10 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   expect(dockSize).toBeGreaterThan(70);
   expect(dockSize).toBeLessThan(280);
   await expect(page.getByTestId('gothic-eclipse-feature')).toBeVisible();
+  await expect(page.getByTestId('gothic-eclipse-feature')).toHaveAttribute('data-first-contract','true');
+  await expect(page.getByTestId('lobby-summon-guide-title')).toHaveText('召唤第一位女主');
+  await expect(page.getByTestId('lobby-summon-guide-detail')).toContainText('3 张初始召唤券');
+  await expect(page.locator('.gothic-lobby__contract-face img')).toHaveCount(4);
   await expect(page.getByTestId('gothic-commission-status')).toContainText('待交付');
   await expect(page.getByTestId('gothic-character-room')).toHaveAttribute('href',/visit=yuesha/);
   const size=await page.evaluate(()=>({
@@ -30,6 +34,25 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   await expect(page).toHaveURL(/\/apartment\/?$/);
   await expect(page.getByTestId('gothic-apartment')).toBeVisible();
   await expect(page.getByTestId('ga-room-2')).toBeVisible();
+});
+
+test('real saved draws change the introductory contract into an accurate collection guide',async({page})=>{
+  await page.addInitScript(()=>{
+    localStorage.setItem('monster-apartment:character-collection:v1',JSON.stringify({
+      version:1,draws:['brook-tide'],shards:2,inventory:[],equipped:{}
+    }));
+    localStorage.setItem('monster-apartment:gacha-v2',JSON.stringify({
+      version:2,tickets:2,crystals:0,moonstones:0,pityCountdown:89,totalSummons:1,
+      history:[],ownedIds:['brook-tide'],claimedProgressRewards:[],activePoolId:'mythic-eclipse'
+    }));
+  });
+  await page.goto('/');
+  await expect(page.getByTestId('gothic-eclipse-feature')).toHaveAttribute('data-first-contract','false');
+  await expect(page.getByTestId('lobby-summon-guide-title')).toHaveText('契约已收录 1/5');
+  await expect(page.getByTestId('lobby-summon-guide-detail')).toContainText('2 张信物');
+  await page.getByTestId('gothic-eclipse-feature').click();
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
+  await expect(page.getByTestId('summon-owned-progress')).toContainText('1/5');
 });
 
 test('lobby reflects a real shared workshop save without inventing currency',async({page})=>{

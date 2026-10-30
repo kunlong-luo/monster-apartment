@@ -8,6 +8,7 @@ import type {WorkshopState,WorkerId} from '../../../v2/src/workshop-engine';
 import {WorkerArtwork} from './worker-artwork';
 import {CharacterLifePortrait} from '@/components/game/character-life-portrait';
 import {useCharacterCollection} from '@/lib/game/character-collection-store';
+import {CHARACTER_CARDS} from '@/core/character-collection';
 import {CharacterAdornment} from '@/components/game/character-adornment';
 import {RoomInvestigationJournal} from '@/components/game/room-investigation-journal';
 import {RoomMemoryGallery} from '@/components/game/room-memory-gallery';
@@ -44,12 +45,20 @@ export function Characters({s,onVisit}:{s:WorkshopState;onVisit:(id:WorkerId)=>v
       {ids.map((id:WorkerId,i)=>{
         const w=WORKERS[id];const plot=s.tiles.findIndex(t=>t?.worker===id);
         const working=plot>=0;
+        const isCollected=CHARACTER_CARDS.some(card=>
+          card.character===id&&collection.draws.includes(card.key));
         return <section key={id} className={'mw-worker-card '+(working?'on-duty':'off-duty')}
           data-testid={'worker-card-'+id}>
           <WorkerPainting id={id} label={w.zh} working={working}/>
           <div className="mw-worker-details">
             <p className="mw-eyebrow">GUILD PERSONNEL · {String(i+1).padStart(2,'0')}</p>
             <h2>{w.zh} <small>{w.en}</small></h2>
+            <span data-testid={'character-contract-status-'+id}
+              className={'inline-flex w-fit rounded border px-2 py-1 text-[11px] '+(isCollected
+                ?'border-[#dcb277] bg-[#55304a] text-[#ffe0b2]'
+                :'border-[#87755a] bg-[#1b1920] text-[#c5b4a3]')}>
+              {isCollected?'✦ 契约已收录':'剧情相识 · 契约待召唤'}
+            </span>
             <p className="mw-worker-job">{w.skill==='water'?'水汽制造':w.skill==='plant'?'孢子种植':'晶核锻造'}专长</p>
             <p className="mw-worker-assignment">{working
               ?'正在 '+String(plot+1).padStart(2,'0')+' 号工位 · '+MACHINES[s.tiles[plot]!.craft].zh
