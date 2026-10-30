@@ -101,8 +101,13 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
           hotspot==='ledger'?'账簿封面有多年前的磨损痕迹。里面记着什么，目前还不能公开。':undefined}/>
       {theater&&<RoomDialogueTheater key={theater.id} name="月纱" title={theater.title}
         response={theater.response} onClose={()=>{setTheater(null);setPose('idle');}}/>}
+      <div className="pointer-events-none absolute top-9 left-3 max-w-[52%] space-y-1 text-shadow-md">
+        <h3 className="text-lg text-[#ffe3bd] sm:text-2xl">月纱的契约会客室</h3>
+        <p className="text-[11px] leading-5 text-[#e4c7ab]">月纹、旧契约和一杯香料茶</p>
+      </div>
+    </div>
       {artReviewEnabled&&<div data-testid="room-art-local-review"
-        className="absolute bottom-2 right-2 z-[30] w-[min(74%,240px)] rounded-lg border border-[#e9ba7d9e] bg-[#170d21f0] p-2 text-[11px] text-[#ffe5c9] shadow-lg">
+        className="w-full max-w-[360px] rounded-lg border border-[#e9ba7d9e] bg-[#170d21f0] p-2 text-[11px] text-[#ffe5c9] shadow-lg">
         <button type="button" data-testid="room-art-review-toggle"
           aria-controls="room-art-review-controls" aria-expanded={reviewOpen}
           onClick={()=>setReviewOpen(open=>!open)}
@@ -126,11 +131,6 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
             onSelect={setReviewPose} onReset={()=>setReviewPose(null)}/>
         </div>
       </div>}
-      <div className="pointer-events-none absolute top-9 left-3 max-w-[52%] space-y-1 text-shadow-md">
-        <h3 className="text-lg text-[#ffe3bd] sm:text-2xl">月纱的契约会客室</h3>
-        <p className="text-[11px] leading-5 text-[#e4c7ab]">月纹、旧契约和一杯香料茶</p>
-      </div>
-    </div>
     <p className="text-[10px] text-[#bda089]">轻触场景中的月纹物件，寻找契约背后的记忆；人物演出与线索分别反馈。</p>
     </div>
     <div className="min-w-0 space-y-3 rounded-xl border border-[#a980655e] bg-[linear-gradient(165deg,#2b1824a8,#160f19df)] p-3 shadow-[inset_0_1px_#f9d9a624] lg:max-h-[min(68vh,670px)] lg:overflow-y-auto lg:pr-2 [scrollbar-color:#a67f67_#281822] [scrollbar-width:thin]">
