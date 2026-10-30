@@ -90,7 +90,22 @@ test('cinematic omen shows exact rarest awarded rarity and never rerolls',async(
   expect(computedFrame.position).toBe('fixed');
   const omenBox=await omenShape.boundingBox();
   const omenCopyBox=await omenText.boundingBox();
-  expect(omenBox!.y+omenBox!.height).toBeLessThan(omenCopyBox!.y-8);
+  const diagnostic=await page.evaluate(()=>{
+    const box=(selector:string)=>{
+      const el=document.querySelector<HTMLElement>(selector);
+      if(!el)return null;
+      const b=el.getBoundingClientRect(),style=getComputedStyle(el);
+      return {top:b.top,bottom:b.bottom,left:b.left,height:b.height,
+        position:style.position,cssTop:style.top,cssHeight:style.height,
+        transform:style.transform,display:style.display};
+    };
+    return {parent:box('.summon-cinematic-ritual'),art:box('.summon-cinematic-ritual__art'),
+      omen:box('.summon-cinematic-ritual__omen'),copy:box('.summon-cinematic-ritual__copy'),
+      modal:box('.summon-reveal-overlay'),viewport:{width:innerWidth,height:innerHeight}};
+  });
+  console.log('CINEMATIC_GEOMETRY_DIAGNOSTIC',JSON.stringify(diagnostic));
+  await page.screenshot({path:'test-results/desktop-summon-omen-layout-v371.png',animations:'disabled'});
+  expect(omenBox!.y+omenBox!.height,JSON.stringify(diagnostic)).toBeLessThan(omenCopyBox!.y-8);
   const rarity=await page.getByTestId('summon-ritual-intro').getAttribute('data-omen-rarity');
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/desktop-summon-omen-v371.png',animations:'disabled'});
