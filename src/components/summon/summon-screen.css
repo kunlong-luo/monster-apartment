@@ -175,3 +175,21 @@
   .summon-cinematic-sidebar{width:27vw!important}
   .summon-cinematic-center{min-width:0!important}
 }
+
+/* Four guardian beast identities are relationship lore, not fake pet gacha. */
+.covenant-beast-card{
+  --beast-edge:#a17865;--beast-glow:#80314244;--beast-label:#dfbc9c;
+  min-width:0;min-height:128px;padding:12px 14px;border-radius:11px;
+  border:1px solid var(--beast-edge);
+  background:radial-gradient(ellipse at 90% 8%,var(--beast-glow),transparent 56%),
+    linear-gradient(135deg,#291726,#130e18);
+  box-shadow:inset 0 1px #ffd8ad24,0 7px 16px #0006;
+}
+.covenant-beast-card__top{
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;
+  gap:4px;margin-bottom:8px;color:var(--beast-label);
+}
+.covenant-beast-card--crimson{--beast-edge:#bb4b64;--beast-glow:#ac1c4777;--beast-label:#f6a9ae}
+.covenant-beast-card--frost{--beast-edge:#6c9bb5;--beast-glow:#417caa66;--beast-label:#aed9ed}
+.covenant-beast-card--verdant{--beast-edge:#6a9d77;--beast-glow:#426d486e;--beast-label:#a8d0a4}
+.covenant-beast-card--ember{--beast-edge:#c28d5c;--beast-glow:#b56b2777;--beast-label:#f2c393}

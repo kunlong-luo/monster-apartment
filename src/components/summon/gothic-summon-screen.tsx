@@ -16,13 +16,13 @@ import { SummonRitualModal } from './summon-ritual-modal';
 import {
   SummonHistoryModal,
   PoolDetailsModal,
-  CharacterArchiveModal,
   CharacterTrialModal,
   UtilityModal,
 } from './summon-dialogs';
 import { useCharacterCollection, commitCollection } from '@/lib/game/character-collection-store';
 import { CHARACTER_CARDS, FORGE_RECIPES } from '@/core/character-collection';
 import type {CharacterId} from '@/core/character-life';
+import {COVENANT_BEASTS} from '@/lib/summon/covenant-beasts';
 
 const SUMMON_WORKER_ART: Record<string,'cinder'|'fern'|'brook'> = {
   'cinder-ember':'cinder',
@@ -73,7 +73,6 @@ export function GothicSummonScreen() {
   });
   const [showHistory, setShowHistory] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const [showArchive, setShowArchive] = useState(false);
   const [showTrial, setShowTrial] = useState(false);
   const [showReplenish, setShowReplenish] = useState(false);
   const [utilityModal, setUtilityModal] = useState<'bag' | 'mail' | 'notice' | 'settings' | null>(null);
@@ -444,7 +443,7 @@ export function GothicSummonScreen() {
               </button>
               <button
                 type="button"
-                onClick={() => setShowArchive(true)}
+                onClick={() => setShowGalleryTab(true)}
                 className="rounded-lg border border-[#a67c52] bg-[#221220] py-1 text-center font-bold text-[#e0bfa3] hover:bg-[#341b30]"
               >
                 🔍 查看档案
@@ -509,7 +508,7 @@ export function GothicSummonScreen() {
                 <button type="button" key={character.id}
                   data-testid="summon-available-card" data-character-id={character.id}
                   title={character.title} aria-label={`查看契约档案：${character.title}`}
-                  onClick={() => setShowArchive(true)}
+                  onClick={() => setShowGalleryTab(true)}
                   className="relative size-10 shrink-0 overflow-hidden rounded-full border border-[#b88c58] bg-[#2a1023] text-xs font-bold text-[#f6d5aa] transition hover:border-[#ffe3b3] hover:scale-105">
                   {character.id.startsWith('yuesha-') ? (
                     <Image src={character.avatar} alt="" fill sizes="40px" className="object-cover object-top" />
@@ -547,7 +546,6 @@ export function GothicSummonScreen() {
         <PoolDetailsModal pool={currentPool} onClose={() => setShowDetails(false)} />
       )}
 
-      {showArchive && <CharacterArchiveModal onClose={() => setShowArchive(false)} />}
 
       {showTrial && (
         <CharacterTrialModal
@@ -630,6 +628,32 @@ export function GothicSummonScreen() {
                   );
                 })}
               </div>
+
+              <section data-testid="beast-contract-roster" aria-label="美女与野兽契约档案"
+                className="border-t border-[#b8895866] pt-3">
+                <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
+                  <h4 className="text-sm font-semibold text-[#ffe0b5]">✦ 美女与野兽 · 契约传说</h4>
+                  <span className="text-[10px] text-[#d4b090]">四只独特异兽 · 正式 CG 制作中</span>
+                </div>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {Object.entries(COVENANT_BEASTS).map(([characterId,beast])=>{
+                    const owned=CHARACTER_CARDS.some(card=>
+                      card.character===characterId&&collection.draws.includes(card.key));
+                    return <article key={beast.id} data-testid={'beast-lore-'+beast.id}
+                      data-beast-identity={beast.silhouette}
+                      data-beast-art-status="awaiting-independent-cg"
+                      className={'covenant-beast-card covenant-beast-card--'+beast.palette}>
+                      <div className="covenant-beast-card__top">
+                        <span className="text-[10px] tracking-[.12em]">BEAST COVENANT</span>
+                        <span className="text-[10px]">{owned?'人物卡已收录':'对应人物待收录'}</span>
+                      </div>
+                      <strong className="block text-sm text-[#ffe8c8]">{beast.name}</strong>
+                      <p className="mt-1 text-[11px] text-[#e5c9a9]">{beast.epithet}</p>
+                      <p className="mt-2 text-[11px] leading-5 text-[#d8c4b6]">{beast.bond}</p>
+                    </article>;
+                  })}
+                </div>
+              </section>
 
               {/* Equipment Forge Section: the canonical collection save also owns
                   equipment, not a second standalone legacy gacha panel. */}

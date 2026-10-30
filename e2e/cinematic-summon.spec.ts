@@ -12,6 +12,15 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await expect(page.getByTestId('collection-odds')).toContainText('1.00%');
   await expect(page.getByTestId('collection-odds')).toContainText('46.00%');
   await expect(page.getByTestId('summon-owned-progress')).toHaveText('收集进度 0/5');
+  await page.getByTestId('summon-available-card').first().click();
+  const archive=page.getByRole('dialog',{name:'角色契约图鉴与装备锻造'});
+  await expect(archive).toBeVisible();
+  await expect(archive.getByTestId('beast-contract-roster')).toBeVisible();
+  await expect(archive.locator('[data-beast-art-status="awaiting-independent-cg"]')).toHaveCount(4);
+  for(const [id,name] of [['eclipse-dragon','红月深渊龙'],['moon-wolf','皎月霜狼'],
+    ['thorn-chimera','荆棘花木奇美拉'],['forge-golem','赤焰熔炉铠兽']] as const)
+    await expect(archive.getByTestId('beast-lore-'+id)).toContainText(name);
+  await archive.getByRole('button',{name:'返回契约大厅'}).click();
   const pools=page.locator('.summon-pool-item');
   await expect(pools).toHaveCount(5);
   await expect(pools.filter({hasText:'神话 · 月蚀'})).toHaveAttribute('aria-pressed','true');
