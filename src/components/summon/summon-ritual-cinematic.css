@@ -101,3 +101,39 @@
   .summon-cinematic-ritual__ring,.summon-cinematic-ritual__particles i,
   .summon-cinematic-ritual__seam,.summon-cinematic-ritual__flash{animation:none!important}
 }
+
+/* V3.71 desktop screenshot composition audit: keep the animated subject
+ * wholly above its subtitle, even during a rotateY card silhouette frame. */
+.summon-cinematic-ritual{
+  display:block;position:relative;
+}
+.summon-cinematic-ritual__art{
+  position:absolute;left:50%;top:clamp(70px,17%,145px);
+  transform:translateX(-50%);
+  width:min(100%,520px);
+  height:min(55%,440px);max-height:440px;
+}
+.summon-cinematic-ritual__copy{
+  position:absolute;left:0;right:0;bottom:95px;
+  min-height:108px;padding:0 12px 8px;
+}
+.summon-cinematic-ritual__footer{
+  position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
+}
+.summon-cinematic-ritual__turning-card{
+  height:100%;max-height:440px;min-height:0;
+}
+@media(max-height:750px){
+ .summon-cinematic-ritual__art{top:9%;height:55%}
+ .summon-cinematic-ritual__copy{bottom:76px;min-height:86px;padding-bottom:3px}
+ .summon-cinematic-ritual__copy h2{font-size:24px}
+ .summon-cinematic-ritual__footer{bottom:10px}
+}
+@media(max-width:699px){
+ .summon-cinematic-ritual__art{top:10%;height:53%}
+ .summon-cinematic-ritual__copy{bottom:85px;min-height:94px;padding:0 9px 6px}
+ .summon-cinematic-ritual__turning-card{
+   width:min(68vw,280px);height:100%;max-height:100%;min-height:0;
+ }
+ .summon-cinematic-ritual__footer{bottom:12px;width:calc(100% - 16px)}
+}
