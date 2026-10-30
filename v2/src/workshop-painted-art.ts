@@ -1,80 +1,71 @@
 import {Texture} from 'pixi.js';
 import type {WorkerId} from './workshop-model';
 
-/** Painted Pixi texture loader. A high-detail WebP is the primary backdrop;
- * older AVIF and procedural textures remain nonfatal codec fallbacks. */
+/** Decode the same static asset again after a transient first-navigation
+ * failure. A retry query prevents a cached failed response from being reused.
+ * Bounded attempts do not turn a missing or unsupported asset into an endless
+ * loading spinner, and high-quality WebP always wins when it is available. */
+async function loadPaintedTexture(assetBase:string,filename:string,attempts=2):Promise<Texture>{
+  let failure:unknown;
+  for(let attempt=0;attempt<attempts;attempt++){
+    try{
+      const url=new URL('./assets/'+filename,assetBase);
+      if(attempt)url.searchParams.set('retry',String(attempt));
+      const image=new Image();
+      image.crossOrigin='anonymous';
+      image.decoding='async';
+      image.src=url.href;
+      await image.decode();
+      if(!image.naturalWidth||!image.naturalHeight)throw Error('Decoded texture is empty: '+filename);
+      return Texture.from(image);
+    }catch(error){
+      failure=error;
+      if(attempt+1<attempts)
+        await new Promise<void>(resolve=>setTimeout(resolve,180));
+    }
+  }
+  throw failure;
+}
+
+/** Painted Pixi textures: retry first-load WebP/AVIF decoding once, then fall
+ * back without blocking gameplay. All resources resolve relative to the
+ * deployed /monster-apartment/workshop/ asset base. */
 export async function loadWorkshopPaintedArt(assetBase:string){
-  // The backdrop loads exactly once per stage mount, never once per shift.
   let painted:Texture|null=null;
   let backdropSource:'high-res-webp'|'legacy-avif'|'procedural'='procedural';
   let paintedFloor:Texture|null=null;
   let kilnArtReview:Texture|null=null;
   let patronPortrait:Texture|null=null;
-  // Legacy worker WebP assets were pet-shaped. Do not reload them into the
-  // human-form roster or stage; only distinct verified humanoid CG may return.
+  // Do not reload old pet-shaped worker assets into the real human roster.
   const workerPaintings:Partial<Record<WorkerId,Texture>>={};
   const paintedDetail:Partial<Record<'well'|'garden',Texture>>={};
   try{
-    const image=new Image();
-    image.crossOrigin='anonymous';
-    image.src=new URL('./assets/lobby-hero-v3.webp',assetBase).href;
-    await image.decode();
-    painted=Texture.from(image);
+    painted=await loadPaintedTexture(assetBase,'lobby-hero-v3.webp');
     backdropSource='high-res-webp';
   }catch{
     try{
-      const image=new Image();
-      image.crossOrigin='anonymous';
-      image.src=new URL('./assets/lobby-hero-v2.webp',assetBase).href;
-      await image.decode();
-      painted=Texture.from(image);
+      painted=await loadPaintedTexture(assetBase,'lobby-hero-v2.webp',1);
       backdropSource='high-res-webp';
     }catch{
       try{
-        const image=new Image();
-        image.crossOrigin='anonymous';
-        image.src=new URL('./assets/moon-workshop.avif',assetBase).href;
-        await image.decode();
-        painted=Texture.from(image);
+        painted=await loadPaintedTexture(assetBase,'moon-workshop.avif',1);
         backdropSource='legacy-avif';
-      }catch{/* generated background remains playable */}
+      }catch{/* procedural background remains playable */ }
     }
   }
   try{
-    const floorImage=new Image();
-    floorImage.crossOrigin='anonymous';
-    floorImage.src=new URL('./assets/moonstone-floor.avif',assetBase).href;
-    await floorImage.decode();
-    paintedFloor=Texture.from(floorImage);
-  }catch{/* keep gameplay available even if an asset cannot decode */}
-  // High-detail cameo remains independent of the factory floor textures.
+    paintedFloor=await loadPaintedTexture(assetBase,'moonstone-floor.avif');
+  }catch{/* interactive floor fallback remains available */}
   try{
-    const image=new Image();
-    image.crossOrigin='anonymous';
-    image.src=new URL('./assets/yuesha-avatar-v3.webp',assetBase).href;
-    await image.decode();
-    patronPortrait=Texture.from(image);
-  }catch{/* keep the original animated visitor as an offline fallback */}
-  // One actual painted, alpha-backed machine crop for visual review only.
-  // Never replace all machine art from a flattened screenshot.
-  try {
-    const kilnImage=new Image();
-    kilnImage.crossOrigin='anonymous';
-    kilnImage.src=new URL('./assets/kiln-art-review.avif',assetBase).href;
-    await kilnImage.decode();
-    kilnArtReview=Texture.from(kilnImage);
-  } catch {/* retain interactive fallback sprite when codec or file is absent */}
-  // Painterly detail overlays keep the procedural lower machines as a
-  // temporary physical base; characters from the concept art are masked out.
+    patronPortrait=await loadPaintedTexture(assetBase,'yuesha-avatar-v3.webp');
+  }catch{/* animated visitor remains available */}
+  try{
+    kilnArtReview=await loadPaintedTexture(assetBase,'kiln-art-review.avif');
+  }catch{/* default machine sprite remains available */}
   for(const kind of ['well','garden'] as const){
     try{
-      const image=new Image();
-    image.crossOrigin='anonymous';
-      image.src=new URL('./assets/'+kind+'-art-review.avif',assetBase).href;
-      await image.decode();
-      paintedDetail[kind]=Texture.from(image);
-    }catch{/* independent codec/image failure does not block production */}
+      paintedDetail[kind]=await loadPaintedTexture(assetBase,kind+'-art-review.avif');
+    }catch{/* the corresponding machine retains its default sprite */}
   }
-
   return {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings};
 }

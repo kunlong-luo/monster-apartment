@@ -17,3 +17,6 @@
 
 ## 构建与发布新硬门槛
 `scripts/audit-exported-images.mjs` 读取七条路由静态导出 HTML 中的 `img`、`source`、`link as=image`，拒绝无 basePath 的本地图片、需要 `/_next/image` 后端的优化请求和未实际输出的图片文件。Quality 静态导出任务与 Pages 正式发布任务都必须通过。动态客户端图片仍由 Playwright 检查真实解码。
+
+## Pixi 工坊首次贴图修复
+`v2/src/workshop-painted-art.ts` 的首次 WebP/AVIF 加载现在对高清背景、地板、月纱头像和三种机器效果最多尝试两次；第二次请求带短暂 retry 参数以绕过缓存的失败响应。旧 WebP 和 AVIF 兜底沿用；仅最后仍失败时降级到可玩程序场景。修改不触及工坊存档、Pixi 交互或派工经济。E2E 已有 `data-backdrop-source=high-res-webp` 检查，CI 新增七页静态图片路径审计。
