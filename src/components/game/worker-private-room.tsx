@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import {useEffect,useRef,useState} from 'react';
 import {useRoomStageSize} from './use-room-stage-size';
+import {RoomArtLocalPreviewPanel,useRoomArtLocalPreview} from './room-art-local-preview';
 import {CHARACTER_PROFILES,WORKER_DIALOGUES} from '@/core/character-life';
 import type {WorkerCharacterId,RoomObjectId,WorkerChoice} from '@/core/character-life';
 import {commitCharacterLife,useCharacterLife} from '@/lib/game/character-life-store';
@@ -30,6 +31,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
 }){
   const stageRef=useRef<HTMLDivElement>(null);
   const stageSize=useRoomStageSize(stageRef);
+  const artReview=useRoomArtLocalPreview();
   const profile=CHARACTER_PROFILES[id];
   const scene=WORKER_DIALOGUES[id];
   const palette=SCENE_PALETTES[id];
@@ -59,6 +61,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
     setNotice(result==='applied'?'这次交谈成为了你们共同的回忆。':result==='duplicate'?'你们已经谈过这件事。':'选择未能保存，原档不会被覆盖。');
   };
   const foundHint=observed.includes(scene.objects[0].id)&&observed.includes(scene.objects[1].id);
+  const shownPose=artReview.enabled&&artReview.selectedPose?artReview.selectedPose:pose;
 
   return <GothicModal title={'拜访'+profile.name+'的房间'} closeLabel={'离开'+profile.name+'的房间'} onClose={onClose} wide immersive>
     <div data-testid={'worker-private-room-'+id} className="min-w-0 w-full space-y-3">
@@ -73,8 +76,10 @@ export function WorkerPrivateRoom({id,onClose,working}:{
       <div className="min-w-0 space-y-2">
       <div className={'relative h-[clamp(270px,53vh,565px)] overflow-hidden rounded-xl border border-gothic-brass/65 bg-[#120f1c]'}
         aria-label={profile.name+'的房间概念场景'} ref={stageRef}>
-        <RoomSceneBackdrop id={id}/>
-        <RoomResidentSprite id={id} name={profile.name} working={working} reaction={reaction} pose={pose}/>
+        <RoomSceneBackdrop id={id} previewUrl={artReview.backgroundUrl}/>
+        <RoomResidentSprite id={id} name={profile.name} working={working} reaction={reaction}
+          pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)}
+          previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>
         <RoomSceneFocus id={id} item={selectedItem} pose={pose} stageSize={stageSize}/>
         <RoomSceneHotspots characterName={profile.name} roomId={id} items={scene.objects} stageSize={stageSize}
           observed={observed} selected={selectedItem} onInspect={inspect}
@@ -87,6 +92,8 @@ export function WorkerPrivateRoom({id,onClose,working}:{
           <p className="text-[11px] leading-5 text-[#f5ddc3]">{working?'正在工坊值守 · 屋内留着便条':'暂时休息 · 可以聊聊天'}</p>
         </div>
       </div>
+      <RoomArtLocalPreviewPanel id={id} name={profile.name} review={artReview}
+        warning="当前仍使用概念版调查热点坐标；新背景的物件定位须在仓库外单独标注并审核，不能据此预览判断正式热点。"/>
       <p className="text-[10px] leading-5 text-gothic-muted">轻触物件寻找房间线索。角色演出独立于环境，工匠值守时仅保留便条。</p>
       </div>
       <div className="min-w-0 space-y-3 lg:max-h-[min(62vh,580px)] lg:overflow-y-auto lg:pr-2 [scrollbar-color:#a67f67_#281822] [scrollbar-width:thin]">
