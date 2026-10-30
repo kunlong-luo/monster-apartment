@@ -1,4 +1,27 @@
 import {test,expect} from '@playwright/test';
+import type {Page} from '@playwright/test';
+
+/** Synthetic environment-only bitmap for preview tests; never production artwork. */
+async function reviewBackgroundCandidate(page:Page){
+  const base64=await page.evaluate(async()=>{
+    const canvas=document.createElement('canvas');
+    canvas.width=1920;canvas.height=1080;
+    const ctx=canvas.getContext('2d');
+    if(!ctx)throw Error('Canvas missing');
+    const gradient=ctx.createLinearGradient(0,0,1920,1080);
+    gradient.addColorStop(0,'#35204f');
+    gradient.addColorStop(1,'#98715b');
+    ctx.fillStyle=gradient;
+    ctx.fillRect(0,0,1920,1080);
+    const blob=await new Promise<Blob>((resolve,reject)=>
+      canvas.toBlob(file=>file?resolve(file):reject(Error('WebP export failed')),'image/webp',.88));
+    const bytes=new Uint8Array(await blob.arrayBuffer());
+    let raw='';for(const byte of bytes)raw+=String.fromCharCode(byte);
+    return btoa(raw);
+  });
+  return {name:'review-only-room.webp',mimeType:'image/webp',buffer:Buffer.from(base64,'base64')};
+}
+
 
 test('mobile personal suites keep hotspots inside the scene and close naturally',async({page})=>{
   await page.setViewportSize({width:390,height:844});
@@ -92,6 +115,9 @@ test('optional in-game HD review only uses an ephemeral local preview',async({pa
   const backdrop=page.getByTestId('room-scene-backdrop');
   await expect(backdrop).toHaveAttribute('data-local-preview','false');
   await page.getByTestId('room-art-local-file').setInputFiles('public/art/yuesha-bust-v3.webp');
+  await expect(page.getByRole('alert')).toContainText('背景候选须至少');
+  await expect(backdrop).toHaveAttribute('data-local-preview','false');
+  await page.getByTestId('room-art-local-file').setInputFiles(await reviewBackgroundCandidate(page));
   await expect(backdrop).toHaveAttribute('data-local-preview','true');
   await expect(backdrop.locator('img')).toHaveAttribute('src',/^blob:/);
   await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-render-mode','separate');
@@ -150,7 +176,7 @@ test('compact-height local art preview keeps overlapping prop accessible without
   await page.getByRole('button',{name:'与女主人月纱交流'}).click();
   await page.getByTestId('visit-yuesha-room').click();
   await page.getByTestId('room-art-review-toggle').click();
-  await page.getByTestId('room-art-local-file').setInputFiles('public/art/yuesha-bust-v3.webp');
+  await page.getByTestId('room-art-local-file').setInputFiles(await reviewBackgroundCandidate(page));
   await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-local-preview','true');
   await page.getByTestId('room-art-review-toggle').click();
   await expect(page.getByTestId('room-art-review-toggle')).toHaveAttribute('aria-expanded','false');
@@ -177,7 +203,7 @@ test('all three worker rooms can review local background and reject nontranspare
     await expect(backdrop).toHaveAttribute('data-local-preview','false');
     await review.getByTestId('room-art-review-toggle').click();
     await expect(review.getByText(/概念版调查热点坐标/)).toBeVisible();
-    await review.getByTestId('room-art-local-file').setInputFiles('public/art/yuesha-bust-v3.webp');
+    await review.getByTestId('room-art-local-file').setInputFiles(await reviewBackgroundCandidate(page));
     await expect(backdrop).toHaveAttribute('data-local-preview','true');
     await expect(backdrop.locator('img')).toHaveAttribute('src',/^blob:/);
     await review.getByTestId('room-pose-upload-idle').setInputFiles('public/art/yuesha-bust-v3.webp');
