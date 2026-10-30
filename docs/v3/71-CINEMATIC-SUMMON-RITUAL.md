@@ -20,3 +20,6 @@
 
 ## 第三次几何诊断与修复
 上一次实际浏览器测出 omen 元素下沿 815px，而文字上沿 642px，遮挡严重；单纯改 art top 百分比不能解决。原因在于 centered Grid item 的 `height:min(100%,810px)` 存在循环百分比高度计算，容器没有拿到稳定的视口高度。已用 `height:min(810px,calc(100dvh - 40px))` 锁定舞台参照（移动端扣减 12px），再维持上下独立分区。增加 `ritualViewport.height > 690` 检查；SSR 预告延至 1250ms，确保玩家能看到高稀有信息和预兆动画。
+
+## 继续定位百分比高度问题（桌面几何回归）
+最新截图检查仍记录 `omen.bottom≈814px`、`copy.top≈643px`，说明普通 `position:absolute` 并未可靠锁定动效层。为避免其他容器布局或 Motion 阶段退出影响，把**仅仪式期间**的法阵、文字、进度条改为固定视口坐标布局；正式结果页仍是原 V3.70 布局。测试额外验证演出图层 computed position 为 fixed，再判定实际元素无重叠。

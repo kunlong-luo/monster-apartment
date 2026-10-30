@@ -83,6 +83,11 @@ test('cinematic omen shows exact rarest awarded rarity and never rerolls',async(
   const omenText=page.locator('.summon-cinematic-ritual__copy');
   await expect(omenShape).toBeVisible();
   await expect(omenText).toBeVisible();
+  const computedFrame=await page.locator('.summon-cinematic-ritual__art').evaluate(el=>({
+    position:getComputedStyle(el).position,top:getComputedStyle(el).top,
+    height:getComputedStyle(el).height,
+  }));
+  expect(computedFrame.position).toBe('fixed');
   const omenBox=await omenShape.boundingBox();
   const omenCopyBox=await omenText.boundingBox();
   expect(omenBox!.y+omenBox!.height).toBeLessThan(omenCopyBox!.y-8);
