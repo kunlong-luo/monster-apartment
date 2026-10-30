@@ -1,8 +1,9 @@
 'use client';
 
-import {useEffect,useMemo,useState,useSyncExternalStore} from 'react';
+import {useEffect,useMemo,useRef,useState,useSyncExternalStore} from 'react';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
-import {dialogueBeatDuration,dialogueBeats} from '@/core/room-performance';
+import {dialogueBeatDuration,dialogueBeats,roomDialogueBeatPose} from '@/core/room-performance';
+import type {RoomPose} from '@/core/room-performance';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 
 const watchVisibility=(notify:()=>void)=>{
@@ -13,8 +14,9 @@ const visible=()=>document.visibilityState==='visible';
 
 /** A small auto-advancing cinematic overlay inside the existing room stage.
  * Progress is ephemeral and never interrupts or edits the first-visit save. */
-export function RoomDialogueTheater({name,title,response,onClose}:{
+export function RoomDialogueTheater({name,title,response,onClose,basePose='warm',onBeatPose}:{
   name:string;title:string;response:string;onClose:()=>void;
+  basePose?:RoomPose;onBeatPose?:(pose:RoomPose)=>void;
 }){
   const beats=useMemo(()=>dialogueBeats(response),[response]);
   const [index,setIndex]=useState(0);
@@ -23,6 +25,15 @@ export function RoomDialogueTheater({name,title,response,onClose}:{
   const systemReduced=useReducedMotion();
   const still=Boolean(gameReduced||systemReduced);
   const finished=still||index===beats.length-1;
+  const currentBeat=still?Math.max(0,beats.length-1):index;
+  const beatPose=roomDialogueBeatPose(basePose,currentBeat,beats.length);
+  // Keep notifications tied to actual beat changes, not to the callback
+  // identity when the parent rerenders for its own story/reaction updates.
+  const poseNotification=useRef(onBeatPose);
+  poseNotification.current=onBeatPose;
+  useEffect(()=>{
+    poseNotification.current?.(beatPose);
+  },[beatPose]);
   useEffect(()=>{
     if(still||finished||!pageVisible||beats.length===0)return;
     const clock=window.setTimeout(()=>{
@@ -33,6 +44,7 @@ export function RoomDialogueTheater({name,title,response,onClose}:{
 
   const displayed=still?beats.join(''):beats.slice(0,index+1).join('');
   return <section data-testid="room-dialogue-theater" data-state={finished?'finished':'playing'}
+    data-beat-pose={beatPose}
     role="region" aria-label={name+'的剧情演出'}
     onKeyDown={event=>{
       if(event.key==='Escape'){event.stopPropagation();onClose();}

@@ -86,6 +86,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
           description={scene.objects.find(item=>item.id===selectedItem)?.text}/>
         {theater&&!working&&<RoomDialogueTheater key={theater.id} name={profile.name}
           title={theater.title} response={theater.response}
+          basePose={roomTopicPose(id,theater.id)} onBeatPose={setPose}
           onClose={()=>{setTheater(null);setPose('idle');}}/>}
         <div className="pointer-events-none absolute bottom-3 left-3 z-[1] max-w-[47%] space-y-2">
           <span className={'inline-block rounded-full border bg-[#14101acc] px-3 py-1 text-[10px] '+palette.ribbon}>{palette.roomDetail}</span>

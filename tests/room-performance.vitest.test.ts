@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {dialogueBeatDuration,dialogueBeats,roomObjectPose,roomTopicPose} from '../src/core/room-performance';
+import {dialogueBeatDuration,dialogueBeats,roomDialogueBeatPose,roomObjectPose,roomTopicPose} from '../src/core/room-performance';
 import {ROOM_ART_MANIFEST} from '../src/core/room-art-manifest';
 
 describe('room performance and clean art slots',()=>{
@@ -19,6 +19,16 @@ describe('room performance and clean art slots',()=>{
     expect(dialogueBeats('一句话')).toEqual(['一句话']);
     expect(dialogueBeatDuration('短')).toBeGreaterThanOrEqual(1800);
     expect(dialogueBeatDuration('长'.repeat(200))).toBeLessThanOrEqual(5200);
+  });
+  it('automatically directs dialogue beat poses without any save-side actions',()=>{
+    expect(roomDialogueBeatPose('warm',0,2)).toBe('attentive');
+    expect(roomDialogueBeatPose('warm',1,2)).toBe('warm');
+    expect(roomDialogueBeatPose('guarded',0,3)).toBe('attentive');
+    expect(roomDialogueBeatPose('guarded',1,3)).toBe('guarded');
+    expect(roomDialogueBeatPose('guarded',2,3)).toBe('guarded');
+    expect(roomDialogueBeatPose('warm',2,4)).toBe('attentive');
+    expect(roomDialogueBeatPose('warm',3,4)).toBe('warm');
+    expect(roomDialogueBeatPose('guarded',0,1)).toBe('guarded');
   });
   it('declares only valid future asset paths without pretending CG already ships',()=>{
     expect(Object.keys(ROOM_ART_MANIFEST)).toEqual(['yuesha','brook','fern','cinder']);

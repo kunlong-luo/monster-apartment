@@ -68,7 +68,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
           hotspot==='tea'?'杯里有桂皮与温暖的香气。月纱说，做生意之前应该先好好喝一杯茶。':
           hotspot==='ledger'?'账簿封面有多年前的磨损痕迹。里面记着什么，目前还不能公开。':undefined}/>
       {theater&&<RoomDialogueTheater key={theater.id} name="月纱" title={theater.title}
-        response={theater.response} onClose={()=>{setTheater(null);setPose('idle');}}/>}
+        response={theater.response} basePose={roomTopicPose('yuesha',theater.id)}
+        onBeatPose={setPose} onClose={()=>{setTheater(null);setPose('idle');}}/>}
       <div className="pointer-events-none absolute top-9 left-3 max-w-[52%] space-y-1 text-shadow-md">
         <h3 className="text-lg text-[#ffe3bd] sm:text-2xl">月纱的契约会客室</h3>
         <p className="text-[11px] leading-5 text-[#e4c7ab]">月纹、旧契约和一杯香料茶</p>

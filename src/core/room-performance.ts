@@ -41,3 +41,11 @@ export function dialogueBeats(text:string):string[]{
 export function dialogueBeatDuration(text:string):number{
   return Math.max(1800,Math.min(5200,1900+text.length*95));
 }
+
+/** A cinematic line begins in a listening pose and resolves into the
+ * topic's established emotional pose. Driven by dialogue progress only:
+ * never writes to character-life or workshop saves. */
+export function roomDialogueBeatPose(base:RoomPose,beat:number,total:number):RoomPose{
+  if(total<=1||beat>=total-1)return base;
+  return beat%2===0?'attentive':base;
+}

@@ -93,7 +93,13 @@ test('mobile cinematic performance scrolls into view and exits without closing t
   await page.getByTestId('visit-yuesha-room').click();
   await page.getByTestId('room-topic-yuesha-moon').click();
   await expect(page.getByTestId('room-dialogue-theater')).toBeInViewport();
+  await expect(page.getByTestId('room-dialogue-theater')).toHaveAttribute('data-beat-pose','attentive');
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-pose','attentive');
+  await page.getByTestId('room-theater-skip').click();
+  await expect(page.getByTestId('room-dialogue-theater')).toHaveAttribute('data-beat-pose','warm');
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-pose','warm');
   await page.getByTestId('room-theater-close').click();
+  await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-pose','idle');
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
   await expect(page.getByTestId('room-dialogue-theater')).toHaveCount(0);
 });
