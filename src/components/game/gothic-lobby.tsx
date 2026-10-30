@@ -1,13 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {AnimatePresence} from 'motion/react';
 import {useMemo,useState} from 'react';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
 import moonveilAvatar from '../../../public/art/yuesha-avatar-v3.webp';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
+import lobbyHeroBackup from '../../../public/art/lobby-hero-v2.webp';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
 import {CHANGE_EVENT,commitWorldAction} from '@/lib/moonwork/world-store';
 import {GothicAtmosphere} from './gothic-atmosphere';
@@ -72,7 +73,7 @@ export function GothicLobby(){
     <div className="gothic-lobby__stage" aria-hidden="true">
       <div className="gothic-lobby__fallback"/>
       <div className="gothic-lobby__painting">
-        <Image src={lobbyHero} fill sizes="100vw" priority unoptimized
+        <Image src={lobbyHero} fallbackSrc={lobbyHeroBackup} fill sizes="100vw" priority unoptimized
           alt="" draggable={false} aria-hidden="true"
           data-testid="gothic-lobby-painting-image"
           className="select-none object-cover object-center"/>

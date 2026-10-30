@@ -1,6 +1,6 @@
 'use client';
-import Image from 'next/image';
-import {useSyncExternalStore} from 'react';
+import {ReliableImage as Image} from '@/components/game/reliable-image';
+import {useState,useSyncExternalStore} from 'react';
 import coverDesktop from '../../../public/art/beauty-beasts/cover/world-cover.webp';
 import coverMobile from '../../../public/art/beauty-beasts/cover/world-cover-mobile.webp';
 import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
@@ -26,13 +26,20 @@ function subscribeExistingSave(callback:()=>void){
  * Desktop/mobile cover is in the repository as independent WebP binary files. */
 export function GothicWelcome({onEnter}:{onEnter:()=>void}){
   const returning=useSyncExternalStore(subscribeExistingSave,readExistingSave,()=>false);
+  // <picture> may select the mobile <source> regardless of an img-src retry.
+  // Retry that source alongside next/image, then fall back to desktop artwork.
+  const [coverFailures,setCoverFailures]=useState(0);
   return <main className="gothic-welcome" data-testid="gothic-welcome"
     aria-label="美女与野兽 · 游戏欢迎页" data-cover-status="integrated-beauty-beasts-cover">
     <link rel="preload" as="image" href={coverMobile.src} media="(max-width:700px)"/>
     <link rel="preload" as="image" href={coverDesktop.src} media="(min-width:701px)"/>
     <picture className="gothic-welcome__painting" aria-hidden="true">
-      <source media="(max-width:700px)" srcSet={coverMobile.src}/>
-      <Image src={coverDesktop} alt="" fill loading="eager" fetchPriority="high" unoptimized sizes="100vw"
+      <source media="(max-width:700px)"
+        srcSet={coverFailures===0?coverMobile.src:
+          coverFailures===1?coverMobile.src+'?asset_retry=1':undefined}/>
+      <Image src={coverDesktop} fallbackSrc={coverMobile} alt="" fill loading="eager"
+        fetchPriority="high" unoptimized sizes="100vw"
+        onError={()=>setCoverFailures(n=>Math.min(2,n+1))}
         data-testid="welcome-cover-image" className="object-cover"/>
     </picture>
     <div className="gothic-welcome__shade" aria-hidden="true"/>

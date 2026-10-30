@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {useReducedMotion} from 'motion/react';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 import {ROOM_ART_MANIFEST,roomPublicAssetPath} from '@/core/room-art-manifest';

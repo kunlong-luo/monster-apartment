@@ -4,8 +4,8 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
-  await expect(page.getByTestId('game-release')).toContainText('V3.61');
-  await expect(page.getByTestId('gothic-eclipse-feature')).toContainText('V3.61');
+  await expect(page.getByTestId('game-release')).toContainText('V3.62');
+  await expect(page.getByTestId('gothic-eclipse-feature')).toContainText('V3.62');
   await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link')).toHaveCount(7);
   await expect(page.getByRole('navigation',{name:'快捷功能'})).toHaveCount(0);
   await expect(page.getByTestId('lobby-coins')).toHaveText('100');
@@ -54,7 +54,7 @@ test('real saved draws change the introductory contract into an accurate collect
   await expect(page.getByTestId('lobby-summon-guide-detail')).toContainText('2 张信物');
   await page.getByTestId('gothic-eclipse-feature').click();
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
-  await expect(page.getByTestId('game-release')).toContainText('V3.61');
+  await expect(page.getByTestId('game-release')).toContainText('V3.62');
   await expect(page.getByTestId('summon-owned-progress')).toContainText('1/5');
 });
 

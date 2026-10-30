@@ -3,6 +3,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import './summon-screen.css';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
+import lobbyHeroBackup from '../../../public/art/lobby-hero-v2.webp';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import {GothicDock} from '@/components/game/gothic-hud';
@@ -11,7 +12,7 @@ import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 import {useCharacterLife} from '@/lib/game/character-life-store';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
 import {claimProgressTickets,claimTrialTicket,gachaSaveStatus,GACHA_CHARACTERS} from '@/lib/summon/gacha-engine';
-import Image from 'next/image';
+import {ReliableImage as Image} from '@/components/game/reliable-image';
 import Link from 'next/link';
 import {Backpack,Droplets,Gem,History,Mail,Megaphone,Settings,Ticket} from 'lucide-react';
 import { useGacha } from '@/lib/summon/use-gacha';
@@ -126,7 +127,7 @@ export function GothicSummonScreen() {
       {/* Static imports preserve the real Next.js Pages basePath and keep
           the original painting sharp after client navigation. */}
       <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
-        <Image src={lobbyHero} alt="" fill priority unoptimized sizes="100vw"
+        <Image src={lobbyHero} fallbackSrc={lobbyHeroBackup} alt="" fill priority unoptimized sizes="100vw"
           data-testid="summon-background-painting"
           className="select-none object-cover object-center" draggable={false}/>
       </div>
