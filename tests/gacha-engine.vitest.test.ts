@@ -68,6 +68,33 @@ describe('a faithful functional summoning screen',()=>{
     expect(claimTrialTicket()).toBe(false);
     expect(readGachaState().tickets).toBe(4);
   });
+  it('retains the single-use trial marker after workshop and visit rewards',()=>{
+    expect(claimTrialTicket()).toBe(true);
+    expect(claimProgressTickets(2,1)).toBe(3);
+    expect(claimTrialTicket()).toBe(false);
+    expect(claimProgressTickets(4,2)).toBe(3);
+    expect(readGachaState().tickets).toBe(10);
+    expect(readGachaState().claimedProgressRewards).toEqual([-1,6]);
+    expect(claimTrialTicket()).toBe(false);
+  });
+  it('retains trial redemption when it happens between progression rewards',()=>{
+    expect(claimProgressTickets(1,2)).toBe(3);
+    expect(claimTrialTicket()).toBe(true);
+    expect(claimProgressTickets(3,2)).toBe(2);
+    expect(claimTrialTicket()).toBe(false);
+    expect(readGachaState().claimedProgressRewards).toEqual([-1,5]);
+  });
+  it('reports distinct first-owned and duplicate card shard rewards',()=>{
+    saved.set(GACHA_STATE_KEY,JSON.stringify({...INITIAL_GACHA_STATE,tickets:2}));
+    const first=executeSummon(1);
+    expect(first.success).toBe(true);
+    expect(first.characters[0]).toMatchObject({firstAcquired:true,awardedShards:1});
+    const second=executeSummon(1);
+    expect(second.success).toBe(true);
+    expect(second.characters[0]).toMatchObject({firstAcquired:false,awardedShards:2});
+    expect(JSON.parse(saved.get(COLLECTION_KEY)!).draws).toEqual(['brook-tide','brook-tide']);
+    expect(JSON.parse(saved.get(COLLECTION_KEY)!).shards).toBe(3);
+  });
   it('keeps the stated base rarity thresholds, with an explicit 90-pull pity',()=>{
     expect(rollSingleGacha(INITIAL_GACHA_STATE,'mythic-eclipse').character.rarity).toBe('N');
     vi.spyOn(Math,'random').mockReturnValue(0);

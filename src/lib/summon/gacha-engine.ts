@@ -22,6 +22,9 @@ export interface SummonableCharacter {
   bio: string;
   isUp?: boolean;
   baseCardKey?: CardKey;
+  /** Per-draw information returned only after saving, not on catalog entries. */
+  firstAcquired?: boolean;
+  awardedShards?: number;
 }
 
 export const GACHA_CHARACTERS: readonly SummonableCharacter[] = [
@@ -146,7 +149,11 @@ export function claimProgressTickets(completed:number,visited:number):number{
   const credited=Math.max(0,...current.claimedProgressRewards.filter(n=>Number.isSafeInteger(n)));
   if(eligible<=credited)return 0;
   const grant=eligible-credited;
-  return saveGachaState({...current,tickets:current.tickets+grant,claimedProgressRewards:[eligible]}) ? grant : 0;
+  // Keep independent one-time reward markers (e.g. -1 means the trial ticket
+  // was already taken) when the workshop/visit progress counter advances.
+  const markers=current.claimedProgressRewards.filter(n=>Number.isSafeInteger(n)&&n<0);
+  return saveGachaState({...current,tickets:current.tickets+grant,
+    claimedProgressRewards:[...markers,eligible]}) ? grant : 0;
 }
 
 /** Grant the skill showcase prize at most once per saved collection. */
@@ -198,7 +205,7 @@ export function rollSingleGacha(
 
   // Hard pity trigger (pity reached 1)
   if (pity <= 1) {
-    // Guaranteed SSR! 50% rate-up Yuesha, 50% other SSR
+    // Disclosed hard-pity split: 50% Mythic, 50% Legend, same in every visual theme.
     const ssrPool = GACHA_CHARACTERS.filter((c) => c.rarity.startsWith('SSR'));
     const isUp = Math.random() < 0.5;
     if (isUp) {
@@ -326,14 +333,19 @@ export function executeSummon(
   const collection=currentCollection.collection;
   const draws=collection.draws.slice();
   let shards=collection.shards;
-  for(const character of results){
+  for(let i=0;i<results.length;i++){
+    const character=results[i];
     if(!character.baseCardKey)continue;
     const card=character.baseCardKey;
     const duplicate=draws.includes(card);
     draws.push(card);
     const tier=card==='yuesha-eclipse'?5:card==='yuesha-vow'?4:
       card==='cinder-ember'?3:card==='fern-spring'?2:1;
-    shards+=1+(duplicate?tier:0);
+    const awardedShards=1+(duplicate?tier:0);
+    shards+=awardedShards;
+    // Within ten-pulls, earlier cards are already owned for later cards.
+    // Never mutate a shared static catalogue entry.
+    results[i]={...character,firstAcquired:!duplicate,awardedShards};
   }
   try {
     const previous=window.localStorage.getItem(GACHA_STATE_KEY);
