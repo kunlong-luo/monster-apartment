@@ -58,6 +58,33 @@ export function roomSpotIsReachable(spot:SceneSpot,stage:RoomStageSize,markerSiz
     x>=half&&x<=stage.width-half&&y>=half&&y<=stage.height-half;
 }
 
+/** Resolves touch-target collisions without moving painted prop locations.
+ * 44px buttons are square, so checking only center-to-center distance can
+ * still leave overlapping hit boxes. The first reachable marker stays in the
+ * scene; later conflicting markers move into the accessible discovery menu.
+ * This is presentation state only, never written to narrative saves. */
+export type RoomHotspotVisibility='visible'|'offscreen'|'overlap';
+export type RoomHotspotPlacement<T extends string>={id:T;position:SceneSpot;visibility:RoomHotspotVisibility};
+export function roomHotspotPlacements<T extends string>(
+  spots:readonly {id:T;position:SceneSpot}[],
+  stage:RoomStageSize|null,
+  markerSize=44,
+):RoomHotspotPlacement<T>[]{
+  if(!stage||!(stage.width>0&&stage.height>0))
+    return spots.map(spot=>({...spot,visibility:'visible' as const}));
+  const placed:{x:number;y:number}[]=[];
+  return spots.map(spot=>{
+    if(!roomSpotIsReachable(spot.position,stage,markerSize))
+      return {...spot,visibility:'offscreen' as const};
+    const x=Number.parseFloat(spot.position.left)*stage.width/100;
+    const y=Number.parseFloat(spot.position.top)*stage.height/100;
+    if(placed.some(other=>Math.abs(x-other.x)<markerSize&&Math.abs(y-other.y)<markerSize))
+      return {...spot,visibility:'overlap' as const};
+    placed.push({x,y});
+    return {...spot,visibility:'visible' as const};
+  });
+}
+
 /** Production art uses physical object anchors. Concept scenes never inherit
  * the new painting's coordinates and retain their existing hotspot behavior. */
 export function roomProjectedHotspotPosition(roomId:string,itemId:string,size:RoomStageSize|null,index=0,preview=false):SceneSpot{
