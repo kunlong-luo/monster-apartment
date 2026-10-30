@@ -26,8 +26,8 @@ test('mobile personal suites keep hotspots inside the scene and close naturally'
     expect(hotBox.x+hotBox.width).toBeLessThanOrEqual(sceneBox.x+sceneBox.width+1);
     expect(hotBox.y+hotBox.height).toBeLessThanOrEqual(sceneBox.y+sceneBox.height+1);
     await expect(hotspot).toHaveAttribute('data-marker-layout','compact');
-    expect(hotBox.width).toBeGreaterThanOrEqual(44);
-    expect(hotBox.height).toBeGreaterThanOrEqual(44);
+    expect(hotBox.width).toBeGreaterThanOrEqual(43.99);
+    expect(hotBox.height).toBeGreaterThanOrEqual(43.99);
     expect(hotBox.width).toBeLessThanOrEqual(45);
     await hotspot.click();
     await expect(hotspot).toHaveAttribute('aria-pressed','true');

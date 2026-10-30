@@ -44,7 +44,7 @@ test('2D polish: architectural room controls, Moonveil dialogue, accessible game
   await expect(page.getByRole('dialog',{name:'与月纱交谈'})).toHaveCount(0);
   await page.getByTestId('ga-room-0').click();
   await expect(page.getByTestId('ga-build-nest')).toBeVisible();
-  await expect(page.getByTestId('ga-build-nest')).toContainText('软绵卧室');
+  await expect(page.getByTestId('ga-build-nest')).toContainText('私人卧室');
   await page.getByTestId('ga-build-nest').click();
   await expect(page.getByTestId('ga-coins')).toHaveText('75');
   await expect(page.locator('.ga-feedback')).toContainText('新房间建好了');

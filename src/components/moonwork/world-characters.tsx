@@ -37,7 +37,7 @@ export function Characters({s,onVisit}:{s:WorkshopState;onVisit:(id:WorkerId)=>v
       <p>月纱、泉泡、青枝与炽角均为成年人物。召唤契约提升人物潜力，打造装备后提升属性；拜访私人房间可以发现新的故事线索。</p>
       <div className="mw-persona-quick-nav">
         <span data-testid="gallery-collected-count">{status==='ok'?'已收录人物契约 '+collectedCount+'/5':'人物收藏存档需要处理'}</span>
-        <Link href="/characters/#summon-screen" data-testid="open-cinematic-summon" className="mw-persona-summon-link">✦ 进入契约召唤</Link>
+        <a href="/characters/#summon-screen" data-testid="open-cinematic-summon" className="mw-persona-summon-link">✦ 进入契约召唤</a>
       </div>
     </section>
     <div className="mw-worker-grid" data-testid="painted-worker-gallery">
