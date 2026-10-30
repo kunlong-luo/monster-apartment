@@ -46,12 +46,15 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await expect(pools.filter({hasText:'红月之邀'})).toHaveAttribute('aria-pressed','true');
   const ids=await page.getByTestId('summon-available-card').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-character-id')));
   expect(ids).toEqual(['yuesha-eclipse','yuesha-vow','cinder-ember','fern-spring','brook-tide']);
-  for(const id of ['cinder-ember','fern-spring','brook-tide']){
-    await expect(page.locator(`[data-character-id="${id}"] [data-art-source]`))
-      .toHaveAttribute('data-art-source','hi-dpi-transparent-human');
-    await expect(page.locator(`[data-character-id="${id}"] [data-figure-kind]`))
-      .toHaveAttribute('data-figure-kind','humanoid');
+  const portraits=page.getByTestId('summon-available-card');
+  for(const card of await portraits.all()){
+    const face=card.locator('img[data-portrait-source="dedicated-heroin-face"]');
+    await expect(face).toBeVisible();
+    await expect(face).toHaveJSProperty('naturalWidth',512);
   }
+  const faces=await portraits.locator('img').evaluateAll(nodes=>
+    nodes.map(n=>(n as HTMLImageElement).currentSrc));
+  expect(new Set(faces).size).toBe(4); // two rarity forms are the same Yuesha.
   await expect(page.getByText('2024/10/24')).toHaveCount(0);
   await page.getByTestId('collection-summon').click();
   await expect(page.getByTestId('collection-reveal')).toBeVisible();

@@ -4,6 +4,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import './summon-screen.css';
 import {GothicDock} from '@/components/game/gothic-hud';
 import {WorkerArtwork} from '@/components/moonwork/worker-artwork';
+import {HEROINE_FACE_ART,getCardFace} from './heroine-portrait-assets';
 import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 import {useCharacterLife} from '@/lib/game/character-life-store';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
@@ -23,12 +24,6 @@ import { useCharacterCollection, commitCollection } from '@/lib/game/character-c
 import { CHARACTER_CARDS, FORGE_RECIPES } from '@/core/character-collection';
 import type {CharacterId} from '@/core/character-life';
 import {COVENANT_BEASTS} from '@/lib/summon/covenant-beasts';
-
-const SUMMON_WORKER_ART: Record<string,'cinder'|'fern'|'brook'> = {
-  'cinder-ember':'cinder',
-  'fern-spring':'fern',
-  'brook-tide':'brook',
-};
 
 function observeGachaSave(callback:()=>void){
   const event=()=>callback();
@@ -258,12 +253,9 @@ export function GothicSummonScreen() {
               >
                 {/* Same real character identity on pool tile and main spotlight. */}
                 <div className="relative size-12 shrink-0 overflow-hidden rounded-lg border border-[#e2b57855]">
-                  {workerPreview ? (
-                    <WorkerArtwork id={workerPreview} name={pool.subname} compact/>
-                  ) : (
-                    <Image src={pool.avatar} alt={pool.name} fill sizes="48px"
-                      className="object-cover object-top"/>
-                  )}
+                  <Image src={HEROINE_FACE_ART[workerPreview??'yuesha']}
+                    alt={pool.subname} fill sizes="48px"
+                    className="object-cover object-top"/>
                 </div>
 
                 {/* Pool copy */}
@@ -528,11 +520,9 @@ export function GothicSummonScreen() {
                   title={character.title} aria-label={`查看契约档案：${character.title}`}
                   onClick={() => setShowGalleryTab(true)}
                   className="relative size-10 shrink-0 overflow-hidden rounded-full border border-[#b88c58] bg-[#2a1023] text-xs font-bold text-[#f6d5aa] transition hover:border-[#ffe3b3] hover:scale-105">
-                  {character.id.startsWith('yuesha-') ? (
-                    <Image src={character.avatar} alt="" fill sizes="40px" className="object-cover object-top" />
-                  ) : (
-                    <WorkerArtwork id={SUMMON_WORKER_ART[character.id]} name={character.name} compact />
-                  )}
+                  <Image src={getCardFace(character.id)??character.avatar} alt=""
+                    fill sizes="40px" className="object-cover object-top"
+                    data-portrait-source="dedicated-heroin-face"/>
                 </button>
               ))}
             </div>
@@ -631,10 +621,8 @@ export function GothicSummonScreen() {
                       }`}
                     >
                       <div className="size-10 overflow-hidden rounded bg-[#1e0f1d] border border-[#a87c50]">
-                        {card.character === 'yuesha'
-                          ?<Image src="/art/yuesha-avatar-v3.webp" alt={card.title}
-                            width={40} height={40} className="size-full object-cover"/>
-                          :<WorkerArtwork id={card.character} name={card.title} compact/>}
+                        <Image src={HEROINE_FACE_ART[card.character]} alt={card.title}
+                          width={40} height={40} className="size-full object-cover"/>
                       </div>
                       <div>
                         <strong className="block text-sm text-[#ffe5be]">{card.title}</strong>

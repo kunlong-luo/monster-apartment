@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import {WorkerArtwork} from '@/components/moonwork/worker-artwork';
+import {getCardFace} from './heroine-portrait-assets';
 import type { SummonableCharacter } from '@/lib/summon/gacha-engine';
 
 interface SummonRitualModalProps {
@@ -173,11 +173,9 @@ export function SummonRitualModal({ characters, onClose, onSummonAgain }: Summon
 
                       {/* Character Artwork */}
                       <div className="relative my-auto flex h-36 sm:h-44 w-full items-center justify-center overflow-hidden rounded-lg">
-                        {char.id==='brook-tide'?<WorkerArtwork id="brook" name={char.name}/>:
-                          char.id==='fern-spring'?<WorkerArtwork id="fern" name={char.name}/>:
-                          char.id==='cinder-ember'?<WorkerArtwork id="cinder" name={char.name}/>:
-                          <Image src={char.avatar} alt={char.name} fill
-                            sizes="200px" className="object-cover object-top filter brightness-105"/>}
+                        <Image src={getCardFace(char.id)??char.avatar} alt={char.name} fill
+                          sizes="200px" className="object-cover object-top filter brightness-105"
+                          data-portrait-source="dedicated-heroin-face"/>
                         <div className="absolute inset-0 bg-gradient-to-t from-[#140b15] via-transparent to-transparent" />
                       </div>
 

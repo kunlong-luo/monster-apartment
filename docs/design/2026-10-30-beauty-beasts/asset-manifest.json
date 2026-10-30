@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-10-30",
-  "statusNote": "P2 cover desktop/mobile actual WebP files integrated. Four standalone heroines and beasts P3/P4 CG are still pending; reference mockups are not production sprites.",
+  "statusNote": "P2 cover and first P3 distinct thumbnail crops integrated as real binary + code. Full individual character CG, facial consistency passes and four independent beast arts are still pending.",
   "availableReferenceOnly": [
     {
       "assetId": "concept-beauty-beasts-cover",
@@ -100,6 +100,58 @@
       "usage": "GothicWelcome mobile cover",
       "derivedFrom": "beauty_and_the_beasts_a_crimson_tale.png",
       "note": "Portrait focus on main character; lower text/UI zone replaced with dark backdrop."
+    },
+    {
+      "assetId": "P3-yuesha-thumbnail-v1",
+      "status": "integrated-thumbnail",
+      "path": "public/art/beauty-beasts/characters/yuesha/face.webp",
+      "width": 512,
+      "height": 512,
+      "sizeBytes": 53084,
+      "sha256": "7507d539b84357cf5994e6f6e88f1aeed17374203730d755ea293511c0a5a55a",
+      "alpha": false,
+      "usage": "Summon pool + catalog + card reveal headshot only",
+      "derivedFrom": "a_highly_detailed_cinematic_fantasy_game_key_art.png",
+      "note": "One independently cropped character face from a shared concept montage; NOT final separate full-body CG or validated lock-face sheet."
+    },
+    {
+      "assetId": "P3-brook-thumbnail-v1",
+      "status": "integrated-thumbnail",
+      "path": "public/art/beauty-beasts/characters/brook/face.webp",
+      "width": 512,
+      "height": 512,
+      "sizeBytes": 46964,
+      "sha256": "98b156ec70e83763fffe081fd8abfe5b208c20c832c89b82f4b1d7ab492e6810",
+      "alpha": false,
+      "usage": "Summon pool + catalog + card reveal headshot only",
+      "derivedFrom": "a_highly_detailed_cinematic_fantasy_game_key_art.png",
+      "note": "One independently cropped character face from a shared concept montage; NOT final separate full-body CG or validated lock-face sheet."
+    },
+    {
+      "assetId": "P3-fern-thumbnail-v1",
+      "status": "integrated-thumbnail",
+      "path": "public/art/beauty-beasts/characters/fern/face.webp",
+      "width": 512,
+      "height": 512,
+      "sizeBytes": 55254,
+      "sha256": "cbeba069887200611319f9ed2d8d8bbfaf8d92252a11dc29b7d95095c0691ecf",
+      "alpha": false,
+      "usage": "Summon pool + catalog + card reveal headshot only",
+      "derivedFrom": "a_highly_detailed_cinematic_fantasy_game_key_art.png",
+      "note": "One independently cropped character face from a shared concept montage; NOT final separate full-body CG or validated lock-face sheet."
+    },
+    {
+      "assetId": "P3-cinder-thumbnail-v1",
+      "status": "integrated-thumbnail",
+      "path": "public/art/beauty-beasts/characters/cinder/face.webp",
+      "width": 512,
+      "height": 512,
+      "sizeBytes": 48306,
+      "sha256": "7377f991f635b83b3a951e5dfb820020b0cf0bd24db52cee35855a3daa90e726",
+      "alpha": false,
+      "usage": "Summon pool + catalog + card reveal headshot only",
+      "derivedFrom": "a_highly_detailed_cinematic_fantasy_game_key_art.png",
+      "note": "One independently cropped character face from a shared concept montage; NOT final separate full-body CG or validated lock-face sheet."
     }
   ]
 }
