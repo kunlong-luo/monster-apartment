@@ -26,3 +26,6 @@
 
 ## 修复根因：Portal 解绑页面变换容器
 之前调整容器高度与 fixed 像素仍无法保证 omen 元素在文字上方；检查发现全屏模态层原本嵌在游戏界面的有变换/裁剪祖先内，`position:fixed` 的参照与预期视口发生偏差。改为与已有 `CharacterSummonReveal` 一致，调用 React `createPortal` 挂载到 `document.body`。通过 `useSyncExternalStore` 处理 SSR 与初次 hydration 的一致性，弹层挂载后恢复聚焦；动画仍只读取已抽到的真实结果。
+
+## 最终查证：同一 Grid 单元格
+完整计算坐标证明：art 容器真实处于 `top=99,bottom=539`，而其 omen 子元素却处于 `top=437,bottom=734`；容器本身位置正确，**内容被放到第二个自动生成的 Grid 行**。造成该现象的根因是 `AnimatePresence mode="sync"` 在转场时同时挂载旧镜头与新镜头，而没有指定两者的 grid area。正式修复：`.summon-cinematic-ritual__art>*{grid-area:1/1;align-self:center;justify-self:center}`，取消多轮试验性的固定屏幕坐标和高度 CSS 层层覆盖，仅保留明确视口大小作为容器约束，继续通过真正的下沿/文字上沿几何验收。Portal 的独立模态挂载继续保留，避免场景裁剪影响全屏结果页。

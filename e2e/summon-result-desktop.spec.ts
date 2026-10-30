@@ -87,7 +87,7 @@ test('cinematic omen shows exact rarest awarded rarity and never rerolls',async(
     position:getComputedStyle(el).position,top:getComputedStyle(el).top,
     height:getComputedStyle(el).height,
   }));
-  expect(computedFrame.position).toBe('fixed');
+  expect(computedFrame.position).toBe('relative');
   const omenBox=await omenShape.boundingBox();
   const omenCopyBox=await omenText.boundingBox();
   const diagnostic=await page.evaluate(()=>{
