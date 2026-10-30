@@ -62,7 +62,7 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await expect(page.getByText('2024/10/24')).toHaveCount(0);
   await page.getByTestId('collection-summon').click();
   await expect(page.getByTestId('collection-reveal')).toBeVisible();
-  await page.getByRole('button',{name:/跳过仪式/}).click();
+  // Wait for the optional ritual animation; it may have completed already.
   await expect(page.getByTestId('collection-reveal-view-collection')).toBeVisible();
   await expect(page.getByRole('button',{name:/再抽十次/})).toHaveCount(0);
   await page.getByTestId('collection-reveal-view-collection').click();
