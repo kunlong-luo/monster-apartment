@@ -224,6 +224,45 @@ test('all three worker rooms can review local background and reject nontranspare
   await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
 });
 
+test('on-duty worker stays away in gameplay while local art review may inspect a temporary actor',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:30_000});
+  await page.goto('/characters/?roomArtReview=1');
+  await page.getByTestId('visit-worker-room-brook').click();
+  const room=page.getByTestId('worker-private-room-brook');
+  const layer=room.getByTestId('room-resident-layer');
+  await expect(layer).toHaveAttribute('data-render-mode','away');
+  await expect(layer).toHaveAttribute('data-review-performer','false');
+  const review=room.getByTestId('room-art-local-review');
+  await review.getByTestId('room-art-review-toggle').click();
+  const base64=await page.evaluate(async()=>{
+    const canvas=document.createElement('canvas');
+    canvas.width=1024;canvas.height=1024;
+    const ctx=canvas.getContext('2d');
+    if(!ctx)throw Error('No 2D context');
+    ctx.fillStyle='#dfbcf1';
+    ctx.beginPath();ctx.ellipse(512,520,230,345,0,0,Math.PI*2);ctx.fill();
+    const blob=await new Promise<Blob>((resolve,reject)=>
+      canvas.toBlob(file=>file?resolve(file):reject(Error('WebP export failed')),'image/webp',.9));
+    const bytes=new Uint8Array(await blob.arrayBuffer());
+    let result='';for(const byte of bytes)result+=String.fromCharCode(byte);
+    return btoa(result);
+  });
+  await review.getByTestId('room-pose-upload-idle').setInputFiles({
+    name:'idle.webp',mimeType:'image/webp',buffer:Buffer.from(base64,'base64'),
+  });
+  await expect(layer).toHaveAttribute('data-render-mode','separate');
+  await expect(layer).toHaveAttribute('data-review-performer','true');
+  await expect(room.getByTestId('room-resident-present-brook')).toBeVisible();
+  await expect(room.getByTestId('worker-room-dialogue-brook')).toContainText('目前无人应答');
+  await review.getByTestId('room-pose-reset').click();
+  await expect(layer).toHaveAttribute('data-render-mode','away');
+  await expect(layer).toHaveAttribute('data-review-performer','false');
+  await expect(room.getByTestId('room-resident-away-brook')).toBeVisible();
+});
+
 test('production art preview remains hidden in regular worker rooms',async({page})=>{
   await page.goto('/characters/');
   await page.getByTestId('visit-worker-room-fern').click();

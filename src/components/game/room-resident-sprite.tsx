@@ -17,23 +17,30 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
   const reduced=Boolean(systemReduced||gameReduced);
-  const performerMotion=reduced?{x:0,y:0,rotate:0}:
-    pose==='idle'?{x:0,y:[0,-3,0,2,0],rotate:0}:
-    pose==='attentive'?{x:-3,y:-3,rotate:-.5}:
-    pose==='warm'?{x:-1,y:-2,rotate:.6}:
-    {x:2,y:1,rotate:.7};
   const art=ROOM_ART_MANIFEST[id];
-  const away=working&&id!=='yuesha';
+  // A candidate performer may be inspected while their real worker remains on
+  // shift, but only while the ephemeral local WebP review URL exists.
+  const reviewPerformer=Boolean(previewPoseUrl);
+  const away=working&&id!=='yuesha'&&!reviewPerformer;
   // Never duplicate a painted resident; the current four room scenes are
   // actor-free concept artwork and can use their own separately composited resident.
   const embedded=!away&&art.composition==='embedded-resident';
   const production=art.residentStatus==='production';
+  // Four actual rendered poses already include body language and a measured
+  // floor anchor. Do not additionally translate or rotate those painted feet.
+  const stableArtwork=production||reviewPerformer;
+  const performerMotion=reduced||stableArtwork?{x:0,y:0,rotate:0}:
+    pose==='idle'?{x:0,y:[0,-3,0,2,0],rotate:0}:
+    pose==='attentive'?{x:-3,y:-3,rotate:-.5}:
+    pose==='warm'?{x:-1,y:-2,rotate:.6}:
+    {x:2,y:1,rotate:.7};
   const frame=art.productionAssets.residentFrames[
     {idle:0,attentive:1,warm:2,guarded:3}[pose]
   ];
   return <div className="pointer-events-none absolute inset-0 z-[2]"
     data-testid="room-resident-layer" data-art-quality={art.residentStatus} data-pose={away?"away":pose}
-    data-render-mode={away?'away':embedded?'embedded':'separate'} data-local-pose-preview={Boolean(previewPoseUrl)}>
+    data-render-mode={away?'away':embedded?'embedded':'separate'}
+    data-review-performer={reviewPerformer?'true':'false'} data-local-pose-preview={Boolean(previewPoseUrl)}>
     {away?<div data-testid={'room-resident-away-'+id}
       className="absolute right-[5%] bottom-[27%] w-[45%] max-w-56 rounded-lg border border-[#efd4aa66] bg-[#170e19e8] p-3 text-center shadow-[0_9px_25px_#000a]">
       <span aria-hidden="true" className="block text-2xl text-[#f5cc8a]">✉</span>
@@ -46,7 +53,7 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
         ((art.backgroundStatus==='production'||previewBackground)?'left-[2%]':'right-[2%]')}
       initial={false}
       animate={performerMotion}
-      transition={reduced?{duration:0}:pose==='idle'?{duration:7,ease:'easeInOut',repeat:Infinity}:{duration:.48,ease:'easeOut'}}>
+      transition={reduced||stableArtwork?{duration:0}:pose==='idle'?{duration:7,ease:'easeInOut',repeat:Infinity}:{duration:.48,ease:'easeOut'}}>
       {previewPoseUrl||production
         ?<AnimatePresence initial={false} mode="sync">
           <motion.div key={previewPoseUrl??frame} data-testid="room-portrait-frame"
@@ -55,7 +62,7 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
             animate={{opacity:1}} exit={{opacity:0}}
             transition={{duration:reduced?0:.24,ease:'easeOut'}}>
             <Image src={previewPoseUrl??roomPublicAssetPath(frame)}
-              alt={previewPoseUrl?name+'的本地透明立绘候选':name+'在会客室中'}
+              alt={previewPoseUrl?name+'的本地透明立绘候选，仅供审核，真实排班未改变':name+'在私人房间中'}
               fill unoptimized draggable={false} sizes="(max-width:640px) 49vw, 410px"
               className="object-contain object-bottom drop-shadow-[0_12px_22px_#000b]"/>
           </motion.div>
