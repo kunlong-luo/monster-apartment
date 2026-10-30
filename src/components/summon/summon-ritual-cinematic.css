@@ -1,0 +1,104 @@
+/* V3.71 — four-scene reveal. Effects are isolated behind character art.
+ * Motion owns state/camera; CSS draws lightweight rune geometry/sparks. */
+.summon-cinematic-ritual{--ritual-accent:#d9b184;position:relative;isolation:isolate;
+  display:grid;grid-template-rows:minmax(0,1fr) auto auto;align-items:center;justify-items:center;
+  width:min(100%,1050px);height:min(100%,810px);min-height:0;padding:20px 12px 24px;text-align:center}
+.summon-cinematic-ritual__sky{position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background:radial-gradient(ellipse 47% 53% at 50% 41%,color-mix(in srgb,var(--ritual-accent) 25%,transparent),transparent 76%),
+  radial-gradient(ellipse 30% 28% at 50% 43%,#fff5cd12,transparent 80%);
+  filter:saturate(1.13)}
+.summon-cinematic-ritual__art{position:relative;width:min(100%,520px);height:100%;min-height:0;
+  display:grid;place-items:center;perspective:1000px}
+.summon-cinematic-ritual__seal{position:relative;display:grid;place-items:center;
+  width:clamp(190px,27vw,320px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 50% 43%,#431e35 0%,#200f24 54%,#100a16 77%);
+  border:2px solid var(--ritual-accent);color:#ffe1b7;
+  box-shadow:0 0 22px var(--ritual-accent),0 0 95px #822e4b90,inset 0 0 55px #b7626665}
+.summon-cinematic-ritual__seal:before{content:"";position:absolute;inset:19%;border:1px solid #e6cda663;
+  border-radius:50%;box-shadow:0 0 13px #ffcc9980}
+.summon-cinematic-ritual__ring{position:absolute;inset:-23px;border-radius:50%;
+  border:2px dashed color-mix(in srgb,var(--ritual-accent) 76%,transparent);
+  animation:summon-cinematic-spin 10s linear infinite}
+.summon-cinematic-ritual__ring--inner{inset:12px;animation-direction:reverse;
+  border-width:1px;border-style:dotted;animation-duration:13s}
+.summon-cinematic-ritual__ring--opening{inset:-16px;
+  border-style:solid;border-width:1px;animation-duration:4s}
+.summon-cinematic-ritual__seam{position:absolute;z-index:1;left:50%;top:-15%;
+  width:2px;height:130%;background:linear-gradient(180deg,transparent,#ffe4a9 25%,#fff 50%,#ffe4a9 75%,transparent);
+  box-shadow:0 0 21px var(--ritual-accent);animation:summon-cinematic-seam .8s ease-out both}
+.summon-cinematic-ritual__particles{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.summon-cinematic-ritual__particles i{position:absolute;left:calc(50% + (var(--spark-index) - 7)*6%);top:calc(27% + (var(--spark-index) % 5)*10%);
+  width:3px;height:3px;border-radius:50%;background:var(--ritual-accent);
+  opacity:0;box-shadow:0 0 12px 2px var(--ritual-accent);
+  animation:summon-cinematic-spark 1.8s ease-in-out infinite;
+  animation-delay:calc(var(--spark-index)*-0.17s)}
+.summon-cinematic-ritual__omen{position:relative;display:flex;align-items:center;
+  justify-content:center;flex-direction:column;gap:10px;min-width:min(85vw,280px);
+  width:clamp(200px,25vw,320px);aspect-ratio:1;border-radius:50%;
+  color:var(--ritual-accent);border:1px solid currentColor;
+  background:radial-gradient(circle,#2e1526 20%,#110a17 70%);
+  box-shadow:0 0 45px var(--ritual-accent),inset 0 0 45px #cc967b45}
+.summon-cinematic-ritual__omen-halo{position:absolute;inset:-13%;border-radius:50%;
+  border:1px solid currentColor;opacity:.6;box-shadow:0 0 25px currentColor}
+.summon-cinematic-ritual__omen strong{font-size:clamp(18px,2.4vw,27px);
+  letter-spacing:.15em;color:#fff4df}
+.summon-cinematic-ritual__omen span{max-width:24ch;font-size:10px;color:#f1dacb}
+.summon-cinematic-ritual[data-ritual-tone="crimson"] .summon-cinematic-ritual__sky{
+  background:radial-gradient(ellipse 51% 60% at 50% 38%,#ed1d4466,transparent 75%),
+  radial-gradient(ellipse 35% 32% at 50% 45%,#f5a57b31,transparent 78%)}
+.summon-cinematic-ritual[data-ritual-tone="crimson"] .summon-cinematic-ritual__omen{
+  background:radial-gradient(circle,#9b1e37 0%,#380e23 50%,#160713 76%);box-shadow:0 0 84px #ff2a5999,inset 0 0 40px #f04b6680}
+.summon-cinematic-ritual__flip{width:100%;height:100%;display:grid;place-items:center;
+  perspective:1100px;position:relative;overflow:visible}
+.summon-cinematic-ritual__turning-card{width:clamp(230px,27vw,370px);
+  height:min(100%,540px);min-height:320px;max-height:calc(100dvh - 255px);
+  position:relative;transform-style:preserve-3d}
+.summon-cinematic-ritual__turning-card>.contract-card{backface-visibility:hidden;
+  position:absolute;inset:0}
+.summon-cinematic-ritual__card-back{position:absolute;inset:0;display:grid;place-items:center;
+  backface-visibility:hidden;transform:rotateY(180deg);pointer-events:none;color:#eac995;
+  border:2px solid #d6ac80;border-radius:14px;
+  background:radial-gradient(circle at center,#663147,#271526 48%,#140c18 85%);
+  box-shadow:inset 0 0 0 9px #231324,inset 0 0 0 10px #d7b1847d}
+.summon-cinematic-ritual__flash{position:absolute;inset:16% 18%;pointer-events:none;
+  background:radial-gradient(ellipse,var(--ritual-accent),transparent 63%);
+  mix-blend-mode:screen;opacity:0;animation:summon-cinematic-flare .8s ease-out both}
+.summon-cinematic-ritual__copy{position:relative;display:flex;align-items:center;
+  justify-content:center;flex-direction:column;gap:9px;padding:0 15px 16px;min-height:110px;
+  text-shadow:0 3px 12px #000}
+.summon-cinematic-ritual__copy>span{font-size:10px;letter-spacing:.32em;color:var(--ritual-accent)}
+.summon-cinematic-ritual__copy h2{font-weight:500;letter-spacing:.18em;
+  font-size:clamp(22px,3.3vw,40px);color:#fff0d7}
+.summon-cinematic-ritual__copy p{font-size:12px;line-height:1.5;color:#d8b9a1}
+.summon-cinematic-ritual__footer{display:flex;align-items:center;justify-content:space-between;
+  width:min(100%,500px);gap:18px;padding-top:13px;border-top:1px solid #d1a36a4a}
+.summon-cinematic-ritual__progress{display:flex;gap:6px;align-items:center}
+.summon-cinematic-ritual__progress i{height:3px;width:32px;background:#6f4a4b;border-radius:4px}
+.summon-cinematic-ritual__progress i[data-passed="true"]{background:#a88a6b}
+.summon-cinematic-ritual__progress i[data-active="true"]{background:var(--ritual-accent);box-shadow:0 0 12px var(--ritual-accent)}
+.summon-cinematic-ritual__skip{border:1px solid #d5a77788;border-radius:7px;
+  background:linear-gradient(120deg,#2b192b,#1b1122);color:#efcf9f;
+  padding:10px 18px;font-size:12px;min-height:42px}
+.summon-cinematic-ritual__skip:hover,.summon-cinematic-ritual__skip:focus-visible{
+  border-color:#ffdfad;color:#fff2db}
+.summon-cinematic-ritual__skip:focus-visible{outline:2px solid #ffe2ac;outline-offset:3px}
+@keyframes summon-cinematic-spin{to{transform:rotate(360deg)}}
+@keyframes summon-cinematic-seam{from{opacity:0;transform:scaleY(.16)}to{opacity:1;transform:scaleY(1)}}
+@keyframes summon-cinematic-spark{0%,100%{opacity:0;transform:translate3d(0,15px,0)}
+  44%{opacity:.9;transform:translate3d(-8px,-11px,0)}
+  80%{opacity:.2;transform:translate3d(14px,-27px,0)}}
+@keyframes summon-cinematic-flare{30%{opacity:.48;transform:scale(1.2)}100%{opacity:0;transform:scale(1.8)}}
+@media(max-width:699px){
+  .summon-cinematic-ritual{height:100%;padding:10px 8px 18px}
+  .summon-cinematic-ritual__seal{width:clamp(170px,52vw,255px)}
+  .summon-cinematic-ritual__omen{width:clamp(190px,62vw,280px)}
+  .summon-cinematic-ritual__copy{gap:5px;min-height:100px}
+  .summon-cinematic-ritual__copy h2{font-size:21px}
+  .summon-cinematic-ritual__copy p{font-size:11px}
+  .summon-cinematic-ritual__turning-card{width:min(72vw,280px);height:min(100%,450px);
+    min-height:240px;max-height:calc(100dvh - 240px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .summon-cinematic-ritual__ring,.summon-cinematic-ritual__particles i,
+  .summon-cinematic-ritual__seam,.summon-cinematic-ritual__flash{animation:none!important}
+}
