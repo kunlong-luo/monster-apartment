@@ -42,6 +42,7 @@
 
 - 正式空景候选：`pnpm art:review --room yuesha --source /path/to/background.webp --out /tmp/yuesha-bg-review`（参数以脚本实际帮助/文档为准）。
 - 四姿态候选：`pnpm art:poses --room yuesha --source /path/to/poses --out /tmp/yuesha-poses-review`。
+- 其余三间房正式高清原画使用独立的 `anchors.json`：`pnpm art:review --room brook --source /path/to/background.webp --anchors /path/to/anchors.json --out /tmp/brook-bg-review`；晋级时传同一份 `--anchors`。不需要先污染当前 `manifest.json`。坐标必须从实际原画测量，不可复用概念物件位置。
 - 首先生成 `review.html` 与 DRAFT 审核记录；在完成视觉/授权复核前，不执行晋级操作。
 - 正式素材最终分别落在 `public/art/rooms/{room}/background.webp` 与 `public/art/rooms/{room}/poses/*.webp`；旧 `concept-scene.svg` 只作为未准入时的回退，不再冒充最终品质。
 - 更新 `public/art/rooms/manifest.json` 时背景、人物分层独立设为 `production`，只有两层全部审核通过才允许 `composition=separated`。验证 `pnpm audit:room-art` 与 `pnpm e2e`。
