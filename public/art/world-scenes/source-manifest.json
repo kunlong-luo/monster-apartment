@@ -1,0 +1,37 @@
+{
+  "status": "world-scene-transitional",
+  "sourcePage": "https://winechan.itch.io/gothic-manor",
+  "artifacts": [
+    {
+      "file": "workshop-gothic-hall.webp",
+      "width": 1920,
+      "height": 1080,
+      "originalFile": "IMG_0268.png",
+      "sourceSHA256": "33cb3f2658314e51f54de16b11bf74381ae522c39e8a8857d327117f26ac3d31",
+      "sourceZipSHA256": "1eadb5f0a69e4b12da974cebd3d035dffbd18c157dbf1079a1430b521112c9b3",
+      "outputSHA256": "b7bab545f44e1be6e2a53c9b201c632075d20e6a145f88299fb4123aa221412f",
+      "publisherPage": "https://winechan.itch.io/gothic-manor",
+      "publisherLicenseClaim": "public domain",
+      "publisherAIClaim": "AI assisted",
+      "intendedUse": "workshop Pixi stage ambient architecture behind real machines",
+      "limitation": "gothic hall, not a dedicated blacksmith/forge illustration",
+      "roomArtApproval": false
+    },
+    {
+      "file": "town-moonlit-gate.webp",
+      "width": 1920,
+      "height": 1080,
+      "originalFile": "IMG_0232.png",
+      "sourceSHA256": "d85e79310b5589d2948e9af0b7a566e16d5a3d948ef89d38c14759af5fad5ad3",
+      "sourceZipSHA256": "1eadb5f0a69e4b12da974cebd3d035dffbd18c157dbf1079a1430b521112c9b3",
+      "outputSHA256": "9df664f524ae8222e5bb6ceec956f4ce6044824e855254ed3de31913cb21558c",
+      "publisherPage": "https://winechan.itch.io/gothic-manor",
+      "publisherLicenseClaim": "public domain",
+      "publisherAIClaim": "AI assisted",
+      "intendedUse": "town exterior world layer behind playable trading panel",
+      "limitation": "single night-time manor gate, not a complete navigable street map",
+      "roomArtApproval": false
+    }
+  ],
+  "doesNotChangeRoomArtReviewStatus": true
+}
