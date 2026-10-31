@@ -210,9 +210,13 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(scene).toContain("document.removeEventListener('visibilitychange',updateMotion)");
     expect(scene).toContain("window.addEventListener(motionEvent,updateMotion)");
     expect(scene).toContain("window.removeEventListener(motionEvent,updateMotion)");
-    expect(loader).toContain("loadPaintedTexture(assetBase,'lobby-hero-v3.webp')");
+    // Scene art must not silently regress to the lobby image on the workshop.
+    // The existing lobby painting remains only a cold-load fallback.
+    expect(loader).toContain("loadPaintedTexture(assetBase,'workshop-gothic-hall.webp')");
+    expect(loader).toContain("backdropSource='world-hall-2k'");
+    expect(loader).toContain("loadPaintedTexture(assetBase,'lobby-hero-v3.webp',1)");
     expect(loader).toContain("new URL('./assets/'+filename,assetBase)");
-    expect(loader).toContain("backdropSource='high-res-webp'");
+    expect(builder).toContain("'../public/art/world-scenes/workshop-gothic-hall.webp'");
     expect(builder).toContain("'../public/art/lobby-hero-v3.webp'");
   });
   it('communicates selected plots and tools with a typed runtime callback',()=>{
