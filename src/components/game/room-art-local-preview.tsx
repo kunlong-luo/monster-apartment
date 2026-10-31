@@ -11,8 +11,7 @@ import {YUESHA_REVIEW_OBJECTS,reviewAnchorGeometry,buildUnapprovedAnchorJson}
 import type {YueshaReviewId,YueshaAnchorDraft,ReviewAnchor} from '@/core/room-art-review-geometry';
 import {roomCompositionReadiness} from '@/core/room-art-prop-composition';
 import type {PropArtworkDraft} from '@/core/room-art-prop-composition';
-import {createUnapprovedRoomComposite,downloadUnapprovedRoomCandidate}
-  from '@/lib/game/room-art-composite-export';
+import {createUnapprovedRoomComposite} from '@/lib/game/room-art-composite-export';
 
 /** The review query flag is strictly presentation-only and never part of a save. */
 function subscribeReviewMode(){return ()=>{};}
@@ -33,6 +32,12 @@ export function useRoomArtLocalPreview(){
   const [anchorEditing,setAnchorEditing]=useState(false);
   const [selectedAnchor,setSelectedAnchor]=useState<YueshaReviewId>('seal');
   const [anchorDraft,setAnchorDraft]=useState<YueshaAnchorDraft>({});
+  const exportedUrlRef=useRef<string|null>(null);
+  const [exportUrl,setExportUrl]=useState<string|null>(null);
+  const resetExport=()=>{
+    if(exportedUrlRef.current)URL.revokeObjectURL(exportedUrlRef.current);
+    exportedUrlRef.current=null;setExportUrl(null);
+  };
   const propUrlRef=useRef<Partial<Record<YueshaReviewId,string>>>({});
   const [propArtwork,setPropArtwork]=useState<PropArtworkDraft>({});
   const [propError,setPropError]=useState('');
@@ -40,13 +45,13 @@ export function useRoomArtLocalPreview(){
   const [exportBusy,setExportBusy]=useState(false);
   const resetPropArtwork=()=>{
     Object.values(propUrlRef.current).forEach(url=>{if(url)URL.revokeObjectURL(url);});
-    propUrlRef.current={};setPropArtwork({});setPropError('');setCompositeStatus('');
+    propUrlRef.current={};setPropArtwork({});setPropError('');setCompositeStatus('');resetExport();
   };
   const uploadProp=async(id:YueshaReviewId,event:ChangeEvent<HTMLInputElement>)=>{
     const file=event.currentTarget.files?.[0];
     event.currentTarget.value='';
     if(!file)return;
-    setCompositeStatus('');
+    setCompositeStatus('');resetExport();
     if(!['image/webp','image/png'].includes(file.type)||file.size<600||file.size>5*1024*1024){
       setPropError('物件应为不超过 5MB 的透明 PNG 或 WebP 原画。');return;
     }
@@ -80,21 +85,23 @@ export function useRoomArtLocalPreview(){
   };
   const exportCandidate=async()=>{
     if(!backgroundUrl)return;
-    setExportBusy(true);setCompositeStatus('');
+    setExportBusy(true);setCompositeStatus('');resetExport();
     try{
       const blob=await createUnapprovedRoomComposite(backgroundUrl,anchorDraft,propArtwork);
-      downloadUnapprovedRoomCandidate(blob);
-      setCompositeStatus('已导出 1920×1080 合成候选；还需独立人工验收后方可入库。');
+      const url=URL.createObjectURL(blob);
+      exportedUrlRef.current=url;setExportUrl(url);
+      setCompositeStatus('已生成完整 1920×1080 候选。请点击下方下载；此文件仍需独立人工验收。');
     }catch(e){setCompositeStatus(e instanceof Error?e.message:'候选合成失败。');}
     finally{setExportBusy(false);}
   };
   const resetAnchors=()=>{
-    setAnchorEditing(false);setAnchorDraft({});setSelectedAnchor('seal');
+    setAnchorEditing(false);setAnchorDraft({});setSelectedAnchor('seal');resetExport();
   };
   useEffect(()=>{
     return ()=>{
       if(backgroundRef.current)URL.revokeObjectURL(backgroundRef.current);
       Object.values(propUrlRef.current).forEach(url=>{if(url)URL.revokeObjectURL(url);});
+      if(exportedUrlRef.current)URL.revokeObjectURL(exportedUrlRef.current);
     };
   },[]);
   const uploadBackground=async(event:ChangeEvent<HTMLInputElement>)=>{
@@ -134,11 +141,12 @@ export function useRoomArtLocalPreview(){
   };
   return {
     enabled,backgroundUrl,poseUrls,selectedPose,error,
-    propArtwork,propError,compositeStatus,exportBusy,uploadProp,exportCandidate,
+    propArtwork,propError,compositeStatus,exportBusy,exportUrl,uploadProp,exportCandidate,
     anchorEditing,selectedAnchor,anchorDraft,setAnchorEditing,setSelectedAnchor,
     setAnchorDraft,resetAnchors,
     placeAnchor:(position:ReviewAnchor)=>{
       setAnchorDraft(previous=>({...previous,[selectedAnchor]:position}));
+      resetExport();
       const next=YUESHA_REVIEW_OBJECTS.find(item=>item.id!==selectedAnchor&&!anchorDraft[item.id]);
       if(next)setSelectedAnchor(next.id);
     },
@@ -271,10 +279,16 @@ export function RoomArtLocalPreviewPanel({id,name,review,warning}:{id:CharacterI
                   YUESHA_REVIEW_OBJECTS.find(obj=>obj.id===id)?.label).join('、')
                 :!anchorCheck.ready?'透明物件齐备，仍须检查坐标及手机热点': '具备候选合成条件，未获得发布许可'}
             </p>
-            {review.compositeStatus&&<p role="status"
+            {review.compositeStatus&&<p role="status" data-testid="room-art-composite-status"
               className="text-[10px] leading-5 text-gothic-champagne">
               {review.compositeStatus}
             </p>}
+            {review.exportUrl&&<a href={review.exportUrl}
+              data-testid="room-art-composite-download"
+              download="yuesha-room-composite.UNAPPROVED.webp"
+              className="flex min-h-11 items-center rounded border border-gothic-glow bg-gothic-panel px-3 py-2 text-gothic-ivory underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-gothic-glow">
+              下载已生成的高清候选 WebP
+            </a>}
           </div>
           <p className="text-[10px] leading-4 text-gothic-muted">
             导出坐标与合成图均是 QA 候选，不能自动更改正式游戏；正式发布还需权利、物件真实性与三视口人工审核。
