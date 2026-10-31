@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {ArrowUpRight,BookOpen,CalendarDays,ChevronRight,Crown,DoorOpen,Mail,MoonStar,Orbit,PackageCheck,ScrollText} from 'lucide-react';
+import {ArrowUpRight,BookOpen,ChevronRight,Crown,DoorOpen,Mail,MoonStar,Orbit,ScrollText} from 'lucide-react';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {AnimatePresence} from 'motion/react';
 import {useMemo,useState} from 'react';
@@ -158,19 +158,6 @@ export function GothicLobby(){
           <ChevronRight className="gothic-lobby__contract-arrow" aria-hidden="true" size={20} strokeWidth={1.6}/>
         </div>
       </Link>
-      <section className="gothic-lobby__message-board" aria-label="公寓动态" data-testid="gothic-lobby-message-board">
-        <div className="gothic-lobby__message-heading">
-          <span><Mail aria-hidden="true" size={18}/> 公寓消息</span>
-          <button type="button" onClick={()=>setOpen('updates')} aria-label="查看全部公寓动态">
-            更多 <ChevronRight aria-hidden="true" size={15}/>
-          </button>
-        </div>
-        <div className="gothic-lobby__message-rows">
-          <div><PackageCheck aria-hidden="true" size={17}/><span>【工坊】晶核库存 {orderStock}/{orderTarget}</span><small>{orderReady?'可交付':'生产中'}</small></div>
-          <div><BookOpen aria-hidden="true" size={17}/><span>【契约】已收录人物 {ownedContractCount}/5</span><small>{firstContract?'待召唤':'已记录'}</small></div>
-          <div><CalendarDays aria-hidden="true" size={17}/><span>【委托】第 {world.order.due} 天交付</span><small>第 {world.day} 天</small></div>
-        </div>
-      </section>
     </section>
 
     <button type="button" className="gothic-lobby__character-hit absolute z-[1] border-0! bg-transparent! inset-[15%_46%_16%_20%] max-[700px]:inset-[22%_27%_24%_25%] cursor-pointer focus-visible:outline-2 focus-visible:outline-gothic-glow"
@@ -183,10 +170,6 @@ export function GothicLobby(){
       <Link href="/apartment/?visit=yuesha" data-testid="gothic-character-room">
         <DoorOpen aria-hidden="true" size={25} strokeWidth={1.55} className="gothic-lobby__action-glyph"/>
         <span>拜访房间<small>探索她的秘密</small></span>
-      </Link>
-      <Link href="/characters/#summon-screen" className="gothic-lobby__desktop-action" data-testid="gothic-right-summon">
-        <Crown aria-hidden="true" size={28} strokeWidth={1.4} className="gothic-lobby__action-glyph"/>
-        <span>契约召唤<small>收录命定角色</small></span>
       </Link>
       <button type="button" className="gothic-lobby__desktop-action" onClick={()=>setOpen('memories')}
         data-testid="gothic-right-memories" aria-label="剧情回顾">
