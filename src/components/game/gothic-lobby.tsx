@@ -21,6 +21,7 @@ import {useGacha} from '@/lib/summon/use-gacha';
 import {useCharacterCollection} from '@/lib/game/character-collection-store';
 import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import {GAME_UI_RELEASE} from '@/core/game-release';
+import {siteAssetUrl} from '@/lib/game/site-asset-url';
 import './gothic-lobby.css';
 import './gothic-polish.css';
 import './gothic-reference-layout.css';
@@ -198,13 +199,19 @@ export function GothicLobby(){
       aria-label="公寓世界场景入口">
       <Link href="/workshop/" data-testid="gothic-reference-workshop"
         className="gothic-lobby__reference-postcard">
-        <Image src={lobbyHero} fill alt="" sizes="320px" className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--workshop"/>
+        <Image src={siteAssetUrl('/art/feature-postcards/gothic-workshop.webp')}
+          fallbackSrc={lobbyHero} fill alt="" sizes="320px"
+          data-testid="gothic-postcard-workshop-art"
+          className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--workshop"/>
         <span><strong>工坊</strong><small>打造专属装备</small></span>
         <ChevronRight aria-hidden="true" size={18}/>
       </Link>
       <Link href="/town/" data-testid="gothic-reference-town"
         className="gothic-lobby__reference-postcard">
-        <Image src={lobbyHeroBackup} fill alt="" sizes="320px" className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--town"/>
+        <Image src={siteAssetUrl('/art/feature-postcards/moonlit-street.webp')}
+          fallbackSrc={lobbyHeroBackup} fill alt="" sizes="320px"
+          data-testid="gothic-postcard-town-art"
+          className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--town"/>
         <span><strong>月光街</strong><small>探索夜色街区</small></span>
         <ChevronRight aria-hidden="true" size={18}/>
       </Link>

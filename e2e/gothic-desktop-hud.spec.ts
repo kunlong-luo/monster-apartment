@@ -21,6 +21,22 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   const right=page.getByTestId('gothic-design-right');
   await expect(right).toBeVisible();
   await expect(right.locator('a')).toHaveCount(2);
+  // Real, independently staged sources must replace the previously repeated
+  // lobby painting on both location cards, not merely recolor the same art.
+  const workshopPainting=page.getByTestId('gothic-postcard-workshop-art');
+  const streetPainting=page.getByTestId('gothic-postcard-town-art');
+  await expect.poll(()=>workshopPainting.evaluate(el=>(el as HTMLImageElement).naturalWidth))
+    .toBeGreaterThanOrEqual(960);
+  await expect.poll(()=>streetPainting.evaluate(el=>(el as HTMLImageElement).naturalWidth))
+    .toBeGreaterThanOrEqual(960);
+  const posterSources=await Promise.all([
+    workshopPainting.getAttribute('src'),streetPainting.getAttribute('src')
+  ]);
+  expect(posterSources[0]).toContain('feature-postcards/gothic-workshop.webp');
+  expect(posterSources[1]).toContain('feature-postcards/moonlit-street.webp');
+  expect(posterSources[0]).not.toBe(posterSources[1]);
+  await expect(page.getByTestId('gothic-reference-workshop')).toHaveAttribute('href',/workshop/);
+  await expect(page.getByTestId('gothic-reference-town')).toHaveAttribute('href',/town/);
   // Reference 01: people left, true summon banner right, illustrated destinations below.
   await expect(page.getByTestId('gothic-lobby-message-board')).toHaveCount(0);
   await expect(page.getByTestId('gothic-right-summon')).toHaveCount(0);
@@ -322,6 +338,10 @@ test('approved lobby layout retains the same image-first silhouette at 1648×928
   const rail=await page.getByTestId('gothic-design-roster').boundingBox();
   const banner=await page.getByTestId('gothic-eclipse-feature').boundingBox();
   const right=await page.getByTestId('gothic-design-right').boundingBox();
+  await expect.poll(()=>page.getByTestId('gothic-postcard-workshop-art')
+    .evaluate(img=>(img as HTMLImageElement).naturalWidth)).toBeGreaterThanOrEqual(960);
+  await expect.poll(()=>page.getByTestId('gothic-postcard-town-art')
+    .evaluate(img=>(img as HTMLImageElement).naturalWidth)).toBeGreaterThanOrEqual(960);
   const dock=await page.getByRole('navigation',{name:'主要游戏功能'}).boundingBox();
   expect(rail&&banner&&right&&dock).toBeTruthy();
   expect(rail!.x+rail!.width).toBeLessThan(1648*.23);

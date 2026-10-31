@@ -22,3 +22,9 @@
 `public/art/beauty-beasts/characters/yuesha/face.webp` 仅保留作历史概念，不再作为正式月纱召唤/欢迎头像。其他三位人物仍是其独立肖像过渡版。所有当前资源均**不是透明全身 CG**，不能将过渡肖像标为正式全身原画。
 
 正式升级路线与候选审核要求见 `docs/CHARACTER-CG-ART-DIRECTION.md`，新人物原画须经逐张角色身份、尺寸、权利来源及桌面/手机构图审核后才可以替换本文件中的对应映射。
+
+## V3.88 · 右侧入口独立横幅
+
+`feature-postcards/gothic-workshop.webp`：独立室内操作台宣传氛围图，960×320；`feature-postcards/moonlit-street.webp`：独立哥特夜景建筑宣传氛围图，960×320。两张均来自正常取得的 WineChan 原始 ZIP，原图为 1920×1080；生成前复查 ZIP 与原图 SHA-256，原文件名、源图/输出哈希及来源许可声明见 `feature-postcards/source-manifest.json`。
+
+**仅可用于大厅小型功能海报。** 源站公开声称 public domain，披露 AI-assisted；这不能替代对具体作品及正式场景的美术、著作权人工审核。两张均不是游戏完整街道、工坊工作场景或私人房间 CG，也不能拿去覆盖生产房间素材。

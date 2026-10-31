@@ -114,3 +114,12 @@ components:
 - **手机**：继续使用独立紧凑的原两张剧情入口和月纱互动小控件，确保 390×844 无横向滚动；不要为了桌面复刻把桌面巨幅海报硬挤进手机。
 
 **后续约束：** 新功能优先在原有面板内做，而不是改变这组四区位置。CG 画质未达到原图也要如实说明，视觉布局回归不能被写成角色原画重新绘制或“1:1 美术复原”。
+
+
+## V3.88 · 右侧场景卡真实素材
+
+在 V3.87 锁定的左人像、中月纱、右海报、底导航布局上，只替换右侧工坊与月光街海报的**重复大厅画面**。正式 UI 现在使用 `public/art/feature-postcards/gothic-workshop.webp` 和 `moonlit-street.webp` 两张独立横幅（960×320）。来自 [WineChan Gothic Manor](https://winechan.itch.io/gothic-manor) 页面声称为 public domain / AI-assisted 的资源包；经过源 ZIP、源图 SHA-256 和导出文件 SHA-256 校验，具体见 `public/art/feature-postcards/source-manifest.json`。
+
+两张仅是“入口宣传气氛图”：第一张表现复古操作台，非完整设备工作场景；第二张是夜色哥特建筑，非正式月光街地图。不可用于四间私人房间，不能修改 `public/art/rooms/manifest.json` 审核状态或冒充像素级 1:1。完整工坊锻造 CG、独立夜街远景 CG 仍待制作。
+
+强制测试验证两张图片在 1440×900 与 1648×928 下均能实际加载原生 960px 宽度，两个 `src` 各不相同，入口链接到已有的 `/workshop/` 与 `/town/`；390×844 不加载额外桌面大面板，维持唯一导航和原有存档与交互。
