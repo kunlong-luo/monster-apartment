@@ -72,23 +72,23 @@ export function WorkerPrivateRoom({id,onClose,working}:{
         (scenicMode?'lg:grid-cols-1':'lg:grid-cols-[minmax(0,3fr)_minmax(265px,1fr)]')}>
       <div className="min-w-0 space-y-2">
       <div data-testid="worker-room-stage"
-        className={'relative h-[clamp(390px,68dvh,720px)] overflow-hidden rounded-xl border border-gothic-brass/60 bg-gothic-night shadow-[0_16px_48px_#0009,inset_0_1px_#e9cfa523] '+(scenicMode?'lg:h-[min(76dvh,760px)]':'')}
+        className={'relative h-[clamp(390px,68dvh,720px)] lg:aspect-video lg:h-auto overflow-hidden rounded-xl border border-gothic-brass/60 bg-gothic-night shadow-[0_16px_48px_#0009,inset_0_1px_#e9cfa523] '}
         aria-label={profile.name+'的房间概念场景'} ref={stageRef}>
-        <RoomScenicViewToggle scenic={scenicMode} onToggle={()=>setScenicMode(previous=>!previous)}/>
-        <RoomSceneBackdrop id={id} previewUrl={artReview.backgroundUrl}
+        <RoomScenicViewToggle scenic={scenicMode} blocked={Boolean(theater)} onToggle={()=>setScenicMode(previous=>!previous)}/>
+        <RoomSceneBackdrop id={id} scenic={scenicMode} previewUrl={artReview.backgroundUrl}
           cinematicPose={theater&&!working?pose:null}/>
-        <RoomResidentSprite id={id} name={profile.name} working={working} reaction={reaction}
+        <RoomResidentSprite id={id} name={profile.name} working={working} reaction={scenicMode?'':reaction}
           pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)}
           previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>
-        <RoomSceneFocus id={id} item={selectedItem} pose={pose} stageSize={stageSize}/>
-        <RoomSceneHotspots characterName={profile.name} roomId={id} items={scene.objects} stageSize={stageSize}
+        <RoomSceneFocus id={id} scenic={scenicMode} item={selectedItem} pose={pose} stageSize={stageSize}/>
+        <RoomSceneHotspots scenic={scenicMode} characterName={profile.name} roomId={id} items={scene.objects} stageSize={stageSize}
           observed={observed} selected={selectedItem} onInspect={inspect}
           description={scene.objects.find(item=>item.id===selectedItem)?.text}/>
         {theater&&!working&&<RoomDialogueTheater key={theater.id} name={profile.name}
           title={theater.title} response={theater.response}
           basePose={roomTopicPose(id,theater.id)} onBeatPose={setPose}
           onClose={()=>{setTheater(null);setPose('idle');}}/>}
-        <header className="pointer-events-none absolute left-4 top-4 z-[5] max-w-[min(54%,340px)] text-shadow-md sm:left-6 sm:top-6">
+        <header className={"pointer-events-none absolute left-4 top-4 z-[5] max-w-[min(54%,340px)] text-shadow-md sm:left-6 sm:top-6"+(scenicMode?" lg:hidden":"")}>
           <span className="text-[9px] font-medium uppercase tracking-[.24em] text-[#e7c294]">PRIVATE SUITE / {profile.name}</span>
           <h2 className="mt-2 font-serif text-xl leading-tight tracking-[.04em] text-[#ffe7c5] sm:text-2xl">{scene.roomName}</h2>
           <p className="mt-2 hidden max-w-[29ch] text-xs leading-6 text-[#ead3bf] sm:block">{scene.roomSummary}</p>

@@ -62,14 +62,14 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     <div data-testid="room-scenic-layout" className={'grid min-w-0 gap-3 lg:items-start '+
       (scenicMode?'lg:grid-cols-1':'lg:grid-cols-[minmax(0,3fr)_minmax(265px,1fr)]')}>
     <div className="min-w-0 space-y-2">
-    <div className={'relative h-[clamp(390px,68dvh,720px)] overflow-hidden rounded-xl border border-gothic-brass/60 bg-gothic-night shadow-[0_16px_48px_#0009,inset_0_1px_#e9cfa523] '+(scenicMode?'lg:h-[min(76dvh,760px)]':'')}
+    <div className={'relative h-[clamp(390px,68dvh,720px)] lg:aspect-video lg:h-auto overflow-hidden rounded-xl border border-gothic-brass/60 bg-gothic-night shadow-[0_16px_48px_#0009,inset_0_1px_#e9cfa523] '}
       data-testid="yuesha-room-stage" ref={stageRef}>
-      <RoomScenicViewToggle scenic={scenicMode} onToggle={()=>setScenicMode(previous=>!previous)}/>
-      <RoomSceneBackdrop id="yuesha" previewUrl={artReview.backgroundUrl}
+      <RoomScenicViewToggle scenic={scenicMode} blocked={Boolean(theater)} onToggle={()=>setScenicMode(previous=>!previous)}/>
+      <RoomSceneBackdrop id="yuesha" scenic={scenicMode} previewUrl={artReview.backgroundUrl}
         cinematicPose={theater?pose:null}/>
-      <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)} previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>
-      <RoomSceneFocus id="yuesha" item={hotspot} pose={pose} stageSize={stageSize} preview={Boolean(artReview.backgroundUrl)}/>
-      <RoomSceneHotspots characterName="月纱" roomId="yuesha" stageSize={stageSize} preview={Boolean(artReview.backgroundUrl)}
+      <RoomResidentSprite id="yuesha" name="月纱" reaction={scenicMode?"":reaction} pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)} previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>
+      <RoomSceneFocus id="yuesha" scenic={scenicMode} item={hotspot} pose={pose} stageSize={stageSize} preview={Boolean(artReview.backgroundUrl)}/>
+      <RoomSceneHotspots scenic={scenicMode} characterName="月纱" roomId="yuesha" stageSize={stageSize} preview={Boolean(artReview.backgroundUrl)}
         items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}
         selected={hotspot} observed={observed} onInspect={inspect}
         description={hotspot==='seal'?'蜡封上的月纹，与旧公寓钥匙的纹样有些相似。月纱没有立即回答你的疑问。':
@@ -78,7 +78,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       {theater&&<RoomDialogueTheater key={theater.id} name="月纱" title={theater.title}
         response={theater.response} basePose={roomTopicPose('yuesha',theater.id)}
         onBeatPose={setPose} onClose={()=>{setTheater(null);setPose('idle');}}/>}
-      <header className="pointer-events-none absolute left-4 top-4 z-[5] max-w-[52%] text-shadow-md sm:left-6 sm:top-6">
+      <header className={"pointer-events-none absolute left-4 top-4 z-[5] max-w-[52%] text-shadow-md sm:left-6 sm:top-6"+(scenicMode?" lg:hidden":"")}>
         <span className="text-[9px] font-medium uppercase tracking-[.24em] text-[#e7c294]">PRIVATE SUITE / 月纱</span>
         <h3 className="mt-2 font-serif text-xl leading-tight tracking-[.04em] text-[#ffe7c5] sm:text-2xl">契约会客室</h3>
         <p className="mt-2 hidden text-xs leading-6 text-[#ead3bf] sm:block">月纹、旧契约和一杯香料茶</p>

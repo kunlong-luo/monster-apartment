@@ -35,8 +35,8 @@ const ROOM_AMBIENCE={
   },
 } as const;
 
-export function RoomSceneBackdrop({id,previewUrl=null,cinematicPose=null}:{
-  id:CharacterId;previewUrl?:string|null;cinematicPose?:RoomPose|null;
+export function RoomSceneBackdrop({id,previewUrl=null,cinematicPose=null,scenic=false}:{
+  id:CharacterId;previewUrl?:string|null;cinematicPose?:RoomPose|null;scenic?:boolean;
 }){
   const ambience=ROOM_AMBIENCE[id];
   const art=ROOM_ART_MANIFEST[id];
@@ -63,7 +63,7 @@ export function RoomSceneBackdrop({id,previewUrl=null,cinematicPose=null}:{
     </div>
     <div className={'absolute inset-0 '+(showHD
       ?'bg-[linear-gradient(90deg,#130b1a4a_0%,transparent_55%,#130b1a56_100%)]'
-      :ambience.veil)}/>
+      :ambience.veil)+(scenic?' opacity-40':'')}/>
     <div className={'absolute inset-0 '+ambience.moon}/>
     <div className={'private-room__moonshaft absolute inset-0 mix-blend-screen '+(still?'private-room__still':'')}/>
     <div className={'private-room__motes absolute inset-0 '+(still?'private-room__still':'')}/>
@@ -76,7 +76,9 @@ export function RoomSceneBackdrop({id,previewUrl=null,cinematicPose=null}:{
       <div className="private-room__story-light--warm absolute inset-0"/>
       <div className="private-room__story-light--guarded absolute inset-0"/>
     </div>
-    <div className="absolute inset-0 bg-[linear-gradient(0deg,#0f091be5_0%,transparent_29%,transparent_78%,#0c07168c_100%)]"/>
+    <div className={"absolute inset-0 "+(scenic
+      ?"bg-[linear-gradient(0deg,#0f091b75_0%,transparent_25%,transparent_85%,#0c071655_100%)]"
+      :"bg-[linear-gradient(0deg,#0f091be5_0%,transparent_29%,transparent_78%,#0c07168c_100%)]")}/>
     <div className="absolute inset-[9px] rounded-[8px] border border-[#f5c99124] shadow-[inset_0_0_40px_#f8be6c0e]"/>
   </div>;
 }

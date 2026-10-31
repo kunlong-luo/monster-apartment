@@ -16,7 +16,7 @@ export type SceneHotspotItem<T extends string=string>={id:T;label:string};
 /** Minimal 44px markers preserve scene detail; accessible names and the
  * discovery panel supply labels on touch and keyboard. */
 export function RoomSceneHotspots<T extends string>({
-  items,observed,selected,onInspect,characterName,roomId,description,stageSize=null,preview=false,
+  items,observed,selected,onInspect,characterName,roomId,description,stageSize=null,preview=false,scenic=false,
 }:{
   items:readonly SceneHotspotItem<T>[];
   observed:readonly string[];
@@ -26,7 +26,7 @@ export function RoomSceneHotspots<T extends string>({
   roomId?:string;
   description?:string;
   stageSize?:RoomStageSize|null;
-  preview?:boolean;
+  preview?:boolean;scenic?:boolean;
 }){
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
@@ -40,7 +40,7 @@ export function RoomSceneHotspots<T extends string>({
   })),stageSize);
   const inaccessible=items.filter((_,index)=>placements[index].visibility!=='visible');
   const hasOverlap=placements.some(placement=>placement.visibility==='overlap');
-  return <div className="pointer-events-none absolute inset-0 z-[4]" data-hotspot-layout="object-id" aria-label={characterName+'的房间物件'}>
+  return <div className={"pointer-events-none absolute inset-0 z-[4]"+(scenic?" lg:hidden":"")} data-hotspot-layout="object-id" aria-label={characterName+'的房间物件'}>
     {items.map((item,index)=>{
       const discovered=observed.includes(item.id);
       const placement=placements[index];
@@ -69,7 +69,7 @@ export function RoomSceneHotspots<T extends string>({
         </span>
       </button>;
     })}
-    {inaccessible.length>0&&<div className="pointer-events-auto absolute right-3 top-3 z-[15] flex max-w-[66%] flex-col items-end gap-2"
+    {inaccessible.length>0&&<div className="pointer-events-auto absolute right-3 top-3 z-[15] flex max-w-[66%] lg:top-[68px] flex-col items-end gap-2"
       data-testid="room-offscreen-objects">
       <button type="button" aria-controls={offscreenMenuId} aria-expanded={showOffscreen}
         onClick={()=>setShowOffscreen(open=>!open)}
