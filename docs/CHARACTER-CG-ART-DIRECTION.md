@@ -69,3 +69,12 @@ pnpm check:design && pnpm test && pnpm build
 - 观赏模式隐藏剧情栏、物件标记、焦点圆环、标题和人物反应文字，只保留建筑绘景、独立人物和环境光；退出后所有互动与剧情状态原样恢复。
 - 「画面外物件」菜单下移，避免覆盖右上角观赏按钮。对话演出期间禁用观赏切换，不打断演出。
 - 候选外部来源为 WineChan 的 73 张 [Gothic Manor 背景](https://winechan.itch.io/gothic-manor)，网页声明公共领域；单张文件**尚未下载及审核**，不能直接写为 `production`。另有 Ebbasuke 的 4K [Gloomy Mansion 背景](https://ebbasuke.itch.io/gloomy-mansion-background-pack)，授权为 CC BY 4.0，需标注来源。
+
+
+## V3.84 · 真实原包 CG 的候选预览（QA-only）
+
+本轮通过免费资源发布者的正常下载通道获取了完整 `Gothic Manor.zip`，实际逐张读取 **73 张 1920×1080 原图**、记录来源 ZIP 的 SHA256，生成全量 5 页索引。原始图均来自 [WineChan Gothic Manor](https://winechan.itch.io/gothic-manor)，页面公开说明 public domain、AI-assisted。需要强调：尺寸合格不代表符合月纱三处物件/审核要求。
+
+从 `IMG_0277.png` 生成 1920×1080 WebP 室内风格候选，接入 `public/art/room-review/yuesha-salon-candidate.webp`，**仅当用户显式在 `/apartment/?visit=yuesha&roomArtReview=1` 打开「本地美术审核」并点击「预览已入库候选」时显示**。正常游戏继续保留原概念背景，`public/art/rooms/manifest.json` 的 `backgroundStatus` 仍为 `concept`。
+
+该素材可用来评估酒红家具、火炉、会客桌的画面层次，但真实蜡封、香料茶杯、旧账簿及其锚点仍待专门审核。未经人工确认的候选不能冒充 production。支持恢复原绘景，且预览不写入存档。

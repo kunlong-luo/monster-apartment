@@ -5,6 +5,7 @@ import type {ChangeEvent} from 'react';
 import type {CharacterId} from '@/core/character-life';
 import type {RoomPose} from '@/core/room-performance';
 import {RoomPosePreviewControls} from './room-pose-preview-controls';
+import {siteAssetUrl} from '@/lib/game/site-asset-url';
 
 /** The review query flag is strictly presentation-only and never part of a save. */
 function subscribeReviewMode(){return ()=>{};}
@@ -61,6 +62,13 @@ export function useRoomArtLocalPreview(){
   return {
     enabled,backgroundUrl,poseUrls,selectedPose,error,
     uploadBackground,resetBackground,
+    usePackagedYueshaReview:()=>{
+      // Officially unreviewed, opt-in QA ONLY: no save and no production manifest.
+      if(backgroundRef.current)URL.revokeObjectURL(backgroundRef.current);
+      backgroundRef.current=null;
+      setBackgroundUrl(siteAssetUrl('/art/room-review/yuesha-salon-candidate.webp'));
+      setError('');
+    },
     setPoseUrl:(pose:RoomPose,url:string|null)=>
       setPoseUrls(previous=>({...previous,[pose]:url??undefined})),
     selectPose:setSelectedPose,
@@ -90,6 +98,11 @@ export function RoomArtLocalPreviewPanel({id,name,review,warning}:{id:CharacterI
       className={open?'mt-2 max-h-[min(42vh,270px)] space-y-1 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin]':'hidden'}>
       <span className="block text-[#ffd298]">{name} · 仅本机预览，不会发布或保存</span>
       {warning&&<p role="note" className="text-[10px] leading-4 text-[#e7b68b]">{warning}</p>}
+      {id==='yuesha'&&<button type="button" data-testid="room-art-staged-candidate"
+        onClick={review.usePackagedYueshaReview}
+        className="min-h-11 w-full rounded border border-gothic-brass/70 bg-gothic-panel px-2 py-2 text-left text-gothic-glow hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow">
+        预览已入库的 1920×1080 会客室候选（未经正式审核）
+      </button>}
       <label htmlFor={fileId} className="block text-[#ffe5c9]">查看高清背景 WebP</label>
       <input id={fileId} data-testid="room-art-local-file" type="file" accept="image/webp"
         onChange={review.uploadBackground}

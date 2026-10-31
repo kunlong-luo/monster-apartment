@@ -219,3 +219,17 @@ test('mobile room keeps investigation without an unnecessary scenic-mode button'
   await expect(page.locator('[data-hotspot-layout="object-id"]')).toBeVisible();
   await expect(page.getByTestId('room-story-rail')).toBeVisible();
 });
+
+test('review-only room image compares a real 1920x1080 source without changing production art',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/apartment/?visit=yuesha&roomArtReview=1');
+  await expect(page.getByTestId('yuesha-private-room')).toBeVisible({timeout:20000});
+  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-art-quality','concept');
+  await page.getByTestId('room-art-review-toggle').click();
+  await page.getByTestId('room-art-staged-candidate').click();
+  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-local-preview','true');
+  await expect.poll(()=>page.getByTestId('room-background-frame').locator('img').evaluate(img=>
+    (img as HTMLImageElement).naturalWidth)).toBeGreaterThanOrEqual(1920);
+  await page.getByTestId('room-art-local-reset').click();
+  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-local-preview','false');
+});
