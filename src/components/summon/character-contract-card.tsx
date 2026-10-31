@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {Gem,Diamond} from 'lucide-react';
 import {getCardFace} from './heroine-portrait-assets';
 import {siteAssetUrl} from '@/lib/game/site-asset-url';
@@ -26,7 +26,7 @@ export function CharacterContractCard({character,mode='feature',awardTestId}:{
     <div className="contract-card__inner">
       <div className="contract-card__art" data-portrait-kind="approved-face-crop">
         <div className="contract-card__halo" aria-hidden="true"/>
-        <Image src={image} alt={character.name+'的精绘肖像'}
+        <Image src={image} fallbackSrc={siteAssetUrl(character.avatar)} alt={character.name+'的精绘肖像'}
           fill unoptimized draggable={false} priority={mode==='feature'}
           sizes={mode==='feature'?'(max-width:600px) 85vw, 490px':'(max-width:600px) 19vw, 100px'}
           className="contract-card__portrait" data-portrait-source="dedicated-heroine-face"/>
