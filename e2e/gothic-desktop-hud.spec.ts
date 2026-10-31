@@ -49,7 +49,7 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   const painting=page.getByTestId('gothic-lobby-painting-image');
   await expect.poll(()=>painting.evaluate(img=>(img as HTMLImageElement).naturalWidth)).toBeGreaterThan(1200);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-lobby-v376.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-lobby-v377.png',animations:'disabled'});
   // The canonical Characters destination intentionally opens the gallery.
   // A hash selects the summon stage without creating an eighth route.
   await dock.getByRole('link',{name:/角色/}).click();
@@ -64,7 +64,7 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   await expect(page.getByTestId('collection-summon').locator('svg')).toHaveCount(2);
   await expect(page.getByTestId('collection-summon-ten').locator('svg')).toHaveCount(2);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-summon-v376.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-v377.png',animations:'disabled'});
 });
 
 test('mobile lobby shows exactly two storyline entries with a working small inbox',async({page})=>{
@@ -96,7 +96,7 @@ test('mobile lobby shows exactly two storyline entries with a working small inbo
   expect(actions!.y+actions!.height).toBeLessThan(footer!.y-20);
   expect(actions!.width).toBeLessThan(85);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/mobile-lobby-v376.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/mobile-lobby-v377.png',animations:'disabled'});
 });
 
 test('desktop reference has functional story recap and contract tile',async({page})=>{
@@ -111,4 +111,47 @@ test('desktop reference has functional story recap and contract tile',async({pag
   await page.getByTestId('gothic-right-summon').click();
   await expect(page).toHaveURL(/\/characters\/?#summon-screen$/);
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
+});
+
+
+test('all seven canonical game pages inherit the same design palette and selected nav material',async({page})=>{
+  test.setTimeout(140000);
+  await page.setViewportSize({width:1440,height:900});
+  const pages=[
+    {path:'/',name:'lobby'},
+    {path:'/apartment/',name:'apartment'},
+    {path:'/workshop/',name:'workshop'},
+    {path:'/town/',name:'town'},
+    {path:'/orders/',name:'orders'},
+    {path:'/characters/',name:'characters'},
+    {path:'/warehouse/',name:'warehouse'},
+  ] as const;
+  for(const entry of pages){
+    await page.goto(entry.path);
+    await expect.poll(()=>page.evaluate(()=>{
+      const c=getComputedStyle(document.documentElement);
+      return c.getPropertyValue('--craft-brass').trim();
+    }),{timeout:15000}).toBe('#a68d70');
+    const palette=await page.evaluate(()=>{
+      const c=getComputedStyle(document.documentElement);
+      const probe=document.createElement('span');
+      probe.style.color='var(--moon-ui-text)';
+      document.body.append(probe);
+      const legacyColor=getComputedStyle(probe).color;
+      probe.remove();
+      return {
+        metal:c.getPropertyValue('--craft-champagne').trim(),
+        panel:c.getPropertyValue('--craft-panel').trim(),
+        legacy:c.getPropertyValue('--moon-ui-text').trim(),
+        legacyColor
+      };
+    });
+    expect(palette.metal).toBe('#d9c2a1');
+    expect(palette.panel).toBe('#1b161d');
+    expect(palette.legacy).toBe('var(--craft-ivory)');
+    expect(palette.legacyColor).toBe('rgb(241, 229, 214)');
+    // Only design tokens and the live scene are checked, not 7 exhaustive E2Es.
+    await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
+    await page.screenshot({path:'test-results/desktop-design-'+entry.name+'-v377.png',animations:'disabled'});
+  }
 });

@@ -10,6 +10,13 @@ on:
       - 'src/components/game/gothic-lobby.css'
       - 'src/components/game/gothic-reference-layout.css'
       - 'src/components/game/gothic-premium-tokens.css'
+      - 'src/components/game/gothic-red-gold.css'
+      - 'src/components/game/gothic-workshop.css'
+      - 'src/components/game/gothic-world.css'
+      - 'src/components/game/gothic-hud.tsx'
+      - 'app/globals.css'
+      - 'app/layout.tsx'
+      - 'src/components/game/gothic-premium-tokens.css'
       - 'src/components/summon/summon-screen.css'
       - 'src/components/game/gothic-hud.tsx'
       - 'src/components/game/gothic-room-doors.tsx'
@@ -59,10 +66,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: desktop-v376-screenshots
+          name: desktop-v377-screenshots
           path: |
             test-results/desktop-*.png
-            test-results/mobile-lobby-v376.png
+            test-results/mobile-lobby-v377.png
             test-results/**/test-failed-*.png
             test-results/**/error-context.md
           if-no-files-found: warn
