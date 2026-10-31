@@ -99,8 +99,7 @@
  .summon-cinematic-title{margin-top:auto!important;margin-bottom:15px!important}
  .summon-cinematic-character img{object-position:50% 18%;transform:none;filter:none}
 }
-/* Premium PC controls: consistent antique metal, never white or saturated red fills. */
-@media(min-width:1024px){
+/* Shared controls: same antique metal on desktop and mobile, layout unchanged. */
   .summon-cinematic .summon-cinematic-wallet button,
   .summon-cinematic .summon-cinematic-tools button{
     border-color:var(--craft-hairline)!important;
@@ -133,7 +132,6 @@
   .summon-cinematic .summon-cinematic-pools .summon-pool-item{
     border-color:var(--craft-hairline)!important;
   }
-}
 @media(max-width:1023px){
  .summon-cinematic-main{
    display:block!important;overflow-x:hidden!important;overflow-y:auto!important;

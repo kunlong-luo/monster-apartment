@@ -25,3 +25,6 @@
 
 ## 发布门槛
 Quality、Desktop Visual Review 与 Pages 按现有轻量方式验收。设计系统变更必须在主分支部署后，再由真实浏览器截图确认。
+
+## V3.77.1 · 首屏真实媒体验收及统一按钮热修
+实测七页截图发现：角色图鉴/街区向导在图片未完成时拍到渐变占位区、工坊舞台尚未启动时拍到加载壳。现将图鉴三张人物肖像与街区向导改为 eager 加载，七页 Visual Review 拍图前检查人物图片 naturalWidth 与工坊 Pixi `data-runtime-ready` + canvas 真正可见。工坊「开始生产轮班」移除独立浅金 Tailwind 渐变，改用共享 `gothic-action-button`；召唤的通用金属控件色彩解除 PC-only 限制，手机同样遵循同一基础材质（手机布局完全不变）。保留图库角色独立主题色和全站存档逻辑。

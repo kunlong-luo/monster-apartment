@@ -416,7 +416,7 @@ export function WorkshopControls({
         </button>}
         <button type="button" id="shift" data-testid="v2-shift"
           onClick={()=>onAction({type:'shift'})} aria-label="开始一天生产轮班"
-          className="shift-btn min-h-11 flex-1 rounded-lg border border-gothic-gold/80 bg-gradient-to-r from-gothic-gold via-[#e2b06e] to-gothic-brass px-4 text-sm font-extrabold text-ink-950 shadow-md transition-all hover:brightness-110 focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none">
+          className="gothic-action-button shift-btn min-h-11 flex-1 rounded-lg border px-4 text-sm font-semibold transition-colors focus-visible:outline-2 motion-reduce:transition-none">
           <span className="inline-flex items-center gap-2"><Play aria-hidden="true" size={16} fill="currentColor" strokeWidth={1.5}/>开始生产轮班</span>
         </button>
       </div>

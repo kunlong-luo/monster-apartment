@@ -150,7 +150,24 @@ test('all seven canonical game pages inherit the same design palette and selecte
     expect(palette.panel).toBe('#1b161d');
     expect(['var(--craft-ivory)','#f1e5d6']).toContain(palette.legacy);
     expect(palette.legacyColor).toBe('rgb(241, 229, 214)');
-    // Only design tokens and the live scene are checked, not 7 exhaustive E2Es.
+    // Images and canvas must be genuinely ready; gradients alone are not art.
+    if(entry.name==='characters'){
+      await expect(page.locator('.mw-worker-portrait-photo')).toHaveCount(3);
+      await expect.poll(()=>page.locator('.mw-worker-portrait-photo').evaluateAll(imgs=>
+        imgs.every(img=>(img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0)
+      )).toBe(true);
+    }
+    if(entry.name==='town'){
+      await expect.poll(()=>page.getByTestId('town-guide-painting').evaluate(img=>
+        (img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0
+      )).toBe(true);
+    }
+    if(entry.name==='workshop'){
+      await expect(page.locator('#root.lab.gothic-workshop'))
+        .toHaveAttribute('data-runtime-ready','true',{timeout:30000});
+      await expect(page.locator('#stage canvas')).toBeVisible();
+    }
+    // Only design tokens and initial media readiness are checked, not 7 exhaustive E2Es.
     await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
     await page.screenshot({path:'test-results/desktop-design-'+entry.name+'-v377.png',animations:'disabled'});
   }

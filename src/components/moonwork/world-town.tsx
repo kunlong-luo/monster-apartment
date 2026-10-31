@@ -47,12 +47,12 @@ export function Town({s}:{s:WorkshopState}){
           <span><strong>物资仓库</strong><small>材料 · 采购</small></span>
         </Link>
       </nav>
-      <div className="mw-town-scene-credit">✦ 契约世界绘景 · 街区导览</div>
+      <div className="mw-town-scene-credit">契约世界绘景 · 街区导览</div>
     </section>
     <section className="mw-town-resident" data-testid="town-resident" aria-label="今日街头居民">
       <div className="mw-resident-character" aria-label="月纱为你带来街头居民消息">
         <Image src={moonveilPortrait} alt="月纱，来自工坊的魔法商人"
-          fill unoptimized sizes="(max-width: 760px) 140px, 220px"
+          fill unoptimized loading="eager" sizes="(max-width: 760px) 140px, 220px"
           className="mw-guide-painting" data-testid="town-guide-painting"/>
         <span className="mw-resident-guide-label">月纱 · 街区向导</span>
       </div>
