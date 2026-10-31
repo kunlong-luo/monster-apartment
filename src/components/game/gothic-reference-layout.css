@@ -1,132 +1,322 @@
-/* V3.75 · user-approved reference 01, desk only. No baked screenshots. */
+/* V3.87 · Reference 01 desktop spatial system.
+ * One layout source: left resident rail / free central character painting /
+ * right illustrated feature + postcards / seven-item bottom dock.
+ * The mobile layout remains the previously playable compact mode. */
+.gothic-lobby__reference-roster,
+.gothic-lobby__reference-right,
+.gothic-lobby__dialogue-invite{display:none}
 .gothic-lobby__summon-illustration,
 .gothic-lobby__summon-verse{display:none}
 .gothic-lobby .gothic-lobby__character-actions .gothic-lobby__desktop-action{display:none}
+
 @media(min-width:1100px) and (min-height:700px){
+  .gothic-lobby{
+    --reference-margin:clamp(17px,1.45vw,28px);
+    --reference-left:clamp(210px,16.7vw,248px);
+    --reference-right:clamp(290px,23vw,348px);
+    --reference-top:clamp(160px,18vh,186px);
+  }
+  /* The original approved painting remains full screen and never receives a
+     dark colour filter or fake body enlargement. */
+  .gothic-lobby .gothic-lobby__painting img{
+    object-fit:cover;object-position:center center;filter:none;
+  }
   body .gothic-lobby .gothic-lobby__brand{
-    top:16px;left:18px;min-width:268px;min-height:85px;
-    border:1px solid var(--craft-hairline);border-radius:4px 12px 4px 12px;
-    background:linear-gradient(118deg,#19141ceF,#110f16dA 90%);
-    padding:7px 16px 10px;text-align:center;
-    box-shadow:inset 0 1px rgba(241,211,165,.17),0 12px 28px #030208a6}
-  body .gothic-lobby .gothic-lobby__brand:before,
-  body .gothic-lobby .gothic-lobby__brand:after{
-    content:"";position:absolute;width:20px;height:20px;pointer-events:none;color:#edbb82}
-  body .gothic-lobby .gothic-lobby__brand:before{
-    top:5px;left:5px;border-top:2px solid;border-left:2px solid}
-  body .gothic-lobby .gothic-lobby__brand:after{
-    bottom:5px;right:5px;border-bottom:2px solid;border-right:2px solid}
-  body .gothic-lobby .gothic-lobby__brand strong{
-    font-size:clamp(30px,2.45vw,42px);letter-spacing:.06em;
-    color:var(--craft-ivory);text-shadow:0 2px 10px #000c}
-  body .gothic-lobby .gothic-lobby__brand small{font-size:9px;letter-spacing:.12em}
+    top:15px;left:var(--reference-margin);
+    width:clamp(220px,18.4vw,275px);min-width:0;
+    min-height:83px;padding:8px 12px 10px;
+    border:1px solid var(--craft-hairline);
+    border-radius:6px 14px 5px 9px;
+    background:linear-gradient(100deg,#171019ed,#110b12dc);
+    box-shadow:inset 0 1px #f1e2c430,0 11px 31px #000a;
+    text-align:center;
+  }
+  .gothic-lobby__brand:before,.gothic-lobby__brand:after{
+    content:"";position:absolute;width:18px;height:18px;
+    color:var(--craft-brass);pointer-events:none;
+  }
+  .gothic-lobby__brand:before{top:5px;left:6px;border-top:1px solid;border-left:1px solid}
+  .gothic-lobby__brand:after{bottom:5px;right:6px;border-right:1px solid;border-bottom:1px solid}
+  .gothic-lobby .gothic-lobby__brand strong{
+    font:500 clamp(28px,2.2vw,37px)/1.18 var(--craft-font-display);
+    letter-spacing:.07em;color:var(--craft-ivory);
+  }
+  .gothic-lobby .gothic-lobby__brand small{
+    font-size:8px;letter-spacing:.13em;
+  }
+  /* Put actual character profile beneath the title as in the reference.
+     Currency and inbox remain the only controls across the top skyline. */
   body .gothic-lobby .gothic-lobby__topbar{
-    padding-left:clamp(303px,23.5vw,385px)!important;padding-top:14px!important;padding-right:24px!important}
-  body .gothic-lobby .gothic-lobby__mission-rail{
-    top:clamp(126px,14vh,144px);left:clamp(16px,1.5vw,25px);
-    width:clamp(286px,23.4vw,346px);gap:10px;
-    max-height:calc(100dvh - 235px);overflow-y:auto;scrollbar-width:thin;
-    scrollbar-color:#ad805f transparent}
-  body .gothic-lobby .gothic-lobby__mission-card{
-    border-radius:5px!important;border-color:var(--craft-hairline)!important;
-    background:linear-gradient(125deg,#1d1720f0,#110e16ed)!important;
-    color:var(--craft-ivory)!important;
-    box-shadow:var(--craft-shadow)!important}
-  body .gothic-lobby .gothic-lobby__mission-card--quest{
-    min-height:106px;padding:11px 15px!important;justify-content:center}
-  body .gothic-lobby .gothic-lobby__mission-card--quest strong{
-    font-size:clamp(15px,1.18vw,18px)!important}
-  body .gothic-lobby .gothic-lobby__mission-card--eclipse{
-    min-height:188px;padding:12px 15px!important;isolation:isolate;
-    justify-content:space-between;border-color:#ad817d88!important;
-    background:linear-gradient(108deg,#41212bdF,#2c1a25e6 57%,#1d1520d9)!important}
-  body .gothic-lobby .gothic-lobby__mission-card--eclipse .gothic-lobby__card-kicker{
-    position:relative;z-index:2;justify-content:flex-start}
-  body .gothic-lobby .gothic-lobby__mission-card--eclipse .gothic-lobby__card-kicker svg{
-    margin-left:0}
-  body .gothic-lobby .gothic-lobby__chapter-mark{margin-left:auto}
-  body .gothic-lobby .gothic-lobby__mission-card--eclipse strong{
-    position:relative;z-index:2;font-size:clamp(25px,2.5vw,38px)!important;
-    line-height:1.15;color:var(--craft-ivory)!important;text-shadow:0 2px 9px #000c}
-  body .gothic-lobby .gothic-lobby__mission-card--eclipse .gothic-lobby__mission-detail{
-    position:relative;z-index:2;font-size:11px!important;color:#f4cfbb}
-  .gothic-lobby__summon-verse{
-    position:relative;z-index:2;display:block;
-    color:#f3c8b4;font-size:11px;line-height:1.3;text-shadow:0 2px 6px #000}
-  .gothic-lobby__summon-illustration{
-    position:absolute;inset:0 0 0 auto;display:block;z-index:0;width:57%;
-    opacity:1;pointer-events:none;overflow:hidden}
-  .gothic-lobby__summon-illustration img{object-fit:cover;object-position:center 25%;filter:none}
-  .gothic-lobby__summon-illustration:after{
-    content:"";position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(90deg,#38212bdF,#2b1b2590 25%,#1b142005 71%,#1c121e78)}
-  body .gothic-lobby .gothic-lobby__mission-card--eclipse .gothic-lobby__contract-faces{
-    position:relative;z-index:2;gap:5px;margin-top:0}
-  body .gothic-lobby .gothic-lobby__mission-card--eclipse .gothic-lobby__contract-face{
-    width:34px!important;height:34px!important;border-radius:4px}
-  body .gothic-lobby .gothic-lobby__character-actions{
-    top:clamp(107px,12.4vh,138px);right:clamp(16px,1.5vw,28px);
-    width:clamp(92px,7.3vw,109px);gap:8px}
-  body .gothic-lobby .gothic-lobby__character-actions :is(a,button){
-    min-height:80px!important;gap:4px!important;padding:7px 4px!important;
-    border:1px solid var(--craft-hairline)!important;border-radius:5px!important;
-    background:var(--craft-surface)!important;
-    box-shadow:var(--craft-shadow)!important;
-    font-size:12px!important;line-height:1.2}
-  body .gothic-lobby .gothic-lobby__character-actions img{width:40px;height:40px}
-  body .gothic-lobby .gothic-lobby__character-actions .gothic-lobby__action-glyph{
-    width:27px;height:27px;color:var(--craft-champagne);stroke-width:1.5}
-  body .gothic-lobby .gothic-lobby__character-actions small{font-size:10px;color:var(--craft-muted)}
-  body .gothic-lobby .gothic-lobby__character-actions .gothic-lobby__desktop-action{display:flex!important}
-  body .gothic-lobby .gothic-dock--cinematic{
-    width:min(980px,calc(100vw - 48px))!important;max-width:980px!important;
-    min-height:72px!important;bottom:12px!important;padding:5px 8px!important;gap:2px!important;
-    border:1px solid var(--craft-hairline)!important;border-radius:10px!important;
-    background:var(--craft-surface)!important;
-    box-shadow:0 -8px 35px #030208b5,inset 0 1px #f2d4a51b!important}
-  body .gothic-lobby .gothic-dock--cinematic a{min-height:60px!important;gap:2px!important}
-  body .gothic-lobby .gothic-dock--cinematic a .gothic-dock__icon{
-    width:29px!important;height:29px!important}
-  body .gothic-lobby .gothic-dock--cinematic a .gothic-dock__icon svg{
-    width:22px;height:22px;stroke-width:1.5}
-  body .gothic-lobby .gothic-dock--cinematic .gothic-dock__label{
-    font-size:12px!important;letter-spacing:.045em!important;font-weight:500!important;color:var(--craft-ivory)}
-  body .gothic-lobby .gothic-dock--cinematic .gothic-dock__subtitle{
-    display:none!important; /* Full descriptions remain available through aria-label. */
-    font-size:10px!important;color:var(--craft-muted)}
-  /* One restrained selected state instead of the old saturated red glow. */
-  body .gothic-lobby .gothic-dock--cinematic a[aria-current="page"]{
-    border:1px solid var(--craft-hairline)!important;border-radius:7px!important;
-    background:var(--craft-surface-selected)!important;
-    color:var(--craft-ivory)!important;
-    box-shadow:inset 0 1px #e2be9870,0 4px 12px #0302088a!important;
-    text-shadow:none!important;
+    display:block;position:absolute;inset:0;
+    padding:0!important;pointer-events:none;
+    z-index:5;
   }
-  body .gothic-lobby .gothic-dock--cinematic a[aria-current="page"] .gothic-dock__icon{
-    color:var(--craft-champagne)!important;
-    background:var(--craft-wine)!important;
-    border-color:var(--craft-brass)!important;
-    box-shadow:inset 0 1px #e8ceac26!important;
+  .gothic-lobby .gothic-lobby__topbar > button:first-child{
+    position:absolute;top:106px;left:var(--reference-margin);
+    pointer-events:auto;min-height:48px;
+    max-width:var(--reference-left);
+    padding:4px 9px 4px 0;background:#120d15a9;
+    border-radius:24px 7px 7px 24px;
+    box-shadow:0 3px 14px #0006;
   }
-  body .gothic-lobby .gothic-dock--cinematic a:is(:hover,:focus-visible){
-    background:var(--craft-surface-raised);
-    color:var(--craft-ivory);
+  .gothic-lobby .gothic-lobby__topbar .gothic-lobby__avatar{
+    width:47px;height:47px;
   }
-  body .gothic-lobby .gothic-lobby__mission-card:is(:hover,:focus-visible),
-  body .gothic-lobby .gothic-lobby__character-actions :is(a,button):is(:hover,:focus-visible){
-    border-color:var(--craft-champagne)!important;
-    background:var(--craft-surface-raised)!important;
-    box-shadow:0 13px 34px #030207c4,inset 0 1px #edd2ae2b!important;
+  .gothic-lobby .gothic-lobby__topbar .gothic-lobby__player-copy strong{font-size:13px}
+  .gothic-lobby .gothic-lobby__topbar .gothic-lobby__player-copy small{font-size:9px}
+  .gothic-lobby .gothic-lobby__topbar > div:nth-child(2){
+    position:absolute;top:14px;left:50%;transform:translateX(-50%);
+    display:flex;pointer-events:auto;gap:7px;
   }
-  body .gothic-lobby .gothic-lobby__vignette{
-    background:linear-gradient(180deg,#09080c83 0%,transparent 21%,transparent 72%,#09070dc4 100%),
-      linear-gradient(90deg,#0a07109e,transparent 31%,transparent 70%,#0807107d);
-  }
-  body .gothic-lobby .gothic-lobby__topbar :is(.gothic-icon-button,[data-tooltip][class*="rounded-full"]){
-    border-color:var(--craft-hairline)!important;
-    background:var(--craft-panel)!important;
-    color:var(--craft-ivory)!important;
-    box-shadow:inset 0 1px #e6c9a020,0 5px 17px #0008!important;
+  .gothic-lobby .gothic-lobby__top-actions{
+    position:absolute;top:12px;right:var(--reference-margin);
+    display:flex;pointer-events:auto;gap:7px;
   }
 
+  /* Left: the actual four-person cast, not a vertical quest dashboard. */
+  .gothic-lobby__reference-roster{
+    display:flex;flex-direction:column;
+    position:absolute;z-index:4;
+    top:var(--reference-top);left:var(--reference-margin);
+    width:var(--reference-left);
+    padding:10px 8px 9px;gap:3px;min-width:0;
+    border:1px solid var(--craft-hairline);border-radius:8px;
+    background:linear-gradient(115deg,#1a111ce9,#130c17dc);
+    box-shadow:var(--craft-shadow);
+  }
+  .gothic-lobby__reference-roster-title{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:0 5px 7px;color:var(--craft-champagne);
+    font:500 13px var(--craft-font-display);letter-spacing:.11em;
+    border-bottom:1px solid #b39a785c;
+  }
+  .gothic-lobby__reference-roster-title small{
+    color:var(--craft-brass);font-size:9px;letter-spacing:.12em;
+  }
+  .gothic-lobby__reference-resident{
+    display:flex;align-items:center;gap:9px;min-height:59px;
+    padding:5px 6px;min-width:0;
+    border:1px solid transparent;border-radius:5px;
+    background:rgba(25,15,25,.5);color:var(--craft-ivory);
+    transition:background-color .17s,border-color .17s;
+  }
+  .gothic-lobby__reference-resident > span{display:grid;min-width:0;flex:1;gap:2px}
+  .gothic-lobby__reference-resident strong{
+    font:500 15px var(--craft-font-display);
+    letter-spacing:.06em;
+  }
+  .gothic-lobby__reference-resident small{
+    color:var(--craft-muted);font:10px var(--craft-font-ui);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .gothic-lobby__reference-resident svg{color:var(--craft-brass);flex:none}
+  .gothic-lobby__reference-avatar{
+    width:47px;height:47px;flex:none;
+    object-fit:cover;object-position:center 22%;
+    border-radius:5px;border:1px solid #b28e746b;
+  }
+  .gothic-lobby__reference-resident--active{
+    background:linear-gradient(100deg,#512832ec,#22151ed8);
+    border-color:#bd92878c;
+  }
+  .gothic-lobby__reference-resident:is(:hover,:focus-visible){
+    background:#4b2937e8;border-color:var(--craft-champagne);
+  }
+
+  /* Keep the actual active quest accessible but compress it beneath the cast.
+     The main event promotion moves to the RIGHT, never competes with the cast. */
+  body .gothic-lobby .gothic-lobby__mission-rail{
+    position:absolute;top:calc(var(--reference-top) + 313px);
+    left:var(--reference-margin);
+    width:var(--reference-left);max-height:none;overflow:visible;
+    gap:0;z-index:3;
+  }
+  body .gothic-lobby .gothic-lobby__mission-card{
+    border:1px solid var(--craft-hairline);
+    border-radius:7px;
+    background:linear-gradient(110deg,#21151fea,#100c13f0);
+    box-shadow:var(--craft-shadow);
+  }
+  body .gothic-lobby .gothic-lobby__mission-card--quest{
+    min-height:107px;padding:11px 12px;
+    gap:5px;
+  }
+  body .gothic-lobby .gothic-lobby__mission-card--quest strong{
+    font-size:13px;line-height:1.45;
+  }
+  .gothic-lobby__mission-card--quest .gothic-lobby__mission-detail{
+    font-size:10px;
+  }
+  body .gothic-lobby .gothic-lobby__mission-card--eclipse{
+    position:fixed;right:var(--reference-margin);
+    top:clamp(124px,14.1vh,148px);
+    left:auto;bottom:auto;
+    width:var(--reference-right);
+    min-height:215px;max-height:240px;
+    gap:10px;padding:15px 16px;
+    z-index:6;isolation:isolate;
+    justify-content:space-between;
+    border-color:#bd8d78aa;
+    background:linear-gradient(110deg,#3a1625f7,#22101ae8);
+    box-shadow:0 12px 30px #08040ca8,inset 0 1px #f1d5b02b;
+  }
+  .gothic-lobby__mission-card--eclipse .gothic-lobby__card-kicker{
+    position:relative;z-index:2;color:var(--craft-champagne);
+  }
+  .gothic-lobby__chapter-mark{margin-left:auto}
+  body .gothic-lobby .gothic-lobby__mission-card--eclipse strong{
+    position:relative;z-index:2;
+    font-size:clamp(27px,2.75vw,42px);line-height:1.1;
+    color:var(--craft-ivory);
+    text-shadow:0 3px 12px #000d;
+  }
+  .gothic-lobby__mission-card--eclipse .gothic-lobby__mission-detail{
+    position:relative;z-index:2;max-width:65%;
+    font-size:10px;line-height:1.4;
+  }
+  .gothic-lobby__summon-verse{
+    display:block;position:relative;z-index:2;
+    font-size:10px;color:var(--craft-champagne);
+    text-shadow:0 2px 6px #000b;
+  }
+  .gothic-lobby__summon-illustration{
+    display:block;position:absolute;inset:0 0 0 auto;
+    z-index:0;overflow:hidden;width:66%;pointer-events:none;
+  }
+  .gothic-lobby__summon-illustration img{
+    object-fit:cover;object-position:55% 22%;filter:none;
+  }
+  .gothic-lobby__summon-illustration:after{
+    position:absolute;content:"";inset:0;
+    background:linear-gradient(90deg,#381b2afc 0%,#3016237c 40%,#160f1b14 72%,#190f1da3);
+  }
+  .gothic-lobby__mission-card--eclipse .gothic-lobby__contract-faces{
+    position:relative;z-index:2;gap:5px;
+    margin-top:auto;
+  }
+  .gothic-lobby__mission-card--eclipse .gothic-lobby__contract-face{
+    width:34px;height:34px;border-radius:6px;
+  }
+
+  /* The approved reference uses painted destination banners, not icon tiles. */
+  .gothic-lobby__reference-right{
+    display:grid;position:absolute;z-index:4;gap:9px;
+    top:clamp(351px,40vh,382px);
+    right:var(--reference-margin);width:var(--reference-right);
+  }
+  .gothic-lobby__reference-postcard{
+    position:relative;display:flex;align-items:flex-end;
+    justify-content:space-between;
+    min-height:96px;width:100%;overflow:hidden;
+    padding:10px 13px;
+    border:1px solid var(--craft-hairline);border-radius:7px;
+    text-align:left;color:var(--craft-ivory);
+    background:var(--craft-panel);
+    box-shadow:0 9px 20px #08040cb3;
+    isolation:isolate;
+    transition:border-color .15s,transform .15s;
+  }
+  .gothic-lobby__reference-postcard:before{
+    content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(90deg,#170d19ed 0%,#1e1221b2 45%,#140b126b 100%);
+  }
+  .gothic-lobby__reference-postcard-img{
+    z-index:0;object-fit:cover;object-position:center 51%;
+    filter:none;
+  }
+  .gothic-lobby__reference-postcard-img--workshop{object-position:20% 80%}
+  .gothic-lobby__reference-postcard-img--town{object-position:80% 35%}
+  .gothic-lobby__reference-postcard-img--gallery{object-position:75% 31%}
+  .gothic-lobby__reference-postcard>span{
+    position:relative;z-index:2;display:grid;gap:3px;
+    text-shadow:0 2px 7px #000e;
+  }
+  .gothic-lobby__reference-postcard strong{
+    font:500 21px var(--craft-font-display);
+    letter-spacing:.08em;
+  }
+  .gothic-lobby__reference-postcard small{
+    font:11px var(--craft-font-ui);
+    color:var(--craft-champagne);
+  }
+  .gothic-lobby__reference-postcard>svg{
+    position:relative;z-index:2;flex:none;
+    color:var(--craft-champagne);
+  }
+  .gothic-lobby__reference-postcard:is(:hover,:focus-visible){
+    border-color:var(--craft-champagne);transform:translateY(-1px);
+  }
+  /* The dialogue belongs to the heroine rather than a fourth dashboard card. */
+  .gothic-lobby__dialogue-invite{
+    position:absolute;z-index:4;display:grid;gap:5px;
+    left:clamp(52%,54vw,57%);top:clamp(230px,30vh,302px);
+    max-width:min(280px,21vw);min-width:200px;
+    padding:12px 16px;text-align:left;
+    border:1px solid var(--craft-hairline);border-radius:10px;
+    background:#17101dc9;color:var(--craft-ivory);
+    box-shadow:0 10px 30px #000a;
+    font:12px/1.5 var(--craft-font-display);
+    text-shadow:0 2px 6px #000;
+  }
+  .gothic-lobby__dialogue-invite:before{
+    content:"";position:absolute;left:-8px;top:43%;
+    width:14px;height:14px;transform:rotate(45deg);
+    background:#17101dc9;border-left:1px solid var(--craft-hairline);
+    border-bottom:1px solid var(--craft-hairline);
+  }
+  .gothic-lobby__dialogue-speaker{
+    display:flex;gap:10px;justify-content:space-between;
+    font-size:14px;color:var(--craft-champagne);
+  }
+  .gothic-lobby__dialogue-speaker small{font-size:8px;letter-spacing:.08em;color:var(--craft-muted)}
+  .gothic-lobby__dialogue-invite:is(:hover,:focus-visible){border-color:var(--craft-champagne)}
+  .gothic-lobby .gothic-lobby__character-actions{display:none}
+  .gothic-lobby__character-hit{z-index:1}
+
+  /* Bottom dock: seven canonical destinations in one slim ornament. */
+  body .gothic-lobby .gothic-dock--cinematic{
+    width:min(990px,calc(100vw - 52px));
+    max-width:990px;bottom:12px;min-height:75px;
+    padding:5px 8px;gap:2px;
+    border:1px solid var(--craft-hairline);
+    border-radius:12px;
+    background:linear-gradient(180deg,#201420ed,#0f0b14f3);
+    box-shadow:0 -8px 29px #000a,inset 0 1px #e3c59d22;
+  }
+  .gothic-lobby .gothic-dock--cinematic a{
+    min-height:62px;gap:1px;
+    border-right:1px solid #9476533c;
+  }
+  .gothic-lobby .gothic-dock--cinematic a:last-child{border-right:0}
+  .gothic-lobby .gothic-dock--cinematic a .gothic-dock__icon{
+    width:30px;height:30px;
+  }
+  .gothic-lobby .gothic-dock--cinematic a .gothic-dock__label{
+    font-size:12px;letter-spacing:.055em;font-weight:500;
+  }
+  .gothic-lobby .gothic-dock--cinematic .gothic-dock__subtitle{display:none}
+  .gothic-lobby .gothic-dock--cinematic a[aria-current="page"]{
+    border-color:var(--craft-hairline);
+    background:var(--craft-surface-selected);
+    box-shadow:inset 0 1px #ebcaa43c;
+  }
+  /* The reference image keeps both side panels above the navigation band. */
+  .gothic-lobby .gothic-lobby__vignette{
+    background:linear-gradient(180deg,#09070b70 0%,transparent 24%,transparent 70%,#09070cc9 100%),
+      linear-gradient(90deg,#0a070d65,transparent 24%,transparent 71%,#0906107c);
+  }
+  .gothic-lobby .gothic-lobby__character-caption{display:none}
+}
+@media(min-width:1100px) and (min-height:700px) and (max-height:790px){
+  .gothic-lobby__reference-roster{gap:0;padding-block:6px}
+  .gothic-lobby__reference-resident{min-height:51px}
+  .gothic-lobby__reference-avatar{width:40px;height:40px}
+  body .gothic-lobby .gothic-lobby__mission-rail{top:calc(var(--reference-top) + 275px)}
+  body .gothic-lobby .gothic-lobby__mission-card--eclipse{min-height:185px}
+  .gothic-lobby__reference-right{top:333px;gap:7px}
+  .gothic-lobby__reference-postcard{min-height:83px}
+}
+@media(prefers-reduced-motion:reduce){
+  .gothic-lobby__reference-resident,
+  .gothic-lobby__reference-postcard{transition:none}
 }

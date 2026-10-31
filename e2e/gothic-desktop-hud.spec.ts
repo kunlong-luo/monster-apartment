@@ -15,7 +15,13 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   const rail=page.locator('.gothic-lobby__mission-rail');
   await expect(rail.locator('a')).toHaveCount(2);
-  // One accessible inbox and one illustrated summon entrance, no redundant dashboard.
+  const roster=page.getByTestId('gothic-design-roster');
+  await expect(roster).toBeVisible();
+  await expect(roster.locator('a')).toHaveCount(4);
+  const right=page.getByTestId('gothic-design-right');
+  await expect(right).toBeVisible();
+  await expect(right.locator('a')).toHaveCount(2);
+  // Reference 01: people left, true summon banner right, illustrated destinations below.
   await expect(page.getByTestId('gothic-lobby-message-board')).toHaveCount(0);
   await expect(page.getByTestId('gothic-right-summon')).toHaveCount(0);
   await expect(page.getByTestId('gothic-right-memories')).toBeVisible();
@@ -26,12 +32,23 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   const summonCard=await page.getByTestId('gothic-eclipse-feature').boundingBox();
   const dockBounds=await dock.boundingBox();
   expect(mainCard).not.toBeNull();expect(summonCard).not.toBeNull();
-  expect(summonCard!.y).toBeGreaterThan(mainCard!.y+mainCard!.height);
-  expect(summonCard!.y+summonCard!.height).toBeLessThan(dockBounds!.y-180);
-  const actions=await page.locator('.gothic-lobby__character-actions').boundingBox();
-  expect(actions).not.toBeNull();
-  expect(actions!.y+actions!.height).toBeLessThan(dockBounds!.y-15);
-  expect(actions!.x).toBeGreaterThan(1440*.82);
+  expect(mainCard!.x).toBeLessThan(1440*.2);
+  expect(summonCard!.x).toBeGreaterThan(1440*.7);
+  expect(summonCard!.width).toBeGreaterThan(285);
+  expect(summonCard!.y).toBeLessThan(mainCard!.y);
+  const people=await roster.boundingBox();
+  const postcards=await right.boundingBox();
+  expect(people).not.toBeNull();expect(postcards).not.toBeNull();
+  expect(people!.x+people!.width).toBeLessThan(1440*.25);
+  expect(postcards!.x).toBeGreaterThan(1440*.7);
+  expect(people!.y+people!.height).toBeLessThan(dockBounds!.y-120);
+  expect(postcards!.y).toBeGreaterThan(summonCard!.y+summonCard!.height);
+  expect(postcards!.y+postcards!.height).toBeLessThan(dockBounds!.y-45);
+  // The center must be occupied by the scene rather than another overlay panel.
+  const message=await page.getByTestId('gothic-character-talk').boundingBox();
+  expect(message).not.toBeNull();
+  expect(message!.x).toBeGreaterThan(people!.x+people!.width);
+  expect(message!.x+message!.width).toBeLessThan(postcards!.x+15);
   const palette=await page.getByTestId('gothic-lobby').evaluate(el=>{
     const c=getComputedStyle(el);
     const card=getComputedStyle(el.querySelector<HTMLElement>('.gothic-lobby__mission-card--quest')!);
@@ -86,6 +103,8 @@ test('mobile lobby shows exactly two storyline entries with a working small inbo
   const rail=await page.locator('.gothic-lobby__mission-rail').boundingBox();
   const footer=await dock.boundingBox();
   expect(rail!.y+rail!.height).toBeLessThan(footer!.y);
+  await expect(page.getByTestId('gothic-design-roster')).toBeHidden();
+  await expect(page.getByTestId('gothic-design-right')).toBeHidden();
   const actions=await page.locator('.gothic-lobby__character-actions').boundingBox();
   expect(actions).not.toBeNull();
   // Mobile heroine's face sits around the 30–52% band: keep action HUD below it.
@@ -290,4 +309,26 @@ test('PC salon review can compose three separately uploaded transparent props wi
   await page.getByTestId('room-art-local-reset').click();
   await expect(page.getByTestId('room-art-prop-preview')).toHaveCount(0);
   await expect(page.locator('[data-hotspot-layout="object-id"]')).toBeVisible();
+});
+
+test('approved lobby layout retains the same image-first silhouette at 1648×928',async({page})=>{
+  await page.setViewportSize({width:1648,height:928});
+  await page.goto('/');
+  const art=page.getByTestId('gothic-lobby-painting-image');
+  await expect.poll(()=>art.evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(1200);
+  await expect.poll(()=>page.getByTestId('gothic-design-roster').locator('img').evaluateAll(
+    images=>images.length===4&&images.every(img=>(img as HTMLImageElement).naturalWidth>0)
+  )).toBe(true);
+  const rail=await page.getByTestId('gothic-design-roster').boundingBox();
+  const banner=await page.getByTestId('gothic-eclipse-feature').boundingBox();
+  const right=await page.getByTestId('gothic-design-right').boundingBox();
+  const dock=await page.getByRole('navigation',{name:'主要游戏功能'}).boundingBox();
+  expect(rail&&banner&&right&&dock).toBeTruthy();
+  expect(rail!.x+rail!.width).toBeLessThan(1648*.23);
+  expect(banner!.x).toBeGreaterThan(1648*.73);
+  expect(right!.y).toBeGreaterThan(banner!.y+banner!.height);
+  expect(right!.y+right!.height).toBeLessThan(dock!.y-30);
+  expect(Math.abs(dock!.x-(1648-dock!.width)/2)).toBeLessThan(4);
+  await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
+  await page.screenshot({path:'test-results/desktop-lobby-reference-1648.png',animations:'disabled'});
 });

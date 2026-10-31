@@ -119,6 +119,28 @@ export function GothicLobby(){
       </div>
     </header>
 
+    {/* Design reference: four real residents in the LEFT portrait rail.
+        These link to their existing rooms; no additional routes or invented status. */}
+    <aside className="gothic-lobby__reference-roster" data-testid="gothic-design-roster"
+      aria-label="公寓住客">
+      <span className="gothic-lobby__reference-roster-title">公寓住客 <small>RESIDENTS</small></span>
+      {([
+        {id:'yuesha',name:'月纱',detail:'契约会客室'},
+        {id:'brook',name:'泉泡',detail:'潮汐之室'},
+        {id:'fern',name:'青枝',detail:'春芽之室'},
+        {id:'cinder',name:'炽角',detail:'余烬之室'},
+      ] as const).map(({id,name,detail})=>
+        <Link href={id==='yuesha'?'/apartment/?visit=yuesha':'/characters/?visit='+id} key={id}
+          className={'gothic-lobby__reference-resident'+(id==='yuesha'?' gothic-lobby__reference-resident--active':'')}
+          data-testid={'gothic-resident-'+id}
+          aria-label={'拜访'+name+'的私人房间'}>
+          <Image src={HEROINE_FACE_ART[id]} alt="" width={52} height={52}
+            sizes="52px" loading="eager" className="gothic-lobby__reference-avatar"/>
+          <span><strong>{name}</strong><small>{detail}</small></span>
+          <ChevronRight aria-hidden="true" size={15} strokeWidth={1.5}/>
+        </Link>)}
+    </aside>
+
     <section className="gothic-lobby__mission-rail" aria-label="当前主线与契约活动">
       <Link href={orderReady?'/orders/':'/workshop/'}
         aria-label={orderReady?'晶核已备齐，查看委托交期':'晶核不足，前往工坊生产'}
@@ -162,8 +184,42 @@ export function GothicLobby(){
 
     <button type="button" className="gothic-lobby__character-hit absolute z-[1] border-0! bg-transparent! inset-[15%_46%_16%_20%] max-[700px]:inset-[22%_27%_24%_25%] cursor-pointer focus-visible:outline-2 focus-visible:outline-gothic-glow"
       onClick={talk} aria-label="与月纱互动" data-tooltip="与月纱互动"/>
+
+    {/* One true speech interaction in the open space beside the heroine.
+        Unlike a screenshot click map, it is accessible and backed by story state. */}
+    <button type="button" className="gothic-lobby__dialogue-invite"
+      data-testid="gothic-character-talk" onClick={talk} aria-label="与月纱交谈">
+      <span className="gothic-lobby__dialogue-speaker">月纱 <small>MOONVEIL</small></span>
+      <span>……你来了？</span><span>今晚，想听听我的故事吗？</span>
+    </button>
+
+    {/* Large illustrated destination tiles on the RIGHT, like approved art. */}
+    <aside className="gothic-lobby__reference-right" data-testid="gothic-design-right"
+      aria-label="公寓世界场景入口">
+      <Link href="/workshop/" data-testid="gothic-reference-workshop"
+        className="gothic-lobby__reference-postcard">
+        <Image src={lobbyHero} fill alt="" sizes="320px" className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--workshop"/>
+        <span><strong>工坊</strong><small>打造专属装备</small></span>
+        <ChevronRight aria-hidden="true" size={18}/>
+      </Link>
+      <Link href="/town/" data-testid="gothic-reference-town"
+        className="gothic-lobby__reference-postcard">
+        <Image src={lobbyHeroBackup} fill alt="" sizes="320px" className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--town"/>
+        <span><strong>月光街</strong><small>探索夜色街区</small></span>
+        <ChevronRight aria-hidden="true" size={18}/>
+      </Link>
+      <button type="button" className="gothic-lobby__reference-postcard"
+        onClick={()=>setOpen('memories')} data-testid="gothic-right-memories"
+        aria-label="剧情回顾">
+        <Image src={moonveilBust} fill alt="" sizes="320px" className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--gallery"/>
+        <span><strong>剧情回顾</strong><small>重温她们的故事</small></span>
+        <BookOpen aria-hidden="true" size={18}/>
+      </button>
+    </aside>
+
+    {/* Mobile keeps the compact verified actions rather than desktop posters. */}
     <aside className="gothic-lobby__character-actions" aria-label="月纱人物互动">
-      <button type="button" onClick={talk} aria-label="与月纱交谈" data-testid="gothic-character-talk">
+      <button type="button" onClick={talk} aria-label="与月纱交谈" data-testid="gothic-character-talk-mobile">
         <Image src={moonveilAvatar} alt="" width={62} height={62} unoptimized/>
         <span>月纱<small>与她交谈</small></span>
       </button>
@@ -172,7 +228,7 @@ export function GothicLobby(){
         <span>拜访房间<small>探索她的秘密</small></span>
       </Link>
       <button type="button" className="gothic-lobby__desktop-action" onClick={()=>setOpen('memories')}
-        data-testid="gothic-right-memories" aria-label="剧情回顾">
+        data-testid="gothic-right-memories-mobile" aria-label="剧情回顾">
         <BookOpen aria-hidden="true" size={28} strokeWidth={1.4} className="gothic-lobby__action-glyph"/>
         <span>剧情回顾<small>重温公寓故事</small></span>
       </button>
