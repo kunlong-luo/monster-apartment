@@ -8,16 +8,16 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   await expect(dock.locator('svg')).toHaveCount(7);
   const box=await dock.boundingBox();
   expect(box).not.toBeNull();
-  expect(box!.width).toBeGreaterThan(1300);
-  expect(box!.width).toBeLessThan(1430);
+  expect(box!.width).toBeGreaterThan(850);
+  expect(box!.width).toBeLessThan(1010);
   expect(Math.abs(box!.x-(1440-box!.width)/2)).toBeLessThan(3);
   await expect(page.getByRole('button',{name:'切换动态特效'}).locator('svg')).toBeVisible();
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   const rail=page.locator('.gothic-lobby__mission-rail');
   await expect(rail.locator('a')).toHaveCount(2);
-  await expect(page.getByTestId('gothic-lobby-message-board')).toBeVisible();
-  await expect(page.getByRole('button',{name:'查看全部公寓动态'})).toBeVisible();
-  await expect(page.getByTestId('gothic-right-summon')).toBeVisible();
+  // One accessible inbox and one illustrated summon entrance, no redundant dashboard.
+  await expect(page.getByTestId('gothic-lobby-message-board')).toHaveCount(0);
+  await expect(page.getByTestId('gothic-right-summon')).toHaveCount(0);
   await expect(page.getByTestId('gothic-right-memories')).toBeVisible();
   const inbox=page.getByRole('button',{name:'委托消息'});
   await expect(inbox).toBeVisible();
@@ -28,11 +28,8 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   expect(mainCard).not.toBeNull();expect(summonCard).not.toBeNull();
   expect(summonCard!.y).toBeGreaterThan(mainCard!.y+mainCard!.height);
   expect(summonCard!.y+summonCard!.height).toBeLessThan(dockBounds!.y-180);
-  const news=await page.getByTestId('gothic-lobby-message-board').boundingBox();
   const actions=await page.locator('.gothic-lobby__character-actions').boundingBox();
-  expect(news).not.toBeNull();expect(actions).not.toBeNull();
-  expect(news!.y).toBeGreaterThan(summonCard!.y+summonCard!.height);
-  expect(news!.y+news!.height).toBeLessThan(dockBounds!.y);
+  expect(actions).not.toBeNull();
   expect(actions!.y+actions!.height).toBeLessThan(dockBounds!.y-15);
   expect(actions!.x).toBeGreaterThan(1440*.82);
   const palette=await page.getByTestId('gothic-lobby').evaluate(el=>{
@@ -102,13 +99,14 @@ test('mobile lobby shows exactly two storyline entries with a working small inbo
 test('desktop reference has functional story recap and contract tile',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
-  await expect(page.getByTestId('gothic-lobby-message-board')).toContainText('晶核库存');
+  await expect(page.getByTestId('gothic-main-quest')).toContainText('晶核');
+  await expect(page.getByTestId('gothic-eclipse-feature')).toBeVisible();
   await page.getByTestId('gothic-right-memories').click();
   const dialog=page.getByRole('dialog',{name:'剧情回顾'});
   await expect(dialog).toBeVisible();
   await expect(page.getByTestId('gothic-memories-content')).toContainText('累计完成');
   await page.getByRole('button',{name:'关闭面板'}).click();
-  await page.getByTestId('gothic-right-summon').click();
+  await page.getByTestId('gothic-eclipse-feature').click();
   await expect(page).toHaveURL(/\/characters\/?#summon-screen$/);
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
 });
