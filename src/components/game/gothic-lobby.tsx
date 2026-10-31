@@ -23,6 +23,7 @@ import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import {GAME_UI_RELEASE} from '@/core/game-release';
 import './gothic-lobby.css';
 import './gothic-polish.css';
+import './gothic-reference-layout.css';
 
 type Panel='profile'|'bond'|'updates'|'memories'|null;
 
