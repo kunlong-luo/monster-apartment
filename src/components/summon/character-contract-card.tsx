@@ -44,7 +44,7 @@ export function CharacterContractCard({character,mode='feature',awardTestId}:{
           <span>{character.firstAcquired?'首次收录':'重复契约'}</span>
           <span className="contract-card__shards"><Gem aria-hidden="true" size={13}/> +{character.awardedShards??0} 锻造碎片</span>
         </p>
-        {mode==='feature'&&<p className="contract-card__art-status">独立人物肖像 · 全身卡面 CG 制作中</p>}
+        {mode==='feature'&&<p className="contract-card__art-status">契约典藏 · 人物肖像</p>}
       </div>
     </div>
   </article>;

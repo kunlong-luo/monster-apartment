@@ -13,6 +13,7 @@
     "test": "vitest run",
     "e2e": "playwright test",
     "check:stable-deps": "node scripts/check-stable-dependencies.mjs",
+    "check:design": "node scripts/check-game-design.mjs",
     "audit:room-art": "node scripts/audit-room-art.mjs",
     "art:review": "node scripts/prepare-room-background.mjs",
     "art:promote": "node scripts/promote-room-background.mjs",

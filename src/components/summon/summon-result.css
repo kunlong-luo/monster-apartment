@@ -1,7 +1,8 @@
 /* V3.70: finished-result scene, not an admin-style ten-card grid.
  * All artwork remains a correctly labelled portrait crop until approved CG. */
 .summon-reveal-overlay{
-  --contract-metal:#d8af7d;--contract-gold:#ffe1af;
+  --contract-metal:var(--moon-ui-gold,#dfb77e);
+  --contract-gold:var(--moon-ui-glow,#ffe3b5);
   position:fixed;inset:0;z-index:100;display:grid;place-items:center;
   overflow:hidden;isolation:isolate;padding:clamp(8px,1.4vw,20px);
   color:#f8e4cc;background:#09050cf5;font-family:Georgia,"Noto Serif SC",serif;
@@ -25,7 +26,7 @@
   color:#f7d1a0;box-shadow:inset 0 0 42px #f6ab6655,0 0 75px #9b214467}
 .summon-ritual-intro__orbit{position:absolute;inset:-19px;border-radius:50%;
   border:1px dashed #f6cd8ca6;animation:summon-ritual-orbit 7s linear infinite}
-.summon-ritual-intro>span,.summon-result__heading>span{font-size:10px;letter-spacing:.31em;color:#d7b78e}
+.summon-ritual-intro>span{font-size:10px;letter-spacing:.18em;color:#d7b78e}
 .summon-ritual-intro h2{font-size:clamp(21px,2.8vw,38px);font-weight:500;letter-spacing:.16em}
 .summon-ritual-intro p{font-size:13px;color:#cab19e}
 .summon-ritual-intro__skip{margin-top:19px;padding:11px 23px;border:1px solid #bc936d85;
@@ -35,8 +36,8 @@
   display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;align-items:center;gap:clamp(6px,1vh,12px)}
 .summon-result__heading{text-align:center;min-height:0;padding-top:3px}
 .summon-result__heading h2{margin:5px 0 2px;font-size:clamp(17px,2.3vw,29px);
-  font-weight:500;letter-spacing:.15em;color:#ffe5ba;text-shadow:0 3px 20px #a44b6c66}
-.summon-result__heading p{font-size:11px;color:#bda28c}
+  font-weight:500;letter-spacing:.07em;color:var(--contract-gold);text-shadow:0 3px 18px #a44b6c52}
+.summon-result__heading p{font-size:12px;line-height:1.55;color:#d6b99f}
 .summon-result__body{display:grid;grid-template-columns:minmax(125px,1fr) minmax(0,470px) minmax(125px,1fr);
   height:100%;min-height:0;width:100%;justify-items:center;align-items:center;gap:clamp(12px,2vw,38px)}
 .summon-result__focus{display:grid;place-items:center;width:100%;height:100%;min-height:0;
@@ -57,7 +58,7 @@
 .contract-card{--contract-edge:#91a0af;--contract-aura:#586d8459;display:block;position:relative;
   height:100%;width:100%;min-height:0;overflow:hidden;border:1px solid var(--contract-edge);
   border-radius:14px;background:radial-gradient(ellipse at 50% 25%,var(--contract-aura),transparent 77%),#160e19;
-  box-shadow:0 0 0 3px #0c0810,0 0 0 4px #a4886559,0 16px 45px #000b,0 0 35px var(--contract-aura)}
+  box-shadow:0 16px 45px #000c,0 0 28px var(--contract-aura)}
 .contract-card[data-rarity="R"]{--contract-edge:#7cb3d6;--contract-aura:#33648c75}
 .contract-card[data-rarity="SR"]{--contract-edge:#c5a0ef;--contract-aura:#713d997d}
 .contract-card[data-rarity="SSR-Legend"]{--contract-edge:#edc179;--contract-aura:#b98a3578}
@@ -66,10 +67,10 @@
 .contract-card__inner:before{content:"";pointer-events:none;position:absolute;z-index:4;
   inset:7px;border:1px solid color-mix(in srgb,var(--contract-edge) 58%,transparent);
   border-radius:8px}
-.contract-card__art{position:absolute;inset:0 0 18%;overflow:hidden;background:radial-gradient(ellipse at 50% 32%,#6b49606b,transparent 75%)}
+.contract-card__art{position:absolute;inset:0 0 20%;overflow:hidden;background:radial-gradient(ellipse at 50% 32%,#6b49605c,transparent 75%)}
 .contract-card__halo{position:absolute;inset:10% 8% 2%;
   background:radial-gradient(ellipse at 50% 43%,var(--contract-aura),transparent 69%)}
-.contract-card__portrait{object-fit:contain;object-position:center center;filter:contrast(1.03) saturate(1.04)}
+.contract-card__portrait{object-fit:contain;object-position:center center;filter:contrast(1.045) saturate(1.075)}
 .contract-card__art-vignette{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,#160e17b8 0%,transparent 12%,transparent 64%,#150c16 98%),
   linear-gradient(90deg,#150d1880,transparent 13%,transparent 87%,#150d1880)}
@@ -81,16 +82,16 @@
 .contract-card__new{color:#ffdf9b;letter-spacing:.14em;font-size:12px}
 .contract-card__echo{color:#d8bdad;font-size:10px}
 .contract-card__caption{position:absolute;z-index:5;bottom:0;left:0;right:0;min-height:22%;
-  padding:17px 24px 18px;background:linear-gradient(0deg,#150b16 38%,#241321e9 82%,#24132184);
+  padding:15px 22px 16px;background:linear-gradient(0deg,#150b16 44%,#241321e9 84%,#24132184);
   display:flex;flex-direction:column;justify-content:center;gap:5px;border-top:1px solid #a9846479}
 .contract-card__eyebrow{font-size:10px;letter-spacing:.17em;color:var(--contract-edge)}
-.contract-card__caption h4{font-size:clamp(15px,1.6vw,23px);line-height:1.3;color:#fff0d5;
+.contract-card__caption h4{font-size:clamp(18px,1.75vw,25px);line-height:1.25;color:#fff0d5;
   font-weight:500;letter-spacing:.075em;white-space:normal}
 .contract-card__quote{font-size:11px;color:#d7b8a7;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .contract-card__award{display:flex;justify-content:space-between;align-items:center;gap:6px;
   flex-wrap:wrap;color:#e9c9a5;font-size:11px}
 .contract-card__shards{display:inline-flex;align-items:center;gap:4px;color:#ecc59a;font-variant-numeric:tabular-nums}
-.contract-card__art-status{font-size:9px;color:#99867d;letter-spacing:.045em}
+.contract-card__art-status{font-size:9px;color:#c9aa8d;letter-spacing:.05em}
 .contract-card--thumbnail{border-radius:6px;box-shadow:none}
 .contract-card--thumbnail .contract-card__head{left:5px;right:5px;top:4px}
 .contract-card--thumbnail .contract-card__rarity{font-size:7px;gap:2px;padding:2px 3px;border:0}
@@ -130,6 +131,9 @@
   display:inline-flex;align-items:center;justify-content:center;gap:5px;font-size:11px;letter-spacing:.035em}
 .summon-result__primary{border:1px solid #e3b57a;background:linear-gradient(110deg,#872943,#491d35);color:#ffe9c7}
 .summon-result__secondary{border:1px solid #a48467;background:#251824;color:#eed2b0}
+.summon-result__actions button:focus-visible,.summon-result__thumb:focus-visible{
+  outline:2px solid var(--contract-gold);outline-offset:3px;
+}
 .summon-result__actions button:hover{border-color:#ffe2b1;filter:brightness(1.15)}
 .summon-result__thumb:focus-visible,.summon-result__actions button:focus-visible,
 .summon-result__step-controls button:focus-visible,.summon-ritual-intro button:focus-visible,

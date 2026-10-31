@@ -81,7 +81,6 @@ export function SummonResultStage({characters,still,onSummonAgain,onViewCollecti
     initial={still?false:{opacity:0,scale:.975,y:18}} animate={{opacity:1,scale:1,y:0}}
     transition={{duration:still?0:.4,ease:'easeOut'}}>
     <header className="summon-result__heading">
-      <span>MOONLIT COVENANT · 契约已缔结</span>
       <h2>{multi?'十连召唤 · 契约回响':'命定相遇 · 契约揭晓'}</h2>
       <p>{multi?(playback==='playing'?'契约正在依次显现 · 高阶人物将停留更久':
         '十张契约已经获得 · 点选任一人物可随时回看'):'此刻属于你获得的角色'}</p>

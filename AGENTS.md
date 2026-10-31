@@ -27,3 +27,11 @@
 - **交付必须玩家可见**：视觉改动给出确切页面入口与版号；涉及截图的阶段审核输出真实浏览器截图；区分“代码已提交”“CI 已通过”“Pages 已部署”，不可混称。
 - **用户体验基线不变**：按既定黑紫酒红/细金原图布局，保持中央绘景、精致人物、角落 HUD、七条正式路由和原存档；优先解决真实错误，不堆无意义的按钮。
 - **每次新对话参与本仓库工作前，先阅读本文件**。这份仓库规则用于跨会话延续研发约定；不要仅依赖聊天记忆。
+
+## 设计工作流与 Impeccable（项目常驻）
+
+- 开始任何 PC 或移动端 UI 修改前先读 `PRODUCT.md` 和 `DESIGN.md`。已批准的酒红、紫黑、细金、全屏绘景与中央人物构图不能被通用 SaaS 风格覆盖。
+- 仓库已固定 `vendor/impeccable` 官方 Git 子模块和 `.agents/skills/impeccable` 链接；首次 clone 执行 `git submodule update --init --recursive` 后由支持的编码代理读取官方 `SKILL.md`。完整流程与 Hook 安全限制见 `docs/IMPECCABLE.md`。
+- 默认依次 `critique → polish → audit`；不要为局部美化改动抽卡概率、存档或路由。禁止 Sparkles 闪光星 icon；请使用 Diamond、MoonStar、Crown、Gem 等语义图标。
+- 新版卡面不展示「CG 制作中」等开发者话语；要在代码与文档中诚实保留“肖像过渡，尚无正式全身 CG”的资源事实。
+- 改动后执行 `pnpm check:design`；涉及布局须用真实 1440×900 与 390×844 浏览器截图验收，不等同于自动 Hooks 已启用。

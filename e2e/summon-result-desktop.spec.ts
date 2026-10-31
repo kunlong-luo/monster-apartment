@@ -13,6 +13,8 @@ test('PC single pull reveals a large face card with real persisted award',async(
   await expect(card).toBeVisible();
   await expect(page.getByTestId('collection-reveal-award')).toContainText('首次收录');
   await expect(page.getByTestId('collection-reveal-award')).toContainText('+1 锻造碎片');
+  await expect(card.locator('.contract-card__art-status')).toHaveText('契约典藏 · 人物肖像');
+  await expect(card.locator('svg.lucide-sparkles')).toHaveCount(0);
   await expect.poll(()=>card.locator('img').evaluate(img=>(img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0)).toBe(true);
   const bounds=await card.boundingBox();
   expect(bounds).not.toBeNull();
@@ -22,7 +24,7 @@ test('PC single pull reveals a large face card with real persisted award',async(
   const firstDraw=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!).totalSummons);
   expect(firstDraw).toBe(1);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-summon-single-v372.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-single-v373.png',animations:'disabled'});
 });
 test('PC ten-pull lets the player select every actual card in one cinematic focus',async({page})=>{
   test.setTimeout(90000);
@@ -58,7 +60,7 @@ test('PC ten-pull lets the player select every actual card in one cinematic focu
   expect(box!.height).toBeGreaterThan(350);
   expect(box!.y+box!.height).toBeLessThanOrEqual(900);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-summon-ten-v372.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-ten-v373.png',animations:'disabled'});
   const total=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!).totalSummons);
   expect(total).toBe(10);
 });
@@ -106,18 +108,18 @@ test('cinematic omen shows exact rarest awarded rarity and never rerolls',async(
       modal:box('.summon-reveal-overlay'),viewport:{width:innerWidth,height:innerHeight}};
   });
   console.log('CINEMATIC_GEOMETRY_DIAGNOSTIC',JSON.stringify(diagnostic));
-  await page.screenshot({path:'test-results/desktop-summon-omen-layout-v372.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-omen-layout-v373.png',animations:'disabled'});
   expect(omenBox!.y+omenBox!.height,JSON.stringify(diagnostic)).toBeLessThan(omenCopyBox!.y-8);
   const rarity=await page.getByTestId('summon-ritual-intro').getAttribute('data-omen-rarity');
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-summon-omen-v372.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-omen-v373.png',animations:'disabled'});
   await expect(reveal).toHaveAttribute('data-ritual-phase','flip',{timeout:5000});
   // The flip must actually render before the sequence moves into reveal.
   await expect(page.getByTestId('summon-ritual-flip')).toBeVisible({timeout:1600});
   const flipBox=await page.locator('.summon-cinematic-ritual__turning-card').boundingBox();
   const captionBox=await page.locator('.summon-cinematic-ritual__copy').boundingBox();
   expect(flipBox!.y+flipBox!.height).toBeLessThan(captionBox!.y-8);
-  await page.screenshot({path:'test-results/desktop-summon-flip-v372.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-flip-v373.png',animations:'disabled'});
   await expect(reveal).toHaveAttribute('data-ritual-phase','reveal',{timeout:5000});
   const actual=await page.getByTestId('collection-focus-card').getAttribute('data-rarity');
   expect(actual).toBe(rarity);
@@ -173,7 +175,7 @@ test('PC ten-pull automatically flips results in order and supports pause, resum
   expect(history).toHaveLength(10);
   await expect(page.getByTestId('summon-replay')).toBeVisible();
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-ten-autoplay-v372.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-ten-autoplay-v373.png',animations:'disabled'});
   await page.getByTestId('summon-replay').click();
   await expect(stage).toHaveAttribute('data-playback-state','playing');
   await expect(stage).toHaveAttribute('data-revealed-count','0');
@@ -193,7 +195,7 @@ test('PC ten-pull automatically flips results in order and supports pause, resum
     await page.waitForTimeout(600);
     await expect(page.getByTestId('collection-focus-card')).toBeVisible();
     await expect(page.locator('.contract-card__rarity svg.lucide-sparkles')).toHaveCount(0);
-    await page.screenshot({path:'test-results/desktop-ten-ssr-focus-v372.png',animations:'disabled'});
+    await page.screenshot({path:'test-results/desktop-ten-ssr-focus-v373.png',animations:'disabled'});
   }
 });
 test('reduced-motion ten-pull reveals all without timed autoplay',async({page})=>{

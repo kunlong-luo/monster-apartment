@@ -6,7 +6,7 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await page.goto('/characters/#summon-screen');
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:25_000});
   await expect(page.getByTestId('summon-featured-portrait')).toBeVisible();
-  await expect(page.getByTestId('game-release')).toContainText('V3.72');
+  await expect(page.getByTestId('game-release')).toContainText('V3.73');
   const paintedBackground=page.getByTestId('summon-background-painting');
   await expect(paintedBackground).toBeVisible();
   await expect.poll(()=>paintedBackground.evaluate((image:HTMLImageElement)=>image.naturalWidth)).toBeGreaterThan(0);
