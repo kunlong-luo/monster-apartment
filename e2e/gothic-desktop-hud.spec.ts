@@ -383,5 +383,12 @@ test('workshop and town use independent native 2K location artwork, not lobby pa
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/desktop-workshop-2k-v389.png',animations:'disabled'});
   await page.goto('/town/');
+  await expect(page.getByTestId('moonlit-town-scene')).toBeVisible({timeout:20000});
+  // Never approve a cold-loading blank cover as the final town visual.
+  for(const imageId of ['town-painting','town-guide-painting']){
+    await expect.poll(()=>page.getByTestId(imageId).evaluate(
+      el=>(el as HTMLImageElement).naturalWidth),{timeout:20000})
+      .toBeGreaterThan(0);
+  }
   await page.screenshot({path:'test-results/desktop-town-2k-v389.png',animations:'disabled'});
 });
