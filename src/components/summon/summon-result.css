@@ -176,7 +176,7 @@
     grid-auto-columns:clamp(56px,17vw,68px);justify-content:start;
     gap:5px;width:100%;overflow-x:auto;scroll-snap-type:x proximity;
     padding:5px 3px;max-height:105px;scrollbar-width:thin}
-  .summon-result__thumb{min-width:0;aspect-ratio:3/5;padding:1px;scroll-snap-align:center}
+  .summon-result__thumb{min-width:0;aspect-ratio:4/5;padding:1px;scroll-snap-align:center}
   .contract-card--thumbnail .contract-card__rarity{font-size:0;padding:1px}
   .contract-card--thumbnail .contract-card__rarity svg{width:8px;height:8px}
   .contract-card--thumbnail .contract-card__caption{padding:1px}
