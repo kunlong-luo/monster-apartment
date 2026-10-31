@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import '@/components/game/gothic-premium-tokens.css';
 import './summon-screen.css';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import lobbyHeroBackup from '../../../public/art/lobby-hero-v2.webp';

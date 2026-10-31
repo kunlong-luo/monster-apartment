@@ -43,15 +43,7 @@ function getCanonicalDockIcon(href: string, fallback?: ReactNode) {
   return typeof fallback === 'string' ? <span>{fallback}</span> : fallback;
 }
 
-const iconButtonStyle=[
-  'gothic-icon-button grid size-9 shrink-0 place-items-center rounded-full border',
-  'border-gothic-brass/65 bg-gothic-panel/85 text-gothic-ivory',
-  'text-lg shadow-[inset_0_1px_0_#ffe4b52a,0_5px_18px_#0009]',
-  'backdrop-blur-md transition-[transform,background-color,border-color] duration-200',
-  'hover:border-gothic-glow hover:bg-gothic-wine/90 active:scale-95',
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gothic-glow',
-  'motion-reduce:transition-none'
-].join(' ');
+const iconButtonStyle='gothic-icon-button grid size-9 shrink-0 place-items-center rounded-full border text-lg backdrop-blur-md transition-[transform,background-color,border-color] duration-200 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none';
 
 export function GothicTooltip({
   text,
@@ -76,9 +68,9 @@ export function GothicTooltip({
       {children}
       <div
         role="tooltip"
-        className={`pointer-events-none absolute ${positionClasses[position]} z-50 hidden whitespace-nowrap rounded-lg border border-gothic-brass/70 bg-[#180d1a]/95 px-2.5 py-1 text-[11px] font-medium text-gothic-glow shadow-[0_4px_20px_rgba(0,0,0,0.9)] backdrop-blur-md group-hover/tooltip:block group-focus-within/tooltip:block motion-reduce:transition-none`}
+        className={`gothic-tooltip pointer-events-none absolute ${positionClasses[position]} z-50 hidden whitespace-nowrap rounded-lg border px-2.5 py-1 text-[11px] font-medium backdrop-blur-md group-hover/tooltip:block group-focus-within/tooltip:block motion-reduce:transition-none`}
       >
-        <span className="mr-1 text-gothic-gold" aria-hidden="true">✦</span>
+        <span className="mr-1 text-gothic-gold" aria-hidden="true">·</span>
         {text}
       </div>
     </div>
@@ -127,9 +119,7 @@ export function GothicResourcePill({
     <span
       data-tooltip={label}
       className={
-        'flex h-8 min-w-0 shrink-0 items-center gap-1 rounded-full border border-gothic-brass/50 '+
-        'bg-gothic-panel/80 px-2.5 text-xs text-gothic-ivory shadow-[inset_0_1px_#ffe5be2c,0_5px_15px_#0008] '+
-        'whitespace-nowrap backdrop-blur-lg sm:gap-1.5 sm:px-3'
+        'gothic-resource-pill flex h-8 min-w-0 shrink-0 items-center gap-1 rounded-full border px-2.5 text-xs whitespace-nowrap backdrop-blur-lg sm:gap-1.5 sm:px-3'
       }
     >
       {ResourceIcon ? <ResourceIcon aria-hidden="true" size={15} strokeWidth={1.7} className="shrink-0 text-gothic-gold"/> : <span className="text-base leading-none text-gothic-gold" aria-hidden="true">{symbol}</span>}
@@ -152,8 +142,8 @@ export function GothicDock({
   return <nav data-testid={testId} aria-label={label} className={
     'gothic-dock-bar absolute bottom-[max(8px,env(safe-area-inset-bottom))] left-1/2 z-[20] '+
     'flex w-[calc(100vw-16px)] max-w-[1400px] -translate-x-1/2 items-center justify-between gap-1 '+
-    'rounded-2xl border border-gothic-brass/55 bg-[linear-gradient(180deg,#1c101de8,#0d0813f5)] '+
-    'p-1.5 shadow-[0_12px_36px_#000c,inset_0_1px_#ffe0a228] backdrop-blur-xl sm:p-2 '+className
+    'rounded-2xl border border-gothic-brass/55 bg-gothic-panel/95 '+
+    'p-1.5 shadow-lg backdrop-blur-xl sm:p-2 '+className
   }>
     {items.map(item => {
       const isActive = activeHref === item.href;
@@ -166,21 +156,12 @@ export function GothicDock({
           aria-current={isActive ? 'page' : undefined}
           data-tooltip={item.description || item.label}
           className={
-            'group flex flex-1 min-w-0 flex-col items-center justify-center rounded-xl py-1 px-0.5 sm:px-1 '+
-            'transition-all duration-200 border '+
-            (isActive
-              ? 'border-[#ff4d6d] bg-gradient-to-b from-[#6e1430] to-[#390d1c] text-[#fff0f2] shadow-[0_0_20px_#e11d4866]'
-              : 'border-transparent text-[#e8cbb0] hover:border-[#a67c5255] hover:bg-[#251322aa]')
+            'gothic-dock__link group flex flex-1 min-w-0 flex-col items-center justify-center rounded-xl py-1 px-0.5 sm:px-1 border transition-colors duration-200'
           }
         >
           <span
             aria-hidden="true"
-            className={
-              'gothic-dock__icon flex size-8 sm:size-9 items-center justify-center rounded-lg border transition-colors '+
-              (isActive
-                ? 'border-[#ff758f] bg-[#881738] text-[#ffd699] shadow-[0_0_12px_#ff4d6d88]'
-                : 'border-[#8f694666] bg-[#2d1829aa] text-[#f3ca88] group-hover:border-[#d4aa70]')
-            }
+            className="gothic-dock__icon flex size-8 sm:size-9 items-center justify-center rounded-lg border transition-colors"
           >
             {getCanonicalDockIcon(item.href, item.icon)}
           </span>
@@ -188,7 +169,7 @@ export function GothicDock({
             {item.label}
           </span>
           {item.description && (
-            <span className="gothic-dock__subtitle hidden md:block text-[9px] text-[#c9a68c] truncate max-w-full opacity-80" aria-hidden="true">
+            <span className="gothic-dock__subtitle hidden md:block text-[9px] truncate max-w-full opacity-80" aria-hidden="true">
               {item.description}
             </span>
           )}
@@ -213,13 +194,9 @@ export function GothicActionButton({
   return <button type="button" data-testid={testId} disabled={disabled}
     aria-pressed={pressed} onClick={onClick}
     className={
-      'flex min-h-[60px] min-w-0 flex-col items-start gap-1 rounded-md border '+
-      'border-gothic-brass/70 bg-[linear-gradient(135deg,#432a31dc,#1a111cdd)] px-2.5 py-2 text-left overflow-hidden '+
-      'text-gothic-ivory shadow-[inset_0_1px_#ffdbac32,0_3px_12px_#0004] '+
-      'transition-[border-color,background-color,transform] duration-150 '+
-      'hover:border-gothic-glow hover:bg-gothic-wine/80 active:scale-[.98] '+
+      'gothic-action-button flex min-h-[60px] min-w-0 flex-col items-start gap-1 rounded-md border px-2.5 py-2 text-left overflow-hidden '+
+      'transition-[border-color,background-color,transform] duration-150 active:scale-[.98] '+
       'disabled:cursor-not-allowed disabled:opacity-45 disabled:active:scale-100 '+
-      'focus-visible:outline-2 focus-visible:outline-gothic-glow '+
       'motion-reduce:transition-none sm:min-h-[68px] sm:px-3'
     }>
     <span aria-hidden="true" className="text-[22px] leading-none text-gothic-gold">{rune}</span>
@@ -280,10 +257,9 @@ export function GothicModal({
         }
       }}
       className={
-        'relative flex w-full gap-3 overflow-y-auto rounded-xl border border-gothic-brass/80 '+
+        'gothic-modal__surface relative flex w-full gap-3 overflow-y-auto rounded-xl border '+
         (immersive?'max-h-[93dvh] ':'max-h-[88dvh] ')+
-        'bg-[radial-gradient(ellipse_at_15%_0%,#69374647,transparent_55%),linear-gradient(140deg,#291b28,#100c15_85%)] '+
-        'p-5 text-gothic-ivory shadow-[0_26px_75px_#000e,inset_0_0_0_3px_#f1d09b14] '+
+        'p-5 '+
         'outline-none sm:gap-6 sm:p-9 '+
         (immersive?'max-w-[1440px] p-3 sm:p-5 ':wide?'max-w-[690px]':'max-w-[610px]')
       }>
@@ -302,10 +278,8 @@ export function GothicPanelLink({href,children,onClick}:{
   href:string;children:ReactNode;onClick?:()=>void;
 }){
   return <Link href={href} onClick={onClick}
-    className="mt-3 inline-flex min-h-10 items-center rounded-md border border-gothic-brass/70
-      bg-gothic-panel/90 px-3 py-2 text-xs text-gothic-ivory
-      transition-colors hover:border-gothic-glow hover:bg-gothic-wine/80
-      focus-visible:outline-2 focus-visible:outline-gothic-glow">
+    className="gothic-panel-link mt-3 inline-flex min-h-10 items-center rounded-md border
+      px-3 py-2 text-xs transition-colors focus-visible:outline-2">
     {children}
   </Link>;
 }
