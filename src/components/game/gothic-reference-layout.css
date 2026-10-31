@@ -24,7 +24,7 @@
     padding-left:clamp(303px,23.5vw,385px)!important;padding-top:14px!important;padding-right:24px!important}
   body .gothic-lobby .gothic-lobby__mission-rail{
     top:clamp(126px,14vh,144px);left:clamp(16px,1.5vw,25px);
-    width:clamp(342px,27.2vw,420px);gap:11px;
+    width:clamp(286px,23.4vw,346px);gap:10px;
     max-height:calc(100dvh - 235px);overflow-y:auto;scrollbar-width:thin;
     scrollbar-color:#ad805f transparent}
   body .gothic-lobby .gothic-lobby__mission-card{
@@ -33,11 +33,11 @@
     color:var(--craft-ivory)!important;
     box-shadow:var(--craft-shadow)!important}
   body .gothic-lobby .gothic-lobby__mission-card--quest{
-    min-height:112px;padding:12px 17px!important;justify-content:center}
+    min-height:106px;padding:11px 15px!important;justify-content:center}
   body .gothic-lobby .gothic-lobby__mission-card--quest strong{
     font-size:clamp(15px,1.18vw,18px)!important}
   body .gothic-lobby .gothic-lobby__mission-card--eclipse{
-    min-height:184px;padding:13px 16px!important;isolation:isolate;
+    min-height:166px;padding:12px 15px!important;isolation:isolate;
     justify-content:space-between;border-color:#ad817d88!important;
     background:linear-gradient(108deg,#41212bdF,#2c1a25e6 57%,#1d1520d9)!important}
   body .gothic-lobby .gothic-lobby__mission-card--eclipse .gothic-lobby__card-kicker{
@@ -64,58 +64,41 @@
     position:relative;z-index:2;gap:5px;margin-top:0}
   body .gothic-lobby .gothic-lobby__mission-card--eclipse .gothic-lobby__contract-face{
     width:34px!important;height:34px!important;border-radius:4px}
-  body .gothic-lobby .gothic-lobby__message-board{
-    display:flex;flex-direction:column;flex-shrink:0;height:168px;max-height:168px;
-    border:1px solid var(--craft-hairline);border-radius:5px;
-    background:linear-gradient(115deg,#1b161eeF,#100e16ef);
-    box-shadow:var(--craft-shadow);color:var(--craft-ivory);overflow:hidden}
-  .gothic-lobby__message-heading{
-    display:flex;align-items:center;justify-content:space-between;gap:8px;
-    padding:9px 14px;border-bottom:1px solid #ae815f71}
-  .gothic-lobby__message-heading>span{
-    display:inline-flex;align-items:center;gap:9px;font-size:16px;font-weight:550}
-  .gothic-lobby__message-heading>span svg{color:#e9ba84}
-  .gothic-lobby__message-heading button{
-    display:inline-flex;align-items:center;gap:2px;min-height:28px;font-size:11px;color:#f1d4b6}
-  .gothic-lobby__message-rows{display:flex;flex-direction:column}
-  .gothic-lobby__message-rows>div{
-    display:grid;align-items:center;grid-template-columns:18px minmax(0,1fr) auto;
-    gap:8px;min-height:38px;margin:0 12px;padding:0 2px;
-    border-bottom:1px solid #aa805948;font-size:11px}
-  .gothic-lobby__message-rows>div:last-child{border:0}
-  .gothic-lobby__message-rows svg{color:#dca979}
-  .gothic-lobby__message-rows span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .gothic-lobby__message-rows small{font-size:10px;color:#d6b89c;font-variant-numeric:tabular-nums}
+  /* Commission and collection data remain in the quest rail and topbar.
+   * The large third dashboard card hid the central artwork on desktop. */
+  body .gothic-lobby .gothic-lobby__message-board{display:none}
   body .gothic-lobby .gothic-lobby__character-actions{
     top:clamp(107px,12.4vh,138px);right:clamp(16px,1.5vw,28px);
-    width:clamp(119px,9.3vw,145px);gap:10px}
+    width:clamp(92px,7.3vw,109px);gap:8px}
   body .gothic-lobby .gothic-lobby__character-actions :is(a,button){
-    min-height:113px!important;gap:4px!important;padding:9px 5px!important;
+    min-height:80px!important;gap:4px!important;padding:7px 4px!important;
     border:1px solid var(--craft-hairline)!important;border-radius:5px!important;
     background:var(--craft-surface)!important;
     box-shadow:var(--craft-shadow)!important;
-    font-size:13px!important;line-height:1.2}
-  body .gothic-lobby .gothic-lobby__character-actions img{width:49px;height:49px}
+    font-size:12px!important;line-height:1.2}
+  body .gothic-lobby .gothic-lobby__character-actions img{width:40px;height:40px}
   body .gothic-lobby .gothic-lobby__character-actions .gothic-lobby__action-glyph{
-    width:33px;height:33px;color:var(--craft-champagne);stroke-width:1.5}
+    width:27px;height:27px;color:var(--craft-champagne);stroke-width:1.5}
   body .gothic-lobby .gothic-lobby__character-actions small{font-size:10px;color:var(--craft-muted)}
   body .gothic-lobby .gothic-lobby__character-actions .gothic-lobby__desktop-action{display:flex!important}
+  /* Summon already has a featured illustrated entry in the left rail. */
+  body .gothic-lobby .gothic-lobby__character-actions [data-testid="gothic-right-summon"]{display:none!important}
   body .gothic-lobby .gothic-dock--cinematic{
-    width:min(1410px,calc(100vw - 32px))!important;max-width:1410px!important;
-    min-height:87px!important;bottom:12px!important;padding:7px 10px!important;gap:2px!important;
+    width:min(980px,calc(100vw - 48px))!important;max-width:980px!important;
+    min-height:72px!important;bottom:12px!important;padding:5px 8px!important;gap:2px!important;
     border:1px solid var(--craft-hairline)!important;border-radius:10px!important;
     background:var(--craft-surface)!important;
     box-shadow:0 -8px 35px #030208b5,inset 0 1px #f2d4a51b!important}
-  body .gothic-lobby .gothic-dock--cinematic a{min-height:71px!important;gap:2px!important}
+  body .gothic-lobby .gothic-dock--cinematic a{min-height:60px!important;gap:2px!important}
   body .gothic-lobby .gothic-dock--cinematic a .gothic-dock__icon{
-    width:33px!important;height:33px!important}
+    width:29px!important;height:29px!important}
   body .gothic-lobby .gothic-dock--cinematic a .gothic-dock__icon svg{
-    width:27px;height:27px;stroke-width:1.5}
+    width:22px;height:22px;stroke-width:1.5}
   body .gothic-lobby .gothic-dock--cinematic .gothic-dock__label{
-    font-size:14px!important;letter-spacing:.045em!important;font-weight:500!important;color:var(--craft-ivory)}
+    font-size:12px!important;letter-spacing:.045em!important;font-weight:500!important;color:var(--craft-ivory)}
   body .gothic-lobby .gothic-dock--cinematic .gothic-dock__subtitle{
-    display:block!important;font-size:10px!important;
-    overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--craft-muted)}
+    display:none!important; /* Full descriptions remain available through aria-label. */
+    font-size:10px!important;color:var(--craft-muted)}
   /* One restrained selected state instead of the old saturated red glow. */
   body .gothic-lobby .gothic-dock--cinematic a[aria-current="page"]{
     border:1px solid var(--craft-hairline)!important;border-radius:7px!important;
