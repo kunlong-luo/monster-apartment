@@ -60,6 +60,22 @@ jobs:
           if not any("sha256" in row for row in rows):
             raise SystemExit("No publisher image was downloadable; inspect logs")
           PY
+      - name: Prepare lightweight review previews
+        if: success()
+        run: |
+          python3 -m pip install -q Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          base=Path("docs/art-reviews/sources/winechan-gothic-manor")
+          for src in sorted(base.glob("publisher-preview-*.png")):
+              with Image.open(src) as art:
+                  view=art.convert("RGB")
+                  view.thumbnail((960,540),Image.Resampling.LANCZOS)
+                  out=src.with_suffix(".review.webp")
+                  view.save(out,"WEBP",quality=75,method=4)
+                  print(out.name,view.size,out.stat().st_size)
+          PY
       - name: Upload source evidence for review
         if: always()
         uses: actions/upload-artifact@v4
