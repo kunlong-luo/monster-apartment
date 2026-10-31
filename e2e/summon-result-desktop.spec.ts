@@ -189,6 +189,10 @@ test('PC ten-pull automatically flips results in order and supports pause, resum
     await high.nth(ssrIndex).click();
     await expect(page.getByTestId('summon-high-rarity')).toBeVisible();
     await expect(page.getByTestId('summon-result-focus').locator('img')).toHaveCount(1);
+    // Screenshot the settled collectible portrait, not a mid-rotate Motion frame.
+    await page.waitForTimeout(600);
+    await expect(page.getByTestId('collection-focus-card')).toBeVisible();
+    await expect(page.locator('.contract-card__rarity svg.lucide-sparkles')).toHaveCount(0);
     await page.screenshot({path:'test-results/desktop-ten-ssr-focus-v372.png',animations:'disabled'});
   }
 });
