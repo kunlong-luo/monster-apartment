@@ -4,8 +4,8 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
-  await expect(page.getByTestId('game-release')).toContainText('V3.74');
-  await expect(page.getByTestId('gothic-eclipse-feature')).toContainText('V3.74');
+  await expect(page.getByTestId('game-release')).toContainText('V3.75');
+  await expect(page.getByTestId('gothic-eclipse-feature')).toContainText('神话 · 月蚀');
   await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link')).toHaveCount(7);
   await expect(page.getByRole('navigation',{name:'快捷功能'})).toHaveCount(0);
   await expect(page.getByTestId('lobby-coins')).toHaveText('100');
@@ -16,8 +16,8 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   expect(dockSize).toBeLessThan(280);
   await expect(page.getByTestId('gothic-eclipse-feature')).toBeVisible();
   await expect(page.getByTestId('gothic-eclipse-feature')).toHaveAttribute('data-first-contract','true');
-  await expect(page.getByTestId('lobby-summon-guide-title')).toHaveText('召唤第一位女主');
-  await expect(page.getByTestId('lobby-summon-guide-detail')).toContainText('3 张初始召唤券');
+  await expect(page.getByTestId('lobby-summon-guide-title')).toHaveText('神话 · 月蚀');
+  await expect(page.getByTestId('lobby-summon-guide-detail')).toContainText('3 张召唤券');
   await expect(page.locator('.gothic-lobby__contract-face img')).toHaveCount(4);
   await expect(page.getByTestId('gothic-commission-status')).toContainText('待交付');
   await expect(page.getByTestId('gothic-character-room')).toHaveAttribute('href',/visit=yuesha/);
@@ -50,11 +50,11 @@ test('real saved draws change the introductory contract into an accurate collect
   });
   await page.goto('/');
   await expect(page.getByTestId('gothic-eclipse-feature')).toHaveAttribute('data-first-contract','false');
-  await expect(page.getByTestId('lobby-summon-guide-title')).toHaveText('契约已收录 1/5');
+  await expect(page.getByTestId('lobby-summon-guide-title')).toHaveText('神话 · 月蚀');
   await expect(page.getByTestId('lobby-summon-guide-detail')).toContainText('2 张信物');
   await page.getByTestId('gothic-eclipse-feature').click();
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
-  await expect(page.getByTestId('game-release')).toContainText('V3.74');
+  await expect(page.getByTestId('game-release')).toContainText('V3.75');
   await expect(page.getByTestId('summon-owned-progress')).toContainText('1/5');
 });
 
