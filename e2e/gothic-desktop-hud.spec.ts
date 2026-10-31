@@ -359,12 +359,14 @@ test('workshop and town use independent native 2K location artwork, not lobby pa
   await page.goto('/town/');
   await expect(page.getByTestId('moonwork-world')).toBeVisible({timeout:20000});
   const town=page.getByTestId('moonwork-background');
-  await expect(town).toHaveCSS('background-image',/town-moonlit-gate\.webp/);
+  await expect(town).toHaveCSS('background-image',/town-moonlit-gate\.[^)]*\.webp/);
   const townUrl=await town.evaluate(el=>{
     const image=getComputedStyle(el).backgroundImage;
     return image.match(/url\(["']?([^"')]+)["']?\)/)?.[1]??'';
   });
-  expect(townUrl).toContain('world-scenes/town-moonlit-gate.webp');
+  // Next.js content-hashes imported image URLs in /_next/static/media/.
+  expect(townUrl).toContain('town-moonlit-gate.');
+  expect(townUrl).not.toContain('lobby-hero');
   const townWidth=await page.evaluate(async src=>{
     const image=new Image();image.src=src;await image.decode();return image.naturalWidth;
   },townUrl);
@@ -374,7 +376,7 @@ test('workshop and town use independent native 2K location artwork, not lobby pa
   await page.goto('/workshop/');
   await expect(page.getByTestId('next-workshop-shell')).toBeVisible({timeout:20000});
   const root=page.locator('#root');
-  await expect(root).toHaveCSS('background-image',/workshop-gothic-hall\.webp/);
+  await expect(root).toHaveCSS('background-image',/workshop-gothic-hall\.[^)]*\.webp/);
   await expect(root).toHaveAttribute('data-runtime-ready','true',{timeout:30000});
   await expect(page.locator('[data-backdrop-source="world-hall-2k"]')).toBeAttached({timeout:15000});
   await expect(page.getByTestId('v2-world-nav').getByRole('link')).toHaveCount(7);
