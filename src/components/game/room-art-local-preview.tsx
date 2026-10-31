@@ -74,10 +74,13 @@ export function useRoomArtLocalPreview(){
       }
       if(transparentEdgePixels<12)
         throw new Error('物件必须具有真正透明的边缘，不能是带矩形背景的截图。');
+      // ImageBitmap is closed in finally; capture dimensions before scheduling
+      // React's state update. Reading a closed bitmap later returns zeroes.
+      const pixelWidth=bitmap.width,pixelHeight=bitmap.height;
       const url=URL.createObjectURL(file);
       if(propUrlRef.current[id])URL.revokeObjectURL(propUrlRef.current[id]);
       propUrlRef.current[id]=url;
-      setPropArtwork(prev=>({...prev,[id]:{url,name:file.name,width:bitmap!.width,height:bitmap!.height}}));
+      setPropArtwork(prev=>({...prev,[id]:{url,name:file.name,width:pixelWidth,height:pixelHeight}}));
       setPropError('');
     }catch(e){
       setPropError(e instanceof Error?e.message:'无法读取透明素材。');
