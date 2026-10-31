@@ -65,6 +65,12 @@ test('mobile lobby shows exactly two storyline entries with a working small inbo
   const rail=await page.locator('.gothic-lobby__mission-rail').boundingBox();
   const footer=await dock.boundingBox();
   expect(rail!.y+rail!.height).toBeLessThan(footer!.y);
+  const actions=await page.locator('.gothic-lobby__character-actions').boundingBox();
+  expect(actions).not.toBeNull();
+  // Mobile heroine's face sits around the 30–52% band: keep action HUD below it.
+  expect(actions!.y).toBeGreaterThan(844*.55);
+  expect(actions!.y+actions!.height).toBeLessThan(footer!.y-20);
+  expect(actions!.width).toBeLessThan(85);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/mobile-lobby-v374.png',animations:'disabled'});
 });

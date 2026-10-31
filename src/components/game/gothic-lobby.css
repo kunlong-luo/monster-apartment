@@ -184,15 +184,15 @@
 }
 @media(max-width:600px){
   .gothic-lobby__topbar{top:45px!important}
-  .gothic-lobby__mission-rail{top:151px;left:7px;width:min(61vw,248px);gap:7px;max-height:calc(100dvh - 245px)}
+  .gothic-lobby__mission-rail{top:151px;left:7px;width:min(54vw,216px);gap:7px;max-height:calc(100dvh - 245px)}
   .gothic-lobby__mission-card{padding:9px 10px;min-height:67px;gap:4px}
   .gothic-lobby__mission-card--eclipse{min-height:91px}
   .gothic-lobby__mission-card--eclipse strong{font-size:22px}
   .gothic-lobby__updates-card{min-height:65px}
   .gothic-lobby__card-kicker{font-size:11px}
-  .gothic-lobby__character-actions{right:6px;top:36%;width:84px;gap:7px}
-  .gothic-lobby__character-actions :is(a,button){min-height:68px;font-size:10px;padding:6px 4px}
-  .gothic-lobby__character-actions img{width:33px;height:33px}
+  .gothic-lobby__character-actions{right:8px;top:60%;width:74px;gap:6px}
+  .gothic-lobby__character-actions :is(a,button){min-height:62px;font-size:10px;padding:6px 3px}
+  .gothic-lobby__character-actions img{width:30px;height:30px}
   .gothic-lobby__character-actions small{font-size:9px}
   .gothic-lobby__action-glyph{font-size:25px}
   .gothic-lobby .gothic-dock--cinematic{width:calc(100vw - 8px)!important;padding:3px!important;gap:0}

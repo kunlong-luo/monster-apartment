@@ -14,3 +14,6 @@
 - Quality: TypeScript、Lint、Vitest、Pixi 与 Next 导出、项目级 `check:design`。
 - Desktop Visual Review: 新增两张卡 + 顶部委托小按钮的数目/间距断言；`lobby-hero-v3.webp` 真实加载断言；新增 390×844 移动端快照、消息弹窗可用、页面不溢出、侧栏不压底部导航检查。
 - 页面入口 `/`，版号 V3.74。仅在真实 CI/Pages 成功后报告已上线。
+
+## 手机截图驱动的第二轮审查
+第一次 PC/390×844 截图证明右侧人物操作卡在手机画面 y=304–465，覆盖月纱脸部；虽然此前冒烟测试通过，但不符合人物优先的 Experience 规则。修正：390px 宽时左侧故事栏由 61vw 收到 54vw，右侧交谈/房间操作降至 60dvh 附近（CSS `top:60%` of full lobby）且缩至 74px 宽。通过 Playwright 新增实际几何断言验证右侧操作区在面部以下且在底部七项 Dock 以上。桌面位置不变。
