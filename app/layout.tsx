@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+import '@/components/game/gothic-premium-tokens.css';
 import './globals.css';
 import '@/components/game/gothic-red-gold.css';
 import '@/components/game/gothic-desktop-ui.css';

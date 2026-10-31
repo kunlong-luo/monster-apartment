@@ -1,6 +1,6 @@
-/* V3.76 · shared antique-metal visual vocabulary, presentation only.
- * Deliberately not coupled to Tailwind or the gacha/production model. */
-.gothic-lobby,.summon-cinematic,.summon-reveal-overlay{
+/* V3.77: single source for game materials, typography and HUD controls.
+ * Preserve distinct rarity, danger, elements and painterly scene art. */
+:root {
   --craft-night:#0f0c12;
   --craft-ink:#151118;
   --craft-panel:#1b161d;
@@ -14,4 +14,81 @@
   --craft-muted:#bdad9d;
   --craft-hairline:rgba(188,159,119,.48);
   --craft-shadow:0 17px 38px rgba(4,3,8,.64),inset 0 1px rgba(241,211,165,.09);
+  --craft-surface:linear-gradient(135deg,#211b24f1,#120f18f5);
+  --craft-surface-selected:linear-gradient(140deg,#4a2d39,#29202c);
+  --craft-surface-raised:linear-gradient(140deg,#302530,#1a151f);
+  --craft-focus:#e9d3b5;
+  --craft-radius:9px;
+  --craft-radius-card:14px;
+  --craft-font-display:Georgia,"Noto Serif SC","Songti SC",serif;
+  --craft-font-ui:"Trebuchet MS","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+  /* Backward-compatible aliases, never another set of independent swatches. */
+  --moon-ui-night:var(--craft-night);
+  --moon-ui-wine:var(--craft-wine);
+  --moon-ui-eclipse:var(--craft-wine-lit);
+  --moon-ui-gold:var(--craft-brass);
+  --moon-ui-glow:var(--craft-champagne);
+  --moon-ui-text:var(--craft-ivory);
+  --moon-ui-muted:var(--craft-muted);
+}
+.gothic-icon-button,.gothic-resource-pill,.gothic-action-button,
+.gothic-modal__surface,.gothic-panel-link{
+  border-color:var(--craft-hairline);
+  background:var(--craft-surface);
+  color:var(--craft-ivory);
+  box-shadow:var(--craft-shadow);
+}
+.gothic-icon-button,.gothic-resource-pill,.gothic-panel-link{
+  font-family:var(--craft-font-ui);
+}
+.gothic-icon-button:is(:hover,:focus-visible),
+.gothic-action-button:is(:hover,:focus-visible),
+.gothic-panel-link:is(:hover,:focus-visible){
+  border-color:var(--craft-champagne);
+  background:var(--craft-surface-raised);
+}
+.gothic-modal__surface{border-radius:var(--craft-radius-card)}
+.gothic-modal__surface:focus{outline:none}
+.gothic-dock__link{
+  border-color:transparent;
+  background:transparent;
+  color:var(--craft-ivory);
+  font-family:var(--craft-font-ui);
+}
+.gothic-dock__link[aria-current="page"]{
+  border-color:var(--craft-hairline);
+  background:var(--craft-surface-selected);
+  color:var(--craft-ivory);
+  box-shadow:inset 0 1px #e9d3b54d,0 5px 16px #0503089c;
+}
+.gothic-dock__link:is(:hover,:focus-visible){
+  border-color:var(--craft-brass);
+  background:var(--craft-surface-raised);
+}
+.gothic-dock__link .gothic-dock__icon{
+  border-color:var(--craft-hairline);
+  background:var(--craft-panel-raised);
+  color:var(--craft-champagne);
+  box-shadow:inset 0 1px #e9d3b528;
+}
+.gothic-dock__link[aria-current="page"] .gothic-dock__icon{
+  border-color:var(--craft-brass);
+  background:var(--craft-wine);
+  color:var(--craft-champagne);
+  box-shadow:inset 0 1px #e9d3b544;
+}
+.gothic-dock__link .gothic-dock__subtitle{color:var(--craft-muted)}
+.gothic-dock__link .gothic-dock__label{font-weight:600;letter-spacing:.045em}
+:is(.gothic-icon-button,.gothic-dock__link,.gothic-panel-link,
+.gothic-action-button,.gothic-resource-pill):focus-visible{
+  outline:2px solid var(--craft-focus);outline-offset:2px;
+}
+.gothic-tooltip{
+  border-color:var(--craft-hairline);
+  background:var(--craft-panel);
+  color:var(--craft-champagne);
+  box-shadow:0 7px 24px #000b;
+}
+@media(prefers-reduced-motion:reduce){
+  .gothic-icon-button,.gothic-dock__link,.gothic-action-button,.gothic-panel-link{transition:none}
 }

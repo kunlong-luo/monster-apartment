@@ -25,14 +25,14 @@
   --color-danger-300: #ffaaa7;
   --radius-panel: 1.25rem;
   /* Shared Gothic game tokens. */
-  --color-gothic-night: #100b13;
-  --color-gothic-panel: #1e1420;
-  --color-gothic-wine: #55313f;
-  --color-gothic-brass: #b68c61;
-  --color-gothic-gold: #f0c588;
-  --color-gothic-glow: #ffe1a8;
-  --color-gothic-ivory: #fae5c8;
-  --color-gothic-muted: #d4b99d;
+  --color-gothic-night: var(--craft-night);
+  --color-gothic-panel: var(--craft-panel);
+  --color-gothic-wine: var(--craft-wine);
+  --color-gothic-brass: var(--craft-brass);
+  --color-gothic-gold: var(--craft-champagne);
+  --color-gothic-glow: var(--craft-champagne);
+  --color-gothic-ivory: var(--craft-ivory);
+  --color-gothic-muted: var(--craft-muted);
 }
 
 @layer base {
@@ -48,8 +48,8 @@
 
 /* Gold-plated metallic filter and glow for Lucide SVG icons */
 .gothic-gold-icon {
-  color: #f0c588;
-  filter: drop-shadow(0 0 4px rgba(240, 197, 136, 0.45));
+  color: var(--craft-brass);
+  filter: none;
 }
 
 .gothic-hotspot-btn {
@@ -82,9 +82,9 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.03em;
-  color: #ffe1a8;
-  background: linear-gradient(135deg, rgba(32, 20, 31, 0.96) 0%, rgba(18, 11, 20, 0.98) 100%);
-  border: 1px solid rgba(240, 197, 136, 0.6);
+  color:var(--craft-champagne);
+  background:var(--craft-panel);
+  border:1px solid var(--craft-hairline);
   border-radius: 8px;
   box-shadow: inset 0 1px 0 rgba(255, 225, 173, 0.15), 0 8px 24px rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(8px);
@@ -95,7 +95,7 @@
 
 /* Custom Gothic Scrollbars */
 * {
-  scrollbar-color: #b68c61 #18101a;
+  scrollbar-color:var(--craft-brass) var(--craft-night);
   scrollbar-width: thin;
 }
 
@@ -110,13 +110,13 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #b68c61;
+  background:var(--craft-brass);
   border-radius: 4px;
   border: 1px solid #322131;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #f0c588;
+  background:var(--craft-champagne);
 }
 
 /* Only the seven current routes are shipped. Layered scene art and canvas
