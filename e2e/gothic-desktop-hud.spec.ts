@@ -228,8 +228,19 @@ test('review-only room image compares a real 1920x1080 source without changing p
   await page.getByTestId('room-art-review-toggle').click();
   await page.getByTestId('room-art-staged-candidate').click();
   await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-local-preview','true');
+  // Unapproved backgrounds must NEVER expose old gameplay hotspots or mutate
+  // observation saves using physically incorrect object locations.
+  await expect(page.locator('[data-hotspot-layout="object-id"]')).toHaveCount(0);
+  await page.getByTestId('room-art-anchor-toggle').click();
+  await expect(page.getByTestId('room-art-anchor-editor')).toBeVisible();
+  await expect(page.getByTestId('room-art-anchor-export')).toBeDisabled();
+  await page.getByTestId('room-art-anchor-canvas').click({position:{x:180,y:180}});
+  await expect(page.getByTestId('room-art-anchor-marker-seal')).toBeVisible();
+  await expect(page.getByTestId('room-art-anchor-progress')).toContainText('1/3');
+  await page.getByTestId('room-art-anchor-toggle').click();
   await expect.poll(()=>page.getByTestId('room-background-frame').locator('img').evaluate(img=>
     (img as HTMLImageElement).naturalWidth)).toBeGreaterThanOrEqual(1920);
   await page.getByTestId('room-art-local-reset').click();
   await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-local-preview','false');
+  await expect(page.locator('[data-hotspot-layout="object-id"]')).toBeVisible();
 });

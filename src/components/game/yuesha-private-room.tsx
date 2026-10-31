@@ -12,6 +12,7 @@ import {RoomSceneBackdrop} from './room-scene-backdrop';
 import {RoomResidentSprite} from './room-resident-sprite';
 import {RoomSceneFocus} from './room-scene-focus';
 import {RoomScenicViewToggle} from './room-scenic-view-toggle';
+import {RoomArtAnchorEditor} from './room-art-anchor-editor';
 import {RoomConversationTopics} from './room-conversation-topics';
 import {YueshaMemoryShelf} from './yuesha-memory-shelf';
 import {RoomDialogueTheater} from './room-dialogue-theater';
@@ -32,6 +33,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
   // Ephemeral view mode never touches the life/room save or changes investigation state.
   const [scenicMode,setScenicMode]=useState(false);
   const shownPose=artReview.enabled&&artReview.selectedPose?artReview.selectedPose:pose;
+  const candidatePreview=Boolean(artReview.enabled&&artReview.backgroundUrl);
+  const anchorEditing=candidatePreview&&artReview.anchorEditing;
   const {status,progress}=useCharacterLife();
   const choice=progress.decisions['yuesha-first-visit'];
   const observed=progress.observations?.yuesha??[];
@@ -67,18 +70,20 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       <RoomScenicViewToggle scenic={scenicMode} blocked={Boolean(theater)} onToggle={()=>setScenicMode(previous=>!previous)}/>
       <RoomSceneBackdrop id="yuesha" scenic={scenicMode} previewUrl={artReview.backgroundUrl}
         cinematicPose={theater?pose:null}/>
-      <RoomResidentSprite id="yuesha" name="月纱" reaction={scenicMode?"":reaction} pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)} previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>
-      <RoomSceneFocus id="yuesha" scenic={scenicMode} item={hotspot} pose={pose} stageSize={stageSize} preview={Boolean(artReview.backgroundUrl)}/>
-      <RoomSceneHotspots scenic={scenicMode} characterName="月纱" roomId="yuesha" stageSize={stageSize} preview={Boolean(artReview.backgroundUrl)}
+      {!anchorEditing&&<RoomResidentSprite id="yuesha" name="月纱" reaction={scenicMode?"":reaction} pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)} previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>}
+      {!candidatePreview&&<RoomSceneFocus id="yuesha" scenic={scenicMode} item={hotspot} pose={pose} stageSize={stageSize}/>}
+      {!candidatePreview&&<RoomSceneHotspots scenic={scenicMode} characterName="月纱" roomId="yuesha" stageSize={stageSize}
         items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}
         selected={hotspot} observed={observed} onInspect={inspect}
         description={hotspot==='seal'?'蜡封上的月纹，与旧公寓钥匙的纹样有些相似。月纱没有立即回答你的疑问。':
           hotspot==='tea'?'杯里有桂皮与温暖的香气。月纱说，做生意之前应该先好好喝一杯茶。':
-          hotspot==='ledger'?'账簿封面有多年前的磨损痕迹。里面记着什么，目前还不能公开。':undefined}/>
+          hotspot==='ledger'?'账簿封面有多年前的磨损痕迹。里面记着什么，目前还不能公开。':undefined}/>}
+      {anchorEditing&&<RoomArtAnchorEditor stageSize={stageSize} selected={artReview.selectedAnchor}
+        draft={artReview.anchorDraft} onPlace={artReview.placeAnchor}/>}
       {theater&&<RoomDialogueTheater key={theater.id} name="月纱" title={theater.title}
         response={theater.response} basePose={roomTopicPose('yuesha',theater.id)}
         onBeatPose={setPose} onClose={()=>{setTheater(null);setPose('idle');}}/>}
-      <header className={"pointer-events-none absolute left-4 top-4 z-[5] max-w-[52%] text-shadow-md sm:left-6 sm:top-6"+(scenicMode?" lg:hidden":"")}>
+      <header className={"pointer-events-none absolute left-4 top-4 z-[5] max-w-[52%] text-shadow-md sm:left-6 sm:top-6"+(scenicMode?" lg:hidden":"")+(candidatePreview?" hidden":"")}>
         <span className="text-[9px] font-medium uppercase tracking-[.24em] text-[#e7c294]">PRIVATE SUITE / 月纱</span>
         <h3 className="mt-2 font-serif text-xl leading-tight tracking-[.04em] text-[#ffe7c5] sm:text-2xl">契约会客室</h3>
         <p className="mt-2 hidden text-xs leading-6 text-[#ead3bf] sm:block">月纹、旧契约和一杯香料茶</p>

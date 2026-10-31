@@ -78,3 +78,11 @@ pnpm check:design && pnpm test && pnpm build
 从 `IMG_0277.png` 生成 1920×1080 WebP 室内风格候选，接入 `public/art/room-review/yuesha-salon-candidate.webp`，**仅当用户显式在 `/apartment/?visit=yuesha&roomArtReview=1` 打开「本地美术审核」并点击「预览已入库候选」时显示**。正常游戏继续保留原概念背景，`public/art/rooms/manifest.json` 的 `backgroundStatus` 仍为 `concept`。
 
 该素材可用来评估酒红家具、火炉、会客桌的画面层次，但真实蜡封、香料茶杯、旧账簿及其锚点仍待专门审核。未经人工确认的候选不能冒充 production。支持恢复原绘景，且预览不写入存档。
+
+## V3.85 · 候选图物件实景定位工具
+
+此前候选图片预览会错误复用旧会客室坐标，用户点击还可能污染探索记录。现在 **QA 候选预览不挂载正式调查热点与焦点层**，也不会调用 `commitCharacterLife` 的调查动作；正常游戏仅在还原旧背景后恢复可玩物件。此改变不修改概率、存档键或角色玩法。
+
+在 `/apartment/?visit=yuesha&roomArtReview=1` 中选择高清候选后可启用「开始在画面中标注真实物件」，分别选择蜡封、茶杯、账簿并点击对应的**实物位置**。投影按 16:9 `object-fit:cover` 做反变换，检查 390×315 手机热点是否可触及、有无 44px 重叠。三项真实物件均有标注且几何合规后才可导出三项坐标草稿 JSON，不能产生生产审批证书或写入 manifest。退出预览即丢弃草稿。
+
+**当前候选** `IMG_0277.png` 仍未具备清晰可辨的月纹蜡封与旧账簿，因此尚不能通过完整视觉审查，即使其原生分辨率足够高；不能以无效坐标作弊通过审核。正式入库继续运行独立 `art:review`／`art:promote` 流程并由人工复核。
