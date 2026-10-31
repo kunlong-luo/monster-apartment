@@ -5,6 +5,7 @@ on:
       - ".github/workflows/gothic-source-pack.yml"
       - "scripts/catalog-gothic-source-pack.py"
       - "scripts/build-lobby-feature-postcards.py"
+      - "scripts/build-world-stage-scenes.py"
   workflow_dispatch:
 permissions:
   contents: write
@@ -44,6 +45,8 @@ jobs:
           python3 scripts/catalog-gothic-source-pack.py "$RUNNER_TEMP/gothic-source-pack"
       - name: Create 960x320 room-independent lobby location postcards
         run: python3 scripts/build-lobby-feature-postcards.py "$RUNNER_TEMP/gothic-source-pack"
+      - name: Create native-size world environment layers
+        run: python3 scripts/build-world-stage-scenes.py "$RUNNER_TEMP/gothic-source-pack"
       - name: Upload source review report and genuine candidate images
         if: always()
         uses: actions/upload-artifact@v4
@@ -58,7 +61,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/art-reviews/sources/winechan-gothic-manor-full-pack/ public/art/feature-postcards/
+          git add docs/art-reviews/sources/winechan-gothic-manor-full-pack/ public/art/feature-postcards/ public/art/world-scenes/
           if ! git diff --cached --quiet; then
             git commit -m "assets(art): add verified navigation postcards, keep rooms under review"
             TOKEN64="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
