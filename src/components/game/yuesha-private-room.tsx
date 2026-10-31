@@ -13,6 +13,7 @@ import {RoomResidentSprite} from './room-resident-sprite';
 import {RoomSceneFocus} from './room-scene-focus';
 import {RoomScenicViewToggle} from './room-scenic-view-toggle';
 import {RoomArtAnchorEditor} from './room-art-anchor-editor';
+import {RoomArtPropPreview} from './room-art-prop-preview';
 import {RoomConversationTopics} from './room-conversation-topics';
 import {YueshaMemoryShelf} from './yuesha-memory-shelf';
 import {RoomDialogueTheater} from './room-dialogue-theater';
@@ -71,6 +72,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       <RoomSceneBackdrop id="yuesha" scenic={scenicMode} previewUrl={artReview.backgroundUrl}
         cinematicPose={theater?pose:null}/>
       {!anchorEditing&&<RoomResidentSprite id="yuesha" name="月纱" reaction={scenicMode?"":reaction} pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)} previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>}
+      {candidatePreview&&<RoomArtPropPreview stageSize={stageSize}
+        anchors={artReview.anchorDraft} art={artReview.propArtwork}/>}
       {!candidatePreview&&<RoomSceneFocus id="yuesha" scenic={scenicMode} item={hotspot} pose={pose} stageSize={stageSize}/>}
       {!candidatePreview&&<RoomSceneHotspots scenic={scenicMode} characterName="月纱" roomId="yuesha" stageSize={stageSize}
         items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}

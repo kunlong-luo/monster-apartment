@@ -244,3 +244,47 @@ test('review-only room image compares a real 1920x1080 source without changing p
   await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-local-preview','false');
   await expect(page.locator('[data-hotspot-layout="object-id"]')).toBeVisible();
 });
+
+test('PC salon review can compose three separately uploaded transparent props without touching saved investigation',async({page})=>{
+  test.setTimeout(60000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/apartment/?visit=yuesha&roomArtReview=1');
+  await expect(page.getByTestId('yuesha-private-room')).toBeVisible({timeout:20000});
+  await page.getByTestId('room-art-review-toggle').click();
+  await page.getByTestId('room-art-staged-candidate').click();
+  await expect(page.getByTestId('room-art-composite-export')).toBeDisabled();
+  await expect(page.locator('[data-hotspot-layout="object-id"]')).toHaveCount(0);
+  const data=await page.evaluate(()=>{
+    const canvas=document.createElement('canvas');
+    canvas.width=256;canvas.height=256;
+    const ctx=canvas.getContext('2d')!;
+    ctx.fillStyle='#b28c65';ctx.beginPath();ctx.ellipse(128,128,67,85,0,0,Math.PI*2);ctx.fill();
+    return canvas.toDataURL('image/png').split(',')[1];
+  });
+  const buffer=Buffer.from(data,'base64');
+  for(const id of ['seal','tea','ledger']){
+    await page.getByTestId('room-art-prop-file-'+id).setInputFiles({
+      name:id+'.png',mimeType:'image/png',buffer
+    });
+  }
+  await page.getByTestId('room-art-anchor-toggle').click();
+  const box=await page.getByTestId('room-art-anchor-canvas').boundingBox();
+  expect(box).not.toBeNull();
+  for(const [x,y] of [[.40,.45],[.60,.45],[.50,.73]]){
+    await page.getByTestId('room-art-anchor-canvas').click({
+      position:{x:Math.round(box!.width*x),y:Math.round(box!.height*y)}
+    });
+  }
+  await expect(page.getByTestId('room-art-prop-preview')).toBeVisible();
+  for(const id of ['seal','tea','ledger'])
+    await expect(page.getByTestId('room-art-prop-'+id)).toBeVisible();
+  await expect(page.getByTestId('room-art-composite-export')).toBeEnabled();
+  const [download]=await Promise.all([
+    page.waitForEvent('download'),
+    page.getByTestId('room-art-composite-export').click(),
+  ]);
+  expect(download.suggestedFilename()).toBe('yuesha-room-composite.UNAPPROVED.webp');
+  await page.getByTestId('room-art-local-reset').click();
+  await expect(page.getByTestId('room-art-prop-preview')).toHaveCount(0);
+  await expect(page.locator('[data-hotspot-layout="object-id"]')).toBeVisible();
+});

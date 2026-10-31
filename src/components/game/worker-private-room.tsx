@@ -64,6 +64,9 @@ export function WorkerPrivateRoom({id,onClose,working}:{
   };
   const foundHint=observed.includes(scene.objects[0].id)&&observed.includes(scene.objects[1].id);
   const shownPose=artReview.enabled&&artReview.selectedPose?artReview.selectedPose:pose;
+  // Review candidates have no authenticated object locations. No false
+  // hotspots and no game-state inspection while a new background is staged.
+  const candidatePreview=Boolean(artReview.enabled&&artReview.backgroundUrl);
 
   return <GothicModal title={'拜访'+profile.name+'的房间'} closeLabel={'离开'+profile.name+'的房间'} onClose={onClose} wide immersive>
     <div data-testid={'worker-private-room-'+id} data-room-layout="scenic-left-rail-right"
@@ -80,25 +83,25 @@ export function WorkerPrivateRoom({id,onClose,working}:{
         <RoomResidentSprite id={id} name={profile.name} working={working} reaction={scenicMode?'':reaction}
           pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)}
           previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>
-        <RoomSceneFocus id={id} scenic={scenicMode} item={selectedItem} pose={pose} stageSize={stageSize}/>
-        <RoomSceneHotspots scenic={scenicMode} characterName={profile.name} roomId={id} items={scene.objects} stageSize={stageSize}
+        {!candidatePreview&&<RoomSceneFocus id={id} scenic={scenicMode} item={selectedItem} pose={pose} stageSize={stageSize}/>}
+        {!candidatePreview&&<RoomSceneHotspots scenic={scenicMode} characterName={profile.name} roomId={id} items={scene.objects} stageSize={stageSize}
           observed={observed} selected={selectedItem} onInspect={inspect}
-          description={scene.objects.find(item=>item.id===selectedItem)?.text}/>
+          description={scene.objects.find(item=>item.id===selectedItem)?.text}/>}
         {theater&&!working&&<RoomDialogueTheater key={theater.id} name={profile.name}
           title={theater.title} response={theater.response}
           basePose={roomTopicPose(id,theater.id)} onBeatPose={setPose}
           onClose={()=>{setTheater(null);setPose('idle');}}/>}
-        <header className={"pointer-events-none absolute left-4 top-4 z-[5] max-w-[min(54%,340px)] text-shadow-md sm:left-6 sm:top-6"+(scenicMode?" lg:hidden":"")}>
+        <header className={"pointer-events-none absolute left-4 top-4 z-[5] max-w-[min(54%,340px)] text-shadow-md sm:left-6 sm:top-6"+(scenicMode?" lg:hidden":"")+(candidatePreview?" hidden":"")}>
           <span className="text-[9px] font-medium uppercase tracking-[.24em] text-[#e7c294]">PRIVATE SUITE / {profile.name}</span>
           <h2 className="mt-2 font-serif text-xl leading-tight tracking-[.04em] text-[#ffe7c5] sm:text-2xl">{scene.roomName}</h2>
           <p className="mt-2 hidden max-w-[29ch] text-xs leading-6 text-[#ead3bf] sm:block">{scene.roomSummary}</p>
         </header>
-        <div className="pointer-events-none absolute bottom-3 left-3 z-[1] max-w-[48%] sm:bottom-5 sm:left-5">
+        <div className={"pointer-events-none absolute bottom-3 left-3 z-[1] max-w-[48%] sm:bottom-5 sm:left-5"+(candidatePreview?" hidden":"")}>
           <p className={'inline-block rounded border border-[#cba77b77] bg-[#180e1cc9] px-2.5 py-1.5 text-[10px] leading-4 '+palette.ribbon}>{working?'工坊值守 · 留言中':palette.roomDetail}</p>
         </div>
       </div>
       <RoomArtLocalPreviewPanel id={id} name={profile.name} review={artReview}
-        warning="当前仍使用概念版调查热点坐标；新背景的物件定位须在仓库外单独标注并审核，不能据此预览判断正式热点。"/>
+        warning="预览中的背景尚未审核，原有调查热点已停用，退出预览后会自动恢复；不会更改探索记录。"/>
       </div>
       <div data-testid="room-story-rail" className={'min-w-0 space-y-4 rounded-xl border border-gothic-brass/40 bg-gothic-panel/90 p-3 lg:max-h-[min(68dvh,720px)] lg:overflow-y-auto lg:pr-3 [scrollbar-width:thin] '+(scenicMode?'lg:hidden':'')}>
       {status!=='ok'&&<p role="alert" className="rounded-lg border border-rose-300/50 p-3 text-xs text-rose-200">
