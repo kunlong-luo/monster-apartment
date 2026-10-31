@@ -179,3 +179,34 @@
   .summon-result__thumb{transition:none}
   .summon-result__thumb.is-selected{transform:none}
 }
+
+/* V3.72: premium ten-draw playback, without starburst iconography. */
+.summon-result__focus{position:relative}
+.summon-result__hero[data-highlight="SSR-Legend"] .contract-card{
+  box-shadow:0 0 0 3px #150d16,0 0 0 4px #f0d09596,0 0 48px #dfad6477,0 20px 55px #000c;
+}
+.summon-result__hero[data-highlight="SSR-Mythic"] .contract-card{
+  box-shadow:0 0 0 3px #150d16,0 0 0 4px #ff9b8499,0 0 52px #cb305c99,0 20px 55px #000c;
+}
+.summon-result__high-rarity{
+  position:absolute;top:clamp(7px,1.3vw,15px);z-index:7;
+  left:50%;transform:translateX(-50%);
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  max-width:calc(100% - 16px);white-space:nowrap;
+  padding:5px 13px;border-radius:30px;
+  background:linear-gradient(90deg,#33202bcf,#20121cdb);
+  border:1px solid #d9b585ac;
+  box-shadow:0 3px 16px #000b;
+  color:#ffdfb2;font-size:10px;letter-spacing:.07em;
+  pointer-events:none;
+}
+.summon-result__high-rarity[data-rarity="SSR-Mythic"]{
+  border-color:#e47a83c2;color:#ffb6b4;background:#411b31e8;
+}
+.summon-result__thumb.is-selected{border-color:#f6d7a0}
+.summon-result__progress{font-variant-numeric:tabular-nums}
+@media(max-width:699px){
+  .summon-result__high-rarity{
+    top:5px;padding:3px 8px;font-size:9px;
+  }
+}

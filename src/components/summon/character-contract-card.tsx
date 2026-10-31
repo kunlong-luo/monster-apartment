@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import {Gem,Sparkles} from 'lucide-react';
+import {Gem,Diamond} from 'lucide-react';
 import {getCardFace} from './heroine-portrait-assets';
 import {siteAssetUrl} from '@/lib/game/site-asset-url';
 import type {SummonableCharacter,GachaRarity} from '@/lib/summon/gacha-engine';
@@ -33,7 +33,7 @@ export function CharacterContractCard({character,mode='feature',awardTestId}:{
         <div className="contract-card__art-vignette" aria-hidden="true"/>
       </div>
       <header className="contract-card__head">
-        <span className="contract-card__rarity"><Sparkles aria-hidden="true" size={13}/>{character.rarityZh}</span>
+        <span className="contract-card__rarity"><Diamond aria-hidden="true" size={13} strokeWidth={1.7}/>{character.rarityZh}</span>
         {character.firstAcquired?<span className="contract-card__new">NEW</span>:<span className="contract-card__echo">契约回响</span>}
       </header>
       <div className="contract-card__caption">

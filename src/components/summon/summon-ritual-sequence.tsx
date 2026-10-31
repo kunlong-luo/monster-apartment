@@ -1,7 +1,7 @@
 'use client';
 
 import {AnimatePresence,motion} from 'motion/react';
-import {CircleDot,LockKeyhole,MoonStar,Sparkles} from 'lucide-react';
+import {CircleDot,LockKeyhole,MoonStar,Crown} from 'lucide-react';
 import type {SummonableCharacter} from '@/lib/summon/gacha-engine';
 import {CharacterContractCard} from './character-contract-card';
 import {strongestSummonResult,type ActiveRitualPhase} from '@/lib/summon/ritual-presentation';
@@ -58,7 +58,7 @@ export function SummonRitualSequence({characters,phase,still,onSkip}:{
           exit={{opacity:0,scale:1.18}}
           transition={{duration:still?0:.55,ease:'easeOut'}}>
           <div className="summon-cinematic-ritual__omen-halo"/>
-          {legendary?<Sparkles size={90} strokeWidth={1.2} aria-hidden="true"/>:
+          {legendary?<Crown size={90} strokeWidth={1.2} aria-hidden="true"/>:
             <CircleDot size={90} strokeWidth={1} aria-hidden="true"/>}
           <strong>{featured.rarityZh}</strong>
           <span>{characters.length===10?'十连契约中最耀眼的共鸣':'命定之人的契约气息'}</span>

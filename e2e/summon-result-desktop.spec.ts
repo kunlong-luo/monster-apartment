@@ -22,7 +22,7 @@ test('PC single pull reveals a large face card with real persisted award',async(
   const firstDraw=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!).totalSummons);
   expect(firstDraw).toBe(1);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-summon-single-v371.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-single-v372.png',animations:'disabled'});
 });
 test('PC ten-pull lets the player select every actual card in one cinematic focus',async({page})=>{
   test.setTimeout(90000);
@@ -39,7 +39,9 @@ test('PC ten-pull lets the player select every actual card in one cinematic focu
   const modal=page.getByTestId('collection-reveal');
   await modal.getByRole('button',{name:'跳过仪式'}).click();
   await expect(page.getByTestId('summon-result-filmstrip').getByRole('button')).toHaveCount(10);
-  await page.getByRole('button',{name:'翻开第 1 张契约卡'}).click();
+  // Pause autoplay before testing deliberate selection, avoiding a timer race.
+  await page.getByTestId('summon-autoplay-pause').click();
+  await page.getByTestId('summon-result-thumb').first().click();
   await expect(page.getByTestId('collection-focus-card')).toBeVisible();
   await page.getByRole('button',{name:'全部翻开'}).click();
   await expect(page.getByTestId('collection-reveal-award')).toHaveCount(10);
@@ -56,7 +58,7 @@ test('PC ten-pull lets the player select every actual card in one cinematic focu
   expect(box!.height).toBeGreaterThan(350);
   expect(box!.y+box!.height).toBeLessThanOrEqual(900);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-summon-ten-v371.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-ten-v372.png',animations:'disabled'});
   const total=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!).totalSummons);
   expect(total).toBe(10);
 });
@@ -104,18 +106,18 @@ test('cinematic omen shows exact rarest awarded rarity and never rerolls',async(
       modal:box('.summon-reveal-overlay'),viewport:{width:innerWidth,height:innerHeight}};
   });
   console.log('CINEMATIC_GEOMETRY_DIAGNOSTIC',JSON.stringify(diagnostic));
-  await page.screenshot({path:'test-results/desktop-summon-omen-layout-v371.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-omen-layout-v372.png',animations:'disabled'});
   expect(omenBox!.y+omenBox!.height,JSON.stringify(diagnostic)).toBeLessThan(omenCopyBox!.y-8);
   const rarity=await page.getByTestId('summon-ritual-intro').getAttribute('data-omen-rarity');
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-summon-omen-v371.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-omen-v372.png',animations:'disabled'});
   await expect(reveal).toHaveAttribute('data-ritual-phase','flip',{timeout:5000});
   // The flip must actually render before the sequence moves into reveal.
   await expect(page.getByTestId('summon-ritual-flip')).toBeVisible({timeout:1600});
   const flipBox=await page.locator('.summon-cinematic-ritual__turning-card').boundingBox();
   const captionBox=await page.locator('.summon-cinematic-ritual__copy').boundingBox();
   expect(flipBox!.y+flipBox!.height).toBeLessThan(captionBox!.y-8);
-  await page.screenshot({path:'test-results/desktop-summon-flip-v371.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-flip-v372.png',animations:'disabled'});
   await expect(reveal).toHaveAttribute('data-ritual-phase','reveal',{timeout:5000});
   const actual=await page.getByTestId('collection-focus-card').getAttribute('data-rarity');
   expect(actual).toBe(rarity);
@@ -139,4 +141,75 @@ test('game reduced motion skips cinematic, with one saved draw even after Escape
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!));
   expect(saved.totalSummons).toBe(1);
   expect(saved.history).toHaveLength(1);
+});
+
+test('PC ten-pull automatically flips results in order and supports pause, resume and replay',async({page})=>{
+  test.setTimeout(110000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:30000});
+  await page.evaluate(()=>localStorage.setItem('monster-apartment:gacha-v2',JSON.stringify({
+    version:2,tickets:10,crystals:0,moonstones:0,pityCountdown:1,
+    totalSummons:0,history:[],ownedIds:[],claimedProgressRewards:[],
+    activePoolId:'mythic-eclipse',
+  })));
+  await page.reload();
+  await page.getByTestId('collection-summon-ten').click();
+  await page.getByTestId('collection-reveal').getByRole('button',{name:'跳过仪式'}).click();
+  const stage=page.getByTestId('summon-result-stage');
+  await expect(stage).toHaveAttribute('data-playback-state','playing');
+  await expect(stage).toHaveAttribute('data-revealed-count',/[1-4]/,{timeout:4000});
+  await page.getByTestId('summon-autoplay-pause').click();
+  await expect(stage).toHaveAttribute('data-playback-state','paused');
+  const pausedCount=await stage.getAttribute('data-revealed-count');
+  await page.waitForTimeout(750);
+  expect(await stage.getAttribute('data-revealed-count')).toBe(pausedCount);
+  await page.getByTestId('summon-autoplay-resume').click();
+  await expect(stage).toHaveAttribute('data-playback-state','playing');
+  await expect(stage).toHaveAttribute('data-revealed-count','10',{timeout:25000});
+  await expect(stage).toHaveAttribute('data-playback-state','complete',{timeout:6000});
+  await expect(page.getByTestId('collection-reveal-award')).toHaveCount(10);
+  const history=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!).history);
+  expect(history).toHaveLength(10);
+  await expect(page.getByTestId('summon-replay')).toBeVisible();
+  await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
+  await page.screenshot({path:'test-results/desktop-ten-autoplay-v372.png',animations:'disabled'});
+  await page.getByTestId('summon-replay').click();
+  await expect(stage).toHaveAttribute('data-playback-state','playing');
+  await expect(stage).toHaveAttribute('data-revealed-count','0');
+  await page.getByTestId('summon-reveal-all').click();
+  await expect(stage).toHaveAttribute('data-playback-state','complete');
+  await expect(stage).toHaveAttribute('data-selected-index',/\d/);
+  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!));
+  expect(saved.totalSummons).toBe(10);
+  expect(saved.history).toEqual(history);
+  const high=page.getByTestId('summon-result-thumb');
+  const ssrIndex=history.findIndex((record:{rarity:string})=>record.rarity.startsWith('SSR'));
+  if(ssrIndex>=0){
+    await high.nth(ssrIndex).click();
+    await expect(page.getByTestId('summon-high-rarity')).toBeVisible();
+    await expect(page.getByTestId('summon-result-focus').locator('img')).toHaveCount(1);
+    await page.screenshot({path:'test-results/desktop-ten-ssr-focus-v372.png',animations:'disabled'});
+  }
+});
+test('reduced-motion ten-pull reveals all without timed autoplay',async({page})=>{
+  test.setTimeout(60000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
+  await page.evaluate(()=>{
+    localStorage.setItem('monster-apartment:gothic-motion-reduced','1');
+    localStorage.setItem('monster-apartment:gacha-v2',JSON.stringify({
+      version:2,tickets:10,crystals:0,moonstones:0,pityCountdown:90,
+      totalSummons:0,history:[],ownedIds:[],claimedProgressRewards:[],activePoolId:'mythic-eclipse',
+    }));
+  });
+  await page.reload();
+  await page.getByTestId('collection-summon-ten').click();
+  const stage=page.getByTestId('summon-result-stage');
+  await expect(stage).toHaveAttribute('data-playback-state','complete',{timeout:3000});
+  await expect(stage).toHaveAttribute('data-revealed-count','10');
+  await expect(page.getByTestId('summon-autoplay-pause')).toHaveCount(0);
+  await expect(page.getByTestId('collection-reveal-award')).toHaveCount(10);
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!).totalSummons)).toBe(10);
 });
