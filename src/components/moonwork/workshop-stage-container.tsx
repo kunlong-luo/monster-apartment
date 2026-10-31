@@ -1,4 +1,5 @@
 'use client';
+import {PanelBottomOpen,PanelBottomClose} from 'lucide-react';
 
 import {
   workshopRank,
@@ -19,8 +20,12 @@ export function WorkshopStageContainer({
   chosenMachine,
   movingFrom,
   selectedPlot,
+  expandedConsole,
+  onToggleConsole,
 }: {
   world: WorkshopState;
+  expandedConsole:boolean;
+  onToggleConsole:()=>void;
   onAction:(action:WorkshopAction)=>void;
   chosenWorker: WorkerId | null;
   chosenMachine: Craft | null;
@@ -72,6 +77,13 @@ export function WorkshopStageContainer({
         <small id="rank" data-testid="v2-rank">
           {rankText}
         </small>
+        <button type="button" onClick={onToggleConsole}
+          aria-pressed={!expandedConsole} aria-label={expandedConsole?'切换到场景优先布局':'展开详细调度面板'}
+          data-testid="workshop-stage-layout-toggle"
+          className="workshop-stage-layout-toggle">
+          {expandedConsole?<PanelBottomClose aria-hidden="true" size={14}/>:<PanelBottomOpen aria-hidden="true" size={14}/>}
+          {expandedConsole?'场景优先':'详细调度'}
+        </button>
       </div>
 
       <div

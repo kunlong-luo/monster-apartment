@@ -10,6 +10,7 @@
   /* Reserve the actual navigation dock footprint before positioning the console. */
   --workshop-dock-clearance: 108px;
   --workshop-stage-gap: 14px;
+  --workshop-console-height:clamp(275px,33dvh,325px);
   min-height: 100dvh;
   overflow: hidden;
   color: var(--craft-ivory);
@@ -1215,11 +1216,11 @@
 
 /* V3.22: one persistent production action row across all console tabs. */
 .gothic-workshop-shell #root.lab.gothic-workshop .console.gothic-console-3col{
-  height:clamp(275px,33dvh,325px);
+  height:var(--workshop-console-height);
   grid-template-rows:minmax(0,1fr) auto;
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .middle{
-  bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-dock-clearance) + var(--workshop-stage-gap) + clamp(275px,33dvh,325px));
+  bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-dock-clearance) + var(--workshop-stage-gap) + var(--workshop-console-height));
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .console .console-panel{grid-row:1}
 .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions{
@@ -1241,6 +1242,82 @@
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions{
     flex:0 0 auto;width:100%;min-height:54px;grid-row:auto;
+  }
+}
+
+/* V3.90: desktop composition. Increase the actual Pixi production canvas;
+   expand the full console only on demand, without duplicating actions.
+   The 390px and tablet presentations retain their current stable arrangement. */
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-stage-layout-toggle{display:none}
+@media(min-width:1100px) and (min-height:730px){
+  .gothic-workshop-shell{
+    --workshop-console-height:clamp(222px,26dvh,250px);
+    --workshop-stage-gap:10px;
+  }
+  .gothic-workshop-shell[data-console-layout="expanded"]{
+    --workshop-console-height:clamp(295px,36dvh,350px);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .middle{
+    top:70px;left:clamp(12px,1.3vw,22px);right:clamp(12px,1.3vw,22px);
+    grid-template-columns:minmax(142px,11vw) minmax(0,1fr) minmax(250px,20.5vw);
+    gap:10px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .gothic-cameo-assistant{
+    min-width:0;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .gothic-cameo-bubble{
+    padding:8px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .gothic-cameo-bubble .bubble-content{
+    font-size:11px;line-height:1.5;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .sidebar{gap:8px}
+  .gothic-workshop-shell #root.lab.gothic-workshop .sidebar .panel{padding:11px}
+  .gothic-workshop-shell #root.lab.gothic-workshop .console.gothic-console-3col{
+    left:clamp(12px,1.3vw,22px);right:clamp(12px,1.3vw,22px);
+    grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,.9fr);
+    gap:9px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .console-panel{
+    padding:8px 10px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .world{
+    border-radius:9px;
+    backdrop-filter:none;
+    background:rgba(17,12,21,.57);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .stage-label{
+    gap:9px;padding:6px 12px;min-height:38px;
+    white-space:nowrap;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .stage-label small{
+    flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;text-align:right;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-stage-layout-toggle{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-height:30px;gap:5px;flex:none;
+    border:1px solid var(--craft-hairline);
+    background:var(--craft-panel);color:var(--craft-champagne);
+    padding:4px 9px;border-radius:6px;
+    font-size:11px;line-height:1.1;cursor:pointer;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-stage-layout-toggle:is(:hover,:focus-visible){
+    border-color:var(--craft-champagne);
+    background:var(--craft-wine);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop #stage{
+    background:rgba(15,10,19,.37);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions{
+    min-height:50px;padding:5px 7px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions button{
+    min-height:40px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-stage-layout-toggle{
+    transition:none;
   }
 }
 

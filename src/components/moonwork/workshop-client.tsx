@@ -100,6 +100,8 @@ export function WorkshopClient() {
   const [blockedSave, setBlockedSave] = useState(false);
   const [recoveryVersion, setRecoveryVersion] = useState(0);
   const [speechIndex, setSpeechIndex] = useState(0);
+  // Presentation-only: switching scene/console priority never writes a save.
+  const [expandedConsole,setExpandedConsole]=useState(false);
   const savedWorld = useWorkshopWorld();
   const world = savedWorld ?? newWorkshop();
   const rank=workshopRank(world.completed);
@@ -186,6 +188,7 @@ export function WorkshopClient() {
     <div
       ref={host}
       data-testid="next-workshop-shell"
+      data-console-layout={expandedConsole?'expanded':'scene'}
       className="gothic-workshop-shell gothic-workshop-shell--red-gold relative isolate min-h-dvh overflow-hidden"
     >
       <main id="root" className="lab gothic-workshop" data-react-controls="true"
@@ -305,6 +308,8 @@ export function WorkshopClient() {
           </aside>
 
           <WorkshopStageContainer
+            expandedConsole={expandedConsole}
+            onToggleConsole={()=>setExpandedConsole(previous=>!previous)}
             onAction={onAction}
             world={world}
             chosenWorker={selection.worker}

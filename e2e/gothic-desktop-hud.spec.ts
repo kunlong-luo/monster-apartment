@@ -392,3 +392,34 @@ test('workshop and town use independent native 2K location artwork, not lobby pa
   }
   await page.screenshot({path:'test-results/desktop-town-2k-v389.png',animations:'disabled'});
 });
+
+test('desktop workshop prioritizes Pixi scene and expands console without restarting production',async({page})=>{
+  test.setTimeout(75000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/workshop/');
+  const shell=page.getByTestId('next-workshop-shell');
+  const stage=page.getByTestId('v2-stage');
+  const consolePanel=page.getByTestId('workshop-console');
+  const toggle=page.getByTestId('workshop-stage-layout-toggle');
+  await expect(shell).toHaveAttribute('data-console-layout','scene');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:30000});
+  await expect(toggle).toBeVisible();
+  await expect(page.getByTestId('v2-shift')).toBeVisible();
+  const stageBefore=await stage.boundingBox(),consoleBefore=await consolePanel.boundingBox();
+  expect(stageBefore&&consoleBefore).toBeTruthy();
+  expect(stageBefore!.width).toBeGreaterThan(700);
+  expect(stageBefore!.height).toBeGreaterThan(300);
+  expect(stageBefore!.y+stageBefore!.height).toBeLessThanOrEqual(consoleBefore!.y+1);
+  await toggle.click();
+  await expect(shell).toHaveAttribute('data-console-layout','expanded');
+  const consoleExpanded=await consolePanel.boundingBox(),stageExpanded=await stage.boundingBox();
+  expect(consoleExpanded!.height-consoleBefore!.height).toBeGreaterThan(60);
+  expect(stageBefore!.height-stageExpanded!.height).toBeGreaterThan(60);
+  await expect(page.getByTestId('v2-shift')).toBeVisible();
+  await toggle.click();
+  await expect(shell).toHaveAttribute('data-console-layout','scene');
+  const stageRestored=await stage.boundingBox();
+  expect(Math.abs(stageRestored!.height-stageBefore!.height)).toBeLessThan(3);
+  await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
+  await page.screenshot({path:'test-results/desktop-workshop-stage-priority-v390.png',animations:'disabled'});
+});
