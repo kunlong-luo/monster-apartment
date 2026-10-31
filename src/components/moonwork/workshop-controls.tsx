@@ -296,7 +296,7 @@ export function WorkshopControls({
                 data-testid={'v2-worker-' + id}
                 onClick={() => onAction({type:'choose-worker',worker:id})}
                 aria-pressed={isSelected}
-                aria-label={'选择工匠 ' + profile.zh}
+                aria-label={'选择工匠 ' + profile.zh + (assignedMachine ? '，已派至'+MACHINES[assignedMachine.craft].zh : '，当前空闲')}
                 className={`worker group flex items-center justify-between rounded-xl border p-2.5 text-gothic-ivory transition-all hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none ${
                   isSelected
                     ? 'active border-gothic-glow bg-gothic-wine/90 shadow-[0_0_14px_rgba(240,197,136,0.3)]'

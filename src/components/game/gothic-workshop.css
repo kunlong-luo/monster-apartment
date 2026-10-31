@@ -1288,9 +1288,9 @@
     align-items:stretch;gap:6px;margin-top:6px;overflow:visible;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options > button{
-    display:flex;flex-direction:column;align-items:stretch;
-    justify-content:space-between;gap:4px;
-    min-height:74px;max-height:95px;padding:6px;
+    position:relative;display:flex;flex-direction:row;align-items:center;
+    justify-content:flex-start;gap:4px;
+    min-height:64px;max-height:76px;padding:6px 6px 15px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-roster-hint{
     display:none;
@@ -1302,10 +1302,14 @@
     width:31px;height:31px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-status{
-    justify-content:space-between;gap:3px;
+    position:absolute;right:5px;bottom:3px;
+    justify-content:flex-end;gap:0;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-status > span{
-    padding:2px 5px;
+    padding:0 5px;font-size:8px;line-height:13px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-next{
+    display:none;
   }
 
   .gothic-workshop-shell #root.lab.gothic-workshop .world{
