@@ -279,9 +279,11 @@ test('PC salon review can compose three separately uploaded transparent props wi
   for(const id of ['seal','tea','ledger'])
     await expect(page.getByTestId('room-art-prop-'+id)).toBeVisible();
   await expect(page.getByTestId('room-art-composite-export')).toBeEnabled();
+  await page.getByTestId('room-art-composite-export').click();
+  await expect(page.getByTestId('room-art-composite-download')).toBeVisible({timeout:20000});
   const [download]=await Promise.all([
     page.waitForEvent('download'),
-    page.getByTestId('room-art-composite-export').click(),
+    page.getByTestId('room-art-composite-download').click(),
   ]);
   expect(download.suggestedFilename()).toBe('yuesha-room-composite.UNAPPROVED.webp');
   await page.getByTestId('room-art-local-reset').click();
