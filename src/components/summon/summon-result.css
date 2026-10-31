@@ -193,10 +193,9 @@
   box-shadow:0 0 0 3px #150d16,0 0 0 4px #ff9b8499,0 0 52px #cb305c99,0 20px 55px #000c;
 }
 .summon-result__high-rarity{
-  position:absolute;top:clamp(7px,1.3vw,15px);z-index:7;
-  left:50%;transform:translateX(-50%);
+  position:relative;
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  max-width:calc(100% - 16px);white-space:nowrap;
+  max-width:100%;white-space:nowrap;
   padding:5px 13px;border-radius:30px;
   background:linear-gradient(90deg,#33202bcf,#20121cdb);
   border:1px solid #d9b585ac;

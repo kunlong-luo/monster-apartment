@@ -16,9 +16,17 @@ test('PC single pull reveals a large face card with real persisted award',async(
   await expect(card.locator('.contract-card__art-status')).toHaveText('契约典藏 · 人物肖像');
   await expect(card.locator('svg.lucide-sparkles')).toHaveCount(0);
   await expect.poll(()=>card.locator('img').evaluate(img=>(img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0)).toBe(true);
+  // Wait for Motion's full-card reveal: a screenshot of a mid-rotate
+  // silhouette is not a valid assessment of finished portrait composition.
+  await page.waitForTimeout(750);
   const bounds=await card.boundingBox();
   expect(bounds).not.toBeNull();
   expect(bounds!.height).toBeGreaterThan(430);
+  const projection=await page.locator('.summon-result__hero').evaluate(element=>{
+    const node=element as HTMLElement;
+    return {width:node.getBoundingClientRect().width,layoutWidth:node.offsetWidth};
+  });
+  expect(projection.width/projection.layoutWidth).toBeGreaterThan(.97);
   expect(bounds!.y).toBeGreaterThanOrEqual(0);
   expect(bounds!.y+bounds!.height).toBeLessThanOrEqual(900);
   const firstDraw=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!).totalSummons);
@@ -190,6 +198,10 @@ test('PC ten-pull automatically flips results in order and supports pause, resum
   if(ssrIndex>=0){
     await high.nth(ssrIndex).click();
     await expect(page.getByTestId('summon-high-rarity')).toBeVisible();
+    // High-rarity narration belongs to the side column, not over the face.
+    const badge=await page.getByTestId('summon-high-rarity').boundingBox();
+    const art=await page.getByTestId('collection-focus-card').boundingBox();
+    expect(badge!.x).toBeGreaterThan(art!.x+art!.width);
     await expect(page.getByTestId('summon-result-focus').locator('img')).toHaveCount(1);
     // Screenshot the settled collectible portrait, not a mid-rotate Motion frame.
     await page.waitForTimeout(600);

@@ -111,17 +111,17 @@ export function SummonResultStage({characters,still,onSummonAgain,onViewCollecti
           {playback!=='playing'&&<button type="button" onClick={()=>select(selectedIndex)}
             data-testid="summon-reveal-current">揭晓当前契约</button>}
         </div>}
-        {selectedHigh&&<div className="summon-result__high-rarity" role="status"
-          data-testid="summon-high-rarity" data-rarity={selected.rarity}>
-          <Crown size={15} strokeWidth={1.5} aria-hidden="true"/>
-          {selected.rarity==='SSR-Mythic'?'神话契约 · 月蚀降临':'传说契约 · 命运相遇'}
-        </div>}
       </div>
       <aside className="summon-result__side summon-result__side--right" aria-label="契约详情">
         <span className="summon-result__section-label">CONTRACT</span>
         <strong>{selectedVisible?selected.name:'封印未启'}</strong>
         <span className="summon-result__rule"/>
         <p>{selectedVisible?selected.bio:'全部结果已经结算。揭晓只负责人物展示，不会再次扣除资源。'}</p>
+        {selectedHigh&&<div className="summon-result__high-rarity" role="status"
+          data-testid="summon-high-rarity" data-rarity={selected.rarity}>
+          <Crown size={15} strokeWidth={1.5} aria-hidden="true"/>
+          {selected.rarity==='SSR-Mythic'?'神话契约 · 月蚀降临':'传说契约 · 命运相遇'}
+        </div>}
         {multi&&<div className="summon-result__step-controls">
           <button type="button" aria-label="上一张契约" onClick={()=>select((selectedIndex+characters.length-1)%characters.length)}>
             <ChevronLeft size={18}/>
