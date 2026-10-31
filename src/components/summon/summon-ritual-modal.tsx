@@ -9,6 +9,7 @@ import type {SummonableCharacter} from '@/lib/summon/gacha-engine';
 import {nextRitualPhase,RITUAL_PHASE_DURATION,type RitualPhase} from '@/lib/summon/ritual-presentation';
 import {SummonRitualSequence} from './summon-ritual-sequence';
 import {SummonResultStage} from './summon-result-stage';
+import '@/components/game/gothic-premium-tokens.css';
 import './summon-result.css';
 import './summon-ritual-cinematic.css';
 

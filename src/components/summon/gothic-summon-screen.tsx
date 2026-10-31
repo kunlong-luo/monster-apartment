@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import '@/components/game/gothic-premium-tokens.css';
 import './summon-screen.css';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import lobbyHeroBackup from '../../../public/art/lobby-hero-v2.webp';
@@ -410,7 +411,7 @@ export function GothicSummonScreen() {
 
             {/* Pity Indicator */}
             <p className="text-[11px] font-semibold text-[#f8d8b4] tracking-wider drop-shadow-[0_1px_2px_#000]">
-              ✦ 再召唤 <span className="font-bold text-[#ffc66e]">{state.pityCountdown}</span> 次内必得{' '}
+              再召唤 <span className="font-bold text-[#ffc66e]">{state.pityCountdown}</span> 次内必得{' '}
               <span className="text-[#ffd700]">SSR</span> 角色
             </p>
           </div>

@@ -19,6 +19,9 @@ test('PC single pull reveals a large face card with real persisted award',async(
   // Wait for Motion's full-card reveal: a screenshot of a mid-rotate
   // silhouette is not a valid assessment of finished portrait composition.
   await page.waitForTimeout(750);
+  const metal=await page.getByTestId('collection-reveal').evaluate(el=>
+    getComputedStyle(el).getPropertyValue('--craft-champagne').trim());
+  expect(metal).toBe('#d9c2a1');
   const bounds=await card.boundingBox();
   expect(bounds).not.toBeNull();
   expect(bounds!.height).toBeGreaterThan(430);
@@ -32,7 +35,7 @@ test('PC single pull reveals a large face card with real persisted award',async(
   const firstDraw=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!).totalSummons);
   expect(firstDraw).toBe(1);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-summon-single-v373.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-single-v376.png',animations:'disabled'});
 });
 test('PC ten-pull lets the player select every actual card in one cinematic focus',async({page})=>{
   test.setTimeout(90000);
@@ -207,7 +210,7 @@ test('PC ten-pull automatically flips results in order and supports pause, resum
     await page.waitForTimeout(600);
     await expect(page.getByTestId('collection-focus-card')).toBeVisible();
     await expect(page.locator('.contract-card__rarity svg.lucide-sparkles')).toHaveCount(0);
-    await page.screenshot({path:'test-results/desktop-ten-ssr-focus-v373.png',animations:'disabled'});
+    await page.screenshot({path:'test-results/desktop-ten-ssr-focus-v376.png',animations:'disabled'});
   }
 });
 test('reduced-motion ten-pull reveals all without timed autoplay',async({page})=>{

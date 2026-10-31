@@ -21,6 +21,7 @@ import {useGacha} from '@/lib/summon/use-gacha';
 import {useCharacterCollection} from '@/lib/game/character-collection-store';
 import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import {GAME_UI_RELEASE} from '@/core/game-release';
+import './gothic-premium-tokens.css';
 import './gothic-lobby.css';
 import './gothic-polish.css';
 import './gothic-reference-layout.css';

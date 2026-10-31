@@ -35,22 +35,36 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   expect(news!.y+news!.height).toBeLessThan(dockBounds!.y);
   expect(actions!.y+actions!.height).toBeLessThan(dockBounds!.y-15);
   expect(actions!.x).toBeGreaterThan(1440*.82);
+  const palette=await page.getByTestId('gothic-lobby').evaluate(el=>{
+    const c=getComputedStyle(el);
+    const card=getComputedStyle(el.querySelector<HTMLElement>('.gothic-lobby__mission-card--quest')!);
+    return {brass:c.getPropertyValue('--craft-brass').trim(),
+      ivory:c.getPropertyValue('--craft-ivory').trim(),
+      panel:card.backgroundImage,shadow:card.boxShadow};
+  });
+  expect(palette.brass).toBe('#a68d70');
+  expect(palette.ivory).toBe('#f1e5d6');
+  expect(palette.panel).toContain('linear-gradient');
+  expect(palette.shadow).not.toBe('none');
   const painting=page.getByTestId('gothic-lobby-painting-image');
   await expect.poll(()=>painting.evaluate(img=>(img as HTMLImageElement).naturalWidth)).toBeGreaterThan(1200);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-lobby-v375.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-lobby-v376.png',animations:'disabled'});
   // The canonical Characters destination intentionally opens the gallery.
   // A hash selects the summon stage without creating an eighth route.
   await dock.getByRole('link',{name:/角色/}).click();
   await expect(page.getByTestId('moonwork-world')).toBeVisible();
   await page.goto('/characters/#summon-screen');
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:20000});
+  const summonPalette=await page.locator('.summon-cinematic').evaluate(el=>
+    getComputedStyle(el).getPropertyValue('--craft-brass').trim());
+  expect(summonPalette).toBe('#a68d70');
   const summonDock=page.getByRole('navigation',{name:'月影契约世界导航'});
   await expect(summonDock.locator('svg')).toHaveCount(7);
   await expect(page.getByTestId('collection-summon').locator('svg')).toHaveCount(2);
   await expect(page.getByTestId('collection-summon-ten').locator('svg')).toHaveCount(2);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/desktop-summon-v368.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/desktop-summon-v376.png',animations:'disabled'});
 });
 
 test('mobile lobby shows exactly two storyline entries with a working small inbox',async({page})=>{
@@ -82,7 +96,7 @@ test('mobile lobby shows exactly two storyline entries with a working small inbo
   expect(actions!.y+actions!.height).toBeLessThan(footer!.y-20);
   expect(actions!.width).toBeLessThan(85);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
-  await page.screenshot({path:'test-results/mobile-lobby-v375.png',animations:'disabled'});
+  await page.screenshot({path:'test-results/mobile-lobby-v376.png',animations:'disabled'});
 });
 
 test('desktop reference has functional story recap and contract tile',async({page})=>{

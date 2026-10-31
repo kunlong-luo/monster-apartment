@@ -1,10 +1,10 @@
 /* Image-matched, operable scene: 1648x928 is the art direction reference,
  * not a raster screenshot displayed under invisible click hotspots. */
 .summon-cinematic{
-  --s-gold:#eac48d;
-  --s-ink:#140812;
-  --s-red:#941a3c;
-  background:#0b060e;
+  --s-gold:var(--craft-champagne);
+  --s-ink:var(--craft-night);
+  --s-red:var(--craft-wine);
+  background:var(--craft-night);
   font-family:Georgia,"Songti SC","Noto Serif SC",serif;
   isolation:isolate;
 }
@@ -15,7 +15,7 @@
     linear-gradient(180deg,#0905099c,transparent 32%,#0e0511c9 88%,#09040de9);
 }
 .summon-cinematic-header{
-  flex:none;border-bottom:1px solid #d5a46e58;
+  flex:none;border-bottom:1px solid var(--craft-hairline);
   text-shadow:0 2px 8px #000b;
 }
 .summon-cinematic-header>div:last-child{min-width:0}
@@ -28,22 +28,22 @@
 }
 .summon-pool-item{
   border-radius:4px!important;
-  box-shadow:inset 0 0 0 1px #e4be922b,0 7px 17px #0009;
-  background:linear-gradient(115deg,#24101fdf,#110b15ed)!important;
+  box-shadow:inset 0 1px #f1d4a51a,0 10px 25px #0009;
+  background:linear-gradient(115deg,#211b23eE,#110f17eF)!important;
 }
 .summon-pool-item[aria-pressed="true"],
 .summon-pool-item:focus-visible{
-  outline:1px solid #ffcf9d;
+  outline:1px solid var(--craft-champagne);
   outline-offset:1px;
-  border-color:#ffe0af!important;
-  background:linear-gradient(115deg,#68203cef,#22101fe9)!important;
-  box-shadow:0 0 22px #af25477d,inset 0 0 0 1px #ffdab058;
+  border-color:var(--craft-brass)!important;
+  background:linear-gradient(115deg,#4b2d3a,#251b27)!important;
+  box-shadow:inset 0 1px #e8c8a13a,0 10px 20px #0009;
 }
 .summon-cinematic-center{isolation:isolate;min-height:0}
 .summon-cinematic-character{opacity:.83;filter:drop-shadow(0 9px 30px #000a);z-index:-1}
 .summon-cinematic-center::before{
   content:"";z-index:-1;pointer-events:none;position:absolute;inset:0;
-  background:radial-gradient(ellipse 68% 70% at 50% 46%,#ad4e5d5c,transparent 70%);
+  background:radial-gradient(ellipse 68% 70% at 50% 46%,#8d536035,transparent 72%);
 }
 .summon-cinematic-quote{
   max-width:min(280px,48%);min-height:48px;
@@ -56,36 +56,37 @@
   margin:auto auto 17px!important;
   padding:12px 18px;
   border-radius:5px;
-  text-shadow:0 3px 8px #000,0 0 11px #8d314a;
+  text-shadow:0 3px 12px #000;
   background:linear-gradient(90deg,transparent,#1c0919a8 16%,#190b18aa 84%,transparent);
 }
 .summon-cinematic-title h2{
   font-size:clamp(30px,3.6vw,58px)!important;
-  color:#ffe1c4!important;
-  font-weight:600!important;
-  letter-spacing:.12em!important;
-  text-shadow:0 0 18px #a32b4a,0 4px 12px #040205;
+  color:var(--craft-ivory)!important;
+  font-weight:500!important;
+  letter-spacing:.085em!important;
+  text-shadow:0 4px 14px #030206;
 }
 .summon-cinematic-sidebar{scrollbar-width:thin;scrollbar-color:#ad875b #22111d}
 .summon-cinematic-sidebar>div{
   border-radius:4px!important;
-  background:linear-gradient(145deg,#251120ed,#110916e8)!important;
-  box-shadow:inset 0 0 0 1px #e8b57c2e,0 9px 25px #0009!important;
+  background:linear-gradient(135deg,#211a24f2,#130f19f1)!important;
+  border-color:var(--craft-hairline)!important;
+  box-shadow:var(--craft-shadow)!important;
 }
 .summon-cinematic-dock{z-index:35!important;bottom:5px!important;max-width:none!important;
-  width:calc(100vw - 12px)!important;border-color:#cfa779!important;
-  border-radius:7px!important;background:linear-gradient(#220f1eee,#0e0813f8)!important;
-  box-shadow:inset 0 1px #ffdfad52,0 -7px 25px #000a!important;
+  width:calc(100vw - 12px)!important;border-color:var(--craft-hairline)!important;
+  border-radius:7px!important;background:linear-gradient(#1d1821f5,#100d16fA)!important;
+  box-shadow:inset 0 1px #e5c6a629,0 -8px 26px #000b!important;
 }
 .summon-cinematic-dock a{min-height:59px}
 .summon-cinematic-dock a[aria-current="page"]{
-  border-color:#ecab8e!important;
-  background:linear-gradient(145deg,#7d2140,#320b20)!important;
+  border-color:var(--craft-brass)!important;
+  background:linear-gradient(145deg,#4d2e3b,#271c28)!important;
 }
 .summon-cinematic [data-testid="collection-summon"],
 .summon-cinematic [data-testid="collection-summon-ten"]{
   border-radius:6px!important;
-  box-shadow:inset 0 2px #fff5d844,0 5px 22px #000c;
+  box-shadow:inset 0 1px #ead1af41,0 7px 24px #000a;
 }
 .summon-cinematic button:disabled{opacity:.44;cursor:not-allowed}
 .summon-cinematic button:focus-visible,.summon-cinematic a:focus-visible{
@@ -97,6 +98,41 @@
  .summon-cinematic-quote{margin-top:clamp(16px,4vh,52px)!important}
  .summon-cinematic-title{margin-top:auto!important;margin-bottom:15px!important}
  .summon-cinematic-character img{object-position:50% 18%;transform:none;filter:none}
+}
+/* Premium PC controls: consistent antique metal, never white or saturated red fills. */
+@media(min-width:1024px){
+  .summon-cinematic .summon-cinematic-wallet button,
+  .summon-cinematic .summon-cinematic-tools button{
+    border-color:var(--craft-hairline)!important;
+    background:#201923e6!important;color:var(--craft-ivory)!important;
+    box-shadow:inset 0 1px #d5bda027,0 5px 15px #0008!important;
+  }
+  .summon-cinematic [data-testid="collection-summon"]{
+    border:1px solid #b4a086!important;
+    background:linear-gradient(180deg,#e0d1bd,#b7a58e)!important;
+    color:#211923!important;
+    box-shadow:inset 0 1px #fff7e4ba,0 9px 25px #0009!important;
+  }
+  .summon-cinematic [data-testid="collection-summon-ten"]{
+    border:1px solid #ad897e!important;
+    background:linear-gradient(155deg,#673743,#432630)!important;
+    color:var(--craft-ivory)!important;
+    box-shadow:inset 0 1px #e0b4a65c,0 9px 25px #000a!important;
+  }
+  .summon-cinematic [data-testid="collection-summon"] :is(span,svg),
+  .summon-cinematic [data-testid="collection-summon-ten"] :is(span,svg){
+    color:inherit;
+  }
+  .summon-cinematic .summon-cinematic-quote{
+    border-color:var(--craft-hairline)!important;
+    background:#1c1520cb!important;
+  }
+  .summon-cinematic .summon-cinematic-sidebar>div{
+    border-color:var(--craft-hairline)!important;
+  }
+  .summon-cinematic .summon-cinematic-pools .summon-pool-item{
+    border-color:var(--craft-hairline)!important;
+  }
 }
 @media(max-width:1023px){
  .summon-cinematic-main{

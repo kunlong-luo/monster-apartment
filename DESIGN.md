@@ -2,15 +2,15 @@
 name: "怪物公寓 · 月蚀契约"
 description: "电影式哥特幻想人物收藏与模拟经营，满屏绘景，小型暗金 HUD"
 colors:
-  night: "#100913"
-  panel: "#1e1420"
-  wine: "#5c1834"
-  eclipse: "#b72d51"
-  gold: "#dfb77e"
-  glow: "#ffe3b5"
-  ivory: "#f7dfc3"
-  muted: "#d6b99f"
-  mythic: "#ed7e83"
+  night: "#0f0c12"
+  panel: "#1b161d"
+  wine: "#512832"
+  eclipse: "#7d3f4f"
+  gold: "#a68d70"
+  glow: "#d9c2a1"
+  ivory: "#f1e5d6"
+  muted: "#bdad9d"
+  mythic: "#c98988"
 typography:
   display:
     fontFamily: "Georgia, Noto Serif SC, Songti SC, serif"
@@ -92,3 +92,6 @@ components:
 - **Don't** 把通用 SaaS 卡片、紫蓝渐变、彩色状态标签、毛玻璃仪表盘和占位图套进游戏。
 - **Don't** 使用 Sparkles 图标、emoji 当导航、无意义重复按钮、多层 `!important` 覆盖或装饰驱动的自制动画框架。
 - **Don't** 让设计技能改变游戏结算、存档、人物身份、美术授权或静态发布方式。
+
+## V3.76 PC Materiel Refinement
+桌面大厅、召唤页与结果卡共享 `gothic-premium-tokens.css` 的旧香槟金（`--craft-champagne`）、低饱和铜线（`--craft-hairline`）、深酒红（`--craft-wine`）、象牙白（`--craft-ivory`）及暗色材质。**背景绘景不整体滤色**，只有 HUD 收敛色相与发光。仅选中导航或十连主按钮允许局部酒红；其余操作回到深色哑光金属。人物与房间原画仍未达到效果图原稿，不能以配色升级冒充 CG 交付。
