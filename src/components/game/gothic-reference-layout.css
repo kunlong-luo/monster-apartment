@@ -218,11 +218,11 @@
   }
   .gothic-lobby__reference-postcard:before{
     content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-    background:linear-gradient(90deg,#170d19ed 0%,#1e1221b2 45%,#140b126b 100%);
+    background:linear-gradient(90deg,#170d19c5 0%,#1e12217a 48%,#140b1245 100%);
   }
   .gothic-lobby__reference-postcard-img{
     z-index:0;object-fit:cover;object-position:center 51%;
-    filter:none;
+    filter:brightness(1.12) saturate(1.04);
   }
   .gothic-lobby__reference-postcard-img--workshop{object-position:20% 80%}
   .gothic-lobby__reference-postcard-img--town{object-position:80% 35%}
@@ -275,8 +275,8 @@
 
   /* Bottom dock: seven canonical destinations in one slim ornament. */
   body .gothic-lobby .gothic-dock--cinematic{
-    width:min(990px,calc(100vw - 52px));
-    max-width:990px;bottom:12px;min-height:75px;
+    width:min(980px,calc(100vw - 52px))!important;
+    max-width:980px!important;bottom:12px!important;min-height:75px;
     padding:5px 8px;gap:2px;
     border:1px solid var(--craft-hairline);
     border-radius:12px;
