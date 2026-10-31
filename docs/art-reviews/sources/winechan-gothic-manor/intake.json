@@ -1,0 +1,48 @@
+{
+  "scope": "3 publisher screenshots only, not full 73-image source ZIP",
+  "commercialApproval": false,
+  "assets": [
+    {
+      "name": "publisher-preview-01.png",
+      "sourceUrl": "https://img.itch.zone/aW1hZ2UvNDE2ODc1Ni8yNDk4NTI0Mi5wbmc=/original/j%2FiigK.png",
+      "sourcePage": "https://winechan.itch.io/gothic-manor",
+      "status": "publisher-preview-not-production",
+      "licenseClaim": "public domain (publisher's site statement)",
+      "fullPackOriginal": false,
+      "humanReview": false,
+      "width": 1920,
+      "height": 1080,
+      "bytes": 2714329,
+      "sha256": "1d864b6fd5203dc823f69dfc1a417af91cc9f4bd8ad42d5b01721679af2b8f49",
+      "meetsNative2k16by9": true
+    },
+    {
+      "name": "publisher-preview-02.png",
+      "sourceUrl": "https://img.itch.zone/aW1hZ2UvNDE2ODc1Ni8yNDk4NTI0Ny5wbmc=/original/0CgPhO.png",
+      "sourcePage": "https://winechan.itch.io/gothic-manor",
+      "status": "publisher-preview-not-production",
+      "licenseClaim": "public domain (publisher's site statement)",
+      "fullPackOriginal": false,
+      "humanReview": false,
+      "width": 1920,
+      "height": 1080,
+      "bytes": 2384795,
+      "sha256": "d0517c4fa0c4326d926b00969e05836582f0e372fa7c7a7ca2af9871fa985061",
+      "meetsNative2k16by9": true
+    },
+    {
+      "name": "publisher-preview-03.png",
+      "sourceUrl": "https://img.itch.zone/aW1hZ2UvNDE2ODc1Ni8yNDk4NTI1NS5wbmc=/original/bP45Bt.png",
+      "sourcePage": "https://winechan.itch.io/gothic-manor",
+      "status": "publisher-preview-not-production",
+      "licenseClaim": "public domain (publisher's site statement)",
+      "fullPackOriginal": false,
+      "humanReview": false,
+      "width": 1920,
+      "height": 1080,
+      "bytes": 1905558,
+      "sha256": "85e5a2fcec447bcb2503ce2d75b59603ad0de6eec66b0ac9f54494057dbf95d5",
+      "meetsNative2k16by9": true
+    }
+  ]
+}
