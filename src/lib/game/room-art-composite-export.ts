@@ -36,12 +36,3 @@ export async function createUnapprovedRoomComposite(
     canvas.toBlob(result=>result?resolve(result):reject(new Error('高清候选导出失败')),
       'image/webp',.94));
 }
-export function downloadUnapprovedRoomCandidate(blob:Blob){
-  const url=URL.createObjectURL(blob);
-  const link=document.createElement('a');
-  link.href=url;
-  link.download='yuesha-room-composite.UNAPPROVED.webp';
-  document.body.append(link);
-  link.click();link.remove();
-  window.setTimeout(()=>URL.revokeObjectURL(url),2000);
-}
