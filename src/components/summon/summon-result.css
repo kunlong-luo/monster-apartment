@@ -38,13 +38,14 @@
 .summon-result__heading h2{margin:5px 0 2px;font-size:clamp(17px,2.3vw,29px);
   font-weight:500;letter-spacing:.055em;color:var(--craft-ivory);text-shadow:0 4px 14px #000b}
 .summon-result__heading p{font-size:12px;line-height:1.55;color:#d6b99f}
-.summon-result__body{display:grid;grid-template-columns:minmax(125px,1fr) minmax(0,470px) minmax(125px,1fr);
+.summon-result__body{display:grid;grid-template-columns:minmax(110px,1fr) minmax(0,510px) minmax(110px,1fr);
   height:100%;min-height:0;width:100%;justify-items:center;align-items:center;gap:clamp(12px,2vw,38px)}
 .summon-result__focus{display:grid;place-items:center;width:100%;height:100%;min-height:0;
   min-width:0;perspective:900px}
-.summon-result__hero{width:100%;height:100%;min-height:0;display:grid;place-items:center}
+.summon-result__hero{height:100%;width:auto;max-width:100%;max-height:660px;min-height:0;
+  aspect-ratio:3/4;display:grid;place-items:center}
 .summon-result__side{display:flex;align-items:center;justify-content:center;flex-direction:column;
-  gap:11px;max-width:225px;text-align:center;color:var(--craft-muted)}
+  gap:11px;max-width:200px;text-align:center;color:var(--craft-muted)}
 .summon-result__side--left>svg{color:#dab782;filter:drop-shadow(0 0 10px #d48a6855)}
 .summon-result__side .summon-result__section-label{letter-spacing:.19em;font-size:9px;color:#9e846f}
 .summon-result__side strong{color:var(--craft-champagne);font-size:clamp(14px,2vw,26px);font-weight:500}
@@ -55,7 +56,8 @@
 .summon-result__step-controls button{display:grid;place-items:center;width:38px;height:38px;
   border:1px solid #ad8764;border-radius:50%;background:#271725;color:#efc997}
 .summon-result__step-controls button:hover{background:#5a2a41}
-.contract-card{--contract-edge:#91a0af;--contract-aura:#586d8459;display:block;position:relative;
+.contract-card{--contract-edge:#91a0af;--contract-aura:#586d8459;
+  --portrait-light:#675263;--portrait-shadow:#221b26;display:block;position:relative;
   height:100%;width:100%;min-height:0;overflow:hidden;border:1px solid var(--contract-edge);
   border-radius:14px;background:radial-gradient(ellipse at 50% 25%,var(--contract-aura),transparent 77%),#160e19;
   box-shadow:0 16px 45px #000c,0 0 28px var(--contract-aura)}
@@ -63,17 +65,24 @@
 .contract-card[data-rarity="SR"]{--contract-edge:#c5a0ef;--contract-aura:#713d997d}
 .contract-card[data-rarity="SSR-Legend"]{--contract-edge:#d7bc8e;--contract-aura:#9b794052}
 .contract-card[data-rarity="SSR-Mythic"]{--contract-edge:#c98988;--contract-aura:#8f405b75}
+/* Distinct environment temperatures belong to each adult heroine, not a
+ * second global UI palette. Existing face art stays sharp and uncropped. */
+.contract-card[data-card-id^="yuesha"]{--portrait-light:#80505d;--portrait-shadow:#291621}
+.contract-card[data-card-id^="brook"]{--portrait-light:#466d7c;--portrait-shadow:#17282f}
+.contract-card[data-card-id^="fern"]{--portrait-light:#58715c;--portrait-shadow:#1b2922}
+.contract-card[data-card-id^="cinder"]{--portrait-light:#89543e;--portrait-shadow:#301b18}
 .contract-card__inner{position:relative;width:100%;height:100%;overflow:hidden;isolation:isolate}
 .contract-card__inner:before{content:"";pointer-events:none;position:absolute;z-index:4;
   inset:7px;border:1px solid color-mix(in srgb,var(--contract-edge) 58%,transparent);
   border-radius:8px}
-.contract-card__art{position:absolute;inset:0 0 20%;overflow:hidden;background:radial-gradient(ellipse at 50% 32%,#6b49605c,transparent 75%)}
+.contract-card__art{position:absolute;inset:0 0 21%;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 37%,var(--portrait-light),var(--portrait-shadow) 68%,var(--craft-night) 100%)}
 .contract-card__halo{position:absolute;inset:10% 8% 2%;
   background:radial-gradient(ellipse at 50% 43%,var(--contract-aura),transparent 69%)}
-.contract-card__portrait{object-fit:contain;object-position:center center;filter:contrast(1.045) saturate(1.075)}
+.contract-card__portrait{object-fit:contain;object-position:center center;filter:none}
 .contract-card__art-vignette{position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,#160e17b8 0%,transparent 12%,transparent 64%,#150c16 98%),
-  linear-gradient(90deg,#150d1880,transparent 13%,transparent 87%,#150d1880)}
+  background:linear-gradient(180deg,#160e174a 0%,transparent 16%,transparent 65%,#150c16e8 99%),
+  linear-gradient(90deg,#150d1835,transparent 14%,transparent 86%,#150d1835)}
 .contract-card__head{position:absolute;z-index:5;top:18px;left:19px;right:19px;
   display:flex;align-items:center;justify-content:space-between;gap:9px;font-size:10px}
 .contract-card__rarity{display:inline-flex;align-items:center;gap:5px;letter-spacing:.06em;
@@ -140,7 +149,7 @@
 .summon-result__sealed button:focus-visible{outline:2px solid #ffe5bb;outline-offset:2px}
 @keyframes summon-ritual-orbit{to{transform:rotate(360deg)}}
 @media(min-width:900px){.summon-result:has(.summon-result__filmstrip) .summon-result__body{
-  grid-template-columns:minmax(110px,1fr) minmax(0,385px) minmax(110px,1fr)}
+  grid-template-columns:minmax(100px,1fr) minmax(0,445px) minmax(100px,1fr)}
 }
 @media(max-height:750px) and (min-width:700px){
   .summon-result{gap:4px}
@@ -163,9 +172,11 @@
   .contract-card__caption h4{font-size:15px}
   .contract-card__award{font-size:10px}
   .contract-card__art-status{font-size:8px}
-  .summon-result__filmstrip{grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;width:100%;overflow-x:auto;
-    padding:3px;max-height:83px}
-  .summon-result__thumb{min-width:0;aspect-ratio:3/5;padding:1px}
+  .summon-result__filmstrip{grid-template-columns:none;grid-auto-flow:column;
+    grid-auto-columns:clamp(56px,17vw,68px);justify-content:start;
+    gap:5px;width:100%;overflow-x:auto;scroll-snap-type:x proximity;
+    padding:5px 3px;max-height:105px;scrollbar-width:thin}
+  .summon-result__thumb{min-width:0;aspect-ratio:3/5;padding:1px;scroll-snap-align:center}
   .contract-card--thumbnail .contract-card__rarity{font-size:0;padding:1px}
   .contract-card--thumbnail .contract-card__rarity svg{width:8px;height:8px}
   .contract-card--thumbnail .contract-card__caption{padding:1px}
