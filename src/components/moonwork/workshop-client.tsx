@@ -14,7 +14,7 @@ import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
 import {WorkshopControls} from './workshop-controls';
 import {newWorkshop,workshopRank} from '../../../v2/src/workshop-engine';
-import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
+import workshopHall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import yueshaBust from '../../../public/art/yuesha-bust-v3.webp';
 import yueshaAvatar from '../../../public/art/yuesha-avatar-v3.webp';
@@ -130,7 +130,7 @@ export function WorkshopClient() {
     root.dataset.reactControls = 'true';
     root.classList.add('gothic-workshop');
     root.style.backgroundImage =
-      'linear-gradient(110deg,#0c0712be,#0d0815d5),url('+JSON.stringify(lobbyHero.src)+')';
+      'linear-gradient(110deg,#0c07129c,#0d0815ac),url('+JSON.stringify(workshopHall.src)+')';
 
     const base = assetRoot();
 

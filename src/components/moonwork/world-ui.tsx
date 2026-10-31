@@ -7,7 +7,7 @@ import {useWorkshopWorld} from './world-save-react';
 import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from './world-navigation';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
-import districtBackdrop from '../../../public/art/lobby-hero-v2.webp';
+import townBackdrop from '../../../public/art/world-scenes/town-moonlit-gate.webp';
 import {Panel,WorkshopLink} from './world-primitives';
 import {Town} from './world-town';
 import {Orders} from './world-orders';
@@ -42,7 +42,9 @@ export function MoonworkWorld({area}:{area:WorldArea}){
   const section=WORLD_NAV.find(destination=>destination.id===area)!;
   const title=section.full;
   return <main className="mw mw-gothic mw-gothic--red-gold relative isolate h-dvh min-h-[560px] overflow-hidden bg-[#100910] font-serif text-[#f3dcc2] max-[700px]:min-h-0" data-testid="moonwork-world" data-area={area}>
-    <div className="mw-gothic-scene pointer-events-none absolute inset-0 -z-[3] bg-[#21151d] bg-cover bg-center" aria-hidden="true" style={{backgroundImage:'url('+JSON.stringify(area==='town'?districtBackdrop.src:lobbyHero.src)+')'}}/>
+    <div className="mw-gothic-scene pointer-events-none absolute inset-0 -z-[3] bg-[#21151d] bg-cover bg-center" aria-hidden="true"
+      data-testid="moonwork-background"
+      style={{backgroundImage:'url('+JSON.stringify(area==='town'?townBackdrop.src:lobbyHero.src)+')'}}/>
     <div className="mw-gothic-shadow pointer-events-none absolute inset-0 -z-[2] bg-[linear-gradient(180deg,#09070bd9_0%,transparent_22%,transparent_65%,#09070de8_100%),linear-gradient(90deg,#10091180,transparent_35%,#0c0713a8_75%,#07050cdd_100%)]" aria-hidden="true"/>
 
 

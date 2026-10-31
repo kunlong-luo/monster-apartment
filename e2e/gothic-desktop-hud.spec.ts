@@ -352,3 +352,34 @@ test('approved lobby layout retains the same image-first silhouette at 1648×928
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/desktop-lobby-reference-1648.png',animations:'disabled'});
 });
+
+test('workshop and town use independent native 2K location artwork, not lobby painting',async({page})=>{
+  test.setTimeout(75000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/town/');
+  await expect(page.getByTestId('moonwork-world')).toBeVisible({timeout:20000});
+  const town=page.getByTestId('moonwork-background');
+  await expect(town).toHaveCSS('background-image',/town-moonlit-gate\.webp/);
+  const townUrl=await town.evaluate(el=>{
+    const image=getComputedStyle(el).backgroundImage;
+    return image.match(/url\(["']?([^"')]+)["']?\)/)?.[1]??'';
+  });
+  expect(townUrl).toContain('world-scenes/town-moonlit-gate.webp');
+  const townWidth=await page.evaluate(async src=>{
+    const image=new Image();image.src=src;await image.decode();return image.naturalWidth;
+  },townUrl);
+  expect(townWidth).toBe(1920);
+  await expect(page.getByTestId('moonlit-market')).toBeVisible();
+  await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('next-workshop-shell')).toBeVisible({timeout:20000});
+  const root=page.locator('#root');
+  await expect(root).toHaveCSS('background-image',/workshop-gothic-hall\.webp/);
+  await expect(root).toHaveAttribute('data-runtime-ready','true',{timeout:30000});
+  await expect(page.locator('[data-backdrop-source="world-hall-2k"]')).toBeAttached({timeout:15000});
+  await expect(page.getByTestId('v2-world-nav').getByRole('link')).toHaveCount(7);
+  await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
+  await page.screenshot({path:'test-results/desktop-workshop-2k-v389.png',animations:'disabled'});
+  await page.goto('/town/');
+  await page.screenshot({path:'test-results/desktop-town-2k-v389.png',animations:'disabled'});
+});

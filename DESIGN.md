@@ -123,3 +123,13 @@ components:
 两张仅是“入口宣传气氛图”：第一张表现复古操作台，非完整设备工作场景；第二张是夜色哥特建筑，非正式月光街地图。不可用于四间私人房间，不能修改 `public/art/rooms/manifest.json` 审核状态或冒充像素级 1:1。完整工坊锻造 CG、独立夜街远景 CG 仍待制作。
 
 强制测试验证两张图片在 1440×900 与 1648×928 下均能实际加载原生 960px 宽度，两个 `src` 各不相同，入口链接到已有的 `/workshop/` 与 `/town/`；390×844 不加载额外桌面大面板，维持唯一导航和原有存档与交互。
+
+
+## V3.89 · 分离世界实际场景绘景（不改变首页参考布局）
+
+V3.88 PC 截图表明 `/town/` 左侧曾使用 `lobby-hero-v2.webp`，`/workshop/` 的 Pixi WebGL 画布使用 `lobby-hero-v3.webp`，两个不同场所显示同一位大厅女主。V3.89 为两个正式路由加入**真实 1920×1080** 的独立世界绘景（`public/art/world-scenes/`）；许可声明、源图与输出 SHA-256 见 `source-manifest.json`，原 V3.87 大厅四区版式维持不变。
+
+- 工坊的 React 根背景及 Pixi WebGL 内层绘景同步采用 `workshop-gothic-hall.webp`（哥特室内厅堂）；真实设备的 Pixi 精灵、15 格地块、工匠、自动生产、委托交付均不改动。Pixi 通过 `v2/scripts/build.mjs` 将绘景复制到自己的 `dist/assets/`，优先加载，失败回退 V3/V2 背景及程序画面。
+- 月光街的全屏绘景使用 `town-moonlit-gate.webp`（点灯的夜间庄园入口）；右侧仍显示真实市集、今日居民和通往工坊/委托所/仓库的入口。玩家角色封面仍是世界剧情插画，不重复充当背景。
+- WineChan Gothic Manor 素材源站声称 public domain 并披露 AI-assisted，真实原图均为 1920×1080。本次图像**仅是独立过渡环境**，厅堂不包含锻造炉、庄园外景也不是完整的商业街地图；不能冒称正式锻造 CG 或街区可导航原画，不可替换已设审核门槛的住客房间图。
+- 在 1440×900 的浏览器验收中必须检查 Pixi `data-backdrop-source=world-hall-2k`、`data-runtime-ready=true`、场景图解码 1920px，以及真实交易与七项导航保持运行；移动端继续无重复导航。

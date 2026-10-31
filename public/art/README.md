@@ -28,3 +28,8 @@
 `feature-postcards/gothic-workshop.webp`：独立室内操作台宣传氛围图，960×320；`feature-postcards/moonlit-street.webp`：独立哥特夜景建筑宣传氛围图，960×320。两张均来自正常取得的 WineChan 原始 ZIP，原图为 1920×1080；生成前复查 ZIP 与原图 SHA-256，原文件名、源图/输出哈希及来源许可声明见 `feature-postcards/source-manifest.json`。
 
 **仅可用于大厅小型功能海报。** 源站公开声称 public domain，披露 AI-assisted；这不能替代对具体作品及正式场景的美术、著作权人工审核。两张均不是游戏完整街道、工坊工作场景或私人房间 CG，也不能拿去覆盖生产房间素材。
+
+
+## V3.89 · 世界地点 1920×1080 过渡绘景
+
+`world-scenes/workshop-gothic-hall.webp` 是哥特室内厅堂；`world-scenes/town-moonlit-gate.webp` 是夜间庄园入口，均来自已审计的 WineChan Gothic Manor 原始 ZIP，保持原尺寸且没有裁切放大。源图/输出 SHA、来源许可声明、使用范围见 `world-scenes/source-manifest.json`。工坊由 Pixi 侧车与 React 根容器共用同一场景背景，街区使用不同完整室外背景；不能用于四间私人房间的正式 CG，也未改变存档或概率。

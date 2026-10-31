@@ -32,25 +32,32 @@ async function loadPaintedTexture(assetBase:string,filename:string,attempts=2):P
  * deployed /monster-apartment/workshop/ asset base. */
 export async function loadWorkshopPaintedArt(assetBase:string){
   let painted:Texture|null=null;
-  let backdropSource:'high-res-webp'|'legacy-avif'|'procedural'='procedural';
+  let backdropSource:'world-hall-2k'|'high-res-webp'|'legacy-avif'|'procedural'='procedural';
   let paintedFloor:Texture|null=null;
   let kilnArtReview:Texture|null=null;
   let patronPortrait:Texture|null=null;
   // Do not reload old pet-shaped worker assets into the real human roster.
   const workerPaintings:Partial<Record<WorkerId,Texture>>={};
   const paintedDetail:Partial<Record<'well'|'garden',Texture>>={};
+  // Independent room painting is a visual backdrop, never an engine input.
+  // Keep the old art as a resilient fallback on cold GitHub Pages navigation.
   try{
-    painted=await loadPaintedTexture(assetBase,'lobby-hero-v3.webp');
-    backdropSource='high-res-webp';
+    painted=await loadPaintedTexture(assetBase,'workshop-gothic-hall.webp');
+    backdropSource='world-hall-2k';
   }catch{
     try{
-      painted=await loadPaintedTexture(assetBase,'lobby-hero-v2.webp',1);
+      painted=await loadPaintedTexture(assetBase,'lobby-hero-v3.webp',1);
       backdropSource='high-res-webp';
     }catch{
       try{
-        painted=await loadPaintedTexture(assetBase,'moon-workshop.avif',1);
-        backdropSource='legacy-avif';
-      }catch{/* procedural background remains playable */ }
+        painted=await loadPaintedTexture(assetBase,'lobby-hero-v2.webp',1);
+        backdropSource='high-res-webp';
+      }catch{
+        try{
+          painted=await loadPaintedTexture(assetBase,'moon-workshop.avif',1);
+          backdropSource='legacy-avif';
+        }catch{/* procedural background remains playable */}
+      }
     }
   }
   try{
