@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cards": {
+    "yuesha-eclipse": {
+      "status": "portrait",
+      "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse.webp"
+    },
+    "yuesha-vow": {
+      "status": "portrait",
+      "path": "public/art/beauty-beasts/characters/yuesha/cg-vow.webp"
+    },
+    "brook-tide": {
+      "status": "portrait",
+      "path": "public/art/beauty-beasts/characters/brook/cg-tide.webp"
+    },
+    "fern-spring": {
+      "status": "portrait",
+      "path": "public/art/beauty-beasts/characters/fern/cg-spring.webp"
+    },
+    "cinder-ember": {
+      "status": "portrait",
+      "path": "public/art/beauty-beasts/characters/cinder/cg-ember.webp"
+    }
+  }
+}
