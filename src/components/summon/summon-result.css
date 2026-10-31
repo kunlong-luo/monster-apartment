@@ -80,6 +80,12 @@
 .contract-card__halo{position:absolute;inset:10% 8% 2%;
   background:radial-gradient(ellipse at 50% 43%,var(--contract-aura),transparent 69%)}
 .contract-card__portrait{object-fit:contain;object-position:center center;filter:none}
+/* Production CG is a real 3:4 authored image (not a scaled-up face crop).
+ * The figure remains behind the compact caption, never behind HUD buttons. */
+.contract-card__art[data-portrait-kind="full-body-cg"]{inset:0 0 17%}
+.contract-card__art[data-portrait-kind="full-body-cg"] .contract-card__portrait{
+  object-fit:contain;object-position:center center;
+}
 /* Keep original V3 room-backed portrait visible within the art area; never
  * upscale a 512px face, add a fake body or blur the source painting. */
 .contract-card__art[data-portrait-kind="scene-portrait"] .contract-card__portrait{

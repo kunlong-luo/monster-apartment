@@ -34,3 +34,19 @@
 ## 04 · 本阶段真实边界
 
 V3.79 只使用库中已经存在的 V3 银发月纱肖像，实现跨页面身份一致，并修复失效时回退到不一致角色的问题。新生成的带完整 UI 的效果图只可作概念参考，**不得作为可供卡面接入的角色透明立绘或正式房间 CG**。下一项正式原画制作仍待独立候选与人工质量审核。
+
+## 05 · V3.80 已接入 CG 生产门禁
+
+正式卡位清单：`public/art/beauty-beasts/characters/cg-manifest.json`。五张人物卡对应五条确定的生产路径；`status=portrait` 时沿用独立肖像，只有完整人工审核通过且资源存在才将卡位标记为 `production`。召唤卡的图片来源由 `getApprovedCardCg` 自动切换，失败则退回原人物肖像；抽卡结果、保底、奖励和存档完全不变。
+
+**审核候选**（生成的图先放在本地工作目录，不在正式游戏路径里）：
+
+```bash
+pnpm art:cg:review --card yuesha-eclipse --source /path/candidate.webp --out /path/review-yuesha
+# 在浏览器打开 review-yuesha/review.html；逐项认真审查
+# 签署 review-status.DRAFT.json 里的批准、来源和人工检查结果
+pnpm art:cg:promote --card yuesha-eclipse --source /path/review-yuesha/cg-candidate.webp --approval /path/review-yuesha/review-status.DRAFT.json
+pnpm check:design && pnpm test && pnpm build
+```
+
+审核由 `scripts/audit-character-cg.mjs` 在 Quality 检查阶段强制执行：图像格式、最小原画像素、3:4 画布、文件哈希、审阅记录、权利来源、原生分辨率以及三种视口签署缺一不可。严禁将 UI 截图裁切版、背景烘焙了导航的截图或仅半身的低分辨率素材勾选为正式全身 CG。房间素材继续使用独立的房间审核流程，不能共享背景/人物批准签名。

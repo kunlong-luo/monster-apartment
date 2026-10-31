@@ -32,7 +32,8 @@ export function CharacterContractCard({character,mode='feature',awardTestId}:{
           fill unoptimized draggable={false} priority={mode==='feature'}
           sizes={mode==='feature'?'(max-width:600px) 85vw, 490px':'(max-width:600px) 19vw, 100px'}
           className="contract-card__portrait"
-          data-portrait-source={portraitKind==='scene-portrait'?'consistent-yuesha-v3':'dedicated-heroine-face'}/>
+          data-portrait-source={portraitKind==='full-body-cg'?'approved-full-body-cg':
+            portraitKind==='scene-portrait'?'consistent-yuesha-v3':'dedicated-heroine-face'}/>
         <div className="contract-card__art-vignette" aria-hidden="true"/>
       </div>
       <header className="contract-card__head">
@@ -47,7 +48,7 @@ export function CharacterContractCard({character,mode='feature',awardTestId}:{
           <span>{character.firstAcquired?'首次收录':'重复契约'}</span>
           <span className="contract-card__shards"><Gem aria-hidden="true" size={13}/> +{character.awardedShards??0} 锻造碎片</span>
         </p>
-        {mode==='feature'&&<p className="contract-card__art-status">契约典藏 · 人物肖像</p>}
+        {mode==='feature'&&<p className="contract-card__art-status">{portraitKind==='full-body-cg'?'契约典藏 · 角色原画':'契约典藏 · 人物肖像'}</p>}
       </div>
     </div>
   </article>;
