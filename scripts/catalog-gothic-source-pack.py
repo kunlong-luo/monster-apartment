@@ -48,6 +48,23 @@ for i,(_,row,thumb,data) in enumerate(candidates):
     im.convert("RGB").save(out/filename,"WEBP",quality=82,method=4)
   row["candidateOutput"]=filename
 sheet.save(out/"review-contact-sheet.webp","WEBP",quality=80,method=4)
+# Every native image gets an index slot; red-ranking alone must never choose
+# the scene. Human reviewers can compare all interiors/exteriors by filename.
+with zipfile.ZipFile(source) as archive:
+  for page_number,start in enumerate(range(0,len(records),16),1):
+    page=Image.new("RGB",(4*266,4*178),(16,12,20))
+    draw=ImageDraw.Draw(page)
+    for k,row in enumerate(records[start:start+16]):
+      try:
+        data=archive.read(row["fileInPublisherZip"])
+        with Image.open(io.BytesIO(data)) as art:
+          tile=ImageOps.fit(art.convert("RGB"),(250,141),method=Image.Resampling.LANCZOS)
+        x=(k%4)*266+8;y=(k//4)*178+6
+        page.paste(tile,(x,y))
+        draw.text((x,y+145),str(start+k+1)+". "+Path(row["fileInPublisherZip"]).name,fill=(233,211,187))
+      except (OSError,ValueError,KeyError):
+        pass
+    page.save(out/f"full-index-{page_number:02d}.webp","WEBP",quality=78,method=4)
 report={"state":"candidate-only-not-production",
   "publisher":"WineChan","licenseClaim":"public domain (publisher page)",
   "sourcePage":"https://winechan.itch.io/gothic-manor",
