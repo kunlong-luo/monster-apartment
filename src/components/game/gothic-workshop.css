@@ -1281,6 +1281,33 @@
   .gothic-workshop-shell #root.lab.gothic-workshop .console .console-panel{
     padding:8px 10px;
   }
+  /* Three craftspeople must stay simultaneously visible in compact mode.
+     A vertical list clipped the third worker after the canvas was enlarged. */
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    align-items:stretch;gap:6px;margin-top:6px;overflow:visible;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options > button{
+    display:flex;flex-direction:column;align-items:stretch;
+    justify-content:space-between;gap:4px;
+    min-height:74px;max-height:95px;padding:6px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-roster-hint{
+    display:none;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-identity{
+    gap:5px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-miniature{
+    width:31px;height:31px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-status{
+    justify-content:space-between;gap:3px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-status > span{
+    padding:2px 5px;
+  }
+
   .gothic-workshop-shell #root.lab.gothic-workshop .world{
     border-radius:9px;
     backdrop-filter:none;
