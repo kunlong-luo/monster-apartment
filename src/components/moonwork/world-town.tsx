@@ -1,9 +1,11 @@
 'use client';
 import Link from 'next/link';
-import Image from 'next/image';
+import {ReliableImage} from '@/components/game/reliable-image';
 import {Anvil,ScrollText,Archive,Waves,Sprout,Gem} from 'lucide-react';
 import districtPainting from '../../../public/art/beauty-beasts/cover/world-cover.webp';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
+import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
+import townBackdrop from '../../../public/art/world-scenes/town-moonlit-gate.webp';
 import {workshopRank,TOWN_MARKET,townMarketAvailable,TOWN_RESIDENTS,residentForDay,residentRequestStock,residentRequestAvailable} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
 import {Action} from './world-primitives';
@@ -24,7 +26,8 @@ export function Town({s}:{s:WorkshopState}){
   return <>
     <div className="mw-town-focus">
     <section className="mw-town-scene" aria-label="月光街的炼金商区" data-testid="moonlit-town-scene">
-      <Image src={districtPainting} alt="月光街的契约人物与世界绘景"
+      <ReliableImage src={districtPainting} fallbackSrc={townBackdrop}
+        alt="月光街的契约人物与世界绘景"
         fill unoptimized loading="eager" sizes="(max-width: 760px) 100vw, 800px"
         className="mw-town-painting" data-testid="town-painting"/>
       <div className="mw-town-scrim" aria-hidden="true"/>
@@ -51,7 +54,8 @@ export function Town({s}:{s:WorkshopState}){
     </section>
     <section className="mw-town-resident" data-testid="town-resident" aria-label="今日街头居民">
       <div className="mw-resident-character" aria-label="月纱为你带来街头居民消息">
-        <Image src={moonveilPortrait} alt="月纱，来自工坊的魔法商人"
+        <ReliableImage src={moonveilPortrait} fallbackSrc={moonveilBust}
+          alt="月纱，来自工坊的魔法商人"
           fill unoptimized loading="eager" sizes="(max-width: 760px) 140px, 220px"
           className="mw-guide-painting" data-testid="town-guide-painting"/>
         <span className="mw-resident-guide-label">月纱 · 街区向导</span>
