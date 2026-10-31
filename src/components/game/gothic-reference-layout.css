@@ -92,19 +92,19 @@
   body .gothic-lobby .gothic-lobby__character-actions :is(a,button){
     min-height:113px!important;gap:4px!important;padding:9px 5px!important;
     border:1px solid var(--craft-hairline)!important;border-radius:5px!important;
-    background:linear-gradient(135deg,#241d26eb,#15121beC)!important;
+    background:var(--craft-surface)!important;
     box-shadow:var(--craft-shadow)!important;
     font-size:13px!important;line-height:1.2}
   body .gothic-lobby .gothic-lobby__character-actions img{width:49px;height:49px}
   body .gothic-lobby .gothic-lobby__character-actions .gothic-lobby__action-glyph{
     width:33px;height:33px;color:var(--craft-champagne);stroke-width:1.5}
-  body .gothic-lobby .gothic-lobby__character-actions small{font-size:10px;color:#d4b296}
+  body .gothic-lobby .gothic-lobby__character-actions small{font-size:10px;color:var(--craft-muted)}
   body .gothic-lobby .gothic-lobby__character-actions .gothic-lobby__desktop-action{display:flex!important}
   body .gothic-lobby .gothic-dock--cinematic{
     width:min(1410px,calc(100vw - 32px))!important;max-width:1410px!important;
     min-height:87px!important;bottom:12px!important;padding:7px 10px!important;gap:2px!important;
     border:1px solid var(--craft-hairline)!important;border-radius:10px!important;
-    background:linear-gradient(180deg,#1c1720f5,#0e0c14fa)!important;
+    background:var(--craft-surface)!important;
     box-shadow:0 -8px 35px #030208b5,inset 0 1px #f2d4a51b!important}
   body .gothic-lobby .gothic-dock--cinematic a{min-height:71px!important;gap:2px!important}
   body .gothic-lobby .gothic-dock--cinematic a .gothic-dock__icon{
@@ -118,26 +118,26 @@
     overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--craft-muted)}
   /* One restrained selected state instead of the old saturated red glow. */
   body .gothic-lobby .gothic-dock--cinematic a[aria-current="page"]{
-    border:1px solid #ad8d76!important;border-radius:7px!important;
-    background:linear-gradient(155deg,#4a2b35,#2a1d2a)!important;
+    border:1px solid var(--craft-hairline)!important;border-radius:7px!important;
+    background:var(--craft-surface-selected)!important;
     color:var(--craft-ivory)!important;
     box-shadow:inset 0 1px #e2be9870,0 4px 12px #0302088a!important;
     text-shadow:none!important;
   }
   body .gothic-lobby .gothic-dock--cinematic a[aria-current="page"] .gothic-dock__icon{
     color:var(--craft-champagne)!important;
-    background:linear-gradient(145deg,#47303b,#261e29)!important;
-    border-color:#b49878!important;
+    background:var(--craft-wine)!important;
+    border-color:var(--craft-brass)!important;
     box-shadow:inset 0 1px #e8ceac26!important;
   }
   body .gothic-lobby .gothic-dock--cinematic a:is(:hover,:focus-visible){
-    background:linear-gradient(160deg,#332430,#211923);
+    background:var(--craft-surface-raised);
     color:var(--craft-ivory);
   }
   body .gothic-lobby .gothic-lobby__mission-card:is(:hover,:focus-visible),
   body .gothic-lobby .gothic-lobby__character-actions :is(a,button):is(:hover,:focus-visible){
     border-color:var(--craft-champagne)!important;
-    background:linear-gradient(135deg,#332430,#17131d)!important;
+    background:var(--craft-surface-raised)!important;
     box-shadow:0 13px 34px #030207c4,inset 0 1px #edd2ae2b!important;
   }
   body .gothic-lobby .gothic-lobby__vignette{
@@ -146,7 +146,7 @@
   }
   body .gothic-lobby .gothic-lobby__topbar :is(.gothic-icon-button,[data-tooltip][class*="rounded-full"]){
     border-color:var(--craft-hairline)!important;
-    background:#1e1821e6!important;
+    background:var(--craft-panel)!important;
     color:var(--craft-ivory)!important;
     box-shadow:inset 0 1px #e6c9a020,0 5px 17px #0008!important;
   }
