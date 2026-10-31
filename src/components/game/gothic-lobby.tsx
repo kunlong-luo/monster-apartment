@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {ArrowUpRight,ChevronRight,Crown,DoorOpen,Mail,MoonStar,Orbit,ScrollText} from 'lucide-react';
+import {ArrowUpRight,BookOpen,CalendarDays,ChevronRight,Crown,DoorOpen,Mail,MoonStar,Orbit,PackageCheck,ScrollText} from 'lucide-react';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {AnimatePresence} from 'motion/react';
 import {useMemo,useState} from 'react';
@@ -24,7 +24,7 @@ import {GAME_UI_RELEASE} from '@/core/game-release';
 import './gothic-lobby.css';
 import './gothic-polish.css';
 
-type Panel='profile'|'bond'|'updates'|null;
+type Panel='profile'|'bond'|'updates'|'memories'|null;
 
 export function GothicLobby(){
   const saved=useWorkshopWorld();
@@ -138,16 +138,17 @@ export function GothicLobby(){
         data-testid="gothic-eclipse-feature" data-first-contract={firstContract?'true':'false'}
         aria-label={firstContract?'开始第一次契约召唤，收录你的人物卡':'前往契约召唤，收集更多人物'}>
         <span className="gothic-lobby__card-kicker"><Crown className="gothic-lobby__card-icon" aria-hidden="true" size={15} strokeWidth={1.55}/>{firstContract?'初次契约':'契约收藏'}
-          <small className="gothic-lobby__chapter-mark" aria-hidden="true">{GAME_UI_RELEASE}</small>
+          <small className="gothic-lobby__chapter-mark" aria-hidden="true">月蚀誓约</small>
         </span>
-        <strong data-testid="lobby-summon-guide-title">
-          {collectionStatus!=='ok'?'人物收藏存档需要检查':
-            firstContract?'召唤第一位女主':`契约已收录 ${ownedContractCount}/5`}
-        </strong>
+        <span className="gothic-lobby__summon-illustration" aria-hidden="true">
+          <Image src={moonveilBust} alt="" fill sizes="220px" className="object-cover object-[center_20%]"/>
+        </span>
+        <strong data-testid="lobby-summon-guide-title">{collectionStatus==='ok'?'神话 · 月蚀':'人物契约需检查'}</strong>
         <span className="gothic-lobby__mission-detail" data-testid="lobby-summon-guide-detail">
-          {firstContract?`你有 ${gacha.tickets} 张初始召唤券 · 点击进入角色召唤`:
-            `当前 ${gacha.tickets} 张信物 · 继续召唤与养成`}
+          {firstContract?`拥有 ${gacha.tickets} 张召唤券 · 开启初次契约`:
+            `已收录 ${ownedContractCount}/5 · 剩余 ${gacha.tickets} 张召唤券`}
         </span>
+        <span className="gothic-lobby__summon-verse">月下的誓言，等待命定之人。</span>
         <div className="gothic-lobby__contract-faces" aria-hidden="true">
           {(['yuesha','brook','fern','cinder'] as const).map(id=>
             <span key={id} className="gothic-lobby__contract-face">
@@ -156,9 +157,20 @@ export function GothicLobby(){
           <ChevronRight className="gothic-lobby__contract-arrow" aria-hidden="true" size={20} strokeWidth={1.6}/>
         </div>
       </Link>
+      <section className="gothic-lobby__message-board" aria-label="公寓动态" data-testid="gothic-lobby-message-board">
+        <div className="gothic-lobby__message-heading">
+          <span><Mail aria-hidden="true" size={18}/> 公寓消息</span>
+          <button type="button" onClick={()=>setOpen('updates')} aria-label="查看全部公寓动态">
+            更多 <ChevronRight aria-hidden="true" size={15}/>
+          </button>
+        </div>
+        <div className="gothic-lobby__message-rows">
+          <div><PackageCheck aria-hidden="true" size={17}/><span>【工坊】晶核库存 {orderStock}/{orderTarget}</span><small>{orderReady?'可交付':'生产中'}</small></div>
+          <div><BookOpen aria-hidden="true" size={17}/><span>【契约】已收录人物 {ownedContractCount}/5</span><small>{firstContract?'待召唤':'已记录'}</small></div>
+          <div><CalendarDays aria-hidden="true" size={17}/><span>【委托】第 {world.order.due} 天交付</span><small>第 {world.day} 天</small></div>
+        </div>
+      </section>
     </section>
-
-
 
     <button type="button" className="gothic-lobby__character-hit absolute z-[1] border-0! bg-transparent! inset-[15%_46%_16%_20%] max-[700px]:inset-[22%_27%_24%_25%] cursor-pointer focus-visible:outline-2 focus-visible:outline-gothic-glow"
       onClick={talk} aria-label="与月纱互动" data-tooltip="与月纱互动"/>
@@ -171,6 +183,15 @@ export function GothicLobby(){
         <DoorOpen aria-hidden="true" size={25} strokeWidth={1.55} className="gothic-lobby__action-glyph"/>
         <span>拜访房间<small>探索她的秘密</small></span>
       </Link>
+      <Link href="/characters/#summon-screen" className="gothic-lobby__desktop-action" data-testid="gothic-right-summon">
+        <Crown aria-hidden="true" size={28} strokeWidth={1.4} className="gothic-lobby__action-glyph"/>
+        <span>契约召唤<small>收录命定角色</small></span>
+      </Link>
+      <button type="button" className="gothic-lobby__desktop-action" onClick={()=>setOpen('memories')}
+        data-testid="gothic-right-memories" aria-label="剧情回顾">
+        <BookOpen aria-hidden="true" size={28} strokeWidth={1.4} className="gothic-lobby__action-glyph"/>
+        <span>剧情回顾<small>重温公寓故事</small></span>
+      </button>
     </aside>
     <div className="gothic-lobby__character-caption pointer-events-none absolute z-[1] bottom-[clamp(106px,16vh,158px)] left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5 text-[#f6d9b8] [text-shadow:0_3px_12px_#000]" aria-hidden="true"><span className="text-[13px] tracking-[.23em]">月纱</span><small className="text-[10px] text-[#d0b298]">暗夜公寓的女主人</small></div>
 
@@ -180,7 +201,7 @@ export function GothicLobby(){
       label="主要游戏功能" activeHref="/" compact className="gothic-dock--cinematic"/>
 
     <AnimatePresence mode="wait">
-    {panel&&<GothicModal key={panel} title={panel==='bond'?'与月纱交谈':panel==='profile'?'玩家资料':'委托消息'}
+    {panel&&<GothicModal key={panel} title={panel==='bond'?'与月纱交谈':panel==='profile'?'玩家资料':panel==='memories'?'剧情回顾':'委托消息'}
       onClose={close} wide={panel==='bond'}>
       {panel==='bond'&&<>
         <div className="relative hidden min-h-[210px] w-[125px] shrink-0 overflow-hidden rounded-md border border-gothic-brass/50 bg-gothic-panel sm:block">
@@ -204,6 +225,12 @@ export function GothicLobby(){
         <p className="text-sm leading-7 text-gothic-muted">第 {world.day} 天 · 星币 {world.coins} · 晶核 {world.warehouse.core}</p>
         <p className="text-sm leading-7 text-gothic-muted">累计交付 {world.completed} 单 · 街区互助 {world.residentsHelped??0} 次</p>
         <GothicPanelLink href="/workshop/">进入晶核工坊 ›</GothicPanelLink>
+      </div>}
+      {panel==='memories'&&<div className="min-w-0 flex-1 space-y-3 pr-5" data-testid="gothic-memories-content">
+        <h2 className="text-xl font-semibold text-gothic-ivory">月影之约 · 公寓手记</h2>
+        <p className="text-sm leading-7 text-gothic-muted">你已在公寓度过 {world.day} 天，累计完成 {world.completed} 单委托，收录 {ownedContractCount} 位不同人物。</p>
+        <p className="text-sm leading-7 text-gothic-muted">{world.completed>0?'完成交付的回响已经写进契约簿。':'第一章的线索：准备晶核并履行委托，月纱才会讲述更多秘密。'}</p>
+        <GothicPanelLink href="/apartment/?visit=yuesha">拜访月纱 · 继续故事 ›</GothicPanelLink>
       </div>}
       {panel==='updates'&&<div className="min-w-0 flex-1 space-y-3 pr-5">
         <span className="text-[10px] tracking-widest text-gothic-gold">COMMISSION UPDATE</span>
