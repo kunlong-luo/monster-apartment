@@ -76,19 +76,52 @@ jobs:
                   view.save(out,"WEBP",quality=75,method=4)
                   print(out.name,view.size,out.stat().st_size)
           PY
+      - name: Source review for dark-red Vampire Living Room
+        if: success()
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,subprocess
+          from pathlib import Path
+          from PIL import Image
+          root=Path("docs/art-reviews/sources/winechan-vampire-living-room")
+          root.mkdir(parents=True,exist_ok=True)
+          url="https://img.itch.zone/aW1hZ2UvNDg5MDM0OC8yOTIzMjk3OC5qcGc=/original/P%2B5moK.jpg"
+          target=root/"publisher-preview-01.jpg"
+          result=subprocess.run(["curl","-fL","--retry","2","--max-time","75",
+            "-H","User-Agent: Mozilla/5.0","-o",str(target),url],
+            capture_output=True,text=True,timeout=90)
+          if result.returncode:raise SystemExit("Publisher screenshot download failed: "+result.stderr[:200])
+          data=target.read_bytes()
+          with Image.open(target) as opened:
+            opened.verify()
+          with Image.open(target) as opened:
+            w,h=opened.size
+            thumb=opened.convert("RGB")
+            thumb.thumbnail((960,540),Image.Resampling.LANCZOS)
+            thumb.save(root/"publisher-preview-01.review.webp","WEBP",quality=76,method=4)
+          meta={"sourcePage":"https://winechan.itch.io/vampire-living-room",
+            "publisherPreviewUrl":url,"asset":"publisher-preview-01.jpg","width":w,"height":h,
+            "bytes":len(data),"sha256":hashlib.sha256(data).hexdigest(),
+            "meets1920x1080":w>=1920 and h>=1080 and abs(w/h-16/9)<.015,
+            "status":"unreviewed-publisher-preview-not-production",
+            "sourceClaim":"WineChan public domain, AI assisted; original download ZIP NOT acquired",
+            "physicalPropAnchorsReviewed":False,"rightsIndependentlyReviewed":False}
+          (root/"intake.json").write_text(json.dumps(meta,ensure_ascii=False,indent=2)+chr(10))
+          print(meta)
+          PY
       - name: Upload source evidence for review
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gothic-manor-publisher-preview-review
-          path: docs/art-reviews/sources/winechan-gothic-manor/
+          path: docs/art-reviews/sources/
           if-no-files-found: warn
       - name: Commit source evidence only (never public game images)
         if: success()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/art-reviews/sources/winechan-gothic-manor/
+          git add docs/art-reviews/sources/
           if ! git diff --cached --quiet; then
             git commit -m "assets(review): publisher previews only, not production CG"
             git push origin HEAD:main
