@@ -1,6 +1,6 @@
 import {afterEach,beforeEach,describe,expect,it,vi} from 'vitest';
 import {GACHA_STATE_KEY,INITIAL_GACHA_STATE,claimProgressTickets,executeSummon,
-  readGachaState,rollSingleGacha,claimTrialTicket} from '../src/lib/summon/gacha-engine';
+  readGachaState,rollSingleGacha,claimTrialTicket,validGachaState,gachaSaveStatus} from '../src/lib/summon/gacha-engine';
 import {COLLECTION_KEY} from '../src/lib/game/character-collection-store';
 
 const saved=new Map<string,string>();
@@ -21,6 +21,16 @@ describe('a faithful functional summoning screen',()=>{
     expect(INITIAL_GACHA_STATE.moonstones).toBe(0);
     expect(INITIAL_GACHA_STATE.history).toHaveLength(0);
     expect(INITIAL_GACHA_STATE.totalSummons).toBe(0);
+  });
+  it('preserves an incomplete gacha save and refuses to treat numeric tickets as valid',()=>{
+    const partial='{"version":2,"tickets":999,"history":[],"ownedIds":[]}';
+    saved.set(GACHA_STATE_KEY,partial);
+    expect(validGachaState(JSON.parse(partial))).toBe(false);
+    expect(gachaSaveStatus()).toBe('corrupt');
+    expect(readGachaState()).toEqual(INITIAL_GACHA_STATE);
+    expect(executeSummon(1).success).toBe(false);
+    expect(saved.get(GACHA_STATE_KEY)).toBe(partial);
+    expect(saved.has(COLLECTION_KEY)).toBe(false);
   });
   it('one result costs one ticket and awards the EXACT same card to collection',()=>{
     const result=executeSummon(1);

@@ -43,6 +43,22 @@ test('the character gallery centers human residents and opens the real summon sc
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
 });
 
+test('incomplete gacha storage blocks summoning without breaking the character scene',async({page})=>{
+  const partial='{"version":2,"tickets":999,"history":[],"ownedIds":[]}';
+  await page.addInitScript(value=>{
+    localStorage.setItem('monster-apartment:gacha-v2',value);
+  },partial);
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
+  await expect(page.getByTestId('summon-save-error')).toBeVisible();
+  // Rendering uses a validated fallback; the corrupt save remains untouched.
+  await expect(page.getByTestId('collection-tickets')).toHaveText('3');
+  await expect(page.getByTestId('collection-summon')).toBeDisabled();
+  await expect(page.getByTestId('collection-summon-ten')).toBeDisabled();
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:gacha-v2')))
+    .toBe(partial);
+});
+
 test('canonical summon archive forges and equips a real item without a duplicate gacha',async({page})=>{
   await page.goto('/characters/#summon-screen');
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();

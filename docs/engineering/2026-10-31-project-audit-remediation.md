@@ -17,9 +17,9 @@
 
 | ID / 优先级 | 代码证据与问题 | 整改目标与验收 | 状态 |
 | --- | --- | --- | --- |
-| **A01 · P0** 角色图鉴原生链接缺少 Pages 子路径 | `src/components/moonwork/world-characters.tsx` 内 `<a href="/characters/#summon-screen">` 不经 Next basePath 处理；Pages 实际部署于 `/monster-apartment/`，直接链接可能跳至错误根路径。该场景的 `characters-scene-router.tsx` 依赖浏览器 `hashchange` 触发视图切换。 | 保留原生 hash 导航语义（可发 `hashchange`），但 href 必须兼容 Pages basePath；补浏览器断言校验同路径 hash 切换，不得新增路由、改变抽卡存档。 | **代码修复与专项回归已提交；待质量/Pages 验证** |
+| **A01 · P0** 角色图鉴原生链接缺少 Pages 子路径 | `src/components/moonwork/world-characters.tsx` 内 `<a href="/characters/#summon-screen">` 不经 Next basePath 处理；Pages 实际部署于 `/monster-apartment/`，直接链接可能跳至错误根路径。该场景的 `characters-scene-router.tsx` 依赖浏览器 `hashchange` 触发视图切换。 | 保留原生 hash 导航语义（可发 `hashchange`），但 href 必须兼容 Pages basePath；补浏览器断言校验同路径 hash 切换，不得新增路由、改变抽卡存档。 | **Quality 与 Pages 已通过**（主分支 4317634；新增浏览器用例仍需专项执行） |
 | **A02 · P0** PC 布局多重覆盖 | `src/components/game/gothic-desktop-ui.css` 约 554 行/173 处 `!important`；`gothic-reference-layout.css` 也控制相同大厅区域，`gothic-lobby.css` 与 Tailwind 还参与布局。 | 建立单一 PC 几何布局所有权，逐步删除重复选择器与 `!important`；固定中央人物、左名册、右功能海报、底部七项 Dock；以 1440×900、1648×928 与参考设计截图验收，也检查 390×844 无溢出。 | 待处理 |
-| **A03 · P1** 抽卡界面状态校验不完整 | `src/lib/summon/use-gacha.ts` 读取数据仅检查 `tickets` 数字后强制断言 `GachaState`，而 `gacha-engine.ts` 已有 `validGachaState`。损坏但局部合法的存档可能在界面访问其它字段时出错。 | 只接受完整有效的状态；损坏数据须保留且操作不可扣费，显示清楚的修复提示；补针对性单测/浏览器检查。 | 待处理 |
+| **A03 · P1** 抽卡界面状态校验不完整 | `src/lib/summon/use-gacha.ts` 读取数据仅检查 `tickets` 数字后强制断言 `GachaState`，而 `gacha-engine.ts` 已有 `validGachaState`。损坏但局部合法的存档可能在界面访问其它字段时出错。 | 只接受完整有效的状态；损坏数据须保留且操作不可扣费，显示清楚的修复提示；补针对性单测/浏览器检查。 | **代码修复及定向测试已提交，待 Quality 验证** |
 | **A04 · P1** 抽卡与收藏跨键一致性 | `src/lib/summon/gacha-engine.ts` 依次写入收藏键与抽卡键，通过回滚降低失败风险，但 localStorage 两次写入不是事务。 | 设计安全的结算/重入与恢复策略，模拟 quota/写入失败，保护玩家真实资源与卡片；不更改概率。 | 待处理 |
 | **A05 · P1** 五张卡面缺正式全身 CG | `public/art/beauty-beasts/characters/cg-manifest.json` 的 5 张卡均为 `portrait`；`heroine-portrait-assets.ts` 明确使用人物肖像过渡。 | 分角色锁脸、审核并接入 5 张独立卡面 CG；真实尺寸/版权/哈希/来源登记；完整人物在抽卡大卡正确展示，不把 512px 脸图拉成全身。 | 等待美术生产与审核 |
 | **A06 · P1** 私人房间仍是概念场景 | `public/art/rooms/manifest.json` 四个房间均标记 `concept`；目前仓库实际只有 `concept-scene.svg`，目标背景/pose 路径尚未正式入库。 | 逐室生成并审批无 UI 背景、透明人物姿态、热点锚点；候选图不等于正式上线，恢复/切换房间不糊不失真。 | 等待美术生产与审核 |

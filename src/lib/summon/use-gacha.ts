@@ -8,6 +8,7 @@ import {
   saveGachaState,
   readGachaState,
   gachaSaveStatus,
+  validGachaState,
   GACHA_POOLS,
   executeSummon,
   type SummonableCharacter,
@@ -51,10 +52,10 @@ export function useGacha(): {
 
   const state = useMemo<GachaState>(() => {
     try {
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed.tickets === 'number') {
-        return parsed as GachaState;
-      }
+      const parsed: unknown = JSON.parse(raw);
+      // Only a validated save may drive the UI; an incomplete snapshot must
+      // never crash rendering or be mistaken for spendable resources.
+      if (validGachaState(parsed)) return parsed;
     } catch {
       /* ignore */
     }
