@@ -200,7 +200,7 @@ export function GothicLobby(){
       <Link href="/workshop/" data-testid="gothic-reference-workshop"
         className="gothic-lobby__reference-postcard">
         <Image src={siteAssetUrl('/art/feature-postcards/gothic-workshop.webp')}
-          fallbackSrc={lobbyHero} fill alt="" sizes="320px"
+          fallbackSrc={lobbyHero} fill unoptimized alt="" sizes="320px"
           data-testid="gothic-postcard-workshop-art"
           className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--workshop"/>
         <span><strong>工坊</strong><small>打造专属装备</small></span>
@@ -209,7 +209,7 @@ export function GothicLobby(){
       <Link href="/town/" data-testid="gothic-reference-town"
         className="gothic-lobby__reference-postcard">
         <Image src={siteAssetUrl('/art/feature-postcards/moonlit-street.webp')}
-          fallbackSrc={lobbyHeroBackup} fill alt="" sizes="320px"
+          fallbackSrc={lobbyHeroBackup} fill unoptimized alt="" sizes="320px"
           data-testid="gothic-postcard-town-art"
           className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--town"/>
         <span><strong>月光街</strong><small>探索夜色街区</small></span>
