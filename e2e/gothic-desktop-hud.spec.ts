@@ -281,6 +281,7 @@ test('PC salon review can compose three separately uploaded transparent props wi
   await expect(page.getByTestId('room-art-composite-export')).toBeEnabled();
   await page.getByTestId('room-art-composite-export').click();
   await expect(page.getByTestId('room-art-composite-download')).toBeVisible({timeout:20000});
+  await expect(page.getByTestId('room-art-composite-status')).toContainText('已生成');
   const [download]=await Promise.all([
     page.waitForEvent('download'),
     page.getByTestId('room-art-composite-download').click(),
