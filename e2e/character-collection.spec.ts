@@ -16,8 +16,8 @@ test('the character gallery centers human residents and opens the real summon sc
   const nativeTarget=await summonLink.evaluate(el=>{
     const target=new URL((el as HTMLAnchorElement).href);
     return {
-      currentPath:window.location.pathname.replace(/\\/+$/,''),
-      targetPath:target.pathname.replace(/\\/+$/,''),
+      currentPath:window.location.pathname.split('/').filter(Boolean).join('/'),
+      targetPath:target.pathname.split('/').filter(Boolean).join('/'),
       hash:target.hash,
       origin:target.origin,
       currentOrigin:window.location.origin,
