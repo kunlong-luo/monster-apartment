@@ -178,3 +178,27 @@ test('all seven canonical game pages inherit the same design palette and selecte
     await page.screenshot({path:'test-results/desktop-design-'+entry.name+'-v377.png',animations:'disabled'});
   }
 });
+
+test('private rooms allow full-width scenic inspection and return to saved story controls',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/apartment/?visit=yuesha');
+  const room=page.getByTestId('yuesha-private-room');
+  await expect(room).toBeVisible({timeout:20000});
+  await expect(room).toHaveAttribute('data-room-view','story');
+  const scene=page.getByTestId('yuesha-room-stage');
+  const before=await scene.boundingBox();
+  expect(before).not.toBeNull();
+  const toggle=page.getByTestId('room-scenic-toggle');
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await expect(room).toHaveAttribute('data-room-view','scenic');
+  await expect(page.getByTestId('room-story-rail')).toBeHidden();
+  await expect(page.getByTestId('room-scene-backdrop')).toBeVisible();
+  const after=await scene.boundingBox();
+  expect(after).not.toBeNull();
+  expect(after!.width).toBeGreaterThan(before!.width*1.2);
+  await toggle.click();
+  await expect(room).toHaveAttribute('data-room-view','story');
+  await expect(page.getByTestId('room-story-rail')).toBeVisible();
+  await expect(page.getByTestId('yuesha-dialogue')).toBeVisible();
+});

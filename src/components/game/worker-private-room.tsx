@@ -12,6 +12,7 @@ import {RoomSceneHotspots} from './room-scene-hotspots';
 import {RoomSceneBackdrop} from './room-scene-backdrop';
 import {RoomResidentSprite} from './room-resident-sprite';
 import {RoomSceneFocus} from './room-scene-focus';
+import {RoomScenicViewToggle} from './room-scenic-view-toggle';
 import {RoomConversationTopics} from './room-conversation-topics';
 import {RoomDialogueTheater} from './room-dialogue-theater';
 import {dialogueBeats,roomDialogueBeatPose,roomObjectPose,roomTopicPose} from '@/core/room-performance';
@@ -40,6 +41,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
   const [pose,setPose]=useState<RoomPose>('idle');
   const [theater,setTheater]=useState<RoomConversationTopic|null>(null);
   const [notice,setNotice]=useState('');
+  const [scenicMode,setScenicMode]=useState(false);
   const {status,progress}=useCharacterLife();
   const choice=progress.workerDecisions?.[id];
   const observed=progress.observations?.[id]??[];
@@ -64,11 +66,15 @@ export function WorkerPrivateRoom({id,onClose,working}:{
   const shownPose=artReview.enabled&&artReview.selectedPose?artReview.selectedPose:pose;
 
   return <GothicModal title={'拜访'+profile.name+'的房间'} closeLabel={'离开'+profile.name+'的房间'} onClose={onClose} wide immersive>
-    <div data-testid={'worker-private-room-'+id} data-room-layout="scenic-left-rail-right" className="min-w-0 w-full space-y-2">
-      <div data-testid="room-scenic-layout" className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,2.2fr)_minmax(280px,.9fr)] lg:items-start">
+    <div data-testid={'worker-private-room-'+id} data-room-layout="scenic-left-rail-right"
+      data-room-view={scenicMode?'scenic':'story'} className="min-w-0 w-full space-y-2">
+      <div data-testid="room-scenic-layout" className={'grid min-w-0 gap-3 lg:items-start '+
+        (scenicMode?'lg:grid-cols-1':'lg:grid-cols-[minmax(0,3fr)_minmax(265px,1fr)]')}>
       <div className="min-w-0 space-y-2">
-      <div data-testid="worker-room-stage" className="relative h-[clamp(390px,68dvh,720px)] overflow-hidden rounded-xl border border-[#b993688c] bg-[#120f1c] shadow-[0_16px_48px_#0009,inset_0_1px_#e9cfa523]"
+      <div data-testid="worker-room-stage"
+        className={'relative h-[clamp(390px,68dvh,720px)] overflow-hidden rounded-xl border border-gothic-brass/60 bg-gothic-night shadow-[0_16px_48px_#0009,inset_0_1px_#e9cfa523] '+(scenicMode?'lg:h-[min(76dvh,760px)]':'')}
         aria-label={profile.name+'的房间概念场景'} ref={stageRef}>
+        <RoomScenicViewToggle scenic={scenicMode} onToggle={()=>setScenicMode(previous=>!previous)}/>
         <RoomSceneBackdrop id={id} previewUrl={artReview.backgroundUrl}
           cinematicPose={theater&&!working?pose:null}/>
         <RoomResidentSprite id={id} name={profile.name} working={working} reaction={reaction}
@@ -94,7 +100,7 @@ export function WorkerPrivateRoom({id,onClose,working}:{
       <RoomArtLocalPreviewPanel id={id} name={profile.name} review={artReview}
         warning="当前仍使用概念版调查热点坐标；新背景的物件定位须在仓库外单独标注并审核，不能据此预览判断正式热点。"/>
       </div>
-      <div data-testid="room-story-rail" className="min-w-0 space-y-4 rounded-xl border border-[#b38d6860] bg-[linear-gradient(170deg,#261724ed,#140d18f2)] p-3 shadow-[inset_0_1px_#f4d6ad20] lg:max-h-[min(68dvh,720px)] lg:overflow-y-auto lg:pr-3 [scrollbar-color:#95755d_#25151f] [scrollbar-width:thin]">
+      <div data-testid="room-story-rail" className={'min-w-0 space-y-4 rounded-xl border border-gothic-brass/40 bg-gothic-panel/90 p-3 lg:max-h-[min(68dvh,720px)] lg:overflow-y-auto lg:pr-3 [scrollbar-width:thin] '+(scenicMode?'lg:hidden':'')}>
       {status!=='ok'&&<p role="alert" className="rounded-lg border border-rose-300/50 p-3 text-xs text-rose-200">
         {status==='corrupt'?'人物存档无法读取；已保留原记录，不会覆盖。':'浏览器暂时无法保存人物拜访记录。'}</p>}
       <section className="space-y-2" aria-label={profile.name+'的交谈'}>

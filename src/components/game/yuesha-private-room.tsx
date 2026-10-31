@@ -11,6 +11,7 @@ import {RoomSceneHotspots} from './room-scene-hotspots';
 import {RoomSceneBackdrop} from './room-scene-backdrop';
 import {RoomResidentSprite} from './room-resident-sprite';
 import {RoomSceneFocus} from './room-scene-focus';
+import {RoomScenicViewToggle} from './room-scenic-view-toggle';
 import {RoomConversationTopics} from './room-conversation-topics';
 import {YueshaMemoryShelf} from './yuesha-memory-shelf';
 import {RoomDialogueTheater} from './room-dialogue-theater';
@@ -28,6 +29,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
   const [pose,setPose]=useState<RoomPose>('idle');
   const [theater,setTheater]=useState<RoomConversationTopic|null>(null);
   const [feedback,setFeedback]=useState('');
+  // Ephemeral view mode never touches the life/room save or changes investigation state.
+  const [scenicMode,setScenicMode]=useState(false);
   const shownPose=artReview.enabled&&artReview.selectedPose?artReview.selectedPose:pose;
   const {status,progress}=useCharacterLife();
   const choice=progress.decisions['yuesha-first-visit'];
@@ -54,10 +57,14 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     setFeedback('已重温这段收录的记忆。');
     stageRef.current?.scrollIntoView({block:'center',behavior:'auto'});
   };
-  return <div className="min-w-0 flex-1 space-y-2" data-testid="yuesha-private-room" data-room-layout="scenic-left-rail-right">
-    <div data-testid="room-scenic-layout" className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,2.2fr)_minmax(280px,.9fr)] lg:items-start">
+  return <div className="min-w-0 flex-1 space-y-2" data-testid="yuesha-private-room"
+    data-room-layout="scenic-left-rail-right" data-room-view={scenicMode?'scenic':'story'}>
+    <div data-testid="room-scenic-layout" className={'grid min-w-0 gap-3 lg:items-start '+
+      (scenicMode?'lg:grid-cols-1':'lg:grid-cols-[minmax(0,3fr)_minmax(265px,1fr)]')}>
     <div className="min-w-0 space-y-2">
-    <div className="relative h-[clamp(390px,68dvh,720px)] overflow-hidden rounded-xl border border-[#b993688c] bg-[#171020] shadow-[0_16px_48px_#0009,inset_0_1px_#e9cfa523]" data-testid="yuesha-room-stage" ref={stageRef}>
+    <div className={'relative h-[clamp(390px,68dvh,720px)] overflow-hidden rounded-xl border border-gothic-brass/60 bg-gothic-night shadow-[0_16px_48px_#0009,inset_0_1px_#e9cfa523] '+(scenicMode?'lg:h-[min(76dvh,760px)]':'')}
+      data-testid="yuesha-room-stage" ref={stageRef}>
+      <RoomScenicViewToggle scenic={scenicMode} onToggle={()=>setScenicMode(previous=>!previous)}/>
       <RoomSceneBackdrop id="yuesha" previewUrl={artReview.backgroundUrl}
         cinematicPose={theater?pose:null}/>
       <RoomResidentSprite id="yuesha" name="月纱" reaction={reaction} pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)} previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>
@@ -80,7 +87,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       <RoomArtLocalPreviewPanel id="yuesha" name="月纱" review={artReview}/>
 
     </div>
-    <div data-testid="room-story-rail" className="min-w-0 space-y-4 rounded-xl border border-[#b38d6860] bg-[linear-gradient(170deg,#261724ed,#140d18f2)] p-3 shadow-[inset_0_1px_#f4d6ad20] lg:max-h-[min(68dvh,720px)] lg:overflow-y-auto lg:pr-3 [scrollbar-color:#95755d_#25151f] [scrollbar-width:thin]">
+    <div data-testid="room-story-rail" className={'min-w-0 space-y-4 rounded-xl border border-gothic-brass/40 bg-gothic-panel/90 p-3 lg:max-h-[min(68dvh,720px)] lg:overflow-y-auto lg:pr-3 [scrollbar-width:thin] '+(scenicMode?'lg:hidden':'')}>
     <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[#ad89644a] bg-[#211520b8] px-3 py-2 text-xs" data-testid="yuesha-living-state">
       <span>今夜心情：{happiness>=70?'安心':'牵挂邻居'}</span>
       <span>公寓现住 {guests} 位邻居</span>
