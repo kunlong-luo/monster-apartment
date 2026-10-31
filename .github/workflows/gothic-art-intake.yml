@@ -1,0 +1,79 @@
+name: Gothic Manor Source Review
+on:
+  push:
+    paths:
+      - ".github/workflows/gothic-art-intake.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inspect-publisher-previews:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch original publisher screenshots (not the 73-file ZIP)
+        shell: bash
+        run: |
+          mkdir -p docs/art-reviews/sources/winechan-gothic-manor
+          python3 - <<'PY'
+          import os,hashlib,json,struct,subprocess
+          from pathlib import Path
+          root=Path("docs/art-reviews/sources/winechan-gothic-manor")
+          urls=[
+            "https://img.itch.zone/aW1hZ2UvNDE2ODc1Ni8yNDk4NTI0Mi5wbmc=/original/j%2FiigK.png",
+            "https://img.itch.zone/aW1hZ2UvNDE2ODc1Ni8yNDk4NTI0Ny5wbmc=/original/0CgPhO.png",
+            "https://img.itch.zone/aW1hZ2UvNDE2ODc1Ni8yNDk4NTI1NS5wbmc=/original/bP45Bt.png",
+          ]
+          rows=[]
+          for i,url in enumerate(urls,1):
+            name=f"publisher-preview-{i:02d}.png"
+            target=root/name
+            r=subprocess.run(["curl","-fL","--retry","2","--max-time","75",
+              "-H","User-Agent: Mozilla/5.0","-o",str(target),url],
+              capture_output=True,text=True,timeout=90)
+            entry={"name":name,"sourceUrl":url,
+              "sourcePage":"https://winechan.itch.io/gothic-manor",
+              "status":"publisher-preview-not-production",
+              "licenseClaim":"public domain (publisher's site statement)",
+              "fullPackOriginal":False,"humanReview":False}
+            try:
+              if r.returncode:raise ValueError(r.stderr.strip()[:200])
+              data=target.read_bytes()
+              if data[:8]!=b"\\x89PNG\\r\\n\\x1a\\n" or data[12:16]!=b"IHDR":
+                raise ValueError("not a PNG image")
+              width,height=struct.unpack(">II",data[16:24])
+              if not (100<=width<=16000 and 100<=height<=16000 and 4000<len(data)<12582912):
+                raise ValueError("invalid dimensions or size")
+              entry.update({"width":width,"height":height,"bytes":len(data),
+                "sha256":hashlib.sha256(data).hexdigest(),
+                "meetsNative2k16by9":width>=1920 and height>=1080 and abs(width/height-16/9)<.015})
+            except (ValueError,OSError) as err:
+              entry["error"]=str(err)
+              target.unlink(missing_ok=True)
+            rows.append(entry)
+            print(name,entry.get("width"),entry.get("height"),entry.get("error"))
+          (root/"intake.json").write_text(json.dumps({
+            "scope":"3 publisher screenshots only, not full 73-image source ZIP",
+            "commercialApproval":False,"assets":rows
+          },indent=2,ensure_ascii=False)+"\\n",encoding="utf-8")
+          if not any("sha256" in row for row in rows):
+            raise SystemExit("No publisher image was downloadable; inspect logs")
+          PY
+      - name: Upload source evidence for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gothic-manor-publisher-preview-review
+          path: docs/art-reviews/sources/winechan-gothic-manor/
+          if-no-files-found: warn
+      - name: Commit source evidence only (never public game images)
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/art-reviews/sources/winechan-gothic-manor/
+          if ! git diff --cached --quiet; then
+            git commit -m "assets(review): publisher previews only, not production CG"
+            git push origin HEAD:main
+          fi
