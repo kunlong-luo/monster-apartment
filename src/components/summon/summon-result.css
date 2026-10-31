@@ -80,6 +80,11 @@
 .contract-card__halo{position:absolute;inset:10% 8% 2%;
   background:radial-gradient(ellipse at 50% 43%,var(--contract-aura),transparent 69%)}
 .contract-card__portrait{object-fit:contain;object-position:center center;filter:none}
+/* Keep original V3 room-backed portrait visible within the art area; never
+ * upscale a 512px face, add a fake body or blur the source painting. */
+.contract-card__art[data-portrait-kind="scene-portrait"] .contract-card__portrait{
+  object-fit:contain;object-position:center 40%;
+}
 .contract-card__art-vignette{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,#160e174a 0%,transparent 16%,transparent 65%,#150c16e8 99%),
   linear-gradient(90deg,#150d1835,transparent 14%,transparent 86%,#150d1835)}

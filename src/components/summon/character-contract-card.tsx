@@ -2,7 +2,7 @@
 
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {Gem,Diamond} from 'lucide-react';
-import {getCardFace} from './heroine-portrait-assets';
+import {getCardFace,getCardPortraitKind,getCardPortraitFallback} from './heroine-portrait-assets';
 import {siteAssetUrl} from '@/lib/game/site-asset-url';
 import type {SummonableCharacter,GachaRarity} from '@/lib/summon/gacha-engine';
 
@@ -19,17 +19,20 @@ export function CharacterContractCard({character,mode='feature',awardTestId}:{
   awardTestId?:string;
 }){
   const image=getCardFace(character.id)??siteAssetUrl(character.avatar);
+  const portraitKind=getCardPortraitKind(character.id);
+  const fallback=getCardPortraitFallback(character.id)??siteAssetUrl(character.avatar);
   return <article
     className={'contract-card contract-card--'+mode}
     data-card-id={character.id} data-rarity={character.rarity}
     data-testid={mode==='feature'?'collection-focus-card':undefined}>
     <div className="contract-card__inner">
-      <div className="contract-card__art" data-portrait-kind="approved-face-crop">
+      <div className="contract-card__art" data-portrait-kind={portraitKind}>
         <div className="contract-card__halo" aria-hidden="true"/>
-        <Image src={image} fallbackSrc={siteAssetUrl(character.avatar)} alt={character.name+'的精绘肖像'}
+        <Image src={image} fallbackSrc={fallback} alt={character.name+'的契约肖像'}
           fill unoptimized draggable={false} priority={mode==='feature'}
           sizes={mode==='feature'?'(max-width:600px) 85vw, 490px':'(max-width:600px) 19vw, 100px'}
-          className="contract-card__portrait" data-portrait-source="dedicated-heroine-face"/>
+          className="contract-card__portrait"
+          data-portrait-source={portraitKind==='scene-portrait'?'consistent-yuesha-v3':'dedicated-heroine-face'}/>
         <div className="contract-card__art-vignette" aria-hidden="true"/>
       </div>
       <header className="contract-card__head">
