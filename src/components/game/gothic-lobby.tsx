@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {ArrowUpRight,DoorOpen,Orbit} from 'lucide-react';
+import {ArrowUpRight,ChevronRight,Crown,DoorOpen,Mail,MoonStar,Orbit,ScrollText} from 'lucide-react';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {AnimatePresence} from 'motion/react';
 import {useMemo,useState} from 'react';
@@ -89,7 +89,7 @@ export function GothicLobby(){
     <GothicAtmosphere paused={reducedMotion}/>
 
     <div className="gothic-lobby__brand" aria-label="怪物公寓 · MONSTER APARTMENT">
-      <span aria-hidden="true" className="gothic-lobby__brand-flourish">❦</span>
+      <MoonStar aria-hidden="true" className="gothic-lobby__brand-flourish" size={19} strokeWidth={1.4}/>
       <strong>怪物公寓</strong>
       <small data-testid="game-release">MONSTER APARTMENT · {GAME_UI_RELEASE}</small>
     </div>
@@ -104,9 +104,15 @@ export function GothicLobby(){
       <div className="flex items-center gap-1.5 pt-1 max-[840px]:col-span-2 max-[840px]:col-start-1 max-[840px]:row-start-2 max-[840px]:justify-center" aria-label="当前存档资源">
         <GothicResourcePill symbol="✦" amount={world.coins} label="星币" testId="lobby-coins"/>
         <GothicResourcePill symbol="◆" amount={world.warehouse.core} label="晶核" testId="lobby-cores"/>
-        <GothicResourcePill symbol="☾" amount={world.day} label="生产日"/>
       </div>
-      <div className="flex justify-end gap-1.5 pt-1 max-[840px]:col-start-2 max-[840px]:row-start-1">
+      <div className="gothic-lobby__top-actions flex justify-end gap-2 pt-1 max-[840px]:col-start-2 max-[840px]:row-start-1">
+        <button type="button" onClick={()=>setOpen('updates')} aria-label="委托消息"
+          aria-expanded={panel==='updates'} data-testid="gothic-commission-status"
+          data-tooltip="查看本日委托"
+          className="gothic-lobby__inbox">
+          <Mail aria-hidden="true" size={17} strokeWidth={1.7}/>
+          <span className="gothic-lobby__inbox-copy">委托<small>待交付 {Math.max(0,orderTarget-orderStock)} 枚</small></span>
+        </button>
         <GothicIconButton label="切换动态特效" data-tooltip="切换动态特效" pressed={reducedMotion}
           onClick={toggleMotion}><Orbit aria-hidden="true" size={17} strokeWidth={1.7}/></GothicIconButton>
       </div>
@@ -116,7 +122,7 @@ export function GothicLobby(){
       <Link href={orderReady?'/orders/':'/workshop/'}
         aria-label={orderReady?'晶核已备齐，查看委托交期':'晶核不足，前往工坊生产'}
         data-testid="gothic-main-quest" className="gothic-lobby__mission-card gothic-lobby__mission-card--quest">
-        <span className="gothic-lobby__card-kicker">✧ 主线 · 月影之约 <ArrowUpRight aria-hidden="true" size={15} strokeWidth={1.7}/></span>
+        <span className="gothic-lobby__card-kicker"><ScrollText className="gothic-lobby__card-icon" aria-hidden="true" size={15} strokeWidth={1.55}/>主线 · 月影之约 <ArrowUpRight aria-hidden="true" size={15} strokeWidth={1.7}/></span>
         <strong>{orderReady?'晶核已备齐 · 去委托核对交期':'与月纱一起筹备第一批晶核'}</strong>
         <span className="gothic-lobby__mission-detail">
           {orderReady?'下一步：确认交付和奖励':'去工坊生产 · 晶核 '+orderStock+' / '+orderTarget}
@@ -131,7 +137,7 @@ export function GothicLobby(){
         className="gothic-lobby__mission-card gothic-lobby__mission-card--eclipse"
         data-testid="gothic-eclipse-feature" data-first-contract={firstContract?'true':'false'}
         aria-label={firstContract?'开始第一次契约召唤，收录你的人物卡':'前往契约召唤，收集更多人物'}>
-        <span className="gothic-lobby__card-kicker">✦ {firstContract?'新手目标 · 初次契约':'角色养成 · 契约收藏'}
+        <span className="gothic-lobby__card-kicker"><Crown className="gothic-lobby__card-icon" aria-hidden="true" size={15} strokeWidth={1.55}/>{firstContract?'初次契约':'契约收藏'}
           <small className="gothic-lobby__chapter-mark" aria-hidden="true">{GAME_UI_RELEASE}</small>
         </span>
         <strong data-testid="lobby-summon-guide-title">
@@ -147,16 +153,9 @@ export function GothicLobby(){
             <span key={id} className="gothic-lobby__contract-face">
               <Image src={HEROINE_FACE_ART[id]} alt="" width={39} height={39} sizes="39px" loading="eager"/>
             </span>)}
-          <span className="gothic-lobby__contract-arrow">❯</span>
+          <ChevronRight className="gothic-lobby__contract-arrow" aria-hidden="true" size={20} strokeWidth={1.6}/>
         </div>
       </Link>
-      <button type="button" onClick={()=>setOpen('updates')} aria-label="委托消息"
-        className="gothic-lobby__mission-card gothic-lobby__updates-card"
-        data-testid="gothic-commission-status">
-        <span className="gothic-lobby__card-kicker">✉ 新消息 · 本日委托</span>
-        <strong>待交付晶核 {Math.max(0,orderTarget-orderStock)} 枚</strong>
-        <span className="gothic-lobby__mission-detail">第 {world.day} 天 · 截止第 {world.order.due} 天</span>
-      </button>
     </section>
 
 

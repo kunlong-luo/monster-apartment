@@ -63,25 +63,25 @@
   /* A narrow quest ledger, small relationship actions, unobscured heroine. */
   .gothic-lobby .gothic-lobby__mission-rail{
     top:clamp(154px,18vh,192px);left:clamp(20px,2.2vw,37px);
-    width:clamp(305px,24vw,370px);gap:8px;
-    max-height:calc(100dvh - 280px);
+    width:clamp(286px,22vw,335px);gap:10px;
+    max-height:calc(100dvh - 280px);overflow:visible;
   }
   .gothic-lobby .gothic-lobby__mission-card{
     min-height:83px;padding:11px 15px 11px 18px;gap:5px;
-    border:1px solid #bc92666f!important;border-left:2px solid #c5a073!important;
+    border:1px solid #bc92666f!important;
     border-radius:7px!important;
     background:linear-gradient(100deg,#160c17f0,#170c1acb 78%,#1e0b1ba6)!important;
     box-shadow:inset 0 1px #f4d6ac22,0 9px 25px #0502087d!important;
     backdrop-filter:blur(8px);
   }
   .gothic-lobby .gothic-lobby__mission-card:is(:hover,:focus-visible){
-    border-color:#f0c994!important;border-left-color:#f0c994!important;
+    border-color:#f0c994!important;
     background:linear-gradient(110deg,#352032ed,#241322eb)!important;
     box-shadow:inset 0 1px #f5dcb550,0 10px 30px #0009!important;
   }
   .gothic-lobby .gothic-lobby__mission-card::before{display:none}
   .gothic-lobby .gothic-lobby__mission-card--eclipse{
-    min-height:142px;border-left-color:#ba6380!important;
+    min-height:134px;border-color:#ba6380!important;
     background:radial-gradient(ellipse at 90% 64%,#8b2b5752,transparent 55%),linear-gradient(110deg,#231020ed,#190c1ce5)!important;
   }
   .gothic-lobby .gothic-lobby__mission-card--eclipse strong{
@@ -91,7 +91,7 @@
     font-size:clamp(13px,1.04vw,15px);font-weight:550;line-height:1.4;
   }
   .gothic-lobby .gothic-lobby__card-kicker{
-    font-size:11px;letter-spacing:.15em;color:#e9be87;
+    font-size:11px;letter-spacing:.045em;color:#e9be87;
   }
   .gothic-lobby .gothic-lobby__card-kicker svg{margin-left:auto;color:#bba17e}
   .gothic-lobby .gothic-lobby__mission-detail{

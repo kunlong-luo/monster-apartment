@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - 'src/components/game/gothic-desktop-ui.css'
+      - 'src/components/game/gothic-lobby.tsx'
+      - 'src/components/game/gothic-lobby.css'
       - 'src/components/game/gothic-hud.tsx'
       - 'src/components/game/gothic-room-doors.tsx'
       - 'src/components/game/room-resident-sprite.tsx'
@@ -54,9 +56,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: desktop-v373-screenshots
+          name: desktop-v374-screenshots
           path: |
             test-results/desktop-*.png
+            test-results/mobile-lobby-v374.png
             test-results/**/test-failed-*.png
             test-results/**/error-context.md
           if-no-files-found: warn
