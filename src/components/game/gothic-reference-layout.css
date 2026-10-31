@@ -1,5 +1,5 @@
 /* V3.75 · user-approved reference 01, desk only. No baked screenshots. */
-.gothic-lobby__message-board,.gothic-lobby__summon-illustration,
+.gothic-lobby__summon-illustration,
 .gothic-lobby__summon-verse{display:none}
 .gothic-lobby .gothic-lobby__character-actions .gothic-lobby__desktop-action{display:none}
 @media(min-width:1100px) and (min-height:700px){
@@ -64,9 +64,6 @@
     position:relative;z-index:2;gap:5px;margin-top:0}
   body .gothic-lobby .gothic-lobby__mission-card--eclipse .gothic-lobby__contract-face{
     width:34px!important;height:34px!important;border-radius:4px}
-  /* Commission and collection data remain in the quest rail and topbar.
-   * The large third dashboard card hid the central artwork on desktop. */
-  body .gothic-lobby .gothic-lobby__message-board{display:none}
   body .gothic-lobby .gothic-lobby__character-actions{
     top:clamp(107px,12.4vh,138px);right:clamp(16px,1.5vw,28px);
     width:clamp(92px,7.3vw,109px);gap:8px}
@@ -81,8 +78,6 @@
     width:27px;height:27px;color:var(--craft-champagne);stroke-width:1.5}
   body .gothic-lobby .gothic-lobby__character-actions small{font-size:10px;color:var(--craft-muted)}
   body .gothic-lobby .gothic-lobby__character-actions .gothic-lobby__desktop-action{display:flex!important}
-  /* Summon already has a featured illustrated entry in the left rail. */
-  body .gothic-lobby .gothic-lobby__character-actions [data-testid="gothic-right-summon"]{display:none!important}
   body .gothic-lobby .gothic-dock--cinematic{
     width:min(980px,calc(100vw - 48px))!important;max-width:980px!important;
     min-height:72px!important;bottom:12px!important;padding:5px 8px!important;gap:2px!important;
