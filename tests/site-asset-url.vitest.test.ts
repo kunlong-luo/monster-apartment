@@ -8,6 +8,12 @@ describe('GitHub Pages public asset URLs',()=>{
     expect(siteAssetUrl('/monster-apartment/art/yuesha-avatar-v3.webp','/monster-apartment'))
       .toBe('/monster-apartment/art/yuesha-avatar-v3.webp');
   });
+  it('prefixes native same-document summon hash URLs on GitHub Pages',()=>{
+    expect(siteAssetUrl('/characters/#summon-screen','/monster-apartment'))
+      .toBe('/monster-apartment/characters/#summon-screen');
+    expect(siteAssetUrl('/characters/#summon-screen',''))
+      .toBe('/characters/#summon-screen');
+  });
   it('keeps normal development and external URLs unchanged',()=>{
     expect(siteAssetUrl('/art/yuesha-avatar-v3.webp','')).toBe('/art/yuesha-avatar-v3.webp');
     expect(siteAssetUrl('blob:https://localhost/abc','/monster-apartment')).toBe('blob:https://localhost/abc');

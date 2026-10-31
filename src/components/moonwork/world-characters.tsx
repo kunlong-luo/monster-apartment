@@ -9,6 +9,7 @@ import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import {CharacterLifePortrait} from '@/components/game/character-life-portrait';
 import {useCharacterCollection} from '@/lib/game/character-collection-store';
 import {CHARACTER_CARDS} from '@/core/character-collection';
+import {siteAssetUrl} from '@/lib/game/site-asset-url';
 import {CharacterAdornment} from '@/components/game/character-adornment';
 import {RoomInvestigationJournal} from '@/components/game/room-investigation-journal';
 import {RoomMemoryGallery} from '@/components/game/room-memory-gallery';
@@ -46,7 +47,8 @@ export function Characters({s,onVisit}:{s:WorkshopState;onVisit:(id:WorkerId)=>v
       <p>月纱、泉泡、青枝与炽角均为成年人物。召唤契约提升人物潜力，打造装备后提升属性；拜访私人房间可以发现新的故事线索。</p>
       <div className="mw-persona-quick-nav">
         <span data-testid="gallery-collected-count">{status==='ok'?'已收录人物契约 '+collectedCount+'/5':'人物收藏存档需要处理'}</span>
-        <a href="/characters/#summon-screen" data-testid="open-cinematic-summon" className="mw-persona-summon-link">进入契约召唤</a>
+        {/* Native same-page hash navigation is intentional: the router listens for hashchange.\n            Prefix it for GitHub Pages; Next Link pushState may not fire hashchange. */}
+        <a href={siteAssetUrl('/characters/#summon-screen')} data-testid="open-cinematic-summon" className="mw-persona-summon-link">进入契约召唤</a>
       </div>
     </section>
     <div className="mw-worker-grid" data-testid="painted-worker-gallery">

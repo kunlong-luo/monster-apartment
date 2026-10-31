@@ -9,7 +9,23 @@ test('the character gallery centers human residents and opens the real summon sc
   await expect(page.getByTestId('character-gallery-header')).toBeVisible();
   await expect(page.getByTestId('gallery-collected-count')).toContainText('0/5');
   await expect(page.locator('.gothic-summon-shell')).toHaveCount(0);
-  await expect(page.getByTestId('open-cinematic-summon')).toHaveCount(1);
+  const summonLink=page.getByTestId('open-cinematic-summon');
+  await expect(summonLink).toHaveCount(1);
+  // Native hash navigation must remain same-document in BOTH dev and
+  // /monster-apartment/ GitHub Pages deployments, never jumping to site root.
+  const nativeTarget=await summonLink.evaluate(el=>{
+    const target=new URL((el as HTMLAnchorElement).href);
+    return {
+      currentPath:window.location.pathname.replace(/\\/+$/,''),
+      targetPath:target.pathname.replace(/\\/+$/,''),
+      hash:target.hash,
+      origin:target.origin,
+      currentOrigin:window.location.origin,
+    };
+  });
+  expect(nativeTarget.targetPath).toBe(nativeTarget.currentPath);
+  expect(nativeTarget.origin).toBe(nativeTarget.currentOrigin);
+  expect(nativeTarget.hash).toBe('#summon-screen');
   for(const id of ['brook','fern','cinder']){
     const card=page.getByTestId('worker-card-'+id);
     await expect(card).toBeAttached();
@@ -22,6 +38,8 @@ test('the character gallery centers human residents and opens the real summon sc
   expect(columns).toBe(3);
   await page.getByTestId('open-cinematic-summon').click();
   await expect(page).toHaveURL(/\/characters\/?#summon-screen$/);
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
+  await page.reload();
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
 });
 
