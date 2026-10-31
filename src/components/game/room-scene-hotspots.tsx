@@ -1,7 +1,7 @@
 'use client';
 
 import {useId,useState} from 'react';
-import {Check,Search,ListFilter,Sparkles} from 'lucide-react';
+import {Check,Search,ListFilter,ScrollText} from 'lucide-react';
 import type {CSSProperties} from 'react';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
@@ -95,7 +95,7 @@ export function RoomSceneHotspots<T extends string>({
         exit={reducedMotion?{opacity:0}:{opacity:0,y:7}}
         transition={{duration:reducedMotion?0:.2}}
         className="pointer-events-none absolute bottom-12 left-[5%] right-[5%] z-[9] max-w-[min(80%,560px)] rounded-lg border border-[#e7bb8e9e] bg-[#1b1124e9] px-3 py-2 text-[11px] leading-5 text-[#ffe0bf] shadow-[0_6px_24px_#000a] backdrop-blur-md">
-        <Sparkles aria-hidden="true" size={14} strokeWidth={1.5} className="mr-1 inline text-[#ffc980]"/>{description}
+        <ScrollText aria-hidden="true" size={14} strokeWidth={1.5} className="mr-1 inline text-[#ffc980]"/>{description}
       </motion.div>}
     </AnimatePresence>
     <span className="pointer-events-none absolute bottom-2 left-3 rounded-full border border-[#c79b7258] bg-[#160f1ad5] px-2.5 py-1 text-[10px] text-[#f1c99f]">

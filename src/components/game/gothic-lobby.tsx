@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {ArrowUpRight,DoorOpen,WandSparkles} from 'lucide-react';
+import {ArrowUpRight,DoorOpen,Orbit} from 'lucide-react';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {AnimatePresence} from 'motion/react';
 import {useMemo,useState} from 'react';
@@ -108,7 +108,7 @@ export function GothicLobby(){
       </div>
       <div className="flex justify-end gap-1.5 pt-1 max-[840px]:col-start-2 max-[840px]:row-start-1">
         <GothicIconButton label="切换动态特效" data-tooltip="切换动态特效" pressed={reducedMotion}
-          onClick={toggleMotion}><WandSparkles aria-hidden="true" size={17} strokeWidth={1.7}/></GothicIconButton>
+          onClick={toggleMotion}><Orbit aria-hidden="true" size={17} strokeWidth={1.7}/></GothicIconButton>
       </div>
     </header>
 

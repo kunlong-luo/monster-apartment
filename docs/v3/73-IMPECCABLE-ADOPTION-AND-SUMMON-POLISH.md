@@ -20,3 +20,6 @@
 - Quality 需通过新增设计检查、类型检查、Lint、Vitest 和 Next 静态构建。
 - Desktop Visual Review 需验证抽卡大卡中文文案、真实图片 naturalWidth、PC 1440×900 结果及十连 SSR 截图。
 - 只在 GitHub Pages 发布成功后宣布上线。官方 Impeccable Hook **尚未在用户编码工具中启用**，不能宣称 Hook 已运行或全站设计检查均通过。
+
+## 全站图标复查
+项目正式游戏组件里另发现两个遗留星光图标：大厅「动态特效」的 `WandSparkles`，房间调查详情的 `Sparkles`。分别改为 `Orbit` 和 `ScrollText`，并将 `check:design` 扩展为递归检查**整个 `src/components` 的 TSX**，不再只扫描召唤页。
