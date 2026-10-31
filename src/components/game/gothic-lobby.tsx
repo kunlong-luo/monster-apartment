@@ -186,23 +186,26 @@ export function GothicLobby(){
 
     <AnimatePresence mode="wait">
     {panel&&<GothicModal key={panel} title={panel==='bond'?'与月纱交谈':panel==='profile'?'玩家资料':panel==='memories'?'剧情回顾':'委托消息'}
-      onClose={close} wide={panel==='bond'}>
-      {panel==='bond'&&<>
-        <div className="relative hidden min-h-[210px] w-[125px] shrink-0 overflow-hidden rounded-md border border-gothic-brass/50 bg-gothic-panel sm:block">
-          <Image src={moonveilBust} alt="月纱" fill unoptimized sizes="130px"
-            className="object-cover object-[48%_45%]"/>
+      onClose={close} wide={panel==='bond'||panel==='memories'}>
+      {panel==='bond'&&<div className="gothic-lobby__story-scene" data-testid="gothic-story-dialogue">
+        <div className="gothic-lobby__story-visual gothic-lobby__story-visual--portrait">
+          <Image src={moonveilBust} fallbackSrc={moonveilAvatar}
+            alt="月纱的烛光肖像" fill unoptimized priority sizes="(max-width:640px) 90vw, 250px"
+            className="gothic-lobby__story-painting"/>
+          <span className="gothic-lobby__story-visual-signature">月纱 <small>月下契约</small></span>
         </div>
-        <div className="min-w-0 flex-1 space-y-2 pr-5">
-          <span className="text-[10px] tracking-[.17em] text-gothic-gold">SPECIAL GUEST · 月纱</span>
-          <h2 className="text-xl font-semibold leading-snug text-gothic-ivory sm:text-2xl">今晚，想和我聊些什么？</h2>
-          <p role="status" className="text-sm leading-7 text-gothic-muted">“{dialogue||'月光街的灯已经亮起，我正在等你。'}”</p>
+        <section className="gothic-lobby__story-content">
+          <span className="gothic-lobby__story-eyebrow">MOONVEIL · PRIVATE AUDIENCE</span>
+          <h2>今晚，想和我聊些什么？</h2>
+          <span className="gothic-lobby__story-rule" aria-hidden="true"/>
+          <p className="gothic-lobby__story-quote" role="status">“{dialogue||'月光街的灯已经亮起，我正在等你。'}”</p>
           {world.patron?.status==='offered'&&<button type="button" onClick={accept}
-            className="mt-3 rounded-md border border-gothic-gold bg-gothic-wine/85 px-3 py-2.5 text-xs text-gothic-ivory transition-colors hover:border-gothic-glow hover:bg-gothic-wine focus-visible:outline-2 focus-visible:outline-gothic-glow">
+            className="gothic-lobby__story-accept">
             接受月纱的特别委托
           </button>}
-          <div><GothicPanelLink href="/orders/">查看委托与契约 ›</GothicPanelLink></div>
-        </div>
-      </>}
+          <GothicPanelLink href="/orders/">查看委托与契约 ›</GothicPanelLink>
+        </section>
+      </div>}
       {panel==='profile'&&<div className="min-w-0 flex-1 space-y-3 pr-5">
         <span className="text-[10px] tracking-widest text-gothic-gold">YOUR RESIDENCE</span>
         <h2 className="text-2xl font-semibold">夜色蔷薇</h2>
@@ -210,11 +213,21 @@ export function GothicLobby(){
         <p className="text-sm leading-7 text-gothic-muted">累计交付 {world.completed} 单 · 街区互助 {world.residentsHelped??0} 次</p>
         <GothicPanelLink href="/workshop/">进入晶核工坊 ›</GothicPanelLink>
       </div>}
-      {panel==='memories'&&<div className="min-w-0 flex-1 space-y-3 pr-5" data-testid="gothic-memories-content">
-        <h2 className="text-xl font-semibold text-gothic-ivory">月影之约 · 公寓手记</h2>
-        <p className="text-sm leading-7 text-gothic-muted">你已在公寓度过 {world.day} 天，累计完成 {world.completed} 单委托，收录 {ownedContractCount} 位不同人物。</p>
-        <p className="text-sm leading-7 text-gothic-muted">{world.completed>0?'完成交付的回响已经写进契约簿。':'第一章的线索：准备晶核并履行委托，月纱才会讲述更多秘密。'}</p>
-        <GothicPanelLink href="/apartment/?visit=yuesha">拜访月纱 · 继续故事 ›</GothicPanelLink>
+      {panel==='memories'&&<div className="gothic-lobby__story-scene" data-testid="gothic-memories-content">
+        <div className="gothic-lobby__story-visual gothic-lobby__story-visual--scene">
+          <Image src={lobbyHero} fallbackSrc={lobbyHeroBackup} fill unoptimized
+            alt="月色下的哥特公寓绘景" sizes="(max-width:640px) 90vw, 260px"
+            className="gothic-lobby__story-painting"/>
+          <span className="gothic-lobby__story-visual-signature">月影之约 <small>公寓手记</small></span>
+        </div>
+        <section className="gothic-lobby__story-content">
+          <span className="gothic-lobby__story-eyebrow">CHAPTER I · THE MOONLIT VOW</span>
+          <h2>月影之约 · 公寓手记</h2>
+          <span className="gothic-lobby__story-rule" aria-hidden="true"/>
+          <p className="gothic-lobby__story-quote">你已在公寓度过 {world.day} 天，累计完成 {world.completed} 单委托，收录 {ownedContractCount} 位不同人物。</p>
+          <p className="gothic-lobby__story-detail">{world.completed>0?'完成交付的回响已经写进契约簿。':'第一章的线索：准备晶核并履行委托，月纱才会讲述更多秘密。'}</p>
+          <GothicPanelLink href="/apartment/?visit=yuesha">拜访月纱 · 继续故事 ›</GothicPanelLink>
+        </section>
       </div>}
       {panel==='updates'&&<div className="min-w-0 flex-1 space-y-3 pr-5">
         <span className="text-[10px] tracking-widest text-gothic-gold">COMMISSION UPDATE</span>

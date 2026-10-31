@@ -282,3 +282,74 @@
     width:clamp(40px,3.5vw,55px);height:clamp(40px,3.5vw,55px);
   }
 }
+
+/* V3.81 · cinematic story views: real approved painting, not another dashboard.
+   A single image + dialogue composition shares the existing GothicModal shell. */
+.gothic-lobby__story-scene{
+  display:grid;grid-template-columns:minmax(0,44%) minmax(0,1fr);
+  gap:clamp(15px,2.1vw,26px);width:100%;min-width:0;
+  align-items:stretch;color:var(--craft-ivory);
+}
+.gothic-lobby__story-visual{
+  position:relative;min-width:0;min-height:345px;
+  overflow:hidden;isolation:isolate;border:1px solid var(--craft-hairline);
+  border-radius:var(--craft-radius-card);background:var(--craft-night);
+  box-shadow:inset 0 1px rgba(241,229,214,.12),0 12px 28px rgba(4,3,8,.42);
+}
+.gothic-lobby__story-painting{object-fit:cover;object-position:54% 35%;filter:none}
+.gothic-lobby__story-visual--scene .gothic-lobby__story-painting{object-position:42% center}
+.gothic-lobby__story-visual:after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent 44%,rgba(15,12,18,.17) 65%,rgba(15,12,18,.92));
+}
+.gothic-lobby__story-visual-signature{
+  position:absolute;bottom:20px;left:17px;right:15px;z-index:1;
+  display:flex;align-items:baseline;justify-content:space-between;gap:7px;
+  font:500 23px var(--craft-font-display);letter-spacing:.12em;
+  color:var(--craft-ivory);text-shadow:0 2px 11px rgba(0,0,0,.8);
+}
+.gothic-lobby__story-visual-signature small{
+  font-size:10px;letter-spacing:.06em;white-space:nowrap;color:var(--craft-champagne)
+}
+.gothic-lobby__story-content{
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  min-width:0;gap:14px;padding:13px 10px 15px 0;
+  font-family:var(--craft-font-ui);
+}
+.gothic-lobby__story-eyebrow{
+  font:10px var(--craft-font-display);letter-spacing:.16em;
+  color:var(--craft-brass);line-height:1.6;
+}
+.gothic-lobby__story-content h2{
+  margin:0;font:500 clamp(19px,2vw,27px)/1.4 var(--craft-font-display);
+  letter-spacing:.045em;color:var(--craft-ivory);
+}
+.gothic-lobby__story-rule{
+  display:block;width:72px;height:1px;
+  background:linear-gradient(90deg,var(--craft-brass),transparent);
+}
+.gothic-lobby__story-quote{
+  margin:0;color:var(--craft-champagne);font-size:14px;line-height:2;
+  font-family:var(--craft-font-display);
+}
+.gothic-lobby__story-detail{
+  margin:0;color:var(--craft-muted);font-size:12px;line-height:1.85;
+}
+.gothic-lobby__story-accept{
+  padding:10px 13px;border:1px solid var(--craft-hairline);border-radius:6px;
+  color:var(--craft-ivory);background:var(--craft-wine);font-size:12px;
+}
+.gothic-lobby__story-accept:is(:hover,:focus-visible){border-color:var(--craft-champagne)}
+.gothic-lobby__story-accept:focus-visible{outline:2px solid var(--craft-focus);outline-offset:3px}
+@media(max-width:639px){
+  .gothic-lobby__story-scene{grid-template-columns:minmax(0,1fr);gap:13px}
+  .gothic-lobby__story-visual{min-height:0;height:clamp(145px,25dvh,195px)}
+  .gothic-lobby__story-visual--portrait .gothic-lobby__story-painting{object-position:50% 32%}
+  .gothic-lobby__story-visual-signature{bottom:11px;left:12px;font-size:19px}
+  .gothic-lobby__story-content{padding:2px 0 4px;gap:9px}
+  .gothic-lobby__story-content h2{font-size:21px}
+  .gothic-lobby__story-quote{font-size:13px;line-height:1.8}
+}
+@media(prefers-reduced-motion:reduce){
+  .gothic-lobby__story-accept{transition:none}
+}

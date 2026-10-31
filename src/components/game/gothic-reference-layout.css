@@ -37,7 +37,7 @@
   body .gothic-lobby .gothic-lobby__mission-card--quest strong{
     font-size:clamp(15px,1.18vw,18px)!important}
   body .gothic-lobby .gothic-lobby__mission-card--eclipse{
-    min-height:166px;padding:12px 15px!important;isolation:isolate;
+    min-height:188px;padding:12px 15px!important;isolation:isolate;
     justify-content:space-between;border-color:#ad817d88!important;
     background:linear-gradient(108deg,#41212bdF,#2c1a25e6 57%,#1d1520d9)!important}
   body .gothic-lobby .gothic-lobby__mission-card--eclipse .gothic-lobby__card-kicker{
@@ -54,12 +54,12 @@
     position:relative;z-index:2;display:block;
     color:#f3c8b4;font-size:11px;line-height:1.3;text-shadow:0 2px 6px #000}
   .gothic-lobby__summon-illustration{
-    position:absolute;inset:0 0 0 auto;display:block;z-index:0;width:51%;
-    opacity:.92;pointer-events:none;overflow:hidden}
-  .gothic-lobby__summon-illustration img{object-fit:cover;object-position:center 25%}
+    position:absolute;inset:0 0 0 auto;display:block;z-index:0;width:57%;
+    opacity:1;pointer-events:none;overflow:hidden}
+  .gothic-lobby__summon-illustration img{object-fit:cover;object-position:center 25%;filter:none}
   .gothic-lobby__summon-illustration:after{
     content:"";position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(90deg,#38212bdF,#2b1b2588 36%,#1b14201a 75%,#1c121ec9)}
+    background:linear-gradient(90deg,#38212bdF,#2b1b2590 25%,#1b142005 71%,#1c121e78)}
   body .gothic-lobby .gothic-lobby__mission-card--eclipse .gothic-lobby__contract-faces{
     position:relative;z-index:2;gap:5px;margin-top:0}
   body .gothic-lobby .gothic-lobby__mission-card--eclipse .gothic-lobby__contract-face{

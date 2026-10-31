@@ -105,6 +105,14 @@ test('desktop reference has functional story recap and contract tile',async({pag
   const dialog=page.getByRole('dialog',{name:'剧情回顾'});
   await expect(dialog).toBeVisible();
   await expect(page.getByTestId('gothic-memories-content')).toContainText('累计完成');
+  // The recap now has a true scene painting, not only a text dashboard.
+  await expect.poll(()=>page.getByTestId('gothic-memories-content').locator('img').evaluate(img=>
+    (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(1000);
+  await page.getByRole('button',{name:'关闭面板'}).click();
+  await page.getByTestId('gothic-character-talk').click();
+  await expect(page.getByTestId('gothic-story-dialogue')).toBeVisible();
+  await expect.poll(()=>page.getByTestId('gothic-story-dialogue').locator('img').evaluate(img=>
+    (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(800);
   await page.getByRole('button',{name:'关闭面板'}).click();
   await page.getByTestId('gothic-eclipse-feature').click();
   await expect(page).toHaveURL(/\/characters\/?#summon-screen$/);
