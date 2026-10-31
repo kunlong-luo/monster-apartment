@@ -51,7 +51,7 @@
 
 /* V3.25: Gothic UI reference 01 — decorative photo stage stays independent of
  * all controls; no screenshot baked under click targets and no mock currencies. */
-.gothic-lobby{--ui-gold:#f0cf9b;--ui-red:#aa2147}
+.gothic-lobby{--ui-gold:var(--craft-champagne);--ui-red:var(--craft-wine)}
 .gothic-lobby__brand{
   position:absolute;z-index:6;top:12px;left:20px;pointer-events:none;
   display:flex;flex-direction:column;align-items:center;min-width:225px;
@@ -100,7 +100,7 @@
 .gothic-lobby__card-kicker span{float:right}
 .gothic-lobby__mission-card strong{font-size:clamp(12px,1.2vw,17px);font-weight:500}
 .gothic-lobby__mission-detail{font-size:clamp(10px,.82vw,12px);color:#d6bca2}
-.gothic-lobby__progress{height:6px;border-radius:6px;border:1px solid #ac846b;background:#100b13;}
+.gothic-lobby__progress{height:6px;border-radius:6px;border:1px solid #ac846b;background:var(--craft-night);}
 .gothic-lobby__progress>span{display:block;height:100%;background:linear-gradient(90deg,#b77753,#f4d599);box-shadow:0 0 9px #fdc66d70}
 .gothic-lobby__mission-card--eclipse{
   min-height:155px;background:

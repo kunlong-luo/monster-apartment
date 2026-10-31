@@ -35,3 +35,6 @@
 - 默认依次 `critique → polish → audit`；不要为局部美化改动抽卡概率、存档或路由。禁止 Sparkles / WandSparkles 等闪光星 icon；请使用 Diamond、MoonStar、Crown、Gem 等语义图标。
 - 新版卡面不展示「CG 制作中」等开发者话语；要在代码与文档中诚实保留“肖像过渡，尚无正式全身 CG”的资源事实。
 - 改动后执行 `pnpm check:design`；涉及布局须用真实 1440×900 与 390×844 浏览器截图验收，不等同于自动 Hooks 已启用。
+
+## V3.77 · 单一设计系统
+唯一 UI 色板由 `app/layout.tsx` 引入 `gothic-premium-tokens.css` 的 `:root`；`--moon-ui-*`、Tailwind `--color-gothic-*` 不允许另起颜色定义。通用导航、按钮、资源胶囊、弹窗、面板请复用 `gothic-hud.tsx` 和全站材质变量；各页面允许独立的绘景、角色和稀有度语义色。禁止 Sparkles/WandSparkles。每次提交跑 `pnpm check:design` 与质量检查，跨页面修改运行至少一个真实 PC 视觉浏览器检查。

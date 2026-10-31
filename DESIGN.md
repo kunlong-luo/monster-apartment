@@ -46,12 +46,12 @@ components:
 ---
 
 ## Overview
-**现状记录 + 下一阶段不可破坏的设计规范。** 《怪物公寓》的实际表现来自 `app/globals.css` 的 Tailwind v4 Gothic tokens、`src/components/game/gothic-red-gold.css` 的 `--moon-ui-*`、当前七个场景组件及独立绘景资产。这里不虚构现有字体文件，也不假设所有页面已经符合规范。游戏的绘景、交互和收藏画面优先采用 **Experience 模式**；工坊、委托和背包的控件以 **Operate 模式**保持精确。
+**现状记录 + 下一阶段不可破坏的设计规范。** 《怪物公寓》的实际表现来自 `gothic-premium-tokens.css` 的唯一 `--craft-*` 基础、Tailwind v4 与旧 `--moon-ui-*` 的兼容别名、当前七个场景组件及独立绘景资产。这里不虚构现有字体文件，也不假设所有页面已经符合规范。游戏的绘景、交互和收藏画面优先采用 **Experience 模式**；工坊、委托和背包的控件以 **Operate 模式**保持精确。
 
 ## Colors
-- **底色**：`--moon-ui-night #100913` 是月夜黑紫；`--moon-ui-wine #5c1834` 是酒红主色，`--moon-ui-eclipse #b72d51` 只用于神话/月蚀重点。
-- **金属**：`--moon-ui-gold #dfb77e` 为描边，`--moon-ui-glow #ffe3b5` 为局部高亮；不是处处大面积金色填充。
-- **可读性**：象牙白 `--moon-ui-text #f7dfc3` 承担正文，`--moon-ui-muted #d6b99f` 承担非核心标注。背景和文字需按实际渲染检查对比。
+- **底色**：`--craft-night #0f0c12` 是月夜黑紫；`--craft-wine #512832` 是酒红主色，`--craft-wine-lit #6a3741` 只用于神话/月蚀重点。
+- **金属**：`--craft-brass #a68d70` 为描边，`--craft-champagne #d9c2a1` 为局部高亮；不是处处大面积金色填充。
+- **可读性**：象牙白 `--craft-ivory #f1e5d6` 承担正文，`--craft-muted #bdad9d` 承担非核心标注。背景和文字需按实际渲染检查对比。
 - **稀有度**：N 雾银、R 霜蓝、SR 暮紫、SSR 传说暖金、SSR 神话赤红。不得根据卡池主题推断真实品阶。
 
 ## Typography
@@ -95,3 +95,6 @@ components:
 
 ## V3.76 PC Materiel Refinement
 桌面大厅、召唤页与结果卡共享 `gothic-premium-tokens.css` 的旧香槟金（`--craft-champagne`）、低饱和铜线（`--craft-hairline`）、深酒红（`--craft-wine`）、象牙白（`--craft-ivory`）及暗色材质。**背景绘景不整体滤色**，只有 HUD 收敛色相与发光。仅选中导航或十连主按钮允许局部酒红；其余操作回到深色哑光金属。人物与房间原画仍未达到效果图原稿，不能以配色升级冒充 CG 交付。
+
+## V3.77 · 共用材质与架构规则
+全站唯一真值：`src/components/game/gothic-premium-tokens.css` 的 `:root`，由 `app/layout.tsx` 唯一引入。`app/globals.css` 的 `--color-gothic-*` 及旧 `--moon-ui-*` 都引用它；旧 `gothic-red-gold.css` 不再定义根级色板。七个场景复用 `GothicDock`、`GothicResourcePill`、`GothicIconButton`、`GothicModal`、`GothicActionButton`、`GothicPanelLink` 的语义类。工坊、月光街、房间可保留不同美术绘景与独立品阶/告警颜色，不得各自设置不同标准文字白、边框金或选中酒红。功能修改时不得改动作/存档/路由。
