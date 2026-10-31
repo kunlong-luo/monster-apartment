@@ -40,7 +40,7 @@ jobs:
             try:
               if r.returncode:raise ValueError(r.stderr.strip()[:200])
               data=target.read_bytes()
-              if data[:8]!=b"\\x89PNG\\r\\n\\x1a\\n" or data[12:16]!=b"IHDR":
+              if data[:8]!=bytes([137,80,78,71,13,10,26,10]) or data[12:16]!=b"IHDR":
                 raise ValueError("not a PNG image")
               width,height=struct.unpack(">II",data[16:24])
               if not (100<=width<=16000 and 100<=height<=16000 and 4000<len(data)<12582912):
@@ -56,7 +56,7 @@ jobs:
           (root/"intake.json").write_text(json.dumps({
             "scope":"3 publisher screenshots only, not full 73-image source ZIP",
             "commercialApproval":False,"assets":rows
-          },indent=2,ensure_ascii=False)+"\\n",encoding="utf-8")
+          },indent=2,ensure_ascii=False)+chr(10),encoding="utf-8")
           if not any("sha256" in row for row in rows):
             raise SystemExit("No publisher image was downloadable; inspect logs")
           PY
