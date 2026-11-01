@@ -125,7 +125,10 @@ test('PC ten-pull lets the player select every actual card in one cinematic focu
   expect(facePresentation.imageLoaded).toBe(true);
   expect(facePresentation.fit).toBe('contain');
   expect(facePresentation.innerWidth).toBeLessThan(facePresentation.outerWidth);
-  expect(facePresentation.innerWidth).toBeGreaterThan(220);
+  // Card scale changes with desktop side panels; the painting must occupy
+  // most of the art surface rather than passing a fragile absolute width.
+  expect(facePresentation.innerWidth/facePresentation.outerWidth).toBeGreaterThan(.82);
+  expect(facePresentation.innerWidth).toBeGreaterThan(110);
   expect(facePresentation.frameBorder).toBe('1px');
   await page.screenshot({path:'test-results/desktop-summon-face-crop-matted.png',animations:'disabled'});
   await thumbs.last().click();
