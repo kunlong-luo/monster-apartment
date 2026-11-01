@@ -155,3 +155,9 @@
 - 保持抽卡 RNG、保底、存档及现有角色 CG 审核门槛不变。三视口原画身份审核仍是进入正式生产卡面的前提，本轮仍为 CG 0/5。
 
 - 本轮验收（`9d1b43c7c1855016c1764cbc3c6fdab07962067e`）：Quality [41270231555](https://github.com/kunlong-luo/monster-apartment/actions/runs/41270231555)、Desktop Visual Review [41270231581](https://github.com/kunlong-luo/monster-apartment/actions/runs/41270231581)、Pages [41270277543](https://github.com/kunlong-luo/monster-apartment/actions/runs/41270277543) 成功。CG 仍为 0/5。
+
+## 十三、A05 过渡肖像的主卡装裱（2026-11-01）
+
+- 仅对 `face-crop` 人物（泉泡、青枝、炽角）的**主契约结果卡**使用暗铜边肖像装裱，最大化已审核方形脸部绘画清晰度，并保留原生等比 contain；不伪造下半身或使用背景模糊扩张为“全身 CG”。小型十连缩略卡仍是无外框的清晰肖像，不牺牲可读性。
+- 正式独立 `full-body-cg` 和月纱 `scene-portrait` 继续使用既有构图，在未来原画通过审核之后不用改动组件；抽卡历史、资源、概率和装备存档逻辑未变。
+- 新增桌面 Playwright 验证非月纱主卡的图片自然宽度、contain 装裱、清晰的卡框尺寸和截图，结果由 Quality / Desktop Visual Review / Pages 门禁决定。再次生成的五人拼图混入错误人物名与烘焙稀有度，不符合 CG 审查，未进入生产目录；正式 CG 仍为 0/5。

@@ -28,12 +28,14 @@ export function CharacterContractCard({character,mode='feature',awardTestId}:{
     <div className="contract-card__inner">
       <div className="contract-card__art" data-portrait-kind={portraitKind}>
         <div className="contract-card__halo" aria-hidden="true"/>
-        <Image src={image} fallbackSrc={fallback} alt={character.name+'的契约肖像'}
-          fill unoptimized draggable={false} priority={mode==='feature'}
-          sizes={mode==='feature'?'(max-width:600px) 85vw, 490px':'(max-width:600px) 19vw, 100px'}
-          className="contract-card__portrait"
-          data-portrait-source={portraitKind==='full-body-cg'?'approved-full-body-cg':
-            portraitKind==='scene-portrait'?'consistent-yuesha-v3':'dedicated-heroine-face'}/>
+        <div className="contract-card__portrait-frame">
+          <Image src={image} fallbackSrc={fallback} alt={character.name+'的契约肖像'}
+            fill unoptimized draggable={false} priority={mode==='feature'}
+            sizes={mode==='feature'?'(max-width:600px) 85vw, 490px':'(max-width:600px) 19vw, 100px'}
+            className="contract-card__portrait"
+            data-portrait-source={portraitKind==='full-body-cg'?'approved-full-body-cg':
+              portraitKind==='scene-portrait'?'consistent-yuesha-v3':'dedicated-heroine-face'}/>
+        </div>
         <div className="contract-card__art-vignette" aria-hidden="true"/>
       </div>
       <header className="contract-card__head">

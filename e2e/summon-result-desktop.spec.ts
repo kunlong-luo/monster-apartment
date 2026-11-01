@@ -104,6 +104,30 @@ test('PC ten-pull lets the player select every actual card in one cinematic focu
   expect(thumbnailLayout.artHeight).toBeGreaterThan(55);
   await expect(page.getByTestId('collection-reveal-view-collection')).toBeVisible();
   const thumbs=page.getByTestId('summon-result-thumb');
+  // All three non-Yuesha residents have face-crop art, deliberately matted
+  // on the main card instead of being stretched into counterfeit full-body CG.
+  const faceIndex=await thumbs.evaluateAll(nodes=>nodes.findIndex(node=>
+    node.querySelector('.contract-card__art[data-portrait-kind="face-crop"]')));
+  expect(faceIndex).toBeGreaterThanOrEqual(0);
+  await thumbs.nth(faceIndex).click();
+  const facePresentation=await page.getByTestId('collection-focus-card').evaluate(node=>{
+    const art=node.querySelector<HTMLElement>('.contract-card__art');
+    const frame=node.querySelector<HTMLElement>('.contract-card__portrait-frame');
+    const image=frame?.querySelector<HTMLImageElement>('img');
+    const outer=art?.getBoundingClientRect(),inner=frame?.getBoundingClientRect();
+    return {kind:art?.dataset.portraitKind,outerWidth:outer?.width??0,
+      innerWidth:inner?.width??0,innerHeight:inner?.height??0,
+      imageLoaded:Boolean(image?.complete&&image.naturalWidth>0),
+      fit:image?getComputedStyle(image).objectFit:'',
+      frameBorder:frame?getComputedStyle(frame).borderTopWidth:'0px'};
+  });
+  expect(facePresentation.kind).toBe('face-crop');
+  expect(facePresentation.imageLoaded).toBe(true);
+  expect(facePresentation.fit).toBe('contain');
+  expect(facePresentation.innerWidth).toBeLessThan(facePresentation.outerWidth);
+  expect(facePresentation.innerWidth).toBeGreaterThan(220);
+  expect(facePresentation.frameBorder).toBe('1px');
+  await page.screenshot({path:'test-results/desktop-summon-face-crop-matted.png',animations:'disabled'});
   await thumbs.last().click();
   await expect(page.getByTestId('summon-result-stage')).toHaveAttribute('data-selected-index','9');
   const current=await page.getByTestId('collection-focus-card').getAttribute('data-card-id');
