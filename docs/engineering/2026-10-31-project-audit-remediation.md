@@ -100,3 +100,9 @@
 - 新增 `SummonForgePanel`：只接收收藏数据、选中人物及回调，继续通过既有 `commitCollection({type:'forge'|'equip'})` 结算，保留存档不可用时禁用按钮和所有当前 data-testid。
 - 修复已收录卡片“拜访私人房间”使用根相对原生 `<a>` 导致 GitHub Pages 子路径丢失的问题：改用 Next `Link`，保留同一路由和 `?visit=...`，添加桌面浏览器目标路径断言。
 - 本阶段不改变抽卡引擎、角色概率/90 抽保底、装备价格、能力增益、资源存档键、已有卡牌归属，也不替换原画；自动 Quality、Desktop Visual Review、Pages 结果另行回填。
+
+### A09 锻造/房间链接专项浏览器门禁
+
+- Desktop Visual Review 已加入现存 `e2e/character-collection.spec.ts` 的两条定向流程：已收录卡片打造并穿戴、私人房间链接导航；不是全量 E2E 门禁。
+- 在已有打造和穿戴场景中增加“关闭后再次打开图鉴，装备人物选项和真实操作反馈仍保留”的断言，防止组件重新挂载造成用户操作状态丢失。
+- 这项专项需以新增提交的 Desktop Visual Review 结果为准；不得只凭上一轮主画面截图断言锻造可用。

@@ -75,6 +75,13 @@ test('canonical summon archive forges and equips a real item without a duplicate
   await expect(archive.getByTestId('collection-shards')).toHaveText('1');
   await archive.getByTestId('collection-equip-moon-pendant').click();
   await expect(archive.getByTestId('collection-forge-feedback')).toContainText('属性已更新');
+  // The archive remains mounted while hidden, retaining the chosen resident
+  // and truthful feedback instead of remounting empty state.
+  await archive.getByRole('button',{name:'返回契约大厅'}).click();
+  await expect(archive).toHaveCount(0);
+  await page.getByRole('button',{name:'查看已收录契约、首饰和装备'}).click();
+  await expect(archive.getByTestId('collection-equip-target')).toHaveValue('brook');
+  await expect(archive.getByTestId('collection-forge-feedback')).toContainText('属性已更新');
   await page.goto('/characters/');
   await expect(page.getByTestId('life-equipped-brook')).toContainText('月纹吊坠');
   await expect(page.getByTestId('gallery-collected-count')).toContainText('1/5');
