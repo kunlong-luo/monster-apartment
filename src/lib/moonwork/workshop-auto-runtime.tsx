@@ -9,7 +9,7 @@ export type AutoToggleResult='enabled'|'paused'|'unavailable'|'missing'|'error';
 export async function toggleWorkshopAuto():Promise<AutoToggleResult>{
   if(typeof navigator==='undefined'||!navigator.locks)return 'unavailable';
   try{
-    return await navigator.locks.request(WORKSHOP_AUTO_LOCK,()=>{
+    return await navigator.locks.request(WORKSHOP_AUTO_LOCK,():AutoToggleResult=>{
       const raw=window.localStorage.getItem(SAVE_KEY);
       const world=parseSavedWorld(raw);
       if(!world)return 'missing';
