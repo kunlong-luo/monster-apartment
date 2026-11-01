@@ -38,13 +38,13 @@ export const GACHA_CHARACTERS: readonly SummonableCharacter[] = [
     quote:'契约已成，星月为证。',bio:'月纱与旅人相遇时的誓约。',
     baseCardKey:'yuesha-vow' },
   { id:'cinder-ember',name:'炽角',title:'炽角 · 炉火余烬',epithet:'史诗 · 锻造',
-    rarity:'SR',rarityZh:'SR 精英',rate:17,avatar:'/art/lobby-hero-v3.webp',
+    rarity:'SR',rarityZh:'SR 精英',rate:17,avatar:'/art/beauty-beasts/characters/cinder/face.webp',
     quote:'炉膛里的火还热着！',bio:'工坊的晶核锻造大师。',baseCardKey:'cinder-ember' },
   { id:'fern-spring',name:'青枝',title:'青枝 · 春芽誓约',epithet:'稀有 · 园艺',
-    rarity:'R',rarityZh:'R 稀有',rate:31,avatar:'/art/lobby-hero-v3.webp',
+    rarity:'R',rarityZh:'R 稀有',rate:31,avatar:'/art/beauty-beasts/characters/fern/face.webp',
     quote:'植物是不会说谎的。',bio:'能听懂植物低语的园艺师。',baseCardKey:'fern-spring' },
   { id:'brook-tide',name:'泉泡',title:'泉泡 · 潮汐来信',epithet:'普通 · 水汽',
-    rarity:'N',rarityZh:'N 常规',rate:46,avatar:'/art/lobby-hero-v3.webp',
+    rarity:'N',rarityZh:'N 常规',rate:46,avatar:'/art/beauty-beasts/characters/brook/face.webp',
     quote:'水汽管道今天一切正常！',bio:'活泼的水汽工匠。',baseCardKey:'brook-tide' },
 ];
 

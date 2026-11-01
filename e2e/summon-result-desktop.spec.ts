@@ -52,12 +52,28 @@ test('PC ten-pull lets the player select every actual card in one cinematic focu
   const modal=page.getByTestId('collection-reveal');
   await modal.getByRole('button',{name:'跳过仪式'}).click();
   await expect(page.getByTestId('summon-result-filmstrip').getByRole('button')).toHaveCount(10);
+  // Ten compact cards must prioritize the actual heroine portrait, not
+  // unreadable 6px reward copy. The full reward ledger remains in the DOM.
+  const thumb=page.getByTestId('summon-result-thumb').first();
+  await expect(thumb).toHaveAttribute('aria-label',/翻开第|已揭晓/);
   // Pause autoplay before testing deliberate selection, avoiding a timer race.
   await page.getByTestId('summon-autoplay-pause').click();
   await page.getByTestId('summon-result-thumb').first().click();
   await expect(page.getByTestId('collection-focus-card')).toBeVisible();
   await page.getByRole('button',{name:'全部翻开'}).click();
   await expect(page.getByTestId('collection-reveal-award')).toHaveCount(10);
+  const thumbnailLayout=await page.getByTestId('summon-result-thumb').first().evaluate(el=>{
+    const label=el.querySelector<HTMLElement>('.contract-card__caption h4');
+    const award=el.querySelector<HTMLElement>('.contract-card__award');
+    const art=el.querySelector<HTMLElement>('.contract-card__art');
+    const bounds=art?.getBoundingClientRect();
+    return {fontSize:label?parseFloat(getComputedStyle(label).fontSize):0,
+      awardClip:award?getComputedStyle(award).clipPath:'',
+      artHeight:bounds?.height??0};
+  });
+  expect(thumbnailLayout.fontSize).toBeGreaterThanOrEqual(9);
+  expect(thumbnailLayout.awardClip).toBe('inset(50%)');
+  expect(thumbnailLayout.artHeight).toBeGreaterThan(55);
   await expect(page.getByTestId('collection-reveal-view-collection')).toBeVisible();
   const thumbs=page.getByTestId('summon-result-thumb');
   await thumbs.last().click();

@@ -138,3 +138,10 @@
 - 强化 `scripts/prepare-character-cg.mjs`：生成线下审核包时附带仓库现有 `reference-face.webp`，使用缩放后保持真实视口比例的 1440×900、1648×928 与 390×844 卡面预览，并列出需要人工检查的项目。只提交审核程序与规范，不做虚假素材晋级。
 - 新增 Vitest `tests/character-cg-intake.vitest.test.ts` 检查五个插画槽位、正确的身份参考和三种视口预览。CG 图片本身仍待合格的单幅原生插画，验收依旧遵循原正式来源审核、权限及字节哈希闸门。
 - **已验证**：代码提交 `8680a4f7fd6d7e17d23504db483b8c324d3796cf` + 严格 TypeScript 脚本声明 `6a41ed8d24f5659b3f6c799be0db4bd38a42e624`；Quality 成功 <https://github.com/kunlong-luo/monster-apartment/actions/runs/41268348382>；GitHub Pages 对应成功发布 <https://github.com/kunlong-luo/monster-apartment/actions/runs/41268398637>。本轮没有变更玩家游戏页面及人物图片，所以不将浏览器美术截图或未合格 CG 写成已通过。
+
+## 十一、A05 · 肖像过渡卡视觉可用性与错图修复（2026-11-01）
+
+- 修复 `src/lib/summon/gacha-engine.ts` 三位工坊住客（泉泡、青枝、炽角）的 `avatar` 仍指向 `lobby-hero-v3.webp`（月纱大厅绘景）的身份错误：目录的正式 fallback 指向各自真实 `face.webp`，**不触碰品阶/概率/结算**。
+- `heroine-portrait-assets.ts` 的图片错误回退也改为同一人物的经过审查的肖像，而不是错误人物。角色照片不可用时，宁可保持同人身份及重试逻辑，不将月纱误当成其他工坊住客。
+- 十连缩略卡改为肖像+可读角色名的紧凑构图，移除肉眼不可辨的 6–7px 碎片奖励文字（仅视觉隐藏，DOM、奖金 data-testid 和真实获得记录仍保留）。主展示卡仍完整显示首收、碎片、角色引文；缩略卡无新的二次导航/按钮。
+- 扩充原头像一致性 Vitest 和十连真实 Playwright 回归，包括头像路径、缩略卡字号与画面可用空间。**正式全身 CG 仍是 0/5**，不要将此轮的卡框打磨误称 A05 原画入库。

@@ -1,6 +1,7 @@
 import {describe,expect,it} from 'vitest';
 import {HEROINE_FACE_ART,getCardFace,getApprovedCardCg,getCardPortraitFallback,getCardPortraitKind} from '../src/components/summon/heroine-portrait-assets';
 import cgManifest from '../public/art/beauty-beasts/characters/cg-manifest.json';
+import {GACHA_CHARACTERS} from '../src/lib/summon/gacha-engine';
 
 describe('character portrait visual identity',()=>{
   it('keeps exactly five full-body CG slots gated until reviewed production art exists',()=>{
@@ -32,7 +33,12 @@ describe('character portrait visual identity',()=>{
     expect(new Set(portraits)).toHaveProperty('size',3);
     for(const id of ids){
       expect(getCardPortraitKind(id)).toBe('face-crop');
-      expect(getCardPortraitFallback(id)).toBeNull();
+      const resident=id.split('-')[0] as 'brook'|'fern'|'cinder';
+      expect(getCardPortraitFallback(id)).toEqual(HEROINE_FACE_ART[resident]);
+      // The published catalog must not point to the lobby heroine if the
+      // character portrait is reloaded or used by another component.
+      const catalog=GACHA_CHARACTERS.find(c=>c.id===id);
+      expect(catalog?.avatar).toBe('/art/beauty-beasts/characters/'+resident+'/face.webp');
     }
     expect(getCardFace('unlisted-character')).toBeNull();
   });

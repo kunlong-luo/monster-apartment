@@ -39,7 +39,14 @@ export function getCardPortraitFallback(id:string){
   // If a newly approved high-resolution CG fails to load, fall back to the
   // original verified identity rather than a broken image or wrong heroine.
   if(getApprovedCardCg(id))return CARD_FACE_ART[id as keyof typeof CARD_FACE_ART]??null;
-  return id==='yuesha-eclipse'||id==='yuesha-vow'?yueshaAvatar:null;
+  if(id==='yuesha-eclipse'||id==='yuesha-vow')return yueshaAvatar;
+  // Never replace a failed resident portrait with the unrelated lobby heroine.
+  // If the resident image is temporarily unavailable, retain the same identity
+  // through the retry/fallback path and the card's accessible name.
+  if(id==='brook-tide')return brook;
+  if(id==='fern-spring')return fern;
+  if(id==='cinder-ember')return cinder;
+  return null;
 }
 export function getCardPortraitKind(id:string):CardPortraitKind{
   if(getApprovedCardCg(id))return 'full-body-cg';

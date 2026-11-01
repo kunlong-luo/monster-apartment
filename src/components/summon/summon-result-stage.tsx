@@ -100,7 +100,7 @@ export function SummonResultStage({characters,still,onSummonAgain,onViewCollecti
         return <button key={index} type="button" data-testid="summon-result-thumb"
           className={'summon-result__thumb'+(index===selectedIndex?' is-selected':'')}
           aria-current={index===selectedIndex?'true':undefined}
-          aria-label={revealed?'已揭晓：'+character.title:'翻开第 '+(index+1)+' 张契约卡'}
+          aria-label={revealed?'已揭晓：'+character.title+' · '+character.rarityZh:'翻开第 '+(index+1)+' 张契约卡'}
           onClick={()=>select(index)} onKeyDown={event=>onThumbKeyDown(event,index)}>
           {revealed?<CharacterContractCard character={character} mode="thumbnail"
             awardTestId="collection-reveal-award"/>:
