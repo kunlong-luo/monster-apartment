@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {ArrowUpRight,BookOpen,ChevronRight,Crown,DoorOpen,Mail,MoonStar,Orbit,ScrollText} from 'lucide-react';
+import {BookOpen,DoorOpen,Mail,MoonStar,Orbit} from 'lucide-react';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {AnimatePresence} from 'motion/react';
 import {useMemo,useState} from 'react';
@@ -19,9 +19,10 @@ import {GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLi
 import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 import {useGacha} from '@/lib/summon/use-gacha';
 import {useCharacterCollection} from '@/lib/game/character-collection-store';
-import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import {GAME_UI_RELEASE} from '@/core/game-release';
-import {siteAssetUrl} from '@/lib/game/site-asset-url';
+import {GothicLobbyResidents} from './gothic-lobby-residents';
+import {GothicLobbyContracts} from './gothic-lobby-contracts';
+import {GothicLobbyDestinations} from './gothic-lobby-destinations';
 import './gothic-lobby.css';
 import './gothic-polish.css';
 import './gothic-reference-layout.css';
@@ -122,66 +123,13 @@ export function GothicLobby(){
 
     {/* Design reference: four real residents in the LEFT portrait rail.
         These link to their existing rooms; no additional routes or invented status. */}
-    <aside className="gothic-lobby__reference-roster" data-testid="gothic-design-roster"
-      aria-label="公寓住客">
-      <span className="gothic-lobby__reference-roster-title">公寓住客 <small>RESIDENTS</small></span>
-      {([
-        {id:'yuesha',name:'月纱',detail:'契约会客室'},
-        {id:'brook',name:'泉泡',detail:'潮汐之室'},
-        {id:'fern',name:'青枝',detail:'春芽之室'},
-        {id:'cinder',name:'炽角',detail:'余烬之室'},
-      ] as const).map(({id,name,detail})=>
-        <Link href={id==='yuesha'?'/apartment/?visit=yuesha':'/characters/?visit='+id} key={id}
-          className={'gothic-lobby__reference-resident'+(id==='yuesha'?' gothic-lobby__reference-resident--active':'')}
-          data-testid={'gothic-resident-'+id}
-          aria-label={'拜访'+name+'的私人房间'}>
-          <Image src={HEROINE_FACE_ART[id]} alt="" width={52} height={52}
-            sizes="52px" loading="eager" className="gothic-lobby__reference-avatar"/>
-          <span><strong>{name}</strong><small>{detail}</small></span>
-          <ChevronRight aria-hidden="true" size={15} strokeWidth={1.5}/>
-        </Link>)}
-    </aside>
+    <GothicLobbyResidents/>
 
-    <section className="gothic-lobby__mission-rail" aria-label="当前主线与契约活动">
-      <Link href={orderReady?'/orders/':'/workshop/'}
-        aria-label={orderReady?'晶核已备齐，查看委托交期':'晶核不足，前往工坊生产'}
-        data-testid="gothic-main-quest" className="gothic-lobby__mission-card gothic-lobby__mission-card--quest">
-        <span className="gothic-lobby__card-kicker"><ScrollText className="gothic-lobby__card-icon" aria-hidden="true" size={15} strokeWidth={1.55}/>主线 · 月影之约 <ArrowUpRight aria-hidden="true" size={15} strokeWidth={1.7}/></span>
-        <strong>{orderReady?'晶核已备齐 · 去委托核对交期':'与月纱一起筹备第一批晶核'}</strong>
-        <span className="gothic-lobby__mission-detail">
-          {orderReady?'下一步：确认交付和奖励':'去工坊生产 · 晶核 '+orderStock+' / '+orderTarget}
-        </span>
-        <span role="progressbar" aria-label="晶核收集进度"
-          aria-valuemin={0} aria-valuemax={orderTarget}
-          aria-valuenow={Math.min(orderStock,orderTarget)}
-          data-testid="gothic-main-quest-progress"
-          className="gothic-lobby__progress"><span style={{width:orderProgress+'%'}}/></span>
-      </Link>
-      <Link href="/characters/#summon-screen"
-        className="gothic-lobby__mission-card gothic-lobby__mission-card--eclipse"
-        data-testid="gothic-eclipse-feature" data-first-contract={firstContract?'true':'false'}
-        aria-label={firstContract?'开始第一次契约召唤，收录你的人物卡':'前往契约召唤，收集更多人物'}>
-        <span className="gothic-lobby__card-kicker"><Crown className="gothic-lobby__card-icon" aria-hidden="true" size={15} strokeWidth={1.55}/>{firstContract?'初次契约':'契约收藏'}
-          <small className="gothic-lobby__chapter-mark" aria-hidden="true">月蚀誓约</small>
-        </span>
-        <span className="gothic-lobby__summon-illustration" aria-hidden="true">
-          <Image src={moonveilBust} alt="" fill sizes="220px" className="object-cover object-[center_20%]"/>
-        </span>
-        <strong data-testid="lobby-summon-guide-title">{collectionStatus==='ok'?'神话 · 月蚀':'人物契约需检查'}</strong>
-        <span className="gothic-lobby__mission-detail" data-testid="lobby-summon-guide-detail">
-          {firstContract?`拥有 ${gacha.tickets} 张召唤券 · 开启初次契约`:
-            `已收录 ${ownedContractCount}/5 · 剩余 ${gacha.tickets} 张召唤券`}
-        </span>
-        <span className="gothic-lobby__summon-verse">月下的誓言，等待命定之人。</span>
-        <div className="gothic-lobby__contract-faces" aria-hidden="true">
-          {(['yuesha','brook','fern','cinder'] as const).map(id=>
-            <span key={id} className="gothic-lobby__contract-face">
-              <Image src={HEROINE_FACE_ART[id]} alt="" width={39} height={39} sizes="39px" loading="eager"/>
-            </span>)}
-          <ChevronRight className="gothic-lobby__contract-arrow" aria-hidden="true" size={20} strokeWidth={1.6}/>
-        </div>
-      </Link>
-    </section>
+    <GothicLobbyContracts
+      orderReady={orderReady} orderTarget={orderTarget} orderStock={orderStock}
+      orderProgress={orderProgress} firstContract={firstContract}
+      collectionStatus={collectionStatus} tickets={gacha.tickets}
+      ownedContractCount={ownedContractCount}/>
 
     <button type="button" className="gothic-lobby__character-hit absolute z-[1] border-0! bg-transparent! inset-[15%_46%_16%_20%] max-[700px]:inset-[22%_27%_24%_25%] cursor-pointer focus-visible:outline-2 focus-visible:outline-gothic-glow"
       onClick={talk} aria-label="与月纱互动" data-tooltip="与月纱互动"/>
@@ -195,34 +143,7 @@ export function GothicLobby(){
     </button>
 
     {/* Large illustrated destination tiles on the RIGHT, like approved art. */}
-    <aside className="gothic-lobby__reference-right" data-testid="gothic-design-right"
-      aria-label="公寓世界场景入口">
-      <Link href="/workshop/" data-testid="gothic-reference-workshop"
-        className="gothic-lobby__reference-postcard">
-        <Image src={siteAssetUrl('/art/feature-postcards/gothic-workshop.webp')}
-          fallbackSrc={lobbyHero} fill unoptimized alt="" sizes="320px"
-          data-testid="gothic-postcard-workshop-art"
-          className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--workshop"/>
-        <span><strong>工坊</strong><small>打造专属装备</small></span>
-        <ChevronRight aria-hidden="true" size={18}/>
-      </Link>
-      <Link href="/town/" data-testid="gothic-reference-town"
-        className="gothic-lobby__reference-postcard">
-        <Image src={siteAssetUrl('/art/feature-postcards/moonlit-street.webp')}
-          fallbackSrc={lobbyHeroBackup} fill unoptimized alt="" sizes="320px"
-          data-testid="gothic-postcard-town-art"
-          className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--town"/>
-        <span><strong>月光街</strong><small>探索夜色街区</small></span>
-        <ChevronRight aria-hidden="true" size={18}/>
-      </Link>
-      <button type="button" className="gothic-lobby__reference-postcard"
-        onClick={()=>setOpen('memories')} data-testid="gothic-right-memories"
-        aria-label="剧情回顾">
-        <Image src={moonveilBust} fill alt="" sizes="320px" className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--gallery"/>
-        <span><strong>剧情回顾</strong><small>重温她们的故事</small></span>
-        <BookOpen aria-hidden="true" size={18}/>
-      </button>
-    </aside>
+    <GothicLobbyDestinations onOpenMemories={()=>setOpen('memories')}/>
 
     {/* Mobile keeps the compact verified actions rather than desktop posters. */}
     <aside className="gothic-lobby__character-actions" aria-label="月纱人物互动">

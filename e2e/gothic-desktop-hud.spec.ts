@@ -110,6 +110,28 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   await page.screenshot({path:'test-results/desktop-summon-v377.png',animations:'disabled'});
 });
 
+test('narrow 1100px desktop keeps heroine dialogue between resident and postcard rails',async({page})=>{
+  await page.setViewportSize({width:1100,height:720});
+  await page.goto('/');
+  const roster=page.getByTestId('gothic-design-roster');
+  const postcards=page.getByTestId('gothic-design-right');
+  const dialogue=page.getByTestId('gothic-character-talk');
+  const dock=page.getByRole('navigation',{name:'主要游戏功能'});
+  await expect(roster).toBeVisible();
+  await expect(postcards).toBeVisible();
+  await expect(dialogue).toBeVisible();
+  const [people,features,talk,footer]=await Promise.all([
+    roster.boundingBox(),postcards.boundingBox(),dialogue.boundingBox(),dock.boundingBox()
+  ]);
+  expect(people&&features&&talk&&footer).toBeTruthy();
+  expect(talk!.x).toBeGreaterThan(people!.x+people!.width);
+  expect(talk!.x+talk!.width).toBeLessThanOrEqual(features!.x-8);
+  expect(features!.y+features!.height).toBeLessThan(footer!.y-8);
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
+  await page.screenshot({path:'test-results/desktop-lobby-1100x720.png',animations:'disabled'});
+});
+
 test('mobile lobby shows exactly two storyline entries with a working small inbox',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto('/');

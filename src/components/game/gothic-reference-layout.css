@@ -249,7 +249,10 @@
   /* The dialogue belongs to the heroine rather than a fourth dashboard card. */
   .gothic-lobby__dialogue-invite{
     position:absolute;z-index:4;display:grid;gap:5px;
-    left:clamp(52%,54vw,57%);top:clamp(230px,30vh,302px);
+    /* Cap the speech bubble to the free lane so it cannot touch the
+       painted postcards on narrow desktop screens (1100–1250px). */
+    left:min(clamp(52%,54vw,57%),calc(100% - var(--reference-right) - var(--reference-margin) - min(280px,21vw) - 16px));
+    top:clamp(230px,30vh,302px);
     max-width:min(280px,21vw);min-width:200px;
     padding:12px 16px;text-align:left;
     border:1px solid var(--craft-hairline);border-radius:10px;
