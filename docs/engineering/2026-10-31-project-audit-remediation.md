@@ -86,3 +86,10 @@
 - **Desktop Visual Review 成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41262334261>（以相同产品代码运行浏览器检查，包含新增 1100×720 测试和 1440×900 / 1648×928 等已有测试）。
 - **GitHub Pages 成功部署**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41262476066>。
 - 浏览器截图打包：`desktop-v377-screenshots`，artifact #13065228668。**尚未人工打开并逐像素核对原设计图与截图**，因此 A02 仍保留设计图 1:1 还原的待办；A09 目前只是完成大厅区域拆分，召唤界面和工坊巨型组件继续待处理。
+
+## 七、A09 · 召唤页面模块化第一阶段（2026-11-01）
+
+- 从 `gothic-summon-screen.tsx` 提取 `SummonHeader`（真实资源/工具）、`SummonPoolRail`（卡池切换）、`SummonActionBar`（召唤入口/保底文字）、`SummonShowcase`（人物、概率公示与收藏进度），将约 760 行主组件压缩到约 450 行。
+- 父组件仍是 `useGacha` 和抽卡弹窗的唯一控制器；子组件只接收真实状态和回调，不读写存档、概率、奖励或资源。
+- 保持五个卡池、单抽/十连、90 抽保底、卡池主题无 UP、实际概率公示、装备/收藏入口、资源异常保护和现有 className/data-testid；不更改路由/游戏逻辑/美术。
+- 本条记录的是代码重构提交；Quality、Desktop Visual Review、Pages 通过后再追加验收结果。完整原画仍未完成，不能把组件拆分冒充艺术升级。

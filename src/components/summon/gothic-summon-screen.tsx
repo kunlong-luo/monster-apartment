@@ -1,20 +1,23 @@
 'use client';
 
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import {SummonHeader} from './summon-header';
+import {SummonPoolRail} from './summon-pool-rail';
+import {SummonActionBar} from './summon-action-bar';
+import {SummonShowcase} from './summon-showcase';
 import './summon-screen.css';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import lobbyHeroBackup from '../../../public/art/lobby-hero-v2.webp';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
-import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import {GothicDock} from '@/components/game/gothic-hud';
-import {HEROINE_FACE_ART,getCardFace} from './heroine-portrait-assets';
+import {HEROINE_FACE_ART} from './heroine-portrait-assets';
 import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 import {useCharacterLife} from '@/lib/game/character-life-store';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
 import {claimProgressTickets,claimTrialTicket,gachaSaveStatus,GACHA_CHARACTERS} from '@/lib/summon/gacha-engine';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import Link from 'next/link';
-import {AlertTriangle,Backpack,ChevronRight,Droplets,Gem,History,Mail,Megaphone,Search,Settings,Ticket} from 'lucide-react';
+import {AlertTriangle,Search} from 'lucide-react';
 import { useGacha } from '@/lib/summon/use-gacha';
 import { GACHA_POOLS, type SummonableCharacter } from '@/lib/summon/gacha-engine';
 import { SummonRitualModal } from './summon-ritual-modal';
@@ -28,8 +31,6 @@ import { useCharacterCollection, commitCollection } from '@/lib/game/character-c
 import { CHARACTER_CARDS, FORGE_RECIPES } from '@/core/character-collection';
 import type {CharacterId} from '@/core/character-life';
 import {COVENANT_BEASTS} from '@/lib/summon/covenant-beasts';
-import {GAME_UI_RELEASE} from '@/core/game-release';
-import {siteAssetUrl} from '@/lib/game/site-asset-url';
 
 function observeGachaSave(callback:()=>void){
   const event=()=>callback();
@@ -140,101 +141,9 @@ export function GothicSummonScreen() {
       {/* ------------------------------------------------------------- */}
       {/* 1. TOP HEADER BAR                                             */}
       {/* ------------------------------------------------------------- */}
-      <header className="summon-cinematic-header relative z-20 flex h-14 sm:h-16 w-full items-center justify-between px-3 sm:px-6 bg-gradient-to-b from-[#120713cc] to-transparent">
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <span className="text-xl sm:text-2xl text-[#f3ca88]">❦</span>
-          <div className="leading-tight">
-            <h1 className="text-base sm:text-xl font-bold tracking-[.18em] text-[#ffebcc] drop-shadow-[0_2px_4px_#000]">
-              怪物公寓
-            </h1>
-            <span className="block text-[8px] sm:text-[9px] tracking-[.25em] text-[#bca085] uppercase">
-              MONSTER APARTMENT · <span data-testid="game-release">{GAME_UI_RELEASE}</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Center-Right Currencies */}
-        <div className="summon-cinematic-header-controls flex items-center gap-2 sm:gap-4">
-          <div className="summon-cinematic-wallet flex items-center gap-2 sm:gap-4" aria-label="真实契约资源">
-          {/* Contract Tickets */}
-          <button type="button" aria-label="查看契约信物来源"
-            onClick={() => setShowReplenish(true)}
-            className="flex cursor-pointer items-center gap-1.5 rounded-full border border-[#b88c5888] bg-[#22101ecc] px-2.5 py-1 text-xs text-[#ffe1bc] shadow-md hover:border-[#ffd699]"
-          >
-            <Ticket aria-hidden="true" size={16} strokeWidth={1.6} className="shrink-0 text-[#e8c695]"/>
-            <span data-testid="collection-tickets" className="font-semibold text-xs sm:text-sm">
-              {state.tickets}
-            </span>
-            <span className="flex size-4 items-center justify-center rounded-full bg-[#462135] text-[10px] text-[#ffc66e]">
-              +
-            </span>
-          </button>
-
-          {/* Blood Crystals */}
-          <button type="button" aria-label="查看血晶来源"
-            onClick={() => setShowReplenish(true)}
-            className="flex cursor-pointer items-center gap-1.5 rounded-full border border-[#b88c5888] bg-[#22101ecc] px-2.5 py-1 text-xs text-[#ffe1bc] shadow-md hover:border-[#ffd699]"
-          >
-            <Droplets aria-hidden="true" size={16} strokeWidth={1.6} className="shrink-0 text-[#d58a9c]"/>
-            <span className="font-semibold text-xs sm:text-sm">
-              {state.crystals.toLocaleString()}
-            </span>
-            <span className="flex size-4 items-center justify-center rounded-full bg-[#462135] text-[10px] text-[#ffc66e]">
-              +
-            </span>
-          </button>
-
-          {/* Moonstones */}
-          <button type="button" aria-label="查看月光石来源"
-            onClick={() => setShowReplenish(true)}
-            className="flex cursor-pointer items-center gap-1.5 rounded-full border border-[#b88c5888] bg-[#22101ecc] px-2.5 py-1 text-xs text-[#ffe1bc] shadow-md hover:border-[#ffd699]"
-          >
-            <Gem aria-hidden="true" size={16} strokeWidth={1.6} className="shrink-0 text-[#c0b8dc]"/>
-            <span className="font-semibold text-xs sm:text-sm">{state.moonstones}</span>
-            <span className="flex size-4 items-center justify-center rounded-full bg-[#462135] text-[10px] text-[#ffc66e]">
-              +
-            </span>
-          </button>
-
-          </div>
-          {/* Top-Right Utility Icons */}
-          <div className="summon-cinematic-tools flex items-center gap-1.5 border-l border-[#805a4155] pl-2 sm:gap-2 sm:pl-3" aria-label="召唤辅助功能">
-            <button
-              type="button"
-              aria-label="背包"
-              onClick={() => setUtilityModal('bag')}
-              className="flex size-8 items-center justify-center rounded-lg border border-[#7e5539] bg-[#23121fcc] text-sm text-[#eed0b2] hover:border-[#ffd699] hover:bg-[#3f1f35]"
-            >
-              <Backpack aria-hidden="true" size={17} strokeWidth={1.6}/>
-            </button>
-            <button
-              type="button"
-              aria-label="邮箱"
-              onClick={() => setUtilityModal('mail')}
-              className="relative flex size-8 items-center justify-center rounded-lg border border-[#7e5539] bg-[#23121fcc] text-sm text-[#eed0b2] hover:border-[#ffd699] hover:bg-[#3f1f35]"
-            >
-              <Mail aria-hidden="true" size={17} strokeWidth={1.6}/>
-            </button>
-            <button
-              type="button"
-              aria-label="公告"
-              onClick={() => setUtilityModal('notice')}
-              className="relative flex size-8 items-center justify-center rounded-lg border border-[#7e5539] bg-[#23121fcc] text-sm text-[#eed0b2] hover:border-[#ffd699] hover:bg-[#3f1f35]"
-            >
-              <Megaphone aria-hidden="true" size={17} strokeWidth={1.6}/>
-            </button>
-            <button
-              type="button"
-              aria-label="设置"
-              onClick={() => setUtilityModal('settings')}
-              className="flex size-8 items-center justify-center rounded-lg border border-[#7e5539] bg-[#23121fcc] text-sm text-[#eed0b2] hover:border-[#ffd699] hover:bg-[#3f1f35]"
-            >
-              <Settings aria-hidden="true" size={17} strokeWidth={1.6}/>
-            </button>
-          </div>
-        </div>
-      </header>
+      <SummonHeader tickets={state.tickets} crystals={state.crystals}
+        moonstones={state.moonstones} onOpenResources={()=>setShowReplenish(true)}
+        onUtility={setUtilityModal}/>
 
       {/* ------------------------------------------------------------- */}
       {/* 2. MAIN 3-COLUMN STAGE AREA                                  */}
@@ -246,53 +155,8 @@ export function GothicSummonScreen() {
         {/* ----------------------------------------------------------- */}
         {/* LEFT COLUMN: 5 GACHA POOLS TABS                             */}
         {/* ----------------------------------------------------------- */}
-        <aside className="summon-cinematic-pools relative flex w-full shrink-0 flex-row gap-2 overflow-x-auto py-1 lg:w-56 lg:flex-col lg:justify-center lg:gap-2 lg:overflow-visible lg:py-4 xl:w-64 z-20">
-          {GACHA_POOLS.map((pool) => {
-            const isActive = pool.id === activePoolId;
-            const workerPreview = featuredWorkers[pool.id] ?? null;
-            return (
-              <button
-                key={pool.id}
-                type="button"
-                aria-pressed={isActive}
-                disabled={saveStatus!=='ok'}
-                onClick={() => setActivePoolId(pool.id)}
-                className={`summon-pool-item group relative flex min-h-14 w-44 shrink-0 items-center gap-2.5 rounded-md border p-2 text-left transition-colors duration-200 lg:h-20 lg:w-full ${
-                  isActive
-                    ? 'border-[#ffcf7a] bg-gradient-to-r from-[#4d1629dd] via-[#2f1124dd] to-[#1a0a19bb] shadow-[0_0_14px_#cc204644]'
-                    : 'border-[#734f3788] bg-[#1a0c18a8] hover:border-[#d9a86a] hover:bg-[#281324cc]'
-                }`}
-              >
-                {/* Same real character identity on pool tile and main spotlight. */}
-                <div className="relative size-12 shrink-0 overflow-hidden rounded-lg border border-[#e2b57855]">
-                  <Image src={HEROINE_FACE_ART[workerPreview??'yuesha']}
-                    alt={pool.subname} fill sizes="48px"
-                    className="object-cover object-top"/>
-                </div>
-
-                {/* Pool copy */}
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between">
-                    <span
-                      className={`text-xs font-bold truncate ${
-                        isActive ? 'text-[#ffe7c9]' : 'text-[#dbc0a6]'
-                      }`}
-                    >
-                      {pool.name}
-                    </span>
-                  </div>
-                  <span className="block text-[10px] text-[#bda088] truncate">{pool.subname}</span>
-                  <span className="mt-0.5 inline-block rounded bg-[#691428] px-1.5 py-0.2 text-[9px] text-[#ffbacb]">
-                    {pool.badge}
-                  </span>
-                </div>
-
-              </button>
-            );
-          })}
-
-
-        </aside>
+        <SummonPoolRail activePoolId={activePoolId} featuredWorkers={featuredWorkers}
+          disabled={saveStatus!=='ok'} onSelectPool={setActivePoolId}/>
 
         {/* ----------------------------------------------------------- */}
         {/* CENTER STAGE: HEROINE, TITLE, QUOTE & SUMMON BUTTONS       */}
@@ -357,185 +221,19 @@ export function GothicSummonScreen() {
             )}
           </div>
 
-          {/* Gacha Action Control Bar */}
-          <div className="w-full max-w-2xl flex flex-col items-center gap-2 mb-2">
-            <div className="flex w-full items-center justify-center gap-2 sm:gap-4">
-              {/* History Button */}
-              <button
-                type="button"
-                onClick={() => setShowHistory(true)}
-                className="flex flex-col items-center justify-center rounded-xl border border-[#9b6e45] bg-[#241120cc] px-3 sm:px-4 py-2 text-xs text-[#ffdcb0] hover:border-[#f3ce8a] hover:bg-[#381a32] shadow-md transition"
-              >
-                <History aria-hidden="true" size={18} strokeWidth={1.6} className="text-[#e6c49c]"/>
-                <span className="text-[10px] sm:text-xs font-semibold">召唤记录</span>
-              </button>
-
-              {/* Single Summon Button */}
-              <button
-                type="button"
-                data-testid="collection-summon"
-                disabled={saveStatus!=='ok'||ritualModal.open}
-                onClick={handleSingleSummon}
-                className="group relative flex min-h-12 sm:min-h-14 flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-[#e5c38e] bg-gradient-to-b from-[#f9f2e4] to-[#ded0b6] px-4 py-2 text-black shadow-[0_6px_20px_#00000099] hover:brightness-105 active:scale-95 transition"
-              >
-                <div className="text-left">
-                  <span className="block text-xs sm:text-sm font-extrabold tracking-wider text-[#221015]">
-                    单次召唤
-                  </span>
-                  <span className="block text-[10px] font-bold text-[#623a1a]">
-                    <span className="summon-cinematic-cost"><Ticket aria-hidden="true" size={12} strokeWidth={1.6}/> × 1 <i>或</i> <Droplets aria-hidden="true" size={12} strokeWidth={1.6}/> 160</span>
-                  </span>
-                </div>
-              </button>
-
-              {/* Ten-Fold Summon Button */}
-              <button
-                type="button"
-                onClick={handleTenSummon}
-                data-testid="collection-summon-ten"
-                disabled={saveStatus!=='ok'||ritualModal.open}
-                className="group relative flex min-h-12 sm:min-h-14 flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-[#f5b86b] bg-gradient-to-r from-[#9b1834] via-[#b61d40] to-[#7f1128] px-4 py-2 text-[#fff3db] shadow-[0_6px_25px_#9b1834aa] hover:brightness-110 active:scale-95 transition"
-              >
-                <div className="text-left">
-                  <span className="block text-xs sm:text-sm font-extrabold tracking-wider text-[#ffe5be]">
-                    十连召唤
-                  </span>
-                  <span className="block text-[10px] font-bold text-[#ffbacb]">
-                    <span className="summon-cinematic-cost"><Ticket aria-hidden="true" size={12} strokeWidth={1.6}/> × 10 <i>或</i> <Droplets aria-hidden="true" size={12} strokeWidth={1.6}/> 1600</span>
-                  </span>
-                </div>
-              </button>
-
-            </div>
-
-            {/* Pity Indicator */}
-            <p className="text-[11px] font-semibold text-[#f8d8b4] tracking-wider drop-shadow-[0_1px_2px_#000]">
-              再召唤 <span className="font-bold text-[#ffc66e]">{state.pityCountdown}</span> 次内必得{' '}
-              <span className="text-[#ffd700]">SSR</span> 角色
-            </p>
-          </div>
-        </section>
+          <SummonActionBar disabled={saveStatus!=='ok'||ritualModal.open}
+            pityCountdown={state.pityCountdown} onHistory={()=>setShowHistory(true)}
+            onSingle={handleSingleSummon} onTen={handleTenSummon}/>        </section>
 
         {/* ----------------------------------------------------------- */}
         {/* RIGHT COLUMN: SSR CARD SHOWCASE & PROBABILITIES             */}
         {/* ----------------------------------------------------------- */}
-        <aside className="summon-cinematic-sidebar relative flex w-full flex-col gap-3 overflow-y-auto py-2 lg:w-64 lg:shrink-0 xl:w-72 z-20">
-          {/* Featured card; a visual theme is not a drop-rate boost. */}
-          <div data-testid="summon-featured-card" data-card-character={featuredWorker??'yuesha'}
-            className="relative flex flex-col rounded-lg border border-[#d4aa7080] bg-[#1a0b18e0] p-3 shadow-[0_10px_30px_#000000aa]">
-            {/* Grounded actual catalog grade. */}
-            <div data-testid="summon-featured-card-tier"
-              className="absolute top-2 left-2 z-10 rounded border border-[#ffe5bd88] bg-[#a96839] px-2 py-0.5 text-[10px] font-bold tracking-[.15em] text-[#fff0ce]">
-              {featuredCard.rarityZh}
-            </div>
-
-            {/* Card Portrait */}
-            <div className="relative h-44 w-full overflow-hidden rounded-xl border border-[#e2b57866] bg-[#22101e]">
-              <Image
-                src={featuredWorker?HEROINE_FACE_ART[featuredWorker]:moonveilPortrait}
-                alt={featuredName}
-                fill
-                loading="eager"
-                unoptimized
-                sizes="(max-width:1023px) 50vw,240px"
-                className="object-cover object-[55%_25%]"
-              />
-            </div>
-
-            {/* Card Meta */}
-            <div className="mt-2">
-              <div className="flex items-baseline justify-between">
-                <h3 className="text-base font-semibold text-[#ffe6c2]">{featuredName} ☾</h3>
-                <span className="text-[10px] text-[#e8c099]">✦ {featuredBeast.name}</span>
-              </div>
-              <p className="mt-1 text-[10px] text-[#c9a786] italic leading-tight">
-                {visibleQuotes[quoteIndex % visibleQuotes.length]}
-              </p>
-            </div>
-
-            <p className="mt-2 text-[10px] leading-5 text-[#c9ae8d]" data-testid="summon-featured-odds">
-              基础获取概率 {featuredCard.rate.toFixed(2)}% · 主题不额外加成
-            </p>
-
-            {/* Quick Actions */}
-            <div className="mt-2.5 text-xs">
-              {featuredWorker ? (
-                <Link href={'/characters/?visit='+featuredWorker}
-                  data-testid="summon-featured-room-link"
-                  className="flex min-h-10 w-full items-center justify-center rounded border border-[#c69d6f80] bg-[#2d1a2cbb] px-2 py-2 text-center font-medium text-[#ffe2be] transition-colors hover:border-[#f4d8b0] hover:bg-[#44304a] focus-visible:outline-2 focus-visible:outline-[#ffe0b5]">
-                  拜访{featuredName}的房间
-                </Link>
-              ) : (
-                <button type="button" onClick={() => setShowTrial(true)}
-                  data-testid="summon-yuesha-trial"
-                  className="min-h-10 w-full rounded border border-[#c69d6f80] bg-[#2d1a2cbb] px-2 py-2 font-medium text-[#ffe2be] transition-colors hover:border-[#f4d8b0] hover:bg-[#44304a] focus-visible:outline-2 focus-visible:outline-[#ffe0b5]">
-                  月纱技能试玩
-                </button>
-              )}
-            </div>
-            <button type="button" onClick={()=>setShowGalleryTab(true)}
-              className="mt-2 min-h-11 w-full rounded border border-[#b98b6188] bg-[#261725b8] px-2.5 py-2 text-[11px] font-medium leading-5 text-[#f7d8b2] transition-colors hover:border-[#f8d9b1] hover:bg-[#3d2737] focus-visible:outline-2 focus-visible:outline-[#ffe0b5]">
-              查看已收录契约、首饰和装备
-            </button>
-          </div>
-
-          {/* Official Gacha Probability Table */}
-          <div
-            data-testid="collection-odds"
-            className="my-2 rounded-xl border border-[#8b614088] bg-[#1c0d1bb8] p-2.5 text-xs"
-          >
-            <h4 className="font-bold text-[#ffdca8] text-[11px] mb-1">召唤概率公示</h4>
-            <div className="space-y-0.5 text-[10px]">
-              {GACHA_CHARACTERS.map((character,index)=>(
-                <div key={character.id} data-testid={'summon-odds-'+character.id}
-                  className={'flex justify-between '+(
-                    ['text-[#ff7585]','text-[#ffd700]','text-[#c084fc]',
-                      'text-[#93c5fd]','text-[#cbd5e1]'][index]??'text-[#e4d2c4]')}>
-                  <span>{character.rarityZh}</span>
-                  <strong>{character.rate.toFixed(2)}%</strong>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Collection Progress */}
-          <div className="rounded-xl border border-[#8b614088] bg-[#1c0d1bb8] p-2.5 text-xs">
-            <div className="flex justify-between items-center text-[10px] text-[#e0bfa3]">
-              <span data-testid="summon-owned-progress">收集进度 {ownedCharacters.length}/{GACHA_CHARACTERS.length}</span>
-              <button
-                type="button"
-                onClick={() => setShowReplenish(true)}
-                className="text-[#ffc66e] hover:underline"
-              >
-                <span className="inline-flex items-center gap-1"><Ticket aria-hidden="true" size={12} strokeWidth={1.7}/> 契约资源来源 <ChevronRight aria-hidden="true" size={12}/></span>
-              </button>
-            </div>
-            <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-[#120713]">
-              <div
-                className="h-full bg-gradient-to-r from-[#d97706] to-[#dc2626]"
-                style={{ width: `${Math.min(100, (ownedCharacters.length / GACHA_CHARACTERS.length) * 100)}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Collectable portraits; visual themes have no UP. */}
-          <div className="mt-2">
-            <span className="block text-[10px] text-[#cca585] mb-1">可收录契约</span>
-            <div className="flex items-center justify-between gap-1">
-              {GACHA_CHARACTERS.map(character => (
-                <button type="button" key={character.id}
-                  data-testid="summon-available-card" data-character-id={character.id}
-                  title={character.title} aria-label={`查看契约档案：${character.title}`}
-                  onClick={() => setShowGalleryTab(true)}
-                  className="relative size-10 shrink-0 overflow-hidden rounded-full border border-[#b88c58] bg-[#2a1023] text-xs font-bold text-[#f6d5aa] transition hover:border-[#ffe3b3] hover:scale-105">
-                  <Image src={getCardFace(character.id)??siteAssetUrl(character.avatar)} alt=""
-                    fill sizes="40px" className="object-cover object-top"
-                    data-portrait-source="dedicated-heroin-face"/>
-                </button>
-              ))}
-            </div>
-          </div>
-        </aside>
+        <SummonShowcase featuredWorker={featuredWorker} featuredName={featuredName}
+          featuredBeastName={featuredBeast.name} featuredCard={featuredCard}
+          quote={visibleQuotes[quoteIndex % visibleQuotes.length]}
+          ownedCharactersCount={ownedCharacters.length} onOpenTrial={()=>setShowTrial(true)}
+          onOpenCollection={()=>setShowGalleryTab(true)}
+          onOpenResources={()=>setShowReplenish(true)}/>
       </main>
 
       {/* One canonical global dock; the summon scene is a mode of the Character route. */}
