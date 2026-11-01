@@ -106,7 +106,8 @@ test('an acquired heroine can be visited directly from the real collection, then
       targetPath:link.pathname,base,search:link.search};
   });
   expect(roomLink.origin).toBe(roomLink.currentOrigin);
-  expect(roomLink.targetPath).toBe(roomLink.base+'/characters/');
+  // Dev may omit the trailing slash; Pages static export uses one.
+  expect(roomLink.targetPath.replace(/\/$/,'')).toBe(roomLink.base+'/characters');
   expect(roomLink.search).toBe('?visit=brook');
   await expect(archive.getByTestId('collection-visit-cinder-ember')).toHaveCount(0);
   await archive.getByTestId('collection-visit-brook-tide').click();
