@@ -25,6 +25,9 @@ test('PC pool carousel preserves four distinct heroine portraits and real base r
       const el=img as HTMLImageElement;
       return el.complete&&el.naturalWidth>0&&el.currentSrc.length>0;
     }),{timeout:12000}).toBe(true);
+    const previous=[...seen.values()].at(-1);
+    if(previous)await expect.poll(()=>portrait.evaluate(img=>(img as HTMLImageElement).currentSrc),
+      {timeout:12000}).not.toBe(previous);
     const src=await portrait.evaluate(img=>(img as HTMLImageElement).currentSrc);
     seen.set(resident,src);
     await expect(page.getByTestId('summon-featured-odds')).toContainText('主题不额外加成');
