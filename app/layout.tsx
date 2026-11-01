@@ -6,6 +6,7 @@ import '@/components/game/gothic-red-gold.css';
 import '@/components/game/gothic-desktop-ui.css';
 import {GothicRouteTransition} from '@/components/game/gothic-route-transition';
 import {GameReleaseNotice} from '@/components/game/game-release-notice';
+import {WorkshopAutoRuntime} from '@/lib/moonwork/workshop-auto-runtime';
 
 export const metadata: Metadata = {
   title: '怪物公寓 · Monster Apartment',
@@ -26,7 +27,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="zh-CN">
-      <body>{children}<GothicRouteTransition/><GameReleaseNotice/></body>
+      <body>{children}<GothicRouteTransition/><GameReleaseNotice/><WorkshopAutoRuntime/></body>
     </html>
   );
 }
