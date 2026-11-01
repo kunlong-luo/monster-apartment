@@ -9,6 +9,7 @@ import {GothicDock, GothicResourcePill} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from './world-navigation';
 import {useWorkshopWorld} from './world-save-react';
 import {SAVE_KEY, CHANGE_EVENT, parseSavedWorld} from '@/lib/moonwork/world-store';
+import {toggleWorkshopAuto} from '@/lib/moonwork/workshop-auto-runtime';
 import {WorkshopContractPanel} from './workshop-contract-panel';
 import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
@@ -93,6 +94,14 @@ export function WorkshopClient() {
   const host = useRef<HTMLDivElement>(null);
   const gameController = useRef<WorkshopRuntimeController|null>(null);
   const onAction = (action:WorkshopAction) => gameController.current?.dispatch(action);
+  const [autoError,setAutoError]=useState('');
+  const onAutoToggle=()=>{
+    void toggleWorkshopAuto().then(outcome=>{
+      setAutoError(outcome==='unavailable'?'请先派工，或使用支持安全多标签协调的浏览器。':
+        outcome==='missing'?'工坊尚未初始化，或旧存档不可用。':
+        outcome==='error'?'存档写入失败，自动生产状态未改变。':'');
+    });
+  };
   const [error, setError] = useState('');
   // Pixi canvas may be visible before mountWorkshopGame has returned its controller.
   // Keep React and Pixi actions inert until dispatch can actually apply them.
@@ -327,6 +336,8 @@ export function WorkshopClient() {
         {/* Factory input controls are one React-owned component. */}
         <WorkshopControls
           onAction={onAction}
+          onAutoToggle={onAutoToggle}
+          autoError={autoError}
           world={world}
           chosenWorker={selection.worker}
           chosenMachine={selection.machine}
