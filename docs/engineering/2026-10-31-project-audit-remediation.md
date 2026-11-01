@@ -145,3 +145,4 @@
 - `heroine-portrait-assets.ts` 的图片错误回退也改为同一人物的经过审查的肖像，而不是错误人物。角色照片不可用时，宁可保持同人身份及重试逻辑，不将月纱误当成其他工坊住客。
 - 十连缩略卡改为肖像+可读角色名的紧凑构图，移除肉眼不可辨的 6–7px 碎片奖励文字（仅视觉隐藏，DOM、奖金 data-testid 和真实获得记录仍保留）。主展示卡仍完整显示首收、碎片、角色引文；缩略卡无新的二次导航/按钮。
 - 扩充原头像一致性 Vitest 和十连真实 Playwright 回归，包括头像路径、缩略卡字号与画面可用空间。**正式全身 CG 仍是 0/5**，不要将此轮的卡框打磨误称 A05 原画入库。
+- **本次验证已通过**：代码提交 `46146911b399c3d21e97ef9c496834babb28eeb4`；Quality <https://github.com/kunlong-luo/monster-apartment/actions/runs/41269106559>；Desktop Visual Review <https://github.com/kunlong-luo/monster-apartment/actions/runs/41269106523>（含 `e2e/summon-result-desktop.spec.ts`）；GitHub Pages 发布 <https://github.com/kunlong-luo/monster-apartment/actions/runs/41269154331>。这些是行为/构图门禁，不代表五张正式 CG 的原画审查通过。
