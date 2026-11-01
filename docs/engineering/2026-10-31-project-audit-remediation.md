@@ -25,7 +25,7 @@
 | **A06 · P1** 私人房间仍是概念场景 | `public/art/rooms/manifest.json` 四个房间均标记 `concept`；目前仓库实际只有 `concept-scene.svg`，目标背景/pose 路径尚未正式入库。 | 逐室生成并审批无 UI 背景、透明人物姿态、热点锚点；候选图不等于正式上线，恢复/切换房间不糊不失真。 | 等待美术生产与审核 |
 | **A07 · P1** 工坊尚非持续自动生产 | `src/components/moonwork/workshop-controls.tsx` 的“开始生产轮班”按钮调用 `shift`，由 `v2/src/main.ts` 执行 `runShift`；虽有 `auto-assign`，但默认并无持续结算循环。 | 先设计自动生产状态机、节奏与离线收益上限，避免标签切换重复结算；保留玩家布置、派工、订单确认等重要决策。 | 待产品/工程设计 |
 | **A08 · P1** 经营体系仍分裂 | `src/core/cozy-engine.ts` 有旧住客/公寓经济；`v2/src/workshop-engine.ts` 为工坊规则；`src/lib/game/character-life-store.ts`、`src/lib/game/character-collection-store.ts` 为额外进度键。 | 明确统一角色身份、成长、库存、契约和故事领域接口，支持旧存档无损迁移；禁止不经验证一口气合并键。 | 待设计 |
-| **A09 · P1** 巨型组件与样式维护成本 | `src/components/summon/gothic-summon-screen.tsx` 约 760 行，`src/components/game/gothic-workshop.css` 约 1359 行，`src/core/cozy-engine.ts` 约 591 行；部分文件包含混合展示/交互/规则。 | 按 UI 场景、领域规则和控制器拆分；尽量保留行为测试，避免机械拆分导致重复 DOM 与新 CSS 覆盖层。 | **进行中 · 大厅 3 个独立 UI 区域已拆分，等待 CI/浏览器验收** |
+| **A09 · P1** 巨型组件与样式维护成本 | `src/components/summon/gothic-summon-screen.tsx` 约 760 行，`src/components/game/gothic-workshop.css` 约 1359 行，`src/core/cozy-engine.ts` 约 591 行；部分文件包含混合展示/交互/规则。 | 按 UI 场景、领域规则和控制器拆分；尽量保留行为测试，避免机械拆分导致重复 DOM 与新 CSS 覆盖层。 | **第一批已验证并上线**（f11f6a7 + d9badfa；剩余大型组件仍待拆分） |
 | **A10 · P2** 构建与依赖策略需收敛 | 根 `package.json` 声明 pnpm，仓库存 `bun.lock`，CI 用 Bun 安装 + pnpm 执行；`v2/` 单独用 npm。 | 明确一个权威锁文件与分包原因，避免无效缓存、意外升级与重复安装；任何迁移先验证 Pages 静态导出与 Pixi sidecar。 | 待处理 |
 | **A11 · P2** 首屏性能与美术加载需实测 | 大厅、召唤、房间同时包含 Next 图层、CSS 光照、Motion、Pixi；虽然已有 `ReliableImage` 和减少动画支持，但尚无在本轮审查中复现的统一性能数字。 | 真实浏览器采样首屏时序、解码、GPU、切页；优先加载关键图，对大图和动效分级，不凭静态分析声称性能故障。 | 待测量 |
 | **A12 · P2** 视觉验收与 CI 结果需分层 | 最新 Quality / Desktop Visual Review / Pages 成功；`docs/DESKTOP-REFERENCE-LAYOUT.md` 与 `docs/v3/75-REFERENCE-01-DESKTOP-GEOMETRY.md` 均明确仍非 1:1 美术构图。 | 统一参考图—实机截图的人工差异记录；区分代码提交、质量通过、部署成功、视觉达标；避免将自动截图通过当作高级美术完成。 | 持续验收 |
@@ -78,3 +78,11 @@
 - **A09 模块化**：从 `gothic-lobby.tsx` 拆分 `GothicLobbyResidents`、`GothicLobbyContracts`、`GothicLobbyDestinations` 三个展示组件。大厅父组件继续统一拥有世界存档、面板开关、抽卡状态和事件；子组件只接收明确的状态/事件，不再重复读取存档或新增路由。
 - **不可破坏的边界**：左侧 4 人房间链接、主线订单完成条件、月蚀召唤展示和右侧真实功能原样，移动端使用既有两按钮，保持同一套 CSS class / data-testid；未换人物原画、未修改概率与经济规则。
 - 尚未宣称人工逐像素还原；GitHub Desktop Visual Review 的 artifact 存在，但本次并未直接打开内部 PNG 文件进行视觉分析。视觉下一里程碑仍需设计图和实机图并排验收。
+
+### A02 / A09 本轮验收记录
+
+- 重构代码：`f11f6a79276f8b71149c9208cb6aa771c3d3c41f`；针对单测中“必须在父文件出现 JSX”的过时路径断言，修正测试：`d9badfa5f9ec6d442e011561a85e8dca1deaa3ef`。实际进度条仍在独立组件中，保持原 `aria-valuenow` 和真实数值传递。
+- **Quality 成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41262422071>（完整 TypeScript、Lint、核心 Vitest、静态导出和 Pixi）。
+- **Desktop Visual Review 成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41262334261>（以相同产品代码运行浏览器检查，包含新增 1100×720 测试和 1440×900 / 1648×928 等已有测试）。
+- **GitHub Pages 成功部署**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41262476066>。
+- 浏览器截图打包：`desktop-v377-screenshots`，artifact #13065228668。**尚未人工打开并逐像素核对原设计图与截图**，因此 A02 仍保留设计图 1:1 还原的待办；A09 目前只是完成大厅区域拆分，召唤界面和工坊巨型组件继续待处理。
