@@ -17,7 +17,12 @@ describe('A07 opt-in realtime production, independent of day/contract engine',()
     nextDue:[0,0,0,0,0,31000,46000,61000]});
   expect(validWorkshop(a)).toBe(true);
   expect(startWorkshopAuto(a,8000)).toBe(a);
-  expect(startWorkshopAuto(newWorkshop(),1000)).toBe(newWorkshop());
+  const starter=startWorkshopAuto(newWorkshop(),1000);
+  expect(starter.tiles[5]?.worker).toBe('brook');
+  expect(starter.tiles[7]?.worker).toBe('fern');
+  expect(starter.auto?.enabled).toBe(true);
+  const empty={...newWorkshop(),tiles:Array(15).fill(null)};
+  expect(startWorkshopAuto(empty,1000)).toBe(empty);
  });
  it('applies each craft interval and linked inputs in due-time order, never advancing day or orders',()=>{
   const start=startWorkshopAuto(setup(),1000);
