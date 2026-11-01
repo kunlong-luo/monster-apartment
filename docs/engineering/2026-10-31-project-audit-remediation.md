@@ -114,3 +114,11 @@
 - **Desktop Visual Review 全绿**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41263427563>；其中 `Run four-scene desktop browser smoke` 与 `Run focused archive forge and room-navigation browser regression` 两个步骤均明确为 success。
 - **GitHub Pages 部署成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41263485730>。线上入口 `/monster-apartment/characters/#summon-screen`，页面保持七个正式路由与原有资源存档键。
 - 尚未完成：整套 PC 设计原画逐像素验收、独立高清角色全身 CG、工坊 CSS 领域拆分、`cozy-engine` 核心分层。A09 的此阶段交付不等同于整个 A09 已结案。
+
+## 九、抽卡结果播放状态机与最高品阶聚焦（2026-11-01）
+
+- `use-ten-pull-playback.ts` 统一十连的自动播放、暂停、继续、手动选择、全部翻开和纯重播；`ten-pull-playback.ts` 将状态转换提取成无副作用 reducer 并增加 Vitest。
+- 十连自动播放完整结束后将视角停在最高品阶已获人物卡，卡牌和历史仍按真实召唤顺序收录，绝不重新抽取或额外扣除资源。
+- 进入结果页后如果玩家开启系统或游戏“减少动效”，取消旧定时器并立即展开所有已结算的卡片。增加真实浏览器用例检查中途切换动效、最高品阶聚焦和存档仍为十张。
+- 现有最高品阶视效继续放在侧栏与卡框外，不覆盖人物脸部；照片保持比例展示。独立全身 CG 未完成，不伪称已替换。
+- 本轮验收须等 Quality、Desktop Visual Review 和 Pages 成功，再回填结果。

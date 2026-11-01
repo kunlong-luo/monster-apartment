@@ -213,6 +213,41 @@ test('PC ten-pull automatically flips results in order and supports pause, resum
     await page.screenshot({path:'test-results/desktop-ten-ssr-focus-v377.png',animations:'disabled'});
   }
 });
+test('switching reduced motion mid-ten-pull immediately completes the settled reveal',async({page})=>{
+  test.setTimeout(90000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:30000});
+  await page.evaluate(()=>localStorage.setItem('monster-apartment:gacha-v2',JSON.stringify({
+    version:2,tickets:10,crystals:0,moonstones:0,pityCountdown:1,
+    totalSummons:0,history:[],ownedIds:[],claimedProgressRewards:[],activePoolId:'mythic-eclipse',
+  })));
+  await page.reload();
+  await page.getByTestId('collection-summon-ten').click();
+  await page.getByTestId('collection-reveal').getByRole('button',{name:'跳过仪式'}).click();
+  const stage=page.getByTestId('summon-result-stage');
+  await expect(stage).toHaveAttribute('data-playback-state','playing');
+  await page.evaluate(()=>{
+    localStorage.setItem('monster-apartment:gothic-motion-reduced','1');
+    window.dispatchEvent(new Event('monster-apartment:motion-changed'));
+  });
+  await expect(page.getByTestId('collection-reveal')).toHaveAttribute('data-motion','still');
+  await expect(stage).toHaveAttribute('data-playback-state','complete',{timeout:2500});
+  await expect(stage).toHaveAttribute('data-revealed-count','10');
+  await expect(page.getByTestId('collection-reveal-award')).toHaveCount(10);
+  const result=await page.evaluate(()=>{
+    const g=JSON.parse(localStorage.getItem('monster-apartment:gacha-v2')!);
+    return {count:g.totalSummons,history:g.history};
+  });
+  expect(result.count).toBe(10);
+  expect(result.history).toHaveLength(10);
+  const sorted=['N','R','SR','SSR-Legend','SSR-Mythic'];
+  const best=result.history.reduce((index:number,record:{rarity:string},i:number)=>
+    sorted.indexOf(record.rarity)>sorted.indexOf(result.history[index].rarity)?i:index,0);
+  await expect(stage).toHaveAttribute('data-selected-index',String(best));
+  await expect(page.getByTestId('summon-replay')).toHaveCount(0);
+});
+
 test('reduced-motion ten-pull reveals all without timed autoplay',async({page})=>{
   test.setTimeout(60000);
   await page.setViewportSize({width:1440,height:900});

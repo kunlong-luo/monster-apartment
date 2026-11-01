@@ -1,15 +1,12 @@
 'use client';
 
-import {useEffect,useState} from 'react';
 import type {KeyboardEvent} from 'react';
 import {ChevronLeft,ChevronRight,Eye,Layers3,MoonStar,SkipForward,Pause,Play,RotateCcw,Crown} from 'lucide-react';
 import {motion} from 'motion/react';
 import type {SummonableCharacter} from '@/lib/summon/gacha-engine';
 import {CharacterContractCard,SUMMON_RARITY_RANK} from './character-contract-card';
-import {getNextUnrevealedIndex,getTenPullHoldMs,isFeaturedTenPullRarity,
-  TEN_PULL_FIRST_REVEAL_MS} from '@/lib/summon/ten-pull-playback';
-
-type Playback='playing'|'paused'|'complete';
+import {isFeaturedTenPullRarity} from '@/lib/summon/ten-pull-playback';
+import {useTenPullPlayback} from './use-ten-pull-playback';
 
 /** Displays the already committed draw snapshot. Autoplay and replay only
  * change which existing card is visible; they NEVER summon or write saves. */
@@ -21,50 +18,14 @@ export function SummonResultStage({characters,still,onSummonAgain,onViewCollecti
   onClose:()=>void;
 }){
   const multi=characters.length>1;
-  const allIndices=characters.map((_,index)=>index);
   const bestIndex=characters.reduce((best,current,index)=>
     SUMMON_RARITY_RANK[current.rarity]>SUMMON_RARITY_RANK[characters[best].rarity]?index:best,0);
-  const [revealedIndices,setRevealedIndices]=useState<number[]>(multi&&!still?[]:allIndices);
-  const [selectedIndex,setSelectedIndex]=useState(multi&&still?bestIndex:0);
-  const [playback,setPlayback]=useState<Playback>(multi&&!still?'playing':'complete');
-  const allRevealed=revealedIndices.length===characters.length;
+  const {revealedIndices,selectedIndex,playback,allRevealed,select,revealAll,replay,pause,resume}=
+    useTenPullPlayback(characters.map(c=>c.rarity),still,bestIndex);
   const selected=characters[selectedIndex];
   const selectedVisible=revealedIndices.includes(selectedIndex);
   const selectedHigh=selectedVisible&&isFeaturedTenPullRarity(selected.rarity);
 
-  useEffect(()=>{
-    if(!multi||playback!=='playing')return;
-    if(allRevealed){
-      const timer=window.setTimeout(()=>setPlayback('complete'),getTenPullHoldMs(selected.rarity));
-      return ()=>window.clearTimeout(timer);
-    }
-    const next=getNextUnrevealedIndex(characters.length,revealedIndices);
-    if(next===-1)return;
-    const delay=revealedIndices.length===0?TEN_PULL_FIRST_REVEAL_MS:
-      getTenPullHoldMs(selected.rarity);
-    const timer=window.setTimeout(()=>{
-      setSelectedIndex(next);
-      setRevealedIndices(previous=>previous.includes(next)?previous:[...previous,next]);
-    },delay);
-    return ()=>window.clearTimeout(timer);
-  },[multi,playback,allRevealed,characters,selected.rarity,revealedIndices]);
-
-  const select=(index:number)=>{
-    if(index<0||index>=characters.length)return;
-    if(playback==='playing')setPlayback('paused');
-    setSelectedIndex(index);
-    setRevealedIndices(previous=>previous.includes(index)?previous:[...previous,index]);
-  };
-  const revealAll=()=>{
-    setPlayback('complete');
-    setRevealedIndices(allIndices);
-    setSelectedIndex(bestIndex);
-  };
-  const replay=()=>{
-    setSelectedIndex(0);
-    setRevealedIndices([]);
-    setPlayback('playing');
-  };
   const onThumbKeyDown=(event:KeyboardEvent<HTMLButtonElement>,index:number)=>{
     if(event.key==='ArrowRight'||event.key==='ArrowLeft'){
       event.preventDefault();
@@ -158,10 +119,10 @@ export function SummonResultStage({characters,still,onSummonAgain,onViewCollecti
       </div>
       <div className="summon-result__actions">
         {multi&&playback==='playing'&&!still&&<button type="button" className="summon-result__secondary"
-          data-testid="summon-autoplay-pause" onClick={()=>setPlayback('paused')}>
+          data-testid="summon-autoplay-pause" onClick={pause}>
           <Pause size={14} strokeWidth={1.7}/>暂停</button>}
         {multi&&playback==='paused'&&!allRevealed&&<button type="button" className="summon-result__secondary"
-          data-testid="summon-autoplay-resume" onClick={()=>setPlayback('playing')}>
+          data-testid="summon-autoplay-resume" onClick={resume}>
           <Play size={14} strokeWidth={1.7}/>继续揭晓</button>}
         {multi&&!allRevealed&&<button type="button" className="summon-result__secondary"
           data-testid="summon-reveal-all" onClick={revealAll}><SkipForward size={15}/>全部翻开</button>}
