@@ -203,6 +203,10 @@ function dispatch(action:WorkshopAction):void{
       break;
     }
     case 'shift':{
+    if(world.auto?.enabled){
+      message='自动产线运行中。先暂停自动生产，再手动推进委托日。';
+      effect='normal';render();break;
+    }
     clearChoice();
     const next=runShift(world);
     const report=next.last!;
@@ -248,6 +252,17 @@ const onStorage=(event:StorageEvent)=>{
   message='已同步另一窗口的工坊进度。';effect='normal';render();
 };
 window.addEventListener('storage',onStorage);
+/** Same-tab autoplay writes bypass the Pixi dispatcher; mirror them into
+ * the canvas without scheduling a second production settlement. */
+const onLocalChange=()=>{
+  let next:unknown=null;
+  try{next=JSON.parse(localStorage.getItem(STORAGE)??'null');}catch{return;}
+  if(!validWorkshop(next)||JSON.stringify(next)===JSON.stringify(world))return;
+  world=next;
+  message=world.auto?.enabled?'自动产线按真实设备节拍生产中。':'工坊产线和库存已同步。';
+  effect='normal';render();
+};
+window.addEventListener('moonwork:v2-update',onLocalChange);
 render();
 return {
   dispatch,
@@ -255,6 +270,7 @@ return {
     if(disposed)return;
     disposed=true;
     window.removeEventListener('storage',onStorage);
+    window.removeEventListener('moonwork:v2-update',onLocalChange);
     stage.destroy();
   },
 };
