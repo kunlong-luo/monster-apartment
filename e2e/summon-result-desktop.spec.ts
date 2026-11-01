@@ -1,5 +1,33 @@
 import {test,expect} from '@playwright/test';
 
+test('PC pool carousel preserves four distinct heroine portraits and real base rates',async({page})=>{
+  test.setTimeout(90000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:30000});
+  const seen=new Map<string,string>();
+  for(const [poolId,resident] of [
+    ['mythic-eclipse','yuesha'],
+    ['eternal-struggle','cinder'],
+    ['bond-echo','fern'],
+    ['memory-remnant','brook'],
+  ]){
+    // A stable data identifier avoids text-dependent pool selection.
+    const pool=page.locator('[data-testid="summon-pool-item"][data-pool-id="'+poolId+'"]');
+    await expect(pool).toBeVisible();
+    await pool.click();
+    await expect(pool).toHaveAttribute('aria-pressed','true');
+    await expect(page.getByTestId('summon-featured-portrait')).toHaveAttribute('data-featured-character',resident);
+    const src=await page.getByTestId('summon-featured-portrait').locator('img').first().evaluate(
+      img=>{const el=img as HTMLImageElement;return el.complete&&el.naturalWidth>0?el.currentSrc:'';});
+    expect(src).not.toBe('');
+    seen.set(resident,src);
+    await expect(page.getByTestId('summon-featured-odds')).toContainText('主题不额外加成');
+  }
+  expect(new Set(seen.values()).size).toBe(4);
+  await page.screenshot({path:'test-results/desktop-summon-pool-heroine-identity.png',animations:'disabled'});
+});
+
 test('PC single pull reveals a large face card with real persisted award',async({page})=>{
   test.setTimeout(90000);
   await page.setViewportSize({width:1440,height:900});

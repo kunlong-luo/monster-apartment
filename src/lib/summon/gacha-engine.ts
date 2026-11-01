@@ -87,15 +87,15 @@ export const GACHA_POOLS: readonly GachaPool[] = [
   {id:'eternal-struggle',name:'赤焰工坊',badge:'主题',subname:'炽角 · 炉火余烬',
     remainingDays:0,bgQuote:'每一抹微光都是恩赐。',
     bannerTitle:'赤焰 · 熔炉誓约',bannerSub:'炽角与赤焰铠兽的古老盟约。',
-    dateRange:'长期开放 · 概率同主池',avatar:'/art/yuesha-portrait-v3.webp'},
+    dateRange:'长期开放 · 概率同主池',avatar:'/art/beauty-beasts/characters/cinder/face.webp'},
   {id:'bond-echo',name:'荆棘回响',badge:'主题',subname:'青枝 · 春芽誓约',
     remainingDays:0,bgQuote:'月光仍记得你的声音。',
     bannerTitle:'荆棘 · 春芽誓约',bannerSub:'青枝与花木古灵守护月光温室。',
-    dateRange:'长期开放 · 无自选概率提升',avatar:'/art/lobby-hero-v3.webp'},
+    dateRange:'长期开放 · 无自选概率提升',avatar:'/art/beauty-beasts/characters/fern/face.webp'},
   {id:'memory-remnant',name:'潮汐来信',badge:'主题',subname:'泉泡 · 水汽调谐',
     remainingDays:0,bgQuote:'尘封的记忆再次苏醒。',
     bannerTitle:'潮汐 · 皎月来信',bannerSub:'泉泡在银月之下听见霜狼的低语。',
-    dateRange:'长期开放 · 概率同主池',avatar:'/art/yuesha-bust-v3.webp'},
+    dateRange:'长期开放 · 概率同主池',avatar:'/art/beauty-beasts/characters/brook/face.webp'},
 ];
 
 export interface GachaState {

@@ -1,7 +1,7 @@
 import {describe,expect,it} from 'vitest';
 import {HEROINE_FACE_ART,getCardFace,getApprovedCardCg,getCardPortraitFallback,getCardPortraitKind} from '../src/components/summon/heroine-portrait-assets';
 import cgManifest from '../public/art/beauty-beasts/characters/cg-manifest.json';
-import {GACHA_CHARACTERS} from '../src/lib/summon/gacha-engine';
+import {GACHA_CHARACTERS,GACHA_POOLS} from '../src/lib/summon/gacha-engine';
 
 describe('character portrait visual identity',()=>{
   it('keeps exactly five full-body CG slots gated until reviewed production art exists',()=>{
@@ -14,6 +14,20 @@ describe('character portrait visual identity',()=>{
       if(entry.status==='portrait')expect(getApprovedCardCg(id)).toBeNull();
       else expect(getApprovedCardCg(id)).toMatch(/^\/art\/beauty-beasts\/characters\//);
     }
+  });
+  it('keeps each themed pool avatar identical to its real resident identity',()=>{
+    const expected={
+      'eternal-struggle':'cinder',
+      'bond-echo':'fern',
+      'memory-remnant':'brook',
+    } as const;
+    for(const [poolId,resident] of Object.entries(expected)){
+      const pool=GACHA_POOLS.find(p=>p.id===poolId);
+      expect(pool?.avatar).toBe('/art/beauty-beasts/characters/'+resident+'/face.webp');
+      expect(GACHA_CHARACTERS.find(card=>card.id.startsWith(resident+'-'))?.avatar)
+        .toBe(pool?.avatar);
+    }
+    expect(GACHA_POOLS).toHaveLength(5);
   });
   it('uses consistent V3 silver-haired Yuesha across both summons and fallback',()=>{
     const mythic=getCardFace('yuesha-eclipse');

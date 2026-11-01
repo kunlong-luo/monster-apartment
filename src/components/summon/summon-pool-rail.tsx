@@ -18,6 +18,7 @@ export function SummonPoolRail({activePoolId,featuredWorkers,disabled,onSelectPo
               <button
                 key={pool.id}
                 type="button"
+                data-testid="summon-pool-item" data-pool-id={pool.id}
                 aria-pressed={isActive}
                 disabled={disabled}
                 onClick={() => onSelectPool(pool.id)}

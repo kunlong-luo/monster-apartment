@@ -146,3 +146,10 @@
 - 十连缩略卡改为肖像+可读角色名的紧凑构图，移除肉眼不可辨的 6–7px 碎片奖励文字（仅视觉隐藏，DOM、奖金 data-testid 和真实获得记录仍保留）。主展示卡仍完整显示首收、碎片、角色引文；缩略卡无新的二次导航/按钮。
 - 扩充原头像一致性 Vitest 和十连真实 Playwright 回归，包括头像路径、缩略卡字号与画面可用空间。**正式全身 CG 仍是 0/5**，不要将此轮的卡框打磨误称 A05 原画入库。
 - **本次验证已通过**：代码提交 `46146911b399c3d21e97ef9c496834babb28eeb4`；Quality <https://github.com/kunlong-luo/monster-apartment/actions/runs/41269106559>；Desktop Visual Review <https://github.com/kunlong-luo/monster-apartment/actions/runs/41269106523>（含 `e2e/summon-result-desktop.spec.ts`）；GitHub Pages 发布 <https://github.com/kunlong-luo/monster-apartment/actions/runs/41269154331>。这些是行为/构图门禁，不代表五张正式 CG 的原画审查通过。
+
+## 十二、A05 · 卡池主题元数据的人物肖像统一（2026-11-01）
+
+- 仓库图像审计确认：目前没有合格的独立 3:4 全身 CG 资产，历史大图是游戏设计稿/场景和过渡肖像。图像生成再次给出带错误身份与概率的整张 UI 图，不作为月纱 CG 使用。
+- 修复 `GACHA_POOLS` 三个主题卡池的原始头像：赤焰工坊 → `cinder/face.webp`、荆棘回响 → `fern/face.webp`、潮汐来信 → `brook/face.webp`。避免任何消费卡池数据的未来视图把月纱误显示为其他人物。
+- 卡池按钮新增稳定 `data-pool-id` 和测试定位符；新增定向 Playwright 测试，验证 PC 四种人物主题头像确实加载、切换后人物不同、显示真实基础概率且没有主题 UP；单元测试约束卡池目录和角色肖像一致。
+- 保持抽卡 RNG、保底、存档及现有角色 CG 审核门槛不变。三视口原画身份审核仍是进入正式生产卡面的前提，本轮仍为 CG 0/5。
