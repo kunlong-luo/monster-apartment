@@ -121,4 +121,12 @@
 - 十连自动播放完整结束后将视角停在最高品阶已获人物卡，卡牌和历史仍按真实召唤顺序收录，绝不重新抽取或额外扣除资源。
 - 进入结果页后如果玩家开启系统或游戏“减少动效”，取消旧定时器并立即展开所有已结算的卡片。增加真实浏览器用例检查中途切换动效、最高品阶聚焦和存档仍为十张。
 - 现有最高品阶视效继续放在侧栏与卡框外，不覆盖人物脸部；照片保持比例展示。独立全身 CG 未完成，不伪称已替换。
-- 本轮验收须等 Quality、Desktop Visual Review 和 Pages 成功，再回填结果。
+- **验收已完成**：9ed7436 + 8df00f5 两次提交组成此轮代码；Quality、Desktop Visual Review 和 Pages 均已成功，详见下方记录。
+
+### 抽卡动画状态机最终验收（2026-11-01）
+
+- 代码提交：`9ed7436f51dcf4ec37983d1e081edfae68bc0f5a`；严格 TypeScript 未使用导入修复：`8df00f53a61c51e99ea2c4816edcd1a2ac991076`。
+- **Quality 成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41265195009>（包含新纯 reducer 单测、静态导出与 Pixi 构建）。
+- **Desktop Visual Review 成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41265194850>（运行了 `e2e/summon-result-desktop.spec.ts`，包含中途开启减少动效与十张实际落盘记录不变的浏览器验证）。
+- **Pages 部署成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41265244992>。
+- 十连完成后聚焦真实最高品阶的结果卡；重播、暂停和减少动效不做任何召唤结算。当前卡片继续使用已审核肖像；五张独立全身 CG 制作仍列为 A05 未完成，不属于本轮修复范围。设计图与截图逐像素审核也尚未完成。
