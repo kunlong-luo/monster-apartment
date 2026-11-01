@@ -91,6 +91,16 @@ test('an acquired heroine can be visited directly from the real collection, then
   await page.getByRole('button',{name:'查看已收录契约、首饰和装备'}).click();
   const archive=page.getByRole('dialog',{name:'角色契约图鉴与装备锻造'});
   await expect(archive.getByTestId('collection-visit-brook-tide')).toBeVisible();
+  // Link must resolve through Next's basePath in both dev and GitHub Pages.
+  const roomLink=await archive.getByTestId('collection-visit-brook-tide').evaluate(el=>{
+    const link=new URL((el as HTMLAnchorElement).href);
+    const base=window.location.pathname.split('/characters')[0];
+    return {origin:link.origin,currentOrigin:window.location.origin,
+      targetPath:link.pathname,base,search:link.search};
+  });
+  expect(roomLink.origin).toBe(roomLink.currentOrigin);
+  expect(roomLink.targetPath).toBe(roomLink.base+'/characters/');
+  expect(roomLink.search).toBe('?visit=brook');
   await expect(archive.getByTestId('collection-visit-cinder-ember')).toHaveCount(0);
   await archive.getByTestId('collection-visit-brook-tide').click();
   await expect(page).toHaveURL(/\/characters\/?\?visit=brook$/);

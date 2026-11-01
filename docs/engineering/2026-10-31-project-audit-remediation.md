@@ -93,3 +93,10 @@
 - 父组件仍是 `useGacha` 和抽卡弹窗的唯一控制器；子组件只接收真实状态和回调，不读写存档、概率、奖励或资源。
 - 保持五个卡池、单抽/十连、90 抽保底、卡池主题无 UP、实际概率公示、装备/收藏入口、资源异常保护和现有 className/data-testid；不更改路由/游戏逻辑/美术。
 - 代码修复提交为 `279a9ba68f54ff35b4e2043142d5b25c46fef598` + `a0eaf88e65a5fe964c2e101046110e552d5a3d95`。**Quality 已通过**（[41262808023](https://github.com/kunlong-luo/monster-apartment/actions/runs/41262808023)），**Pages 已发布**（[41262854945](https://github.com/kunlong-luo/monster-apartment/actions/runs/41262854945)）。**Desktop Visual Review 已通过**（[41262807980](https://github.com/kunlong-luo/monster-apartment/actions/runs/41262807980)，真实浏览器测试）。未执行人工逐像素对图，也未生成正式人物全身 CG。完整原画仍未完成，不能把组件拆分冒充艺术升级。
+
+## 八、A09 · 图鉴与锻造弹窗组件化（2026-11-01）
+
+- 新增 `SummonCollectionArchive`：统一承载角色契约卡、异兽契约档案及弹窗关闭等展示，不自建/复制收藏存档；组件在关闭时保持挂载，选中的装备人物与锻造反馈不因临时关闭而丢失。
+- 新增 `SummonForgePanel`：只接收收藏数据、选中人物及回调，继续通过既有 `commitCollection({type:'forge'|'equip'})` 结算，保留存档不可用时禁用按钮和所有当前 data-testid。
+- 修复已收录卡片“拜访私人房间”使用根相对原生 `<a>` 导致 GitHub Pages 子路径丢失的问题：改用 Next `Link`，保留同一路由和 `?visit=...`，添加桌面浏览器目标路径断言。
+- 本阶段不改变抽卡引擎、角色概率/90 抽保底、装备价格、能力增益、资源存档键、已有卡牌归属，也不替换原画；自动 Quality、Desktop Visual Review、Pages 结果另行回填。
