@@ -208,3 +208,6 @@
 - 收藏详情采用单一图鉴 Dialog 内切换展示，保留真实装备、碎片与装备目标状态；图片响应式等比 `contain`，不盖住鞋尖、奖励或其他页面 HUD。可从详情返回图鉴并继续锻造。
 - 增加真实浏览器的 PC 1440×900、移动端 390×844 的图片解码、真实 1086×1448 尺寸、URL、横向溢出、返回与存档不变的检查；Desktop Visual Review 的重点回归包含此新增用例。
 - 第二张「月纱·月下誓约」的单人 CG 生成持续出现错误五人宣传 UI，不能裁切替代或冒充同一张脸；**本轮没有新增第二张 CG，正式 production 仍 0/5，已入库候选仍 1/5**。
+
+- **验收全部成功**：代码 `f62285574e77de92c4ab2034fe3e4ffb1f07e17f`；[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/41290956627)（TypeScript、Lint、Vitest、Next、Pixi）通过；[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/41290956605) 通过（包含 1440×900 与 390×844 月纱全身原画浏览器解码/截图、图鉴返回与既有工坊回归）；[GitHub Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/41291003569) 发布成功。线上入口 `/monster-apartment/characters/#summon-screen`。截图回归不等于人工逐像素审核，不改变 CG 原生高清审核条件。
+
