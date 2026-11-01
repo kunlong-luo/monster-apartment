@@ -2,7 +2,7 @@
 
 import {useEffect,useReducer} from 'react';
 import type {GachaRarity} from '@/lib/summon/gacha-engine';
-import {getNextUnrevealedIndex,getTenPullHoldMs,TEN_PULL_FIRST_REVEAL_MS,
+import {getTenPullHoldMs,TEN_PULL_FIRST_REVEAL_MS,
   initialTenPullPlayback,reduceTenPullPlayback} from '@/lib/summon/ten-pull-playback';
 
 /** Reveal navigation only. No access to gacha currency, RNG or localStorage. */
