@@ -6,7 +6,6 @@ export function SummonActionBar({disabled,pityCountdown,onHistory,onSingle,onTen
   onHistory:()=>void;onSingle:()=>void;onTen:()=>void;
 }){
   return (
-          {/* Gacha Action Control Bar */}
           <div className="w-full max-w-2xl flex flex-col items-center gap-2 mb-2">
             <div className="flex w-full items-center justify-center gap-2 sm:gap-4">
               {/* History Button */}
