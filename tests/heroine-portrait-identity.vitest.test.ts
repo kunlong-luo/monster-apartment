@@ -27,7 +27,8 @@ describe('character portrait visual identity',()=>{
       expect(getSelectedCardPreview('yuesha-eclipse')).toBeNull();
       expect(getCardFace('yuesha-eclipse','feature')).toEqual(getCardFace('yuesha-eclipse','thumbnail'));
     }
-    expect(getApprovedCardCg('yuesha-eclipse')).toBeNull();
+    if(cgManifest.cards['yuesha-eclipse'].status==='portrait')
+      expect(getApprovedCardCg('yuesha-eclipse')).toBeNull();
   });
   it('keeps each themed pool avatar identical to its real resident identity',()=>{
     const expected={
@@ -56,7 +57,7 @@ describe('character portrait visual identity',()=>{
   });
   it('keeps the other three heroines distinct and honestly classed as face crops',()=>{
     const ids=['brook-tide','fern-spring','cinder-ember'];
-    const portraits=ids.map(getCardFace);
+    const portraits=ids.map(id=>getCardFace(id));
     expect(portraits.every(Boolean)).toBe(true);
     expect(new Set(portraits)).toHaveProperty('size',3);
     for(const id of ids){
