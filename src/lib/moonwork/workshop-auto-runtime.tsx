@@ -19,7 +19,8 @@ export async function toggleWorkshopAuto():Promise<AutoToggleResult>{
       // Production state and clock share ONE existing, validated save write.
       window.localStorage.setItem(SAVE_KEY,JSON.stringify(next));
       window.dispatchEvent(new Event(CHANGE_EVENT));
-      return next.auto?.enabled?'enabled':'paused';
+      const outcome:AutoToggleResult=next.auto?.enabled?'enabled':'paused';
+      return outcome;
     });
   }catch{return 'error';}
 }
