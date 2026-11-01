@@ -421,6 +421,7 @@ export function WorkshopControls({
         <button type="button" data-testid="workshop-auto-toggle"
           aria-pressed={Boolean(world.auto?.enabled)}
           onClick={onAutoToggle}
+          title="自动产线按 30/45/60 秒设备节拍生产，不会推进委托日或重复扣款"
           className="min-h-11 flex-1 rounded-md border border-gothic-gold/70 bg-gothic-wine px-2 text-xs font-medium text-gothic-ivory hover:border-gothic-glow focus-visible:outline-2">
           <span className="inline-flex items-center gap-1.5">
             {world.auto?.enabled?<Pause aria-hidden="true" size={15}/>:<Play aria-hidden="true" size={15}/>}
@@ -434,7 +435,7 @@ export function WorkshopControls({
           <span className="inline-flex items-center gap-1.5"><Play aria-hidden="true" size={15} fill="currentColor" strokeWidth={1.5}/>手动轮班</span>
         </button>
         {world.auto?.enabled&&<span data-testid="workshop-auto-status"
-          className="text-[10px] text-gothic-muted" role="status">
+          className="sr-only" role="status">
           自动产线：水汽 30 秒 / 温室 45 秒 / 熔炉 60 秒，委托天数不自动推进。
         </span>}
         {autoError&&<span role="alert" className="text-[10px] text-rose-200">{autoError}</span>}
