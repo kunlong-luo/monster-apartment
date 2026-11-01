@@ -153,3 +153,5 @@
 - 修复 `GACHA_POOLS` 三个主题卡池的原始头像：赤焰工坊 → `cinder/face.webp`、荆棘回响 → `fern/face.webp`、潮汐来信 → `brook/face.webp`。避免任何消费卡池数据的未来视图把月纱误显示为其他人物。
 - 卡池按钮新增稳定 `data-pool-id` 和测试定位符；新增定向 Playwright 测试，验证 PC 四种人物主题头像确实加载、切换后人物不同、显示真实基础概率且没有主题 UP；单元测试约束卡池目录和角色肖像一致。
 - 保持抽卡 RNG、保底、存档及现有角色 CG 审核门槛不变。三视口原画身份审核仍是进入正式生产卡面的前提，本轮仍为 CG 0/5。
+
+- 本轮验收（`9d1b43c7c1855016c1764cbc3c6fdab07962067e`）：Quality [41270231555](https://github.com/kunlong-luo/monster-apartment/actions/runs/41270231555)、Desktop Visual Review [41270231581](https://github.com/kunlong-luo/monster-apartment/actions/runs/41270231581)、Pages [41270277543](https://github.com/kunlong-luo/monster-apartment/actions/runs/41270277543) 成功。CG 仍为 0/5。
