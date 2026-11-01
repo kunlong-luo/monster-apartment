@@ -262,11 +262,22 @@ export function executeSummon(
   poolId: string = 'mythic-eclipse'
 ): { success: boolean; characters: SummonableCharacter[]; error?: string; newState?: GachaState } {
   if(gachaSaveStatus()!=='ok')return {success:false,characters:[],error:'召唤存档不可读取；为保护已有进度，操作已停止。'};
-  let currentCollection:ReturnType<typeof decodeCollection>;
-  try{currentCollection=decodeCollection(window.localStorage.getItem(COLLECTION_KEY));}
-  catch{return {success:false,characters:[],error:'收藏存档不可读取，无法安全召唤。'};}
+  // Snapshot both original saves BEFORE rolling. A concurrent update must
+  // fail the commit precondition rather than be overwritten by stale results.
+  let previousGacha:string|null;
+  let previousCollection:string|null;
+  try{
+    previousGacha=window.localStorage.getItem(GACHA_STATE_KEY);
+    previousCollection=window.localStorage.getItem(COLLECTION_KEY);
+  }catch{return {success:false,characters:[],error:'召唤或角色收藏存档无法读取，结算已停止。'};}
+  const currentCollection=decodeCollection(previousCollection);
   if(currentCollection.status!=='ok')return {success:false,characters:[],error:'角色收藏存档已损坏或不可用；不会消耗资源。'};
-  const current = readGachaState();
+  let parsed:unknown;
+  try{parsed=previousGacha===null?INITIAL_GACHA_STATE:JSON.parse(previousGacha);}
+  catch{return {success:false,characters:[],error:'召唤存档无法解析，结算已停止。'};}
+  if(!validGachaState(parsed))
+    return {success:false,characters:[],error:'召唤存档校验失败，结算已停止。'};
+  const current=parsed;
   const pool = GACHA_POOLS.find((p) => p.id === poolId) || GACHA_POOLS[0];
 
   // Currency deduction: Prefer tickets first, then blood crystals
@@ -353,14 +364,6 @@ export function executeSummon(
   }
   // Journal both keys BEFORE modifying either one. A crash after only one
   // write is recoverable on the next read; a completed write is not rerolled.
-  let previousGacha:string|null;
-  let previousCollection:string|null;
-  try{
-    previousGacha=window.localStorage.getItem(GACHA_STATE_KEY);
-    previousCollection=window.localStorage.getItem(COLLECTION_KEY);
-  }catch{
-    return {success:false,characters:[],error:'无法读取本地结算状态，请检查浏览器存储权限。'};
-  }
   const settled=commitSummonTransaction(
     {gacha:previousGacha,collection:previousCollection},
     {gacha:JSON.stringify(nextState),

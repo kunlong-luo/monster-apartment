@@ -77,15 +77,10 @@ describe('a faithful functional summoning screen',()=>{
     saved.set(GACHA_STATE_KEY,original);
     let failSecond=true;
     let failRollback=true;
-    const write=vi.spyOn(window.localStorage,'setItem').mockImplementation((key:string,val:string)=>{
-      if(key===GACHA_STATE_KEY&&failSecond)throw Error('second write failed');
-      if(key===COLLECTION_KEY&&val===original&&failRollback)throw Error('rollback failed');
-      saved.set(key,val);
-    });
-    // Start with a persisted collection, so rollback itself must use setItem.
+    // Persist an existing collection so a failed rollback must write it back.
     const pristine='{"version":1,"draws":[],"shards":0,"inventory":[],"equipped":{}}';
     saved.set(COLLECTION_KEY,pristine);
-    write.mockImplementation((key:string,val:string)=>{
+    const write=vi.spyOn(window.localStorage,'setItem').mockImplementation((key:string,val:string)=>{
       if(key===GACHA_STATE_KEY&&failSecond)throw Error('second write failed');
       if(key===COLLECTION_KEY&&val===pristine&&failRollback)throw Error('rollback failed');
       saved.set(key,val);
