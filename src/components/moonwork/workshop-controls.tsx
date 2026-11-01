@@ -437,7 +437,7 @@ export function WorkshopControls({
           className="text-[10px] text-gothic-muted" role="status">
           自动产线：水汽 30 秒 / 温室 45 秒 / 熔炉 60 秒，委托天数不自动推进。
         </span>}
-        {autoError&&<span role="alert" className="text-[10px] text-rose-200">{autoError}</span>
+        {autoError&&<span role="alert" className="text-[10px] text-rose-200">{autoError}</span>}
       </div>
     </section>
   );
