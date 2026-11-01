@@ -21,7 +21,7 @@ describe('A07 opt-in realtime production, independent of day/contract engine',()
  });
  it('applies each craft interval and linked inputs in due-time order, never advancing day or orders',()=>{
   const start=startWorkshopAuto(setup(),1000);
-  expect(simulateWorkshopAutoUntil(start,30999)).toEqual(start.auto?{...start,auto:{...start.auto,lastSimulatedAt:30999}}:start);
+  expect(simulateWorkshopAutoUntil(start,30999)).toBe(start);
   const w=simulateWorkshopAutoUntil(start,31000);
   expect(w.tiles[5]?.stored).toBe(2);
   expect(w.tiles[6]?.stored).toBe(0);
