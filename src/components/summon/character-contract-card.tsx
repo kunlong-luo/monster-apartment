@@ -52,7 +52,8 @@ export function CharacterContractCard({character,mode='feature',awardTestId}:{
           <span>{character.firstAcquired?'首次收录':'重复契约'}</span>
           <span className="contract-card__shards"><Gem aria-hidden="true" size={13}/> +{character.awardedShards??0} 锻造碎片</span>
         </p>
-        {mode==='feature'&&<p className="contract-card__art-status">{portraitKind==='full-body-cg'?'契约典藏 · 角色原画':'契约典藏 · 人物肖像'}</p>}
+        {mode==='feature'&&<p className="contract-card__art-status">{portraitKind==='full-body-cg'?'契约典藏 · 角色原画':
+          candidate?'契约典藏 · 月蚀立绘':'契约典藏 · 人物肖像'}</p>}
       </div>
     </div>
   </article>;

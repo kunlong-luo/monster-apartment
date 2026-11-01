@@ -1,4 +1,7 @@
 import {describe,expect,it} from 'vitest';
+import {readFileSync,statSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {resolve} from 'node:path';
 import {HEROINE_FACE_ART,getCardFace,getApprovedCardCg,getCardPortraitFallback,getCardPortraitKind,getSelectedCardPreview,YUESHA_ECLIPSE_PREVIEW_PATH} from '../src/components/summon/heroine-portrait-assets';
 import cgManifest from '../public/art/beauty-beasts/characters/cg-manifest.json';
 import {GACHA_CHARACTERS,GACHA_POOLS} from '../src/lib/summon/gacha-engine';
@@ -17,6 +20,18 @@ describe('character portrait visual identity',()=>{
   });
   it('keeps the player-selected YueSha preview separate from official CG approval',()=>{
     expect(YUESHA_ECLIPSE_PREVIEW_PATH).toBe('public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp');
+    const preview=readFileSync(resolve(YUESHA_ECLIPSE_PREVIEW_PATH));
+    expect(preview.toString('ascii',0,4)).toBe('RIFF');
+    expect(preview.toString('ascii',8,12)).toBe('WEBP');
+    expect(statSync(resolve(YUESHA_ECLIPSE_PREVIEW_PATH)).size).toBe(456622);
+    expect(createHash('sha256').update(preview).digest('hex'))
+      .toBe('7f2f34b205b156f08c02be683244175951c45da6cbab1113930bee0ae971b8ae');
+    expect(getSelectedCardPreview('yuesha-eclipse'))
+      .toMatch(/\/art\/beauty-beasts\/characters\/yuesha\/cg-eclipse-candidate\.webp$/);
+    expect(getCardFace('yuesha-eclipse','feature'))
+      .toBe(getSelectedCardPreview('yuesha-eclipse'));
+    expect(getCardFace('yuesha-eclipse','thumbnail'))
+      .not.toBe(getSelectedCardPreview('yuesha-eclipse'));
     expect(getSelectedCardPreview('brook-tide')).toBeNull();
     expect(getSelectedCardPreview('yuesha-vow')).toBeNull();
     // This commit only introduces an opt-in preview resolver. The binary

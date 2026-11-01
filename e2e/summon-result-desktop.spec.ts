@@ -1,5 +1,25 @@
 import {test,expect} from '@playwright/test';
 
+test('user-selected YueSha Eclipse preview is decoded and displayed without CG rank change',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:30000});
+  const image=page.getByTestId('summon-featured-card-image');
+  await expect(image).toBeVisible();
+  await expect.poll(()=>image.evaluate(node=>{
+    const img=node as HTMLImageElement;
+    return img.complete&&img.naturalWidth>0
+      ?{width:img.naturalWidth,height:img.naturalHeight,
+        path:new URL(img.currentSrc).pathname,fit:getComputedStyle(img).objectFit}:null;
+  }),{timeout:15000}).toMatchObject({
+    width:1086,height:1448,fit:'contain',
+    path:expect.stringMatching(/\/art\/beauty-beasts\/characters\/yuesha\/cg-eclipse-candidate\.webp$/),
+  });
+  // Candidate illustration is not approved production CG.
+  await expect(page.getByTestId('summon-featured-card-tier')).not.toContainText('制作中');
+  await page.screenshot({path:'test-results/desktop-yuesha-eclipse-preview.png',animations:'disabled'});
+});
+
 test('PC pool carousel preserves four distinct heroine portraits and real base rates',async({page})=>{
   test.setTimeout(90000);
   await page.setViewportSize({width:1440,height:900});

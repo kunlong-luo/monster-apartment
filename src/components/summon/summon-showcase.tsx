@@ -29,13 +29,16 @@ export function SummonShowcase({featuredWorker,featuredName,featuredBeastName,fe
             {/* Card Portrait */}
             <div className="relative h-44 w-full overflow-hidden rounded-xl border border-[#e2b57866] bg-[#22101e]">
               <Image
-                src={featuredWorker?HEROINE_FACE_ART[featuredWorker]:moonveilPortrait}
+                src={featuredWorker?HEROINE_FACE_ART[featuredWorker]:
+                  getCardFace('yuesha-eclipse','feature')??moonveilPortrait}
+                fallbackSrc={featuredWorker?undefined:moonveilPortrait}
                 alt={featuredName}
+                data-testid="summon-featured-card-image"
                 fill
                 loading="eager"
                 unoptimized
                 sizes="(max-width:1023px) 50vw,240px"
-                className="object-cover object-[55%_25%]"
+                className={featuredWorker?'object-cover object-[55%_25%]':'object-contain'}
               />
             </div>
 
@@ -125,7 +128,7 @@ export function SummonShowcase({featuredWorker,featuredName,featuredBeastName,fe
                   title={character.title} aria-label={`查看契约档案：${character.title}`}
                   onClick={() => onOpenCollection()}
                   className="relative size-10 shrink-0 overflow-hidden rounded-full border border-[#b88c58] bg-[#2a1023] text-xs font-bold text-[#f6d5aa] transition hover:border-[#ffe3b3] hover:scale-105">
-                  <Image src={getCardFace(character.id)??siteAssetUrl(character.avatar)} alt=""
+                  <Image src={getCardFace(character.id,'thumbnail')??siteAssetUrl(character.avatar)} alt=""
                     fill sizes="40px" className="object-cover object-top"
                     data-portrait-source="dedicated-heroin-face"/>
                 </button>

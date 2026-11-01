@@ -3,7 +3,8 @@
   "cards": {
     "yuesha-eclipse": {
       "status": "portrait",
-      "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse.webp"
+      "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse.webp",
+      "previewPath": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp"
     },
     "yuesha-vow": {
       "status": "portrait",
