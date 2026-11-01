@@ -3,7 +3,7 @@
 import {useState} from 'react';
 import Image from 'next/image';
 import type {ReactNode} from 'react';
-import {Waves,Sprout,Gem,Settings2,ClipboardList,ChevronRight,Play,MoveHorizontal,TriangleAlert} from 'lucide-react';
+import {Waves,Sprout,Gem,Settings2,ClipboardList,ChevronRight,Play,Pause,MoveHorizontal,TriangleAlert} from 'lucide-react';
 import type {LucideIcon} from 'lucide-react';
 import brookFace from '../../../public/art/beauty-beasts/characters/brook/face.webp';
 import fernFace from '../../../public/art/beauty-beasts/characters/fern/face.webp';
@@ -39,9 +39,13 @@ export function WorkshopControls({
   selectedTile,
   isMoving,
   onAction,
+  onAutoToggle,
+  autoError,
 }: {
   world: WorkshopState;
   onAction: (action: WorkshopAction) => void;
+  onAutoToggle: () => void;
+  autoError: string;
   chosenWorker: WorkerId | null;
   chosenMachine: Craft | null;
   selectedTile: Machine | null;
@@ -414,11 +418,26 @@ export function WorkshopControls({
           className="min-h-11 shrink-0 rounded-lg border border-gothic-brass/70 bg-gothic-panel/90 px-3 text-xs font-bold text-gothic-ivory hover:border-gothic-glow">
           <span className="inline-flex items-center gap-1.5"><MoveHorizontal aria-hidden="true" size={15} strokeWidth={1.7}/>{isMoving?'取消移动':'移动设备'}</span>
         </button>}
-        <button type="button" id="shift" data-testid="v2-shift"
-          onClick={()=>onAction({type:'shift'})} aria-label="开始一天生产轮班"
-          className="gothic-action-button shift-btn min-h-11 flex-1 rounded-lg border px-4 text-sm font-semibold transition-colors focus-visible:outline-2 motion-reduce:transition-none">
-          <span className="inline-flex items-center gap-2"><Play aria-hidden="true" size={16} fill="currentColor" strokeWidth={1.5}/>开始生产轮班</span>
+        <button type="button" data-testid="workshop-auto-toggle"
+          aria-pressed={Boolean(world.auto?.enabled)}
+          onClick={onAutoToggle}
+          className="min-h-11 flex-1 rounded-md border border-gothic-gold/70 bg-gothic-wine px-2 text-xs font-medium text-gothic-ivory hover:border-gothic-glow focus-visible:outline-2">
+          <span className="inline-flex items-center gap-1.5">
+            {world.auto?.enabled?<Pause aria-hidden="true" size={15}/>:<Play aria-hidden="true" size={15}/>}
+            {world.auto?.enabled?'暂停自动生产':'开启自动生产'}
+          </span>
         </button>
+        <button type="button" id="shift" data-testid="v2-shift"
+          disabled={Boolean(world.auto?.enabled)}
+          onClick={()=>onAction({type:'shift'})} aria-label="开始一天生产轮班"
+          className="gothic-action-button shift-btn min-h-11 flex-1 rounded-lg border px-2 text-xs font-semibold transition-colors focus-visible:outline-2 motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-45">
+          <span className="inline-flex items-center gap-1.5"><Play aria-hidden="true" size={15} fill="currentColor" strokeWidth={1.5}/>手动轮班</span>
+        </button>
+        {world.auto?.enabled&&<span data-testid="workshop-auto-status"
+          className="text-[10px] text-gothic-muted" role="status">
+          自动产线：水汽 30 秒 / 温室 45 秒 / 熔炉 60 秒，委托天数不自动推进。
+        </span>}
+        {autoError&&<span role="alert" className="text-[10px] text-rose-200">{autoError}</span>
       </div>
     </section>
   );
