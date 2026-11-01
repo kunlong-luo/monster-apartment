@@ -130,3 +130,10 @@
 - **Desktop Visual Review 成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41265194850>（运行了 `e2e/summon-result-desktop.spec.ts`，包含中途开启减少动效与十张实际落盘记录不变的浏览器验证）。
 - **Pages 部署成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41265244992>。
 - 十连完成后聚焦真实最高品阶的结果卡；重播、暂停和减少动效不做任何召唤结算。当前卡片继续使用已审核肖像；五张独立全身 CG 制作仍列为 A05 未完成，不属于本轮修复范围。设计图与截图逐像素审核也尚未完成。
+
+## 十、A05 · 角色 CG 生产设计包与审核预览（2026-11-01）
+
+- 所有五张卡 `cg-manifest.json` 目前仍为 `portrait`。两次尝试生成的图像均变成了**整张游戏 UI/错误人物与概率信息**，并非独立 3:4 全身立绘；此类图片不入库、不改 production 标志、不冒充完成。
+- 新增 `docs/design/2026-11-01-character-cg-production-brief.md`：分别锁定月纱两版、泉泡、青枝、炽角的成年人物身份、服装、站姿、光源和兽类剪影规则；避免同脸、裁手裁脚及错误材料。
+- 强化 `scripts/prepare-character-cg.mjs`：生成线下审核包时附带仓库现有 `reference-face.webp`，使用缩放后保持真实视口比例的 1440×900、1648×928 与 390×844 卡面预览，并列出需要人工检查的项目。只提交审核程序与规范，不做虚假素材晋级。
+- 新增 Vitest `tests/character-cg-intake.vitest.test.ts` 检查五个插画槽位、正确的身份参考和三种视口预览。CG 图片本身仍待合格的单幅原生插画，验收依旧遵循原正式来源审核、权限及字节哈希闸门。

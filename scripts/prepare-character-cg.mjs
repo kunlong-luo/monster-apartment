@@ -22,27 +22,56 @@ function parse(argv){
 export function cardReviewHtml(card){
   const title={'yuesha-eclipse':'月纱 · 神话月蚀','yuesha-vow':'月纱 · 月下誓约',
     'brook-tide':'泉泡 · 潮汐','fern-spring':'青枝 · 春芽','cinder-ember':'炽角 · 余烬'}[card];
-  const panels=[['desktop-1440x900',1440,900,430],['desktop-1648x928',1648,928,470],
-    ['mobile-390x844',390,844,350]];
-  return '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
-    '<title>'+title+' · 独立 CG 审核</title><style>'+
-    '*{box-sizing:border-box}body{margin:0;background:#0f0c12;color:#f1e5d6;font:14px system-ui;padding:24px}'+
-    'h1{font:500 28px Georgia,serif}main{display:flex;flex-wrap:wrap;align-items:start;gap:30px}'+
-    'section{max-width:100%;overflow:auto}section h2{font-size:14px;color:#d9c2a1}'+
-    '.scene{height:450px;max-width:100%;display:grid;place-items:center;background:#1b161d;border:1px solid #a68d70;overflow:hidden}'+
-    '.card{height:94%;aspect-ratio:3/4;max-width:90%;position:relative;overflow:hidden;'+
-    'border:1px solid #a68d70;border-radius:12px;background:#24141d}'+
-    'img{display:block;width:100%;height:100%;object-fit:contain}'+
-    'footer{position:absolute;bottom:0;left:0;right:0;min-height:20%;padding:12px;'+
-    'background:linear-gradient(transparent,#1b161de8 30%,#1b161d 100%);font:500 18px Georgia,serif}'+
-    '.note{font-size:12px;color:#bdad9d;line-height:1.7;max-width:760px}</style>'+
-    '<h1>'+title+' · 原画候选审核（尚未批准）</h1>'+
-    '<p class="note">真实候选应为原生至少 1536×2048、3:4、无文字/图标/按钮、头足完整的人物 CG。'+
-    '此处仅是构图预览，不会自动确认版权、全身、手脚或身份一致；需人工逐项签署 review-status.DRAFT.json。</p>'+
-    '<main>'+panels.map(([id,w,h,cw])=>'<section><h2>'+id+'</h2><div class="scene" style="width:'+Math.min(w,850)+'px">'+
-    '<div class="card" style="max-width:'+cw+'px"><img src="./cg-candidate.webp" alt="'+title+'">'+
-    '<footer>'+title+'</footer></div></div></section>').join('')+'</main></html>';
+  const panels=[['desktop-1440x900',1440,900,690],['desktop-1648x928',1648,928,730],
+    ['mobile-390x844',390,844,390]];
+  const viewport=panels.map(([id,w,h,target])=>{
+    const scale=target/w;
+    return '<section class="panel" data-viewport="'+id+'"><h2>'+id+' · '+w+'×'+h+'</h2>'+
+      '<div class="preview" style="width:'+target+'px;height:'+Math.round(h*scale)+'px">'+
+      '<div class="scene" style="width:'+w+'px;height:'+h+'px;transform:scale('+scale+')">'+
+      '<div class="card"><img src="./cg-candidate.webp" alt="'+title+' 的完整 CG 候选">'+
+      '<div class="card-footer">'+title+'</div></div></div></div></section>';
+  }).join('');
+  return '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">'+
+    '<meta name="viewport" content="width=device-width,initial-scale=1">'+
+    '<title>'+title+' · CG 构图与人物身份审查</title><style>'+
+    '*{box-sizing:border-box}body{margin:0;background:#0f0c12;color:#f1e5d6;'+
+    'font:14px system-ui;padding:clamp(12px,2vw,30px)}'+
+    'h1{font:500 28px Georgia,serif;margin:0 0 14px}'+
+    'h2{font-size:14px;font-weight:500;color:#d9c2a1}'+
+    'p{line-height:1.8;max-width:86ch;color:#bdad9d}'+
+    'main{display:flex;flex-wrap:wrap;gap:20px;align-items:start}'+
+    '.panel{max-width:100%;overflow-x:auto}'+
+    '.preview{position:relative;max-width:none;overflow:hidden;border:1px solid #a68d70}'+
+    '.scene{position:absolute;left:0;top:0;display:grid;place-items:center;'+
+    'transform-origin:top left;background:radial-gradient(ellipse at 50% 38%,#51283288,#0f0c12 75%)}'+
+    '.card{width:min(89%,470px);aspect-ratio:3/4;max-height:86%;position:relative;'+
+    'overflow:hidden;border:1px solid #a68d70;border-radius:14px;background:#1b161d}'+
+    '.card img{display:block;width:100%;height:100%;object-fit:contain}'+
+    '.card-footer{position:absolute;bottom:0;left:0;right:0;height:18%;padding:14px;'+
+    'background:linear-gradient(transparent,#1b161de8 40%,#1b161d);'+
+    'display:flex;align-items:end;font:500 24px Georgia,serif}'+
+    '.identity{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin:18px 0 25px}'+
+    '.identity img{display:block;width:140px;max-width:100%;aspect-ratio:1;object-fit:contain;'+
+    'border:1px solid #a68d70;border-radius:7px}'+
+    '.identity p{max-width:62ch;margin:0}'+
+    '.checks{max-width:850px;line-height:2;color:#bdad9d}'+
+    '</style></head><body><h1>'+title+' · 独立 CG 审核候选（未批准）</h1>'+
+    '<p>须为原生至少 1536×2048、3:4、头发到鞋尖完整、无烘焙文字和 UI 的独立绘画。'+
+    '本页仅用于构图和身份人工核对，不会自动批准版权、手脚与人物一致性。</p>'+
+    '<div class="identity"><img src="./reference-face.webp" alt="仓库既有角色身份基准">'+
+    '<p><strong>现有正式角色面孔，必须与候选一致</strong>：请核对脸型、眼型、发色、发际线与年龄感。'+
+    '严禁把其他角色、男性形象或整张游戏 UI 截图冒充人物全身 CG。</p></div>'+
+    '<main>'+viewport+'</main>'+
+    '<h2>人工签署前必须完成</h2><ol class="checks">'+
+    '<li>真实原始分辨率与 SHA-256 一致，不能是低清图放大</li>'+
+    '<li>头发、双手、双足和全身完整，关键部位不被底部铭牌遮挡</li>'+
+    '<li>身份一致，服装及装备有独特设计；无文字、按钮或虚构概率</li>'+
+    '<li>上述三种实际屏幕构图均逐项检查</li>'+
+    '<li>原始来源、版权与商用许可由审核人确认并记录</li></ol>'+
+    '</body></html>';
 }
+
 function main(argv){
   const {card,source,out}=parse(argv),src=resolve(source),target=resolve(out);
   if(extname(src).toLowerCase()!=='.webp'||!existsSync(src)||!statSync(src).isFile())
@@ -50,8 +79,14 @@ function main(argv){
   const bytes=readFileSync(src),image=inspectCharacterCg(bytes);
   if(existsSync(join(target,'review-status.DRAFT.json'))||existsSync(join(target,'cg-candidate.webp')))
     throw Error('Refusing to overwrite an existing review');
+  const resident=card.split('-')[0];
+  const face=join(resolve(import.meta.dirname,'..'),
+    'public/art/beauty-beasts/characters',resident,'face.webp');
+  if(!existsSync(face))throw Error('Reference face missing for '+resident);
   mkdirSync(target,{recursive:true});
   copyFileSync(src,join(target,'cg-candidate.webp'));
+  // A real identity comparison travels with the offline review bundle.
+  copyFileSync(face,join(target,'reference-face.webp'));
   writeFileSync(join(target,'review.html'),cardReviewHtml(card));
   const review={
     card,status:'needs-human-review',approved:false,humanVisualReview:false,
