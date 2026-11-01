@@ -18,9 +18,14 @@ test('PC pool carousel preserves four distinct heroine portraits and real base r
     await pool.click();
     await expect(pool).toHaveAttribute('aria-pressed','true');
     await expect(page.getByTestId('summon-featured-portrait')).toHaveAttribute('data-featured-character',resident);
-    const src=await page.getByTestId('summon-featured-portrait').locator('img').first().evaluate(
-      img=>{const el=img as HTMLImageElement;return el.complete&&el.naturalWidth>0?el.currentSrc:'';});
-    expect(src).not.toBe('');
+    const portrait=page.getByTestId('summon-featured-portrait').locator('img').first();
+    // A source swap is asynchronous. Wait for the decoded new resident
+    // image, not merely the changed data attribute on the surrounding div.
+    await expect.poll(()=>portrait.evaluate(img=>{
+      const el=img as HTMLImageElement;
+      return el.complete&&el.naturalWidth>0&&el.currentSrc.length>0;
+    }),{timeout:12000}).toBe(true);
+    const src=await portrait.evaluate(img=>(img as HTMLImageElement).currentSrc);
     seen.set(resident,src);
     await expect(page.getByTestId('summon-featured-odds')).toContainText('主题不额外加成');
   }
