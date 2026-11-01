@@ -87,6 +87,49 @@ test('canonical summon archive forges and equips a real item without a duplicate
   await expect(page.getByTestId('gallery-collected-count')).toContainText('1/5');
 });
 
+test('collected YueSha opens the real full-body artwork at desktop and mobile sizes',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/characters/#summon-screen');
+  await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:25_000});
+  await page.evaluate(()=>localStorage.setItem('monster-apartment:character-collection:v1',
+    JSON.stringify({version:1,draws:['yuesha-eclipse'],shards:0,inventory:[],equipped:{}})));
+  await page.reload();
+  const openGallery=page.getByRole('button',{name:'查看已收录契约、首饰和装备'});
+  await openGallery.click();
+  const archive=page.getByRole('dialog',{name:'角色契约图鉴与装备锻造'});
+  await expect(archive.getByTestId('collection-card-yuesha-eclipse')).toContainText('已收录');
+  await expect(archive.getByTestId('collection-view-art-yuesha-eclipse')).toBeVisible();
+  await expect(archive.getByTestId('collection-view-art-yuesha-vow')).toHaveCount(0);
+  await archive.getByTestId('collection-view-art-yuesha-eclipse').click();
+  const viewer=archive.getByTestId('collection-art-view');
+  await expect(viewer).toBeVisible();
+  const illustration=viewer.getByTestId('collection-art-image');
+  await expect.poll(()=>illustration.evaluate(el=>{
+    const img=el as HTMLImageElement;
+    return img.complete?{width:img.naturalWidth,height:img.naturalHeight,
+      path:new URL(img.currentSrc).pathname,fit:getComputedStyle(img).objectFit}:null;
+  }),{timeout:15000}).toMatchObject({
+    width:1086,height:1448,fit:'contain',
+    path:expect.stringMatching(/\/art\/beauty-beasts\/characters\/yuesha\/cg-eclipse-candidate\.webp$/),
+  });
+  await page.screenshot({path:'test-results/desktop-yuesha-collection-art.png',animations:'disabled'});
+  await page.setViewportSize({width:390,height:844});
+  await expect(viewer).toBeVisible();
+  const mobile=await viewer.evaluate(el=>({
+    viewport:document.documentElement.clientWidth,
+    contentWidth:el.getBoundingClientRect().width,
+    overflow:document.documentElement.scrollWidth-innerWidth,
+  }));
+  expect(mobile.contentWidth).toBeLessThanOrEqual(mobile.viewport);
+  expect(mobile.overflow).toBeLessThanOrEqual(2);
+  await page.screenshot({path:'test-results/mobile-yuesha-collection-art.png',animations:'disabled'});
+  await archive.getByTestId('collection-art-back').click();
+  await expect(viewer).toHaveCount(0);
+  await expect(archive.getByTestId('collection-equip-target')).toBeVisible();
+  await archive.getByRole('button',{name:'返回契约大厅'}).click();
+  await expect(archive).toHaveCount(0);
+});
+
 test('an acquired heroine can be visited directly from the real collection, then return',async({page})=>{
   test.setTimeout(90_000);
   await page.goto('/characters/#summon-screen');

@@ -72,7 +72,7 @@ jobs:
       - name: Run four-scene desktop browser smoke
         run: pnpm exec playwright test e2e/gothic-desktop-hud.spec.ts e2e/gothic-desktop-scenes.spec.ts e2e/summon-result-desktop.spec.ts --workers=1 --retries=0
       - name: Run focused archive forge and room-navigation browser regression
-        run: pnpm exec playwright test e2e/character-collection.spec.ts --grep "canonical summon archive|an acquired heroine" --workers=1 --retries=0
+        run: pnpm exec playwright test e2e/character-collection.spec.ts --grep "canonical summon archive|an acquired heroine|collected YueSha opens" --workers=1 --retries=0
       - name: Check realtime workshop starts, produces and pauses in browser
         run: pnpm exec playwright test e2e/moonwork-next-workshop.spec.ts --grep "automatic production runs" --workers=1 --retries=0
       - name: Upload actual PC browser screenshots and failures
