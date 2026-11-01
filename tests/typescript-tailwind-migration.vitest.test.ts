@@ -106,11 +106,16 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
   it('uses cancelled-navigation-safe events and no duplicate menu links',()=>{
     const transition=read('src/components/game/gothic-route-transition.tsx');
     const lobby=read('src/components/game/gothic-lobby.tsx');
+    const contracts=read('src/components/game/gothic-lobby-contracts.tsx');
     expect(transition).toContain("document.addEventListener('click',clicked);");
     expect(transition).not.toContain("document.addEventListener('click',clicked,true)");
     expect(transition).not.toContain("addEventListener('popstate',depart)");
-    expect(lobby).toContain('data-testid="gothic-main-quest-progress"');
-    expect(lobby).toContain('aria-valuenow={Math.min(orderStock,orderTarget)}');
+    // The progressbar lives in the extracted display component; the parent
+    // still passes the real warehouse quantities without duplicating logic.
+    expect(lobby).toContain('<GothicLobbyContracts');
+    expect(lobby).toContain('orderProgress={orderProgress}');
+    expect(contracts).toContain('data-testid="gothic-main-quest-progress"');
+    expect(contracts).toContain('aria-valuenow={Math.min(orderStock,orderTarget)}');
     expect(lobby).not.toContain("label:'委托大厅',description:'契约与交付'");
   });
   it('has one current UI, no retired game routes or standalone HTML',()=>{
