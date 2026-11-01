@@ -1,5 +1,59 @@
 import {test,expect} from '@playwright/test';
 
+test('automatic production runs from saved machines without advancing contract days',async({page})=>{
+  test.setTimeout(90000);
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25000});
+  const toggle=page.getByTestId('workshop-auto-toggle');
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByTestId('v2-shift')).toBeDisabled();
+  await expect(page.getByTestId('workshop-auto-status')).toContainText('30 秒');
+  const baseline=await page.evaluate(()=>{
+    const s=JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')!);
+    return {day:s.day,coins:s.coins,due:s.order.due,
+      water:s.tiles[5].stored,auto:s.auto};
+  });
+  expect(baseline.auto.enabled).toBe(true);
+  // Force a due physical cycle while leaving the real clock and economy
+  // untouched: this tests the browser-side scheduler, not fake UI numbers.
+  await page.evaluate(()=>{
+    const key='monster-apartment:workshop-v2-lab';
+    const s=JSON.parse(localStorage.getItem(key)!);
+    const now=Date.now();
+    s.auto.nextDue[5]=now-1000;
+    s.auto.lastSimulatedAt=now-31000;
+    localStorage.setItem(key,JSON.stringify(s));
+    window.dispatchEvent(new Event('moonwork:v2-update'));
+  });
+  await expect.poll(()=>page.evaluate(()=>{
+    const s=JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')!);
+    return s.tiles[5].stored;
+  }),{timeout:12000}).toBeGreaterThan(baseline.water);
+  const settled=await page.evaluate(()=>{
+    const s=JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')!);
+    return {day:s.day,coins:s.coins,due:s.order.due,produced:s.auto.produced};
+  });
+  expect(settled.day).toBe(baseline.day);
+  expect(settled.coins).toBe(baseline.coins);
+  expect(settled.due).toBe(baseline.due);
+  expect(settled.produced.water).toBeGreaterThan(0);
+  await page.screenshot({path:'test-results/desktop-workshop-realtime-v1.png',animations:'disabled'});
+  await page.getByTestId('v2-world-nav').getByRole('link',{name:'月光街'}).click();
+  await expect(page).toHaveURL(/\/town\/?$/);
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('workshop-auto-toggle')).toHaveAttribute('aria-pressed','true');
+  await page.getByTestId('workshop-auto-toggle').click();
+  await expect(page.getByTestId('workshop-auto-toggle')).toHaveAttribute('aria-pressed','false');
+  await expect(page.getByTestId('v2-shift')).toBeEnabled();
+  const paused=await page.evaluate(()=>{
+    const s=JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')!);
+    return {day:s.day,auto:s.auto.enabled};
+  });
+  expect(paused).toEqual({day:baseline.day,auto:false});
+});
+
 test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',async({page})=>{
   test.setTimeout(90_000);
   const errors:string[]=[];
