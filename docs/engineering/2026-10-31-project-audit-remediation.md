@@ -187,3 +187,10 @@
 - **Desktop Visual Review 成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41273772738>；包含原四场景浏览器冒烟、图鉴锻造/房间回归，以及新增 `e2e/moonwork-next-workshop.spec.ts` 的自动生产真库存、时钟、日期/星币保护、跨页持续和暂停恢复专项。截图产物 `desktop-v377-screenshots`（ID 13070233765），不能将此写成参考原画逐像素人眼审查。
 - **GitHub Pages 成功部署**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41273824088>，玩家入口 `/monster-apartment/workshop/`。
 - 尚待 A07 下一阶段：按世界统一库存自动预留与订单交付、多人标签所有手动写入的严格事务协调，以及更丰富的设备生产状态反馈；本阶段不把这些未实现项标记为完成。A05 独立 3:4 全身人物 CG 仍 0/5，不能由自动工坊代码弥补。
+
+## 十五、A05 · 用户选定月纱全身立绘候选（2026-11-01）
+
+- 用户在当前对话明确上传并选定黑发、赤瞳、双角、红黑礼服的「月纱·神话月蚀」单人全身图，原始 PNG **1086×1448**，无烘焙 UI、双手和脚尖完整。此最新身份依据取代早期错误银白发设定。已保留原画并生成同尺寸 WebP q92（不对小图假造 1536×2048 原生像素）。
+- GitHub 文本代码提交 `72b0a06a762f6145c3168a691ceaabf358626aab` + `8029aae0b3a539ff3f1e163a7853c576c1a8571e`：增加**仅在 manifest opt-in previewPath 存在时**才选择候选图片的资源映射；大卡展示候选，十连缩略卡继续旧肖像，加载失败回退到原角色；正式 `production`/哈希/来源/人审门禁不受影响。当前线上 manifest 尚未登记 previewPath，因此不引用不存在的文件。
+- 用户原始图片在本会话容器，已产出可下载的 `A05_Yuesha_Eclipse_Integration.zip`，包含原 PNG、WebP、尺寸与 SHA-256、可重复且原子执行的 `install_a05.py`。当前 GitHub 接口不接受容器本地二进制路径，**因此图片文件仍未提交到 GitHub 仓库**，仓库线上画面未切换；不能把代码支持或本地包称为已真正入库或已部署美术。
+- 正式 CG 仍为 **0/5**，只有按原生 1536×2048 的生产标准做高清重绘、完成版权与人工逐视口审核并提交正式文件/证明，才能切换 `production`。

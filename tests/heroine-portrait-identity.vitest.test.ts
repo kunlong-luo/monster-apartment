@@ -44,7 +44,7 @@ describe('character portrait visual identity',()=>{
     }
     expect(GACHA_POOLS).toHaveLength(5);
   });
-  it('uses consistent V3 silver-haired Yuesha across both summons and fallback',()=>{
+  it('uses the established horned, dark-haired YueSha identity across both summons and fallback',()=>{
     const mythic=getCardFace('yuesha-eclipse');
     const vow=getCardFace('yuesha-vow');
     expect(mythic).toBeTruthy();
