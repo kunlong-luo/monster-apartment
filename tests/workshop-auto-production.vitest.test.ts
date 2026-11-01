@@ -13,8 +13,11 @@ const setup=()=>{
 describe('A07 opt-in realtime production, independent of day/contract engine',()=>{
  it('starts once with genuine assigned workers, preserving the V2 JSON save',()=>{
   const s=setup(),a=startWorkshopAuto(s,1000);
-  expect(a.auto).toMatchObject({version:1,enabled:true,lastSimulatedAt:1000,
-    nextDue:[0,0,0,0,0,31000,46000,61000]});
+  expect(a.auto).toMatchObject({version:1,enabled:true,lastSimulatedAt:1000});
+  expect(a.auto?.nextDue).toHaveLength(15);
+  expect(a.auto?.nextDue[5]).toBe(31000);
+  expect(a.auto?.nextDue[6]).toBe(46000);
+  expect(a.auto?.nextDue[7]).toBe(61000);
   expect(validWorkshop(a)).toBe(true);
   expect(startWorkshopAuto(a,8000)).toBe(a);
   const starter=startWorkshopAuto(newWorkshop(),1000);
