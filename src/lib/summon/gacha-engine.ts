@@ -6,6 +6,7 @@
 
 import type { CardKey } from '../../core/character-collection';
 import { COLLECTION_KEY, decodeCollection } from '../game/character-collection-store';
+import {SUMMON_GACHA_KEY,commitSummonTransaction,recoverPendingSummon} from '../game/summon-transaction';
 
 export type GachaRarity = 'SSR-Mythic' | 'SSR-Legend' | 'SR' | 'R' | 'N';
 
@@ -110,7 +111,7 @@ export interface GachaState {
   activePoolId: string;
 }
 
-export const GACHA_STATE_KEY = 'monster-apartment:gacha-v2';
+export const GACHA_STATE_KEY = SUMMON_GACHA_KEY;
 const GACHA_EVENT = 'monster-apartment:gacha-updated';
 
 /** New accounts begin at the actual first-time grant, not screenshot mock data. */
@@ -133,6 +134,7 @@ export function validGachaState(value:unknown):value is GachaState{
 }
 export function gachaSaveStatus(): 'ok'|'corrupt'|'unavailable'{
   if(typeof window==='undefined')return 'unavailable';
+  if(!recoverPendingSummon())return 'unavailable';
   try {
     const raw=window.localStorage.getItem(GACHA_STATE_KEY);
     if(raw===null)return 'ok';
@@ -166,6 +168,7 @@ export function claimTrialTicket():boolean{
 }
 export function readGachaState(): GachaState {
   if (typeof window === 'undefined') return INITIAL_GACHA_STATE;
+  if(!recoverPendingSummon())return INITIAL_GACHA_STATE;
   try {
     const raw = window.localStorage.getItem(GACHA_STATE_KEY);
     if (!raw) return INITIAL_GACHA_STATE;
@@ -181,6 +184,7 @@ export function readGachaState(): GachaState {
 
 export function saveGachaState(state: GachaState): boolean {
   if (typeof window === 'undefined') return false;
+  if(!recoverPendingSummon())return false;
   try {
     window.localStorage.setItem(GACHA_STATE_KEY, JSON.stringify(state));
   } catch {
@@ -347,20 +351,29 @@ export function executeSummon(
     // Never mutate a shared static catalogue entry.
     results[i]={...character,firstAcquired:!duplicate,awardedShards};
   }
-  try {
-    const previous=window.localStorage.getItem(GACHA_STATE_KEY);
-    window.localStorage.setItem(COLLECTION_KEY,JSON.stringify({...collection,draws,shards}));
-    try {window.localStorage.setItem(GACHA_STATE_KEY,JSON.stringify(nextState));}
-    catch(error){
-      window.localStorage.setItem(COLLECTION_KEY,JSON.stringify(collection));
-      if(previous===null)window.localStorage.removeItem(GACHA_STATE_KEY);
-      throw error;
-    }
+  // Journal both keys BEFORE modifying either one. A crash after only one
+  // write is recoverable on the next read; a completed write is not rerolled.
+  let previousGacha:string|null;
+  let previousCollection:string|null;
+  try{
+    previousGacha=window.localStorage.getItem(GACHA_STATE_KEY);
+    previousCollection=window.localStorage.getItem(COLLECTION_KEY);
+  }catch{
+    return {success:false,characters:[],error:'无法读取本地结算状态，请检查浏览器存储权限。'};
+  }
+  const settled=commitSummonTransaction(
+    {gacha:previousGacha,collection:previousCollection},
+    {gacha:JSON.stringify(nextState),
+     collection:JSON.stringify({...collection,draws,shards})}
+  );
+  if(settled==='pending')
+    return {success:false,characters:[],error:'召唤结算暂未恢复一致；为保护资源和契约已暂停操作，请检查浏览器存储并重新打开页面。'};
+  if(settled==='failed')
+    return {success:false,characters:[],error:'本地存储写入失败或存档已更新；未确认召唤，请检查存储空间后重试。'};
+  try{
     window.dispatchEvent(new Event('monster-apartment:collection-updated'));
     window.dispatchEvent(new Event(GACHA_EVENT));
-  } catch {
-    return {success:false,characters:[],error:'本地存储写入失败；未确认召唤，请检查浏览器存储空间。'};
-  }
+  }catch{/* Settlement was saved; UI observers can refresh the next snapshot. */}
   return { success: true, characters: results, newState: nextState };
 }
 

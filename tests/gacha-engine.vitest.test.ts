@@ -2,6 +2,7 @@ import {afterEach,beforeEach,describe,expect,it,vi} from 'vitest';
 import {GACHA_STATE_KEY,INITIAL_GACHA_STATE,claimProgressTickets,executeSummon,
   readGachaState,rollSingleGacha,claimTrialTicket,validGachaState,gachaSaveStatus} from '../src/lib/summon/gacha-engine';
 import {COLLECTION_KEY} from '../src/lib/game/character-collection-store';
+import {PENDING_SUMMON_KEY,recoverPendingSummon} from '../src/lib/game/summon-transaction';
 
 const saved=new Map<string,string>();
 beforeEach(()=>{
@@ -57,6 +58,85 @@ describe('a faithful functional summoning screen',()=>{
     expect(result.success).toBe(false);
     expect(saved.get(COLLECTION_KEY)).toBe('{original:broken');
     expect(saved.has(GACHA_STATE_KEY)).toBe(false);
+  });
+  it('rolls back both stores if the second write fails, preserving absent collection key',()=>{
+    const initial=JSON.stringify({...INITIAL_GACHA_STATE,tickets:2});
+    saved.set(GACHA_STATE_KEY,initial);
+    vi.spyOn(window.localStorage,'setItem').mockImplementation((key:string,val:string)=>{
+      if(key===GACHA_STATE_KEY)throw Error('quota exceeded at second write');
+      saved.set(key,val);
+    });
+    const result=executeSummon(1);
+    expect(result.success).toBe(false);
+    expect(saved.get(GACHA_STATE_KEY)).toBe(initial);
+    expect(saved.has(COLLECTION_KEY)).toBe(false);
+    expect(saved.has(PENDING_SUMMON_KEY)).toBe(false);
+  });
+  it('blocks further draws when rollback fails, then safely recovers after storage works',()=>{
+    const original=JSON.stringify({...INITIAL_GACHA_STATE,tickets:2});
+    saved.set(GACHA_STATE_KEY,original);
+    let failSecond=true;
+    let failRollback=true;
+    const write=vi.spyOn(window.localStorage,'setItem').mockImplementation((key:string,val:string)=>{
+      if(key===GACHA_STATE_KEY&&failSecond)throw Error('second write failed');
+      if(key===COLLECTION_KEY&&val===original&&failRollback)throw Error('rollback failed');
+      saved.set(key,val);
+    });
+    // Start with a persisted collection, so rollback itself must use setItem.
+    const pristine='{"version":1,"draws":[],"shards":0,"inventory":[],"equipped":{}}';
+    saved.set(COLLECTION_KEY,pristine);
+    write.mockImplementation((key:string,val:string)=>{
+      if(key===GACHA_STATE_KEY&&failSecond)throw Error('second write failed');
+      if(key===COLLECTION_KEY&&val===pristine&&failRollback)throw Error('rollback failed');
+      saved.set(key,val);
+    });
+    expect(executeSummon(1).success).toBe(false);
+    expect(saved.has(PENDING_SUMMON_KEY)).toBe(true);
+    expect(gachaSaveStatus()).toBe('unavailable');
+    expect(executeSummon(1).success).toBe(false);
+    failSecond=false;failRollback=false;
+    expect(recoverPendingSummon()).toBe(true);
+    expect(saved.get(GACHA_STATE_KEY)).toBe(original);
+    expect(saved.get(COLLECTION_KEY)).toBe(pristine);
+    expect(saved.has(PENDING_SUMMON_KEY)).toBe(false);
+    const success=executeSummon(1);
+    expect(success.success).toBe(true);
+    expect(readGachaState().totalSummons).toBe(1);
+    expect(JSON.parse(saved.get(COLLECTION_KEY)!).draws).toEqual(['brook-tide']);
+    write.mockRestore();
+  });
+  it('finalizes fully committed journal without undoing a previously drawn card',()=>{
+    const initial=JSON.stringify({...INITIAL_GACHA_STATE,tickets:2});
+    saved.set(GACHA_STATE_KEY,initial);
+    let refuseCleanup=true;
+    const remove=vi.spyOn(window.localStorage,'removeItem').mockImplementation((key:string)=>{
+      if(key===PENDING_SUMMON_KEY&&refuseCleanup)throw Error('journal cleanup blocked');
+      saved.delete(key);
+    });
+    expect(executeSummon(1).success).toBe(false);
+    expect(saved.has(PENDING_SUMMON_KEY)).toBe(true);
+    const committedGacha=saved.get(GACHA_STATE_KEY);
+    const committedCollection=saved.get(COLLECTION_KEY);
+    expect(JSON.parse(committedGacha!).totalSummons).toBe(1);
+    expect(gachaSaveStatus()).toBe('unavailable');
+    refuseCleanup=false;
+    expect(recoverPendingSummon()).toBe(true);
+    expect(saved.has(PENDING_SUMMON_KEY)).toBe(false);
+    expect(saved.get(GACHA_STATE_KEY)).toBe(committedGacha);
+    expect(saved.get(COLLECTION_KEY)).toBe(committedCollection);
+    expect(JSON.parse(saved.get(COLLECTION_KEY)!).draws).toEqual(['brook-tide']);
+    remove.mockRestore();
+  });
+  it('does not overwrite unknown changes made while a settlement is pending',()=>{
+    const before={gacha:JSON.stringify(INITIAL_GACHA_STATE),collection:null};
+    const after={gacha:JSON.stringify({...INITIAL_GACHA_STATE,tickets:2}),
+      collection:'{"version":1,"draws":["brook-tide"],"shards":1,"inventory":[],"equipped":{}}'};
+    saved.set(PENDING_SUMMON_KEY,JSON.stringify({version:1,before,after}));
+    saved.set(GACHA_STATE_KEY,JSON.stringify({...INITIAL_GACHA_STATE,tickets:25}));
+    expect(recoverPendingSummon()).toBe(false);
+    expect(gachaSaveStatus()).toBe('unavailable');
+    expect(saved.get(GACHA_STATE_KEY)).toBe(JSON.stringify({...INITIAL_GACHA_STATE,tickets:25}));
+    expect(saved.has(PENDING_SUMMON_KEY)).toBe(true);
   });
   it('never awards first-time visit and workshop rewards twice',()=>{
     expect(claimProgressTickets(2,3)).toBe(5);

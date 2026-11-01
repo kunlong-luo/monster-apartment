@@ -3,8 +3,9 @@ import {useSyncExternalStore} from 'react';
 import {equipEquipment,forgeEquipment,newCharacterCollection,summonCharacter,validCharacterCollection} from '../../core/character-collection';
 import type {CardKey,CollectionState,GearId} from '../../core/character-collection';
 import type {CharacterId} from '../../core/character-life';
+import {SUMMON_COLLECTION_KEY,recoverPendingSummon} from './summon-transaction';
 
-export const COLLECTION_KEY='monster-apartment:character-collection:v1';
+export const COLLECTION_KEY=SUMMON_COLLECTION_KEY;
 const EVENT='monster-apartment:collection-updated';
 const UNAVAILABLE='__collection-no-storage__';
 export type CollectionStatus='ok'|'corrupt'|'unavailable';
@@ -19,7 +20,10 @@ export function decodeCollection(raw:string|null):{status:CollectionStatus;colle
 }
 function snapshot():string|null{
   if(typeof window==='undefined')return null;
-  try{return localStorage.getItem(COLLECTION_KEY);}catch{return UNAVAILABLE;}
+  try{
+    if(!recoverPendingSummon())return UNAVAILABLE;
+    return localStorage.getItem(COLLECTION_KEY);
+  }catch{return UNAVAILABLE;}
 }
 function subscribe(cb:()=>void){
   const storage=(e:StorageEvent)=>{if(e.key===COLLECTION_KEY||e.key===null)cb();};

@@ -19,8 +19,8 @@
 | --- | --- | --- | --- |
 | **A01 · P0** 角色图鉴原生链接缺少 Pages 子路径 | `src/components/moonwork/world-characters.tsx` 内 `<a href="/characters/#summon-screen">` 不经 Next basePath 处理；Pages 实际部署于 `/monster-apartment/`，直接链接可能跳至错误根路径。该场景的 `characters-scene-router.tsx` 依赖浏览器 `hashchange` 触发视图切换。 | 保留原生 hash 导航语义（可发 `hashchange`），但 href 必须兼容 Pages basePath；补浏览器断言校验同路径 hash 切换，不得新增路由、改变抽卡存档。 | **Quality 与 Pages 已通过**（主分支 4317634；新增浏览器用例仍需专项执行） |
 | **A02 · P0** PC 布局多重覆盖 | `src/components/game/gothic-desktop-ui.css` 约 554 行/173 处 `!important`；`gothic-reference-layout.css` 也控制相同大厅区域，`gothic-lobby.css` 与 Tailwind 还参与布局。 | 建立单一 PC 几何布局所有权，逐步删除重复选择器与 `!important`；固定中央人物、左名册、右功能海报、底部七项 Dock；以 1440×900、1648×928 与参考设计截图验收，也检查 390×844 无溢出。 | 待处理 |
-| **A03 · P1** 抽卡界面状态校验不完整 | `src/lib/summon/use-gacha.ts` 读取数据仅检查 `tickets` 数字后强制断言 `GachaState`，而 `gacha-engine.ts` 已有 `validGachaState`。损坏但局部合法的存档可能在界面访问其它字段时出错。 | 只接受完整有效的状态；损坏数据须保留且操作不可扣费，显示清楚的修复提示；补针对性单测/浏览器检查。 | **代码修复及定向测试已提交，待 Quality 验证** |
-| **A04 · P1** 抽卡与收藏跨键一致性 | `src/lib/summon/gacha-engine.ts` 依次写入收藏键与抽卡键，通过回滚降低失败风险，但 localStorage 两次写入不是事务。 | 设计安全的结算/重入与恢复策略，模拟 quota/写入失败，保护玩家真实资源与卡片；不更改概率。 | 待处理 |
+| **A03 · P1** 抽卡界面状态校验不完整 | `src/lib/summon/use-gacha.ts` 读取数据仅检查 `tickets` 数字后强制断言 `GachaState`，而 `gacha-engine.ts` 已有 `validGachaState`。损坏但局部合法的存档可能在界面访问其它字段时出错。 | 只接受完整有效的状态；损坏数据须保留且操作不可扣费，显示清楚的修复提示；补针对性单测/浏览器检查。 | **Quality 与 Pages 已通过**（ae54661；新增浏览器用例待专项执行） |
+| **A04 · P1** 抽卡与收藏跨键一致性 | `src/lib/summon/gacha-engine.ts` 依次写入收藏键与抽卡键，通过回滚降低失败风险，但 localStorage 两次写入不是事务。 | 设计安全的结算/重入与恢复策略，模拟 quota/写入失败，保护玩家真实资源与卡片；不更改概率。 | **结算日志 / 恢复代码与故障用例已提交；待 Quality / Pages 检验** |
 | **A05 · P1** 五张卡面缺正式全身 CG | `public/art/beauty-beasts/characters/cg-manifest.json` 的 5 张卡均为 `portrait`；`heroine-portrait-assets.ts` 明确使用人物肖像过渡。 | 分角色锁脸、审核并接入 5 张独立卡面 CG；真实尺寸/版权/哈希/来源登记；完整人物在抽卡大卡正确展示，不把 512px 脸图拉成全身。 | 等待美术生产与审核 |
 | **A06 · P1** 私人房间仍是概念场景 | `public/art/rooms/manifest.json` 四个房间均标记 `concept`；目前仓库实际只有 `concept-scene.svg`，目标背景/pose 路径尚未正式入库。 | 逐室生成并审批无 UI 背景、透明人物姿态、热点锚点；候选图不等于正式上线，恢复/切换房间不糊不失真。 | 等待美术生产与审核 |
 | **A07 · P1** 工坊尚非持续自动生产 | `src/components/moonwork/workshop-controls.tsx` 的“开始生产轮班”按钮调用 `shift`，由 `v2/src/main.ts` 执行 `runShift`；虽有 `auto-assign`，但默认并无持续结算循环。 | 先设计自动生产状态机、节奏与离线收益上限，避免标签切换重复结算；保留玩家布置、派工、订单确认等重要决策。 | 待产品/工程设计 |
@@ -42,3 +42,4 @@
 2. 点击后展示已存在的 `gothic-summon-stage`，且返回角色图鉴仍可用；中键/刷新能恢复正确 hash 视图。
 3. 为 `e2e/character-collection.spec.ts` 增加最小真实浏览器断言；保持现有七路由、概率、货币、收藏键不变。
 4. 通过 Quality、必要时的定向浏览器测试与 Pages 部署后，才将状态改为“已验证/已上线”，附上对应提交 SHA 和运行链接。
+\n## 四、A04 结算一致性方案（2026-11-01）\n\n- 新增 `src/lib/game/summon-transaction.ts`，保留旧的 `monster-apartment:gacha-v2` 和 `monster-apartment:character-collection:v1` 两个正式存档键，仅添加 `monster-apartment:summon-settlement:v1` 结算日志。\n- 结算前记录两个键的原始值与目标值；收藏和抽卡都写入后再删除日志。故障或页面重启时，若两键都已达目标则确认已提交，若只有一键修改则回滚到原样；日志清理或回滚失败时锁定新结算，不得重复消耗或奖励。\n- 只有两个键恰好等于结算前/后值时才可自动恢复；发现其他标签页或外部改写的未知值，拒绝覆盖，保留日志供人工排查。\n- 新增第二次写入失败、回滚失败后恢复、结算完毕但日志删除失败、未知并发变化等 Vitest 回归测试。此防护是本地可恢复结算，不是跨标签页完全串行化事务，也不替代服务器防作弊机制。\n- 质量/Pages 发布结果需以对应提交的 Actions 结果为准；不会以提交成功冒充线上验收。\n

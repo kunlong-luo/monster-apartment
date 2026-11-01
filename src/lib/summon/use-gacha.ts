@@ -13,6 +13,7 @@ import {
   executeSummon,
   type SummonableCharacter,
 } from './gacha-engine';
+import {recoverPendingSummon} from '../game/summon-transaction';
 
 const EVENT = 'monster-apartment:gacha-updated';
 
@@ -33,6 +34,7 @@ function subscribe(callback: () => void) {
 function getSnapshot(): string {
   if (typeof window === 'undefined') return JSON.stringify(INITIAL_GACHA_STATE);
   try {
+    if(!recoverPendingSummon())return JSON.stringify(INITIAL_GACHA_STATE);
     return window.localStorage.getItem(GACHA_STATE_KEY) || JSON.stringify(INITIAL_GACHA_STATE);
   } catch {
     return JSON.stringify(INITIAL_GACHA_STATE);
