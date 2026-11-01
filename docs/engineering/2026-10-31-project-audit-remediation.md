@@ -25,7 +25,7 @@
 | **A06 · P1** 私人房间仍是概念场景 | `public/art/rooms/manifest.json` 四个房间均标记 `concept`；目前仓库实际只有 `concept-scene.svg`，目标背景/pose 路径尚未正式入库。 | 逐室生成并审批无 UI 背景、透明人物姿态、热点锚点；候选图不等于正式上线，恢复/切换房间不糊不失真。 | 等待美术生产与审核 |
 | **A07 · P1** 工坊尚非持续自动生产 | `src/components/moonwork/workshop-controls.tsx` 的“开始生产轮班”按钮调用 `shift`，由 `v2/src/main.ts` 执行 `runShift`；虽有 `auto-assign`，但默认并无持续结算循环。 | 先设计自动生产状态机、节奏与离线收益上限，避免标签切换重复结算；保留玩家布置、派工、订单确认等重要决策。 | 待产品/工程设计 |
 | **A08 · P1** 经营体系仍分裂 | `src/core/cozy-engine.ts` 有旧住客/公寓经济；`v2/src/workshop-engine.ts` 为工坊规则；`src/lib/game/character-life-store.ts`、`src/lib/game/character-collection-store.ts` 为额外进度键。 | 明确统一角色身份、成长、库存、契约和故事领域接口，支持旧存档无损迁移；禁止不经验证一口气合并键。 | 待设计 |
-| **A09 · P1** 巨型组件与样式维护成本 | `src/components/summon/gothic-summon-screen.tsx` 约 760 行，`src/components/game/gothic-workshop.css` 约 1359 行，`src/core/cozy-engine.ts` 约 591 行；部分文件包含混合展示/交互/规则。 | 按 UI 场景、领域规则和控制器拆分；尽量保留行为测试，避免机械拆分导致重复 DOM 与新 CSS 覆盖层。 | **第一批已验证并上线**（f11f6a7 + d9badfa；剩余大型组件仍待拆分） |
+| **A09 · P1** 巨型组件与样式维护成本 | `src/components/summon/gothic-summon-screen.tsx` 约 760 行，`src/components/game/gothic-workshop.css` 约 1359 行，`src/core/cozy-engine.ts` 约 591 行；部分文件包含混合展示/交互/规则。 | 按 UI 场景、领域规则和控制器拆分；尽量保留行为测试，避免机械拆分导致重复 DOM 与新 CSS 覆盖层。 | **大厅+召唤+图鉴锻造已验证上线；工坊样式及领域大文件待处理** |
 | **A10 · P2** 构建与依赖策略需收敛 | 根 `package.json` 声明 pnpm，仓库存 `bun.lock`，CI 用 Bun 安装 + pnpm 执行；`v2/` 单独用 npm。 | 明确一个权威锁文件与分包原因，避免无效缓存、意外升级与重复安装；任何迁移先验证 Pages 静态导出与 Pixi sidecar。 | 待处理 |
 | **A11 · P2** 首屏性能与美术加载需实测 | 大厅、召唤、房间同时包含 Next 图层、CSS 光照、Motion、Pixi；虽然已有 `ReliableImage` 和减少动画支持，但尚无在本轮审查中复现的统一性能数字。 | 真实浏览器采样首屏时序、解码、GPU、切页；优先加载关键图，对大图和动效分级，不凭静态分析声称性能故障。 | 待测量 |
 | **A12 · P2** 视觉验收与 CI 结果需分层 | 最新 Quality / Desktop Visual Review / Pages 成功；`docs/DESKTOP-REFERENCE-LAYOUT.md` 与 `docs/v3/75-REFERENCE-01-DESKTOP-GEOMETRY.md` 均明确仍非 1:1 美术构图。 | 统一参考图—实机截图的人工差异记录；区分代码提交、质量通过、部署成功、视觉达标；避免将自动截图通过当作高级美术完成。 | 持续验收 |
@@ -99,10 +99,18 @@
 - 新增 `SummonCollectionArchive`：统一承载角色契约卡、异兽契约档案及弹窗关闭等展示，不自建/复制收藏存档；组件在关闭时保持挂载，选中的装备人物与锻造反馈不因临时关闭而丢失。
 - 新增 `SummonForgePanel`：只接收收藏数据、选中人物及回调，继续通过既有 `commitCollection({type:'forge'|'equip'})` 结算，保留存档不可用时禁用按钮和所有当前 data-testid。
 - 修复已收录卡片“拜访私人房间”使用根相对原生 `<a>` 导致 GitHub Pages 子路径丢失的问题：改用 Next `Link`，保留同一路由和 `?visit=...`，添加桌面浏览器目标路径断言。
-- 本阶段不改变抽卡引擎、角色概率/90 抽保底、装备价格、能力增益、资源存档键、已有卡牌归属，也不替换原画；自动 Quality、Desktop Visual Review、Pages 结果另行回填。
+- 本阶段不改变抽卡引擎、角色概率/90 抽保底、装备价格、能力增益、资源存档键、已有卡牌归属，也不替换原画；相关代码提交 `402025d14c3f57c07cc5a8c847ecbb5d6137ec74` 已经通过 Quality、静态导出和 Pages；后续专项浏览器验证见下方记录。
 
 ### A09 锻造/房间链接专项浏览器门禁
 
 - Desktop Visual Review 已加入现存 `e2e/character-collection.spec.ts` 的两条定向流程：已收录卡片打造并穿戴、私人房间链接导航；不是全量 E2E 门禁。
 - 在已有打造和穿戴场景中增加“关闭后再次打开图鉴，装备人物选项和真实操作反馈仍保留”的断言，防止组件重新挂载造成用户操作状态丢失。
-- 这项专项需以新增提交的 Desktop Visual Review 结果为准；不得只凭上一轮主画面截图断言锻造可用。
+- **专项验证已通过**：本次工作流同时验证原桌面场景、完整锻造与穿戴、关闭重开状态保持、角色房间链接。截图产物由相同工作流上传；不等同于设计图逐像素人工审查。
+
+### A09 本轮最终验收（2026-11-01）
+
+- 功能重构：`402025d14c3f57c07cc5a8c847ecbb5d6137ec74`；定向浏览器门禁：`b86b5e51689144b81162730fdedfa43d22b0d250`；兼容开发与 Pages 斜杠的断言修正：`7c5688e7e47d1c258aad1d4302e65f78a1661d1b`。
+- **Quality 全绿**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41263427516>（TypeScript、Lint、Vitest、Next 静态导出、Pixi）。
+- **Desktop Visual Review 全绿**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41263427563>；其中 `Run four-scene desktop browser smoke` 与 `Run focused archive forge and room-navigation browser regression` 两个步骤均明确为 success。
+- **GitHub Pages 部署成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41263485730>。线上入口 `/monster-apartment/characters/#summon-screen`，页面保持七个正式路由与原有资源存档键。
+- 尚未完成：整套 PC 设计原画逐像素验收、独立高清角色全身 CG、工坊 CSS 领域拆分、`cozy-engine` 核心分层。A09 的此阶段交付不等同于整个 A09 已结案。
