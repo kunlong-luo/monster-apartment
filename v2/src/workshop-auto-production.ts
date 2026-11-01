@@ -4,7 +4,7 @@
  * atomic across reloads. React/Pixi only project this domain state. */
 import {autoAssignWorkers} from './workshop-engine';
 import {projectMachineProduction} from './workshop-production';
-import {BOARD_SIZE,machineLevel,WORKERS,MACHINES} from './workshop-model';
+import {BOARD_SIZE,machineLevel} from './workshop-model';
 import type {Craft,WorkshopState,WorkshopAutoClock} from './workshop-model';
 
 export const AUTO_PERIOD_MS:Readonly<Record<Craft,number>>={
@@ -94,5 +94,6 @@ export function simulateWorkshopAutoUntil(world:WorkshopState,now:number):Worksh
   if(processed===MAX_EVENTS)
     for(let i=0;i<BOARD_SIZE;i++)if(nextDue[i]&&nextDue[i]<=now)
       nextDue[i]=now+AUTO_PERIOD_MS[current.tiles[i]!.craft];
+  if(processed===0&&nextDue.every((due,i)=>due===prior.nextDue[i]))return world;
   return {...current,auto:{...prior,lastSimulatedAt:now,nextDue,produced}};
 }
