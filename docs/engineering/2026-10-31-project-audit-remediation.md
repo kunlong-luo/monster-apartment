@@ -179,3 +179,11 @@
 - `WorkshopAutoRuntime` 挂载全站布局，通过浏览器 Web Locks 选举自动写入者；运行时使用实际时间戳而非定时器触发次数，离线最多补算8小时，停在原料/容量瓶颈。**不支持 Web Locks 的浏览器明确拒绝启用**，不假装已自动生产；原有 Dexie 备份仍跟随存档事件同步。
 - 工坊底部新增单个开启/暂停操作，与原手动轮班并排；运行中手动轮班禁用，防止 V2 按天罚款叠加；Pixi 同步同标签页自动进度。自动生产不会自动完成普通订单，下一阶段需要独立设计“库存预留及交付”的权威事务。
 - 新增 Vitest 测试生产物料守恒、节拍、离线恢复、布局重置、旧班次隔离；定向 Playwright 验证按钮、真库存、跨页继续、暂停及截图。此阶段只是 A07 的可玩基础，严格多标签跨所有**手动**写入的事务 CAS 与完整 V3 订单模型仍未完成。
+
+### A07 实时生产第一阶段最终验收（2026-11-01）
+
+- 实际版本代码以 `5b21510ff4b373ec17ed41eb7adb6ffb7b8657c4` 为准（此前的若干增量提交经历严格检查修复）。
+- **Quality 成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41273772769>。TypeScript、Lint、全套 Vitest（包括新自动工坊守恒与离线模拟）、Next 静态构建、Pixi 构建通过。
+- **Desktop Visual Review 成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41273772738>；包含原四场景浏览器冒烟、图鉴锻造/房间回归，以及新增 `e2e/moonwork-next-workshop.spec.ts` 的自动生产真库存、时钟、日期/星币保护、跨页持续和暂停恢复专项。截图产物 `desktop-v377-screenshots`（ID 13070233765），不能将此写成参考原画逐像素人眼审查。
+- **GitHub Pages 成功部署**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41273824088>，玩家入口 `/monster-apartment/workshop/`。
+- 尚待 A07 下一阶段：按世界统一库存自动预留与订单交付、多人标签所有手动写入的严格事务协调，以及更丰富的设备生产状态反馈；本阶段不把这些未实现项标记为完成。A05 独立 3:4 全身人物 CG 仍 0/5，不能由自动工坊代码弥补。
