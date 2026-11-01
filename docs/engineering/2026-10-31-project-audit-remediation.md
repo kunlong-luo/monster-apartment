@@ -161,3 +161,12 @@
 - 仅对 `face-crop` 人物（泉泡、青枝、炽角）的**主契约结果卡**使用暗铜边肖像装裱，最大化已审核方形脸部绘画清晰度，并保留原生等比 contain；不伪造下半身或使用背景模糊扩张为“全身 CG”。小型十连缩略卡仍是无外框的清晰肖像，不牺牲可读性。
 - 正式独立 `full-body-cg` 和月纱 `scene-portrait` 继续使用既有构图，在未来原画通过审核之后不用改动组件；抽卡历史、资源、概率和装备存档逻辑未变。
 - 新增桌面 Playwright 验证非月纱主卡的图片自然宽度、contain 装裱、清晰的卡框尺寸和截图，结果由 Quality / Desktop Visual Review / Pages 门禁决定。再次生成的五人拼图混入错误人物名与烘焙稀有度，不符合 CG 审查，未进入生产目录；正式 CG 仍为 0/5。
+
+### A05 装裱版主卡验收（2026-11-01）
+
+- 初次代码提交 `57be897f4822ce12d6da41735fef844abac8db52`；首次桌面浏览器检查在新加的固定像素宽度断言中失败（22 通过、1 失败，真实肖像画框约 126px，预设 220px 不适用）。已根据真实结果修复不合理的较大边距和断言，而非忽略失败。
+- 修复提交 `7f0839e6c190d9c912711b3aff9b781f2902079a`：画框在窄桌面卡内按百分比保留人物面积，Playwright 检查实际图片解码、`object-fit:contain`、装裱占卡面比例与真实截图。
+- **Quality 成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41270996297>。
+- **Desktop Visual Review 成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41270996301>，原桌面场景+召唤结果+锻造/房间定向浏览器测试均通过；截图产物由同工作流保存，但未做人眼逐像素设计图复刻审查。
+- **Pages 发布成功**：<https://github.com/kunlong-luo/monster-apartment/actions/runs/41271041032>；线上入口 `/monster-apartment/characters/#summon-screen`。
+- 本次只优化审核已通过的旧肖像过渡显示，未进入新的全身美术素材，正式独立全身 CG 数仍为 **0/5**，游戏规则与存档未改变。
