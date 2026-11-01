@@ -38,8 +38,15 @@ export type DailyProduction={
   /** Persists premium delivery feedback after the order has rolled over. */
   premium?:boolean;
 };
+/** In the same V2 JSON transaction as inventories: no duplicate clock key.
+ * Old saves omit this field and load unchanged. */
+export type WorkshopAutoClock={
+  version:1;enabled:boolean;lastSimulatedAt:number;layout:string;
+  nextDue:number[];produced:{water:number;fiber:number;cores:number};
+};
 export type WorkshopState={
   version:2;day:number;coins:number;
+  auto?:WorkshopAutoClock;
   tiles:(Machine|null)[];
   warehouse:{core:number};
   order:WorkshopOrder;

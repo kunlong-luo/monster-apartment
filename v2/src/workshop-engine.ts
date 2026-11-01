@@ -229,6 +229,18 @@ export function validWorkshop(value:unknown):value is WorkshopState {
       ||(!Object.hasOwn(TOWN_MARKET,s.market.kind)
         &&!Object.hasOwn(TOWN_RESIDENTS,s.market.kind)))return false;
   }
+  if(s.auto!==undefined){
+    const a=s.auto;
+    if(!a||a.version!==1||typeof a.enabled!=='boolean'
+      ||!Number.isSafeInteger(a.lastSimulatedAt)||a.lastSimulatedAt<0
+      ||typeof a.layout!=='string'||a.layout.length>600
+      ||!Array.isArray(a.nextDue)||a.nextDue.length!==BOARD_SIZE
+      ||!a.nextDue.every(t=>Number.isSafeInteger(t)&&t>=0)
+      ||!a.produced||!['water','fiber','cores'].every(k=>{
+        const n=a.produced?.[k as keyof typeof a.produced];
+        return Number.isSafeInteger(n)&&n>=0;
+      }))return false;
+  }
   if(s.residentsHelped!==undefined&&(!Number.isSafeInteger(s.residentsHelped)
     ||s.residentsHelped<0||s.residentsHelped>s.day!))return false;
   if(s.patron!==undefined&&s.patron!==null){
