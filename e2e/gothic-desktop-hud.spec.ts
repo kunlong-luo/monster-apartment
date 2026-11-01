@@ -11,6 +11,13 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   expect(box!.width).toBeGreaterThan(850);
   expect(box!.width).toBeLessThan(1010);
   expect(Math.abs(box!.x-(1440-box!.width)/2)).toBeLessThan(3);
+  // Global world chrome no longer overrides this dedicated reference dock.
+  const dockStyle=await dock.evaluate(element=>{
+    const style=getComputedStyle(element);
+    return {maxWidth:style.maxWidth,background:style.backgroundImage};
+  });
+  expect(dockStyle.maxWidth).toBe('980px');
+  expect(dockStyle.background).toContain('linear-gradient');
   await expect(page.getByRole('button',{name:'切换动态特效'}).locator('svg')).toBeVisible();
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   const rail=page.locator('.gothic-lobby__mission-rail');
@@ -60,6 +67,12 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   expect(people!.y+people!.height).toBeLessThan(dockBounds!.y-120);
   expect(postcards!.y).toBeGreaterThan(summonCard!.y+summonCard!.height);
   expect(postcards!.y+postcards!.height).toBeLessThan(dockBounds!.y-45);
+  // Keep the center unobstructed, and guard against the old wide HUD layout.
+  const freeCenter=(people!.x+people!.width+postcards!.x)/2;
+  expect(freeCenter).toBeGreaterThan(1440*.35);
+  expect(freeCenter).toBeLessThan(1440*.67);
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
   // The center must be occupied by the scene rather than another overlay panel.
   const message=await page.getByTestId('gothic-character-talk').boundingBox();
   expect(message).not.toBeNull();

@@ -63,7 +63,7 @@
 .gothic-lobby__brand strong{font-size:clamp(25px,2.8vw,42px);font-weight:600;line-height:1.22;letter-spacing:.11em}
 .gothic-lobby__brand small{font-size:9px;letter-spacing:.28em}
 .gothic-lobby__brand-flourish{position:absolute;top:9px;left:5px;font-size:19px;color:#ce9676}
-.gothic-lobby__topbar{padding-left:clamp(265px,25vw,385px)!important}
+.gothic-lobby__topbar{padding-left:clamp(265px,25vw,385px)}
 .gothic-lobby__mission-rail{
   position:absolute;z-index:3;left:clamp(12px,1.6vw,28px);
   top:clamp(155px,18vh,205px);
@@ -147,10 +147,10 @@
 .gothic-lobby__action-glyph{font-size:38px;color:#f3c289;line-height:1}
 .gothic-lobby__character-caption{display:none!important}
 .gothic-lobby .gothic-dock--cinematic{
-  bottom:max(8px,env(safe-area-inset-bottom))!important;
-  width:calc(100vw - 26px)!important;max-width:1750px!important;
+  bottom:max(8px,env(safe-area-inset-bottom));
+  width:calc(100vw - 26px);max-width:1750px;
   border-radius:14px;padding:7px 10px;gap:2px;
-  background:linear-gradient(180deg,#170e16ef,#0b0710f6)!important;
+  background:linear-gradient(180deg,#170e16ef,#0b0710f6);
   border-color:#c79b687f;box-shadow:inset 0 1px #f2d2a538,0 0 0 2px #0a0610dc,0 -9px 30px #000b;
 }
 .gothic-lobby .gothic-dock--cinematic a{
@@ -260,7 +260,7 @@
  
 /* V3.60: the EXISTING summon entrance gets a visual identity, no new button. */
 .gothic-lobby__mission-card--eclipse{
-  border-color:#e8bd8c!important;
+  border-color:#e8bd8c;
   background:radial-gradient(ellipse at 82% 54%,#b52c557c,transparent 64%),
     linear-gradient(124deg,#4c1c37e8,#160d1deb 86%);
   box-shadow:inset 0 1px #ffe4ad52,0 10px 32px #09030eb8,0 0 18px #b1384b25;

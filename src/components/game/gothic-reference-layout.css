@@ -48,7 +48,7 @@
      Currency and inbox remain the only controls across the top skyline. */
   body .gothic-lobby .gothic-lobby__topbar{
     display:block;position:absolute;inset:0;
-    padding:0!important;pointer-events:none;
+    padding:0;pointer-events:none;
     z-index:5;
   }
   .gothic-lobby .gothic-lobby__topbar > button:first-child{
@@ -275,8 +275,8 @@
 
   /* Bottom dock: seven canonical destinations in one slim ornament. */
   body .gothic-lobby .gothic-dock--cinematic{
-    width:min(980px,calc(100vw - 52px))!important;
-    max-width:980px!important;bottom:12px!important;min-height:75px;
+    width:min(980px,calc(100vw - 52px));
+    max-width:980px;bottom:12px;min-height:75px;
     padding:5px 8px;gap:2px;
     border:1px solid var(--craft-hairline);
     border-radius:12px;
@@ -284,12 +284,16 @@
     box-shadow:0 -8px 29px #000a,inset 0 1px #e3c59d22;
   }
   .gothic-lobby .gothic-dock--cinematic a{
-    min-height:62px;gap:1px;
+    min-height:62px;gap:1px;padding:5px 4px;
+    border:1px solid transparent;
     border-right:1px solid #9476533c;
+    background:transparent;box-shadow:none;
   }
   .gothic-lobby .gothic-dock--cinematic a:last-child{border-right:0}
   .gothic-lobby .gothic-dock--cinematic a .gothic-dock__icon{
     width:30px;height:30px;
+    border:0;border-radius:0;background:transparent;box-shadow:none;
+    color:var(--craft-champagne);
   }
   .gothic-lobby .gothic-dock--cinematic a .gothic-dock__label{
     font-size:12px;letter-spacing:.055em;font-weight:500;
@@ -318,5 +322,6 @@
 }
 @media(prefers-reduced-motion:reduce){
   .gothic-lobby__reference-resident,
-  .gothic-lobby__reference-postcard{transition:none}
+  .gothic-lobby__reference-postcard,
+  .gothic-lobby .gothic-dock--cinematic a{transition:none;transform:none}
 }
