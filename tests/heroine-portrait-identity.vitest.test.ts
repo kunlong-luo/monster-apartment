@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {HEROINE_FACE_ART,getCardFace,getApprovedCardCg,getCardPortraitFallback,getCardPortraitKind} from '../src/components/summon/heroine-portrait-assets';
+import {HEROINE_FACE_ART,getCardFace,getApprovedCardCg,getCardPortraitFallback,getCardPortraitKind,getSelectedCardPreview,YUESHA_ECLIPSE_PREVIEW_PATH} from '../src/components/summon/heroine-portrait-assets';
 import cgManifest from '../public/art/beauty-beasts/characters/cg-manifest.json';
 import {GACHA_CHARACTERS,GACHA_POOLS} from '../src/lib/summon/gacha-engine';
 
@@ -14,6 +14,20 @@ describe('character portrait visual identity',()=>{
       if(entry.status==='portrait')expect(getApprovedCardCg(id)).toBeNull();
       else expect(getApprovedCardCg(id)).toMatch(/^\/art\/beauty-beasts\/characters\//);
     }
+  });
+  it('keeps the player-selected YueSha preview separate from official CG approval',()=>{
+    expect(YUESHA_ECLIPSE_PREVIEW_PATH).toBe('public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp');
+    expect(getSelectedCardPreview('brook-tide')).toBeNull();
+    expect(getSelectedCardPreview('yuesha-vow')).toBeNull();
+    // This commit only introduces an opt-in preview resolver. The binary
+    // and manifest flag must be installed together; a partial upload
+    // must never create a broken asset request in the published game.
+    if(cgManifest.cards['yuesha-eclipse'].status==='portrait'
+      &&!('previewPath' in cgManifest.cards['yuesha-eclipse'])){
+      expect(getSelectedCardPreview('yuesha-eclipse')).toBeNull();
+      expect(getCardFace('yuesha-eclipse','feature')).toEqual(getCardFace('yuesha-eclipse','thumbnail'));
+    }
+    expect(getApprovedCardCg('yuesha-eclipse')).toBeNull();
   });
   it('keeps each themed pool avatar identical to its real resident identity',()=>{
     const expected={

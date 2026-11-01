@@ -23,6 +23,19 @@ export const CARD_FACE_ART={
 } as const;
 export type CardPortraitKind='scene-portrait'|'face-crop'|'full-body-cg';
 
+/** Exact, user-selected preview path. A PNG/WebP created below the native
+ * CG threshold must NEVER set manifest.status = 'production'. The preview is
+ * limited to the feature card, so small thumbnails stay face-legible. */
+export const YUESHA_ECLIPSE_PREVIEW_PATH='public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp';
+export function getSelectedCardPreview(id:string):string|null{
+  if(id!=='yuesha-eclipse')return null;
+  const entry=cgManifest.cards['yuesha-eclipse'] as
+    {status:string;path:string;previewPath?:string};
+  return entry.status==='portrait'&&entry.previewPath===YUESHA_ECLIPSE_PREVIEW_PATH
+    ?siteAssetUrl('/'+YUESHA_ECLIPSE_PREVIEW_PATH.slice('public/'.length))
+    :null;
+}
+
 /** A production CG is selected ONLY after the matching WebP, human review,
  * provenance and SHA-256 have passed scripts/audit-character-cg.mjs. */
 export function getApprovedCardCg(id:string):string|null{
@@ -30,11 +43,12 @@ export function getApprovedCardCg(id:string):string|null{
   return entry?.status==='production'?siteAssetUrl('/'+entry.path.slice('public/'.length)):null;
 }
 
-export function getCardFace(id:string){
-  return getApprovedCardCg(id)??CARD_FACE_ART[id as keyof typeof CARD_FACE_ART]??null;
+export function getCardFace(id:string,view:'feature'|'thumbnail'='feature'){
+  return getApprovedCardCg(id)??(view==='feature'?getSelectedCardPreview(id):null)
+    ??CARD_FACE_ART[id as keyof typeof CARD_FACE_ART]??null;
 }
-/** Use the SAME silver-haired heroine if a scene portrait fails to load;
- * do not fall back to an unrelated old dark-haired concept face. */
+/** Failed preview images fall back to the established matching resident.
+ * The player-selected dark-haired, horned YueSha is not a different character. */
 export function getCardPortraitFallback(id:string){
   // If a newly approved high-resolution CG fails to load, fall back to the
   // original verified identity rather than a broken image or wrong heroine.

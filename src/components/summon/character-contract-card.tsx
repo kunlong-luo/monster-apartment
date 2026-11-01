@@ -2,7 +2,7 @@
 
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {Gem,Diamond} from 'lucide-react';
-import {getCardFace,getCardPortraitKind,getCardPortraitFallback} from './heroine-portrait-assets';
+import {getCardFace,getCardPortraitKind,getCardPortraitFallback,getSelectedCardPreview} from './heroine-portrait-assets';
 import {siteAssetUrl} from '@/lib/game/site-asset-url';
 import type {SummonableCharacter,GachaRarity} from '@/lib/summon/gacha-engine';
 
@@ -18,7 +18,8 @@ export function CharacterContractCard({character,mode='feature',awardTestId}:{
   mode?:'feature'|'thumbnail';
   awardTestId?:string;
 }){
-  const image=getCardFace(character.id)??siteAssetUrl(character.avatar);
+  const candidate=mode==='feature'&&Boolean(getSelectedCardPreview(character.id));
+  const image=getCardFace(character.id,mode)??siteAssetUrl(character.avatar);
   const portraitKind=getCardPortraitKind(character.id);
   const fallback=getCardPortraitFallback(character.id)??siteAssetUrl(character.avatar);
   return <article
@@ -34,6 +35,7 @@ export function CharacterContractCard({character,mode='feature',awardTestId}:{
             sizes={mode==='feature'?'(max-width:600px) 85vw, 490px':'(max-width:600px) 19vw, 100px'}
             className="contract-card__portrait"
             data-portrait-source={portraitKind==='full-body-cg'?'approved-full-body-cg':
+              candidate?'user-selected-portrait-preview':
               portraitKind==='scene-portrait'?'consistent-yuesha-v3':'dedicated-heroine-face'}/>
         </div>
         <div className="contract-card__art-vignette" aria-hidden="true"/>
