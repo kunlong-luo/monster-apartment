@@ -137,3 +137,4 @@
 - 新增 `docs/design/2026-11-01-character-cg-production-brief.md`：分别锁定月纱两版、泉泡、青枝、炽角的成年人物身份、服装、站姿、光源和兽类剪影规则；避免同脸、裁手裁脚及错误材料。
 - 强化 `scripts/prepare-character-cg.mjs`：生成线下审核包时附带仓库现有 `reference-face.webp`，使用缩放后保持真实视口比例的 1440×900、1648×928 与 390×844 卡面预览，并列出需要人工检查的项目。只提交审核程序与规范，不做虚假素材晋级。
 - 新增 Vitest `tests/character-cg-intake.vitest.test.ts` 检查五个插画槽位、正确的身份参考和三种视口预览。CG 图片本身仍待合格的单幅原生插画，验收依旧遵循原正式来源审核、权限及字节哈希闸门。
+- **已验证**：代码提交 `8680a4f7fd6d7e17d23504db483b8c324d3796cf` + 严格 TypeScript 脚本声明 `6a41ed8d24f5659b3f6c799be0db4bd38a42e624`；Quality 成功 <https://github.com/kunlong-luo/monster-apartment/actions/runs/41268348382>；GitHub Pages 对应成功发布 <https://github.com/kunlong-luo/monster-apartment/actions/runs/41268398637>。本轮没有变更玩家游戏页面及人物图片，所以不将浏览器美术截图或未合格 CG 写成已通过。
