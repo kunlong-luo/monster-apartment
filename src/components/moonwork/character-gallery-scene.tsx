@@ -254,9 +254,14 @@ export function CharacterGalleryScene(){
           {detailTab==='training'&&<div className="cg-detail__scroll">
             <p>已收录：{owned.has(selected.key)?'当前契约已获得':'此契约尚未获得'}</p>
             <p>已穿戴装备：{installed.join('、')||'暂无'}</p>
-            {selected.character!=='yuesha'&&<p data-testid="character-workshop-assignment">
-              工坊状态：{workshopSlot>=0?'正在 '+String(workshopSlot+1).padStart(2,'0')+' 号工位':'目前待派工'}
-            </p>}
+            {selected.character!=='yuesha'&&<>
+              <p data-testid="character-workshop-assignment">
+                工坊状态：{workshopSlot>=0?'正在 '+String(workshopSlot+1).padStart(2,'0')+' 号工位':'目前待派工'}
+              </p>
+              <Link href={'/workshop/?worker='+selected.character} className="cg-detail__inline-action">
+                安排{person.name}到工坊
+              </Link>
+            </>}
             <button type="button" className="cg-detail__inline-action" onClick={()=>setArchiveOpen(true)}>
               进入真实装备锻造与养成
             </button>
