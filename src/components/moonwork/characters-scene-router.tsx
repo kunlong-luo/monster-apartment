@@ -1,7 +1,7 @@
 'use client';
 import {useSyncExternalStore} from 'react';
 import {useSearchParams} from 'next/navigation';
-import {MoonworkWorld} from './world-ui';
+import {CharacterGalleryScene} from './character-gallery-scene';
 import {GothicSummonScreen} from '@/components/summon/gothic-summon-screen';
 
 /** Summoning and the established private-room gallery share /characters/.
@@ -20,5 +20,5 @@ export function CharactersSceneRouter(){
   const target=params.get('visit');
   const visitingWorker=target==='brook'||target==='fern'||target==='cinder';
   const view=visitingWorker?'gallery':hashView;
-  return view==='summon'?<GothicSummonScreen/>:<MoonworkWorld area="characters"/>;
+  return view==='summon'?<GothicSummonScreen/>:<CharacterGalleryScene/>;
 }
