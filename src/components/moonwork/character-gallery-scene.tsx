@@ -3,7 +3,7 @@
 import './character-gallery-scene.css';
 import Link from 'next/link';
 import {useEffect,useState} from 'react';
-import {Archive,BookOpen,DoorOpen,Gem,Heart,Image as ImageIcon,Mail,ScrollText,Volume2} from 'lucide-react';
+import {Archive,BookOpen,Crown,DoorOpen,Flame,Gem,Heart,Image as ImageIcon,Leaf,Mail,MoonStar,ScrollText,Volume2,Waves} from 'lucide-react';
 import {GothicDock,GothicResourcePill,GothicModal} from '@/components/game/gothic-hud';
 import {ReliableImage} from '@/components/game/reliable-image';
 import {CharacterLifePortrait} from '@/components/game/character-life-portrait';
@@ -11,7 +11,7 @@ import {RoomInvestigationJournal} from '@/components/game/room-investigation-jou
 import {RoomMemoryGallery} from '@/components/game/room-memory-gallery';
 import {WorkerPrivateRoom} from '@/components/game/worker-private-room';
 import {SummonCollectionArchive} from '@/components/summon/summon-collection-archive';
-import {getCardFace,getCardPortraitFallback,getCardPortraitKind} from '@/components/summon/heroine-portrait-assets';
+import {getCardFace,getCardPortraitFallback,getCardPortraitKind,getCollectibleCardArt} from '@/components/summon/heroine-portrait-assets';
 import {useCharacterCollection} from '@/lib/game/character-collection-store';
 import {siteAssetUrl} from '@/lib/game/site-asset-url';
 import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
@@ -45,6 +45,13 @@ const CARD_RARITY:Record<CardKey,string>={
   'cinder-ember':'SR · 史诗',
 };
 const cards=CARD_ORDER.map(key=>CHARACTER_CARDS.find(card=>card.key===key)!);
+const CARD_SEAL={
+  'yuesha-eclipse':Crown,
+  'yuesha-vow':MoonStar,
+  'brook-tide':Waves,
+  'fern-spring':Leaf,
+  'cinder-ember':Flame,
+} as const;
 
 export function CharacterGalleryScene(){
   const world=useWorkshopWorld();
@@ -143,8 +150,14 @@ export function CharacterGalleryScene(){
           {cards.map((card,index)=>{
             const art=getCardFace(card.key,'feature');
             const collected=owned.has(card.key);
+            // The 512px square face images are honest portraits, never stretched into
+            // a tall full-body painting. Only the reviewed preview/production art
+            // receives the full-height composition.
+            const fullFigure=Boolean(getCollectibleCardArt(card.key));
+            const CardSeal=CARD_SEAL[card.key];
             return <article key={card.key}
               className={'cg-card cg-card--'+CARD_CLASS[card.key]+(selectedKey===card.key?' cg-card--selected':'')}
+              data-art-layout={fullFigure?'figure':'portrait'}
               data-testid={card.character==='yuesha'?'gallery-card-'+card.key:'worker-card-'+card.character}
               data-owned={collected}>
               <button type="button" className="cg-card__select"
@@ -152,10 +165,20 @@ export function CharacterGalleryScene(){
                 aria-label={'选择'+card.title+' · '+(collected?'已收录':'尚未收录')}
                 onClick={()=>{setSelectedKey(card.key);setDetailTab('attributes');}}>
                 <div className="cg-card__art">
-                  {art&&<ReliableImage src={art} fallbackSrc={getCardPortraitFallback(card.key)??undefined}
-                    fill unoptimized priority={index<2} sizes="(max-width:700px) 68vw, (max-width:1050px) 24vw, 14vw"
-                    className="cg-card__image" alt={card.title+'人物肖像'}
-                    data-art-kind={getCardPortraitKind(card.key)}/>}
+                  <div className={'cg-card__portrait-window '+(fullFigure
+                    ?'cg-card__portrait-window--figure':'cg-card__portrait-window--portrait')}>
+                    {art&&<ReliableImage src={art} fallbackSrc={getCardPortraitFallback(card.key)??undefined}
+                      fill unoptimized priority={index<2}
+                      sizes="(max-width:700px) 45vw, (max-width:1050px) 22vw, 14vw"
+                      className="cg-card__image" alt={card.title+'人物肖像'}
+                      data-art-kind={getCardPortraitKind(card.key)}/>}
+                  </div>
+                  {!fullFigure&&<div className="cg-card__portrait-insignia" aria-hidden="true">
+                    <span className="cg-card__portrait-rule"/>
+                    <CardSeal size={30} strokeWidth={1.25}/>
+                    <span className="cg-card__portrait-kicker">{CHARACTER_PROFILES[card.character].title}</span>
+                    <span className="cg-card__portrait-rule"/>
+                  </div>}
                   <span className="cg-card__halo" aria-hidden="true"/>
                   {!collected&&<span className="cg-card__lock">尚未收录</span>}
                 </div>
