@@ -35,6 +35,9 @@ on:
       - 'src/lib/moonwork/workshop-auto-runtime.tsx'
       - 'v2/src/workshop-auto-production.ts'
       - 'e2e/moonwork-next-workshop.spec.ts'
+      - 'src/components/moonwork/character-gallery-scene.tsx'
+      - 'src/components/moonwork/character-gallery-scene.css'
+      - 'e2e/a05-character-gallery-layout.spec.ts'
       - 'src/components/moonwork/world-ui.tsx'
       - 'src/components/moonwork/world-town.tsx'
       - 'e2e/gothic-desktop-*.spec.ts'
@@ -71,6 +74,8 @@ jobs:
           fc-match ':lang=zh-cn'
       - name: Run four-scene desktop browser smoke
         run: pnpm exec playwright test e2e/gothic-desktop-hud.spec.ts e2e/gothic-desktop-scenes.spec.ts e2e/summon-result-desktop.spec.ts --workers=1 --retries=0
+      - name: Review A05 reference proportions, keyboard navigation and capture desktop/mobile screenshots
+        run: pnpm exec playwright test e2e/a05-character-gallery-layout.spec.ts --workers=1 --retries=0
       - name: Run focused archive forge and room-navigation browser regression
         run: pnpm exec playwright test e2e/character-collection.spec.ts --grep "canonical summon archive|an acquired heroine|collected YueSha opens" --workers=1 --retries=0
       - name: Check realtime workshop starts, produces and pauses in browser
@@ -83,6 +88,7 @@ jobs:
           path: |
             test-results/desktop-*.png
             test-results/mobile-lobby-v377.png
+            test-results/mobile-a05-reference-390.png
             test-results/**/test-failed-*.png
             test-results/**/error-context.md
           if-no-files-found: warn
