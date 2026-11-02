@@ -16,6 +16,7 @@ import {useCharacterCollection} from '@/lib/game/character-collection-store';
 import {siteAssetUrl} from '@/lib/game/site-asset-url';
 import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
 import {useWorkshopWorld} from './world-save-react';
+import hallBackdrop from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
 import {WORLD_NAV} from './world-navigation';
 import {CHARACTER_CARDS,FORGE_RECIPES,characterAbilities} from '@/core/character-collection';
 import type {CardKey} from '@/core/character-collection';
@@ -84,7 +85,8 @@ export function CharacterGalleryScene(){
     '/characters/?visit='+selected.character;
 
   return <main className="cg-scene" data-testid="moonwork-world" data-area="characters">
-    <div className="cg-scene__background" aria-hidden="true"/>
+    <div className="cg-scene__background" aria-hidden="true"
+      style={{backgroundImage:"url("+JSON.stringify(hallBackdrop.src)+")"}}/>
     <div className="cg-scene__vignette" aria-hidden="true"/>
     <header className="cg-topbar">
       <Link href="/" className="cg-brand" aria-label="怪物公寓 · 返回大厅">
@@ -163,7 +165,7 @@ export function CharacterGalleryScene(){
                 </span>
               </button>
               {card.character!=='yuesha'&&<button type="button"
-                className="cg-card__quick-room" title={'拜访'+person.name+'的房间'}
+                className="cg-card__quick-room" title={'拜访'+CHARACTER_PROFILES[card.character].name+'的房间'}
                 data-testid={'visit-worker-room-'+card.character}
                 aria-label={'拜访'+CHARACTER_PROFILES[card.character].name+'的房间'}
                 onClick={()=>enterRoom(card.character as WorkerCharacterId)}>
@@ -186,7 +188,7 @@ export function CharacterGalleryScene(){
       <aside className="cg-detail" aria-label="当前选中人物资料">
         <header className={'cg-detail__hero cg-detail__hero--'+CARD_CLASS[selected.key]}>
           <div className="cg-detail__hero-text">
-            <small>月纱档案 · A05 角色名录</small>
+            <small>人物契约 · A05 角色名录</small>
             <h2>{selected.title}</h2>
             <strong>{CARD_RARITY[selected.key]}</strong>
             <p>{person.description}</p>
