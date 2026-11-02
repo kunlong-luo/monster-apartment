@@ -21,6 +21,16 @@ export const CG_PREVIEW_PATHS={
   'fern-spring':'fern/cg-spring-candidate.webp',
   'cinder-ember':'cinder/cg-ember-candidate.webp',
 };
+/** Only current canonical resident identities may be used for CG approval.
+ * YueSha's old yuesha/face.webp is a retired black-haired concept and must
+ * NEVER be passed to an artist as the current silver-haired YueSha. */
+export const CG_IDENTITY_REFERENCE_PATHS={
+  'yuesha-eclipse':'public/art/yuesha-portrait-v3.webp',
+  'yuesha-vow':'public/art/yuesha-bust-v3.webp',
+  'brook-tide':'public/art/beauty-beasts/characters/brook/face.webp',
+  'fern-spring':'public/art/beauty-beasts/characters/fern/face.webp',
+  'cinder-ember':'public/art/beauty-beasts/characters/cinder/face.webp',
+};
 export const CG_VIEWPORTS=['desktop-1440x900','desktop-1648x928','mobile-390x844'];
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 const check=(yes,message)=>{if(!yes)throw new Error('Character CG: '+message);};
@@ -37,6 +47,14 @@ export function assertCharacterCgReview({card,review,bytes}){
   const info=inspectCharacterCg(bytes);
   check(review?.card===card&&review.approved===true&&review.humanVisualReview===true,
     'review approval and card identity required');
+  // A signed review must attest to the current identity reference, not the
+  // old YueSha black-haired portrait or an arbitrary character's face.
+  const canonicalPath=CG_IDENTITY_REFERENCE_PATHS[card];
+  const canonicalFile=join(root,canonicalPath);
+  check(existsSync(canonicalFile),'canonical identity art missing for '+card);
+  check(review.identityReference?.path===canonicalPath&&
+    review.identityReference?.sha256===sha256(readFileSync(canonicalFile)),
+    'CG identity reference path/hash no longer matches '+card);
   check(review.image?.sha256===info.sha256&&review.image.width===info.width&&
     review.image.height===info.height&&review.image.bytes===info.bytes,
     'reviewed image bytes or dimensions changed');
@@ -67,6 +85,10 @@ export function auditCharacterCg(){
   const ids=Object.keys(CG_PATHS);
   check(JSON.stringify(Object.keys(manifest.cards??{}).sort())===JSON.stringify([...ids].sort()),
     'manifest must contain exactly the five playable cards');
+  check(JSON.stringify(Object.keys(CG_IDENTITY_REFERENCE_PATHS).sort())===JSON.stringify([...ids].sort()),
+    'identity reference map must cover exactly the five playable cards');
+  for(const card of ids)check(existsSync(join(root,CG_IDENTITY_REFERENCE_PATHS[card])),
+    'missing canonical identity reference for '+card);
   let production=0;
   for(const card of ids){
     const entry=manifest.cards[card];
