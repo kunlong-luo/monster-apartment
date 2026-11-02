@@ -18,6 +18,7 @@ import {siteAssetUrl} from '@/lib/game/site-asset-url';
 import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
 import {useWorkshopWorld} from './world-save-react';
 import {CharacterGalleryArtwork} from './character-gallery-artwork';
+import {CharacterGalleryPetals} from './character-gallery-petals';
 import hallBackdrop from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
 import {WORLD_NAV} from './world-navigation';
 import {CHARACTER_CARDS,FORGE_RECIPES,characterAbilities} from '@/core/character-collection';
@@ -107,6 +108,7 @@ export function CharacterGalleryScene(){
       style={{backgroundImage:'url('+JSON.stringify(siteAssetUrl('/art/a05/moonlight-tracery.svg'))+')'}}/>
     <div className="cg-scene__ornaments" data-testid="a05-foreground-ornaments" aria-hidden="true"
       style={{backgroundImage:'url('+JSON.stringify(siteAssetUrl('/art/a05/foreground-ornaments.svg'))+')'}}/>
+    <CharacterGalleryPetals reducedMotion={Boolean(prefersReducedMotion)}/>
     <header className="cg-topbar">
       <Link href="/" className="cg-brand" aria-label="怪物公寓 · 返回大厅">
         <span className="cg-brand__title">怪物公寓</span>
