@@ -24,7 +24,18 @@
       "approval": "transitional-decoration",
       "containsCharacters": false,
       "containsControls": false
+    },
+    {
+      "file": "rose-petal.svg",
+      "width": 80,
+      "height": 52,
+      "kind": "ambient-particle-sprite",
+      "source": "original isolated decorative rose petal authored for the project",
+      "purpose": "six slow rose-petal drifts over A05 on desktop",
+      "approval": "transitional-decoration",
+      "containsCharacters": false,
+      "containsControls": false
     }
   ],
-  "note": "These static vectors are decorative only; the existing registered 1920x1080 bitmap remains the architecture picture. Do not treat them as approved production background CG, character art, clickable UI, or source of game values."
+  "note": "These static vectors are decorative only; the existing registered 1920x1080 bitmap remains the architecture picture. Do not treat them as approved production background CG, character art, clickable UI, or source of game values. The rose petal is an isolated original SVG; six Motion instances use reduced-motion and mobile fallbacks; no screenshot-derived art."
 }
