@@ -101,6 +101,23 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await expect(page.getByTestId('cg-equipped-equipment')).toBeVisible();
   await expect(page.getByTestId('cg-equipped-jewelry')).toBeVisible();
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
+  // Artwork viewer displays the real source at contain, with working filmstrip
+  // and controls. It never substitutes an unrelated CG for a portrait.
+  await page.getByRole('button',{name:'欣赏立绘'}).click();
+  const artwork=page.getByTestId('a05-art-viewer');
+  await expect(artwork).toBeVisible();
+  await expect(artwork.locator('.cg-art-view__thumb')).toHaveCount(5);
+  await expect(artwork.locator('.cg-art-view__photo')).toHaveCSS('object-fit','contain');
+  await expect.poll(()=>artwork.locator('.cg-art-view__photo').evaluate(img=>
+    img instanceof HTMLImageElement&&img.complete&&img.naturalWidth>0
+  )).toBe(true);
+  await page.getByRole('button',{name:/查看月纱 · 神话/}).click();
+  await expect(artwork.locator('.cg-art-view__stage')).toHaveAttribute('data-art-kind','figure');
+  await page.getByRole('button',{name:'下一张人物画作'}).click();
+  await expect(artwork.locator('.cg-art-view__stage')).toHaveAttribute('data-art-kind','portrait');
+  await expect(artwork.locator('.cg-art-view__heading h2')).toContainText('月下誓约');
+  await page.getByRole('button',{name:'关闭面板'}).click();
+  await expect(artwork).toHaveCount(0);
   await page.setViewportSize({width:1440,height:900});
   await page.screenshot({path:'test-results/desktop-a05-reference-1440.png',animations:'disabled'});
 });
