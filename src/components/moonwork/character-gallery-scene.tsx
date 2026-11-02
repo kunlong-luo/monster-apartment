@@ -3,8 +3,10 @@
 import './character-gallery-scene.css';
 import Link from 'next/link';
 import {useEffect,useState} from 'react';
+import type {CSSProperties} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
-import {Archive,BookOpen,Crown,DoorOpen,Flame,Gem,Heart,Image as ImageIcon,Leaf,Mail,MoonStar,ScrollText,Shield,Volume2,Waves} from 'lucide-react';
+import {Archive,BookOpen,Brain,Crown,DoorOpen,Dumbbell,Eye,Flame,Focus,Gem,HandHeart,Heart,HeartPulse,Hourglass,Image as ImageIcon,Leaf,Mail,MessageCircle,MoonStar,Palette,ScrollText,Shield,Swords,Volume2,Waves} from 'lucide-react';
+import type {LucideIcon} from 'lucide-react';
 import {GothicDock,GothicResourcePill,GothicModal} from '@/components/game/gothic-hud';
 import {ReliableImage} from '@/components/game/reliable-image';
 import {CharacterLifePortrait} from '@/components/game/character-life-portrait';
@@ -24,6 +26,7 @@ import {WORLD_NAV} from './world-navigation';
 import {CHARACTER_CARDS,FORGE_RECIPES,characterAbilities} from '@/core/character-collection';
 import type {CardKey} from '@/core/character-collection';
 import {ABILITY_LABELS,CHARACTER_PROFILES} from '@/core/character-life';
+import type {AbilityKey} from '@/core/character-life';
 import type {WorkerCharacterId} from '@/core/character-life';
 
 const CARD_ORDER:readonly CardKey[]=[
@@ -55,6 +58,15 @@ const CARD_SEAL={
   'fern-spring':Leaf,
   'cinder-ember':Flame,
 } as const;
+
+/** Abilities, not fictional leveled combat skills. Icons are intentionally
+ * distinct across each character's four actual strengths. */
+const STRENGTH_ICON:Partial<Record<AbilityKey,LucideIcon>>={
+  wisdom:Brain,memory:BookOpen,communication:MessageCircle,focus:Focus,
+  spirit:Waves,vitality:HeartPulse,perception:Eye,empathy:HandHeart,
+  creativity:Palette,strength:Swords,physique:Dumbbell,endurance:Hourglass,
+};
+
 
 export function CharacterGalleryScene(){
   const world=useWorkshopWorld();
@@ -239,7 +251,8 @@ export function CharacterGalleryScene(){
         </footer>
       </section>
 
-      <aside className="cg-detail" aria-label="当前选中人物资料">
+      <aside className={'cg-detail cg-detail--'+CARD_CLASS[selected.key]}
+        aria-label="当前选中人物资料">
         <header className={'cg-detail__hero cg-detail__hero--'+CARD_CLASS[selected.key]}>
           <div className="cg-detail__hero-text">
             <small>人物契约 · A05 角色名录</small>
@@ -278,15 +291,28 @@ export function CharacterGalleryScene(){
           {detailTab==='attributes'&&<>
             <div className="cg-stats" aria-label="真实人物能力值">
               {(['vitality','strength','physique','spirit','speed','affinity'] as const).map(k=>
-                <div key={k}><span>{ABILITY_LABELS[k]}</span><strong>{abilities[k]}</strong></div>)}
+                <div className="cg-stat" key={k} aria-label={ABILITY_LABELS[k]+' '+abilities[k]+' / 100'}>
+                  <span>{ABILITY_LABELS[k]}</span><strong>{abilities[k]}</strong>
+                  <span className="cg-stat__track" aria-hidden="true">
+                    <span style={{width:Math.min(100,Math.max(0,abilities[k]))+'%'}}/>
+                  </span>
+                </div>)}
             </div>
-            <h3 className="cg-section-title">专长技能</h3>
-            <div className="cg-skills">{person.strengths.map((key,i)=>
-              <div className="cg-skill" key={key}>
-                <span className="cg-skill__icon">{i%2===0?<Gem size={21}/>:<Heart size={21}/>}</span>
-                <span>{ABILITY_LABELS[key]}</span>
-                <small>能力 {abilities[key]}</small>
-              </div>)}</div>
+            <h3 className="cg-section-title">人物专长</h3>
+            <div className="cg-skills" aria-label="四项真实专长能力">
+              {person.strengths.map(key=>{
+                const Icon=STRENGTH_ICON[key]??Gem;
+                return <div className="cg-skill" key={key}
+                  aria-label={ABILITY_LABELS[key]+'专长，能力 '+abilities[key]+' / 100'}>
+                  <span className="cg-skill__icon"
+                    style={{'--cg-skill-progress':abilities[key]+'%'} as CSSProperties}>
+                    <Icon size={24} strokeWidth={1.5} aria-hidden="true"/>
+                  </span>
+                  <span className="cg-skill__label">{ABILITY_LABELS[key]}</span>
+                  <small>{abilities[key]} / 100</small>
+                </div>;
+              })}
+            </div>
             <h3 className="cg-section-title">装备</h3>
             <div className="cg-equipment" aria-label="已装备首饰与防具">
               {([['equipment','装备'],['jewelry','首饰']] as const).map(([slot,label])=>{
