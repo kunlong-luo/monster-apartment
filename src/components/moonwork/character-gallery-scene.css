@@ -214,7 +214,7 @@
   cursor:pointer}
 .cg-detail__actions .cg-detail__primary{background:linear-gradient(115deg,#8f2d50,#cb3b70);
   border-color:#ff9fbd;color:#fff0e2;box-shadow:0 0 15px #bc376d69}
-.cg-scene .cg-dock{bottom:4.05dvh;left:50%;width:calc(100% - 18px);max-width:1650px;
+.cg-scene .cg-dock{bottom:4.05dvh;left:50%;width:calc(100% - 18px);max-width:none;
   height:8.7dvh;min-height:74px;max-height:90px;border-radius:0;
   border-width:1px 0 0;border-color:#a87558ad;
   background:linear-gradient(#2b1629f0,#180d1bf7);padding:5px 12vw 4px;
