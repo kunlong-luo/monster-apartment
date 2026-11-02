@@ -22,6 +22,19 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
     });
     expect(decoded).toEqual({width:1672,height:941});
   }
+  const petals=page.getByTestId('a05-petal-layer');
+  await expect(petals).toHaveCSS('pointer-events','none');
+  await expect(petals.locator('.cg-petal-layer__petal')).toHaveCount(6);
+  await expect(petals).toHaveAttribute('aria-hidden','true');
+  // A real isolated SVG sprite, not a decorative crop of the UI screenshot.
+  await expect.poll(()=>petals.locator('.cg-petal-layer__petal').first().evaluate(async node=>{
+    const match=getComputedStyle(node).backgroundImage.match(/url\(["']?([^"')]+)["']?\)/);
+    if(!match)return false;
+    const image=new Image();
+    image.src=match[1];
+    await image.decode();
+    return image.naturalWidth===80&&image.naturalHeight===52;
+  })).toBe(true);
   const gallery=page.getByTestId('painted-worker-gallery');
   await expect(gallery.locator('.cg-card')).toHaveCount(5);
   await expect(page.getByTestId('gallery-collected-count')).toHaveText('0/5');
@@ -118,6 +131,9 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await expect(artwork.locator('.cg-art-view__heading h2')).toContainText('月下誓约');
   await page.getByRole('button',{name:'关闭面板'}).click();
   await expect(artwork).toHaveCount(0);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect(petals).toBeHidden();
+  await page.emulateMedia({reducedMotion:'no-preference'});
   await page.setViewportSize({width:1440,height:900});
   await page.screenshot({path:'test-results/desktop-a05-reference-1440.png',animations:'disabled'});
 });
@@ -128,6 +144,7 @@ test('A05 mobile card strip remains operable without page overflow',async({page}
   await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
   await expect(page.getByTestId('a05-tracery')).toBeHidden();
   await expect(page.getByTestId('a05-foreground-ornaments')).toBeHidden();
+  await expect(page.getByTestId('a05-petal-layer')).toBeHidden();
   await page.getByRole('button',{name:/选择炽角/}).scrollIntoViewIfNeeded();
   await page.getByRole('button',{name:/选择炽角/}).click();
   await expect(page.locator('.cg-detail h2')).toContainText('炽角');
