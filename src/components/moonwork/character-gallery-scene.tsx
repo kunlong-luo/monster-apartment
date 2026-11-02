@@ -17,6 +17,7 @@ import {useCharacterCollection} from '@/lib/game/character-collection-store';
 import {siteAssetUrl} from '@/lib/game/site-asset-url';
 import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
 import {useWorkshopWorld} from './world-save-react';
+import {CharacterGalleryArtwork} from './character-gallery-artwork';
 import hallBackdrop from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
 import {WORLD_NAV} from './world-navigation';
 import {CHARACTER_CARDS,FORGE_RECIPES,characterAbilities} from '@/core/character-collection';
@@ -85,7 +86,6 @@ export function CharacterGalleryScene(){
   const abilities=status==='ok'?characterAbilities(selected.character,collection):person.abilities;
   const owned=new Set(collection.draws);
   const collectedCount=owned.size;
-  const portrait=getCardFace(selected.key,'feature');
   // Alternate covenants may have different visual forms: keep YueSha's
   // mythic-eclipse art on the hero panel whenever its approved preview exists.
   const detailPortrait=getCollectibleCardArt(selected.key)??HEROINE_FACE_ART[selected.character];
@@ -348,17 +348,11 @@ export function CharacterGalleryScene(){
         <RoomMemoryGallery/><RoomInvestigationJournal/>
       </div>
     </GothicModal>}
-    {overlay==='art'&&<GothicModal title={selected.title+'立绘欣赏'} onClose={()=>setOverlay(null)} wide>
-      <div className="cg-art-view">
-        <h2>{selected.title}</h2>
-        <p>{owned.has(selected.key)?'已收录的契约插画':'人物预览 · 召唤后可收录契约'}</p>
-        {portrait&&<div className="cg-art-view__image">
-          <ReliableImage src={portrait} fallbackSrc={getCardPortraitFallback(selected.key)??undefined}
-            alt={selected.title+'人物画作'} fill unoptimized sizes="(max-width:640px) 85vw, 540px"
-            className="object-contain"/>
-        </div>}
-      </div>
-    </GothicModal>}
+    {overlay==='art'&&<GothicModal title={selected.title+'画作鉴赏'} onClose={()=>setOverlay(null)} immersive>
+      <CharacterGalleryArtwork cards={cards} selectedKey={selected.key}
+        collectedKeys={collection.draws} reducedMotion={Boolean(prefersReducedMotion)}
+        onSelect={key=>{setSelectedKey(key);setDetailTab('attributes');}}/>
+    </GothicModal>
     <SummonCollectionArchive open={archiveOpen} collection={collection}
       collectionStatus={status} onClose={()=>setArchiveOpen(false)}/>
     {world&&visiting&&<WorkerPrivateRoom id={visiting}
