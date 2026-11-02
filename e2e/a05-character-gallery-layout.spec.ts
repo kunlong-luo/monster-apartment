@@ -29,6 +29,9 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   near(cards!.y,197,10);
   near(progress!.y,752,12);
   near(dock!.y,820,14);
+  expect(dock!.width).toBeGreaterThan(0.90*1672);
+  expect(dock!.x).toBeLessThan(25);
+  expect(dock!.x+dock!.width).toBeGreaterThan(1647);
   expect(progress!.y).toBeGreaterThan(cards!.y+cards!.height);
   expect(details!.y+details!.height).toBeLessThan(dock!.y);
   const images=gallery.locator('.cg-card__image');
