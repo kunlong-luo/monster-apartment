@@ -185,8 +185,9 @@
 .cg-detail__scroll{height:100%;min-height:0;overflow:auto;font-size:13px;line-height:1.7}
 .cg-detail__scroll p{margin-bottom:10px}
 .cg-detail__flavor{margin-top:10px;color:#ddc7b4}
-.cg-detail__inline-action{border:1px solid #d2a16a;background:#5a3042;
-  border-radius:6px;padding:8px 12px;color:#ffe1b4;cursor:pointer}
+.cg-detail__inline-action{display:inline-flex;align-items:center;margin:3px 8px 5px 0;
+  min-height:38px;border:1px solid #d2a16a;background:#5a3042;
+  border-radius:6px;padding:8px 12px;color:#ffe1b4;text-decoration:none;cursor:pointer;font:inherit}
 .cg-detail__bottom{flex-shrink:0;padding:7px 13px 12px;border-top:1px solid #a67d576e;}
 .cg-detail__bond{display:flex;align-items:center;gap:8px;color:#f0c4b4;font-size:13px;
   padding:0 4px 8px;margin:0}
