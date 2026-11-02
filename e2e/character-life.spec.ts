@@ -60,10 +60,13 @@ test('Moonsha private room preserves a meaningful first choice without changing 
 
 test('character gallery can open the same room; corrupt lore save is not silently overwritten',async({page})=>{
   await page.goto('/characters/');
+  await page.getByRole('button',{name:/选择泉泡/}).click();
+  await page.getByRole('tab',{name:'详情'}).click();
   await expect(page.getByTestId('life-profile-brook')).toBeVisible();
   await page.getByTestId('life-expand-brook').click();
   await expect(page.getByTestId('life-profile-brook')).toContainText('耐力');
-  await page.getByRole('link',{name:/拜访月纱会客室/}).click();
+  await page.getByRole('button',{name:/选择月纱 · 神话/}).click();
+  await page.getByRole('link',{name:'个人房间'}).click();
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
   await page.goto('/apartment/');
   await page.evaluate(()=>localStorage.setItem('monster-apartment:character-life:v1','{damaged'));
@@ -109,7 +112,7 @@ test('Brook, Fern and Cinder have unique rooms and persisted personal choices',a
 
 test('assigned worker is not duplicated in their private room',async({page})=>{
   await page.goto('/characters/');
-  await expect(page.getByTestId('life-profile-brook')).toBeVisible();
+  await expect(page.getByTestId('worker-card-brook')).toBeVisible();
   await page.evaluate(()=>{
     const key='monster-apartment:workshop-v2-lab';
     const world=JSON.parse(localStorage.getItem(key)!);
