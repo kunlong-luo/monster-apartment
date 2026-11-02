@@ -3,6 +3,7 @@
 import './character-gallery-scene.css';
 import Link from 'next/link';
 import {useEffect,useState} from 'react';
+import {motion,useReducedMotion} from 'motion/react';
 import {Archive,BookOpen,Crown,DoorOpen,Flame,Gem,Heart,Image as ImageIcon,Leaf,Mail,MoonStar,ScrollText,Shield,Volume2,Waves} from 'lucide-react';
 import {GothicDock,GothicResourcePill,GothicModal} from '@/components/game/gothic-hud';
 import {ReliableImage} from '@/components/game/reliable-image';
@@ -61,6 +62,7 @@ export function CharacterGalleryScene(){
   const [overlay,setOverlay]=useState<'memories'|'art'|null>(null);
   const [archiveOpen,setArchiveOpen]=useState(false);
   const [visiting,setVisiting]=useState<WorkerCharacterId|null>(null);
+  const prefersReducedMotion=useReducedMotion();
 
   useEffect(()=>{void ensureWorkshopWorld();},[]);
   useEffect(()=>{
@@ -168,8 +170,19 @@ export function CharacterGalleryScene(){
               data-owned={collected}>
               <button type="button" className="cg-card__select"
                 aria-pressed={selectedKey===card.key}
+                data-card-key={card.key}
                 aria-label={'选择'+card.title+' · '+(collected?'已收录':'尚未收录')}
-                onClick={()=>{setSelectedKey(card.key);setDetailTab('attributes');}}>
+                onClick={()=>{setSelectedKey(card.key);setDetailTab('attributes');}}
+                onKeyDown={event=>{
+                  if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+                  event.preventDefault();
+                  const next=event.key==='Home'?0:event.key==='End'?cards.length-1:
+                    (index+(event.key==='ArrowRight'?1:cards.length-1))%cards.length;
+                  setSelectedKey(cards[next].key);
+                  setDetailTab('attributes');
+                  event.currentTarget.closest('.cg-cards')
+                    ?.querySelectorAll<HTMLButtonElement>('.cg-card__select')[next]?.focus();
+                }}>
                 <div className="cg-card__art">
                   <div className={'cg-card__portrait-window '+(fullFigure
                     ?'cg-card__portrait-window--figure':'cg-card__portrait-window--portrait')}>
@@ -222,18 +235,34 @@ export function CharacterGalleryScene(){
             <strong>{CARD_RARITY[selected.key]}</strong>
             <p>{person.description}</p>
           </div>
-          <div className="cg-detail__hero-art">
+          <motion.div key={selected.key} className="cg-detail__hero-art"
+            initial={prefersReducedMotion?false:{opacity:0,scale:1.04}}
+            animate={{opacity:1,scale:1}} transition={{duration:prefersReducedMotion?0:0.28,ease:'easeOut'}}>
             <ReliableImage src={detailPortrait} fallbackSrc={HEROINE_FACE_ART[selected.character]}
               alt="" fill unoptimized priority sizes="240px" className="cg-detail__hero-img"/>
-          </div>
+          </motion.div>
         </header>
         <div className="cg-detail__tabs" role="tablist" aria-label="人物资料栏目">
           {([['attributes','属性'],['story','详情'],['training','养成']] as const).map(([id,label])=>
-            <button key={id} type="button" role="tab" aria-selected={detailTab===id}
+            <button key={id} type="button" role="tab" id={'cg-tab-'+id}
+              aria-controls="cg-detail-tabpanel" aria-selected={detailTab===id}
+              tabIndex={detailTab===id?0:-1}
               className={detailTab===id?'cg-tab cg-tab--active':'cg-tab'}
-              onClick={()=>setDetailTab(id)}>{label}</button>)}
+              onClick={()=>setDetailTab(id)}
+              onKeyDown={event=>{
+                const tabIds=['attributes','story','training'] as const;
+                const current=tabIds.indexOf(id);
+                const next=event.key==='Home'?0:event.key==='End'?2:
+                  event.key==='ArrowRight'?(current+1)%3:
+                  event.key==='ArrowLeft'?(current+2)%3:-1;
+                if(next<0)return;
+                event.preventDefault();
+                setDetailTab(tabIds[next]);
+                document.getElementById('cg-tab-'+tabIds[next])?.focus();
+              }}>{label}</button>)}
         </div>
-        <div className="cg-detail__body">
+        <div className="cg-detail__body" id="cg-detail-tabpanel" role="tabpanel"
+          aria-labelledby={'cg-tab-'+detailTab} tabIndex={0}>
           {detailTab==='attributes'&&<>
             <div className="cg-stats" aria-label="真实人物能力值">
               {(['vitality','strength','physique','spirit','speed','affinity'] as const).map(k=>
