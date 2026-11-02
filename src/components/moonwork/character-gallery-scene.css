@@ -257,9 +257,51 @@
 .cg-scene .cg-dock .gothic-dock__link[aria-current="page"]{background:#7d214168;color:#ffe1c0}
 .cg-overlay-stack{width:100%;display:flex;flex-direction:column;gap:10px}
 .cg-overlay-stack h2,.cg-art-view h2{font-size:24px;color:#ffe0ac}
-.cg-art-view{width:100%;text-align:center;color:#e4c5ad}
-.cg-art-view__image{position:relative;width:100%;height:min(66dvh,580px);margin-top:12px;
-  background:#160c1c;border:1px solid #9c7255;border-radius:10px;overflow:hidden}
+/* Collector's gallery: view the registered painting at native proportions.
+ * Portrait previews remain portraits; only a reviewed CG may fill the stage. */
+.cg-art-view{width:100%;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(205px,25%);
+  gap:clamp(13px,1.7vw,24px);align-items:stretch;text-align:left;color:var(--craft-ivory);}
+.cg-art-view__stage{position:relative;min-width:0;min-height:320px;height:min(76dvh,730px);
+  border:1px solid var(--craft-brass);border-radius:12px;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 38%,#41273f,#1d101e 64%,#0e0913);
+  box-shadow:inset 0 0 0 5px #d5a77412,0 14px 38px #08040da8;}
+.cg-art-view__stage::before{content:"";position:absolute;inset:7px;z-index:3;pointer-events:none;
+  border:1px solid #c8a37655;border-radius:8px;}
+.cg-art-view__stage[data-art-kind="portrait"]{
+  background:radial-gradient(ellipse at 50% 28%,#53354d,#241627 68%,#100912);
+}
+.cg-art-view__painting{position:absolute;inset:12px;overflow:hidden}
+.cg-art-view__photo{object-fit:contain;object-position:center center}
+.cg-art-view__stage-ornament{position:absolute;pointer-events:none;z-index:4;
+  top:0;left:50%;width:70px;height:17px;transform:translateX(-50%);
+  border:1px solid #d8b581a8;background:linear-gradient(110deg,#35202e,#c49567,#35202e);
+  clip-path:polygon(0 0,42% 0,50% 80%,58% 0,100% 0,100% 25%,63% 25%,50% 100%,37% 25%,0 25%);}
+.cg-art-view__side{display:flex;flex-direction:column;min-width:0;min-height:0;
+  max-height:min(76dvh,730px);padding:12px 0 0}
+.cg-art-view__heading small{font:10px/1.6 Georgia,serif;letter-spacing:.15em;color:var(--craft-brass)}
+.cg-art-view__heading h2{margin:8px 0 6px;font-size:clamp(17px,1.8vw,27px);
+  font-weight:500;line-height:1.28;color:var(--craft-champagne)}
+.cg-art-view__heading p{margin:6px 0;font-size:13px;color:var(--craft-ivory)}
+.cg-art-view__heading .cg-art-view__disclaimer{font-size:12px;line-height:1.6;color:var(--craft-muted)}
+.cg-art-view__navigation{display:flex;justify-content:space-between;align-items:center;
+  gap:6px;padding:11px 0;margin:13px 0 9px;border-top:1px solid #a68d7066;border-bottom:1px solid #a68d7066}
+.cg-art-view__navigation button{display:inline-flex;align-items:center;gap:4px;min-height:40px;
+  padding:7px 9px;color:var(--craft-champagne);border:1px solid #a68d707a;
+  background:#2f1d2a;border-radius:7px;cursor:pointer;font:12px inherit}
+.cg-art-view__navigation button:hover{border-color:var(--craft-champagne);background:#583343}
+.cg-art-view__counter{font-variant-numeric:tabular-nums;font-size:13px;color:var(--craft-ivory)}
+.cg-art-view__filmstrip{display:flex;flex-direction:column;overflow-y:auto;min-height:0;
+  gap:7px;padding:2px;scrollbar-width:thin}
+.cg-art-view__thumb{display:flex;align-items:center;gap:9px;flex-shrink:0;min-width:0;min-height:63px;
+  width:100%;padding:5px 7px;border:1px solid #a68d7063;border-radius:7px;
+  background:#231620;text-align:left;color:var(--craft-ivory);font:12px inherit;cursor:pointer}
+.cg-art-view__thumb:hover{border-color:#d9c2a1a6}
+.cg-art-view__thumb--active{border-color:#d9c2a1;background:#513142;
+  box-shadow:inset 2px 0 var(--craft-champagne)}
+.cg-art-view__thumb-image{position:relative;flex:0 0 42px;width:42px;height:51px;
+  border:1px solid #d4ab806d;border-radius:4px;overflow:hidden;background:#120b17}
+.cg-art-view__thumb>span:nth-child(2){flex:1;min-width:0;line-height:1.4}
+.cg-art-view__thumb svg{color:var(--craft-champagne);flex-shrink:0}
 @media(max-width:1250px){
   .cg-layout{grid-template-columns:140px minmax(0,1fr) 325px;gap:7px}
   .cg-gallery{grid-template-rows:93px minmax(0,1fr) 52px}
@@ -352,4 +394,19 @@
 }
 @media(prefers-reduced-motion:reduce){
   .cg-card__select,.cg-card__image,.cg-progress__track>span{transition:none!important}
+}
+
+@media(max-width:900px){
+  .cg-art-view{grid-template-columns:minmax(0,1fr);gap:10px}
+  .cg-art-view__stage{height:min(51dvh,520px);min-height:210px}
+  .cg-art-view__side{max-height:none;padding:0}
+  .cg-art-view__heading h2{font-size:18px;margin:4px 0}
+  .cg-art-view__heading .cg-art-view__disclaimer{display:none}
+  .cg-art-view__navigation{margin:5px 0;padding:6px 0}
+  .cg-art-view__filmstrip{flex-direction:row;overflow-x:auto;overflow-y:hidden;gap:6px}
+  .cg-art-view__thumb{min-height:55px;min-width:145px;width:145px}
+  .cg-art-view__thumb-image{flex-basis:36px;width:36px;height:42px}
+}
+@media(prefers-reduced-motion:reduce){
+  .cg-art-view__painting{animation:none!important;transition:none!important}
 }
