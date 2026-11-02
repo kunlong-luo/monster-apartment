@@ -93,7 +93,7 @@
 }
 .cg-card__image{object-fit:contain;object-position:center center;transition:transform .32s}
 .cg-card__portrait-window--portrait .cg-card__image{object-fit:cover;object-position:center 42%}
-.cg-card__portrait-window--figure .cg-card__image{object-fit:contain;object-position:center bottom}
+.cg-card__portrait-window--figure .cg-card__image{object-fit:cover;object-position:50% 34%}
 .cg-card__select:hover .cg-card__image{transform:scale(1.02)}
 .cg-card[data-art-layout="portrait"] .cg-card__art{
   background:linear-gradient(165deg,var(--cg-halo),#24121e 37%,#120d19 84%);
