@@ -47,6 +47,13 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   const portraitCards=gallery.locator('.cg-card[data-art-layout="portrait"]');
   await expect(portraitCards).toHaveCount(4);
   await expect(gallery.locator('.cg-card[data-art-layout="figure"]')).toHaveCount(1);
+  // Reused identity art creates atmosphere; no screenshot raster or unrelated
+  // resident is allowed to replace the original face. Both layers must decode.
+  const ambient=portraitCards.locator('.cg-card__ambient-image');
+  await expect(ambient).toHaveCount(4);
+  await expect.poll(()=>ambient.evaluateAll(images=>images.every(img=>
+    (img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0
+  )),{timeout:25000}).toBe(true);
   const portraitFrames=await portraitCards.locator('.cg-card__portrait-window').evaluateAll(nodes=>
     nodes.map(el=>{
       const img=el.querySelector('img')!;
