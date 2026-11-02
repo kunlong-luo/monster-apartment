@@ -108,6 +108,26 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await page.getByRole('tab',{name:'属性'}).click();
   await page.getByRole('button',{name:/选择青枝/}).click();
   await expect(page.locator('.cg-stats')).toBeVisible();
+  // Six real attributes and four unique expertise seals must track
+  // selected resident instead of repeated generic diamonds/hearts.
+  const gauges=page.locator('.cg-stat');
+  const seals=page.locator('.cg-skill');
+  await expect(gauges).toHaveCount(6);
+  await expect(seals).toHaveCount(4);
+  await expect(page.getByRole('heading',{name:'人物专长'})).toBeVisible();
+  await expect(seals.first()).toContainText('感知');
+  const actualProgress=await gauges.evaluateAll(nodes=>nodes.map(el=>({
+    shown:Number(el.querySelector('strong')?.textContent),
+    bar:parseFloat((el.querySelector('.cg-stat__track > span') as HTMLElement)?.style.width??'0'),
+  })));
+  for(const gauge of actualProgress){
+    expect(gauge.shown).toBeGreaterThanOrEqual(0);
+    expect(gauge.shown).toBeLessThanOrEqual(100);
+    expect(gauge.bar).toBe(gauge.shown);
+  }
+  const distinctIcons=await seals.locator('.cg-skill__icon > svg').evaluateAll(nodes=>
+    nodes.map(el=>el.getAttribute('class')));
+  expect(new Set(distinctIcons).size).toBe(4);
   // The detail portrait is always the canonical resident face, not a crop of
   // the selected card's optional full-scene preview.
   await expect(page.locator('.cg-detail__hero-img')).toHaveAttribute('src',/face\.|face-/);
