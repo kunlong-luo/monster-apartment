@@ -28,6 +28,19 @@
 .cg-scene__ornaments{
   z-index:3;opacity:.82;mix-blend-mode:screen;
 }
+/* Filmic foreground atmosphere: six tiny, individually moving rose petals.
+ * They are decorative only and stay out of interaction/hit-testing. */
+.cg-petal-layer{
+  position:absolute;inset:0;z-index:4;overflow:hidden;
+  pointer-events:none;user-select:none;contain:layout paint;
+}
+.cg-petal-layer__petal{
+  position:absolute;display:block;background-position:center;
+  background-size:contain;background-repeat:no-repeat;
+  pointer-events:none;will-change:transform,opacity;
+  filter:drop-shadow(0 2px 3px #24091890);
+}
+.cg-petal-layer__petal:nth-child(2n){filter:blur(.5px) drop-shadow(0 1px 2px #24091860)}
 .cg-topbar{
   position:absolute;left:2.4%;right:2.4%;top:0;height:76px;display:flex;align-items:center;
   justify-content:space-between;gap:20px;z-index:8;
@@ -314,7 +327,7 @@
   .cg-scene .cg-dock{padding-left:10vw;padding-right:10vw}
 }
 @media(max-width:900px){
-  .cg-scene__tracery,.cg-scene__ornaments{display:none}
+  .cg-scene__tracery,.cg-scene__ornaments,.cg-petal-layer{display:none}
   .cg-topbar{height:62px;left:12px;right:12px}
   .cg-brand{min-width:0;align-items:flex-start}
   .cg-brand__title{font-size:23px}
@@ -394,6 +407,7 @@
 }
 @media(prefers-reduced-motion:reduce){
   .cg-card__select,.cg-card__image,.cg-progress__track>span{transition:none!important}
+  .cg-petal-layer{display:none}
 }
 
 @media(max-width:900px){
