@@ -13,6 +13,14 @@ export const CG_PATHS={
   'fern-spring':'fern/cg-spring.webp',
   'cinder-ember':'cinder/cg-ember.webp',
 };
+/** Keep the runtime art-slot allowlist and the Node intake check aligned. */
+export const CG_PREVIEW_PATHS={
+  'yuesha-eclipse':'yuesha/cg-eclipse-candidate.webp',
+  'yuesha-vow':'yuesha/cg-vow-candidate.webp',
+  'brook-tide':'brook/cg-tide-candidate.webp',
+  'fern-spring':'fern/cg-spring-candidate.webp',
+  'cinder-ember':'cinder/cg-ember-candidate.webp',
+};
 export const CG_VIEWPORTS=['desktop-1440x900','desktop-1648x928','mobile-390x844'];
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 const check=(yes,message)=>{if(!yes)throw new Error('Character CG: '+message);};
@@ -70,8 +78,27 @@ export function auditCharacterCg(){
     if(entry.status==='portrait'){
       check(!existsSync(assetPath)&&!existsSync(proofPath),
         'unreviewed art exists outside production manifest '+card);
+      if(entry.previewPath!==undefined){
+        const preview='public/art/beauty-beasts/characters/'+CG_PREVIEW_PATHS[card];
+        check(entry.previewPath===preview,'preview path is not the approved card slot '+card);
+        const candidatePath=join(root,preview);
+        check(existsSync(candidatePath),'manifest preview is missing '+card);
+        const candidate=readFileSync(candidatePath);
+        check(candidate.length>=100000&&candidate.length<=12*1024*1024,
+          'preview file size invalid '+card);
+        const dimensions=webpDimensions(candidate);
+        check(dimensions.width>=960&&dimensions.height>=1280&&
+          Math.abs(dimensions.width/dimensions.height-.75)<.018,
+          'preview must be a native 3:4 image at least 960x1280 '+card);
+        check(typeof entry.previewSha256==='string'&&
+          /^[a-f0-9]{64}$/.test(entry.previewSha256)&&
+          entry.previewSha256===sha256(candidate),
+          'preview checksum does not match actual artwork '+card);
+      }
       continue;
     }
+    check(entry.previewPath===undefined,
+      'approved production art must not retain stale preview selection '+card);
     check(existsSync(assetPath)&&existsSync(proofPath),'production art/provenance missing '+card);
     const bytes=readFileSync(assetPath);
     const review=JSON.parse(readFileSync(proofPath,'utf8'));

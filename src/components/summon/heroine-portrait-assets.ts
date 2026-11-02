@@ -23,17 +23,33 @@ export const CARD_FACE_ART={
 } as const;
 export type CardPortraitKind='scene-portrait'|'face-crop'|'full-body-cg';
 
-/** Exact, user-selected preview path. A PNG/WebP created below the native
- * CG threshold must NEVER set manifest.status = 'production'. The preview is
- * limited to the feature card, so small thumbnails stay face-legible. */
-export const YUESHA_ECLIPSE_PREVIEW_PATH='public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp';
+/** One immutable asset slot for each contract; adding a new image must be
+ * opt-in through the manifest AND match the correct resident folder.
+ * Unapproved candidates can never bypass the production provenance gate. */
+export const CARD_PREVIEW_PATHS={
+  'yuesha-eclipse':'public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp',
+  'yuesha-vow':'public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp',
+  'brook-tide':'public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp',
+  'fern-spring':'public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp',
+  'cinder-ember':'public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp',
+} as const;
+export type ContractCardId=keyof typeof CARD_PREVIEW_PATHS;
+export const YUESHA_ECLIPSE_PREVIEW_PATH=CARD_PREVIEW_PATHS['yuesha-eclipse'];
+
 export function getSelectedCardPreview(id:string):string|null{
-  if(id!=='yuesha-eclipse')return null;
-  const entry=cgManifest.cards['yuesha-eclipse'] as
-    {status:string;path:string;previewPath?:string};
-  return entry.status==='portrait'&&entry.previewPath===YUESHA_ECLIPSE_PREVIEW_PATH
-    ?siteAssetUrl('/'+YUESHA_ECLIPSE_PREVIEW_PATH.slice('public/'.length))
-    :null;
+  if(!Object.hasOwn(CARD_PREVIEW_PATHS,id))return null;
+  const entry=(cgManifest.cards as Record<string,{
+    status:string;path:string;previewPath?:string
+  }>)[id];
+  const expected=CARD_PREVIEW_PATHS[id as ContractCardId];
+  return entry?.status==='portrait'&&entry.previewPath===expected
+    ?siteAssetUrl('/'+expected.slice('public/'.length)):null;
+}
+
+/** Collectors can admire either an explicitly approved preview or the
+ * fully audited production CG. Promotion must not hide the artwork button. */
+export function getCollectibleCardArt(id:string):string|null{
+  return getApprovedCardCg(id)??getSelectedCardPreview(id);
 }
 
 /** A production CG is selected ONLY after the matching WebP, human review,
@@ -44,7 +60,9 @@ export function getApprovedCardCg(id:string):string|null{
 }
 
 export function getCardFace(id:string,view:'feature'|'thumbnail'='feature'){
-  return getApprovedCardCg(id)??(view==='feature'?getSelectedCardPreview(id):null)
+  // Small ten-pull thumbnails prioritize the same resident's detailed face.
+  // Feature cards receive the widest approved or user-selected illustration.
+  return (view==='feature'?getCollectibleCardArt(id):null)
     ??CARD_FACE_ART[id as keyof typeof CARD_FACE_ART]??null;
 }
 /** Failed preview images fall back to the established matching resident.

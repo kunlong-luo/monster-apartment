@@ -4,7 +4,8 @@
     "yuesha-eclipse": {
       "status": "portrait",
       "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse.webp",
-      "previewPath": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp"
+      "previewPath": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp",
+      "previewSha256": "7f2f34b205b156f08c02be683244175951c45da6cbab1113930bee0ae971b8ae"
     },
     "yuesha-vow": {
       "status": "portrait",

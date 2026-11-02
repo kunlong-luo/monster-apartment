@@ -211,3 +211,10 @@
 
 - **验收全部成功**：代码 `f62285574e77de92c4ab2034fe3e4ffb1f07e17f`；[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/41290956627)（TypeScript、Lint、Vitest、Next、Pixi）通过；[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/41290956605) 通过（包含 1440×900 与 390×844 月纱全身原画浏览器解码/截图、图鉴返回与既有工坊回归）；[GitHub Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/41291003569) 发布成功。线上入口 `/monster-apartment/characters/#summon-screen`。截图回归不等于人工逐像素审核，不改变 CG 原生高清审核条件。
 
+
+### A05 第二张及后续人物的资源接入通道（2026-11-02）
+
+- 月下誓约本轮生成结果仍为五人游戏 UI、银发换脸和虚构“5/5 已完成”，不满足独立单人原画标准；**拒绝入库**。只有用户选定的月蚀候选仍实际可欣赏（1/5 preview），正式生产级审查 0/5。
+- 将 `getSelectedCardPreview` 从只识别月蚀扩充为完整五槽位、严格路径白名单、manifest 显式 opt-in 的统一解析。不得把其他人物画到月纱头像位置；不存在的图不会在 UI 里被请求。
+- 收藏插画现在由 `getCollectibleCardArt` 同时兼容 manifest 允许的候选和未来正式 `production` 图。修复正式晋级后原图入口消失的问题；图鉴欣赏文案跟随五种人物契约切换，不再固定讲红月。
+- 图片审计新增候选源 WebP 的文件存在、尺寸比例、最小 960×1280 与 SHA-256 校验。候选入库不能绕过白名单；正式产物依旧要原生 1536×2048、版权和人工验收。不修改抽卡概率、保底、装备、工坊或存档。

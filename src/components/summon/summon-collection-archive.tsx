@@ -3,12 +3,20 @@
 import {useState} from 'react';
 import Link from 'next/link';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
-import {HEROINE_FACE_ART,getCardPortraitFallback,getSelectedCardPreview} from './heroine-portrait-assets';
-import {CHARACTER_CARDS,type CollectionState} from '@/core/character-collection';
+import {HEROINE_FACE_ART,getCardPortraitFallback,getCollectibleCardArt} from './heroine-portrait-assets';
+import {CHARACTER_CARDS,type CollectionState,type CardKey} from '@/core/character-collection';
 import type {CharacterId} from '@/core/character-life';
 import {COVENANT_BEASTS} from '@/lib/summon/covenant-beasts';
 import type {CollectionStatus} from '@/lib/game/character-collection-store';
 import {SummonForgePanel} from './summon-forge-panel';
+
+const ART_LORE:Record<CardKey,string>={
+  'yuesha-eclipse':'深红月蚀映照古老宫殿，她已与你缔结不可遗忘的契约。',
+  'yuesha-vow':'冷月照亮契约会客室；月白与深紫的誓约见证你们的羁绊。',
+  'brook-tide':'潮汐回廊的月色漫过地面，泉泡守护着来自深海的秘密。',
+  'fern-spring':'月光温室的枝叶轻响，青枝珍藏着春芽与古老的故事。',
+  'cinder-ember':'赤铜炉火点亮深夜，炽角的锻锤与誓言同样坚定。',
+};
 
 /**
  * A pure collection/gear surface over the same canonical collection save.
@@ -21,7 +29,7 @@ export function SummonCollectionArchive({open,collection,collectionStatus,onClos
   const [forgeNotice,setForgeNotice]=useState('');
   const [selectedArtId,setSelectedArtId]=useState<string|null>(null);
   const artCard=selectedArtId?CHARACTER_CARDS.find(c=>c.key===selectedArtId):null;
-  const artPreview=artCard?getSelectedCardPreview(artCard.key):null;
+  const artPreview=artCard?getCollectibleCardArt(artCard.key):null;
   const artOwned=Boolean(artCard&&collection.draws.includes(artCard.key));
   const showArt=Boolean(artCard&&artPreview&&artOwned);
   const closeArchive=()=>{setSelectedArtId(null);onClose();};
@@ -40,7 +48,7 @@ export function SummonCollectionArchive({open,collection,collectionStatus,onClos
           <div className="relative flex max-h-[90vh] w-full max-w-4xl flex-col rounded-2xl border border-[#c49a62] bg-[#1a0f19] p-4 sm:p-5 shadow-[0_15px_50px_#000000ee] text-[#f2dac2]">
             <div className="flex items-center justify-between border-b border-[#c49a6244] pb-3">
               <div>
-                <h3 className="text-lg font-bold text-[#ffe2be]">{showArt?'月蚀契约 · 人物立绘':'♟ 人物契约图鉴与装备锻造'}</h3>
+                <h3 className="text-lg font-bold text-[#ffe2be]">{showArt?'契约典藏 · 人物立绘':'♟ 人物契约图鉴与装备锻造'}</h3>
                 {showArt?<p className="text-xs text-[#d2af8e]">{artCard?.title} · 已收录的契约插画</p>:
                   <p className="text-xs text-[#d2af8e]">
                     已收录契约：{new Set(collection.draws).size} / 5 | 锻造碎片：
@@ -67,10 +75,10 @@ export function SummonCollectionArchive({open,collection,collectionStatus,onClos
                 </div>
                 <div className="flex flex-col justify-between gap-4 self-start py-2 md:self-stretch">
                   <div className="space-y-3">
-                    <p className="text-[11px] tracking-[.22em] text-[#cfa876]">ECLIPSE COVENANT</p>
+                    <p className="text-[11px] tracking-[.22em] text-[#cfa876]">COVENANT PORTRAIT</p>
                     <h4 className="font-serif text-2xl leading-tight text-[#ffe0bb]">{artCard.title}</h4>
                     <p className="text-sm leading-7 text-[#ddc4af]">
-                      深红月蚀映照古老宫殿，她已与你缔结不可遗忘的契约。
+                      {ART_LORE[artCard.key]}
                     </p>
                     <p className="text-xs leading-6 text-[#bea38e]">
                       完整欣赏已收录的人物插画；抽卡品阶与真实奖励以契约记录为准。
@@ -106,7 +114,7 @@ export function SummonCollectionArchive({open,collection,collectionStatus,onClos
                         <span className="text-[10px] text-[#caa789]">
                           {owned ? '已收录' : '待收录 · ' + card.rarity}
                         </span>
-                        {owned&&getSelectedCardPreview(card.key)&&
+                        {owned&&getCollectibleCardArt(card.key)&&
                           <button type="button" data-testid={'collection-view-art-'+card.key}
                             onClick={()=>setSelectedArtId(card.key)}
                             className="mt-2 mr-2 inline-flex min-h-9 items-center rounded border border-[#a68d70] bg-[#241825] px-3 py-1.5 text-[11px] text-[#f1e5d6] hover:bg-[#492839] focus-visible:outline-2 focus-visible:outline-[#f1e5d6]">

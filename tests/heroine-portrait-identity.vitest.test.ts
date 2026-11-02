@@ -2,7 +2,7 @@ import {describe,expect,it} from 'vitest';
 import {readFileSync,statSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {resolve} from 'node:path';
-import {HEROINE_FACE_ART,getCardFace,getApprovedCardCg,getCardPortraitFallback,getCardPortraitKind,getSelectedCardPreview,YUESHA_ECLIPSE_PREVIEW_PATH} from '../src/components/summon/heroine-portrait-assets';
+import {HEROINE_FACE_ART,getCardFace,getApprovedCardCg,getCardPortraitFallback,getCardPortraitKind,getSelectedCardPreview,getCollectibleCardArt,CARD_PREVIEW_PATHS,YUESHA_ECLIPSE_PREVIEW_PATH} from '../src/components/summon/heroine-portrait-assets';
 import cgManifest from '../public/art/beauty-beasts/characters/cg-manifest.json';
 import {GACHA_CHARACTERS,GACHA_POOLS} from '../src/lib/summon/gacha-engine';
 
@@ -32,8 +32,14 @@ describe('character portrait visual identity',()=>{
       .toBe(getSelectedCardPreview('yuesha-eclipse'));
     expect(getCardFace('yuesha-eclipse','thumbnail'))
       .not.toBe(getSelectedCardPreview('yuesha-eclipse'));
-    expect(getSelectedCardPreview('brook-tide')).toBeNull();
-    expect(getSelectedCardPreview('yuesha-vow')).toBeNull();
+    for(const id of ['yuesha-vow','brook-tide','fern-spring','cinder-ember']){
+      expect(getSelectedCardPreview(id)).toBeNull();
+      expect(getCollectibleCardArt(id)).toBeNull();
+      expect(getCardFace(id,'feature')).toBeTruthy();
+    }
+    expect(Object.keys(CARD_PREVIEW_PATHS).sort()).toEqual(Object.keys(cgManifest.cards).sort());
+    expect(getCollectibleCardArt('yuesha-eclipse')).toBe(getSelectedCardPreview('yuesha-eclipse'));
+    expect(getCollectibleCardArt('no-such-card')).toBeNull();
     // This commit only introduces an opt-in preview resolver. The binary
     // and manifest flag must be installed together; a partial upload
     // must never create a broken asset request in the published game.
