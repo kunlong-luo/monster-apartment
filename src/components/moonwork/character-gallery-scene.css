@@ -16,6 +16,18 @@
   background:linear-gradient(180deg,rgba(10,6,12,.37),transparent 22%,transparent 68%,rgba(10,5,11,.78) 100%),
   linear-gradient(90deg,rgba(11,5,13,.35),transparent 27%,rgba(17,7,17,.16) 60%,rgba(11,5,14,.61));
 }
+/* Environment-only art overlays. Bitmap architecture remains the primary
+ * scene image; these lightweight, transparent decorations contain no HUD. */
+.cg-scene__tracery,.cg-scene__ornaments{
+  position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;
+  background-size:100% 100%;
+}
+.cg-scene__tracery{
+  z-index:-1;opacity:.56;mix-blend-mode:screen;
+}
+.cg-scene__ornaments{
+  z-index:3;opacity:.82;mix-blend-mode:screen;
+}
 .cg-topbar{
   position:absolute;left:2.4%;right:2.4%;top:0;height:76px;display:flex;align-items:center;
   justify-content:space-between;gap:20px;z-index:8;
@@ -260,6 +272,7 @@
   .cg-scene .cg-dock{padding-left:10vw;padding-right:10vw}
 }
 @media(max-width:900px){
+  .cg-scene__tracery,.cg-scene__ornaments{display:none}
   .cg-topbar{height:62px;left:12px;right:12px}
   .cg-brand{min-width:0;align-items:flex-start}
   .cg-brand__title{font-size:23px}
