@@ -61,8 +61,18 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   // Slim reference-style cards need a cover crop; the artwork viewer retains contain.
   await expect(gallery.locator('.cg-card[data-art-layout="figure"] .cg-card__image'))
     .toHaveCSS('object-fit','cover');
+  await page.screenshot({path:'test-results/desktop-a05-reference-1672.png',animations:'disabled'});
   await page.getByRole('button',{name:/选择青枝/}).click();
   await expect(page.locator('.cg-detail h2')).toContainText('青枝');
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('.cg-detail h2')).toContainText('炽角');
+  await page.keyboard.press('Home');
+  await expect(page.locator('.cg-detail h2')).toContainText('月纱');
+  await page.getByRole('tab',{name:'属性'}).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('tab',{name:'详情'})).toHaveAttribute('aria-selected','true');
+  await page.getByRole('tab',{name:'属性'}).click();
+  await page.getByRole('button',{name:/选择青枝/}).click();
   await expect(page.locator('.cg-stats')).toBeVisible();
   // The detail portrait is always the canonical resident face, not a crop of
   // the selected card's optional full-scene preview.
@@ -70,6 +80,8 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await expect(page.getByTestId('cg-equipped-equipment')).toBeVisible();
   await expect(page.getByTestId('cg-equipped-jewelry')).toBeVisible();
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
+  await page.setViewportSize({width:1440,height:900});
+  await page.screenshot({path:'test-results/desktop-a05-reference-1440.png',animations:'disabled'});
 });
 
 test('A05 mobile card strip remains operable without page overflow',async({page})=>{
@@ -82,4 +94,5 @@ test('A05 mobile card strip remains operable without page overflow',async({page}
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(2);
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
+  await page.screenshot({path:'test-results/mobile-a05-reference-390.png',animations:'disabled'});
 });
