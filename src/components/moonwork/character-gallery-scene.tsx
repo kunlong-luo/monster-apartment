@@ -84,6 +84,9 @@ export function CharacterGalleryScene(){
   const owned=new Set(collection.draws);
   const collectedCount=owned.size;
   const portrait=getCardFace(selected.key,'feature');
+  // Alternate covenants may have different visual forms: keep YueSha's
+  // mythic-eclipse art on the hero panel whenever its approved preview exists.
+  const detailPortrait=getCollectibleCardArt(selected.key)??HEROINE_FACE_ART[selected.character];
   const equippedSlots=collection.equipped[selected.character]??{};
   const installed=Object.values(equippedSlots)
     .map(id=>FORGE_RECIPES.find(item=>item.id===id)?.name)
@@ -220,8 +223,8 @@ export function CharacterGalleryScene(){
             <p>{person.description}</p>
           </div>
           <div className="cg-detail__hero-art">
-            <ReliableImage src={HEROINE_FACE_ART[selected.character]} alt="" fill unoptimized
-              priority sizes="240px" className="cg-detail__hero-img"/>
+            <ReliableImage src={detailPortrait} fallbackSrc={HEROINE_FACE_ART[selected.character]}
+              alt="" fill unoptimized priority sizes="240px" className="cg-detail__hero-img"/>
           </div>
         </header>
         <div className="cg-detail__tabs" role="tablist" aria-label="人物资料栏目">
