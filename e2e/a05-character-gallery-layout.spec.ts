@@ -24,6 +24,23 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await expect.poll(()=>images.evaluateAll(nodes=>nodes.every(el=>
     (el as HTMLImageElement).complete&&(el as HTMLImageElement).naturalWidth>0
   )),{timeout:25000}).toBe(true);
+  // Existing portraits are square; never crop 512px art to impersonate a full-body CG.
+  const portraitCards=gallery.locator('.cg-card[data-art-layout="portrait"]');
+  await expect(portraitCards).toHaveCount(4);
+  await expect(gallery.locator('.cg-card[data-art-layout="figure"]')).toHaveCount(1);
+  const portraitFrames=await portraitCards.locator('.cg-card__portrait-window').evaluateAll(nodes=>
+    nodes.map(el=>{
+      const img=el.querySelector('img')!;
+      const frame=el.getBoundingClientRect();
+      return {ratio:frame.width/frame.height,fit:getComputedStyle(img).objectFit};
+    }));
+  for(const frame of portraitFrames){
+    expect(frame.ratio).toBeGreaterThan(.73);
+    expect(frame.ratio).toBeLessThan(.77);
+    expect(frame.fit).toBe('cover');
+  }
+  await expect(gallery.locator('.cg-card[data-art-layout="figure"] .cg-card__image'))
+    .toHaveCSS('object-fit','contain');
   await page.getByRole('button',{name:/选择青枝/}).click();
   await expect(page.locator('.cg-detail h2')).toContainText('青枝');
   await expect(page.locator('.cg-stats')).toBeVisible();
