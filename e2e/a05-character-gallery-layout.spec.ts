@@ -11,6 +11,10 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   const gallery=page.getByTestId('painted-worker-gallery');
   await expect(gallery.locator('.cg-card')).toHaveCount(5);
   await expect(page.getByTestId('gallery-collected-count')).toHaveText('0/5');
+  // The user's reference gives mythic YueSha a distinct horned eclipse form.
+  // Do not silently replace that card's feature art with the ordinary avatar.
+  await expect(page.locator('.cg-detail__hero-img'))
+    .toHaveAttribute('src',/cg-eclipse-candidate\.webp$/);
   const cards=await gallery.boundingBox();
   const details=await page.locator('.cg-detail').boundingBox();
   const sidebar=await page.locator('.cg-sidebar').boundingBox();
