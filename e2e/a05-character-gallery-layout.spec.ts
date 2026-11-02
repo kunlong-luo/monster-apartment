@@ -13,7 +13,7 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   for(const id of ['a05-tracery','a05-foreground-ornaments']){
     await expect(page.getByTestId(id)).toHaveCSS('pointer-events','none');
     const decoded=await page.getByTestId(id).evaluate(async element=>{
-      const src=getComputedStyle(element).backgroundImage.match(/url\\?\\?\(["']?(.+?)["']?\)/)?.[1];
+      const src=getComputedStyle(element).backgroundImage.match(/url\(["']?([^"')]+)["']?\)/)?.[1];
       if(!src)return {width:0,height:0};
       const image=new Image();
       image.src=src;
