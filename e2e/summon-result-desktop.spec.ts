@@ -69,7 +69,13 @@ test('PC single pull reveals a large face card with real persisted award',async(
   await expect(card).toBeVisible();
   await expect(page.getByTestId('collection-reveal-award')).toContainText('首次收录');
   await expect(page.getByTestId('collection-reveal-award')).toContainText('+1 锻造碎片');
-  await expect(card.locator('.contract-card__art-status')).toHaveText('契约典藏 · 人物肖像');
+  // The approved YueSha eclipse PREVIEW is deliberately shown after this
+  // covenant is drawn; do not expect the obsolete generic portrait label.
+  // Other covenant draws must still describe their actual art tier.
+  const awardedCard=await card.getAttribute('data-card-id');
+  await expect(card.locator('.contract-card__art-status')).toHaveText(
+    awardedCard==='yuesha-eclipse'?'契约典藏 · 月蚀立绘':'契约典藏 · 人物肖像',
+  );
   await expect(card.locator('svg.lucide-sparkles')).toHaveCount(0);
   await expect.poll(()=>card.locator('img').evaluate(img=>(img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0)).toBe(true);
   // Wait for Motion's full-card reveal: a screenshot of a mid-rotate
