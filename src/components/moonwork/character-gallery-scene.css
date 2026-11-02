@@ -250,9 +250,11 @@
     overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;padding:2px 3px 5px}
   .cg-card{scroll-snap-align:center}
   .cg-card__caption{flex-basis:45px;padding:3px}
-  .cg-card__portrait-window--portrait{top:8%;left:9%;width:82%}
-  .cg-card__portrait-insignia{top:60%}
-  .cg-card__portrait-kicker{font-size:11px}
+  .cg-card__portrait-window--portrait{
+    top:7%;left:6%;width:88%;height:86%;aspect-ratio:auto;border-radius:12px;
+  }
+  .cg-card__portrait-window--portrait .cg-card__image{object-fit:contain;object-position:center}
+  .cg-card__portrait-insignia{display:none}
   .cg-card__caption strong{font-size:13px}
   .cg-card__caption small{font-size:10px}
   .cg-progress{height:33px;padding:0 9px;gap:7px}
