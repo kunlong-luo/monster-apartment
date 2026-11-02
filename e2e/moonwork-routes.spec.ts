@@ -44,7 +44,9 @@ test('orders and warehouse transact the same real localStorage save',async({page
   await page.reload();
   await expect(page.getByTestId('world-cores')).toHaveText('9');
   await page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link',{name:'角色图鉴'}).click();
-  await expect(page.getByText(/正在 06 号工位/)).toBeVisible();
+  await page.getByRole('button',{name:/选择泉泡/}).click();
+  await page.getByRole('tab',{name:'养成'}).click();
+  await expect(page.getByTestId('character-workshop-assignment')).toContainText('正在 06 号工位');
 });
 
 
@@ -184,11 +186,9 @@ test('painted worker roster and scene art load as real gameplay destinations',as
     .getByRole('link',{name:'角色图鉴'}).click();
   await expect(page.getByTestId('painted-worker-gallery')).toBeVisible({timeout:15_000});
   for(const id of ['brook','fern','cinder']){
-    const art=page.getByTestId('worker-card-'+id).getByRole('img');
-    await expect(art).toBeVisible();
-    await expect(art).toHaveAttribute('data-art-source','dedicated-heroine-face');
-    await expect(page.getByTestId('worker-card-'+id)
-      .getByRole('link',{name:/安排.+到工坊/})).toBeVisible();
+    const card=page.getByTestId('worker-card-'+id);
+    await expect(card).toHaveAttribute('data-art-layout','portrait');
+    await expect(card.locator('img.cg-card__image')).toBeVisible();
   }
   await page.getByRole('navigation',{name:'月光工坊世界'})
     .getByRole('link',{name:'委托大厅'}).click();
@@ -206,7 +206,9 @@ test('choosing an illustrated guild worker preselects their real Pixi factory as
   await page.getByRole('navigation',{name:'月光工坊世界'})
     .getByRole('link',{name:'角色图鉴'}).click();
   await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
-  await page.getByTestId('worker-card-fern').getByRole('link',{name:'安排青枝到工坊'}).click();
+  await page.getByRole('button',{name:/选择青枝/}).click();
+  await page.getByRole('tab',{name:'养成'}).click();
+  await page.getByRole('link',{name:'安排青枝到工坊'}).click();
   await expect(page).toHaveURL(/\/workshop\/?\?worker=fern/);
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
   await expect(page.getByTestId('v2-worker-fern')).toHaveClass(/active/);
