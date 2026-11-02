@@ -84,8 +84,33 @@
 .cg-card__select:hover{transform:translateY(-5px)}
 .cg-card__art{position:relative;flex:1;min-height:0;width:100%;overflow:hidden;
   background:linear-gradient(145deg,var(--cg-halo),#1b0f19 72%);}
-.cg-card__image{object-fit:cover;object-position:center 24%;transition:transform .32s;will-change:auto}
-.cg-card__select:hover .cg-card__image{transform:scale(1.035)}
+.cg-card__portrait-window{position:absolute;overflow:hidden;isolation:isolate}
+.cg-card__portrait-window--figure{inset:0}
+.cg-card__portrait-window--portrait{
+  top:12%;left:7%;width:86%;aspect-ratio:3/4;border-radius:45% 45% 10px 10px/24% 24% 10px 10px;
+  border:1px solid var(--cg-accent);background:#190f1c;
+  box-shadow:0 8px 28px #08030b9e,0 0 0 3px #1208168a,inset 0 0 16px #050308;
+}
+.cg-card__image{object-fit:contain;object-position:center center;transition:transform .32s}
+.cg-card__portrait-window--portrait .cg-card__image{object-fit:cover;object-position:center 42%}
+.cg-card__portrait-window--figure .cg-card__image{object-fit:contain;object-position:center bottom}
+.cg-card__select:hover .cg-card__image{transform:scale(1.02)}
+.cg-card[data-art-layout="portrait"] .cg-card__art{
+  background:linear-gradient(165deg,var(--cg-halo),#24121e 37%,#120d19 84%);
+}
+.cg-card__portrait-insignia{
+  position:absolute;top:57%;left:4%;right:4%;bottom:5%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:clamp(5px,1.2vh,12px);
+  color:var(--cg-accent);text-align:center;pointer-events:none;
+  text-shadow:0 2px 10px #07030c;
+}
+.cg-card__portrait-insignia svg{width:clamp(21px,2vw,30px);height:auto;filter:drop-shadow(0 1px 9px var(--cg-halo))}
+.cg-card__portrait-kicker{
+  display:block;max-width:94%;font-size:clamp(10px,.86vw,14px);font-weight:500;
+  line-height:1.55;letter-spacing:.08em;color:#e7c9ae;overflow-wrap:anywhere;
+}
+.cg-card__portrait-rule{display:block;height:1px;width:54%;max-width:86px;
+  background:linear-gradient(90deg,transparent,var(--cg-accent),transparent);opacity:.75}
 .cg-card__halo{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,#1b0d1825,transparent 43%,#180c19a6 100%);
   box-shadow:inset 0 0 23px var(--cg-halo);}
@@ -225,6 +250,9 @@
     overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;padding:2px 3px 5px}
   .cg-card{scroll-snap-align:center}
   .cg-card__caption{flex-basis:45px;padding:3px}
+  .cg-card__portrait-window--portrait{top:8%;left:9%;width:82%}
+  .cg-card__portrait-insignia{top:60%}
+  .cg-card__portrait-kicker{font-size:11px}
   .cg-card__caption strong{font-size:13px}
   .cg-card__caption small{font-size:10px}
   .cg-progress{height:33px;padding:0 9px;gap:7px}
