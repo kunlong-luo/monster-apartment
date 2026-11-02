@@ -352,7 +352,7 @@ export function CharacterGalleryScene(){
       <CharacterGalleryArtwork cards={cards} selectedKey={selected.key}
         collectedKeys={collection.draws} reducedMotion={Boolean(prefersReducedMotion)}
         onSelect={key=>{setSelectedKey(key);setDetailTab('attributes');}}/>
-    </GothicModal>
+    </GothicModal>}
     <SummonCollectionArchive open={archiveOpen} collection={collection}
       collectionStatus={status} onClose={()=>setArchiveOpen(false)}/>
     {world&&visiting&&<WorkerPrivateRoom id={visiting}
