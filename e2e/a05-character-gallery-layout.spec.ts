@@ -19,6 +19,18 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   expect(sidebar!.x+sidebar!.width).toBeLessThan(cards!.x+3);
   expect(cards!.x+cards!.width).toBeLessThan(details!.x+3);
   expect(cards!.y+cards!.height).toBeLessThan(dock!.y);
+  // The accepted composition uses a 941px-high canvas: card gallery ends
+  // before the progress plate, details end at ~803px, dock starts ~820px.
+  const progress=await page.locator('.cg-progress').boundingBox();
+  expect(progress).toBeTruthy();
+  const near=(actual:number,target:number,tolerance:number)=>expect(Math.abs(actual-target)).toBeLessThanOrEqual(tolerance);
+  near(details!.y,78,5);
+  near(details!.y+details!.height,803,10);
+  near(cards!.y,197,10);
+  near(progress!.y,752,12);
+  near(dock!.y,820,14);
+  expect(progress!.y).toBeGreaterThan(cards!.y+cards!.height);
+  expect(details!.y+details!.height).toBeLessThan(dock!.y);
   const images=gallery.locator('.cg-card__image');
   await expect(images).toHaveCount(5);
   await expect.poll(()=>images.evaluateAll(nodes=>nodes.every(el=>
@@ -45,6 +57,11 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await page.getByRole('button',{name:/选择青枝/}).click();
   await expect(page.locator('.cg-detail h2')).toContainText('青枝');
   await expect(page.locator('.cg-stats')).toBeVisible();
+  // The detail portrait is always the canonical resident face, not a crop of
+  // the selected card's optional full-scene preview.
+  await expect(page.locator('.cg-detail__hero-img')).toHaveAttribute('src',/face\.|face-/);
+  await expect(page.getByTestId('cg-equipped-equipment')).toBeVisible();
+  await expect(page.getByTestId('cg-equipped-jewelry')).toBeVisible();
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
 });
 
