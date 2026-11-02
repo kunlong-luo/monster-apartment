@@ -3,7 +3,7 @@
 import './character-gallery-scene.css';
 import Link from 'next/link';
 import {useEffect,useState} from 'react';
-import {Archive,BookOpen,Crown,DoorOpen,Flame,Gem,Heart,Image as ImageIcon,Leaf,Mail,MoonStar,ScrollText,Volume2,Waves} from 'lucide-react';
+import {Archive,BookOpen,Crown,DoorOpen,Flame,Gem,Heart,Image as ImageIcon,Leaf,Mail,MoonStar,ScrollText,Shield,Volume2,Waves} from 'lucide-react';
 import {GothicDock,GothicResourcePill,GothicModal} from '@/components/game/gothic-hud';
 import {ReliableImage} from '@/components/game/reliable-image';
 import {CharacterLifePortrait} from '@/components/game/character-life-portrait';
@@ -11,7 +11,7 @@ import {RoomInvestigationJournal} from '@/components/game/room-investigation-jou
 import {RoomMemoryGallery} from '@/components/game/room-memory-gallery';
 import {WorkerPrivateRoom} from '@/components/game/worker-private-room';
 import {SummonCollectionArchive} from '@/components/summon/summon-collection-archive';
-import {getCardFace,getCardPortraitFallback,getCardPortraitKind,getCollectibleCardArt} from '@/components/summon/heroine-portrait-assets';
+import {HEROINE_FACE_ART,getCardFace,getCardPortraitFallback,getCardPortraitKind,getCollectibleCardArt} from '@/components/summon/heroine-portrait-assets';
 import {useCharacterCollection} from '@/lib/game/character-collection-store';
 import {siteAssetUrl} from '@/lib/game/site-asset-url';
 import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
@@ -84,7 +84,8 @@ export function CharacterGalleryScene(){
   const owned=new Set(collection.draws);
   const collectedCount=owned.size;
   const portrait=getCardFace(selected.key,'feature');
-  const installed=Object.values(collection.equipped[selected.character]??{})
+  const equippedSlots=collection.equipped[selected.character]??{};
+  const installed=Object.values(equippedSlots)
     .map(id=>FORGE_RECIPES.find(item=>item.id===id)?.name)
     .filter(Boolean);
   const workshopSlot=world&&selected.character!=='yuesha'
@@ -144,7 +145,7 @@ export function CharacterGalleryScene(){
       <section className="cg-gallery" aria-label="A05 人物立绘全集">
         <header className="cg-heading" data-testid="character-gallery-header">
           <h1>A05 人物立绘全集 <span>({collectedCount}/5)</span></h1>
-          <p>主要角色 · 正式立绘 · 契约档案</p>
+          <p>主要角色 · 契约鉴赏 · 人物档案</p>
           {status!=='ok'&&<p role="alert" className="cg-storage-error">
             人物收藏存档暂不可读取，未修改原有数据。</p>}
         </header>
@@ -218,10 +219,10 @@ export function CharacterGalleryScene(){
             <strong>{CARD_RARITY[selected.key]}</strong>
             <p>{person.description}</p>
           </div>
-          {portrait&&<div className="cg-detail__hero-art">
-            <ReliableImage src={portrait} fallbackSrc={getCardPortraitFallback(selected.key)??undefined}
-              alt="" fill unoptimized priority sizes="240px" className="cg-detail__hero-img"/>
-          </div>}
+          <div className="cg-detail__hero-art">
+            <ReliableImage src={HEROINE_FACE_ART[selected.character]} alt="" fill unoptimized
+              priority sizes="240px" className="cg-detail__hero-img"/>
+          </div>
         </header>
         <div className="cg-detail__tabs" role="tablist" aria-label="人物资料栏目">
           {([['attributes','属性'],['story','详情'],['training','养成']] as const).map(([id,label])=>
@@ -243,8 +244,21 @@ export function CharacterGalleryScene(){
                 <small>能力 {abilities[key]}</small>
               </div>)}</div>
             <h3 className="cg-section-title">装备</h3>
-            <div className="cg-gear">
-              {installed.length>0?installed.map(name=><span key={name}>{name}</span>):<span>尚未装备 · 可在收藏中锻造</span>}
+            <div className="cg-equipment" aria-label="已装备首饰与防具">
+              {([['equipment','装备'],['jewelry','首饰']] as const).map(([slot,label])=>{
+                const recipe=FORGE_RECIPES.find(item=>item.id===equippedSlots[slot]);
+                const SlotIcon=slot==='equipment'?Shield:Gem;
+                return <button key={slot} type="button"
+                  className={'cg-equipment__slot '+(recipe?'cg-equipment__slot--filled':'')}
+                  onClick={()=>setArchiveOpen(true)}
+                  aria-label={label+'：'+(recipe?.name??'空位')+'，前往装备与锻造'}
+                  data-testid={'cg-equipped-'+slot}>
+                  <span className="cg-equipment__icon"><SlotIcon size={24} strokeWidth={1.65}/></span>
+                  <span className="cg-equipment__name"><strong>{label}</strong>
+                    <small>{recipe?.name??'可锻造'}</small>
+                  </span>
+                </button>;
+              })}
             </div>
           </>}
           {detailTab==='story'&&<div className="cg-detail__scroll">
