@@ -298,7 +298,7 @@ export function CharacterGalleryScene(){
         </div>
       </aside>
     </div>
-    <GothicDock label="月光工坊世界" activeHref="/characters/" className="cg-dock"
+    <GothicDock label="月光工坊世界" activeHref="/characters/" className="cg-dock gothic-dock--cinematic"
       items={WORLD_NAV.map(item=>({href:item.href,icon:item.glyph,label:item.label,description:item.purpose,ariaLabel:item.full}))}/>
     {overlay==='memories'&&<GothicModal title="月光记忆与人物故事" onClose={()=>setOverlay(null)} wide>
       <div className="cg-overlay-stack">
