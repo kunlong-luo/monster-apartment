@@ -39,8 +39,9 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
     expect(frame.ratio).toBeLessThan(.77);
     expect(frame.fit).toBe('cover');
   }
+  // Slim reference-style cards need a cover crop; the artwork viewer retains contain.
   await expect(gallery.locator('.cg-card[data-art-layout="figure"] .cg-card__image'))
-    .toHaveCSS('object-fit','contain');
+    .toHaveCSS('object-fit','cover');
   await page.getByRole('button',{name:/选择青枝/}).click();
   await expect(page.locator('.cg-detail h2')).toContainText('青枝');
   await expect(page.locator('.cg-stats')).toBeVisible();
