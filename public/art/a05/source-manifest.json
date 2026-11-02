@@ -1,0 +1,30 @@
+{
+  "status": "A05-decorative-layer-review",
+  "reference": "A05 approved 1672x941 concept layout; independent overlay artwork, not composited screenshot",
+  "createdAt": "2026-11-02",
+  "assets": [
+    {
+      "file": "moonlight-tracery.svg",
+      "width": 1672,
+      "height": 941,
+      "kind": "background-atmospheric-overlay",
+      "source": "original procedural tracery authored for the project",
+      "purpose": "gothic stained-glass architecture and purple moon lighting behind live UI",
+      "approval": "transitional-decoration",
+      "containsCharacters": false,
+      "containsControls": false
+    },
+    {
+      "file": "foreground-ornaments.svg",
+      "width": 1672,
+      "height": 941,
+      "kind": "foreground-atmospheric-overlay",
+      "source": "original procedural ornaments authored for the project",
+      "purpose": "left/right candle and red rose-petal atmosphere around live UI",
+      "approval": "transitional-decoration",
+      "containsCharacters": false,
+      "containsControls": false
+    }
+  ],
+  "note": "These static vectors are decorative only; the existing registered 1920x1080 bitmap remains the architecture picture. Do not treat them as approved production background CG, character art, clickable UI, or source of game values."
+}
