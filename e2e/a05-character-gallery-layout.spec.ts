@@ -8,6 +8,20 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await page.goto('/characters/');
   await expect(page.getByTestId('moonwork-world')).toHaveAttribute('data-area','characters');
   await expect(page.getByRole('heading',{name:/A05 人物立绘全集/})).toBeVisible();
+  // Decorative layers are genuine independent images, have no baked UI and
+  // cannot intercept card / tab / dock interactions.
+  for(const id of ['a05-tracery','a05-foreground-ornaments']){
+    await expect(page.getByTestId(id)).toHaveCSS('pointer-events','none');
+    const decoded=await page.getByTestId(id).evaluate(async element=>{
+      const src=getComputedStyle(element).backgroundImage.match(/url\\?\\?\(["']?(.+?)["']?\)/)?.[1];
+      if(!src)return {width:0,height:0};
+      const image=new Image();
+      image.src=src;
+      await image.decode();
+      return {width:image.naturalWidth,height:image.naturalHeight};
+    });
+    expect(decoded).toEqual({width:1672,height:941});
+  }
   const gallery=page.getByTestId('painted-worker-gallery');
   await expect(gallery.locator('.cg-card')).toHaveCount(5);
   await expect(page.getByTestId('gallery-collected-count')).toHaveText('0/5');
@@ -95,6 +109,8 @@ test('A05 mobile card strip remains operable without page overflow',async({page}
   await page.setViewportSize({width:390,height:844});
   await page.goto('/characters/');
   await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
+  await expect(page.getByTestId('a05-tracery')).toBeHidden();
+  await expect(page.getByTestId('a05-foreground-ornaments')).toBeHidden();
   await page.getByRole('button',{name:/选择炽角/}).scrollIntoViewIfNeeded();
   await page.getByRole('button',{name:/选择炽角/}).click();
   await expect(page.locator('.cg-detail h2')).toContainText('炽角');
