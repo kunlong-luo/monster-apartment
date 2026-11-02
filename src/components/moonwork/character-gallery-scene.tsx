@@ -103,6 +103,10 @@ export function CharacterGalleryScene(){
     <div className="cg-scene__background" aria-hidden="true"
       style={{backgroundImage:"url("+JSON.stringify(hallBackdrop.src)+")"}}/>
     <div className="cg-scene__vignette" aria-hidden="true"/>
+    <div className="cg-scene__tracery" data-testid="a05-tracery" aria-hidden="true"
+      style={{backgroundImage:'url('+JSON.stringify(siteAssetUrl('/art/a05/moonlight-tracery.svg'))+')'}}/>
+    <div className="cg-scene__ornaments" data-testid="a05-foreground-ornaments" aria-hidden="true"
+      style={{backgroundImage:'url('+JSON.stringify(siteAssetUrl('/art/a05/foreground-ornaments.svg'))+')'}}/>
     <header className="cg-topbar">
       <Link href="/" className="cg-brand" aria-label="怪物公寓 · 返回大厅">
         <span className="cg-brand__title">怪物公寓</span>
