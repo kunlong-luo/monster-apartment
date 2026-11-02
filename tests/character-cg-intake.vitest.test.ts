@@ -2,7 +2,7 @@ import {describe,it,expect} from 'vitest';
 import {existsSync,readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {cardReviewHtml} from '../scripts/prepare-character-cg.mjs';
-import {CG_PATHS,CG_PREVIEW_PATHS,auditCharacterCg} from '../scripts/audit-character-cg.mjs';
+import {CG_PATHS,CG_PREVIEW_PATHS,CG_IDENTITY_REFERENCE_PATHS,auditCharacterCg} from '../scripts/audit-character-cg.mjs';
 import {createHash} from 'node:crypto';
 import {webpDimensions} from '../scripts/prepare-room-background.mjs';
 
@@ -17,8 +17,20 @@ describe('A05 production CG intake and preview',()=>{
       for(const viewport of ['desktop-1440x900','desktop-1648x928','mobile-390x844'])
         expect(html).toContain('data-viewport="'+viewport+'"');
       expect(html).toContain('object-fit:contain');
-      const character=id.split('-')[0];
-      expect(existsSync(resolve('public/art/beauty-beasts/characters',character,'face.webp'))).toBe(true);
+      expect(html).toContain('object-fit:cover');
+      expect(html).toContain('data-review-mode="full"');
+      expect(html).toContain('data-review-mode="gallery-slim"');
+      const reference=CG_IDENTITY_REFERENCE_PATHS[id as keyof typeof CG_IDENTITY_REFERENCE_PATHS];
+      expect(existsSync(resolve(reference))).toBe(true);
+      expect(html).toContain(reference);
+    }
+  });
+  it('pins silver-haired YueSha to her current V3 painting, never retired black-haired face',()=>{
+    expect(CG_IDENTITY_REFERENCE_PATHS['yuesha-eclipse']).toBe('public/art/yuesha-portrait-v3.webp');
+    expect(CG_IDENTITY_REFERENCE_PATHS['yuesha-vow']).toBe('public/art/yuesha-bust-v3.webp');
+    for(const [id,reference] of Object.entries(CG_IDENTITY_REFERENCE_PATHS)){
+      expect(existsSync(resolve(reference))).toBe(true);
+      if(id.startsWith('yuesha'))expect(reference).not.toMatch(/characters\/yuesha\/face.webp$/);
     }
   });
   it('will not pretend an unreviewed source has already become full-body production artwork',()=>{
