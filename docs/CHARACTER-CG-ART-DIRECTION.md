@@ -88,6 +88,23 @@ pnpm check:design && pnpm test && pnpm build
 **当前候选** `IMG_0277.png` 仍未具备清晰可辨的月纹蜡封与旧账簿，因此尚不能通过完整视觉审查，即使其原生分辨率足够高；不能以无效坐标作弊通过审核。正式入库继续运行独立 `art:review`／`art:promote` 流程并由人工复核。
 
 
+## A05 人物原画身份锁定与真实窄卡审核（2026-11-02）
+
+本轮检查发现 `prepare-character-cg.mjs` 原来按照 `card.split('-')[0]/face.webp` 从角色目录读取身份基准。这会把 **月纱已退役的黑发角饰概念头像**拿给新原画作者作参考，与现有银白长发、赤瞳 V3 月纱冲突。
+
+现已修复并在审核脚本中锁定五张卡的准确源文件：
+- 神话月蚀：`public/art/yuesha-portrait-v3.webp`
+- 月下誓约：`public/art/yuesha-bust-v3.webp`
+- 泉泡：`public/art/beauty-beasts/characters/brook/face.webp`
+- 青枝：`public/art/beauty-beasts/characters/fern/face.webp`
+- 炽角：`public/art/beauty-beasts/characters/cinder/face.webp`
+
+新审核草稿记录每张身份基准的相对路径及 SHA-256。正式晋级与 CI 审核都必须核对该哈希，避免准备、签署与正式入库期间偷偷换参考面孔。旧草稿必须重新走审核，不能直接用来跳过最新审查。
+
+`art:cg:review` 的审核 HTML 已同时展示 **完整 3:4 原画**与**实际 A05 细长卡的 cover 裁切**，三个桌面/手机视口分别审查。仅 3:4 展示好看不代表放到 1:3 竖卡里仍能清楚看见双眼、头饰与重要体态。完整欣赏界面保持 contain，不可把真实画面缺陷用模糊光晕遮蔽。
+
+本轮未产生新的合格独立 1536×2048 全身 CG，也没有更改 `cg-manifest.json` 的 `production` 状态。上线前继续按人工审核/授权与浏览器画质评估。
+
 ## V3.86 · 高清会客室独立物件合成（不自动成为正式素材）
 
 候选 `IMG_0277.png` 画有客厅与茶几，但缺少清晰可辨的蜡封与账簿。V3.86 加入 **透明物件图片合成审核**，不是通过 CSS 绘制假家具，也不会把不匹配的背景设为正式场景：
