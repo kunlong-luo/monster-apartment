@@ -184,6 +184,12 @@ export function CharacterGalleryScene(){
                     ?.querySelectorAll<HTMLButtonElement>('.cg-card__select')[next]?.focus();
                 }}>
                 <div className="cg-card__art">
+                  {!fullFigure&&art&&<div className="cg-card__ambient-art" aria-hidden="true">
+                    <ReliableImage src={art}
+                      fallbackSrc={getCardPortraitFallback(card.key)??undefined}
+                      fill unoptimized sizes="(max-width:900px) 46vw, 15vw"
+                      className="cg-card__ambient-image" alt=""/>
+                  </div>}
                   <div className={'cg-card__portrait-window '+(fullFigure
                     ?'cg-card__portrait-window--figure':'cg-card__portrait-window--portrait')}>
                     {art&&<ReliableImage src={art} fallbackSrc={getCardPortraitFallback(card.key)??undefined}
