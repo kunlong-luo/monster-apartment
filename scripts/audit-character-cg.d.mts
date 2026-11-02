@@ -2,6 +2,7 @@
 export declare const CG_PATHS:Readonly<Record<
   'yuesha-eclipse'|'yuesha-vow'|'brook-tide'|'fern-spring'|'cinder-ember',string
 >>;
+export declare const CG_PREVIEW_PATHS:typeof CG_PATHS;
 export declare const CG_VIEWPORTS:readonly string[];
 export declare function inspectCharacterCg(bytes:Buffer):{
   width:number;height:number;bytes:number;sha256:string;
