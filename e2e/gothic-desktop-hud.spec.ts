@@ -228,9 +228,16 @@ test('all seven canonical game pages inherit the same design palette and selecte
     expect(palette.legacyColor).toBe('rgb(241, 229, 214)');
     // Images and canvas must be genuinely ready; gradients alone are not art.
     if(entry.name==='characters'){
-      await expect(page.locator('.mw-worker-portrait-photo')).toHaveCount(3);
-      await expect.poll(()=>page.locator('.mw-worker-portrait-photo').evaluateAll(imgs=>
-        imgs.every(img=>(img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0)
+      // The approved A05 gallery has five contract cards, not the removed
+      // three-column workshop-worker roster. Check actual decoded artwork.
+      const art=page.locator('.cg-cards .cg-card__image');
+      await expect(art).toHaveCount(5);
+      await expect.poll(()=>art.evaluateAll(imgs=>
+        imgs.length===5&&imgs.every(img=>(img as HTMLImageElement).complete&&
+          (img as HTMLImageElement).naturalWidth>0)
+      ),{timeout:20000}).toBe(true);
+      await expect.poll(()=>page.locator('.cg-detail__hero-img').evaluate(img=>
+        (img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0
       )).toBe(true);
     }
     if(entry.name==='town'){
