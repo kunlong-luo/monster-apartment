@@ -15,12 +15,13 @@ test('four personal suites reveal one cross-character investigation without extr
     await dialog.getByTestId('scene-object-'+item.second).click();
     await dialog.getByRole('button',{name:'离开'+item.name+'的房间'}).click();
   }
-  await page.getByRole('link',{name:/拜访月纱会客室/}).click();
+  await page.getByRole('link',{name:'个人房间'}).click();
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
   await page.getByRole('button',{name:'月纹蜡封'}).click();
   await page.getByRole('button',{name:'旧账簿'}).click();
   await expect(page.getByTestId('yuesha-four-room-memory')).toContainText('四个人的房间');
   await page.goto('/characters/');
+  await page.getByRole('button',{name:'羁绊故事'}).click();
   await expect(page.getByTestId('room-memory-gallery')).toContainText('4 / 4');
   await expect(page.getByTestId('memory-card-contract')).toBeEnabled();
   await page.getByTestId('memory-card-contract').click();
@@ -29,6 +30,7 @@ test('four personal suites reveal one cross-character investigation without extr
   await expect(page.getByTestId('room-investigation-journal')).toContainText('4/4');
   await expect(page.getByTestId('investigation-conclusion')).toBeVisible();
   await page.reload();
+  await page.getByRole('button',{name:'羁绊故事'}).click();
   await page.getByTestId('investigation-toggle').click();
   await expect(page.getByTestId('investigation-conclusion')).toContainText('四个人的房间');
 });
