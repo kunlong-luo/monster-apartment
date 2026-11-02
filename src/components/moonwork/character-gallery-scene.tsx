@@ -87,6 +87,8 @@ export function CharacterGalleryScene(){
   const installed=Object.values(collection.equipped[selected.character]??{})
     .map(id=>FORGE_RECIPES.find(item=>item.id===id)?.name)
     .filter(Boolean);
+  const workshopSlot=world&&selected.character!=='yuesha'
+    ?world.tiles.findIndex(tile=>tile?.worker===selected.character):-1;
   const enterRoom=(id:WorkerCharacterId)=>setVisiting(id);
   const roomUrl=selected.character==='yuesha'?'/apartment/?visit=yuesha':
     '/characters/?visit='+selected.character;
@@ -252,6 +254,9 @@ export function CharacterGalleryScene(){
           {detailTab==='training'&&<div className="cg-detail__scroll">
             <p>已收录：{owned.has(selected.key)?'当前契约已获得':'此契约尚未获得'}</p>
             <p>已穿戴装备：{installed.join('、')||'暂无'}</p>
+            {selected.character!=='yuesha'&&<p data-testid="character-workshop-assignment">
+              工坊状态：{workshopSlot>=0?'正在 '+String(workshopSlot+1).padStart(2,'0')+' 号工位':'目前待派工'}
+            </p>}
             <button type="button" className="cg-detail__inline-action" onClick={()=>setArchiveOpen(true)}>
               进入真实装备锻造与养成
             </button>
