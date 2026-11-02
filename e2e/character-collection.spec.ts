@@ -1,6 +1,6 @@
 import {expect,test} from '@playwright/test';
 
-test('the character gallery centers human residents and opens the real summon scene',async({page})=>{
+test('A05 character gallery displays five human contracts and opens the real summon scene',async({page})=>{
   test.setTimeout(90_000);
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/characters/');
@@ -26,16 +26,16 @@ test('the character gallery centers human residents and opens the real summon sc
   expect(nativeTarget.targetPath).toBe(nativeTarget.currentPath);
   expect(nativeTarget.origin).toBe(nativeTarget.currentOrigin);
   expect(nativeTarget.hash).toBe('#summon-screen');
+  await expect(gallery.locator('.cg-card')).toHaveCount(5);
   for(const id of ['brook','fern','cinder']){
     const card=page.getByTestId('worker-card-'+id);
     await expect(card).toBeAttached();
-    await expect(card.locator('.mw-worker-portrait')).toHaveAttribute('data-figure-kind','humanoid');
-    await expect(card.locator('img[data-art-source="dedicated-heroine-face"]')).toBeVisible();
-    await expect(card.getByTestId('character-contract-status-'+id))
-      .toHaveText('剧情相识 · 契约待召唤');
+    await expect(card).toHaveAttribute('data-owned','false');
+    await expect(card).toHaveAttribute('data-art-layout','portrait');
+    await expect(card.locator('img.cg-card__image')).toBeVisible();
   }
   const columns=await gallery.evaluate(node=>getComputedStyle(node).gridTemplateColumns.split(' ').length);
-  expect(columns).toBe(3);
+  expect(columns).toBe(5);
   await page.getByTestId('open-cinematic-summon').click();
   await expect(page).toHaveURL(/\/characters\/?#summon-screen$/);
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
@@ -83,6 +83,8 @@ test('canonical summon archive forges and equips a real item without a duplicate
   await expect(archive.getByTestId('collection-equip-target')).toHaveValue('brook');
   await expect(archive.getByTestId('collection-forge-feedback')).toContainText('属性已更新');
   await page.goto('/characters/');
+  await page.getByRole('button',{name:/选择泉泡/}).click();
+  await page.getByRole('tab',{name:'详情'}).click();
   await expect(page.getByTestId('life-equipped-brook')).toContainText('月纹吊坠');
   await expect(page.getByTestId('gallery-collected-count')).toContainText('1/5');
 });
@@ -177,12 +179,12 @@ test('390px human character gallery fits without horizontal overflow',async({pag
   await page.goto('/characters/');
   const gallery=page.getByTestId('painted-worker-gallery');
   await expect(gallery).toBeVisible();
-  const result=await page.evaluate(()=>({
+  const result=await gallery.evaluate(el=>({
     spill:document.documentElement.scrollWidth-innerWidth,
-    columns:getComputedStyle(document.querySelector('[data-testid="painted-worker-gallery"]')!).gridTemplateColumns.split(' ').length,
+    scrollable:el.scrollWidth>el.clientWidth,
   }));
   expect(result.spill).toBeLessThanOrEqual(2);
-  expect(result.columns).toBe(1);
+  expect(result.scrollable).toBe(true);
   await page.getByTestId('open-cinematic-summon').click();
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
 });
