@@ -1,4 +1,13 @@
 import {expect,test} from '@playwright/test';
+import {mkdirSync} from 'node:fs';
+
+// Playwright clears its own test-results directory at the start of EVERY
+// invocation. Put durable A05 milestone captures outside that directory.
+const EVIDENCE_DIR='visual-evidence/a05';
+const captureA05=async(page:import('@playwright/test').Page,name:string)=>{
+  mkdirSync(EVIDENCE_DIR,{recursive:true});
+  await page.screenshot({path:EVIDENCE_DIR+'/'+name,animations:'disabled'});
+};
 
 /** Visual smoke for the approved 1672 x 941 A05 reference composition.
  * Deliberately checks live DOM geometry and data instead of a baked screenshot. */
@@ -95,7 +104,7 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   // Slim reference-style cards need a cover crop; the artwork viewer retains contain.
   await expect(gallery.locator('.cg-card[data-art-layout="figure"] .cg-card__image'))
     .toHaveCSS('object-fit','cover');
-  await page.screenshot({path:'test-results/desktop-a05-reference-1672.png',animations:'disabled'});
+  await captureA05(page,'desktop-a05-reference-1672.png');
   await page.getByRole('button',{name:/选择青枝/}).click();
   await expect(page.locator('.cg-detail h2')).toContainText('青枝');
   await page.keyboard.press('ArrowRight');
@@ -155,7 +164,7 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await expect(petals).toBeHidden();
   await page.emulateMedia({reducedMotion:'no-preference'});
   await page.setViewportSize({width:1440,height:900});
-  await page.screenshot({path:'test-results/desktop-a05-reference-1440.png',animations:'disabled'});
+  await captureA05(page,'desktop-a05-reference-1440.png');
 });
 
 test('A05 mobile card strip remains operable without page overflow',async({page})=>{
@@ -171,5 +180,5 @@ test('A05 mobile card strip remains operable without page overflow',async({page}
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(2);
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
-  await page.screenshot({path:'test-results/mobile-a05-reference-390.png',animations:'disabled'});
+  await captureA05(page,'mobile-a05-reference-390.png');
 });
