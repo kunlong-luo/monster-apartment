@@ -74,21 +74,32 @@ jobs:
           fc-match ':lang=zh-cn'
       - name: Run four-scene desktop browser smoke
         run: pnpm exec playwright test e2e/gothic-desktop-hud.spec.ts e2e/gothic-desktop-scenes.spec.ts e2e/summon-result-desktop.spec.ts --workers=1 --retries=0
+      # Each Playwright invocation clears test-results. Preserve these captures
+      # before the A05/forge/workshop suites wipe the directory.
+      - name: Preserve first-pass screenshots
+        if: always()
+        run: |
+          mkdir -p visual-evidence/general
+          find test-results -maxdepth 1 -type f \( -name 'desktop-*.png' -o -name 'mobile-lobby-*.png' \) -exec cp {} visual-evidence/general/ \; || true
       - name: Review A05 reference proportions, keyboard navigation and capture desktop/mobile screenshots
         run: pnpm exec playwright test e2e/a05-character-gallery-layout.spec.ts --workers=1 --retries=0
       - name: Run focused archive forge and room-navigation browser regression
         run: pnpm exec playwright test e2e/character-collection.spec.ts --grep "canonical summon archive|an acquired heroine|collected YueSha opens" --workers=1 --retries=0
       - name: Check realtime workshop starts, produces and pauses in browser
         run: pnpm exec playwright test e2e/moonwork-next-workshop.spec.ts --grep "automatic production runs" --workers=1 --retries=0
+      - name: Verify A05 screenshots survive subsequent browser suites
+        run: |
+          test -s visual-evidence/a05/desktop-a05-reference-1672.png
+          test -s visual-evidence/a05/desktop-a05-reference-1440.png
+          test -s visual-evidence/a05/mobile-a05-reference-390.png
       - name: Upload actual PC browser screenshots and failures
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: desktop-v377-screenshots
           path: |
+            visual-evidence/**/*.png
             test-results/desktop-*.png
-            test-results/mobile-lobby-v377.png
-            test-results/mobile-a05-reference-390.png
             test-results/**/test-failed-*.png
             test-results/**/error-context.md
           if-no-files-found: warn
