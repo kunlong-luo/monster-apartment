@@ -5,6 +5,7 @@ dist/
 coverage/
 playwright-report/
 test-results/
+visual-evidence/
 next-env.d.ts
 *.tsbuildinfo
 .env
