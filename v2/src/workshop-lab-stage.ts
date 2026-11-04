@@ -443,7 +443,7 @@ export async function mountWorkshopLab(
       const fixture:Sprite=atlas?new AnimatedSprite(atlas):
         new Sprite(master??(machine.craft==='kiln'&&kilnArtReview
           ?kilnArtReview:art.machines[machine.craft]));
-      fixture.anchor.set(.5,atlas||master?.92:1);
+      fixture.anchor.set(.5,(atlas||master)?0.92:1);
       if(atlas&&fixture instanceof AnimatedSprite){
         fixture.animationSpeed=.085;fixture.loop=true;
         fixture.gotoAndStop(i%4);
