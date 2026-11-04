@@ -1182,12 +1182,8 @@
   .gothic-workshop-shell #root.lab.gothic-workshop .console.gothic-console-3col{
     bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-scene-nav-clearance));
     left:8px;right:8px;
-    height:clamp(240px,40dvh,340px);
     display:flex;flex-direction:column;gap:8px;
     padding:0;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .middle{
-    bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-scene-nav-clearance) + var(--workshop-stage-gap) + clamp(240px,40dvh,340px));
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .workshop-console-tabs{
     display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;flex-shrink:0;
@@ -1233,13 +1229,13 @@
 .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions button{
   min-width:0;min-height:42px;white-space:normal;line-height:1.2;
 }
+/* Compact viewport: panels scroll independently, while the persistent
+ * shift/auto action row stays accessible. A single height token drives
+ * both the console and the Pixi middle-stage bottom calculation. */
 @media(max-width:900px){
+  .gothic-workshop-shell{--workshop-console-height:clamp(270px,40dvh,345px)}
   .gothic-workshop-shell #root.lab.gothic-workshop .console.gothic-console-3col{
-    height:clamp(300px,45dvh,385px);
     gap:8px;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .middle{
-    bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-scene-nav-clearance) + var(--workshop-stage-gap) + clamp(300px,45dvh,385px));
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions{
     flex:0 0 auto;width:100%;min-height:54px;grid-row:auto;
