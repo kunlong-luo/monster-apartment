@@ -1,5 +1,6 @@
 import {expect,test} from '@playwright/test';
 import {mkdir} from 'node:fs/promises';
+import {assignWorker,moveMachine,newWorkshop,placeMachine} from '../v2/src/workshop-engine';
 
 // The smaller persistent scene launcher must not steal the real factory shift
 // button hit target at either PC or mobile widths.
@@ -9,6 +10,8 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
     await page.setViewportSize(viewport);
     await page.goto('/workshop/');
     await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:30_000});
+    await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-machine-effect-style','layered-resource-v2');
+    await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-supply-routes','');
     const shift=page.getByTestId('v2-shift');
     const nav=page.getByTestId('scene-navigation');
     await expect(shift).toBeVisible();
@@ -93,3 +96,36 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
     await expect(page.getByTestId('v2-day')).toHaveText('2');
   });
 }
+
+test('painted workshop shows only authentic supplier-to-receiver flow',async({page})=>{
+  test.setTimeout(90_000);
+  let world=newWorkshop();
+  world=moveMachine(world,7,6);
+  world=placeMachine(world,7,'kiln');
+  world=assignWorker(world,'brook',5);
+  world=assignWorker(world,'fern',6);
+  world=assignWorker(world,'cinder',7);
+  const before=JSON.stringify(world);
+  await page.setViewportSize({width:1440,height:900});
+  await page.addInitScript(seed=>{
+    const key='monster-apartment:workshop-v2-lab';
+    if(localStorage.getItem(key)===null)localStorage.setItem(key,JSON.stringify(seed));
+  },world);
+  await page.goto('/workshop/');
+  const stage=page.getByTestId('v2-stage');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:30_000});
+  await expect(stage).toHaveAttribute('data-machine-effect-style','layered-resource-v2');
+  await expect(stage).toHaveAttribute('data-supply-routes','5>6:water;6>7:fiber');
+  await expect(stage).toHaveAttribute('data-machine-states',/5:working;6:working;7:working/);
+  await expect(stage.locator('canvas')).toBeVisible();
+  const persisted=await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'));
+  expect(persisted).toBe(before); // rendering must not alter the economy or save
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({path:'visual-evidence/workshop/desktop-workshop-working-effects-1440.png',animations:'disabled'});
+  await page.evaluate(()=>{
+    localStorage.setItem('monster-apartment:gothic-motion-reduced','1');
+    window.dispatchEvent(new Event('monster-apartment:motion-changed'));
+  });
+  await expect(stage).toHaveAttribute('data-motion-state','paused');
+  await expect(stage).toHaveAttribute('data-supply-routes','5>6:water;6>7:fiber');
+});
