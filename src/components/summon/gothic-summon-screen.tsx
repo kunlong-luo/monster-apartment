@@ -10,9 +10,7 @@ import './summon-screen.css';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import lobbyHeroBackup from '../../../public/art/lobby-hero-v2.webp';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
-import {GothicDock} from '@/components/game/gothic-hud';
 import {HEROINE_FACE_ART} from './heroine-portrait-assets';
-import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 import {useCharacterLife} from '@/lib/game/character-life-store';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
 import {claimProgressTickets,claimTrialTicket,gachaSaveStatus,GACHA_CHARACTERS} from '@/lib/summon/gacha-engine';
@@ -231,11 +229,6 @@ export function GothicSummonScreen() {
           onOpenResources={()=>setShowReplenish(true)}/>
       </main>
 
-      {/* One canonical global dock; the summon scene is a mode of the Character route. */}
-      <GothicDock label="月影契约世界导航" activeHref="/characters/#summon-screen" className="gothic-dock--world summon-cinematic-dock"
-        items={WORLD_NAV.map(n=>({href:n.id==='characters'?'/characters/#summon-screen':n.href,icon:n.glyph,
-          label:n.id==='characters'?'契约召唤':n.label,
-          ariaLabel:n.id==='characters'?'契约召唤':n.full,description:n.purpose}))}/>
       {/* ------------------------------------------------------------- */}
       {/* 4. MODALS & DIALOGS                                           */}
       {/* ------------------------------------------------------------- */}
