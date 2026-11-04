@@ -5,6 +5,7 @@ import './globals.css';
 import '@/components/game/gothic-red-gold.css';
 import '@/components/game/gothic-desktop-ui.css';
 import {GothicRouteTransition} from '@/components/game/gothic-route-transition';
+import {GameSceneNavigation} from '@/components/game/game-scene-navigation';
 import {GameReleaseNotice} from '@/components/game/game-release-notice';
 import {WorkshopAutoRuntime} from '@/lib/moonwork/workshop-auto-runtime';
 
@@ -27,7 +28,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="zh-CN">
-      <body>{children}<GothicRouteTransition/><GameReleaseNotice/><WorkshopAutoRuntime/></body>
+      <body>{children}<GameSceneNavigation/><GothicRouteTransition/><GameReleaseNotice/><WorkshopAutoRuntime/></body>
     </html>
   );
 }
