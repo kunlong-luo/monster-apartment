@@ -39,7 +39,8 @@ async function checkFile(path,minBytes=32){
   if(webp&&buffer.subarray(12,16).toString()==='VP8X'){
     dimensions={width:1+buffer.readUIntLE(24,3),height:1+buffer.readUIntLE(27,3)};
   }
-  return {bytes:buffer.length,dimensions};
+  return {bytes:buffer.length,dimensions,
+    hasAlpha:webp&&buffer.subarray(12,16).toString()==='VP8X'&&!!(buffer[20]&0x10)};
 }
 if(manifest.schemaVersion!==1||!Array.isArray(manifest.runtimePrototypes)||
    !Array.isArray(manifest.productionAssets))errors.push('Malformed asset manifest');
@@ -66,9 +67,11 @@ for(const item of manifest.productionAssets??[]){
       p.height*p.rows!==item.canvas.height||
       p.columns*p.rows!==p.count)errors.push('Atlas layout mismatch: '+item.id);
   }
-  if(item.status==='ready'){
+  if(item.status==='ready'||item.status==='review'){
     const result=await checkFile(item.path,item.minBytes??16000);
     if(result){
+      if(item.role==='machine'&&!result.hasAlpha)
+        errors.push('Machine painting must have real alpha transparency: '+item.path);
       if(!result.dimensions)errors.push('Cannot verify ready image dimensions: '+item.path);
       else if(result.dimensions.width!==item.canvas.width||
         result.dimensions.height!==item.canvas.height)
