@@ -9,6 +9,7 @@ import {projectMachineProduction} from './workshop-production';
 import type {MachineCycle} from './workshop-production';
 import {createMachineEffects} from './workshop-machine-effects';
 import {createMachineMaterial} from './workshop-machine-materials';
+import {createMachineActuators} from './workshop-machine-actuators';
 import {projectedSupplyTrails} from './workshop-machine-presentation';
 import type {MachineVisualState} from './workshop-machine-status';
 import { BOARD_SIZE, WIDTH, MACHINES, linked, machineLevel, workshopHint } from './workshop-engine';
@@ -73,6 +74,7 @@ export async function mountWorkshopLab(
     ?'all-painted-machine-reviews':'mixed-machine-art';
   element.dataset.machineEffectStyle='layered-resource-v2';
   element.dataset.machineMaterialStyle='glass-botanical-crystal-v1';
+  element.dataset.machineActuatorStyle='piston-leaves-iris-v1';
   const approvedMachinePaintings=Object.values(machineMasters).reduce(
     (count,byLevel)=>count+Object.keys(byLevel??{}).length,0);
   element.dataset.machineArtworkTier=approvedMachinePaintings===0?'review-avif':
@@ -141,6 +143,7 @@ export async function mountWorkshopLab(
   const machineEffects:{ring:Graphics;state:MachineVisualState;index:number}[]=[];
   const deviceEffects:ReturnType<typeof createMachineEffects>[]=[];
   const materialEffects:ReturnType<typeof createMachineMaterial>[]=[];
+  const actuatorEffects:ReturnType<typeof createMachineActuators>[]=[];
   let flowPaths:{from:{x:number;y:number};to:{x:number;y:number};tint:number}[]=[];
   const flowLayer=new Graphics();
   app.stage.addChild(flowLayer);
@@ -270,6 +273,7 @@ export async function mountWorkshopLab(
     }
     for(const fx of deviceEffects)fx.tick(elapsed+dt/60,animationEnabled);
     for(const material of materialEffects)material.tick(elapsed+dt/60,animationEnabled);
+    for(const actuator of actuatorEffects)actuator.tick(elapsed+dt/60,animationEnabled);
     if(!animationEnabled)return;
     elapsed+=dt/60;
     for(const actor of paintedActors){
@@ -339,7 +343,7 @@ export async function mountWorkshopLab(
     for(const actor of actors)actor.stop();
     actors.length=0;paintedActors.length=0;
     machineArt.length=0;machineEffects.length=0;deviceEffects.length=0;
-    materialEffects.length=0;
+    materialEffects.length=0;actuatorEffects.length=0;
     flowPaths=[];
     stage.removeChildren().forEach(child=>child.destroy({children:true}));
     tutorialLayer.removeChildren().forEach(child=>child.destroy({children:true}));
@@ -461,6 +465,12 @@ export async function mountWorkshopLab(
         x+CELL*.49,y+CELL*.54,newlyStarted?elapsed:null,
         justProduced?elapsed:null);
       stage.addChild(material.node);materialEffects.push(material);
+      // Local moving machinery tracks the same production phase as the
+      // noninteractive material light, below each human worker.
+      const actuator=createMachineActuators(machine.craft,signal.state,i,
+        x+CELL*.49,y+CELL*.55,newlyStarted?elapsed:null,
+        justProduced?elapsed:null);
+      stage.addChild(actuator.node);actuatorEffects.push(actuator);
       const fx=createMachineEffects(machine.craft,signal.state,i,
         x+CELL*.50,y+CELL*.69,newlyStarted?elapsed:null,
         justProduced?elapsed:null);
