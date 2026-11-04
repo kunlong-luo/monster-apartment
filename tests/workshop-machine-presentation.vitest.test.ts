@@ -1,6 +1,6 @@
 import {describe,expect,it} from 'vitest';
 import {assignWorker,moveMachine,newWorkshop,placeMachine} from '../v2/src/workshop-engine';
-import {machineEffectProfile,materialLight,projectedSupplyTrails} from '../v2/src/workshop-machine-presentation';
+import {machineEffectProfile,materialLight,machineActuatorPose,projectedSupplyTrails} from '../v2/src/workshop-machine-presentation';
 
 describe('Pixi workshop presentation follows production, not visual guesses',()=>{
   it('uses distinctive intensity but never emits active particles for blocked or idle machines',()=>{
@@ -42,6 +42,31 @@ describe('Pixi workshop presentation follows production, not visual guesses',()=
     expect(start.strength).toBeGreaterThan(run.strength);
     expect(output.strength).toBeGreaterThan(start.strength);
     expect(output.movement).toBeGreaterThan(run.movement);
+  });
+
+
+  it('has independent mechanical motions but no false movement under pauses or supply starvation',()=>{
+    for(const craft of ['well','garden','kiln'] as const){
+      for(const phase of ['idle','blocked'] as const){
+        const pose=machineActuatorPose(craft,phase,.7,5,true);
+        expect(pose).toMatchObject({
+          displacement:0,angle:0,glow:0,active:false,
+        });
+      }
+      for(const phase of ['startup','working','output'] as const){
+        const pose=machineActuatorPose(craft,phase,.7,5,false);
+        expect(pose.displacement).toBe(0);
+        expect(pose.angle).toBe(0);
+        expect(pose.glow).toBeCloseTo(.08);
+        expect(pose.active).toBe(true);
+      }
+    }
+    const well=machineActuatorPose('well','working',.7,5,true);
+    const garden=machineActuatorPose('garden','working',.7,5,true);
+    const kiln=machineActuatorPose('kiln','working',.7,5,true);
+    expect(new Set([well.displacement,garden.displacement,kiln.displacement]).size).toBe(3);
+    expect(Math.abs(machineActuatorPose('well','output',.7,5,true).displacement))
+      .toBeGreaterThan(Math.abs(well.displacement));
   });
 
   it('animates only actual well-to-garden and garden-to-kiln consumption',()=>{
