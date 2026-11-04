@@ -13,12 +13,11 @@ import type {CozyState} from '@/core/cozy-engine';
 import {GothicAtmosphere} from './gothic-atmosphere';
 import {GothicSceneIllumination} from './gothic-scene-illumination';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
-import {GothicDock,GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
+import {GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
 import {GothicRoomDoors} from './gothic-room-doors';
 import {GothicRoomDrawer} from './gothic-room-drawer';
 import {YueshaPrivateRoom} from './yuesha-private-room';
 import './gothic-apartment.css';
-import {WORLD_NAV} from '@/components/moonwork/world-navigation';
 const KEY='monster-apartment:cozy:v1';
 function invalidCozySave(raw:string|null):boolean {
   if(raw===null)return false;
@@ -222,7 +221,5 @@ export function GothicApartment(){
         </div>
       </div>
     </div>}
-    <GothicDock label="公寓世界导航" activeHref="/apartment/" className="gothic-dock--world"
-      items={WORLD_NAV.map(n => ({ href: n.href, icon: n.glyph, label: n.label, ariaLabel: n.full,description:n.purpose }))}/>
   </main>;
 }
