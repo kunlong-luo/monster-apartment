@@ -35,14 +35,14 @@
   padding:8px;border-radius:8px}
 .ga :is(a,button):focus-visible{outline:2px solid #fff0be;outline-offset:2px}
 @media(max-width:850px){
-  .ga-lower{top:auto;bottom:91px;width:260px;max-height:44%}
+  .ga-lower{top:auto;bottom:58px;width:260px;max-height:49%}
   .ga-witch{left:35%;width:32%}
 }
 @media(max-width:600px){
   .ga-witch{left:48%;top:11%;width:45%;height:31%}
   .ga-witch-title{bottom:56%;left:74%;font-size:11px}
   .ga-witch-title small{display:none}
-  .ga-lower{left:8px;right:8px;top:47%;bottom:80px;width:auto;max-height:none}
+  .ga-lower{left:8px;right:8px;top:47%;bottom:55px;width:auto;max-height:none}
   .ga-story,.ga-room-drawer{padding:12px 13px;border-radius:11px}
 }
 @media(prefers-reduced-motion:reduce){}
