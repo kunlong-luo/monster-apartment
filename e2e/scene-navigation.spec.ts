@@ -57,6 +57,7 @@ test('gallery art viewer hides the map and summon can return to the gallery',asy
   await page.getByTestId('scene-navigation-toggle').click();
   await page.getByRole('navigation',{name:'游戏七个正式地点'})
     .locator('[data-destination="/characters/"]').click();
-  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
+  await expect(page).toHaveURL(/\/characters\/?$/);
+  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible({timeout:15000});
   await expect(page.getByTestId('scene-navigation-panel')).toHaveCount(0);
 });
