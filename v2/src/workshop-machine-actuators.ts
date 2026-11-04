@@ -1,20 +1,8 @@
 import {Container,Graphics} from 'pixi.js';
 import {devicePhase} from './workshop-machine-phases';
-import type {DevicePhase} from './workshop-machine-phases';
+import {machineActuatorPose} from './workshop-machine-presentation';
 import type {Craft} from './workshop-model';
 import type {MachineVisualState} from './workshop-machine-status';
-
-export function machineActuatorPose(craft:Craft,phase:DevicePhase,seconds:number,index:number,allowMotion:boolean){
-  const working=phase==='startup'||phase==='working'||phase==='output';
-  const strength=!allowMotion||!working?0:phase==='output'?1:phase==='startup'?.65:.38;
-  const cycle=Math.sin(seconds*(craft==='well'?4.2:craft==='garden'?1.6:3.4)+index*.47);
-  return {
-    displacement:strength*cycle*(craft==='well'?6:craft==='garden'?3.8:2.7),
-    angle:strength*cycle*(craft==='garden'?.14:craft==='kiln'?.10:.02),
-    glow:working?(allowMotion?.23+.15*strength*(.5+.5*cycle):.08):0,
-    active:working,
-  };
-}
 
 /** Small non-interactive machine mechanisms; approved paintings remain the
  * visible body of every machine. The ticker moves only existing Pixi parts. */
