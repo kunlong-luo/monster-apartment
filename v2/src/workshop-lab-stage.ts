@@ -8,6 +8,7 @@ import {inspectMachineSignals} from './workshop-machine-status';
 import {projectMachineProduction} from './workshop-production';
 import type {MachineCycle} from './workshop-production';
 import {createMachineEffects} from './workshop-machine-effects';
+import {projectedSupplyTrails} from './workshop-machine-presentation';
 import type {MachineVisualState} from './workshop-machine-status';
 import { BOARD_SIZE, WIDTH, MACHINES, linked, machineLevel, workshopHint } from './workshop-engine';
 import type { WorkshopState, Craft, WorkerId } from './workshop-engine';
@@ -69,6 +70,7 @@ export async function mountWorkshopLab(
   element.dataset.backdropSource=backdropSource;
   element.dataset.machineArt=kilnArtReview&&paintedDetail.well&&paintedDetail.garden
     ?'all-painted-machine-reviews':'mixed-machine-art';
+  element.dataset.machineEffectStyle='layered-resource-v2';
   element.dataset.visualTheme=painted?'painted-moonwork':'procedural-fallback';
   element.dataset.floorArt=paintedFloor?'painted-moonstone':'procedural-floor';
   const backdrop=new Sprite(painted??art.backdrop);
@@ -333,6 +335,11 @@ export async function mountWorkshopLab(
     stage.removeChildren().forEach(child=>child.destroy({children:true}));
     tutorialLayer.removeChildren().forEach(child=>child.destroy({children:true}));
     const signals=inspectMachineSignals(current);
+    // The live transport cues correspond to inputs a real next shift would
+    // consume. Neighboring tiles alone do not imply that goods can flow.
+    const supplyTrails=projectedSupplyTrails(current);
+    element.dataset.supplyRoutes=supplyTrails.map(route=>
+      route.from+'>'+route.to+':'+route.kind).join(';');
     const previousSignals=previousSnapshot?inspectMachineSignals(previousSnapshot):null;
     const shiftCycles=completedShift&&previousSnapshot
       ?projectMachineProduction(previousSnapshot).cycles:[];
@@ -504,9 +511,15 @@ export async function mountWorkshopLab(
           .lineTo(b.x+CELL/2,b.y+CELL/2)
           .stroke({color:water?0x69d2ed:0xd5eaa1,width:7,alpha:.6});
         stage.addChildAt(pipe,0);
-        if(signals[i]?.state==='working'&&signals[j]?.state==='working'){
-          flowPaths.push({from:{x:a.x+CELL/2,y:a.y+CELL/2},
-            to:{x:b.x+CELL/2,y:b.y+CELL/2},tint:water?0x73d6ef:0xc7f1a9});
+        const supply=supplyTrails.find(route=>
+          (route.from===i&&route.to===j)||(route.from===j&&route.to===i));
+        if(supply){
+          const source=plotXY(supply.from),target=plotXY(supply.to);
+          flowPaths.push({
+            from:{x:source.x+CELL/2,y:source.y+CELL/2},
+            to:{x:target.x+CELL/2,y:target.y+CELL/2},
+            tint:supply.kind==='water'?0x73d6ef:0xc7f1a9,
+          });
         }
 
       }
