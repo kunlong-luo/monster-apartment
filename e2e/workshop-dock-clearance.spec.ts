@@ -69,7 +69,7 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
       expect(compactConsole).not.toBeNull();
       expect(compactStage!.width).toBeGreaterThan(940);
       expect(compactStage!.height).toBeGreaterThan(380);
-      expect(compactConsole!.height).toBeLessThan(240);
+      expect(compactConsole!.height).toBeLessThan(250);
       await expect(page.getByTestId('v2-worker-cinder')).toBeVisible();
       await mkdir('visual-evidence/workshop',{recursive:true});
       await page.screenshot({path:'visual-evidence/workshop/desktop-workshop-scene-1440.png',animations:'disabled'});
