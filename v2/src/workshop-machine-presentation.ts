@@ -60,8 +60,8 @@ export function machineActuatorPose(
   const strength=!allowMotion||!working?0:phase==='output'?1:phase==='startup'?.65:.38;
   const cycle=Math.sin(seconds*(craft==='well'?4.2:craft==='garden'?1.6:3.4)+index*.47);
   return {
-    displacement:strength*cycle*(craft==='well'?6:craft==='garden'?3.8:2.7),
-    angle:strength*cycle*(craft==='garden'?.14:craft==='kiln'?.10:.02),
+    displacement:strength===0?0:strength*cycle*(craft==='well'?6:craft==='garden'?3.8:2.7),
+    angle:strength===0?0:strength*cycle*(craft==='garden'?.14:craft==='kiln'?.10:.02),
     glow:working?(allowMotion?.23+.15*strength*(.5+.5*cycle):.08):0,
     active:working,
   };
