@@ -89,7 +89,14 @@ export function GameSceneNavigation(){
           return <Link key={item.id} href={item.href}
             data-destination={item.href}
             aria-current={selected?'page':undefined}
-            onClick={()=>setExpandedRoute(null)}
+            onClick={()=>{
+              setExpandedRoute(null);
+              // Next Link uses pushState for same-path hash-only navigation,
+              // which does not notify the gallery's hashchange subscriber.
+              // Clear an existing subscene hash natively before navigating to
+              // the canonical route, so summon -> gallery is a real transition.
+              if(item.href===route && window.location.hash)window.location.hash='';
+            }}
             className={'game-scene-nav__destination'+(selected?' game-scene-nav__destination--current':'')}>
             <Icon size={19} aria-hidden="true" strokeWidth={1.65}/>
             <span><strong>{item.label}</strong><small>{item.purpose}</small></span>
