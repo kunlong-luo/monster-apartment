@@ -51,6 +51,7 @@ jobs:
       # Preserve Next's page HTML; only copy Pixi assets into its route.
       - run: mkdir -p out/workshop/assets && cp -a v2/dist/assets/. out/workshop/assets/
       - run: test -s out/workshop/assets/workshop-runtime.js
+      - run: test -s out/workshop/assets/machine-art-index.json
       - run: test -s out/workshop/assets/gothic-atmosphere.js
       - run: test -s out/workshop/assets/moon-workshop.avif
       - run: test -s out/workshop/assets/moonveil-portrait.avif
