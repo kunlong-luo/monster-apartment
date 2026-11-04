@@ -5,7 +5,7 @@ import {dirname,resolve} from 'node:path';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 // All entry points (Pages, Playwright's direct webServer, npm build) must
 // generate audited review art before copying it. Do not depend on npm scripts.
-await import('./prepare-machine-art.mjs');
+await import('./prepare-machine-working-art.mjs');
 await mkdir(resolve(root,'dist/assets'),{recursive:true});
 // Next.js owns /workshop/ route; the sidecar IIFE only mounts on request.
 await build({
@@ -58,7 +58,7 @@ for(const worker of ['brook','fern','cinder']){
  * the first GitHub Pages navigation). Prototypes remain the playable fallback.
  */
 const pack=JSON.parse(await readFile(resolve(root,'art/asset-pack.v1.json'),'utf8'));
-const machineIndex={schemaVersion:1,machines:{},working:{},review:{}};
+const machineIndex={schemaVersion:1,machines:{},working:{},review:{},reviewWorking:{}};
 for(const item of pack.productionAssets??[]){
   if(item.role==='machine'&&item.status==='review'){
     if(!['well','garden','kiln'].includes(item.craft)||
@@ -73,9 +73,23 @@ for(const item of pack.productionAssets??[]){
     machineIndex.review[item.craft][String(item.level)]=output;
     continue;
   }
+  if(item.role==='machine-animation'&&item.status==='review'){
+    if(!['well','garden','kiln'].includes(item.craft)||item.level!==2||
+       item.path!==`art/production/machines/${item.craft}/working.webp`||
+       item.canvas?.width!==2048||item.canvas?.height!==512||
+       item.frame?.count!==4||item.frame?.width!==512||
+       item.frame?.height!==512||item.frame?.columns!==4||item.frame?.rows!==1)
+      throw Error('Unexpected review machine atlas: '+item.id);
+    const output=`review/machines/${item.craft}/working.webp`;
+    const destination=resolve(root,'dist/assets',output);
+    await mkdir(dirname(destination),{recursive:true});
+    await copyFile(resolve(root,item.path),destination);
+    machineIndex.reviewWorking[item.craft]=output;
+    continue;
+  }
   if(item.status!=='ready'||!['machine','machine-animation'].includes(item.role))continue;
   if(item.role==='machine-animation'){
-    if(!['well','garden','kiln'].includes(item.craft)||
+    if(item.level!==2||!['well','garden','kiln'].includes(item.craft)||
        item.path!==`art/production/machines/${item.craft}/working.webp`||
        item.canvas?.width!==2048||item.canvas?.height!==512||
        item.frame?.count!==4||item.frame?.width!==512||
