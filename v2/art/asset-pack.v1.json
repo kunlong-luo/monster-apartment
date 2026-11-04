@@ -139,7 +139,7 @@
       "id": "machine.well.working",
       "role": "machine-animation",
       "craft": "well",
-      "status": "pending",
+      "status": "review",
       "path": "art/production/machines/well/working.webp",
       "canvas": {
         "width": 2048,
@@ -156,7 +156,10 @@
         "x": 0.5,
         "y": 0.92
       },
-      "minBytes": 24000
+      "minBytes": 24000,
+      "level": 2,
+      "generatedFrom": "scripts/prepare-machine-working-art.mjs",
+      "notes": "Lv.2-only four-frame aligned motion study; review, not approved CG or Lv.1/Lv.3 art."
     },
     {
       "id": "machine.garden.lv1",
@@ -219,7 +222,7 @@
       "id": "machine.garden.working",
       "role": "machine-animation",
       "craft": "garden",
-      "status": "pending",
+      "status": "review",
       "path": "art/production/machines/garden/working.webp",
       "canvas": {
         "width": 2048,
@@ -236,7 +239,10 @@
         "x": 0.5,
         "y": 0.92
       },
-      "minBytes": 24000
+      "minBytes": 24000,
+      "level": 2,
+      "generatedFrom": "scripts/prepare-machine-working-art.mjs",
+      "notes": "Lv.2-only four-frame aligned motion study; review, not approved CG or Lv.1/Lv.3 art."
     },
     {
       "id": "machine.kiln.lv1",
@@ -299,7 +305,7 @@
       "id": "machine.kiln.working",
       "role": "machine-animation",
       "craft": "kiln",
-      "status": "pending",
+      "status": "review",
       "path": "art/production/machines/kiln/working.webp",
       "canvas": {
         "width": 2048,
@@ -316,7 +322,10 @@
         "x": 0.5,
         "y": 0.92
       },
-      "minBytes": 24000
+      "minBytes": 24000,
+      "level": 2,
+      "generatedFrom": "scripts/prepare-machine-working-art.mjs",
+      "notes": "Lv.2-only four-frame aligned motion study; review, not approved CG or Lv.1/Lv.3 art."
     },
     {
       "id": "npc.yuesha.full",
@@ -421,7 +430,7 @@
     }
   ],
   "approval": {
-    "stage": "independent-machine-review",
+    "stage": "independent-machine-and-motion-review",
     "paintingDelivered": false,
     "browserVisualReviewPassed": false,
     "releaseReady": false
