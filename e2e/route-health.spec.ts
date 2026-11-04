@@ -29,11 +29,14 @@ test('seven production routes boot with interactive game surfaces',async({page})
       }
       expect(pageErrors.slice(errorsBefore),route.path+' client errors').toEqual([]);
       if(['/apartment/','/town/','/orders/','/characters/','/warehouse/'].includes(route.path)){
-        const selector=route.path==='/apartment/'?'.ga-backdrop':'.mw-gothic-scene';
+        const selector=route.path==='/apartment/'?'.ga-backdrop':
+          route.path==='/characters/'?'.cg-scene__background':'.mw-gothic-scene';
+        const expected=route.path==='/characters/'?'workshop-gothic-hall':
+          route.path==='/town/'?'town-moonlit-gate':'lobby-hero';
         const background=await page.locator(selector).evaluate(el=>getComputedStyle(el).backgroundImage);
         expect(background,route.path+' painted background must resolve with Pages basePath')
-          .toContain('lobby-hero');
-        expect(background).not.toContain('../lobby-hero');
+          .toContain(expected);
+        expect(background).not.toContain('../'+expected);
       }
     }catch(error){
       const body=await page.locator('body').innerText().catch(()=>'<unavailable>');
@@ -46,25 +49,37 @@ test('seven production routes boot with interactive game surfaces',async({page})
   }
 });
 
-test('all seven destinations use one active dock, not duplicate scene menus',async({page})=>{
+test('lobby owns seven-item dock; all other scenes share one optional map',async({page})=>{
   test.setTimeout(150_000);
   const pages=[
-    {path:'/',active:'大厅',test:'gothic-lobby'},
-    {path:'/apartment/',active:'暗夜公寓',test:'gothic-apartment'},
-    {path:'/workshop/',active:'工坊',test:'next-workshop-shell'},
-    {path:'/characters/',active:'角色图鉴',test:'moonwork-world'},
-    {path:'/orders/',active:'委托大厅',test:'moonwork-world'},
-    {path:'/town/',active:'月光街',test:'moonwork-world'},
-    {path:'/warehouse/',active:'魔法仓库',test:'moonwork-world'},
-  ];
+    {path:'/',test:'gothic-lobby'},
+    {path:'/apartment/',test:'gothic-apartment'},
+    {path:'/workshop/',test:'next-workshop-shell'},
+    {path:'/characters/',test:'moonwork-world'},
+    {path:'/orders/',test:'moonwork-world'},
+    {path:'/town/',test:'moonwork-world'},
+    {path:'/warehouse/',test:'moonwork-world'},
+  ] as const;
   for(const entry of pages){
     await page.goto(entry.path);
     await expect(page.getByTestId(entry.test)).toBeVisible({timeout:20000});
-    const dock=page.getByRole('navigation',{name:entry.path==='/'?'主要游戏功能':
-      entry.path==='/apartment/'?'公寓世界导航':'月光工坊世界'});
-    await expect(dock.getByRole('link')).toHaveCount(7);
-    await expect(dock.getByRole('link',{name:entry.active,exact:true})).toHaveAttribute('aria-current','page');
-    if(entry.test==='moonwork-world'){
+    if(entry.path==='/'){
+      await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link'))
+        .toHaveCount(7);
+      await expect(page.getByTestId('scene-navigation')).toHaveCount(0);
+    }else{
+      await expect(page.locator('.gothic-dock-bar')).toHaveCount(0);
+      await expect(page.getByTestId('scene-navigation')).toHaveAttribute('data-current-route',entry.path);
+      await expect(page.getByTestId('scene-return-lobby')).toHaveAttribute('href','/');
+      await expect(page.getByTestId('scene-navigation-panel')).toHaveCount(0);
+      await page.getByRole('button',{name:'展开世界导航'}).click();
+      const map=page.getByRole('navigation',{name:'游戏七个正式地点'});
+      await expect(map.getByRole('link')).toHaveCount(7);
+      await expect(map.locator('[aria-current="page"]')).toHaveAttribute('data-destination',entry.path);
+      await page.keyboard.press('Escape');
+      await expect(page.getByTestId('scene-navigation-panel')).toHaveCount(0);
+    }
+    if(entry.test==='moonwork-world' && entry.path!=='/characters/'){
       await expect(page.getByTestId('game-page-purpose')).not.toBeEmpty();
       await expect(page.getByTestId('game-location')).toContainText('大厅 /');
     }
