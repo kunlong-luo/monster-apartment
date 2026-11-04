@@ -22,16 +22,15 @@ test('mobile workshop machine states follow real staffing and supply',async({pag
   await expect(stage).toHaveAttribute('data-machine-states',/7:blocked/);
   await expect(page.getByTestId('v2-status')).toContainText('已派往');
 
-  // At 390px all controls remain above the bottom dock, not on top of it.
+  // Compact launcher must not obstruct the scene's real factory actions.
   const layout=await page.evaluate(()=>{
     const consoleBox=document.querySelector('#root .console')!.getBoundingClientRect();
-    const dock=document.querySelector('[data-testid="v2-world-nav"]')!.getBoundingClientRect();
+    const nav=document.querySelector('[data-testid="scene-navigation"]')!.getBoundingClientRect();
     const rail=document.querySelector('#root .middle')!.getBoundingClientRect();
-    return {consoleBottom:consoleBox.bottom,dockTop:dock.top,
-      railBottom:rail.bottom,consoleTop:consoleBox.top,
+    return {navWidth:nav.width,railBottom:rail.bottom,consoleTop:consoleBox.top,
       consoleWidth:consoleBox.width,viewport:window.innerWidth};
   });
-  expect(layout.consoleBottom).toBeLessThanOrEqual(layout.dockTop+2);
+  expect(layout.navWidth).toBeLessThan(190);
   expect(layout.railBottom).toBeLessThanOrEqual(layout.consoleTop+2);
   expect(layout.consoleWidth).toBeLessThan(layout.viewport);
 });
@@ -41,12 +40,13 @@ test('world buttons and headings remain in their panels on a narrow phone',async
   await page.setViewportSize({width:320,height:700});
   await page.goto('/town/');
   await expect(page.getByTestId('moonlit-town-scene')).toBeVisible();
-  const worldNav=page.getByRole('navigation',{name:'月光工坊世界'});
-  await expect(worldNav.getByRole('link')).toHaveCount(7);
-  const dockBounds=await worldNav.boundingBox();
-  expect(dockBounds).not.toBeNull();
-  expect(dockBounds!.x).toBeGreaterThanOrEqual(-1);
-  expect(dockBounds!.x+dockBounds!.width).toBeLessThanOrEqual(321);
+  const launcher=page.getByTestId('scene-navigation');
+  await expect(launcher).toBeVisible();
+  await expect(page.getByRole('navigation',{name:'月光工坊世界'})).toHaveCount(0);
+  const launcherBounds=await launcher.boundingBox();
+  expect(launcherBounds).not.toBeNull();
+  expect(launcherBounds!.x).toBeGreaterThanOrEqual(-1);
+  expect(launcherBounds!.x+launcherBounds!.width).toBeLessThanOrEqual(321);
   const positions=await page.locator('.mw-town-portal').evaluateAll(anchors=>
     anchors.map(node=>{
       const rect=node.getBoundingClientRect();
