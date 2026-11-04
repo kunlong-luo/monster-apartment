@@ -117,11 +117,6 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await expect(page.locator('.cg-detail h2')).toContainText('青枝');
   await page.keyboard.press('ArrowRight');
   await expect(page.locator('.cg-detail h2')).toContainText('炽角');
-  const mobileTitle=await page.locator('.cg-detail__hero-text h2').boundingBox();
-  const mobileArt=await page.locator('.cg-detail__hero-art').boundingBox();
-  expect(mobileTitle&&mobileArt).toBeTruthy();
-  // The ambient portrait now starts below the character title, not across it.
-  expect(mobileArt!.y).toBeGreaterThan(mobileTitle!.y);
   await page.keyboard.press('Home');
   await expect(page.locator('.cg-detail h2')).toContainText('月纱');
   await page.getByRole('tab',{name:'属性'}).focus();
@@ -190,6 +185,11 @@ test('A05 mobile card strip remains operable without page overflow',async({page}
   await page.getByRole('button',{name:/选择炽角/}).scrollIntoViewIfNeeded();
   await page.getByRole('button',{name:/选择炽角/}).click();
   await expect(page.locator('.cg-detail h2')).toContainText('炽角');
+  const mobileTitle=await page.locator('.cg-detail__hero-text h2').boundingBox();
+  const mobileArt=await page.locator('.cg-detail__hero-art').boundingBox();
+  expect(mobileTitle&&mobileArt).toBeTruthy();
+  // The ambient portrait now starts below the character title, not across it.
+  expect(mobileArt!.y).toBeGreaterThan(mobileTitle!.y);
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(2);
   await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
