@@ -453,8 +453,8 @@ export async function mountWorkshopLab(
         fixture.animationSpeed=.085;fixture.loop=true;
         fixture.gotoAndStop(i%4);
         machineAnimations.push(fixture);
-        const animated=element.dataset.machineAnimatedTiles;
-        element.dataset.machineAnimatedTiles=(animated?animated+';':'')+i;
+        const previousAnimatedTiles:string=element.dataset.machineAnimatedTiles??'';
+        element.dataset.machineAnimatedTiles=(previousAnimatedTiles?previousAnimatedTiles+';':'')+String(i);
       }
       fixture.position.set(x+CELL*.49,y+CELL*.92);
       fixture.width=CELL*(.89+(level-1)*.03);
