@@ -40,6 +40,7 @@ on:
       - 'v2/src/workshop-lab-stage.ts'
       - 'v2/src/workshop-machine-effects.ts'
       - 'v2/src/workshop-machine-materials.ts'
+      - 'v2/src/workshop-machine-actuators.ts'
       - 'v2/src/workshop-machine-phases.ts'
       - 'v2/src/workshop-machine-presentation.ts'
       - 'v2/src/workshop-machine-status.ts'
