@@ -5,8 +5,7 @@ import {useMoonworkState,ensureWorkshopWorld,EMPTY_SELECTION} from '@/lib/moonwo
 import Link from 'next/link';
 import '@/components/game/gothic-workshop.css';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
-import {GothicDock, GothicResourcePill} from '@/components/game/gothic-hud';
-import {WORLD_NAV} from './world-navigation';
+import {GothicResourcePill} from '@/components/game/gothic-hud';
 import {useWorkshopWorld} from './world-save-react';
 import {SAVE_KEY, CHANGE_EVENT, parseSavedWorld} from '@/lib/moonwork/world-store';
 import {toggleWorkshopAuto} from '@/lib/moonwork/workshop-auto-runtime';
@@ -356,21 +355,6 @@ export function WorkshopClient() {
         className="pointer-events-none absolute left-1/2 top-[45%] z-[15] -translate-x-1/2 rounded-lg border border-gothic-gold/45 bg-[#170f20eb] px-4 py-3 text-xs text-gothic-ivory shadow-lg">
         正在准备工坊设备…
       </p>}
-      {/* Shared Gothic World Navigation Dock */}
-      <GothicDock
-        label="月光工坊世界"
-        activeHref="/workshop/"
-        testId="v2-world-nav"
-        className="gothic-dock--world"
-        items={WORLD_NAV.map((item) => ({
-          href: item.href,
-          icon: item.glyph,
-          label: item.label,
-          ariaLabel: item.full,
-          description: item.purpose,
-        }))}
-      />
-
       {blockedSave && (
         <div className="absolute inset-0 z-[100] flex items-center justify-center bg-[#09050ce8] px-5 backdrop-blur-md" role="alertdialog" aria-modal="true" aria-labelledby="workshop-save-error">
           <div className="w-full max-w-md rounded-xl border border-gothic-brass/70 bg-gothic-panel p-6 text-gothic-ivory shadow-2xl">
