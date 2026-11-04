@@ -25,8 +25,8 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await expect(page.getByRole('button',{name:'查看详情'})).toHaveCount(1);
   await expect(page.getByRole('button',{name:'查看档案'})).toHaveCount(0);
   await expect(page.getByRole('button',{name:'查看已收录契约、首饰和装备'})).toHaveCount(1);
-  const dock=page.getByRole('navigation',{name:'月影契约世界导航'});
-  await expect(dock.getByRole('link')).toHaveCount(7);
+  await expect(page.getByRole('navigation',{name:'月影契约世界导航'})).toHaveCount(0);
+  await expect(page.getByTestId('scene-navigation-toggle')).toBeVisible();
   await expect(page.getByTestId('collection-tickets')).toHaveText('3');
   await expect(page.getByTestId('collection-odds')).toContainText('1.00%');
   await expect(page.getByTestId('collection-odds')).toContainText('46.00%');
@@ -179,7 +179,7 @@ test('zero resources cannot mint cards; phone can access the real banners and ac
   await expect(page.getByText(/契约信物与血晶不足/)).toBeVisible();
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:character-collection:v1')))
     .toBeNull();
-  await expect(page.getByRole('navigation',{name:'月影契约世界导航'}).getByRole('link')).toHaveCount(7);
+  await expect(page.getByTestId('scene-navigation-toggle')).toBeVisible();
 });
 
 test('desktop composition preserves the screenshot three-zone balance at 1648px',async({page})=>{
@@ -242,7 +242,7 @@ test('summon featured-room shortcut opens the real heroine suite without adding 
   await page.getByRole('button',{name:'离开青枝的房间'}).click();
   await expect(privateRoom).toHaveCount(0);
   await expect(page).toHaveURL(/\/characters\/?$/);
-  await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
+  await expect(page.getByTestId('scene-navigation-toggle')).toBeVisible();
 });
  
 
@@ -260,10 +260,10 @@ test('320px and 390px summon HUD keeps resource row and core actions in first sc
     const pool=page.locator('.summon-cinematic-pools');
     const summon=page.getByTestId('collection-summon');
     const ten=page.getByTestId('collection-summon-ten');
-    const dock=page.getByRole('navigation',{name:'月影契约世界导航'});
-    for(const element of [header,wallet,controls,pool,summon,ten,dock])
+    const mapToggle=page.getByTestId('scene-navigation-toggle');
+    for(const element of [header,wallet,controls,pool,summon,ten,mapToggle])
       await expect(element).toBeVisible();
-    await expect(dock.getByRole('link')).toHaveCount(7);
+    await expect(page.getByRole('navigation',{name:'月影契约世界导航'})).toHaveCount(0);
     if(width===390)await page.screenshot({path:'test-results/summon-mobile.png',animations:'disabled'});
     const geometry=await page.evaluate(()=>{
       const box=(selector:string)=>{
@@ -278,7 +278,6 @@ test('320px and 390px summon HUD keeps resource row and core actions in first sc
         pools:box('.summon-cinematic-pools'),
         summon:box('[data-testid="collection-summon"]'),
         ten:box('[data-testid="collection-summon-ten"]'),
-        dock:box('[aria-label="月影契约世界导航"]'),
         spill:document.documentElement.scrollWidth-innerWidth,
       };
     });
@@ -286,8 +285,8 @@ test('320px and 390px summon HUD keeps resource row and core actions in first sc
     expect(geometry.tools.right).toBeLessThanOrEqual(width+1);
     expect(geometry.wallet.y).toBeGreaterThan(geometry.tools.y);
     expect(geometry.pools.y).toBeGreaterThanOrEqual(geometry.header.bottom-2);
-    expect(geometry.summon.bottom).toBeLessThanOrEqual(geometry.dock.y+1);
-    expect(geometry.ten.bottom).toBeLessThanOrEqual(geometry.dock.y+1);
+    expect(geometry.summon.bottom).toBeLessThanOrEqual(height+1);
+    expect(geometry.ten.bottom).toBeLessThanOrEqual(height+1);
     await expect(summon).toBeEnabled();
     await expect(ten).toBeEnabled();
   }
