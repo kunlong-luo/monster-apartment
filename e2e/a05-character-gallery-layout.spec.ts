@@ -65,26 +65,26 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   const cards=await gallery.boundingBox();
   const details=await page.locator('.cg-detail').boundingBox();
   const sidebar=await page.locator('.cg-sidebar').boundingBox();
-  const dock=await page.getByRole('navigation',{name:'月光工坊世界'}).boundingBox();
-  expect(cards&&details&&sidebar&&dock).toBeTruthy();
+  const launcher=page.getByTestId('scene-navigation');
+  await expect(launcher).toBeVisible();
+  await expect(page.getByRole('navigation',{name:'月光工坊世界'})).toHaveCount(0);
+  const navBox=await launcher.boundingBox();
+  expect(cards&&details&&sidebar&&navBox).toBeTruthy();
   expect(sidebar!.x+sidebar!.width).toBeLessThan(cards!.x+3);
   expect(cards!.x+cards!.width).toBeLessThan(details!.x+3);
-  expect(cards!.y+cards!.height).toBeLessThan(dock!.y);
-  // The accepted composition uses a 941px-high canvas: card gallery ends
-  // before the progress plate, details end at ~803px, dock starts ~820px.
+  // After the player-approved lobby-only navigation redesign, the center
+  // painting gallery can reclaim the former full-width bottom dock space.
   const progress=await page.locator('.cg-progress').boundingBox();
   expect(progress).toBeTruthy();
   const near=(actual:number,target:number,tolerance:number)=>expect(Math.abs(actual-target)).toBeLessThanOrEqual(tolerance);
   near(details!.y,78,5);
-  near(details!.y+details!.height,803,10);
   near(cards!.y,197,10);
-  near(progress!.y,752,12);
-  near(dock!.y,820,14);
-  expect(dock!.width).toBeGreaterThan(0.90*1672);
-  expect(dock!.x).toBeLessThan(25);
-  expect(dock!.x+dock!.width).toBeGreaterThan(1647);
+  expect(details!.y+details!.height).toBeGreaterThan(850);
+  expect(details!.y+details!.height).toBeLessThanOrEqual(941);
+  expect(progress!.y).toBeGreaterThan(800);
   expect(progress!.y).toBeGreaterThan(cards!.y+cards!.height);
-  expect(details!.y+details!.height).toBeLessThan(dock!.y);
+  expect(navBox!.x).toBeLessThan(26);
+  expect(navBox!.y).toBeGreaterThan(850);
   const images=gallery.locator('.cg-card__image');
   await expect(images).toHaveCount(5);
   await expect.poll(()=>images.evaluateAll(nodes=>nodes.every(el=>
@@ -153,7 +153,11 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await expect(page.locator('.cg-detail__hero-img')).toHaveAttribute('src',/face\.|face-/);
   await expect(page.getByTestId('cg-equipped-equipment')).toBeVisible();
   await expect(page.getByTestId('cg-equipped-jewelry')).toBeVisible();
-  await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
+  await page.getByRole('button',{name:'展开世界导航'}).click();
+  const worldMap=page.getByRole('navigation',{name:'游戏七个正式地点'});
+  await expect(worldMap.getByRole('link')).toHaveCount(7);
+  await expect(worldMap.locator('[aria-current="page"]')).toHaveAttribute('data-destination','/characters/');
+  await page.getByRole('button',{name:'关闭世界导航'}).click();
   // Artwork viewer displays the real source at contain, with working filmstrip
   // and controls. It never substitutes an unrelated CG for a portrait.
   await page.getByRole('button',{name:'欣赏立绘'}).click();
@@ -195,6 +199,7 @@ test('A05 mobile card strip remains operable without page overflow',async({page}
   expect(mobileArt!.y).toBeGreaterThan(mobileTitle!.y);
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(2);
-  await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
+  await expect(page.getByTestId('scene-navigation')).toBeVisible();
+  await expect(page.getByRole('navigation',{name:'月光工坊世界'})).toHaveCount(0);
   await captureA05(page,'mobile-a05-reference-390.png');
 });
