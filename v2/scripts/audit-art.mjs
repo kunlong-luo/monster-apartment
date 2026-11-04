@@ -1,4 +1,5 @@
 import {readFile, stat} from 'node:fs/promises';
+import sharp from 'sharp';
 import {resolve, dirname, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
@@ -70,12 +71,24 @@ for(const item of manifest.productionAssets??[]){
   if(item.status==='ready'||item.status==='review'){
     const result=await checkFile(item.path,item.minBytes??16000);
     if(result){
-      if(item.role==='machine'&&!result.hasAlpha)
-        errors.push('Machine painting must have real alpha transparency: '+item.path);
+      if((item.role==='machine'||item.role==='machine-animation')&&!result.hasAlpha)
+        errors.push('Machine painting or atlas must have real alpha transparency: '+item.path);
       if(!result.dimensions)errors.push('Cannot verify ready image dimensions: '+item.path);
       else if(result.dimensions.width!==item.canvas.width||
         result.dimensions.height!==item.canvas.height)
-        errors.push('Unexpected ready image dimensions: '+item.path);
+        errors.push('Unexpected review/ready image dimensions: '+item.path);
+      if(item.role==='machine-animation'&&item.frame?.count===4){
+        try{
+          const absolute=checkedPath(item.path);
+          if(absolute){
+            const frames=await Promise.all([0,1,2,3].map(frame=>
+              sharp(absolute).extract({left:frame*512,top:0,width:512,height:512})
+                .ensureAlpha().raw().toBuffer()));
+            if(frames.every(buffer=>buffer.equals(frames[0])))
+              errors.push('All four machine working frames are identical: '+item.path);
+          }
+        }catch(error){errors.push('Cannot inspect atlas: '+item.path+' '+error.message);}
+      }
     }
   }
 }
