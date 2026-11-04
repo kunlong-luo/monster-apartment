@@ -1,57 +1,8 @@
 /* Shared desktop world/summon chrome. The full-screen lobby is an isolated
    layout owned by gothic-reference-layout.css, not this global stylesheet. */
 @media (min-width:1100px){
-  /* A floating compass instead of a screen-wide browser toolbar. */
-  body .gothic-dock-bar:not(.gothic-dock--cinematic),body .gothic-dock--world,
-  body .summon-cinematic .summon-cinematic-dock{
-    width:min(1016px,calc(100vw - 112px))!important;
-    max-width:1016px!important;min-height:72px;
-    bottom:17px!important;gap:2px!important;padding:6px 10px!important;
-    border:1px solid #b28b6473!important;border-radius:15px!important;
-    background:linear-gradient(180deg,#20151fde,#100c15f2)!important;
-    box-shadow:0 8px 34px #05030ab0,inset 0 1px #f4d4ae31,0 0 0 4px #09070b55!important;
-    backdrop-filter:blur(12px);
-  }
-  body .gothic-dock-bar:not(.gothic-dock--cinematic) a,body .gothic-dock--world a{
-    flex:1 1 0;min-width:0;min-height:57px;gap:3px;
-    padding:5px 6px!important;border:1px solid transparent!important;
-    border-right:1px solid #c79b672a!important;border-radius:8px!important;
-    background:transparent!important;box-shadow:none!important;
-    text-shadow:0 1px 5px #060207;
-    transition:background-color .18s,border-color .18s,color .18s,transform .18s;
-  }
-  body .gothic-dock-bar:not(.gothic-dock--cinematic) a:last-child,body .gothic-dock--world a:last-child{
-    border-right-color:transparent!important;
-  }
-  body .gothic-dock-bar:not(.gothic-dock--cinematic) a:is(:hover,:focus-visible){
-    background:#59304675!important;border-color:#d9af7d5e!important;
-    transform:translateY(-1px);
-  }
-  body .gothic-dock-bar:not(.gothic-dock--cinematic) a[aria-current="page"]{
-    border-color:#d6ac7d8a!important;
-    background:linear-gradient(180deg,#593147c9,#351a2df0)!important;
-    box-shadow:inset 0 1px #f5d7b53b!important;color:#fff0d7!important;
-  }
-  body .gothic-dock-bar:not(.gothic-dock--cinematic) a[aria-current="page"]::before{
-    content:"";position:absolute;top:0;left:25%;right:25%;height:1px;
-    background:linear-gradient(90deg,transparent,#f7d4a0,transparent);
-  }
-  body .gothic-dock-bar:not(.gothic-dock--cinematic) a .gothic-dock__icon{
-    width:25px!important;height:25px!important;
-    border:0!important;border-radius:0!important;
-    background:transparent!important;box-shadow:none!important;
-    color:#ddbd91!important;
-  }
-  body .gothic-dock-bar:not(.gothic-dock--cinematic) a[aria-current="page"] .gothic-dock__icon{
-    color:#ffe0ac!important;background:transparent!important;
-    box-shadow:none!important;border:0!important;
-  }
-  body .gothic-dock-bar:not(.gothic-dock--cinematic) .gothic-dock__label{
-    margin-top:0;font-size:12px!important;font-weight:550!important;
-    letter-spacing:.14em!important;color:#ead3b6;
-  }
-  body .gothic-dock-bar:not(.gothic-dock--cinematic) a[aria-current="page"] .gothic-dock__label{color:#fff0d6}
-  body .gothic-dock-bar:not(.gothic-dock--cinematic) .gothic-dock__subtitle{display:none!important}
+  /* Only the lobby retains a full dock. Shared world/dock overrides were
+     removed when all other routes adopted GameSceneNavigation. */
   body .gothic-icon-button{
     border:1px solid #d1a9786b;
     background:linear-gradient(155deg,#35202fd9,#1a111fe8);
@@ -159,7 +110,6 @@
   .summon-cinematic .summon-cinematic-cost svg{color:#d8ac7f}
 }
 @media(min-width:1100px) and (prefers-reduced-motion:reduce){
-  body .gothic-dock-bar:not(.gothic-dock--cinematic) a,
   .summon-cinematic .summon-pool-item,
   .summon-cinematic [data-testid="collection-summon"],
   .summon-cinematic [data-testid="collection-summon-ten"]{
