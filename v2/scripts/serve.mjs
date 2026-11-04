@@ -4,7 +4,7 @@ import {resolve,dirname,extname,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'../dist');
 const port=Number(process.env.V2_PORT||3901);
-const mime={'.js':'text/javascript','.css':'text/css','.html':'text/html','.png':'image/png','.webp':'image/webp','.avif':'image/avif','.woff2':'font/woff2'};
+const mime={'.js':'text/javascript','.css':'text/css','.html':'text/html','.png':'image/png','.webp':'image/webp','.avif':'image/avif','.woff2':'font/woff2','.json':'application/json'};
 createServer(async(req,res)=>{
   const uri=decodeURI((req.url||'/').split('?')[0]);
   // Asset server only. The latest Next.js workshop owns the UI.
