@@ -7,7 +7,7 @@ import type {CSSProperties} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import {Archive,BookOpen,Brain,Crown,DoorOpen,Dumbbell,Eye,Flame,Focus,Gem,HandHeart,Heart,HeartPulse,Hourglass,Image as ImageIcon,Leaf,Mail,MessageCircle,MoonStar,Palette,ScrollText,Shield,Swords,Volume2,Waves} from 'lucide-react';
 import type {LucideIcon} from 'lucide-react';
-import {GothicDock,GothicResourcePill,GothicModal} from '@/components/game/gothic-hud';
+import {GothicResourcePill,GothicModal} from '@/components/game/gothic-hud';
 import {ReliableImage} from '@/components/game/reliable-image';
 import {CharacterLifePortrait} from '@/components/game/character-life-portrait';
 import {RoomInvestigationJournal} from '@/components/game/room-investigation-journal';
@@ -22,7 +22,6 @@ import {useWorkshopWorld} from './world-save-react';
 import {CharacterGalleryArtwork} from './character-gallery-artwork';
 import {CharacterGalleryPetals} from './character-gallery-petals';
 import hallBackdrop from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
-import {WORLD_NAV} from './world-navigation';
 import {CHARACTER_CARDS,FORGE_RECIPES,characterAbilities} from '@/core/character-collection';
 import type {CardKey} from '@/core/character-collection';
 import {ABILITY_LABELS,CHARACTER_PROFILES} from '@/core/character-life';
@@ -368,8 +367,6 @@ export function CharacterGalleryScene(){
         </div>
       </aside>
     </div>
-    <GothicDock label="月光工坊世界" activeHref="/characters/" className="cg-dock gothic-dock--cinematic"
-      items={WORLD_NAV.map(item=>({href:item.href,icon:item.glyph,label:item.label,description:item.purpose,ariaLabel:item.full}))}/>
     {overlay==='memories'&&<GothicModal title="月光记忆与人物故事" onClose={()=>setOverlay(null)} wide>
       <div className="cg-overlay-stack">
         <h2>羁绊故事 · 月光记忆</h2>
