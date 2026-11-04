@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "audit:art": "node scripts/prepare-machine-art.mjs && node scripts/audit-art.mjs",
+    "audit:art": "node scripts/prepare-machine-working-art.mjs && node scripts/audit-art.mjs",
     "build": "node scripts/build.mjs",
     "dev": "node scripts/build.mjs && node scripts/serve.mjs",
     "check": "npm run typecheck"
