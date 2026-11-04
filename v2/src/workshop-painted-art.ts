@@ -1,4 +1,4 @@
-import {Texture} from 'pixi.js';
+import {Rectangle,Texture} from 'pixi.js';
 import type {Craft,WorkerId} from './workshop-model';
 
 /** Decode the same static asset again after a transient first-navigation
@@ -29,20 +29,24 @@ async function loadPaintedTexture(assetBase:string,filename:string,attempts=2):P
 
 type MachineLevelKey='1'|'2'|'3';
 type MasterMachineArt=Partial<Record<Craft,Partial<Record<MachineLevelKey,Texture>>>>;
+type WorkingMachineArt=Partial<Record<Craft,Texture[]>>;
+type MachineArtPack={masters:MasterMachineArt;working:WorkingMachineArt};
 
 /** The manifest is emitted at build time from audited `status: ready` artwork.
  * It is always present, even when no formal machine paintings are approved.
  * Never request nonexistent production sprites or treat concept AVIF as final.
  */
-async function loadMachineMasterArt(assetBase:string):Promise<MasterMachineArt>{
+async function loadMachineMasterArt(assetBase:string):Promise<MachineArtPack>{
   const result:MasterMachineArt={};
+  const working:WorkingMachineArt={};
+  const pack={masters:result,working};
   try{
     const response=await fetch(new URL('./assets/machine-art-index.json',assetBase));
-    if(!response.ok)return result;
+    if(!response.ok)return pack;
     const index:unknown=await response.json();
     if(!index||typeof index!=='object'||!('schemaVersion' in index)||
        index.schemaVersion!==1||!('machines' in index)||
-       !index.machines||typeof index.machines!=='object')return result;
+       !index.machines||typeof index.machines!=='object')return pack;
     const machines=index.machines as Record<string,unknown>;
     for(const craft of ['well','garden','kiln'] as const){
       const levels=machines[craft];
@@ -60,8 +64,24 @@ async function loadMachineMasterArt(assetBase:string):Promise<MasterMachineArt>{
         }catch{/* Failed master: retain the working AVIF / raster fallback. */}
       }
     }
+    // Four fixed-position 512px frames, sliced from a single audited
+    // 2048x512 WebP texture. No per-tick texture allocation or frame probing.
+    const atlases='working' in index&&index.working&&
+      typeof index.working==='object'
+      ?index.working as Record<string,unknown>:{};
+    for(const craft of ['well','garden','kiln'] as const){
+      const filename=atlases[craft];
+      if(filename!==`production/machines/${craft}/working.webp`)continue;
+      try{
+        const sheet=await loadPaintedTexture(assetBase,filename);
+        if(sheet.width!==2048||sheet.height!==512)continue;
+        working[craft]=Array.from({length:4},(_,frame)=>new Texture({
+          source:sheet.source,frame:new Rectangle(frame*512,0,512,512),
+        }));
+      }catch{/* A bad animation never removes the still-image fallback. */}
+    }
   }catch{/* A cold fetch must never block the factory. */}
-  return result;
+  return pack;
 }
 
 /** Painted Pixi textures: retry first-load WebP/AVIF decoding once, then fall
@@ -112,6 +132,6 @@ export async function loadWorkshopPaintedArt(assetBase:string){
       paintedDetail[kind]=await loadPaintedTexture(assetBase,kind+'-art-review.avif');
     }catch{/* the corresponding machine retains its default sprite */}
   }
-  const machineMasters=await machineMastersPromise;
-  return {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings,machineMasters};
+  const {masters:machineMasters,working:machineWorking}=await machineMastersPromise;
+  return {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings,machineMasters,machineWorking};
 }
