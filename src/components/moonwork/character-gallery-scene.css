@@ -207,10 +207,12 @@
 .cg-detail__hero-text strong{display:block;color:#ff9c77;font-size:clamp(15px,1.25vw,21px)}
 .cg-detail__hero-text p{color:#edd0bf;font-size:clamp(10px,.9vw,13px);line-height:1.55;
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:8px}
-.cg-detail__hero-art{position:absolute;right:-5%;top:-13%;width:54%;height:130%;
-  opacity:.95;mask-image:linear-gradient(90deg,transparent,#000 22%);
+/* The shallow header must show the resident's FACE. Previously a negative
+ * top offset plus an oversized image cropped mythic YueSha's head away. */
+.cg-detail__hero-art{position:absolute;right:-3%;top:0;width:57%;height:100%;
+  opacity:.95;mask-image:linear-gradient(90deg,transparent,#000 24%);
   pointer-events:none}
-.cg-detail__hero-img{object-fit:cover;object-position:50% 22%}
+.cg-detail__hero-img{object-fit:cover;object-position:50% 0%}
 .cg-detail__tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
   flex:0 0 41px;border-bottom:1px solid #b1835e71;padding:0 14px}
 .cg-tab{border:0;border-bottom:2px solid transparent;background:transparent;color:#e3c6a8;
@@ -396,7 +398,10 @@
   .cg-detail__hero-text h2{font-size:15px;word-break:break-word}
   .cg-detail__hero-text strong{font-size:13px}
   .cg-detail__hero-text p{font-size:10px;line-height:1.3;-webkit-line-clamp:4}
-  .cg-detail__hero-art{opacity:.27;right:-25%;width:100%;mask-image:none}
+  /* Keep the compact identity portrait below the labels on phones; the
+   * old oversized hero was a giant floating eye covering the caption. */
+  .cg-detail__hero-art{top:24%;height:76%;right:-10%;width:108%;opacity:.23;
+    mask-image:linear-gradient(90deg,transparent 8%,#000 66%)}
   .cg-detail__tabs{grid-column:2;grid-row:1;padding:0 5px;min-height:0}
   .cg-detail__body{grid-column:2;grid-row:2;padding:5px;min-height:0}
   .cg-detail__bottom{grid-column:2;grid-row:3;padding:3px 5px 5px}
