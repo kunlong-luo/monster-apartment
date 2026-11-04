@@ -1,6 +1,6 @@
 import {describe,expect,it} from 'vitest';
 import {assignWorker,moveMachine,newWorkshop,placeMachine} from '../v2/src/workshop-engine';
-import {machineEffectProfile,projectedSupplyTrails} from '../v2/src/workshop-machine-presentation';
+import {machineEffectProfile,materialLight,projectedSupplyTrails} from '../v2/src/workshop-machine-presentation';
 
 describe('Pixi workshop presentation follows production, not visual guesses',()=>{
   it('uses distinctive intensity but never emits active particles for blocked or idle machines',()=>{
@@ -22,6 +22,26 @@ describe('Pixi workshop presentation follows production, not visual guesses',()=
     expect(starting.ringAlpha).toBeGreaterThan(working.ringAlpha);
     expect(output.bloomAlpha).toBeGreaterThan(starting.bloomAlpha);
     expect(output.speed).toBeGreaterThan(working.speed);
+  });
+
+  it('keeps machine-mounted glass, leaves and crystal light tied to production',()=>{
+    for(const phase of ['idle','blocked'] as const){
+      expect(materialLight(phase,true)).toEqual({
+        active:false,strength:0,movement:0,
+      });
+    }
+    for(const phase of ['startup','working','output'] as const){
+      const reduced=materialLight(phase,false);
+      expect(reduced.active).toBe(true);
+      expect(reduced.strength).toBeLessThan(.2);
+      expect(reduced.movement).toBe(0);
+    }
+    const start=materialLight('startup',true);
+    const run=materialLight('working',true);
+    const output=materialLight('output',true);
+    expect(start.strength).toBeGreaterThan(run.strength);
+    expect(output.strength).toBeGreaterThan(start.strength);
+    expect(output.movement).toBeGreaterThan(run.movement);
   });
 
   it('animates only actual well-to-garden and garden-to-kiln consumption',()=>{
