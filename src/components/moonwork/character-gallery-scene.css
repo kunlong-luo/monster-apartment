@@ -426,5 +426,7 @@
   .cg-art-view__thumb-image{flex-basis:36px;width:36px;height:42px}
 }
 @media(prefers-reduced-motion:reduce){
+  .cg-petal-layer{display:none!important}
+  .cg-card__select,.cg-card__image,.cg-progress__track>span{transition:none!important}
   .cg-art-view__painting{animation:none!important;transition:none!important}
 }
