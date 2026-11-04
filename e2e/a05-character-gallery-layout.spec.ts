@@ -229,4 +229,17 @@ test('A05 mobile card strip remains operable without page overflow',async({page}
   await expect(page.getByTestId('scene-navigation')).toBeVisible();
   await expect(page.getByRole('navigation',{name:'月光工坊世界'})).toHaveCount(0);
   await captureA05(page,'mobile-a05-reference-390.png');
+  // The three remaining contextual actions must all fit a narrow phone
+  // without forcing the player to discover an off-screen button.
+  await page.setViewportSize({width:320,height:700});
+  const shortcuts=page.getByRole('navigation',{name:'图鉴快捷功能'});
+  await expect(shortcuts.locator('.cg-sidebar__item')).toHaveCount(3);
+  const railSizes=await shortcuts.evaluate(el=>({
+    scrollWidth:el.scrollWidth,clientWidth:el.clientWidth
+  }));
+  expect(railSizes.scrollWidth).toBeLessThanOrEqual(railSizes.clientWidth+2);
+  await expect(page.locator('.cg-detail__actions').locator('a,button')).toHaveCount(2);
+  const narrowOverflow=await page.evaluate(()=>
+    document.documentElement.scrollWidth-window.innerWidth);
+  expect(narrowOverflow).toBeLessThanOrEqual(2);
 });
