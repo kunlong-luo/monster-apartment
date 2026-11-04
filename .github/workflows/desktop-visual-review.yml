@@ -40,6 +40,7 @@ on:
       - 'src/lib/moonwork/workshop-auto-runtime.tsx'
       - 'v2/src/workshop-auto-production.ts'
       - 'e2e/moonwork-next-workshop.spec.ts'
+      - 'e2e/workshop-dock-clearance.spec.ts'
       - 'src/components/moonwork/character-gallery-scene.tsx'
       - 'src/components/moonwork/character-gallery-scene.css'
       - 'e2e/a05-character-gallery-layout.spec.ts'
@@ -92,6 +93,8 @@ jobs:
         run: pnpm exec playwright test e2e/a05-character-gallery-layout.spec.ts --workers=1 --retries=0
       - name: Run focused archive forge and room-navigation browser regression
         run: pnpm exec playwright test e2e/character-collection.spec.ts --grep "canonical summon archive|an acquired heroine|collected YueSha opens" --workers=1 --retries=0
+      - name: Verify workshop canvas clearance from compact world map on PC and mobile
+        run: pnpm exec playwright test e2e/workshop-dock-clearance.spec.ts --workers=1 --retries=0
       - name: Check realtime workshop starts, produces and pauses in browser
         run: pnpm exec playwright test e2e/moonwork-next-workshop.spec.ts --grep "automatic production runs" --workers=1 --retries=0
       - name: Verify A05 screenshots survive subsequent browser suites
