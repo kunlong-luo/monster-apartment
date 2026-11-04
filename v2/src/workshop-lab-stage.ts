@@ -8,6 +8,7 @@ import {inspectMachineSignals} from './workshop-machine-status';
 import {projectMachineProduction} from './workshop-production';
 import type {MachineCycle} from './workshop-production';
 import {createMachineEffects} from './workshop-machine-effects';
+import {createMachineMaterial} from './workshop-machine-materials';
 import {projectedSupplyTrails} from './workshop-machine-presentation';
 import type {MachineVisualState} from './workshop-machine-status';
 import { BOARD_SIZE, WIDTH, MACHINES, linked, machineLevel, workshopHint } from './workshop-engine';
@@ -71,6 +72,7 @@ export async function mountWorkshopLab(
   element.dataset.machineArt=kilnArtReview&&paintedDetail.well&&paintedDetail.garden
     ?'all-painted-machine-reviews':'mixed-machine-art';
   element.dataset.machineEffectStyle='layered-resource-v2';
+  element.dataset.machineMaterialStyle='glass-botanical-crystal-v1';
   element.dataset.visualTheme=painted?'painted-moonwork':'procedural-fallback';
   element.dataset.floorArt=paintedFloor?'painted-moonstone':'procedural-floor';
   const backdrop=new Sprite(painted??art.backdrop);
@@ -134,6 +136,7 @@ export async function mountWorkshopLab(
   const machineArt:{sprite:Sprite;detail:Sprite|null;baseY:number;state:MachineVisualState;index:number}[]=[];
   const machineEffects:{ring:Graphics;state:MachineVisualState;index:number}[]=[];
   const deviceEffects:ReturnType<typeof createMachineEffects>[]=[];
+  const materialEffects:ReturnType<typeof createMachineMaterial>[]=[];
   let flowPaths:{from:{x:number;y:number};to:{x:number;y:number};tint:number}[]=[];
   const flowLayer=new Graphics();
   app.stage.addChild(flowLayer);
@@ -262,6 +265,7 @@ export async function mountWorkshopLab(
       }
     }
     for(const fx of deviceEffects)fx.tick(elapsed+dt/60,animationEnabled);
+    for(const material of materialEffects)material.tick(elapsed+dt/60,animationEnabled);
     if(!animationEnabled)return;
     elapsed+=dt/60;
     for(const actor of paintedActors){
@@ -331,6 +335,7 @@ export async function mountWorkshopLab(
     for(const actor of actors)actor.stop();
     actors.length=0;paintedActors.length=0;
     machineArt.length=0;machineEffects.length=0;deviceEffects.length=0;
+    materialEffects.length=0;
     flowPaths=[];
     stage.removeChildren().forEach(child=>child.destroy({children:true}));
     tutorialLayer.removeChildren().forEach(child=>child.destroy({children:true}));
@@ -443,6 +448,12 @@ export async function mountWorkshopLab(
       const newlyStarted=signal.state==='working'&&
         !!previousSignals&&previousSignals[i]?.state!=='working';
       const justProduced=shiftCycles.some(c=>c.index===i&&c.amount>0);
+      // Restrained internal material light lies on the actual painted vessel
+      // / glazing / crystal, beneath the human worker and outside hit targets.
+      const material=createMachineMaterial(machine.craft,signal.state,i,
+        x+CELL*.49,y+CELL*.54,newlyStarted?elapsed:null,
+        justProduced?elapsed:null);
+      stage.addChild(material.node);materialEffects.push(material);
       const fx=createMachineEffects(machine.craft,signal.state,i,
         x+CELL*.50,y+CELL*.69,newlyStarted?elapsed:null,
         justProduced?elapsed:null);
