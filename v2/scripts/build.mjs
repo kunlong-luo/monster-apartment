@@ -1,5 +1,5 @@
 import {build} from 'esbuild';
-import {mkdir,copyFile} from 'node:fs/promises';
+import {mkdir,copyFile,readFile,writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {dirname,resolve} from 'node:path';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
@@ -48,3 +48,26 @@ for(const worker of ['brook','fern','cinder']){
     if(error?.code!=='ENOENT')throw error;
   }
 }
+
+/** Production-grade 512px painted machine sprites are opt-in. Only files
+ * explicitly marked ready in the audited art pack are deployed. The runtime
+ * reads this tiny index and never probes nonexistent artwork (no 404 burst on
+ * the first GitHub Pages navigation). Prototypes remain the playable fallback.
+ */
+const pack=JSON.parse(await readFile(resolve(root,'art/asset-pack.v1.json'),'utf8'));
+const machineIndex={schemaVersion:1,machines:{}};
+for(const item of pack.productionAssets??[]){
+  if(item.role!=='machine'||item.status!=='ready')continue;
+  if(!['well','garden','kiln'].includes(item.craft)||
+     ![1,2,3].includes(item.level)||
+     item.path!==`art/production/machines/${item.craft}/lv${item.level}.webp`)
+    throw Error('Unexpected ready machine asset: '+item.id);
+  const output='production/machines/'+item.craft+'/lv'+item.level+'.webp';
+  const destination=resolve(root,'dist/assets',output);
+  await mkdir(dirname(destination),{recursive:true});
+  await copyFile(resolve(root,item.path),destination);
+  machineIndex.machines[item.craft]??={};
+  machineIndex.machines[item.craft][String(item.level)]=output;
+}
+await writeFile(resolve(root,'dist/assets/machine-art-index.json'),
+  JSON.stringify(machineIndex));
