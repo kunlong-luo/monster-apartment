@@ -50,6 +50,23 @@ export function materialLight(
   return {active:true,strength:.27,movement:1};
 }
 
+/** Reusable, deterministic mechanical pose: paused / blocked machines cannot
+ * move or imply production. Distinct craft speeds prevent synchronized toys. */
+export function machineActuatorPose(
+  craft:'well'|'garden'|'kiln',
+  phase:DevicePhase,seconds:number,index:number,allowMotion:boolean
+){
+  const working=phase==='startup'||phase==='working'||phase==='output';
+  const strength=!allowMotion||!working?0:phase==='output'?1:phase==='startup'?.65:.38;
+  const cycle=Math.sin(seconds*(craft==='well'?4.2:craft==='garden'?1.6:3.4)+index*.47);
+  return {
+    displacement:strength*cycle*(craft==='well'?6:craft==='garden'?3.8:2.7),
+    angle:strength*cycle*(craft==='garden'?.14:craft==='kiln'?.10:.02),
+    glow:working?(allowMotion?.23+.15*strength*(.5+.5*cycle):.08):0,
+    active:working,
+  };
+}
+
 export type WorkshopSupplyTrail=Readonly<{
   from:number;
   to:number;
