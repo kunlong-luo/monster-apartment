@@ -59,7 +59,7 @@ export function MoonworkWorld({area}:{area:WorldArea}){
     <GothicDock label="月光工坊世界" activeHref={'/'+area+'/'} className="gothic-dock--world"
       items={WORLD_NAV.map(n=>({href:n.href,icon:n.glyph,label:n.label,ariaLabel:n.full,description:n.purpose}))}/>
 
-    <div className={'mw-main mw-main--red-gold '+(area==='characters'?'mw-main--summon ':'')+'absolute top-[85px] right-[clamp(12px,2.4vw,42px)] bottom-[94px] z-[4] min-h-0 w-[clamp(330px,35vw,540px)] max-w-[calc(100vw-42px)] overflow-x-hidden overflow-y-auto overscroll-contain rounded-[18px] border border-[#b9946877] bg-[linear-gradient(135deg,#241721ed,#160f19e8_48%,#1e161bdc)] px-5 pt-[18px] pb-[25px] shadow-[0_18px_70px_#08040bc9,inset_0_1px_#f5e3c933] backdrop-blur-[17px] [scrollbar-color:#ab8258_#231521] [scrollbar-width:thin] max-[700px]:top-[44%] max-[700px]:right-[10px] max-[700px]:bottom-[80px] max-[700px]:left-[10px] max-[700px]:w-auto max-[700px]:max-w-none max-[700px]:rounded-[13px] max-[700px]:px-[13px] max-[700px]:pt-[13px] max-[700px]:pb-[19px]'}>
+    <div className={'mw-main mw-main--red-gold '+(area==='characters'?'mw-main--summon ':'')+'absolute top-[85px] right-[clamp(12px,2.4vw,42px)] bottom-[22px] z-[4] min-h-0 w-[clamp(330px,35vw,540px)] max-w-[calc(100vw-42px)] overflow-x-hidden overflow-y-auto overscroll-contain rounded-[18px] border border-[#b9946877] bg-[linear-gradient(135deg,#241721ed,#160f19e8_48%,#1e161bdc)] px-5 pt-[18px] pb-[25px] shadow-[0_18px_70px_#08040bc9,inset_0_1px_#f5e3c933] backdrop-blur-[17px] [scrollbar-color:#ab8258_#231521] [scrollbar-width:thin] max-[700px]:top-[44%] max-[700px]:right-[10px] max-[700px]:bottom-[56px] max-[700px]:left-[10px] max-[700px]:w-auto max-[700px]:max-w-none max-[700px]:rounded-[13px] max-[700px]:px-[13px] max-[700px]:pt-[13px] max-[700px]:pb-[19px]'}>
       <p className={'mw-eyebrow font-serif text-[10px] tracking-[.14em] text-[#bc9e7e] uppercase '+(area==='characters'?'sr-only':'')}
         data-testid="game-location">大厅 / {title}</p>
       <h1 className={'my-[3px] text-[clamp(23px,2.5vw,34px)] leading-[1.2] tracking-[.12em] text-[#ffdeb1] max-[700px]:text-[21px] '+(area==='characters'?'sr-only':'')}>{title}</h1>
@@ -72,6 +72,5 @@ export function MoonworkWorld({area}:{area:WorldArea}){
     {area==='characters'&&s&&visiting&&<WorkerPrivateRoom id={visiting}
       working={s.tiles.some(tile=>tile?.worker===visiting)}
       onClose={closeVisit}/>}
-    <footer className="mw-footer absolute bottom-2.5 left-0 z-[2] border-0 bg-transparent px-[15px] py-1 text-left text-[9px] text-[#ac8e78] max-[700px]:hidden">✦ 夜色公寓 · 你的选择影响每一位住客</footer>
   </main>;
 }
