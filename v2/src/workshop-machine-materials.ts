@@ -2,29 +2,7 @@ import {Container,Graphics} from 'pixi.js';
 import type {Craft} from './workshop-model';
 import type {MachineVisualState} from './workshop-machine-status';
 import {devicePhase} from './workshop-machine-phases';
-import type {DevicePhase} from './workshop-machine-phases';
-
-/** Material lighting belongs on the painted machine, not the floating particle
- * layer. Its state is a rendering decision, never a second production model. */
-export type MaterialLight=Readonly<{
-  active:boolean;
-  strength:number;
-  movement:number;
-}>;
-
-export function materialLight(
-  phase:DevicePhase,motionEnabled:boolean
-):MaterialLight{
-  if(phase==='idle'||phase==='blocked')
-    return {active:false,strength:0,movement:0};
-  if(!motionEnabled)
-    return {active:true,strength:.12,movement:0};
-  if(phase==='output')
-    return {active:true,strength:.64,movement:1.65};
-  if(phase==='startup')
-    return {active:true,strength:.42,movement:1.25};
-  return {active:true,strength:.27,movement:1};
-}
+import {materialLight} from './workshop-machine-presentation';
 
 /** Three restrained hand-built material-light layers on top of the existing
  * painterly machinery. Pixi draws the forms once; ticker updates only alpha,
