@@ -59,7 +59,7 @@
   color:#ffdeb0;border:1px solid #c39464a0;background:#24101dbb;border-radius:50%;
   box-shadow:0 4px 14px #09030977;text-decoration:none}
 .cg-layout{
-  position:absolute;left:8px;right:16px;top:78px;bottom:clamp(110px,14.7dvh,148px);display:grid;min-height:0;
+  position:absolute;left:8px;right:16px;top:78px;bottom:clamp(18px,2.4dvh,27px);display:grid;min-height:0;
   grid-template-columns:minmax(152px,12.3%) minmax(0,1fr) minmax(350px,29.6%);gap:10px;
 }
 .cg-sidebar{align-self:stretch;min-height:0;padding-top:42px;display:flex;flex-direction:column;
@@ -291,16 +291,6 @@
   cursor:pointer}
 .cg-detail__actions .cg-detail__primary{background:linear-gradient(115deg,#8f2d50,#cb3b70);
   border-color:#ff9fbd;color:#fff0e2;box-shadow:0 0 15px #bc376d69}
-.cg-scene .cg-dock{bottom:4.05dvh;left:50%;width:calc(100% - 18px);max-width:none;
-  height:8.7dvh;min-height:74px;max-height:90px;border-radius:0;
-  border-width:1px 0 0;border-color:#a87558ad;
-  background:linear-gradient(#2b1629f0,#180d1bf7);padding:5px 12vw 4px;
-  box-shadow:0 -7px 30px #0d06129a;}
-.cg-scene .cg-dock .gothic-dock__subtitle{display:none}
-.cg-scene .cg-dock .gothic-dock__link{padding:3px 0;min-height:67px}
-.cg-scene .cg-dock .gothic-dock__icon{background:transparent;border:0;color:#e7bb83}
-.cg-scene .cg-dock .gothic-dock__label{font-size:14px}
-.cg-scene .cg-dock .gothic-dock__link[aria-current="page"]{background:#7d214168;color:#ffe1c0}
 .cg-overlay-stack{width:100%;display:flex;flex-direction:column;gap:10px}
 .cg-overlay-stack h2,.cg-art-view h2{font-size:24px;color:#ffe0ac}
 /* Collector's gallery: view the registered painting at native proportions.
@@ -357,7 +347,6 @@
   .cg-detail__hero-text{padding:15px 0 10px 13px}
   .cg-detail__body{padding:8px 9px}
   .cg-detail__hero{min-height:150px}
-  .cg-scene .cg-dock{padding-left:10vw;padding-right:10vw}
 }
 @media(max-width:900px){
   .cg-scene__tracery,.cg-scene__ornaments,.cg-petal-layer{display:none}
@@ -368,7 +357,7 @@
   .cg-topbar__resource{gap:4px}
   .cg-scene .gothic-resource-pill{height:31px;min-height:31px;padding:0 7px;font-size:11px}
   .cg-topbar__mail{width:31px;height:31px}
-  .cg-layout{top:62px;bottom:83px;left:8px;right:8px;
+  .cg-layout{top:62px;bottom:55px;left:8px;right:8px;
     grid-template-columns:minmax(0,1fr);grid-template-rows:43px minmax(240px,1fr) minmax(185px,.82fr);
     gap:6px}
   .cg-sidebar{padding:0;display:flex;flex-direction:row;gap:5px;overflow:auto;scrollbar-width:none;align-items:stretch}
@@ -426,28 +415,6 @@
   .cg-equipment__icon{width:28px;height:28px}
   .cg-equipment__icon svg{width:17px;height:17px}
   .cg-equipment__name strong,.cg-equipment__name small{font-size:9px}
-  .cg-scene .cg-dock{height:auto;min-height:71px;max-height:none;
-    padding:4px 3px;width:calc(100% - 8px);bottom:3px}
-  .cg-scene .cg-dock .gothic-dock__link{min-height:60px}
-  .cg-scene .cg-dock .gothic-dock__label{font-size:9px}
-  .cg-scene .cg-dock .gothic-dock__icon{height:24px;width:24px}
-  .cg-scene .cg-dock .gothic-dock__icon svg{width:18px;height:18px}
-}
-@media(max-width:420px){
-  .cg-topbar__resource .gothic-resource-pill:first-child{display:none}
-  .cg-layout{grid-template-rows:41px minmax(215px,1fr) minmax(175px,.86fr)}
-  .cg-cards{grid-auto-columns:46%}
-  .cg-detail{grid-template-columns:34% minmax(0,1fr)}
-  .cg-detail__hero-text h2{font-size:13px}
-  .cg-detail__hero-text p{display:none}
-  .cg-heading h1{font-size:19px}
-}
-@media(prefers-reduced-motion:reduce){
-  .cg-card__select,.cg-card__image,.cg-progress__track>span{transition:none!important}
-  .cg-petal-layer{display:none}
-}
-
-@media(max-width:900px){
   .cg-art-view{grid-template-columns:minmax(0,1fr);gap:10px}
   .cg-art-view__stage{height:min(51dvh,520px);min-height:210px}
   .cg-art-view__side{max-height:none;padding:0}
