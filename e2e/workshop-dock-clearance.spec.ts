@@ -137,3 +137,38 @@ test('painted workshop shows only authentic supplier-to-receiver flow',async({pa
   await expect(stage).toHaveAttribute('data-motion-state','paused');
   await expect(stage).toHaveAttribute('data-supply-routes','5>6:water;6>7:fiber');
 });
+
+
+test('approved sprites stay live while nine independent review WebPs require explicit opt-in',async({page})=>{
+  test.setTimeout(100_000);
+  let world=newWorkshop();
+  world=moveMachine(world,7,6);
+  world=placeMachine(world,7,'kiln');
+  world=assignWorker(world,'brook',5);
+  world=assignWorker(world,'fern',6);
+  world=assignWorker(world,'cinder',7);
+  const saved=JSON.stringify(world);
+  await page.setViewportSize({width:1440,height:900});
+  await page.addInitScript(seed=>{
+    const key='monster-apartment:workshop-v2-lab';
+    if(localStorage.getItem(key)===null)localStorage.setItem(key,JSON.stringify(seed));
+  },world);
+  await page.goto('/workshop/?machine-art=review');
+  const stage=page.getByTestId('v2-stage');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:35_000});
+  await expect(stage).toHaveAttribute('data-machine-artwork-tier','review-webp');
+  await expect(stage.locator('canvas')).toBeVisible();
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({path:'visual-evidence/workshop/desktop-machine-art-review-1440.png',animations:'disabled'});
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
+    .toBe(saved);
+  await page.goto('/workshop/');
+  await expect(stage).toHaveAttribute('data-machine-artwork-tier','review-avif',{timeout:35_000});
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/workshop/?machine-art=review');
+  await expect(stage).toHaveAttribute('data-machine-artwork-tier','review-webp',{timeout:35_000});
+  await expect(stage.locator('canvas')).toBeVisible();
+  await page.screenshot({path:'visual-evidence/workshop/mobile-machine-art-review-390.png',animations:'disabled'});
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
+    .toBe(saved);
+});
