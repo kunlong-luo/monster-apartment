@@ -182,6 +182,33 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await captureA05(page,'desktop-a05-reference-1440.png');
 });
 
+test('A05 provides unique contextual actions instead of duplicate character menus',async({page})=>{
+  await page.setViewportSize({width:1672,height:941});
+  await page.goto('/characters/');
+  const rail=page.getByRole('navigation',{name:'图鉴快捷功能'});
+  await expect(rail).toBeVisible();
+  await expect(rail.locator('.cg-sidebar__item')).toHaveCount(3);
+  await expect(rail.getByRole('link',{name:'契约召唤'})).toHaveCount(1);
+  await expect(rail.getByRole('button',{name:'羁绊故事'})).toHaveCount(1);
+  await expect(rail.getByRole('button',{name:'CG 收藏'})).toHaveCount(1);
+  await expect(rail.getByText('语音档案')).toHaveCount(0);
+  await expect(rail.getByText('个人房间')).toHaveCount(0);
+  await expect(rail.getByText('立绘欣赏')).toHaveCount(0);
+  // Room and artwork belong to the selected resident, not to global nav.
+  const actions=page.locator('.cg-detail__actions');
+  await expect(actions.locator('a,button')).toHaveCount(2);
+  await expect(actions.getByRole('button',{name:'欣赏立绘'})).toBeVisible();
+  await expect(page.getByRole('link',{name:'怪物公寓 · 返回大厅'})).toHaveCount(0);
+  const center=await page.getByTestId('painted-worker-gallery').boundingBox();
+  expect(center).not.toBeNull();
+  expect(center!.width).toBeGreaterThan(960);
+  await rail.getByRole('button',{name:'羁绊故事'}).click();
+  await expect(page.getByRole('heading',{name:'羁绊故事 · 月光记忆'})).toBeVisible();
+  await expect(page.getByTestId('scene-navigation')).toBeHidden();
+  await page.getByRole('button',{name:'关闭面板'}).click();
+  await expect(page.getByTestId('scene-navigation')).toBeVisible();
+});
+
 test('A05 mobile card strip remains operable without page overflow',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto('/characters/');
