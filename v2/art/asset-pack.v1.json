@@ -83,7 +83,7 @@
       "role": "machine",
       "craft": "well",
       "level": 1,
-      "status": "pending",
+      "status": "review",
       "path": "art/production/machines/well/lv1.webp",
       "canvas": {
         "width": 512,
@@ -93,14 +93,16 @@
         "x": 0.5,
         "y": 0.92
       },
-      "minBytes": 16000
+      "minBytes": 16000,
+      "generatedFrom": "scripts/prepare-machine-art.mjs",
+      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
     },
     {
       "id": "machine.well.lv2",
       "role": "machine",
       "craft": "well",
       "level": 2,
-      "status": "pending",
+      "status": "review",
       "path": "art/production/machines/well/lv2.webp",
       "canvas": {
         "width": 512,
@@ -110,14 +112,16 @@
         "x": 0.5,
         "y": 0.92
       },
-      "minBytes": 16000
+      "minBytes": 16000,
+      "generatedFrom": "scripts/prepare-machine-art.mjs",
+      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
     },
     {
       "id": "machine.well.lv3",
       "role": "machine",
       "craft": "well",
       "level": 3,
-      "status": "pending",
+      "status": "review",
       "path": "art/production/machines/well/lv3.webp",
       "canvas": {
         "width": 512,
@@ -127,7 +131,9 @@
         "x": 0.5,
         "y": 0.92
       },
-      "minBytes": 16000
+      "minBytes": 16000,
+      "generatedFrom": "scripts/prepare-machine-art.mjs",
+      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
     },
     {
       "id": "machine.well.working",
@@ -157,7 +163,7 @@
       "role": "machine",
       "craft": "garden",
       "level": 1,
-      "status": "pending",
+      "status": "review",
       "path": "art/production/machines/garden/lv1.webp",
       "canvas": {
         "width": 512,
@@ -167,14 +173,16 @@
         "x": 0.5,
         "y": 0.92
       },
-      "minBytes": 16000
+      "minBytes": 16000,
+      "generatedFrom": "scripts/prepare-machine-art.mjs",
+      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
     },
     {
       "id": "machine.garden.lv2",
       "role": "machine",
       "craft": "garden",
       "level": 2,
-      "status": "pending",
+      "status": "review",
       "path": "art/production/machines/garden/lv2.webp",
       "canvas": {
         "width": 512,
@@ -184,14 +192,16 @@
         "x": 0.5,
         "y": 0.92
       },
-      "minBytes": 16000
+      "minBytes": 16000,
+      "generatedFrom": "scripts/prepare-machine-art.mjs",
+      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
     },
     {
       "id": "machine.garden.lv3",
       "role": "machine",
       "craft": "garden",
       "level": 3,
-      "status": "pending",
+      "status": "review",
       "path": "art/production/machines/garden/lv3.webp",
       "canvas": {
         "width": 512,
@@ -201,7 +211,9 @@
         "x": 0.5,
         "y": 0.92
       },
-      "minBytes": 16000
+      "minBytes": 16000,
+      "generatedFrom": "scripts/prepare-machine-art.mjs",
+      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
     },
     {
       "id": "machine.garden.working",
@@ -231,7 +243,7 @@
       "role": "machine",
       "craft": "kiln",
       "level": 1,
-      "status": "pending",
+      "status": "review",
       "path": "art/production/machines/kiln/lv1.webp",
       "canvas": {
         "width": 512,
@@ -241,14 +253,16 @@
         "x": 0.5,
         "y": 0.92
       },
-      "minBytes": 16000
+      "minBytes": 16000,
+      "generatedFrom": "scripts/prepare-machine-art.mjs",
+      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
     },
     {
       "id": "machine.kiln.lv2",
       "role": "machine",
       "craft": "kiln",
       "level": 2,
-      "status": "pending",
+      "status": "review",
       "path": "art/production/machines/kiln/lv2.webp",
       "canvas": {
         "width": 512,
@@ -258,14 +272,16 @@
         "x": 0.5,
         "y": 0.92
       },
-      "minBytes": 16000
+      "minBytes": 16000,
+      "generatedFrom": "scripts/prepare-machine-art.mjs",
+      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
     },
     {
       "id": "machine.kiln.lv3",
       "role": "machine",
       "craft": "kiln",
       "level": 3,
-      "status": "pending",
+      "status": "review",
       "path": "art/production/machines/kiln/lv3.webp",
       "canvas": {
         "width": 512,
@@ -275,7 +291,9 @@
         "x": 0.5,
         "y": 0.92
       },
-      "minBytes": 16000
+      "minBytes": 16000,
+      "generatedFrom": "scripts/prepare-machine-art.mjs",
+      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
     },
     {
       "id": "machine.kiln.working",
@@ -403,7 +421,7 @@
     }
   ],
   "approval": {
-    "stage": "design-spec-only",
+    "stage": "independent-machine-review",
     "paintingDelivered": false,
     "browserVisualReviewPassed": false,
     "releaseReady": false
