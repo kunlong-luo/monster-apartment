@@ -4,7 +4,7 @@ import '@/components/game/gothic-world.css';
 import {useEffect,useState} from 'react';
 import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
 import {useWorkshopWorld} from './world-save-react';
-import {GothicDock,GothicResourcePill} from '@/components/game/gothic-hud';
+import {GothicResourcePill} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from './world-navigation';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import townBackdrop from '../../../public/art/world-scenes/town-moonlit-gate.webp';
@@ -56,9 +56,6 @@ export function MoonworkWorld({area}:{area:WorldArea}){
         <GothicResourcePill symbol="◆" amount={s?.warehouse.core??'—'} label="晶核" testId="world-cores"/>
       </div>
     </header>
-    <GothicDock label="月光工坊世界" activeHref={'/'+area+'/'} className="gothic-dock--world"
-      items={WORLD_NAV.map(n=>({href:n.href,icon:n.glyph,label:n.label,ariaLabel:n.full,description:n.purpose}))}/>
-
     <div className={'mw-main mw-main--red-gold '+(area==='characters'?'mw-main--summon ':'')+'absolute top-[85px] right-[clamp(12px,2.4vw,42px)] bottom-[22px] z-[4] min-h-0 w-[clamp(330px,35vw,540px)] max-w-[calc(100vw-42px)] overflow-x-hidden overflow-y-auto overscroll-contain rounded-[18px] border border-[#b9946877] bg-[linear-gradient(135deg,#241721ed,#160f19e8_48%,#1e161bdc)] px-5 pt-[18px] pb-[25px] shadow-[0_18px_70px_#08040bc9,inset_0_1px_#f5e3c933] backdrop-blur-[17px] [scrollbar-color:#ab8258_#231521] [scrollbar-width:thin] max-[700px]:top-[44%] max-[700px]:right-[10px] max-[700px]:bottom-[56px] max-[700px]:left-[10px] max-[700px]:w-auto max-[700px]:max-w-none max-[700px]:rounded-[13px] max-[700px]:px-[13px] max-[700px]:pt-[13px] max-[700px]:pb-[19px]'}>
       <p className={'mw-eyebrow font-serif text-[10px] tracking-[.14em] text-[#bc9e7e] uppercase '+(area==='characters'?'sr-only':'')}
         data-testid="game-location">大厅 / {title}</p>
