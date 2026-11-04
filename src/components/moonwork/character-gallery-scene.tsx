@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {useEffect,useState} from 'react';
 import type {CSSProperties} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
-import {Archive,BookOpen,Brain,Crown,DoorOpen,Dumbbell,Eye,Flame,Focus,Gem,HandHeart,Heart,HeartPulse,Hourglass,Image as ImageIcon,Leaf,Mail,MessageCircle,MoonStar,Palette,ScrollText,Shield,Swords,Volume2,Waves} from 'lucide-react';
+import {Archive,BookOpen,Brain,Crown,DoorOpen,Dumbbell,Eye,Flame,Focus,Gem,HandHeart,Heart,HeartPulse,Hourglass,Image as ImageIcon,Leaf,Mail,MessageCircle,MoonStar,Palette,Shield,Swords,Waves} from 'lucide-react';
 import type {LucideIcon} from 'lucide-react';
 import {GothicResourcePill,GothicModal} from '@/components/game/gothic-hud';
 import {ReliableImage} from '@/components/game/reliable-image';
@@ -121,10 +121,10 @@ export function CharacterGalleryScene(){
       style={{backgroundImage:'url('+JSON.stringify(siteAssetUrl('/art/a05/foreground-ornaments.svg'))+')'}}/>
     <CharacterGalleryPetals reducedMotion={Boolean(prefersReducedMotion)}/>
     <header className="cg-topbar">
-      <Link href="/" className="cg-brand" aria-label="怪物公寓 · 返回大厅">
+      <div className="cg-brand" aria-label="怪物公寓">
         <span className="cg-brand__title">怪物公寓</span>
         <span className="cg-brand__subtitle">MONSTER APARTMENT</span>
-      </Link>
+      </div>
       <div className="cg-topbar__resource" aria-label="游戏实际资源">
         <GothicResourcePill symbol="☾" amount={world?.day??'—'} label="天数" testId="world-day"/>
         <GothicResourcePill symbol="◇" amount={world?.warehouse.core??'—'} label="晶核" testId="world-cores"/>
@@ -136,32 +136,17 @@ export function CharacterGalleryScene(){
     </header>
 
     <div className="cg-layout">
-      <nav className="cg-sidebar" aria-label="人物图鉴功能">
+      <nav className="cg-sidebar" aria-label="图鉴快捷功能">
         <span className="cg-sidebar__ornament" aria-hidden="true">❦</span>
-        <span className="cg-sidebar__item cg-sidebar__item--active" aria-current="page">
-          <BookOpen size={20}/>角色图鉴
-        </span>
+        <span className="cg-sidebar__heading">契约档案</span>
         <a href={siteAssetUrl('/characters/#summon-screen')} data-testid="open-cinematic-summon"
           className="cg-sidebar__item"><Gem size={20}/>契约召唤</a>
         <button type="button" className="cg-sidebar__item" onClick={()=>setOverlay('memories')}>
           <Heart size={20}/>羁绊故事
         </button>
-        {selected.character==='yuesha'
-          ?<Link className="cg-sidebar__item" href="/apartment/?visit=yuesha">
-            <DoorOpen size={20}/>个人房间</Link>
-          :<button type="button" className="cg-sidebar__item"
-            onClick={()=>enterRoom(selected.character as WorkerCharacterId)}>
-            <DoorOpen size={20}/>个人房间</button>}
-        <button type="button" className="cg-sidebar__item" onClick={()=>setOverlay('art')}>
-          <ImageIcon size={20}/>立绘欣赏
-        </button>
         <button type="button" className="cg-sidebar__item" onClick={()=>setArchiveOpen(true)}>
           <Archive size={20}/>CG 收藏
         </button>
-        <span className="cg-sidebar__item cg-sidebar__item--unavailable" aria-label="语音档案尚未开放">
-          <Volume2 size={20}/>语音档案
-          <small>待开放</small>
-        </span>
       </nav>
 
       <section className="cg-gallery" aria-label="A05 人物立绘全集">
@@ -355,8 +340,6 @@ export function CharacterGalleryScene(){
             <strong>{owned.has(selected.key)?'已收录':'尚未收录'}</strong>
             <span>{collectedCount}/5</span></p>
           <div className="cg-detail__actions">
-            <button type="button" onClick={()=>setOverlay('memories')}>
-              <ScrollText size={18}/>查看故事</button>
             {selected.character==='yuesha'
               ?<Link href={roomUrl}><DoorOpen size={18}/>进入房间</Link>
               :<button type="button" onClick={()=>enterRoom(selected.character as WorkerCharacterId)}>
