@@ -353,6 +353,7 @@ export async function mountWorkshopLab(
     stage.removeChildren().forEach(child=>child.destroy({children:true}));
     tutorialLayer.removeChildren().forEach(child=>child.destroy({children:true}));
     const signals=inspectMachineSignals(current);
+    element.dataset.machineAnimatedTiles='';
     // The live transport cues correspond to inputs a real next shift would
     // consume. Neighboring tiles alone do not imply that goods can flow.
     const supplyTrails=projectedSupplyTrails(current);
@@ -440,7 +441,10 @@ export async function mountWorkshopLab(
       const master=machineMasters[machine.craft]?.[String(level) as '1'|'2'|'3'];
       // Audited working atlas replaces the still painting only while this
       // machine is actually staffed and supplied; blocked devices stay still.
-      const atlas=signal.state==='working'?machineWorking[machine.craft]:undefined;
+      // The existing working.webp contract depicts a Lv.2 mechanism only.
+      // Never show a lower-level machine during a Lv.1/Lv.3 production cycle.
+      const atlas=signal.state==='working'&&level===2
+        ?machineWorking[machine.craft]:undefined;
       const fixture:Sprite=atlas?new AnimatedSprite(atlas):
         new Sprite(master??(machine.craft==='kiln'&&kilnArtReview
           ?kilnArtReview:art.machines[machine.craft]));
@@ -449,6 +453,8 @@ export async function mountWorkshopLab(
         fixture.animationSpeed=.085;fixture.loop=true;
         fixture.gotoAndStop(i%4);
         machineAnimations.push(fixture);
+        const animated=element.dataset.machineAnimatedTiles;
+        element.dataset.machineAnimatedTiles=(animated?animated+';':'')+i;
       }
       fixture.position.set(x+CELL*.49,y+CELL*.92);
       fixture.width=CELL*(.89+(level-1)*.03);
