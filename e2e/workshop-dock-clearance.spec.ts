@@ -12,6 +12,7 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
     await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:30_000});
     await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-machine-effect-style','layered-resource-v2');
     await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-machine-material-style','glass-botanical-crystal-v1');
+    await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-machine-artwork-tier','review-avif');
     await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-supply-routes','');
     const shift=page.getByTestId('v2-shift');
     const nav=page.getByTestId('scene-navigation');
@@ -117,6 +118,7 @@ test('painted workshop shows only authentic supplier-to-receiver flow',async({pa
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:30_000});
   await expect(stage).toHaveAttribute('data-machine-effect-style','layered-resource-v2');
   await expect(stage).toHaveAttribute('data-machine-material-style','glass-botanical-crystal-v1');
+  await expect(stage).toHaveAttribute('data-machine-artwork-tier','review-avif');
   await expect(stage).toHaveAttribute('data-supply-routes','5>6:water;6>7:fiber');
   await expect(stage).toHaveAttribute('data-machine-states',/5:working;6:working;7:working/);
   await expect(stage.locator('canvas')).toBeVisible();
