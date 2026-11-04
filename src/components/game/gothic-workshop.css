@@ -1248,7 +1248,9 @@
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-stage-layout-toggle{display:none}
 @media(min-width:1100px) and (min-height:730px){
   .gothic-workshop-shell{
-    --workshop-console-height:clamp(250px,29dvh,275px);
+    /* PC scene-first mode: keep the three worker cards visible while giving
+       the Pixi canvas priority. The expanded drawer remains full height. */
+    --workshop-console-height:clamp(214px,25dvh,238px);
     --workshop-stage-gap:10px;
   }
   .gothic-workshop-shell[data-console-layout="expanded"]{
@@ -1256,7 +1258,7 @@
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .middle{
     top:70px;left:clamp(12px,1.3vw,22px);right:clamp(12px,1.3vw,22px);
-    grid-template-columns:minmax(142px,11vw) minmax(0,1fr) minmax(250px,20.5vw);
+    grid-template-columns:minmax(140px,10vw) minmax(0,1fr) minmax(240px,19vw);
     gap:10px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .gothic-cameo-assistant{
