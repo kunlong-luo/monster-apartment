@@ -55,9 +55,23 @@ for(const worker of ['brook','fern','cinder']){
  * the first GitHub Pages navigation). Prototypes remain the playable fallback.
  */
 const pack=JSON.parse(await readFile(resolve(root,'art/asset-pack.v1.json'),'utf8'));
-const machineIndex={schemaVersion:1,machines:{}};
+const machineIndex={schemaVersion:1,machines:{},working:{}};
 for(const item of pack.productionAssets??[]){
-  if(item.role!=='machine'||item.status!=='ready')continue;
+  if(item.status!=='ready'||!['machine','machine-animation'].includes(item.role))continue;
+  if(item.role==='machine-animation'){
+    if(!['well','garden','kiln'].includes(item.craft)||
+       item.path!==`art/production/machines/${item.craft}/working.webp`||
+       item.canvas?.width!==2048||item.canvas?.height!==512||
+       item.frame?.count!==4||item.frame?.width!==512||
+       item.frame?.height!==512||item.frame?.columns!==4||item.frame?.rows!==1)
+      throw Error('Unexpected ready machine animation: '+item.id);
+    const output=`production/machines/${item.craft}/working.webp`;
+    const destination=resolve(root,'dist/assets',output);
+    await mkdir(dirname(destination),{recursive:true});
+    await copyFile(resolve(root,item.path),destination);
+    machineIndex.working[item.craft]=output;
+    continue;
+  }
   if(!['well','garden','kiln'].includes(item.craft)||
      ![1,2,3].includes(item.level)||
      item.path!==`art/production/machines/${item.craft}/lv${item.level}.webp`)
