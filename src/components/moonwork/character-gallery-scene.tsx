@@ -245,8 +245,8 @@ export function CharacterGalleryScene(){
             <p>{person.description}</p>
           </div>
           <motion.div key={selected.key} className="cg-detail__hero-art"
-            initial={prefersReducedMotion?false:{opacity:0,scale:1.04}}
-            animate={{opacity:1,scale:1}} transition={{duration:prefersReducedMotion?0:0.28,ease:'easeOut'}}>
+            initial={prefersReducedMotion?false:{opacity:0}}
+            animate={{opacity:1}} transition={{duration:prefersReducedMotion?0:0.28,ease:'easeOut'}}>
             <ReliableImage src={detailPortrait} fallbackSrc={HEROINE_FACE_ART[selected.character]}
               alt="" fill unoptimized priority sizes="240px" className="cg-detail__hero-img"/>
           </motion.div>
