@@ -1,5 +1,5 @@
 import {Texture} from 'pixi.js';
-import type {WorkerId} from './workshop-model';
+import type {Craft,WorkerId} from './workshop-model';
 
 /** Decode the same static asset again after a transient first-navigation
  * failure. A retry query prevents a cached failed response from being reused.
@@ -27,6 +27,43 @@ async function loadPaintedTexture(assetBase:string,filename:string,attempts=2):P
   throw failure;
 }
 
+type MachineLevelKey='1'|'2'|'3';
+type MasterMachineArt=Partial<Record<Craft,Partial<Record<MachineLevelKey,Texture>>>>;
+
+/** The manifest is emitted at build time from audited `status: ready` artwork.
+ * It is always present, even when no formal machine paintings are approved.
+ * Never request nonexistent production sprites or treat concept AVIF as final.
+ */
+async function loadMachineMasterArt(assetBase:string):Promise<MasterMachineArt>{
+  const result:MasterMachineArt={};
+  try{
+    const response=await fetch(new URL('./assets/machine-art-index.json',assetBase));
+    if(!response.ok)return result;
+    const index:unknown=await response.json();
+    if(!index||typeof index!=='object'||!('schemaVersion' in index)||
+       index.schemaVersion!==1||!('machines' in index)||
+       !index.machines||typeof index.machines!=='object')return result;
+    const machines=index.machines as Record<string,unknown>;
+    for(const craft of ['well','garden','kiln'] as const){
+      const levels=machines[craft];
+      if(!levels||typeof levels!=='object')continue;
+      const byLevel=levels as Record<string,unknown>;
+      for(const level of ['1','2','3'] as const){
+        const filename=byLevel[level];
+        if(filename!==`production/machines/${craft}/lv${level}.webp`)continue;
+        try{
+          const image=await loadPaintedTexture(assetBase,filename);
+          // The audit gate verifies exactly 512x512; don't promote a tiny
+          // review image through the manifest on transient deployments.
+          if(image.width<512||image.height<512)continue;
+          (result[craft]??={})[level]=image;
+        }catch{/* Failed master: retain the working AVIF / raster fallback. */}
+      }
+    }
+  }catch{/* A cold fetch must never block the factory. */}
+  return result;
+}
+
 /** Painted Pixi textures: retry first-load WebP/AVIF decoding once, then fall
  * back without blocking gameplay. All resources resolve relative to the
  * deployed /monster-apartment/workshop/ asset base. */
@@ -39,6 +76,7 @@ export async function loadWorkshopPaintedArt(assetBase:string){
   // Do not reload old pet-shaped worker assets into the real human roster.
   const workerPaintings:Partial<Record<WorkerId,Texture>>={};
   const paintedDetail:Partial<Record<'well'|'garden',Texture>>={};
+  const machineMastersPromise=loadMachineMasterArt(assetBase);
   // Independent room painting is a visual backdrop, never an engine input.
   // Keep the old art as a resilient fallback on cold GitHub Pages navigation.
   try{
@@ -74,5 +112,6 @@ export async function loadWorkshopPaintedArt(assetBase:string){
       paintedDetail[kind]=await loadPaintedTexture(assetBase,kind+'-art-review.avif');
     }catch{/* the corresponding machine retains its default sprite */}
   }
-  return {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings};
+  const machineMasters=await machineMastersPromise;
+  return {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings,machineMasters};
 }
