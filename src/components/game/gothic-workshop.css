@@ -1250,7 +1250,7 @@
   .gothic-workshop-shell{
     /* PC scene-first mode: keep the three worker cards visible while giving
        the Pixi canvas priority. The expanded drawer remains full height. */
-    --workshop-console-height:clamp(214px,25dvh,238px);
+    --workshop-console-height:clamp(224px,26dvh,245px);
     --workshop-stage-gap:10px;
   }
   .gothic-workshop-shell[data-console-layout="expanded"]{
@@ -1278,18 +1278,22 @@
     gap:9px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console .console-panel{
-    padding:8px 10px;
+    padding:6px 10px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .console .gothic-panel-roster .panel-head{
+    margin-bottom:4px;
+    padding-bottom:4px;
   }
   /* Three craftspeople must stay simultaneously visible in compact mode.
      A vertical list clipped the third worker after the canvas was enlarged. */
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options{
     display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-    align-items:stretch;gap:6px;margin-top:6px;overflow:visible;
+    align-items:stretch;gap:6px;margin-top:4px;overflow:visible;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options > button{
     position:relative;display:flex;flex-direction:row;align-items:center;
     justify-content:flex-start;gap:4px;
-    min-height:64px;max-height:76px;padding:6px 6px 15px;
+    min-height:52px;max-height:58px;padding:4px 5px 12px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-roster-hint{
     display:none;
@@ -1339,7 +1343,7 @@
     background:rgba(15,10,19,.37);
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions{
-    min-height:50px;padding:5px 7px;
+    min-height:48px;padding:4px 7px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions button{
     min-height:40px;
