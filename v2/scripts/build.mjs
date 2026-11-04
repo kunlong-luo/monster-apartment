@@ -3,6 +3,9 @@ import {mkdir,copyFile,readFile,writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {dirname,resolve} from 'node:path';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+// All entry points (Pages, Playwright's direct webServer, npm build) must
+// generate audited review art before copying it. Do not depend on npm scripts.
+await import('./prepare-machine-art.mjs');
 await mkdir(resolve(root,'dist/assets'),{recursive:true});
 // Next.js owns /workshop/ route; the sidecar IIFE only mounts on request.
 await build({
