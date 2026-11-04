@@ -51,6 +51,7 @@ jobs:
       - run: npm --prefix v2 run typecheck
       - run: npm --prefix v2 run build
       - run: test -s v2/dist/assets/workshop-runtime.js
+      - run: test -s v2/dist/assets/machine-art-index.json
       - run: test -s v2/dist/assets/gothic-atmosphere.js
       - run: test -s v2/dist/assets/noto-sans-sc.woff2
       - run: test -s v2/dist/assets/moon-workshop.avif
