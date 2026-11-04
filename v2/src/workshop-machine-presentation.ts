@@ -28,6 +28,28 @@ export function machineEffectProfile(
   return {particles:true,ringAlpha:.34,bloomAlpha:.19,speed:1,size:1};
 }
 
+/** An art-layer state, derived from the *same* production phase as the
+ * existing particles. No Pixi import is required for a deterministic test. */
+export type MaterialLight=Readonly<{
+  active:boolean;
+  strength:number;
+  movement:number;
+}>;
+
+export function materialLight(
+  phase:DevicePhase,motionEnabled:boolean
+):MaterialLight{
+  if(phase==='idle'||phase==='blocked')
+    return {active:false,strength:0,movement:0};
+  if(!motionEnabled)
+    return {active:true,strength:.12,movement:0};
+  if(phase==='output')
+    return {active:true,strength:.64,movement:1.65};
+  if(phase==='startup')
+    return {active:true,strength:.42,movement:1.25};
+  return {active:true,strength:.27,movement:1};
+}
+
 export type WorkshopSupplyTrail=Readonly<{
   from:number;
   to:number;
