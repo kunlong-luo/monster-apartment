@@ -76,18 +76,24 @@ async function loadMachineMasterArt(assetBase:string):Promise<MachineArtPack>{
     }
     // Four fixed-position 512px frames, sliced from a single audited
     // 2048x512 WebP texture. No per-tick texture allocation or frame probing.
-    const atlases='working' in index&&index.working&&
-      typeof index.working==='object'
-      ?index.working as Record<string,unknown>:{};
+    const atlasValue=previewRequested
+      ?('reviewWorking' in index?index.reviewWorking:null)
+      :('working' in index?index.working:null);
+    const atlases=atlasValue&&typeof atlasValue==='object'
+      ?atlasValue as Record<string,unknown>:{};
     for(const craft of ['well','garden','kiln'] as const){
       const filename=atlases[craft];
-      if(previewRequested||filename!==`production/machines/${craft}/working.webp`)continue;
+      const expectedAtlas=previewRequested
+        ?`review/machines/${craft}/working.webp`
+        :`production/machines/${craft}/working.webp`;
+      if(filename!==expectedAtlas)continue;
       try{
         const sheet=await loadPaintedTexture(assetBase,filename);
         if(sheet.width!==2048||sheet.height!==512)continue;
         working[craft]=Array.from({length:4},(_,frame)=>new Texture({
           source:sheet.source,frame:new Rectangle(frame*512,0,512,512),
         }));
+        if(previewRequested)pack.review=true;
       }catch{/* A bad animation never removes the still-image fallback. */}
     }
   }catch{/* A cold fetch must never block the factory. */}
