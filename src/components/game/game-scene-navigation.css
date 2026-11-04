@@ -1,0 +1,94 @@
+/* Shared scene navigator: one predictable entry point on every non-lobby
+ * route. Materials come exclusively from gothic-premium-tokens.css. */
+.game-scene-nav{
+  position:fixed;z-index:65;
+  left:max(12px,env(safe-area-inset-left));
+  bottom:max(13px,env(safe-area-inset-bottom));
+  color:var(--craft-ivory);font-family:var(--craft-font-ui);
+}
+.game-scene-nav__controls{
+  display:flex;gap:5px;align-items:center;
+  padding:4px;border:1px solid var(--craft-hairline);
+  border-radius:11px;background:rgba(22,13,24,.91);
+  box-shadow:var(--craft-shadow);backdrop-filter:blur(13px);
+}
+.game-scene-nav__control{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  min-height:41px;min-width:67px;border:1px solid transparent;
+  padding:7px 10px;border-radius:7px;color:var(--craft-champagne);
+  font-family:inherit;font-size:12px;line-height:1.1;
+  font-weight:600;letter-spacing:.03em;cursor:pointer;text-decoration:none;
+  background:transparent;transition:background-color .18s,border-color .18s;
+}
+.game-scene-nav__control:hover,
+.game-scene-nav__control[aria-expanded="true"]{
+  background:var(--craft-surface-selected);border-color:var(--craft-hairline);
+}
+.game-scene-nav__chevron{transition:transform .18s;opacity:.72}
+.game-scene-nav__chevron--open{transform:rotate(180deg)}
+.game-scene-nav__panel{
+  position:absolute;left:0;bottom:calc(100% + 9px);
+  width:min(306px,calc(100vw - 24px));max-height:min(73dvh,580px);
+  display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid var(--craft-brass);border-radius:12px;
+  background:var(--craft-surface);
+  box-shadow:0 16px 45px rgba(5,3,10,.9),inset 0 1px rgba(255,222,180,.13);
+  backdrop-filter:blur(18px);
+}
+.game-scene-nav__heading{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:6px;
+  padding:16px 14px 12px;border-bottom:1px solid var(--craft-hairline);
+}
+.game-scene-nav__heading>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.game-scene-nav__heading small{
+  font-family:Georgia,serif;font-size:9px;letter-spacing:.14em;color:var(--craft-brass)}
+.game-scene-nav__heading strong{
+  color:var(--craft-champagne);font-size:18px;font-family:var(--craft-font-display);
+  font-weight:600;letter-spacing:.08em}
+.game-scene-nav__heading span{font-size:11px;color:var(--craft-muted)}
+.game-scene-nav__close{
+  display:grid;place-items:center;flex-shrink:0;width:34px;height:34px;
+  color:var(--craft-champagne);border:1px solid var(--craft-hairline);
+  border-radius:8px;background:var(--craft-panel-raised);cursor:pointer;
+}
+.game-scene-nav__destinations{
+  display:flex;flex-direction:column;gap:3px;overflow-y:auto;
+  overscroll-behavior:contain;padding:8px;scrollbar-width:thin;
+}
+.game-scene-nav__destination{
+  display:flex;align-items:center;gap:10px;
+  min-height:56px;padding:7px 10px;border:1px solid transparent;
+  border-radius:8px;text-decoration:none;color:var(--craft-ivory);
+  transition:background-color .15s,border-color .15s;
+}
+.game-scene-nav__destination>svg{color:var(--craft-champagne);flex-shrink:0}
+.game-scene-nav__destination>span{display:flex;flex:1;flex-direction:column;gap:2px;min-width:0}
+.game-scene-nav__destination strong{font-size:13px;font-weight:600}
+.game-scene-nav__destination small{font-size:10px;color:var(--craft-muted);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.game-scene-nav__destination em{
+  font-size:10px;color:var(--craft-champagne);font-style:normal}
+.game-scene-nav__destination:hover{
+  border-color:var(--craft-hairline);background:var(--craft-panel-raised)}
+.game-scene-nav__destination--current{
+  border-color:var(--craft-hairline);background:var(--craft-surface-selected)}
+.game-scene-nav :is(button,a):focus-visible{
+  outline:2px solid var(--craft-focus);outline-offset:2px;
+}
+/* In-game dialogs always own focus and interactions; the global launcher
+ * must not float in front of summoning, archives or private rooms. */
+body:has([aria-modal="true"]) .game-scene-nav{display:none}
+@media(max-width:700px){
+  .game-scene-nav{
+    left:max(8px,env(safe-area-inset-left));
+    bottom:max(8px,env(safe-area-inset-bottom));
+  }
+  .game-scene-nav__controls{padding:3px;gap:2px;border-radius:9px}
+  .game-scene-nav__control{min-height:40px;min-width:53px;padding:6px 7px;
+    gap:4px;font-size:11px}
+  .game-scene-nav__control svg{width:16px;height:16px}
+  .game-scene-nav__panel{max-height:min(69dvh,535px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .game-scene-nav *{transition:none!important}
+}
