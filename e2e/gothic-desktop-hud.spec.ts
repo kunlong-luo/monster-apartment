@@ -102,8 +102,11 @@ test('PC HUD keeps seven icon destinations and compact summon actions',async({pa
   const summonPalette=await page.locator('.summon-cinematic').evaluate(el=>
     getComputedStyle(el).getPropertyValue('--craft-brass').trim());
   expect(summonPalette).toBe('#a68d70');
-  const summonDock=page.getByRole('navigation',{name:'月影契约世界导航'});
-  await expect(summonDock.locator('svg')).toHaveCount(7);
+  await expect(page.getByRole('navigation',{name:'月影契约世界导航'})).toHaveCount(0);
+  await expect(page.getByTestId('scene-navigation-toggle')).toBeVisible();
+  await page.getByTestId('scene-navigation-toggle').click();
+  await expect(page.getByRole('navigation',{name:'游戏七个正式地点'}).getByRole('link')).toHaveCount(7);
+  await page.keyboard.press('Escape');
   await expect(page.getByTestId('collection-summon').locator('svg')).toHaveCount(2);
   await expect(page.getByTestId('collection-summon-ten').locator('svg')).toHaveCount(2);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
@@ -414,14 +417,16 @@ test('workshop and town use independent native 2K location artwork, not lobby pa
   },townUrl);
   expect(townWidth).toBe(1920);
   await expect(page.getByTestId('moonlit-market')).toBeVisible();
-  await expect(page.getByRole('navigation',{name:'月光工坊世界'}).getByRole('link')).toHaveCount(7);
+  await expect(page.getByTestId('scene-navigation-toggle')).toBeVisible();
+  await expect(page.getByRole('navigation',{name:'月光工坊世界'})).toHaveCount(0);
   await page.goto('/workshop/');
   await expect(page.getByTestId('next-workshop-shell')).toBeVisible({timeout:20000});
   const root=page.locator('#root');
   await expect(root).toHaveCSS('background-image',/workshop-gothic-hall\.[^)]*\.webp/);
   await expect(root).toHaveAttribute('data-runtime-ready','true',{timeout:30000});
   await expect(page.locator('[data-backdrop-source="world-hall-2k"]')).toBeAttached({timeout:15000});
-  await expect(page.getByTestId('v2-world-nav').getByRole('link')).toHaveCount(7);
+  await expect(page.getByTestId('v2-world-nav')).toHaveCount(0);
+  await expect(page.getByTestId('scene-navigation-toggle')).toBeVisible();
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/desktop-workshop-2k-v389.png',animations:'disabled'});
   await page.goto('/town/');
