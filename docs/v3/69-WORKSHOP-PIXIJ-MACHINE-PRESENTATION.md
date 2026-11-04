@@ -14,7 +14,7 @@
 1. `v2/src/workshop-machine-effects.ts`：每台设备复用一个无交互 Pixi 容器、双光环、柔光层和 7 枚不同形状的粒子。水汽泵有带高光的透明水泡；孢子温室用细叶形漂浮孢子；晶核熔炉用尖锐的暖色火星。对象创建在场景同步时完成，ticker 只修改位置、透明度、缩放和旋转，不每帧重建 Graphics。
 2. `v2/src/workshop-machine-presentation.ts`：把 `idle / blocked / startup / working / output` 映射到可单测的动效强度。停工或缺料绝不出现产出粒子；关闭动效时停止粒子且保留低亮静态状态提示，阻塞警告继续可读。
 3. `v2/src/workshop-lab-stage.ts`：保留真实机器和管线贴图；动态能量流只显示 `projectMachineProduction()` 预测将发生的消耗，从实际供应机器向接收设备移动，而不是按地块编号任意流动。
-4. `e2e/workshop-dock-clearance.spec.ts`：新增一个真正布置并派工的完整产线存档，验证路线为水汽泵 05→温室 06→熔炉 07（内部索引 5→6→7）、动效状态、不会被绘制修改的存档，以及禁止动效后的静态状态。保留 PC 与手机的老布局断言，并截取 `visual-evidence/workshop/desktop-workshop-working-effects-1440.png` 供人工审核。
+4. `e2e/workshop-dock-clearance.spec.ts`：新增一个真正布置并派工的完整产线存档，验证路线为水汽泵 06→温室 07→熔炉 08（内部索引 5→6→7）、动效状态、不会被绘制修改的存档，以及禁止动效后的静态状态。保留 PC 与手机的老布局断言，并截取 `visual-evidence/workshop/desktop-workshop-working-effects-1440.png` 供人工审核。
 5. 新增 `tests/workshop-machine-presentation.vitest.test.ts` 验证减弱动效、真实消耗条件和逆索引管路方向。更新 Desktop Visual Review 的触发路径：以后修改 Pixi 设备效果也会自动触发浏览器视觉审查。
 
 ## 验收门槛与遗留
