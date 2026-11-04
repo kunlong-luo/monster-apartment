@@ -21,22 +21,23 @@ function canonicalPath(pathname:string){
  * The full seven-destination dock belongs only to the lobby. */
 export function GameSceneNavigation(){
   const pathname=usePathname();
-  const [open,setOpen]=useState(false);
+  const route=canonicalPath(pathname||'/');
+  // Closing on a route change is derived from the route key rather than a
+  // synchronous setState inside useEffect (React 19 hooks lint).
+  const [expandedRoute,setExpandedRoute]=useState<string|null>(null);
+  const open=expandedRoute===route;
   const root=useRef<HTMLDivElement>(null);
   const toggle=useRef<HTMLButtonElement>(null);
-  const route=canonicalPath(pathname||'/');
   const active=WORLD_NAV.find(item=>item.href===route);
-
-  useEffect(()=>setOpen(false),[pathname]);
   useEffect(()=>{
     if(!open)return;
     const pointer=(event:PointerEvent)=>{
-      if(event.target instanceof Node&&!root.current?.contains(event.target))setOpen(false);
+      if(event.target instanceof Node&&!root.current?.contains(event.target))setExpandedRoute(null);
     };
     const key=(event:KeyboardEvent)=>{
       if(event.key!=='Escape')return;
       event.preventDefault();
-      setOpen(false);
+      setExpandedRoute(null);
       toggle.current?.focus();
     };
     document.addEventListener('pointerdown',pointer);
@@ -61,7 +62,7 @@ export function GameSceneNavigation(){
         data-testid="scene-navigation-toggle" aria-controls="game-scene-nav-panel"
         aria-haspopup="true" aria-expanded={open}
         aria-label={open?'收起世界导航':'展开世界导航'}
-        onClick={()=>setOpen(value=>!value)}>
+        onClick={()=>setExpandedRoute(value=>value===route?null:route)}>
         <Map size={18} strokeWidth={1.8} aria-hidden="true"/>
         <span>地点</span>
         <ChevronUp className={open?'game-scene-nav__chevron game-scene-nav__chevron--open':'game-scene-nav__chevron'}
@@ -76,7 +77,7 @@ export function GameSceneNavigation(){
           <strong>世界导航</strong>
           <span>当前位置 · {active?.full??'游戏场景'}</span>
         </div>
-        <button type="button" onClick={()=>{setOpen(false);toggle.current?.focus();}}
+        <button type="button" onClick={()=>{setExpandedRoute(null);toggle.current?.focus();}}
           aria-label="关闭世界导航" className="game-scene-nav__close">
           <X size={17} aria-hidden="true"/>
         </button>
@@ -88,7 +89,7 @@ export function GameSceneNavigation(){
           return <Link key={item.id} href={item.href}
             data-destination={item.href}
             aria-current={selected?'page':undefined}
-            onClick={()=>setOpen(false)}
+            onClick={()=>setExpandedRoute(null)}
             className={'game-scene-nav__destination'+(selected?' game-scene-nav__destination--current':'')}>
             <Icon size={19} aria-hidden="true" strokeWidth={1.65}/>
             <span><strong>{item.label}</strong><small>{item.purpose}</small></span>
