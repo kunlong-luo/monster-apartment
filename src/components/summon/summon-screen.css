@@ -20,7 +20,8 @@
 }
 .summon-cinematic-header>div:last-child{min-width:0}
 .summon-cinematic-main{
-  padding-bottom:90px!important;
+  /* The seven-item dock lives in the lobby only. */
+  padding-bottom:20px!important;
   gap:clamp(8px,1vw,18px);
 }
 .summon-cinematic-pools{
@@ -136,7 +137,7 @@
  .summon-cinematic-main{
    display:block!important;overflow-x:hidden!important;overflow-y:auto!important;
    overscroll-behavior:contain;scrollbar-width:thin;
-   padding-bottom:105px!important;
+   padding-bottom:52px!important;
  }
  .summon-cinematic-pools{display:flex!important;flex-direction:row!important;
    height:82px;gap:6px;overflow-x:auto!important;padding:6px 1px!important}
@@ -282,7 +283,7 @@
     min-width:0;border-left:0;padding-left:0;
   }
   .summon-cinematic-tools>button{width:30px;height:30px;flex-shrink:0}
-  .summon-cinematic-main{padding-bottom:80px!important}
+  .summon-cinematic-main{padding-bottom:48px!important}
   .summon-cinematic-pools{
     height:72px!important;padding:4px 0!important;
     gap:6px!important;scroll-snap-type:x proximity;
