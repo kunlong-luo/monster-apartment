@@ -42,3 +42,15 @@
 V3.21 原方案把全屏七按钮 Dock 用于全部页面，以消除早期的多个重复底部菜单；但随后 A05、召唤和工坊分别覆盖 Dock 的高度、位置，造成版式漂移。本次改为“一个唯一目的地注册表、两种有明确归属的展现”：大厅完整、子场景小型按需。这保留了数据与路由单一真值，也消除了导致用户反馈的重复固定底栏。
 
 工坊深链接 `?worker=...` 仍由 Pixi runtime 在挂载时自动选中，React 不可重复派发，否则会把工匠反选。这项已有修复不受导航变更影响。
+
+## 2026-11-04 · 次轮清理：不再把空 Dock 当作导航架构
+
+上一轮采用了在 `GothicDock` 中 `if(activeHref!=='/') return null` 的过渡实现，导致五个子场景仍引入 `GothicDock` 并计算 `WORLD_NAV.map(...)`，但没有输出任何导航。此次已完成真实迁移：
+
+- 从工坊 `workshop-client.tsx`、公寓 `gothic-apartment.tsx`、月光街/委托/仓库 `world-ui.tsx`、A05 `character-gallery-scene.tsx`、契约召唤 `gothic-summon-screen.tsx` 清除全部无效 Dock 节点及仅用于 Dock 的依赖。
+- `GothicDock` 的 `activeHref` 类型收紧为 **仅 '/'**，移除过渡用静默返回逻辑；将来有人在其他页面重新挂整宽 Dock，TypeScript 将立即报错而非悄悄失败。
+- 从 `gothic-desktop-ui.css`、`summon-screen.css` 和 `gothic-red-gold.css` 移除已经无法匹配 DOM 的 `.gothic-dock--world`、`.summon-cinematic-dock` 和非电影式全宽导航规则，保留大厅原有 `.gothic-dock-bar` 材质。用户可见的大厅样式、资源、角色、工坊操作保持不变。
+- 新增 `e2e/scene-navigation.spec.ts` 并纳入 Desktop Visual Review，真正检查 **320×700 / 390×844** 的地图面板在视口内、当前场景语义、Esc 归还焦点、从月光街直接去工坊、工坊轮班按钮不被挡住，以及打开角色画作弹层时导航退让、从召唤子视图返回图鉴。
+- 原有七路由 smoke、A05 桌面比例截图、工坊自动生产、存档保护仍继续运行。此轮没有更换新原画或修改已保存的游戏数据。
+
+验收时必须区分 **静态构建/Quality 通过**、**GitHub Pages 发布** 与 **浏览器跨场景成功**；任一关键用户旅程失败都不能以清理代码提交替代成功验证。
