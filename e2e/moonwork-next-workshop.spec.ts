@@ -41,7 +41,7 @@ test('automatic production runs from saved machines without advancing contract d
   expect(settled.due).toBe(baseline.due);
   expect(settled.produced.water).toBeGreaterThan(0);
   await page.screenshot({path:'test-results/desktop-workshop-realtime-v1.png',animations:'disabled'});
-  await page.getByTestId('v2-world-nav').getByRole('link',{name:'月光街'}).click();
+  await navigateScene(page,'/town/');
   await expect(page).toHaveURL(/\/town\/?$/);
   await page.goto('/workshop/');
   await expect(page.getByTestId('workshop-auto-toggle')).toHaveAttribute('aria-pressed','true');
