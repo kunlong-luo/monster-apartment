@@ -238,7 +238,12 @@ test('A05 mobile card strip remains operable without page overflow',async({page}
     scrollWidth:el.scrollWidth,clientWidth:el.clientWidth
   }));
   expect(railSizes.scrollWidth).toBeLessThanOrEqual(railSizes.clientWidth+2);
-  await expect(page.locator('.cg-detail__actions').locator('a,button')).toHaveCount(2);
+  const mobileActions=page.locator('.cg-detail__actions').locator('a,button');
+  await expect(mobileActions).toHaveCount(2);
+  const actionHeights=await mobileActions.evaluateAll(nodes=>nodes.map(node=>
+    node.getBoundingClientRect().height));
+  expect(actionHeights).toHaveLength(2);
+  for(const height of actionHeights)expect(height).toBeGreaterThanOrEqual(44);
   const narrowOverflow=await page.evaluate(()=>
     document.documentElement.scrollWidth-window.innerWidth);
   expect(narrowOverflow).toBeLessThanOrEqual(2);
