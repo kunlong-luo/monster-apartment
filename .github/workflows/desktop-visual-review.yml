@@ -46,6 +46,8 @@ on:
       - 'v2/src/workshop-machine-status.ts'
       - 'v2/src/workshop-painted-art.ts'
       - 'v2/scripts/build.mjs'
+      - 'v2/scripts/prepare-machine-art.mjs'
+      - 'v2/scripts/audit-art.mjs'
       - 'v2/art/asset-pack.v1.json'
       - 'src/lib/moonwork/workshop-auto-runtime.tsx'
       - 'v2/src/workshop-auto-production.ts'
