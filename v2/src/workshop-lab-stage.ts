@@ -66,13 +66,17 @@ export async function mountWorkshopLab(
   const observer=new ResizeObserver(resize);
   observer.observe(element);resize();
   const art=makeRasterArt();
-  const {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings}=
+  const {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings,machineMasters}=
     await loadWorkshopPaintedArt(assetBase);
   element.dataset.backdropSource=backdropSource;
   element.dataset.machineArt=kilnArtReview&&paintedDetail.well&&paintedDetail.garden
     ?'all-painted-machine-reviews':'mixed-machine-art';
   element.dataset.machineEffectStyle='layered-resource-v2';
   element.dataset.machineMaterialStyle='glass-botanical-crystal-v1';
+  const approvedMachinePaintings=Object.values(machineMasters).reduce(
+    (count,byLevel)=>count+Object.keys(byLevel??{}).length,0);
+  element.dataset.machineArtworkTier=approvedMachinePaintings===0?'review-avif':
+    approvedMachinePaintings===9?'full-master-webp':'partial-master-webp';
   element.dataset.visualTheme=painted?'painted-moonwork':'procedural-fallback';
   element.dataset.floorArt=paintedFloor?'painted-moonstone':'procedural-floor';
   const backdrop=new Sprite(painted??art.backdrop);
@@ -422,16 +426,19 @@ export async function mountWorkshopLab(
           .stroke({width:2,color:0xffdea5,alpha:level===3?.82:.43});
         glow.eventMode='none';stage.addChild(glow);
       }
-      const fixture=new Sprite(machine.craft==='kiln'&&kilnArtReview
-        ?kilnArtReview:art.machines[machine.craft]);
-      fixture.anchor.set(.5,1);
+      // Approved 512px transparent production painting always wins. A review
+      // overlay is used only until that craft/level has an audited master.
+      const master=machineMasters[machine.craft]?.[String(level) as '1'|'2'|'3'];
+      const fixture=new Sprite(master??(machine.craft==='kiln'&&kilnArtReview
+        ?kilnArtReview:art.machines[machine.craft]));
+      fixture.anchor.set(.5,master?.92:1);
       fixture.position.set(x+CELL*.49,y+CELL*.92);
       fixture.width=CELL*(.89+(level-1)*.03);
       fixture.height=CELL*(.88+(level-1)*.035);
       fixture.eventMode='static';fixture.cursor='pointer';
       fixture.on('pointertap',()=>callbacks.plot(i));
       stage.addChild(fixture);
-      const detail=machine.craft==='well'?paintedDetail.well:
+      const detail=master?null:machine.craft==='well'?paintedDetail.well:
         machine.craft==='garden'?paintedDetail.garden:null;
       let overlay:Sprite|null=null;
       if(detail){
