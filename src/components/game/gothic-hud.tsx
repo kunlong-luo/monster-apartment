@@ -135,14 +135,13 @@ export function GothicDock({
   items:readonly GothicDestination[];
   label:string;
   className?:string;
-  activeHref?:string;
+  /** The full-size Dock belongs only to the Lobby route. */
+  activeHref:'/';
   testId?:string;
   compact?:boolean;
 }){
-  // The seven-destination persistent dock is deliberately lobby-only.
-  // All other scenes use the same small, on-demand map in RootLayout.
-  // Keep the existing call sites harmless while those layouts are migrated.
-  if(activeHref!=='/')return null;
+  // Intentionally no no-op fallback for other routes. A typed, lobby-only
+  // component makes accidental reintroduction of scene-wide docks detectable.
   return <nav data-testid={testId} aria-label={label} className={
     'gothic-dock-bar absolute bottom-[max(8px,env(safe-area-inset-bottom))] left-1/2 z-[20] '+
     'flex w-[calc(100vw-16px)] max-w-[1400px] -translate-x-1/2 items-center justify-between gap-1 '+
