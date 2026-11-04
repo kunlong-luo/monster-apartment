@@ -51,6 +51,14 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   // Do not silently replace that card's feature art with the ordinary avatar.
   await expect(page.locator('.cg-detail__hero-img'))
     .toHaveAttribute('src',/cg-eclipse-candidate\.webp$/);
+  // Shallow detail headers must show the top of the figure (including its
+  // head), never shift the full-body image above the clipped hero region.
+  await expect(page.locator('.cg-detail__hero-img')).toHaveCSS('object-position','50% 0%');
+  const hero=await page.locator('.cg-detail__hero').boundingBox();
+  const heroArt=await page.locator('.cg-detail__hero-art').boundingBox();
+  expect(hero&&heroArt).toBeTruthy();
+  expect(heroArt!.y).toBeGreaterThanOrEqual(hero!.y-1);
+  expect(heroArt!.y+heroArt!.height).toBeLessThanOrEqual(hero!.y+hero!.height+1);
   const cards=await gallery.boundingBox();
   const details=await page.locator('.cg-detail').boundingBox();
   const sidebar=await page.locator('.cg-sidebar').boundingBox();
@@ -109,6 +117,11 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await expect(page.locator('.cg-detail h2')).toContainText('青枝');
   await page.keyboard.press('ArrowRight');
   await expect(page.locator('.cg-detail h2')).toContainText('炽角');
+  const mobileTitle=await page.locator('.cg-detail__hero-text h2').boundingBox();
+  const mobileArt=await page.locator('.cg-detail__hero-art').boundingBox();
+  expect(mobileTitle&&mobileArt).toBeTruthy();
+  // The ambient portrait now starts below the character title, not across it.
+  expect(mobileArt!.y).toBeGreaterThan(mobileTitle!.y);
   await page.keyboard.press('Home');
   await expect(page.locator('.cg-detail h2')).toContainText('月纱');
   await page.getByRole('tab',{name:'属性'}).focus();
