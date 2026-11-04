@@ -157,6 +157,8 @@ test('approved sprites stay live while nine independent review WebPs require exp
   const stage=page.getByTestId('v2-stage');
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:35_000});
   await expect(stage).toHaveAttribute('data-machine-artwork-tier','review-webp');
+  await expect(stage).toHaveAttribute('data-machine-working-atlases','3');
+  await expect(stage).toHaveAttribute('data-machine-animated-tiles','');
   await expect(stage.locator('canvas')).toBeVisible();
   await mkdir('visual-evidence/workshop',{recursive:true});
   await page.screenshot({path:'visual-evidence/workshop/desktop-machine-art-review-1440.png',animations:'disabled'});
@@ -171,4 +173,47 @@ test('approved sprites stay live while nine independent review WebPs require exp
   await page.screenshot({path:'visual-evidence/workshop/mobile-machine-art-review-390.png',animations:'disabled'});
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
     .toBe(saved);
+});
+
+test('Lv.2 animated review art follows real production and leaves all saved values intact',async({page})=>{
+  test.setTimeout(115_000);
+  let world=newWorkshop();
+  world=moveMachine(world,7,6);
+  world=placeMachine(world,7,'kiln');
+  world=assignWorker(world,'brook',5);
+  world=assignWorker(world,'fern',6);
+  world=assignWorker(world,'cinder',7);
+  for(const index of [5,6,7])world.tiles[index]!.level=2;
+  const saved=JSON.stringify(world);
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.setViewportSize({width:1440,height:900});
+  await page.addInitScript(seed=>{
+    const key='monster-apartment:workshop-v2-lab';
+    if(localStorage.getItem(key)===null)localStorage.setItem(key,JSON.stringify(seed));
+  },world);
+  await page.goto('/workshop/?machine-art=review');
+  const stage=page.getByTestId('v2-stage');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  await expect(stage).toHaveAttribute('data-machine-artwork-tier','review-webp');
+  await expect(stage).toHaveAttribute('data-machine-working-atlases','3');
+  await expect(stage).toHaveAttribute('data-machine-states',/5:working;6:working;7:working/);
+  await expect(stage).toHaveAttribute('data-machine-animated-tiles','5;6;7');
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({path:'visual-evidence/workshop/desktop-machine-lv2-working-1440.png',animations:'disabled'});
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
+  await page.evaluate(()=>{
+    localStorage.setItem('monster-apartment:gothic-motion-reduced','1');
+    window.dispatchEvent(new Event('monster-apartment:motion-changed'));
+  });
+  await expect(stage).toHaveAttribute('data-motion-state','paused');
+  await expect(stage).toHaveAttribute('data-machine-animated-tiles','5;6;7');
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/workshop/?machine-art=review');
+  await expect(stage).toHaveAttribute('data-machine-animated-tiles','5;6;7',{timeout:45_000});
+  await page.screenshot({path:'visual-evidence/workshop/mobile-machine-lv2-working-390.png',animations:'disabled'});
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
+  // Normal players do not load even one review atlas.
+  await page.goto('/workshop/');
+  await expect(stage).toHaveAttribute('data-machine-working-atlases','0',{timeout:45_000});
+  await expect(stage).toHaveAttribute('data-machine-animated-tiles','');
 });
