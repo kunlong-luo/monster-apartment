@@ -67,7 +67,7 @@ export async function mountWorkshopLab(
   const observer=new ResizeObserver(resize);
   observer.observe(element);resize();
   const art=makeRasterArt();
-  const {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings,machineMasters,machineWorking}=
+  const {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings,machineMasters,machineWorking,machinePreviewActive}=
     await loadWorkshopPaintedArt(assetBase);
   element.dataset.backdropSource=backdropSource;
   element.dataset.machineArt=kilnArtReview&&paintedDetail.well&&paintedDetail.garden
@@ -78,7 +78,8 @@ export async function mountWorkshopLab(
   element.dataset.machineWorkingAtlases=String(Object.keys(machineWorking).length);
   const approvedMachinePaintings=Object.values(machineMasters).reduce(
     (count,byLevel)=>count+Object.keys(byLevel??{}).length,0);
-  element.dataset.machineArtworkTier=approvedMachinePaintings===0?'review-avif':
+  element.dataset.machineArtworkTier=machinePreviewActive?'review-webp':
+    approvedMachinePaintings===0?'review-avif':
     approvedMachinePaintings===9?'full-master-webp':'partial-master-webp';
   element.dataset.visualTheme=painted?'painted-moonwork':'procedural-fallback';
   element.dataset.floorArt=paintedFloor?'painted-moonstone':'procedural-floor';
