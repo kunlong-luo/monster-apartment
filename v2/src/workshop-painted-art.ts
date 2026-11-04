@@ -30,7 +30,7 @@ async function loadPaintedTexture(assetBase:string,filename:string,attempts=2):P
 type MachineLevelKey='1'|'2'|'3';
 type MasterMachineArt=Partial<Record<Craft,Partial<Record<MachineLevelKey,Texture>>>>;
 type WorkingMachineArt=Partial<Record<Craft,Texture[]>>;
-type MachineArtPack={masters:MasterMachineArt;working:WorkingMachineArt};
+type MachineArtPack={masters:MasterMachineArt;working:WorkingMachineArt;review:boolean};
 
 /** The manifest is emitted at build time from audited `status: ready` artwork.
  * It is always present, even when no formal machine paintings are approved.
@@ -39,7 +39,9 @@ type MachineArtPack={masters:MasterMachineArt;working:WorkingMachineArt};
 async function loadMachineMasterArt(assetBase:string):Promise<MachineArtPack>{
   const result:MasterMachineArt={};
   const working:WorkingMachineArt={};
-  const pack={masters:result,working};
+  const pack:MachineArtPack={masters:result,working,review:false};
+  const previewRequested=typeof window!=='undefined'&&
+    new URLSearchParams(window.location.search).get('machine-art')==='review';
   try{
     const response=await fetch(new URL('./assets/machine-art-index.json',assetBase));
     if(!response.ok)return pack;
@@ -47,20 +49,28 @@ async function loadMachineMasterArt(assetBase:string):Promise<MachineArtPack>{
     if(!index||typeof index!=='object'||!('schemaVersion' in index)||
        index.schemaVersion!==1||!('machines' in index)||
        !index.machines||typeof index.machines!=='object')return pack;
-    const machines=index.machines as Record<string,unknown>;
+    // A review candidate is reachable ONLY from the explicit URL parameter;
+    // all normal visits resolve the audited production master index unchanged.
+    const reviews='review' in index&&index.review&&typeof index.review==='object'
+      ?index.review as Record<string,unknown>:{};
+    const machines=previewRequested?reviews:index.machines as Record<string,unknown>;
     for(const craft of ['well','garden','kiln'] as const){
       const levels=machines[craft];
       if(!levels||typeof levels!=='object')continue;
       const byLevel=levels as Record<string,unknown>;
       for(const level of ['1','2','3'] as const){
         const filename=byLevel[level];
-        if(filename!==`production/machines/${craft}/lv${level}.webp`)continue;
+        const expected=previewRequested?
+          `review/machines/${craft}/lv${level}.webp`:
+          `production/machines/${craft}/lv${level}.webp`;
+        if(filename!==expected)continue;
         try{
           const image=await loadPaintedTexture(assetBase,filename);
           // The audit gate verifies exactly 512x512; don't promote a tiny
           // review image through the manifest on transient deployments.
-          if(image.width<512||image.height<512)continue;
+          if(image.width!==512||image.height!==512)continue;
           (result[craft]??={})[level]=image;
+          if(previewRequested)pack.review=true;
         }catch{/* Failed master: retain the working AVIF / raster fallback. */}
       }
     }
@@ -71,7 +81,7 @@ async function loadMachineMasterArt(assetBase:string):Promise<MachineArtPack>{
       ?index.working as Record<string,unknown>:{};
     for(const craft of ['well','garden','kiln'] as const){
       const filename=atlases[craft];
-      if(filename!==`production/machines/${craft}/working.webp`)continue;
+      if(previewRequested||filename!==`production/machines/${craft}/working.webp`)continue;
       try{
         const sheet=await loadPaintedTexture(assetBase,filename);
         if(sheet.width!==2048||sheet.height!==512)continue;
@@ -132,6 +142,6 @@ export async function loadWorkshopPaintedArt(assetBase:string){
       paintedDetail[kind]=await loadPaintedTexture(assetBase,kind+'-art-review.avif');
     }catch{/* the corresponding machine retains its default sprite */}
   }
-  const {masters:machineMasters,working:machineWorking}=await machineMastersPromise;
-  return {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings,machineMasters,machineWorking};
+  const {masters:machineMasters,working:machineWorking,review:machinePreviewActive}=await machineMastersPromise;
+  return {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings,machineMasters,machineWorking,machinePreviewActive};
 }
