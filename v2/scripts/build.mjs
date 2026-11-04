@@ -55,8 +55,21 @@ for(const worker of ['brook','fern','cinder']){
  * the first GitHub Pages navigation). Prototypes remain the playable fallback.
  */
 const pack=JSON.parse(await readFile(resolve(root,'art/asset-pack.v1.json'),'utf8'));
-const machineIndex={schemaVersion:1,machines:{},working:{}};
+const machineIndex={schemaVersion:1,machines:{},working:{},review:{}};
 for(const item of pack.productionAssets??[]){
+  if(item.role==='machine'&&item.status==='review'){
+    if(!['well','garden','kiln'].includes(item.craft)||
+       ![1,2,3].includes(item.level)||
+       item.path!==`art/production/machines/${item.craft}/lv${item.level}.webp`)
+      throw Error('Unexpected review machine candidate: '+item.id);
+    const output=`review/machines/${item.craft}/lv${item.level}.webp`;
+    const destination=resolve(root,'dist/assets',output);
+    await mkdir(dirname(destination),{recursive:true});
+    await copyFile(resolve(root,item.path),destination);
+    machineIndex.review[item.craft]??={};
+    machineIndex.review[item.craft][String(item.level)]=output;
+    continue;
+  }
   if(item.status!=='ready'||!['machine','machine-animation'].includes(item.role))continue;
   if(item.role==='machine-animation'){
     if(!['well','garden','kiln'].includes(item.craft)||
