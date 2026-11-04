@@ -54,6 +54,9 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   // Shallow detail headers must show the top of the figure (including its
   // head), never shift the full-body image above the clipped hero region.
   await expect(page.locator('.cg-detail__hero-img')).toHaveCSS('object-position','50% 0%');
+  const mythicZoom=await page.locator('.cg-detail__hero-img').evaluate(el=>
+    new DOMMatrixReadOnly(getComputedStyle(el).transform).a);
+  expect(mythicZoom).toBeGreaterThan(1.9);
   const hero=await page.locator('.cg-detail__hero').boundingBox();
   const heroArt=await page.locator('.cg-detail__hero-art').boundingBox();
   expect(hero&&heroArt).toBeTruthy();
