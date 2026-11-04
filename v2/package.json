@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "audit:art": "node scripts/audit-art.mjs",
-    "build": "node scripts/build.mjs",
+    "audit:art": "node scripts/prepare-machine-art.mjs && node scripts/audit-art.mjs",
+    "build": "node scripts/prepare-machine-art.mjs && node scripts/build.mjs",
     "dev": "node scripts/build.mjs && node scripts/serve.mjs",
     "check": "npm run typecheck"
   },
@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "typescript": "6.0.3",
-    "esbuild": "0.28.2"
+    "esbuild": "0.28.2",
+    "sharp": "0.35.5"
   }
 }
