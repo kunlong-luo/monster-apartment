@@ -67,7 +67,7 @@ export async function mountWorkshopLab(
   const observer=new ResizeObserver(resize);
   observer.observe(element);resize();
   const art=makeRasterArt();
-  const {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings,machineMasters}=
+  const {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings,machineMasters,machineWorking}=
     await loadWorkshopPaintedArt(assetBase);
   element.dataset.backdropSource=backdropSource;
   element.dataset.machineArt=kilnArtReview&&paintedDetail.well&&paintedDetail.garden
@@ -75,6 +75,7 @@ export async function mountWorkshopLab(
   element.dataset.machineEffectStyle='layered-resource-v2';
   element.dataset.machineMaterialStyle='glass-botanical-crystal-v1';
   element.dataset.machineActuatorStyle='piston-leaves-iris-v1';
+  element.dataset.machineWorkingAtlases=String(Object.keys(machineWorking).length);
   const approvedMachinePaintings=Object.values(machineMasters).reduce(
     (count,byLevel)=>count+Object.keys(byLevel??{}).length,0);
   element.dataset.machineArtworkTier=approvedMachinePaintings===0?'review-avif':
@@ -144,6 +145,7 @@ export async function mountWorkshopLab(
   const deviceEffects:ReturnType<typeof createMachineEffects>[]=[];
   const materialEffects:ReturnType<typeof createMachineMaterial>[]=[];
   const actuatorEffects:ReturnType<typeof createMachineActuators>[]=[];
+  const machineAnimations:AnimatedSprite[]=[];
   let flowPaths:{from:{x:number;y:number};to:{x:number;y:number};tint:number}[]=[];
   const flowLayer=new Graphics();
   app.stage.addChild(flowLayer);
@@ -229,6 +231,7 @@ export async function mountWorkshopLab(
     motes.visible=allowed;flowLayer.visible=allowed;
     tutorialLayer.alpha=allowed?.85:1;
     for(const actor of actors){if(allowed)actor.play();else actor.stop();}
+    for(const machine of machineAnimations){if(allowed)machine.play();else machine.stop();}
     if(!allowed)for(const actor of paintedActors)actor.sprite.y=actor.baseY;
     // Invisible tabs must not keep scheduling WebGL work.
     if(document.hidden)app.ticker.stop();
@@ -341,7 +344,8 @@ export async function mountWorkshopLab(
     paintFocus(selected);
     element.dataset.sceneRefreshes=String(++sceneRefreshes);
     for(const actor of actors)actor.stop();
-    actors.length=0;paintedActors.length=0;
+    for(const machine of machineAnimations)machine.stop();
+    actors.length=0;paintedActors.length=0;machineAnimations.length=0;
     machineArt.length=0;machineEffects.length=0;deviceEffects.length=0;
     materialEffects.length=0;actuatorEffects.length=0;
     flowPaths=[];
@@ -433,16 +437,25 @@ export async function mountWorkshopLab(
       // Approved 512px transparent production painting always wins. A review
       // overlay is used only until that craft/level has an audited master.
       const master=machineMasters[machine.craft]?.[String(level) as '1'|'2'|'3'];
-      const fixture=new Sprite(master??(machine.craft==='kiln'&&kilnArtReview
-        ?kilnArtReview:art.machines[machine.craft]));
-      fixture.anchor.set(.5,master?.92:1);
+      // Audited working atlas replaces the still painting only while this
+      // machine is actually staffed and supplied; blocked devices stay still.
+      const atlas=signal.state==='working'?machineWorking[machine.craft]:undefined;
+      const fixture:Sprite=atlas?new AnimatedSprite(atlas):
+        new Sprite(master??(machine.craft==='kiln'&&kilnArtReview
+          ?kilnArtReview:art.machines[machine.craft]));
+      fixture.anchor.set(.5,atlas||master?.92:1);
+      if(atlas&&fixture instanceof AnimatedSprite){
+        fixture.animationSpeed=.085;fixture.loop=true;
+        fixture.gotoAndStop(i%4);
+        machineAnimations.push(fixture);
+      }
       fixture.position.set(x+CELL*.49,y+CELL*.92);
       fixture.width=CELL*(.89+(level-1)*.03);
       fixture.height=CELL*(.88+(level-1)*.035);
       fixture.eventMode='static';fixture.cursor='pointer';
       fixture.on('pointertap',()=>callbacks.plot(i));
       stage.addChild(fixture);
-      const detail=master?null:machine.craft==='well'?paintedDetail.well:
+      const detail=master||atlas?null:machine.craft==='well'?paintedDetail.well:
         machine.craft==='garden'?paintedDetail.garden:null;
       let overlay:Sprite|null=null;
       if(detail){
@@ -467,10 +480,12 @@ export async function mountWorkshopLab(
       stage.addChild(material.node);materialEffects.push(material);
       // Local moving machinery tracks the same production phase as the
       // noninteractive material light, below each human worker.
-      const actuator=createMachineActuators(machine.craft,signal.state,i,
-        x+CELL*.49,y+CELL*.55,newlyStarted?elapsed:null,
-        justProduced?elapsed:null);
-      stage.addChild(actuator.node);actuatorEffects.push(actuator);
+      if(!atlas){
+        const actuator=createMachineActuators(machine.craft,signal.state,i,
+          x+CELL*.49,y+CELL*.55,newlyStarted?elapsed:null,
+          justProduced?elapsed:null);
+        stage.addChild(actuator.node);actuatorEffects.push(actuator);
+      }
       const fx=createMachineEffects(machine.craft,signal.state,i,
         x+CELL*.50,y+CELL*.69,newlyStarted?elapsed:null,
         justProduced?elapsed:null);
