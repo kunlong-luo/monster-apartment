@@ -36,3 +36,11 @@ V3.90 虽已将工坊默认调整为「场景优先」并允许点击「详细�
 - 仍以 **PC 1440×900 场景可见 / 手机 390×844 画布 >140px / 两种尺寸导航无覆盖且轮班可点击** 为验收标准，后续需要以新一轮实际浏览器测试确认，不能根据 CSS 推算直接标记通过。
 
 此前失败的视觉审核 https://github.com/kunlong-luo/monster-apartment/actions/runs/41804553916 是此问题的可追溯证据；修复后检查结果必须另行判定。
+
+## PC 场景优先二次打磨 · 2026-11-04
+
+- 主分支修复原有底部 Dock 留白后，PC 默认控制台仍使用 `clamp(250px,29dvh,275px)`：在 1440×900 时约 261px，Pixi 场景纵向占比仍偏低。
+- 现在只有 `min-width:1100px` 且 `min-height:730px` 的 PC「场景优先」默认态使用 `clamp(214px,25dvh,238px)`；1440×900 的 CSS 预算约从 261px 降至 225px，新增约 36px 场景空间。左右侧栏从 11vw/20.5vw 缩到 10vw/19vw，场景更宽。
+- 「详细调度」仍使用旧 `clamp(295px,36dvh,350px)` 完整视图，三名工匠及设备/生产控制不删除。手机（390×844）`clamp(270px,40dvh,345px)` 与世界导航 60px 安全边距不变。
+- `e2e/workshop-dock-clearance.spec.ts` 新增 PC 画布宽高、控制台高度、展开/收回的真实 DOM 尺寸验证，并保存 `visual-evidence/workshop/desktop-workshop-{scene,expanded}-1440.png` 两张截图供视觉审查。
+- 验收必须由本次提交的 Quality、Desktop Visual Review 与 Pages 状态决定。这里的 36px 是 CSS 预算，不代表 Playwright 已通过，也不代表新增 3D 或更换设备原画。
