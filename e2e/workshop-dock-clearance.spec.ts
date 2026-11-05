@@ -217,3 +217,57 @@ test('Lv.2 animated review art follows real production and leaves all saved valu
   await expect(stage).toHaveAttribute('data-machine-working-atlases','0',{timeout:45_000});
   await expect(stage).toHaveAttribute('data-machine-animated-tiles','');
 });
+
+
+test('review mode inspects the real nine machine masters and four frames without changing production',async({page})=>{
+  test.setTimeout(110_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  await expect(page.getByTestId('workshop-art-review-launcher')).toHaveCount(0);
+
+  await page.goto('/workshop/?machine-art=review');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  const before=await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'));
+  const launch=page.getByTestId('workshop-art-review-launcher');
+  await expect(launch).toBeVisible();
+  await launch.click();
+  const dialog=page.getByTestId('workshop-art-review-dialog');
+  await expect(dialog).toBeVisible();
+  await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',/review\\/machines\\/well\\/lv2\\.webp/);
+  await expect(page.getByTestId('workshop-review-working-frame')).toHaveAttribute('data-frame','0');
+  await page.getByTestId('workshop-review-frame-2').click();
+  await expect(page.getByTestId('workshop-review-working-frame')).toHaveAttribute('data-frame','2');
+
+  await page.getByTestId('workshop-review-craft-garden').click();
+  await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',/review\\/machines\\/garden\\/lv2\\.webp/);
+  await page.getByTestId('workshop-review-level-3').click();
+  await expect(page.getByTestId('workshop-review-no-atlas')).toBeVisible();
+  await expect(page.getByTestId('workshop-review-playback')).toBeDisabled();
+  await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',/review\\/machines\\/garden\\/lv3\\.webp/);
+  await page.getByTestId('workshop-review-craft-kiln').click();
+  await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',/review\\/machines\\/kiln\\/lv3\\.webp/);
+  await page.getByTestId('workshop-review-level-2').click();
+  await expect(page.getByTestId('workshop-review-working-frame')).toBeVisible();
+
+  const decoded=await page.getByTestId('workshop-review-static-image').evaluate(async element=>{
+    const img=element as HTMLImageElement;
+    await img.decode();
+    return [img.naturalWidth,img.naturalHeight];
+  });
+  expect(decoded).toEqual([512,512]);
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({path:'visual-evidence/workshop/desktop-machine-review-inspector-1440.png',animations:'disabled'});
+  await expect(page.getByTestId('workshop-review-static-image')).toBeVisible();
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(before);
+
+  await page.keyboard.press('Escape');
+  await expect(dialog).not.toBeVisible();
+  await page.setViewportSize({width:390,height:844});
+  await launch.click();
+  await expect(dialog).toBeVisible();
+  await page.screenshot({path:'visual-evidence/workshop/mobile-machine-review-inspector-390.png',animations:'disabled'});
+  await page.getByRole('button',{name:'关闭原画审查'}).click();
+  await expect(dialog).not.toBeVisible();
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(before);
+});
