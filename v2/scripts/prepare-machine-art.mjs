@@ -2,7 +2,7 @@
  * SVG is an offline drawing source only; Pixi receives transparent 512px WebP.
  * These are review candidates, not approved final cinematic CG. */
 import sharp from 'sharp';
-import {mkdir} from 'node:fs/promises';
+import {mkdir,readFile,access} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {dirname,resolve} from 'node:path';
 
@@ -149,15 +149,36 @@ return s+commonBase('kiln',level);
 function artwork(craft,level){const content=craft==='well'?well(level):craft==='garden'?garden(level):kiln(level);return `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">${defs()}<g stroke-linejoin="round" stroke-linecap="round">${content}</g></svg>`}
 
 async function prepare(){
-const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
-for(const craft of ['well','garden','kiln'])for(const level of [1,2,3]){
-const filename=resolve(root,'art/production/machines',craft,`lv${level}.webp`);
-await mkdir(dirname(filename),{recursive:true});
-const input=Buffer.from(artwork(craft,level));
-const {width,height}=await sharp(input).metadata();
-if(width!==512||height!==512)throw Error('Invalid source dimensions: '+craft+' Lv.'+level);
-await sharp(input,{density:144}).resize(512,512).webp({quality:92,effort:3,alphaQuality:100}).toFile(filename);
-console.log('[machine-art] '+craft+' Lv.'+level);
-}}
+  const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+  const manifest=JSON.parse(await readFile(resolve(root,'art/asset-pack.v1.json'),'utf8'));
+  const indexed=new Map(manifest.productionAssets.map(asset=>[asset.id,asset]));
+  for(const craft of ['well','garden','kiln'])for(const level of [1,2,3]){
+    const asset=indexed.get(`machine.${craft}.lv${level}`);
+    const expected=`art/production/machines/${craft}/lv${level}.webp`;
+    if(!asset||asset.path!==expected||asset.role!=='machine')
+      throw Error('Invalid machine art manifest entry: '+expected);
+    const filename=resolve(root,expected);
+    // Generated structural stand-ins may be recreated. Artist CG never may:
+    // a build must not silently overwrite an original painting.
+    const generated=asset.status==='review'&&
+      asset.generatedFrom==='scripts/prepare-machine-art.mjs';
+    if(!generated){
+      if(asset.status==='review'||asset.status==='ready'){
+        await access(filename).catch(()=>{throw Error(
+          'Missing artist painting: '+expected+' (build will not replace it)');});
+      }
+      console.log('[machine-art] keep '+asset.status+' '+craft+' Lv.'+level);
+      continue;
+    }
+    await mkdir(dirname(filename),{recursive:true});
+    const input=Buffer.from(artwork(craft,level));
+    const {width,height}=await sharp(input).metadata();
+    if(width!==512||height!==512)
+      throw Error('Invalid source dimensions: '+craft+' Lv.'+level);
+    await sharp(input,{density:144}).resize(512,512)
+      .webp({quality:92,effort:3,alphaQuality:100}).toFile(filename);
+    console.log('[machine-art] generated prototype '+craft+' Lv.'+level);
+  }
+}
 
 await prepare();
