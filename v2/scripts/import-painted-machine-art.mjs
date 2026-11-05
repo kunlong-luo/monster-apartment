@@ -48,6 +48,14 @@ function alphaQuality(data,info){
   return {transparent:transparent/(width*height),border:border/(2*width+2*height-4)};
 }
 const verified=[];
+// Also reject already approved animation BEFORE modifying a single image.
+for(const craft of ['well','garden','kiln']){
+  const working=entries.find(x=>x.id==='machine.'+craft+'.working');
+  if(!working||working.role!=='machine-animation')
+    throw Error('Missing atlas manifest for '+craft);
+  if(working.status==='ready')
+    throw Error('Cannot swap an approved working atlas without a compatible CG review: '+craft);
+}
 for(const asset of expected){
   const entry=entries.find(x=>x.id===asset.id);
   if(!entry||entry.path!==asset.destination||entry.role!=='machine')
@@ -78,15 +86,13 @@ for(const asset of verified){
   await rename(stage,dest);
   const item=entries.find(x=>x.id===asset.id);
   item.status='review';
-  item.generatedFrom='artist-import';
+  item.generatedFrom='curated-cg-import';
+  item.sourceKind='AI-assisted isolated machine concept sheet';
   item.sourceSha256=asset.sha256;
-  item.notes='Transparent painted candidate, imported from machine concept art set; final CG still requires human art approval.';
+  item.notes='Transparent review candidate extracted from purpose-made machine art board; CG polish and approval still required.';
 }
 for(const craft of ['well','garden','kiln']){
   const working=entries.find(x=>x.id==='machine.'+craft+'.working');
-  if(!working)throw Error('Missing atlas manifest for '+craft);
-  if(working.status==='ready')
-    throw Error('Ready working atlas must be reviewed separately before swapping the chassis for '+craft);
   working.status='pending';
   working.generatedFrom='await-matched-painting-animation';
   working.notes='Needs a new four-frame 2048x512 atlas aligned to this painted Lv.2 chassis; do not reuse old prototype atlas.';
