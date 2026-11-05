@@ -234,19 +234,19 @@ test('review mode inspects the real nine machine masters and four frames without
   await launch.click();
   const dialog=page.getByTestId('workshop-art-review-dialog');
   await expect(dialog).toBeVisible();
-  await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',/review\\/machines\\/well\\/lv2\\.webp/);
+  await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',new RegExp('review/machines/well/lv2[.]webp'));
   await expect(page.getByTestId('workshop-review-working-frame')).toHaveAttribute('data-frame','0');
   await page.getByTestId('workshop-review-frame-2').click();
   await expect(page.getByTestId('workshop-review-working-frame')).toHaveAttribute('data-frame','2');
 
   await page.getByTestId('workshop-review-craft-garden').click();
-  await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',/review\\/machines\\/garden\\/lv2\\.webp/);
+  await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',new RegExp('review/machines/garden/lv2[.]webp'));
   await page.getByTestId('workshop-review-level-3').click();
   await expect(page.getByTestId('workshop-review-no-atlas')).toBeVisible();
   await expect(page.getByTestId('workshop-review-playback')).toBeDisabled();
-  await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',/review\\/machines\\/garden\\/lv3\\.webp/);
+  await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',new RegExp('review/machines/garden/lv3[.]webp'));
   await page.getByTestId('workshop-review-craft-kiln').click();
-  await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',/review\\/machines\\/kiln\\/lv3\\.webp/);
+  await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',new RegExp('review/machines/kiln/lv3[.]webp'));
   await page.getByTestId('workshop-review-level-2').click();
   await expect(page.getByTestId('workshop-review-working-frame')).toBeVisible();
 
