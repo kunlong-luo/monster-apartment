@@ -1,5 +1,6 @@
 import {readFile, stat} from 'node:fs/promises';
 import sharp from 'sharp';
+import {createHash} from 'node:crypto';
 import {resolve, dirname, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
@@ -73,6 +74,42 @@ for(const item of manifest.productionAssets??[]){
     if(result){
       if((item.role==='machine'||item.role==='machine-animation')&&!result.hasAlpha)
         errors.push('Machine painting or atlas must have real alpha transparency: '+item.path);
+      if(item.role==='machine'&&item.generatedFrom==='curated-cg-import'){
+        const expected=item.sourceSha256;
+        if(typeof expected!=='string'||!/^[a-f0-9]{64}$/.test(expected))
+          errors.push('Curated machine art has no SHA-256 provenance: '+item.path);
+        else{
+          const absolute=checkedPath(item.path);
+          if(absolute){
+            const content=await readFile(absolute);
+            const actual=createHash('sha256').update(content).digest('hex');
+            if(actual!==expected)errors.push('Curated CG changed without approval: '+item.path);
+          }
+        }
+      }
+      if(item.role==='machine'||item.role==='machine-animation'){
+        try{
+          const absolute=checkedPath(item.path);
+          if(absolute){
+            const {data,info}=await sharp(absolute).ensureAlpha().raw()
+              .toBuffer({resolveWithObject:true});
+            const {width,height,channels}=info;
+            let empty=0,border=0;
+            for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+              const alpha=data[(y*width+x)*channels+3];
+              if(alpha<6)empty++;
+              if((x===0||x===width-1||y===0||y===height-1)&&alpha>6)border++;
+            }
+            const blank=empty/(width*height);
+            const edge=border/(width*2+height*2-4);
+            if(blank<.10||blank>.92||edge>.01)
+              errors.push('Machine CG has clipped edges / opaque background: '+
+                item.path+' blank='+blank.toFixed(3)+' edge='+edge.toFixed(3));
+          }
+        }catch(error){
+          errors.push('Cannot sample transparent machine artwork: '+item.path+' '+error.message);
+        }
+      }
       if(!result.dimensions)errors.push('Cannot verify ready image dimensions: '+item.path);
       else if(result.dimensions.width!==item.canvas.width||
         result.dimensions.height!==item.canvas.height)
