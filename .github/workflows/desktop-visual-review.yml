@@ -37,6 +37,7 @@ on:
       - 'e2e/character-collection.spec.ts'
       - 'public/art/rooms/**'
       - 'src/components/moonwork/workshop-controls.tsx'
+      - 'src/components/moonwork/workshop-machine-art-review.tsx'
       - 'v2/src/workshop-lab-stage.ts'
       - 'v2/src/workshop-machine-effects.ts'
       - 'v2/src/workshop-machine-materials.ts'
