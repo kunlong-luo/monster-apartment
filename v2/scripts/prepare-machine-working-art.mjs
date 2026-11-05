@@ -3,7 +3,7 @@
  * These REVIEW atlases may not replace approved hand-painted CG. */
 import './prepare-machine-art.mjs';
 import sharp from 'sharp';
-import {readFile,mkdir} from 'node:fs/promises';
+import {readFile,mkdir,access} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {dirname,resolve} from 'node:path';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
@@ -65,8 +65,30 @@ function workLayer(craft,index){
     '<defs><clipPath id="cut"><path d="'+clip[craft]+'"/></clipPath></defs>'+
     '<g clip-path="url(#cut)">'+scene+'</g></svg>');
 }
+const manifest=JSON.parse(await readFile(resolve(root,'art/asset-pack.v1.json'),'utf8'));
+const manifestArt=new Map(manifest.productionAssets.map(item=>[item.id,item]));
 for(const craft of ['well','garden','kiln']){
+  const motion=manifestArt.get('machine.'+craft+'.working');
+  const painting=manifestArt.get('machine.'+craft+'.lv2');
   const folder=resolve(root,'art/production/machines',craft);
+  const output=resolve(folder,'working.webp');
+  if(!motion||motion.path!==`art/production/machines/${craft}/working.webp`||
+     motion.level!==2||motion.role!=='machine-animation'||!painting)
+    throw Error('Invalid working atlas manifest for '+craft);
+  const generated=motion.status==='review'&&
+    motion.generatedFrom==='scripts/prepare-machine-working-art.mjs';
+  if(!generated){
+    if(motion.status==='review'||motion.status==='ready'){
+      await access(output).catch(()=>{throw Error(
+        'Missing artist working atlas: '+motion.path+'; refusing to replace it');});
+    }
+    console.log('[machine-art] preserve '+motion.status+' working '+craft);
+    continue;
+  }
+  if(painting.generatedFrom!=='scripts/prepare-machine-art.mjs'){
+    throw Error('Generated Lv.2 motion atlas cannot be aligned with hand-painted '+
+      craft+' CG. Set working asset status=pending or deliver matching artist frames.');
+  }
   await mkdir(folder,{recursive:true});
   const chassis=await readFile(resolve(folder,'lv2.webp'));
   const frames=[];
