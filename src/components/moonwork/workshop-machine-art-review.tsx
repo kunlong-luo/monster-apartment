@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import Image from 'next/image';
 import {Eye,Pause,Play,X} from 'lucide-react';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
@@ -15,51 +15,55 @@ type Level=1|2|3;
 const LEVELS=[1,2,3] as const;
 const FRAME_LABELS=['回位','启动','峰值','复位'] as const;
 
+function readReviewRoute(){
+  if(typeof window==='undefined')return '';
+  return new URLSearchParams(window.location.search).get('machine-art')==='review'
+    ?workshopAssetRoot(window.location.href):'';
+}
+function subscribeReviewRoute(onChange:()=>void){
+  window.addEventListener('popstate',onChange);
+  return ()=>window.removeEventListener('popstate',onChange);
+}
+function readMotionPreference(){
+  if(typeof window==='undefined')return false;
+  let userPaused=false;
+  try{userPaused=window.localStorage.getItem('monster-apartment:gothic-motion-reduced')==='1';}
+  catch{/* Private storage still respects system motion preference. */}
+  return !window.matchMedia('(prefers-reduced-motion: reduce)').matches&&!userPaused;
+}
+function subscribeMotionPreference(onChange:()=>void){
+  const media=window.matchMedia('(prefers-reduced-motion: reduce)');
+  media.addEventListener('change',onChange);
+  window.addEventListener('monster-apartment:motion-changed',onChange);
+  window.addEventListener('storage',onChange);
+  return ()=>{
+    media.removeEventListener('change',onChange);
+    window.removeEventListener('monster-apartment:motion-changed',onChange);
+    window.removeEventListener('storage',onChange);
+  };
+}
+
 /** The review panel never dispatches workshop actions or touches a save.
  * It is not available to ordinary players, not even as a hidden game button. */
 export function WorkshopMachineArtReview(){
-  const [reviewEnabled,setReviewEnabled]=useState(false);
-  const [base,setBase]=useState('');
+  const base=useSyncExternalStore(subscribeReviewRoute,readReviewRoute,()=> '');
+  const reviewEnabled=Boolean(base);
   const [open,setOpen]=useState(false);
   const [craft,setCraft]=useState<Craft>('well');
   const [level,setLevel]=useState<Level>(2);
   const [frame,setFrame]=useState(0);
   const [playing,setPlaying]=useState(false);
-  const [motionAllowed,setMotionAllowed]=useState(false);
+  const motionAllowed=useSyncExternalStore(subscribeMotionPreference,readMotionPreference,()=>false);
   const dialog=useRef<HTMLDialogElement>(null);
   const launcher=useRef<HTMLButtonElement>(null);
   const lastFocus=useRef<HTMLElement|null>(null);
 
-  useEffect(()=>{
-    const params=new URLSearchParams(window.location.search);
-    setReviewEnabled(params.get('machine-art')==='review');
-    setBase(workshopAssetRoot(window.location.href));
-  },[]);
   useEffect(()=>{
     const target=dialog.current;
     if(!target)return;
     if(open&&!target.open){lastFocus.current=document.activeElement as HTMLElement;target.showModal();}
     else if(!open&&target.open)target.close();
   },[open]);
-  useEffect(()=>{
-    if(!reviewEnabled)return;
-    const media=window.matchMedia('(prefers-reduced-motion: reduce)');
-    const sync=()=>{
-      let paused=false;
-      try{paused=window.localStorage.getItem('monster-apartment:gothic-motion-reduced')==='1';}
-      catch{/* Private storage must not change art review availability. */}
-      setMotionAllowed(!media.matches&&!paused);
-    };
-    sync();
-    media.addEventListener('change',sync);
-    window.addEventListener('monster-apartment:motion-changed',sync);
-    window.addEventListener('storage',sync);
-    return ()=>{
-      media.removeEventListener('change',sync);
-      window.removeEventListener('monster-apartment:motion-changed',sync);
-      window.removeEventListener('storage',sync);
-    };
-  },[reviewEnabled]);
   useEffect(()=>{
     if(!playing||!open||!motionAllowed||level!==2)return;
     const timer=window.setInterval(()=>setFrame(previous=>(previous+1)%4),320);
