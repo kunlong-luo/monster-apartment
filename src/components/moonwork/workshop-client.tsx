@@ -12,6 +12,7 @@ import {toggleWorkshopAuto} from '@/lib/moonwork/workshop-auto-runtime';
 import {WorkshopContractPanel} from './workshop-contract-panel';
 import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
+import {WorkshopMachineArtReview} from './workshop-machine-art-review';
 import {WorkshopControls} from './workshop-controls';
 import {newWorkshop,workshopRank} from '../../../v2/src/workshop-engine';
 import workshopHall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
@@ -343,6 +344,9 @@ export function WorkshopClient() {
           selectedTile={selectedTile}
           isMoving={isMoving}
         />
+
+        {/* Only the explicit machine-art=review route can inspect source sprites. */}
+        <WorkshopMachineArtReview />
 
         {/* Footer */}
         <footer aria-hidden="true">
