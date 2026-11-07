@@ -106,11 +106,11 @@
  * The bitmap stays noninteractive; its parent real-state station button owns
  * all pointer/keyboard input. Separate factors protect the reviewed CG detail. */
 .gothic-workshop-shell #root.lab.gothic-workshop
-.workshop-cinematic__station--well{--prop-zoom:2.65}
+.workshop-cinematic__station--well{--prop-zoom:1.90}
 .gothic-workshop-shell #root.lab.gothic-workshop
-.workshop-cinematic__station--garden{--prop-zoom:1.95}
+.workshop-cinematic__station--garden{--prop-zoom:1.60}
 .gothic-workshop-shell #root.lab.gothic-workshop
-.workshop-cinematic__station--kiln{--prop-zoom:2.10}
+.workshop-cinematic__station--kiln{--prop-zoom:1.70}
 .gothic-workshop-shell #root.lab.gothic-workshop
 .workshop-cinematic__station[data-art-tier="review"]{--prop-zoom:1.65}
 .gothic-workshop-shell #root.lab.gothic-workshop
