@@ -201,6 +201,7 @@ export function WorkshopClient() {
       ref={host}
       data-testid="next-workshop-shell"
       data-console-layout={expandedConsole?'expanded':'scene'}
+      data-cinematic-layout={sceneMode==='cinematic'&&!selection.worker&&!selection.machine&&!isMoving?'true':'false'}
       className="gothic-workshop-shell gothic-workshop-shell--red-gold relative isolate min-h-dvh overflow-hidden"
     >
       <main id="root" className="lab gothic-workshop" data-react-controls="true"
