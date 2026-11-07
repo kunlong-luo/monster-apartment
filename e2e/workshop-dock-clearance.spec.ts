@@ -193,11 +193,17 @@ test('approved sprites stay live while nine independent review WebPs require exp
   await expect(stage).toHaveAttribute('data-machine-preview-scale','painted-1.075-1.125');
   await expect(stage).toHaveAttribute('data-machine-working-atlases','0');
   await expect(stage).toHaveAttribute('data-machine-animated-tiles','');
+  // R01 hides the equipment catalog in scenic mode. Open the real drawer
+  // before checking image decoding, so lazy WebPs are requested by the browser.
+  await expect(page.getByTestId('console-equipment')).toBeHidden();
+  await page.getByTestId('workshop-stage-layout-toggle').click();
+  await expect(page.getByTestId('console-equipment')).toBeVisible();
   for(const craft of ['well','garden','kiln']){
     const frame=page.getByTestId('workshop-machine-thumbnail-frame-'+craft);
     const image=page.getByTestId('workshop-machine-thumbnail-'+craft);
     await expect(frame).toHaveAttribute('data-art-tier','cg-review');
     await expect(image).toHaveAttribute('src',new RegExp('review/machines/'+craft+'/lv1[.]webp'));
+    await image.scrollIntoViewIfNeeded();
     const good=await image.evaluate(async el=>{
       const img=el as HTMLImageElement;
       await img.decode();
