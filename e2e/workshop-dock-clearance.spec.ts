@@ -453,8 +453,8 @@ for(const width of [390,360]){
 }
 
 
-// R07: automatic inventory updates must not destroy and recreate every
-// Pixi Sprite; changed staffing/supply still requires a full visual refresh.
+// R07.2: stock-only changes patch Text. Staffing changes refresh their
+// plot display tree; only global supply/guide transitions repaint the scene.
 test('Pixi updates stock labels in place but repaints changed machine state',async({page})=>{
   test.setTimeout(90_000);
   await page.setViewportSize({width:1440,height:900});
@@ -478,8 +478,8 @@ test('Pixi updates stock labels in place but repaints changed machine state',asy
     localStorage.setItem(key,JSON.stringify(state));
     window.dispatchEvent(new Event('moonwork:v2-update'));
   });
-  await expect.poll(async()=>Number(await stage.getAttribute('data-scene-refreshes')))
-    .toBe(before+1);
+  await expect(stage).toHaveAttribute('data-last-patched-plots','5');
+  expect(Number(await stage.getAttribute('data-scene-refreshes'))).toBe(before);
   await expect(stage).toHaveAttribute('data-machine-states',/5:working/);
 });
 
