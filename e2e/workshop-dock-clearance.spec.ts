@@ -157,8 +157,21 @@ test('approved sprites stay live while nine independent review WebPs require exp
   const stage=page.getByTestId('v2-stage');
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:35_000});
   await expect(stage).toHaveAttribute('data-machine-artwork-tier','review-webp');
+  await expect(stage).toHaveAttribute('data-machine-preview-scale','painted-1.075-1.125');
   await expect(stage).toHaveAttribute('data-machine-working-atlases','0');
   await expect(stage).toHaveAttribute('data-machine-animated-tiles','');
+  for(const craft of ['well','garden','kiln']){
+    const frame=page.getByTestId('workshop-machine-thumbnail-frame-'+craft);
+    const image=page.getByTestId('workshop-machine-thumbnail-'+craft);
+    await expect(frame).toHaveAttribute('data-art-tier','cg-review');
+    await expect(image).toHaveAttribute('src',new RegExp('review/machines/'+craft+'/lv1[.]webp'));
+    const good=await image.evaluate(async el=>{
+      const img=el as HTMLImageElement;
+      await img.decode();
+      return img.naturalWidth===512&&img.naturalHeight===512;
+    });
+    expect(good).toBe(true);
+  }
   await expect(stage.locator('canvas')).toBeVisible();
   await mkdir('visual-evidence/workshop',{recursive:true});
   await page.screenshot({path:'visual-evidence/workshop/desktop-machine-art-review-1440.png',animations:'disabled'});
@@ -166,6 +179,11 @@ test('approved sprites stay live while nine independent review WebPs require exp
     .toBe(saved);
   await page.goto('/workshop/');
   await expect(stage).toHaveAttribute('data-machine-artwork-tier','review-avif',{timeout:35_000});
+  await expect(stage).toHaveAttribute('data-machine-preview-scale','normal');
+  for(const craft of ['well','garden','kiln']){
+    await expect(page.getByTestId('workshop-machine-thumbnail-frame-'+craft))
+      .toHaveAttribute('data-art-tier','legacy');
+  }
   await page.setViewportSize({width:390,height:844});
   await page.goto('/workshop/?machine-art=review');
   await expect(stage).toHaveAttribute('data-machine-artwork-tier','review-webp',{timeout:35_000});
@@ -198,6 +216,11 @@ test('Lv.2 painted review keeps correct equipment and production without mismatc
   await expect(stage).toHaveAttribute('data-machine-working-atlases','0');
   await expect(stage).toHaveAttribute('data-machine-states',/5:working;6:working;7:working/);
   await expect(stage).toHaveAttribute('data-machine-animated-tiles','');
+  await expect(stage).toHaveAttribute('data-machine-preview-scale','painted-1.075-1.125');
+  for(const craft of ['well','garden','kiln']){
+    await expect(page.getByTestId('workshop-machine-thumbnail-'+craft))
+      .toHaveAttribute('src',new RegExp('review/machines/'+craft+'/lv2[.]webp'));
+  }
   await mkdir('visual-evidence/workshop',{recursive:true});
   await page.screenshot({path:'visual-evidence/workshop/desktop-machine-lv2-cg-still-1440.png',animations:'disabled'});
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
