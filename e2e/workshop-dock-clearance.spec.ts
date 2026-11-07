@@ -482,3 +482,55 @@ test('Pixi updates stock labels in place but repaints changed machine state',asy
     .toBe(before+1);
   await expect(stage).toHaveAttribute('data-machine-states',/5:working/);
 });
+
+
+// R07.2: Refresh an independent plot's Pixi children, not the scene or
+// unrelated machine sprites. Check both the desktop canvas and mobile camera.
+for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
+  test(`R07.2 changes only one machine display group at ${viewport.width}px`,async({page})=>{
+    test.setTimeout(90_000);
+    await page.setViewportSize(viewport);
+    await page.goto('/workshop/');
+    await expect(page.locator('#root'))
+      .toHaveAttribute('data-runtime-ready','true',{timeout:30_000});
+    const stage=page.getByTestId('v2-stage');
+    await expect(stage).toHaveAttribute('data-plot-revisions',/\d+,\d+/);
+    const refreshes=Number(await stage.getAttribute('data-scene-refreshes'));
+    const before=(await stage.getAttribute('data-plot-revisions'))!
+      .split(',').map(Number);
+    expect(before).toHaveLength(15);
+    await page.evaluate(()=>{
+      const key='monster-apartment:workshop-v2-lab';
+      const state=JSON.parse(localStorage.getItem(key)!);
+      state.tiles[5].level=2; // only the water machine's painted body changes
+      localStorage.setItem(key,JSON.stringify(state));
+      window.dispatchEvent(new Event('moonwork:v2-update'));
+    });
+    await expect(stage).toHaveAttribute('data-last-patched-plots','5');
+    const after=(await stage.getAttribute('data-plot-revisions'))!
+      .split(',').map(Number);
+    expect(after[5]).toBe(before[5]+1);
+    for(let index=0;index<after.length;index++)
+      if(index!==5)expect(after[index]).toBe(before[index]);
+    expect(Number(await stage.getAttribute('data-scene-refreshes'))).toBe(refreshes);
+    await expect(stage).toHaveAttribute('data-machine-states',/5:idle/);
+
+    // The worker presence row is global on mobile, so it intentionally
+    // takes the complete-render fallback; desktop only replaces plot 7.
+    await page.evaluate(()=>{
+      const key='monster-apartment:workshop-v2-lab';
+      const state=JSON.parse(localStorage.getItem(key)!);
+      state.tiles[7].worker='fern';
+      localStorage.setItem(key,JSON.stringify(state));
+      window.dispatchEvent(new Event('moonwork:v2-update'));
+    });
+    await expect(stage).toHaveAttribute('data-machine-states',/7:blocked/);
+    if(viewport.width===1440){
+      await expect(stage).toHaveAttribute('data-last-patched-plots','7');
+      expect(Number(await stage.getAttribute('data-scene-refreshes'))).toBe(refreshes);
+    }else{
+      await expect.poll(async()=>Number(
+        await stage.getAttribute('data-scene-refreshes'))).toBe(refreshes+1);
+    }
+  });
+}

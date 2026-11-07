@@ -6,7 +6,7 @@ import { createFloatingFeedback } from './workshop-floating-feedback';
 import { paintShiftFeedback } from './workshop-shift-effects';
 import {inspectMachineSignals} from './workshop-machine-status';
 import {presentWorkshopStations} from './workshop-station-presenter';
-import {workshopStageStockPatch,workshopMachineCaption} from './workshop-stage-diff';
+import {workshopStagePlotPatch,workshopMachineCaption} from './workshop-stage-diff';
 import type {WorkshopPresentationMode} from './workshop-runtime-contract';
 import {projectMachineProduction} from './workshop-production';
 import type {MachineCycle} from './workshop-production';
@@ -353,6 +353,197 @@ export async function mountWorkshopLab(
   let sceneRefreshes=0;
   let stockPatches=0;
   const machineLabels:Array<Text|null>=Array.from({length:BOARD_SIZE},()=>null);
+  // Each plot owns its own display tree. Recycling one plot cannot dispose
+  // a neighboring machine, its worker sprite, or a different effect loop.
+  const plotLayers:Array<Container|null>=Array.from({length:BOARD_SIZE},()=>null);
+  const plotRevisions=Array.from({length:BOARD_SIZE},()=>0);
+  const animatedPlots=new Set<number>();
+  let scenePlotPatches=0;
+  const drawPlot=(
+    i:number,plotLayer:Container,current:WorkshopState,
+    stationModel:ReturnType<typeof presentWorkshopStations>,
+    signals:ReturnType<typeof inspectMachineSignals>,
+    previousSignals:ReturnType<typeof inspectMachineSignals>|null,
+    shiftCycles:MachineCycle[]
+  )=>{
+      const {x,y}=plotXY(i);
+      const machine=stationModel.byPlot[i]?.machine??null;
+      // Foundation sprites survive every world snapshot and every shift.
+      const tile=floorTiles[i];
+      tile.tint=machine?0xffffff:0xc9d6e0;
+      tile.alpha=painted?(machine?.87:.76):1;
+      if(!machine){
+        const plus=glabel('＋',28,0x4a6976);plus.anchor.set(.5);
+        plus.position.set(x+CELL/2,y+CELL/2);plotLayer.addChild(plus);
+        plotRevisions[i]++;
+        return;
+      }
+      // Connections are physical routes between adjacent machines.
+      if(machine.craft==='garden'){
+        const connected=current.tiles.some((other,j)=>
+          other?.craft==='well'&&linked(i,j));
+        if(!connected){
+          const marker=glabel('缺水源',12,0xffab9c,true);
+          marker.position.set(x+58,y+9);plotLayer.addChild(marker);
+        }
+      }
+      if(machine.craft==='kiln'){
+        const connected=current.tiles.some((other,j)=>
+          other?.craft==='garden'&&linked(i,j));
+        if(!connected){
+          const marker=glabel('缺温室',12,0xffab9c,true);
+          marker.position.set(x+54,y+9);plotLayer.addChild(marker);
+        }
+      }
+      const level=stationModel.byPlot[i]!.level;
+      const signal=signals[i]!;
+      const glow=new Graphics().ellipse(x+CELL*.5,y+CELL*.78,CELL*.35,CELL*.19)
+        .fill({color:signal.state==='working'?COLORS[machine.craft]:
+          signal.state==='blocked'?0xea7968:0x6d7183,alpha:.36});
+      glow.eventMode='none';
+      glow.alpha=signal.state==='working'?.36:signal.state==='blocked'?.25:.10;
+      plotLayer.addChild(glow);
+      machineEffects.push({ring:glow,state:signal.state,index:i});
+      if(level>1){
+        const glow=new Graphics().ellipse(x+CELL*.49,y+CELL*.79,
+          CELL*.34+(level-2)*12,CELL*.21+(level-2)*5)
+          .fill({color:level===3?0xffd7a5:COLORS[machine.craft],alpha:.22})
+          .stroke({width:2,color:0xffdea5,alpha:level===3?.82:.43});
+        glow.eventMode='none';plotLayer.addChild(glow);
+      }
+      // Approved 512px transparent production painting always wins. A review
+      // overlay is used only until that craft/level has an audited master.
+      const master=machineMasters[machine.craft]?.[String(level) as '1'|'2'|'3'];
+      // Audited working atlas replaces the still painting only while this
+      // machine is actually staffed and supplied; blocked devices stay still.
+      // The existing working.webp contract depicts a Lv.2 mechanism only.
+      // Never show a lower-level machine during a Lv.1/Lv.3 production cycle.
+      const atlas=signal.state==='working'&&level===2
+        ?machineWorking[machine.craft]:undefined;
+      const fixture:Sprite=atlas?new AnimatedSprite(atlas):
+        new Sprite(master??(machine.craft==='kiln'&&kilnArtReview
+          ?kilnArtReview:art.machines[machine.craft]));
+      fixture.anchor.set(.5,(atlas||master)?0.92:1);
+      if(atlas&&fixture instanceof AnimatedSprite){
+        fixture.animationSpeed=.085;fixture.loop=true;
+        fixture.gotoAndStop(i%4);
+        machineAnimations.push(fixture);
+        animatedPlots.add(i);
+      }
+      // Preserve tile geometry and input hit areas. Review paintings have
+      // meaningful transparent margins, so enlarge only their DISPLAY sprite,
+      // not the board or the interaction region.
+      const enlargedReview=machinePreviewActive&&Boolean(master);
+      fixture.position.set(x+CELL*.49,y+CELL*.92);
+      fixture.width=CELL*(enlargedReview?1.075+(level-1)*.025:.89+(level-1)*.03);
+      fixture.height=CELL*(enlargedReview?1.075+(level-1)*.025:.88+(level-1)*.035);
+      if(enlargedReview){
+        // The independent, fixed CELL-sized plotHits layer owns all clicks.
+        // Never let a large painted silhouette select a neighboring plot.
+        fixture.eventMode='none';
+      }else{
+        fixture.eventMode='static';fixture.cursor='pointer';
+        fixture.on('pointertap',()=>callbacks.plot(i));
+      }
+      plotLayer.addChild(fixture);
+      const detail=master||atlas?null:machine.craft==='well'?paintedDetail.well:
+        machine.craft==='garden'?paintedDetail.garden:null;
+      let overlay:Sprite|null=null;
+      if(detail){
+        overlay=new Sprite(detail);
+        overlay.anchor.set(.5,1);
+        overlay.position.copyFrom(fixture.position);
+        overlay.width=fixture.width;
+        overlay.height=fixture.height;
+        overlay.eventMode='none'; // never intercept plot/fixture interaction
+        plotLayer.addChild(overlay);
+      }
+      machineArt.push({sprite:fixture,detail:overlay,baseY:fixture.y,
+        state:signal.state,index:i});
+      const newlyStarted=signal.state==='working'&&
+        !!previousSignals&&previousSignals[i]?.state!=='working';
+      const justProduced=shiftCycles.some(c=>c.index===i&&c.amount>0);
+      // Restrained internal material light lies on the actual painted vessel
+      // / glazing / crystal, beneath the human worker and outside hit targets.
+      // Programmatic pistons, leaves and crystal overlays were aligned to
+      // the old geometric chassis. They cover a detailed CG painting with
+      // toy-like shapes, so painted review masters use the actual bitmap
+      // without those mismatched layers. Normal gameplay is unchanged.
+      if(!enlargedReview){
+        const material=createMachineMaterial(machine.craft,signal.state,i,
+          x+CELL*.49,y+CELL*.54,newlyStarted?elapsed:null,
+          justProduced?elapsed:null);
+        plotLayer.addChild(material.node);materialEffects.push(material);
+        if(!atlas){
+          const actuator=createMachineActuators(machine.craft,signal.state,i,
+            x+CELL*.49,y+CELL*.55,newlyStarted?elapsed:null,
+            justProduced?elapsed:null);
+          plotLayer.addChild(actuator.node);actuatorEffects.push(actuator);
+        }
+      }
+      const fx=createMachineEffects(machine.craft,signal.state,i,
+        x+CELL*.50,y+CELL*.69,newlyStarted?elapsed:null,
+        justProduced?elapsed:null);
+      plotLayer.addChild(fx.node);deviceEffects.push(fx);
+      if(machine.worker){
+        const actor=createWorkerSprite(
+          machine.worker,x+CELL*.77,y+CELL*.94,CELL*.60,CELL*.60,i,
+          signal.state==='working'?.13+(.01*(i%3)):.025);
+        actor.eventMode='static';actor.cursor='pointer';
+        actor.on('pointertap',()=>callbacks.plot(i));
+        plotLayer.addChild(actor);
+      }
+      if(level>1){
+        const star=glabel(level===3?'✦ Lv.3':'✦ Lv.2',12,0xffdaa1,true);
+        star.position.set(x+CELL-62,y+11);
+        plotLayer.addChild(star);
+      }
+      if(enlargedReview){
+        const placard=new Graphics().roundRect(x+CELL*.05,y+CELL-23,
+          CELL*.90,20,6).fill({color:0x171021,alpha:.89})
+          .stroke({color:0xdbb582,alpha:.32,width:1});
+        placard.eventMode='none';plotLayer.addChild(placard);
+      }
+      const label=glabel(workshopMachineCaption(
+        machine.craft,machine.stored,signal
+      ),11,signal.state==='blocked'?0xffac99:COLORS[machine.craft],true);
+      machineLabels[i]=label;
+      label.anchor.set(.5,0);
+      label.position.set(x+CELL/2,y+CELL-(enlargedReview?21:29));
+      plotLayer.addChild(label);
+
+    plotRevisions[i]++;
+  };
+  /** Evict only references from the selected plot before destroying its old
+   * display children. Global actors (the visitor and mobile portrait row)
+   * and all other machine updates continue undisturbed. */
+  const resetPlot=(index:number)=>{
+    const layer=plotLayers[index];
+    if(!layer)return;
+    const prune=<T>(list:T[],belongs:(item:T)=>boolean,stop?:(item:T)=>void)=>{
+      for(let i=list.length-1;i>=0;i--){
+        if(!belongs(list[i]))continue;
+        stop?.(list[i]);
+        list.splice(i,1);
+      }
+    };
+    prune(actors,actor=>actor.parent===layer,actor=>actor.stop());
+    prune(paintedActors,entry=>entry.sprite.parent===layer);
+    prune(machineAnimations,actor=>actor.parent===layer,actor=>actor.stop());
+    prune(machineArt,entry=>entry.sprite.parent===layer);
+    prune(machineEffects,entry=>entry.ring.parent===layer);
+    prune(deviceEffects,entry=>entry.node.parent===layer);
+    prune(materialEffects,entry=>entry.node.parent===layer);
+    prune(actuatorEffects,entry=>entry.node.parent===layer);
+    animatedPlots.delete(index);
+    machineLabels[index]=null;
+    layer.removeChildren().forEach(child=>child.destroy({children:true}));
+  };
+  const publishPlotState=()=>{
+    element.dataset.machineAnimatedTiles=[...animatedPlots].sort((a,b)=>a-b).join(';');
+    element.dataset.plotRevisions=plotRevisions.join(',');
+  };
+
   const paintFocus=(selected:number|null)=>{
     focusLayer.clear();
     if(selected===null||selected<0||selected>=BOARD_SIZE)return;
@@ -370,23 +561,48 @@ export async function mountWorkshopLab(
       return;
     }
     const previousSnapshot=lastSnapshot;
-    // R07: automatic stock ticks, clock updates and market purchases must
-    // not rebuild 15 working sprites when their presentation is unchanged.
-    const patch=previousSnapshot
-      ?workshopStageStockPatch(previousSnapshot,current):null;
-    if(patch!==null&&patch.every(index=>machineLabels[index]!==null)){
-      const signals=inspectMachineSignals(current);
-      for(const index of patch){
+    // Mobile's global worker portraits show employment, so a workforce
+    // presence change must repaint the whole scene on narrow screens.
+    const mobileRosterChanged=Boolean(MOBILE&&previousSnapshot&&
+      (['brook','fern','cinder'] as const).some(id=>
+        previousSnapshot.tiles.some(tile=>tile?.worker===id)!==
+          current.tiles.some(tile=>tile?.worker===id)));
+    // R07.2 keeps independent machine trees alive across changes to a
+    // different plot. Global pipes, tutorial, contract or daily settlement
+    // still require a full redraw (checked by workshopStagePlotPatch).
+    const patch=previousSnapshot&&!mobileRosterChanged
+      ?workshopStagePlotPatch(previousSnapshot,current):null;
+    if(patch!==null&&
+       patch.stockPlots.every(index=>machineLabels[index]!==null)&&
+       patch.rebuildPlots.every(index=>plotLayers[index]!==null)){
+      const stationModel=presentWorkshopStations(current,selected);
+      const signals=stationModel.byPlot.map(station=>station?.signal??null);
+      const previousSignals=inspectMachineSignals(previousSnapshot!);
+      for(const index of patch.stockPlots){
         const machine=current.tiles[index]!;
         machineLabels[index]!.text=workshopMachineCaption(
           machine.craft,machine.stored,signals[index]!
         );
       }
+      for(const index of patch.rebuildPlots){
+        resetPlot(index);
+        drawPlot(index,plotLayers[index]!,current,stationModel,signals,
+          previousSignals,[]);
+      }
+      if(patch.rebuildPlots.length){
+        scenePlotPatches+=patch.rebuildPlots.length;
+        element.dataset.scenePlotPatches=String(scenePlotPatches);
+        element.dataset.machineStates=signals.map((entry,index)=>
+          entry?index+':'+entry.state:'').filter(Boolean).join(';');
+        publishPlotState();
+        updateMotion();
+      }
       lastSnapshot=current;lastSelection=selected;
       paintFocus(selected);
       if(selected!==null){cameraFocus=selected;focusCamera(selected);}
       element.dataset.sceneStockPatches=String(++stockPatches);
-      element.dataset.lastStockPlots=patch.join(',');
+      element.dataset.lastStockPlots=patch.stockPlots.join(',');
+      element.dataset.lastPatchedPlots=patch.rebuildPlots.join(',');
       return;
     }
     const previousPatronStatus=previousSnapshot?.patron?.status;
@@ -398,7 +614,10 @@ export async function mountWorkshopLab(
     if(selected!==null){cameraFocus=selected;focusCamera(selected);}
     element.dataset.sceneRefreshes=String(++sceneRefreshes);
     element.dataset.lastStockPlots='';
+    element.dataset.lastPatchedPlots='';
     machineLabels.fill(null);
+    plotLayers.fill(null);
+    animatedPlots.clear();
     for(const actor of actors)actor.stop();
     for(const machine of machineAnimations)machine.stop();
     actors.length=0;paintedActors.length=0;machineAnimations.length=0;
@@ -409,7 +628,6 @@ export async function mountWorkshopLab(
     tutorialLayer.removeChildren().forEach(child=>child.destroy({children:true}));
     const stationModel=presentWorkshopStations(current,selected);
     const signals=stationModel.byPlot.map(station=>station?.signal??null);
-    element.dataset.machineAnimatedTiles='';
     // The live transport cues correspond to inputs a real next shift would
     // consume. Neighboring tiles alone do not imply that goods can flow.
     const supplyTrails=projectedSupplyTrails(current);
@@ -448,152 +666,12 @@ export async function mountWorkshopLab(
       }
     }
     for(let i=0;i<BOARD_SIZE;i++){
-      const {x,y}=plotXY(i);
-      const machine=stationModel.byPlot[i]?.machine??null;
-      // Foundation sprites survive every world snapshot and every shift.
-      const tile=floorTiles[i];
-      tile.tint=machine?0xffffff:0xc9d6e0;
-      tile.alpha=painted?(machine?.87:.76):1;
-      if(!machine){
-        const plus=glabel('＋',28,0x4a6976);plus.anchor.set(.5);
-        plus.position.set(x+CELL/2,y+CELL/2);stage.addChild(plus);
-        continue;
-      }
-      // Connections are physical routes between adjacent machines.
-      if(machine.craft==='garden'){
-        const connected=current.tiles.some((other,j)=>
-          other?.craft==='well'&&linked(i,j));
-        if(!connected){
-          const marker=glabel('缺水源',12,0xffab9c,true);
-          marker.position.set(x+58,y+9);stage.addChild(marker);
-        }
-      }
-      if(machine.craft==='kiln'){
-        const connected=current.tiles.some((other,j)=>
-          other?.craft==='garden'&&linked(i,j));
-        if(!connected){
-          const marker=glabel('缺温室',12,0xffab9c,true);
-          marker.position.set(x+54,y+9);stage.addChild(marker);
-        }
-      }
-      const level=stationModel.byPlot[i]!.level;
-      const signal=signals[i]!;
-      const glow=new Graphics().ellipse(x+CELL*.5,y+CELL*.78,CELL*.35,CELL*.19)
-        .fill({color:signal.state==='working'?COLORS[machine.craft]:
-          signal.state==='blocked'?0xea7968:0x6d7183,alpha:.36});
-      glow.eventMode='none';
-      glow.alpha=signal.state==='working'?.36:signal.state==='blocked'?.25:.10;
-      stage.addChild(glow);
-      machineEffects.push({ring:glow,state:signal.state,index:i});
-      if(level>1){
-        const glow=new Graphics().ellipse(x+CELL*.49,y+CELL*.79,
-          CELL*.34+(level-2)*12,CELL*.21+(level-2)*5)
-          .fill({color:level===3?0xffd7a5:COLORS[machine.craft],alpha:.22})
-          .stroke({width:2,color:0xffdea5,alpha:level===3?.82:.43});
-        glow.eventMode='none';stage.addChild(glow);
-      }
-      // Approved 512px transparent production painting always wins. A review
-      // overlay is used only until that craft/level has an audited master.
-      const master=machineMasters[machine.craft]?.[String(level) as '1'|'2'|'3'];
-      // Audited working atlas replaces the still painting only while this
-      // machine is actually staffed and supplied; blocked devices stay still.
-      // The existing working.webp contract depicts a Lv.2 mechanism only.
-      // Never show a lower-level machine during a Lv.1/Lv.3 production cycle.
-      const atlas=signal.state==='working'&&level===2
-        ?machineWorking[machine.craft]:undefined;
-      const fixture:Sprite=atlas?new AnimatedSprite(atlas):
-        new Sprite(master??(machine.craft==='kiln'&&kilnArtReview
-          ?kilnArtReview:art.machines[machine.craft]));
-      fixture.anchor.set(.5,(atlas||master)?0.92:1);
-      if(atlas&&fixture instanceof AnimatedSprite){
-        fixture.animationSpeed=.085;fixture.loop=true;
-        fixture.gotoAndStop(i%4);
-        machineAnimations.push(fixture);
-        const previousAnimatedTiles:string=element.dataset.machineAnimatedTiles??'';
-        element.dataset.machineAnimatedTiles=(previousAnimatedTiles?previousAnimatedTiles+';':'')+String(i);
-      }
-      // Preserve tile geometry and input hit areas. Review paintings have
-      // meaningful transparent margins, so enlarge only their DISPLAY sprite,
-      // not the board or the interaction region.
-      const enlargedReview=machinePreviewActive&&Boolean(master);
-      fixture.position.set(x+CELL*.49,y+CELL*.92);
-      fixture.width=CELL*(enlargedReview?1.075+(level-1)*.025:.89+(level-1)*.03);
-      fixture.height=CELL*(enlargedReview?1.075+(level-1)*.025:.88+(level-1)*.035);
-      if(enlargedReview){
-        // The independent, fixed CELL-sized plotHits layer owns all clicks.
-        // Never let a large painted silhouette select a neighboring plot.
-        fixture.eventMode='none';
-      }else{
-        fixture.eventMode='static';fixture.cursor='pointer';
-        fixture.on('pointertap',()=>callbacks.plot(i));
-      }
-      stage.addChild(fixture);
-      const detail=master||atlas?null:machine.craft==='well'?paintedDetail.well:
-        machine.craft==='garden'?paintedDetail.garden:null;
-      let overlay:Sprite|null=null;
-      if(detail){
-        overlay=new Sprite(detail);
-        overlay.anchor.set(.5,1);
-        overlay.position.copyFrom(fixture.position);
-        overlay.width=fixture.width;
-        overlay.height=fixture.height;
-        overlay.eventMode='none'; // never intercept plot/fixture interaction
-        stage.addChild(overlay);
-      }
-      machineArt.push({sprite:fixture,detail:overlay,baseY:fixture.y,
-        state:signal.state,index:i});
-      const newlyStarted=signal.state==='working'&&
-        !!previousSignals&&previousSignals[i]?.state!=='working';
-      const justProduced=shiftCycles.some(c=>c.index===i&&c.amount>0);
-      // Restrained internal material light lies on the actual painted vessel
-      // / glazing / crystal, beneath the human worker and outside hit targets.
-      // Programmatic pistons, leaves and crystal overlays were aligned to
-      // the old geometric chassis. They cover a detailed CG painting with
-      // toy-like shapes, so painted review masters use the actual bitmap
-      // without those mismatched layers. Normal gameplay is unchanged.
-      if(!enlargedReview){
-        const material=createMachineMaterial(machine.craft,signal.state,i,
-          x+CELL*.49,y+CELL*.54,newlyStarted?elapsed:null,
-          justProduced?elapsed:null);
-        stage.addChild(material.node);materialEffects.push(material);
-        if(!atlas){
-          const actuator=createMachineActuators(machine.craft,signal.state,i,
-            x+CELL*.49,y+CELL*.55,newlyStarted?elapsed:null,
-            justProduced?elapsed:null);
-          stage.addChild(actuator.node);actuatorEffects.push(actuator);
-        }
-      }
-      const fx=createMachineEffects(machine.craft,signal.state,i,
-        x+CELL*.50,y+CELL*.69,newlyStarted?elapsed:null,
-        justProduced?elapsed:null);
-      stage.addChild(fx.node);deviceEffects.push(fx);
-      if(machine.worker){
-        const actor=createWorkerSprite(
-          machine.worker,x+CELL*.77,y+CELL*.94,CELL*.60,CELL*.60,i,
-          signal.state==='working'?.13+(.01*(i%3)):.025);
-        actor.eventMode='static';actor.cursor='pointer';
-        actor.on('pointertap',()=>callbacks.plot(i));
-        stage.addChild(actor);
-      }
-      if(level>1){
-        const star=glabel(level===3?'✦ Lv.3':'✦ Lv.2',12,0xffdaa1,true);
-        star.position.set(x+CELL-62,y+11);
-        stage.addChild(star);
-      }
-      if(enlargedReview){
-        const placard=new Graphics().roundRect(x+CELL*.05,y+CELL-23,
-          CELL*.90,20,6).fill({color:0x171021,alpha:.89})
-          .stroke({color:0xdbb582,alpha:.32,width:1});
-        placard.eventMode='none';stage.addChild(placard);
-      }
-      const label=glabel(workshopMachineCaption(
-        machine.craft,machine.stored,signal
-      ),11,signal.state==='blocked'?0xffac99:COLORS[machine.craft],true);
-      machineLabels[i]=label;
-      label.anchor.set(.5,0);
-      label.position.set(x+CELL/2,y+CELL-(enlargedReview?21:29));
-      stage.addChild(label);
+      const layer=new Container();
+      plotLayers[i]=layer;
+      stage.addChild(layer);
+      drawPlot(i,layer,current,stationModel,signals,previousSignals,shiftCycles);
     }
+    publishPlotState();
     // Hint source and destination are distinct: no fullscreen tutorial modal,
     // no auto-play and no labels hiding the painted machine actors.
     if(firstDeliveryPending){
