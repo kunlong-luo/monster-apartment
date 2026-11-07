@@ -206,13 +206,13 @@
   }
   .gothic-workshop-shell[data-cinematic-layout="true"]
   #root.lab.gothic-workshop .gothic-cameo-assistant{
-    position:absolute;left:9px;top:12px;bottom:12px;
+    position:absolute;left:9px;top:56px;bottom:12px;
     width:clamp(145px,11vw,188px);z-index:4;
     pointer-events:auto;min-width:0;min-height:0;
   }
   .gothic-workshop-shell[data-cinematic-layout="true"]
   #root.lab.gothic-workshop .sidebar{
-    position:absolute;right:9px;top:12px;bottom:12px;
+    position:absolute;right:9px;top:56px;bottom:12px;
     width:clamp(210px,17vw,260px);z-index:4;
     min-width:0;min-height:0;overflow-y:auto;pointer-events:auto;
     background:linear-gradient(135deg,#150c1b20,#130b1b50);
