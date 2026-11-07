@@ -76,6 +76,7 @@ export async function mountWorkshopLab(
   element.dataset.machineMaterialStyle='glass-botanical-crystal-v1';
   element.dataset.machineActuatorStyle='piston-leaves-iris-v1';
   element.dataset.machineWorkingAtlases=String(Object.keys(machineWorking).length);
+  element.dataset.machinePreviewScale=machinePreviewActive?'painted-1.075-1.125':'normal';
   const approvedMachinePaintings=Object.values(machineMasters).reduce(
     (count,byLevel)=>count+Object.keys(byLevel??{}).length,0);
   element.dataset.machineArtworkTier=machinePreviewActive?'review-webp':
@@ -456,11 +457,21 @@ export async function mountWorkshopLab(
         const previousAnimatedTiles:string=element.dataset.machineAnimatedTiles??'';
         element.dataset.machineAnimatedTiles=(previousAnimatedTiles?previousAnimatedTiles+';':'')+String(i);
       }
+      // Preserve tile geometry and input hit areas. Review paintings have
+      // meaningful transparent margins, so enlarge only their DISPLAY sprite,
+      // not the board or the interaction region.
+      const enlargedReview=machinePreviewActive&&Boolean(master);
       fixture.position.set(x+CELL*.49,y+CELL*.92);
-      fixture.width=CELL*(.89+(level-1)*.03);
-      fixture.height=CELL*(.88+(level-1)*.035);
-      fixture.eventMode='static';fixture.cursor='pointer';
-      fixture.on('pointertap',()=>callbacks.plot(i));
+      fixture.width=CELL*(enlargedReview?1.075+(level-1)*.025:.89+(level-1)*.03);
+      fixture.height=CELL*(enlargedReview?1.075+(level-1)*.025:.88+(level-1)*.035);
+      if(enlargedReview){
+        // The independent, fixed CELL-sized plotHits layer owns all clicks.
+        // Never let a large painted silhouette select a neighboring plot.
+        fixture.eventMode='none';
+      }else{
+        fixture.eventMode='static';fixture.cursor='pointer';
+        fixture.on('pointertap',()=>callbacks.plot(i));
+      }
       stage.addChild(fixture);
       const detail=master||atlas?null:machine.craft==='well'?paintedDetail.well:
         machine.craft==='garden'?paintedDetail.garden:null;
@@ -481,17 +492,21 @@ export async function mountWorkshopLab(
       const justProduced=shiftCycles.some(c=>c.index===i&&c.amount>0);
       // Restrained internal material light lies on the actual painted vessel
       // / glazing / crystal, beneath the human worker and outside hit targets.
-      const material=createMachineMaterial(machine.craft,signal.state,i,
-        x+CELL*.49,y+CELL*.54,newlyStarted?elapsed:null,
-        justProduced?elapsed:null);
-      stage.addChild(material.node);materialEffects.push(material);
-      // Local moving machinery tracks the same production phase as the
-      // noninteractive material light, below each human worker.
-      if(!atlas){
-        const actuator=createMachineActuators(machine.craft,signal.state,i,
-          x+CELL*.49,y+CELL*.55,newlyStarted?elapsed:null,
+      // Programmatic pistons, leaves and crystal overlays were aligned to
+      // the old geometric chassis. They cover a detailed CG painting with
+      // toy-like shapes, so painted review masters use the actual bitmap
+      // without those mismatched layers. Normal gameplay is unchanged.
+      if(!enlargedReview){
+        const material=createMachineMaterial(machine.craft,signal.state,i,
+          x+CELL*.49,y+CELL*.54,newlyStarted?elapsed:null,
           justProduced?elapsed:null);
-        stage.addChild(actuator.node);actuatorEffects.push(actuator);
+        stage.addChild(material.node);materialEffects.push(material);
+        if(!atlas){
+          const actuator=createMachineActuators(machine.craft,signal.state,i,
+            x+CELL*.49,y+CELL*.55,newlyStarted?elapsed:null,
+            justProduced?elapsed:null);
+          stage.addChild(actuator.node);actuatorEffects.push(actuator);
+        }
       }
       const fx=createMachineEffects(machine.craft,signal.state,i,
         x+CELL*.50,y+CELL*.69,newlyStarted?elapsed:null,
@@ -512,10 +527,17 @@ export async function mountWorkshopLab(
       }
       const stateLabel=signal.state==='idle'?'待派工':
         signal.state==='blocked'?'缺'+(signal.problem==='water'?'水汽':'孢子'):'可生产';
+      if(enlargedReview){
+        const placard=new Graphics().roundRect(x+CELL*.05,y+CELL-23,
+          CELL*.90,20,6).fill({color:0x171021,alpha:.89})
+          .stroke({color:0xdbb582,alpha:.32,width:1});
+        placard.eventMode='none';stage.addChild(placard);
+      }
       const label=glabel(MACHINES[machine.craft].zh+' · '+machine.stored+' · '+stateLabel,
         11,signal.state==='blocked'?0xffac99:COLORS[machine.craft],true);
       label.anchor.set(.5,0);
-      label.position.set(x+CELL/2,y+CELL-29);stage.addChild(label);
+      label.position.set(x+CELL/2,y+CELL-(enlargedReview?21:29));
+      stage.addChild(label);
     }
     // Hint source and destination are distinct: no fullscreen tutorial modal,
     // no auto-play and no labels hiding the painted machine actors.
