@@ -15,7 +15,7 @@ import {createMachineMaterial} from './workshop-machine-materials';
 import {createMachineActuators} from './workshop-machine-actuators';
 import {projectedSupplyTrails} from './workshop-machine-presentation';
 import type {MachineVisualState} from './workshop-machine-status';
-import { BOARD_SIZE, WIDTH, MACHINES, linked, workshopHint } from './workshop-engine';
+import { BOARD_SIZE, WIDTH, linked, workshopHint } from './workshop-engine';
 import type { WorkshopState, Craft, WorkerId } from './workshop-engine';
 
 export type LabSelect={plot:(index:number)=>void; patronTap?:()=>void};
