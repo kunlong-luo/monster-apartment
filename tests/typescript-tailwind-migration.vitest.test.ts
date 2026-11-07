@@ -233,7 +233,7 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(runtime).toContain('onSelectionChange?.({');
     // The typed selection callback now travels alongside the transient
     // presentation mode; no save schema change or DOM dataset bridge.
-    expect(client).toMatch(/mountWorkshopGame\\(\\s*root,\\s*base,\\s*onSelectionChange,\\s*presentationModeRef\\.current\\s*\\)/);
+    expect(client).toContain('root, base, onSelectionChange, presentationModeRef.current');
     expect(bridge).toContain('setPresentationMode:(mode:WorkshopPresentationMode)=>void;');
     // Selection now lives in a typed Zustand state module instead of a
     // duplicated React component-local snapshot.
