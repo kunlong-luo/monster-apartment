@@ -14,7 +14,9 @@ permissions:
 
 concurrency:
   group: monster-apartment-pages
-  cancel-in-progress: true
+  # GitHub Pages can leave its backend deployment lock behind if a running
+  # deployment is cancelled by a later push. Queue instead of interrupting.
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -63,6 +65,9 @@ jobs:
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
+          name: github-pages-${{ github.run_attempt }}
           path: out
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}

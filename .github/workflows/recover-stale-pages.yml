@@ -1,0 +1,25 @@
+name: Release stalled GitHub Pages deployment (one-shot)
+# The 5dd2dae deployment timed out after 10 minutes of syncing_files.
+# GitHub Pages still reported it as active when later builds attempted to ship.
+on:
+  push:
+    paths:
+      - '.github/workflows/recover-stale-pages.yml'
+permissions:
+  contents: read
+  pages: write
+jobs:
+  release-stale:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Cancel only the previously failed deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STALE_DEPLOYMENT: 5dd2dae77ec8cdf7b045691771c55d5ff467d89c
+        run: |
+          echo "Inspecting failed Pages deployment ${STALE_DEPLOYMENT}"
+          gh api "repos/${GITHUB_REPOSITORY}/pages/deployments/${STALE_DEPLOYMENT}" || true
+          # This particular run finished with failure; no active successful
+          # deployment is ever cancelled by this maintenance workflow.
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/${STALE_DEPLOYMENT}/cancel"
