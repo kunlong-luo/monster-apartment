@@ -97,6 +97,12 @@
   .summon-cinematic-ritual__turning-card{width:min(72vw,280px);height:min(100%,450px);
     min-height:240px;max-height:calc(100dvh - 240px)}
 }
+/* Reserve a stable breathing gap between the moving 3D card and its caption.
+ * The previous ~7.6px clearance jittered below the 8px visual invariant
+ * during the CSS/Framer transition at 1440x900; avoid relaxing the test. */
+@media(min-width:700px){
+  .summon-cinematic-ritual__copy{margin-top:14px}
+}
 @media(prefers-reduced-motion:reduce){
   .summon-cinematic-ritual__ring,.summon-cinematic-ritual__particles i,
   .summon-cinematic-ritual__seam,.summon-cinematic-ritual__flash{animation:none!important}
