@@ -94,8 +94,10 @@
         "y": 0.92
       },
       "minBytes": 16000,
-      "generatedFrom": "scripts/prepare-machine-art.mjs",
-      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
+      "generatedFrom": "curated-cg-import",
+      "notes": "Review only. Painted machine candidate extracted from one original AI-generated equipment comparison sheet; transparency and shading need final human art QA.",
+      "sourceKind": "AI-assisted nine-equipment concept board, individually isolated",
+      "sourceSha256": "54a7a0995306d896392091f5cdf6b696138b0e2cec90dd141814e12674c12f7d"
     },
     {
       "id": "machine.well.lv2",
@@ -113,8 +115,10 @@
         "y": 0.92
       },
       "minBytes": 16000,
-      "generatedFrom": "scripts/prepare-machine-art.mjs",
-      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
+      "generatedFrom": "curated-cg-import",
+      "notes": "Review only. Painted machine candidate extracted from one original AI-generated equipment comparison sheet; transparency and shading need final human art QA.",
+      "sourceKind": "AI-assisted nine-equipment concept board, individually isolated",
+      "sourceSha256": "8f04d6fe2a9e0ba9f334f71a18a01440313224b9396d86cf043c9ba94d270a1c"
     },
     {
       "id": "machine.well.lv3",
@@ -132,14 +136,16 @@
         "y": 0.92
       },
       "minBytes": 16000,
-      "generatedFrom": "scripts/prepare-machine-art.mjs",
-      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
+      "generatedFrom": "curated-cg-import",
+      "notes": "Review only. Painted machine candidate extracted from one original AI-generated equipment comparison sheet; transparency and shading need final human art QA.",
+      "sourceKind": "AI-assisted nine-equipment concept board, individually isolated",
+      "sourceSha256": "5c7f8893d907a1df82785fb189102996bc6baa307ead63892c3f21b227d6ad2d"
     },
     {
       "id": "machine.well.working",
       "role": "machine-animation",
       "craft": "well",
-      "status": "review",
+      "status": "pending",
       "path": "art/production/machines/well/working.webp",
       "canvas": {
         "width": 2048,
@@ -158,8 +164,8 @@
       },
       "minBytes": 24000,
       "level": 2,
-      "generatedFrom": "scripts/prepare-machine-working-art.mjs",
-      "notes": "Lv.2-only four-frame aligned motion study; review, not approved CG or Lv.1/Lv.3 art."
+      "generatedFrom": "await-matched-painting-animation",
+      "notes": "Old procedural work atlas no longer matches imported Lv.2 CG; wait for four aligned 512px frames based on the new still artwork."
     },
     {
       "id": "machine.garden.lv1",
@@ -177,8 +183,10 @@
         "y": 0.92
       },
       "minBytes": 16000,
-      "generatedFrom": "scripts/prepare-machine-art.mjs",
-      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
+      "generatedFrom": "curated-cg-import",
+      "notes": "Review only. Painted machine candidate extracted from one original AI-generated equipment comparison sheet; transparency and shading need final human art QA.",
+      "sourceKind": "AI-assisted nine-equipment concept board, individually isolated",
+      "sourceSha256": "0e02ff929b46d9ddb5ea9a4ca0ac54f3f4c688489a60e1f3153e7630d6bce933"
     },
     {
       "id": "machine.garden.lv2",
@@ -196,8 +204,10 @@
         "y": 0.92
       },
       "minBytes": 16000,
-      "generatedFrom": "scripts/prepare-machine-art.mjs",
-      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
+      "generatedFrom": "curated-cg-import",
+      "notes": "Review only. Painted machine candidate extracted from one original AI-generated equipment comparison sheet; transparency and shading need final human art QA.",
+      "sourceKind": "AI-assisted nine-equipment concept board, individually isolated",
+      "sourceSha256": "37141d17a90ddc5a66c6208722a80a1bad4fd29917989fd289f527a798690d14"
     },
     {
       "id": "machine.garden.lv3",
@@ -215,14 +225,16 @@
         "y": 0.92
       },
       "minBytes": 16000,
-      "generatedFrom": "scripts/prepare-machine-art.mjs",
-      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
+      "generatedFrom": "curated-cg-import",
+      "notes": "Review only. Painted machine candidate extracted from one original AI-generated equipment comparison sheet; transparency and shading need final human art QA.",
+      "sourceKind": "AI-assisted nine-equipment concept board, individually isolated",
+      "sourceSha256": "80f67a9a88248f9723c3e4dc5ebe5a682b006b2cc65e7af468941a9e341767f1"
     },
     {
       "id": "machine.garden.working",
       "role": "machine-animation",
       "craft": "garden",
-      "status": "review",
+      "status": "pending",
       "path": "art/production/machines/garden/working.webp",
       "canvas": {
         "width": 2048,
@@ -241,8 +253,8 @@
       },
       "minBytes": 24000,
       "level": 2,
-      "generatedFrom": "scripts/prepare-machine-working-art.mjs",
-      "notes": "Lv.2-only four-frame aligned motion study; review, not approved CG or Lv.1/Lv.3 art."
+      "generatedFrom": "await-matched-painting-animation",
+      "notes": "Old procedural work atlas no longer matches imported Lv.2 CG; wait for four aligned 512px frames based on the new still artwork."
     },
     {
       "id": "machine.kiln.lv1",
@@ -260,8 +272,10 @@
         "y": 0.92
       },
       "minBytes": 16000,
-      "generatedFrom": "scripts/prepare-machine-art.mjs",
-      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
+      "generatedFrom": "curated-cg-import",
+      "notes": "Review only. Painted machine candidate extracted from one original AI-generated equipment comparison sheet; transparency and shading need final human art QA.",
+      "sourceKind": "AI-assisted nine-equipment concept board, individually isolated",
+      "sourceSha256": "88a4c4538dd5682e35ec2e34318c68e0930d4533e4cbc61fa34690870ffacd2e"
     },
     {
       "id": "machine.kiln.lv2",
@@ -279,8 +293,10 @@
         "y": 0.92
       },
       "minBytes": 16000,
-      "generatedFrom": "scripts/prepare-machine-art.mjs",
-      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
+      "generatedFrom": "curated-cg-import",
+      "notes": "Review only. Painted machine candidate extracted from one original AI-generated equipment comparison sheet; transparency and shading need final human art QA.",
+      "sourceKind": "AI-assisted nine-equipment concept board, individually isolated",
+      "sourceSha256": "38eaad7451b8b6d5f539b6e5adf3f422eef9c49491e597e517ef5f032a6faf0e"
     },
     {
       "id": "machine.kiln.lv3",
@@ -298,14 +314,16 @@
         "y": 0.92
       },
       "minBytes": 16000,
-      "generatedFrom": "scripts/prepare-machine-art.mjs",
-      "notes": "Original transparent WebP structure review only; do not auto-promote to approved painted CG."
+      "generatedFrom": "curated-cg-import",
+      "notes": "Review only. Painted machine candidate extracted from one original AI-generated equipment comparison sheet; transparency and shading need final human art QA.",
+      "sourceKind": "AI-assisted nine-equipment concept board, individually isolated",
+      "sourceSha256": "203e0704c2617ac64c98c74a9014a18d2fa650e78b528cc48f7fc87493c287a1"
     },
     {
       "id": "machine.kiln.working",
       "role": "machine-animation",
       "craft": "kiln",
-      "status": "review",
+      "status": "pending",
       "path": "art/production/machines/kiln/working.webp",
       "canvas": {
         "width": 2048,
@@ -324,8 +342,8 @@
       },
       "minBytes": 24000,
       "level": 2,
-      "generatedFrom": "scripts/prepare-machine-working-art.mjs",
-      "notes": "Lv.2-only four-frame aligned motion study; review, not approved CG or Lv.1/Lv.3 art."
+      "generatedFrom": "await-matched-painting-animation",
+      "notes": "Old procedural work atlas no longer matches imported Lv.2 CG; wait for four aligned 512px frames based on the new still artwork."
     },
     {
       "id": "npc.yuesha.full",
@@ -430,7 +448,7 @@
     }
   ],
   "approval": {
-    "stage": "independent-machine-and-motion-review",
+    "stage": "painted-candidate-imported-for-review",
     "paintingDelivered": false,
     "browserVisualReviewPassed": false,
     "releaseReady": false

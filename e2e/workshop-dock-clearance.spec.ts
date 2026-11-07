@@ -157,7 +157,7 @@ test('approved sprites stay live while nine independent review WebPs require exp
   const stage=page.getByTestId('v2-stage');
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:35_000});
   await expect(stage).toHaveAttribute('data-machine-artwork-tier','review-webp');
-  await expect(stage).toHaveAttribute('data-machine-working-atlases','3');
+  await expect(stage).toHaveAttribute('data-machine-working-atlases','0');
   await expect(stage).toHaveAttribute('data-machine-animated-tiles','');
   await expect(stage.locator('canvas')).toBeVisible();
   await mkdir('visual-evidence/workshop',{recursive:true});
@@ -175,7 +175,7 @@ test('approved sprites stay live while nine independent review WebPs require exp
     .toBe(saved);
 });
 
-test('Lv.2 animated review art follows real production and leaves all saved values intact',async({page})=>{
+test('Lv.2 painted review keeps correct equipment and production without mismatched atlases',async({page})=>{
   test.setTimeout(115_000);
   let world=newWorkshop();
   world=moveMachine(world,7,6);
@@ -195,22 +195,22 @@ test('Lv.2 animated review art follows real production and leaves all saved valu
   const stage=page.getByTestId('v2-stage');
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
   await expect(stage).toHaveAttribute('data-machine-artwork-tier','review-webp');
-  await expect(stage).toHaveAttribute('data-machine-working-atlases','3');
+  await expect(stage).toHaveAttribute('data-machine-working-atlases','0');
   await expect(stage).toHaveAttribute('data-machine-states',/5:working;6:working;7:working/);
-  await expect(stage).toHaveAttribute('data-machine-animated-tiles','5;6;7');
+  await expect(stage).toHaveAttribute('data-machine-animated-tiles','');
   await mkdir('visual-evidence/workshop',{recursive:true});
-  await page.screenshot({path:'visual-evidence/workshop/desktop-machine-lv2-working-1440.png',animations:'disabled'});
+  await page.screenshot({path:'visual-evidence/workshop/desktop-machine-lv2-cg-still-1440.png',animations:'disabled'});
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
   await page.evaluate(()=>{
     localStorage.setItem('monster-apartment:gothic-motion-reduced','1');
     window.dispatchEvent(new Event('monster-apartment:motion-changed'));
   });
   await expect(stage).toHaveAttribute('data-motion-state','paused');
-  await expect(stage).toHaveAttribute('data-machine-animated-tiles','5;6;7');
+  await expect(stage).toHaveAttribute('data-machine-animated-tiles','');
   await page.setViewportSize({width:390,height:844});
   await page.goto('/workshop/?machine-art=review');
   await expect(stage).toHaveAttribute('data-machine-animated-tiles','5;6;7',{timeout:45_000});
-  await page.screenshot({path:'visual-evidence/workshop/mobile-machine-lv2-working-390.png',animations:'disabled'});
+  await page.screenshot({path:'visual-evidence/workshop/mobile-machine-lv2-cg-still-390.png',animations:'disabled'});
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
   // Normal players do not load even one review atlas.
   await page.goto('/workshop/');
@@ -219,7 +219,7 @@ test('Lv.2 animated review art follows real production and leaves all saved valu
 });
 
 
-test('review mode inspects the real nine machine masters and four frames without changing production',async({page})=>{
+test('review mode validates nine high-detail 512px machine CG candidates without mismatched motion',async({page})=>{
   test.setTimeout(110_000);
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/workshop/');
@@ -235,9 +235,10 @@ test('review mode inspects the real nine machine masters and four frames without
   const dialog=page.getByTestId('workshop-art-review-dialog');
   await expect(dialog).toBeVisible();
   await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',new RegExp('review/machines/well/lv2[.]webp'));
-  await expect(page.getByTestId('workshop-review-working-frame')).toHaveAttribute('data-frame','0');
-  await page.getByTestId('workshop-review-frame-2').click();
-  await expect(page.getByTestId('workshop-review-working-frame')).toHaveAttribute('data-frame','2');
+  // The old procedural Lv.2 atlases would render an incompatible flat machine.
+  await expect(page.getByTestId('workshop-review-no-atlas')).toBeVisible();
+  await expect(page.getByTestId('workshop-review-playback')).toBeDisabled();
+  await expect(page.getByTestId('workshop-review-frame-2')).toBeDisabled();
 
   await page.getByTestId('workshop-review-craft-garden').click();
   await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',new RegExp('review/machines/garden/lv2[.]webp'));
@@ -248,7 +249,23 @@ test('review mode inspects the real nine machine masters and four frames without
   await page.getByTestId('workshop-review-craft-kiln').click();
   await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',new RegExp('review/machines/kiln/lv3[.]webp'));
   await page.getByTestId('workshop-review-level-2').click();
-  await expect(page.getByTestId('workshop-review-working-frame')).toBeVisible();
+  await expect(page.getByTestId('workshop-review-no-atlas')).toBeVisible();
+  // Prove all nine actual imported WebPs decode at native dimensions.
+  for(const craft of ['well','garden','kiln']){
+    await page.getByTestId('workshop-review-craft-'+craft).click();
+    for(const level of [1,2,3]){
+      await page.getByTestId('workshop-review-level-'+level).click();
+      await expect(page.getByTestId('workshop-review-static-image'))
+        .toHaveAttribute('src',new RegExp('review/machines/'+craft+'/lv'+level+'[.]webp'));
+      const dimensions=await page.getByTestId('workshop-review-static-image')
+        .evaluate(async element=>{
+          const img=element as HTMLImageElement;
+          await img.decode();
+          return [img.naturalWidth,img.naturalHeight];
+        });
+      expect(dimensions).toEqual([512,512]);
+    }
+  }
 
   const decoded=await page.getByTestId('workshop-review-static-image').evaluate(async element=>{
     const img=element as HTMLImageElement;
@@ -259,6 +276,7 @@ test('review mode inspects the real nine machine masters and four frames without
   await mkdir('visual-evidence/workshop',{recursive:true});
   await page.screenshot({path:'visual-evidence/workshop/desktop-machine-review-inspector-1440.png',animations:'disabled'});
   await expect(page.getByTestId('workshop-review-static-image')).toBeVisible();
+  await expect(page.getByTestId('workshop-review-no-atlas')).toBeVisible();
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(before);
 
   await page.keyboard.press('Escape');
