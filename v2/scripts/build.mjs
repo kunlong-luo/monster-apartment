@@ -2,6 +2,7 @@ import {build} from 'esbuild';
 import {mkdir,copyFile,readFile,writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {dirname,resolve} from 'node:path';
+import {prepareMachineReviewSprite} from './prepare-machine-review-sprite.mjs';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 // All entry points (Pages, Playwright's direct webServer, npm build) must
 // generate audited review art before copying it. Do not depend on npm scripts.
@@ -68,7 +69,13 @@ for(const item of pack.productionAssets??[]){
     const output=`review/machines/${item.craft}/lv${item.level}.webp`;
     const destination=resolve(root,'dist/assets',output);
     await mkdir(dirname(destination),{recursive:true});
-    await copyFile(resolve(root,item.path),destination);
+    if(item.generatedFrom==='curated-cg-import'){
+      // The source remains SHA-audited and byte-for-byte intact. Only the
+      // review output gets a conservative neutral-white underside cleanup.
+      await prepareMachineReviewSprite(resolve(root,item.path),destination);
+    }else{
+      await copyFile(resolve(root,item.path),destination);
+    }
     machineIndex.review[item.craft]??={};
     machineIndex.review[item.craft][String(item.level)]=output;
     continue;
