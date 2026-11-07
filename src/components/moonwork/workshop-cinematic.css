@@ -191,3 +191,47 @@
     transition:none!important;
   }
 }
+
+/* The desktop panorama owns the WHOLE middle stage, rather than a small
+ * center box. Existing heroine/contract panels become peripheral overlays.
+ * Returning to the plot grid restores the unchanged three-column layout. */
+@media(min-width:1100px) and (min-height:730px){
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .middle{
+    grid-template-columns:minmax(0,1fr);gap:0;
+  }
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .world{
+    grid-column:1;min-width:0;min-height:0;
+  }
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .gothic-cameo-assistant{
+    position:absolute;left:9px;top:12px;bottom:12px;
+    width:clamp(145px,11vw,188px);z-index:4;
+    pointer-events:auto;min-width:0;min-height:0;
+  }
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .sidebar{
+    position:absolute;right:9px;top:12px;bottom:12px;
+    width:clamp(210px,17vw,260px);z-index:4;
+    min-width:0;min-height:0;overflow-y:auto;pointer-events:auto;
+    background:linear-gradient(135deg,#150c1b20,#130b1b50);
+    border-radius:12px;
+  }
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .workshop-cinematic__stations{
+    padding-left:clamp(146px,12vw,195px);
+    padding-right:clamp(215px,18vw,275px);
+    gap:clamp(0px,.5vw,9px);
+  }
+}
+@media(min-width:1100px) and (max-width:1300px) and (min-height:730px){
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .workshop-cinematic__identity-title{
+    font-size:14px;
+  }
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .workshop-cinematic__identity-detail{
+    font-size:9px;
+  }
+}
