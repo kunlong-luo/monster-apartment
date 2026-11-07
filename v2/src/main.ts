@@ -1,4 +1,4 @@
-import { WORKERS, MACHINES, newWorkshop, validWorkshop,
+import { WORKERS, MACHINES, newWorkshop, validWorkshop, validIndex,
   placeMachine, moveMachine, salvageMachine, machineSalvageRefund, assignWorker, autoAssignWorkers, runShift, acceptPatronCommission,
   upgradeMachine, forecastPatronCommission, importPatronCore, PATRON_IMPORT_PRICE,
   PREMIUM_ORDER_PENALTY, STANDARD_ORDER_PENALTY } from './workshop-engine';
@@ -136,6 +136,11 @@ let disposed=false;
 function dispatch(action:WorkshopAction):void{
   if(disposed)return;
   switch(action.type){
+    case 'select-plot':{
+      if(!validIndex(action.index))return;
+      plot(action.index);
+      break;
+    }
     case 'salvage':{
     if(selectedPlot===null||!world.tiles[selectedPlot])return;
     const index=selectedPlot;
