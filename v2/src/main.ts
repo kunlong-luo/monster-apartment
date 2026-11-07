@@ -5,8 +5,12 @@ import { WORKERS, MACHINES, newWorkshop, validWorkshop, validIndex,
 import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
 import { mountWorkshopLab } from './workshop-lab-stage';
 import type {WorkshopAction,WorkshopRuntimeController,WorkshopSelectionListener,WorkshopPresentationMode} from './workshop-runtime-contract';
+import {
+  WORKSHOP_SAVE_KEY,WORKSHOP_CHANGE_EVENT,parseWorkshopSnapshot,
+  writeWorkshopSnapshot,withWorkshopSaveLock
+} from './workshop-save-transaction';
 
-const STORAGE='monster-apartment:workshop-v2-lab';
+const STORAGE=WORKSHOP_SAVE_KEY;
 /** Bind the Pixi stage and game actions to the single Next.js React shell.
  * React owns every visible business control, readout and catalog.
  * This runtime owns only Pixi, transient selection, status and persistence. */
@@ -28,9 +32,8 @@ if(raw!==null){
   if(!validWorkshop(parsed))throw Error('现有工坊存档结构异常，原始内容已保留。');
   world=parsed;
 }else{
-  // Initialize only when no prior save exists.
-  try{localStorage.setItem(STORAGE,JSON.stringify(world));}
-  catch{/* A temporary unsaved session is still playable. */}
+  // The Next shell must create or restore the first save under the shared lock.
+  throw Error('工坊存档尚未完成安全初始化，请检查浏览器存储权限。');
 }
 let selectedPlot:number|null=null;
 let chosenWorker:WorkerId|null=null;
@@ -38,13 +41,26 @@ let chosenMachine:Craft|null=null;
 let movingFrom:number|null=null;
 let message='从温室开始：把 08 号机器移到水泵旁，再建一座熔炉。';
 let effect:'good'|'bad'|'normal'='normal';
+let disposed=false;
+let expectedRaw:string|null=null;
 
-function apply(next:WorkshopState,feedback:string,tone:typeof effect='normal'){
-  if(next===world){message='无法这样操作：请检查格子、机器或星币。';effect='bad';return;}
-  world=next;message=feedback;effect=tone;
-  try{localStorage.setItem(STORAGE,JSON.stringify(world));
-    window.dispatchEvent(new Event('moonwork:v2-update'));}
-  catch{message=feedback+'（保存失败，刷新后可能丢失进度）';effect='bad';}
+function apply(next:WorkshopState,feedback:string,tone:typeof effect='normal'):boolean{
+  if(next===world){
+    message='无法这样操作：请检查格子、机器或星币。';effect='bad';
+    return false;
+  }
+  // expectedRaw is loaded after obtaining WORKSHOP_SAVE_LOCK; never write
+  // blindly from a scene snapshot captured before the clock tick.
+  const outcome=writeWorkshopSnapshot(localStorage,expectedRaw,next);
+  if(outcome!=='applied'){
+    message=outcome==='conflict'?'存档刚刚更新，请重试操作。':
+      '保存失败，当前操作未写入存档。';
+    effect='bad';return false;
+  }
+  world=next;expectedRaw=JSON.stringify(next);
+  message=feedback;effect=tone;
+  window.dispatchEvent(new Event(WORKSHOP_CHANGE_EVENT));
+  return true;
 }
 function clearChoice(){chosenWorker=null;chosenMachine=null;movingFrom=null;}
 function plot(index:number){
@@ -52,26 +68,22 @@ function plot(index:number){
     const id=chosenWorker;
     if(!world.tiles[index]){message='先在这个格子建机器，才能派人。';effect='bad';}
     else{
-      const previous=world;
       const next=assignWorker(world,id,index);
-      apply(next,WORKERS[id].zh+'已派往 '+String(index+1).padStart(2,'0')+' 号工位。');
-      if(next!==previous)selectedPlot=index;
+      if(apply(next,WORKERS[id].zh+'已派往 '+String(index+1).padStart(2,'0')+' 号工位。'))
+        selectedPlot=index;
     }
     clearChoice();
   }else if(chosenMachine){
     const kind=chosenMachine;
-    const previous=world;
     const next=placeMachine(world,index,kind);
-    apply(next,'已建造 '+MACHINES[kind].zh+'。');
-    if(next!==previous)selectedPlot=index;
+    if(apply(next,'已建造 '+MACHINES[kind].zh+'。'))selectedPlot=index;
     clearChoice();
   }else if(movingFrom!==null){
     if(movingFrom===index){message='已取消移动。';effect='normal';}
     else{
-      const previous=world;
       const next=moveMachine(world,movingFrom,index);
-      apply(next,'机器已搬动。连接路线与下一次产量会随之改变。','good');
-      if(next!==previous)selectedPlot=index;
+      if(apply(next,'机器已搬动。连接路线与下一次产量会随之改变。','good'))
+        selectedPlot=index;
     }
     clearChoice();
   }else{
@@ -106,8 +118,34 @@ function buyPatronCore(){
     ' 星币，货物已入共享仓库。','good');
   render();
 }
+/** All Pixi taps and React commands wait for the same save lock as real-time
+ * production. Reload the latest state before evaluating economic actions. */
+function runSerializedAction(action:()=>void):void{
+  if(disposed)return;
+  void withWorkshopSaveLock(navigator.locks,()=>{
+    if(disposed)return;
+    const latestRaw=localStorage.getItem(STORAGE);
+    const latest=parseWorkshopSnapshot(latestRaw);
+    if(!latest){
+      message='原始工坊存档缺失或无效，操作已停止以保护数据。';
+      effect='bad';render();return;
+    }
+    world=latest;
+    expectedRaw=latestRaw;
+    try{action();}finally{expectedRaw=null;}
+  }).then(result=>{
+    if(disposed||result.status==='ok')return;
+    message=result.status==='unavailable'
+      ?'浏览器不支持跨标签安全存档，无法执行此操作。'
+      :'存档事务暂时失败，请重试。';
+    effect='bad';render();
+  });
+}
 const stage=await mountWorkshopLab(
-  $('stage'),world,{plot,patronTap:acceptPatron},assetBase,initialPresentationMode
+  $('stage'),world,{
+    plot:index=>runSerializedAction(()=>plot(index)),
+    patronTap:()=>runSerializedAction(acceptPatron),
+  },assetBase,initialPresentationMode
 );
 // Contextual navigation from /characters/ selects a genuine worker; the
 // player still has to choose an actual compatible machine for the assignment.
@@ -136,7 +174,6 @@ function render(){
 }
 /** Explicit command dispatcher: React owns button events; Pixi retains
  * tile pointer events. This never reads a DOM event target or CSS selector. */
-let disposed=false;
 function dispatch(action:WorkshopAction):void{
   if(disposed)return;
   switch(action.type){
@@ -235,10 +272,9 @@ function dispatch(action:WorkshopAction):void{
       break;
     }
     case 'reset':{
-    world=newWorkshop();clearChoice();selectedPlot=null;
-    message='新工坊已开始。先连接温室和水泵。';effect='normal';
-    try{localStorage.setItem(STORAGE,JSON.stringify(world));
-      window.dispatchEvent(new Event('moonwork:v2-update'));}catch{/* optional */}
+    if(apply(newWorkshop(),'新工坊已开始。先连接温室和水泵。')){
+      clearChoice();selectedPlot=null;
+    }
     render();
       break;
     }
@@ -274,7 +310,7 @@ const onLocalChange=()=>{
 window.addEventListener('moonwork:v2-update',onLocalChange);
 render();
 return {
-  dispatch,
+  dispatch:(action)=>runSerializedAction(()=>dispatch(action)),
   setPresentationMode:stage.setPresentationMode,
   destroy:()=>{
     if(disposed)return;

@@ -5,6 +5,7 @@ import {newWorkshop} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
 import type {WorkshopSelectionSnapshot} from '../../../v2/src/workshop-runtime-contract';
 import {CHANGE_EVENT,SAVE_KEY,parseSavedWorld} from './world-store';
+import {withWorkshopSaveLock} from '../../../v2/src/workshop-save-transaction';
 import {mirrorWorkshopSave,readWorkshopBackup} from './world-database';
 
 export const EMPTY_SELECTION:WorkshopSelectionSnapshot={
@@ -73,15 +74,16 @@ export function ensureWorkshopWorld():Promise<WorkshopState|null>{
     catch{return null;}
     if(raw!==null)return parseSavedWorld(raw);
     const backup=await readWorkshopBackup();
-    try{
-      // Another tab or component might have initialized while IndexedDB read.
-      raw=window.localStorage.getItem(SAVE_KEY);
-      if(raw!==null)return parseSavedWorld(raw);
+    // Initial recovery is a write too; serialize it against every open tab.
+    const result=await withWorkshopSaveLock(navigator.locks,()=>{
+      const latest=window.localStorage.getItem(SAVE_KEY);
+      if(latest!==null)return parseSavedWorld(latest);
       const world=backup??newWorkshop();
       window.localStorage.setItem(SAVE_KEY,JSON.stringify(world));
       window.dispatchEvent(new Event(CHANGE_EVENT));
       return world;
-    }catch{return backup??null;}
+    });
+    return result.status==='ok'?result.value:null;
   })().finally(()=>{bootPromise=null;});
   return bootPromise;
 }

@@ -31,20 +31,26 @@ export function Action({type,children,disabled=false,testId,onApplied}:{
   onApplied?:()=>void;
 }){
   const [message,setMessage]=useState('');
-  const execute=()=>{
-    let outcome:ActionStatus;
-    try{outcome=commitWorldAction(window.localStorage,type);}
-    catch{outcome='error';}
-    if(outcome==='applied'){
-      window.dispatchEvent(new Event(CHANGE_EVENT));
-      onApplied?.();
-    }
+  const [pending,setPending]=useState(false);
+  const execute=async()=>{
+    if(pending)return;
+    setPending(true);
+    let outcome:ActionStatus='error';
+    try{
+      outcome=await commitWorldAction(
+        window.localStorage,type,navigator.locks,
+        ()=>window.dispatchEvent(new Event(CHANGE_EVENT))
+      );
+    }catch{/* A failed write must not appear successful. */}
+    if(outcome==='applied')onApplied?.();
     setMessage(({applied:'操作完成，工坊存档已更新。',
-      missing:'没有可用的工坊存档。',unavailable:'当前不可进行此操作。',
-      error:'本地存储不可写入。'} as const)[outcome]);
+      missing:'没有可用的工坊存档。',
+      unavailable:'此浏览器不支持跨标签安全存档，请使用支持 Web Locks 的浏览器。',
+      error:'操作未完成，请检查存储权限并重试。'} as const)[outcome]);
+    setPending(false);
   };
   return <div>
-    <button type="button" data-testid={testId} disabled={disabled}
+    <button type="button" data-testid={testId} disabled={disabled||pending}
       className={WORLD_ACTION_CLASS}
       onClick={execute}>{children}</button>
     {message&&<output role="status" className="block text-xs text-[#c7f0b8]">{message}</output>}

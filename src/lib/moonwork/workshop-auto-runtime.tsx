@@ -1,28 +1,26 @@
 'use client';
 import {useEffect} from 'react';
 import {simulateWorkshopAutoUntil,startWorkshopAuto,pauseWorkshopAuto} from '../../../v2/src/workshop-auto-production';
-import {CHANGE_EVENT,parseSavedWorld,SAVE_KEY} from './world-store';
+import {CHANGE_EVENT} from './world-store';
+import {WORKSHOP_SAVE_LOCK,transactWorkshopSave} from '../../../v2/src/workshop-save-transaction';
 
-export const WORKSHOP_AUTO_LOCK='monster-apartment:realtime-workshop-v1';
+export const WORKSHOP_AUTO_LOCK=WORKSHOP_SAVE_LOCK;
 export type AutoToggleResult='enabled'|'paused'|'unavailable'|'missing'|'error';
 
 export async function toggleWorkshopAuto():Promise<AutoToggleResult>{
   if(typeof navigator==='undefined'||!navigator.locks)return 'unavailable';
-  try{
-    return await navigator.locks.request(WORKSHOP_AUTO_LOCK,():AutoToggleResult=>{
-      const raw=window.localStorage.getItem(SAVE_KEY);
-      const world=parseSavedWorld(raw);
-      if(!world)return 'missing';
-      const next=world.auto?.enabled?pauseWorkshopAuto(world):startWorkshopAuto(world,Date.now());
-      if(next===world)return 'unavailable';
-      if(window.localStorage.getItem(SAVE_KEY)!==raw)return 'error';
-      // Production state and clock share ONE existing, validated save write.
-      window.localStorage.setItem(SAVE_KEY,JSON.stringify(next));
-      window.dispatchEvent(new Event(CHANGE_EVENT));
-      const outcome:AutoToggleResult=next.auto?.enabled?'enabled':'paused';
-      return outcome;
-    });
-  }catch{return 'error';}
+  let enabled=false;
+  const result=await transactWorkshopSave(
+    window.localStorage,navigator.locks,world=>{
+      const next=world.auto?.enabled
+        ?pauseWorkshopAuto(world):startWorkshopAuto(world,Date.now());
+      enabled=Boolean(next.auto?.enabled);
+      return next;
+    },()=>window.dispatchEvent(new Event(CHANGE_EVENT))
+  );
+  return result==='applied'?(enabled?'enabled':'paused'):
+    result==='missing'?'missing':
+    result==='unchanged'||result==='unavailable'?'unavailable':'error';
 }
 
 /** Active on all seven routes, even when workshop Pixi is unmounted.
@@ -35,20 +33,13 @@ export function WorkshopAutoRuntime(){
     const tick=()=>{
       if(disposed||busy||document.hidden)return;
       busy=true;
-      void navigator.locks.request(WORKSHOP_AUTO_LOCK,{ifAvailable:true},lock=>{
-        if(!lock||disposed)return;
-        let raw:string|null;
-        try{raw=window.localStorage.getItem(SAVE_KEY);}catch{return;}
-        const world=parseSavedWorld(raw);
-        if(!world?.auto?.enabled)return;
-        const next=simulateWorkshopAutoUntil(world,Date.now());
-        if(next===world)return;
-        try{
-          if(window.localStorage.getItem(SAVE_KEY)!==raw)return;
-          window.localStorage.setItem(SAVE_KEY,JSON.stringify(next));
-          window.dispatchEvent(new Event(CHANGE_EVENT));
-        }catch{/* Uncommitted output is never displayed as a reward. */}
-      }).catch(()=>undefined).finally(()=>{busy=false;});
+      void transactWorkshopSave(
+        window.localStorage,navigator.locks,
+        world=>disposed||!world.auto?.enabled
+          ?world:simulateWorkshopAutoUntil(world,Date.now()),
+        ()=>window.dispatchEvent(new Event(CHANGE_EVENT)),
+        {ifAvailable:true}
+      ).finally(()=>{busy=false;});
     };
     const interval=window.setInterval(tick,3000);
     window.addEventListener(CHANGE_EVENT,tick);

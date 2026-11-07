@@ -1,14 +1,10 @@
-import {acceptPatronCommission,importPatronCore,acceptPremiumOrder,buyTownSupply,deliverResidentRequest,validWorkshop} from '../../../v2/src/workshop-engine';
+import {acceptPatronCommission,importPatronCore,acceptPremiumOrder,buyTownSupply,deliverResidentRequest} from '../../../v2/src/workshop-engine';
+import {WORKSHOP_SAVE_KEY,WORKSHOP_CHANGE_EVENT,parseWorkshopSnapshot,transactWorkshopSave} from '../../../v2/src/workshop-save-transaction';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
 
-export const SAVE_KEY='monster-apartment:workshop-v2-lab';
-export const CHANGE_EVENT='moonwork:v2-update';
-
-export function parseSavedWorld(raw:string|null):WorkshopState|null {
-  if(!raw)return null;
-  try{const data:unknown=JSON.parse(raw);return validWorkshop(data)?data:null;}
-  catch{return null;}
-}
+export const SAVE_KEY=WORKSHOP_SAVE_KEY;
+export const CHANGE_EVENT=WORKSHOP_CHANGE_EVENT;
+export const parseSavedWorld=parseWorkshopSnapshot;
 type SaveStorage=Pick<Storage,'getItem'|'setItem'>;
 export type WorldAction='accept'|'import'|'premium'|'marketWater'|'marketFiber'|'marketCore'|'resident';
 export type ActionStatus='applied'|'missing'|'unavailable'|'error';
@@ -21,13 +17,14 @@ export function reduceWorldAction(world:WorkshopState,action:WorldAction):Worksh
     action==='marketCore'?buyTownSupply(world,'core'):
     action==='resident'?deliverResidentRequest(world):importPatronCore(world);
 }
-export function commitWorldAction(store:SaveStorage,action:WorldAction):ActionStatus {
-  let raw:string|null;
-  try{raw=store.getItem(SAVE_KEY);}catch{return 'error';}
-  const world=parseSavedWorld(raw);
-  if(!world)return 'missing';
-  const next=reduceWorldAction(world,action);
-  if(next===world)return 'unavailable';
-  try{store.setItem(SAVE_KEY,JSON.stringify(next));return 'applied';}
-  catch{return 'error';}
+/** All market and contract actions use the same exclusive V2 save lock. */
+export async function commitWorldAction(
+  store:SaveStorage,action:WorldAction,locks:LockManager|null|undefined,
+  onApplied?:()=>void
+):Promise<ActionStatus>{
+  const status=await transactWorkshopSave(
+    store,locks,world=>reduceWorldAction(world,action),onApplied
+  );
+  return status==='unchanged'?'unavailable':
+    status==='applied'||status==='missing'||status==='unavailable'?status:'error';
 }
