@@ -1,0 +1,193 @@
+/* Monster Apartment · Moonwork scenic desktop stage
+ * Painted scenery takes the whole stage; buttons remain small and contextual.
+ * Pixi's 15 real plot hit areas never move or disappear from the runtime.
+ */
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-stage-composition{
+  position:relative;flex:1 1 auto;min-height:0;min-width:0;overflow:hidden;
+  background:#110d1b;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-stage-composition #stage{
+  position:absolute;inset:0;width:100%;height:100%;min-height:0;overflow:hidden;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-stage-composition[data-view="cinematic"] #stage canvas{
+  opacity:0;pointer-events:none;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-scene-choices{
+  display:none;align-items:center;gap:3px;padding:3px;border:1px solid #b891625f;
+  border-radius:9px;background:#100b1ad9;flex:none;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-scene-choices button{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  min-height:28px;padding:4px 9px;border:1px solid transparent;border-radius:6px;
+  color:#cdbba8;font-size:11px;line-height:1;white-space:nowrap;cursor:pointer;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-scene-choices button[aria-pressed="true"]{
+  background:linear-gradient(145deg,#704151,#422438);
+  border-color:#dfb6788a;color:#ffebca;
+  box-shadow:0 2px 10px #0c07185c,inset 0 1px 0 #ffe0aa26;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-scene-choices button:is(:hover,:focus-visible){
+  color:#fff2d8;border-color:#d9ae7c;outline-offset:2px;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic{
+  position:absolute;inset:0;isolation:isolate;overflow:hidden;display:flex;
+  flex-direction:column;color:#fff1d6;
+  background-size:cover;background-position:center 49%;
+  font-family:"Noto Serif SC",Georgia,serif;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 62% 57% at 51% 39%,#7f4b4945,transparent 81%),
+    linear-gradient(180deg,#140b18b5 0%,transparent 19%,transparent 63%,#0a0717e8 100%);
+  box-shadow:inset 0 0 0 1px #e2b8796e,inset 0 0 90px #090511dc;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic::after{
+  content:"";position:absolute;inset:9px;z-index:-1;pointer-events:none;
+  border:1px solid #cda66e33;border-radius:4px;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__topline{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;padding:13px 24px 4px;position:relative;z-index:2;
+  text-shadow:0 2px 9px #05020a;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__eyebrow{
+  color:#eccaa0;font:600 10px/1.2 Georgia,serif;letter-spacing:.21em;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__chapter{
+  font-size:11px;letter-spacing:.1em;color:#e5c6aa;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__stations{
+  position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(0px,.8vw,14px);flex:1;min-height:0;
+  padding:0 clamp(15px,2.8vw,46px);
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station{
+  --station-glow:#79c8d9;
+  position:relative;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-end;min-width:0;min-height:0;isolation:isolate;
+  text-align:center;border:1px solid transparent;border-radius:15px;
+  background:transparent;color:#f8e5c8;cursor:pointer;padding:0 3px 6px;
+  transition:border-color .18s ease,background .18s ease;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station--garden{
+  --station-glow:#9edebc;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station--kiln{
+  --station-glow:#f8a66d;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station:is(:hover,:focus-visible,[aria-pressed="true"]){
+  border-color:#d2a9777c;background:linear-gradient(180deg,transparent 10%,#3d284b29 63%,#2315277a);
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station:focus-visible{
+  outline:2px solid #ffdda9;outline-offset:-3px;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__ordinal{
+  position:absolute;top:4%;left:50%;transform:translateX(-50%);
+  width:25px;height:25px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid #d8b47894;background:#170e20d9;color:#f9d7a4;
+  font:italic 14px/1 Georgia,serif;box-shadow:0 0 10px #070313a6;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station-halo{
+  position:absolute;inset:12% 0 25%;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 60%,color-mix(in srgb,var(--station-glow) 33%,transparent),transparent 68%);
+  filter:blur(5px);
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__machine-art{
+  position:relative;width:100%;flex:1;min-height:0;margin-top:20px;
+  filter:drop-shadow(0 13px 13px #080510d0);transition:transform .25s ease;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__machine-art img{
+  object-fit:contain;object-position:center bottom;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station:is(:hover,:focus-visible)
+.workshop-cinematic__machine-art{transform:translateY(-4px) scale(1.025)}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__identity{
+  display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;
+  width:100%;flex:none;padding:5px 3px 4px;
+  text-shadow:0 2px 8px #05020cee;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__identity::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 75%,#0f0b1dea,transparent 78%);
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__identity-title{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  color:#ffe6b5;font-size:clamp(14px,1.4vw,19px);font-weight:700;letter-spacing:.05em;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__level{
+  border:1px solid #d5ad785c;background:#201125bf;padding:3px 6px;
+  border-radius:4px;color:#f6d4ac;font:600 10px/1 Georgia,serif;letter-spacing:0;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__identity-detail{
+  color:#d4bca7;font-size:10px;letter-spacing:.03em;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__state{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-size:10px;line-height:1.5;color:#e8cdb9;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__state i{
+  width:6px;height:6px;border-radius:50%;background:#b27f71;
+  box-shadow:0 0 7px #c3887477;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__state--active i{
+  background:#98ddb9;box-shadow:0 0 9px #8ee5ab;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__worker{
+  position:absolute;top:10px;right:3px;display:flex;gap:5px;
+  align-items:center;padding:4px 7px;border:1px solid #c99f7675;
+  border-radius:999px;color:#f6d8b5;font-size:10px;
+  background:#150e1ce8;box-shadow:0 4px 14px #07040b8a;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__worker img{
+  width:27px;height:27px;object-fit:cover;border-radius:50%;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__count{
+  position:absolute;bottom:3px;right:2px;font-size:9px;
+  color:#e8c8a0;background:#150c19bb;border-radius:3px;padding:2px 5px;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__bottomline{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:6px 22px 11px;flex:none;background:linear-gradient(180deg,transparent,#110c1ac9);
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__route{
+  display:inline-flex;align-items:center;gap:10px;color:#dfbfa1;
+  font-size:11px;letter-spacing:.07em;text-shadow:0 2px 6px #08020c;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__route svg{color:#d9aa73}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__grid-button{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  border:1px solid #b6906866;border-radius:7px;
+  padding:7px 10px;background:#1c1223db;color:#f3d6ad;
+  font-size:10px;cursor:pointer;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__grid-button:is(:hover,:focus-visible){
+  border-color:#e7c18d;color:#fff1d7;outline-offset:2px;
+}
+@media(min-width:1100px) and (min-height:730px){
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-scene-choices{display:flex}
+}
+@media(max-width:1099px),(max-height:729px){
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic{display:none}
+  .gothic-workshop-shell #root.lab.gothic-workshop
+  .workshop-stage-composition #stage canvas{opacity:1;pointer-events:auto}
+}
+@media(min-width:1100px) and (max-width:1360px){
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__stations{
+    padding:0 12px;gap:0;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__topline{padding:9px 13px}
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__worker{
+    top:6px;right:0;font-size:9px;padding:3px 5px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__worker img{
+    width:23px;height:23px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station,
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__machine-art{
+    transition:none!important;
+  }
+}
