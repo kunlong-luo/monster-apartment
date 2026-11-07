@@ -161,6 +161,10 @@ test('Next workshop uses React-owned worker and machine controls with the origin
   const canvas=stage.locator('canvas');
   await expect(canvas).toBeVisible({timeout:25000});
   await expect(page.locator('#root')).toHaveAttribute('data-react-controls','true');
+  // Scenic HUD intentionally hides the three management columns on desktop.
+  // Explicitly open the contextual scheduler before selecting a worker.
+  if(await page.getByTestId('workshop-stage-layout-toggle').isVisible())
+    await page.getByTestId('workshop-stage-layout-toggle').click();
   const worker=page.getByTestId('v2-worker-brook');
   await expect(worker).toBeVisible();
   await worker.click();
@@ -477,7 +481,10 @@ test('workshop roster remains legible and operable at desktop and phone widths',
     await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:30000});
     const console=page.getByTestId('workshop-console');
     await expect(console).toBeVisible();
-    if(size.width<=900)await page.getByTestId('console-tab-roster').click();
+    if(size.width>900){
+      await page.getByTestId('workshop-stage-layout-toggle').click();
+      await expect(page.getByTestId('next-workshop-shell')).toHaveAttribute('data-console-layout','expanded');
+    }else await page.getByTestId('console-tab-roster').click();
     const roster=page.getByTestId('console-roster');
     await expect(roster).toBeVisible();
     const workers=['brook','fern','cinder'].map(id=>page.getByTestId('v2-worker-'+id));
