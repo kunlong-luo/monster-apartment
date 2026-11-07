@@ -7,6 +7,7 @@ import { paintShiftFeedback } from './workshop-shift-effects';
 import {inspectMachineSignals} from './workshop-machine-status';
 import {presentWorkshopStations} from './workshop-station-presenter';
 import {workshopStagePlotPatch,workshopMachineCaption} from './workshop-stage-diff';
+import {createWorkshopFrameMeter} from './workshop-frame-metrics';
 import type {WorkshopPresentationMode} from './workshop-runtime-contract';
 import {projectMachineProduction} from './workshop-production';
 import type {MachineCycle} from './workshop-production';
@@ -275,7 +276,24 @@ export async function mountWorkshopLab(
   document.addEventListener('visibilitychange',updateMotion);
   window.addEventListener(motionEvent,updateMotion);
   window.addEventListener('storage',onMotionStorage);
+  // Measure 1/4 of ticker callbacks. Publish a rolling 128-sample window
+  // every 32 samples (~128 live frames), never on each animation frame.
+  const frameMeter=createWorkshopFrameMeter();
+  let frameCounter=0;
   app.ticker.add(ticker=>{
+    const measure=(++frameCounter%4)===0;
+    const startedAt=measure?performance.now():0;
+    const finishSample=()=>{
+      if(!measure)return;
+      const report=frameMeter.sample(ticker.deltaMS,performance.now()-startedAt);
+      if(!report)return;
+      element.dataset.frameSamples=String(report.totalSamples);
+      element.dataset.frameWindow=String(report.windowSamples);
+      element.dataset.frameIntervalP50Ms=String(report.intervalP50Ms);
+      element.dataset.frameIntervalP95Ms=String(report.intervalP95Ms);
+      element.dataset.frameUpdateP95Ms=String(report.updateP95Ms);
+      element.dataset.frameUpdateMaxMs=String(report.updateMaxMs);
+    };
     const dt=ticker.deltaTime;
     // Feedback must still complete when a player disables decorative motion.
     feedback.tick(dt);
@@ -308,7 +326,10 @@ export async function mountWorkshopLab(
     for(const fx of deviceEffects)fx.tick(elapsed+dt/60,animationEnabled);
     for(const material of materialEffects)material.tick(elapsed+dt/60,animationEnabled);
     for(const actuator of actuatorEffects)actuator.tick(elapsed+dt/60,animationEnabled);
-    if(!animationEnabled)return;
+    if(!animationEnabled){
+      finishSample();
+      return;
+    }
     elapsed+=dt/60;
     for(const actor of paintedActors){
       actor.sprite.y=actor.baseY+Math.sin(elapsed*2.2+actor.seed*.75)*
@@ -344,6 +365,7 @@ export async function mountWorkshopLab(
       flowLayer.circle(x,y,5).fill({color:flow.tint,alpha:.9});
       flowLayer.circle(x,y,12).fill({color:flow.tint,alpha:.13});
     }
+    finishSample();
   });
   updateMotion();
   // Pure DOM-control changes must never dispose and restart animated sprites.

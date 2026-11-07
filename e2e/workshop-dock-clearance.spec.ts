@@ -591,3 +591,37 @@ test('R06 625px console matches reserved stage clearance',async({page})=>{
   expect(layout.gap).toBeGreaterThanOrEqual(4);
   expect(layout.documentOverflow).toBeLessThanOrEqual(2);
 });
+
+
+// R09: no indefinite telemetry arrays, no frame measurement while the
+// cinematic canvas is paused. Only compare measured values for finiteness,
+// not synthetic FPS thresholds from variable CI hardware.
+test('R09 Pixi samples running grid frames and freezes diagnostics in cinematic mode',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute(
+    'data-runtime-ready','true',{timeout:30_000});
+  const stage=page.getByTestId('v2-stage');
+  await expect(stage).toHaveAttribute('data-pixi-ticker','stopped');
+  expect(await stage.getAttribute('data-frame-samples')).toBeNull();
+  await page.getByTestId('workshop-view-grid').click();
+  await expect(stage).toHaveAttribute('data-pixi-ticker','running');
+  await expect.poll(async()=>Number(
+    await stage.getAttribute('data-frame-samples')),{timeout:20000})
+    .toBeGreaterThanOrEqual(32);
+  const readings=await stage.evaluate(element=>{
+    const keys=['frameSamples','frameWindow','frameIntervalP50Ms',
+      'frameIntervalP95Ms','frameUpdateP95Ms','frameUpdateMaxMs'] as const;
+    return Object.fromEntries(keys.map(key=>[key,Number(element.dataset[key])]));
+  });
+  for(const value of Object.values(readings))expect(Number.isFinite(value)).toBe(true);
+  expect(readings.frameWindow).toBeLessThanOrEqual(128);
+  expect(readings.frameIntervalP95Ms).toBeGreaterThanOrEqual(readings.frameIntervalP50Ms);
+  expect(readings.frameUpdateMaxMs).toBeGreaterThanOrEqual(readings.frameUpdateP95Ms);
+  await page.getByTestId('workshop-view-cinematic').click();
+  await expect(stage).toHaveAttribute('data-pixi-ticker','stopped');
+  const stoppedSamples=await stage.getAttribute('data-frame-samples');
+  await page.waitForTimeout(350);
+  expect(await stage.getAttribute('data-frame-samples')).toBe(stoppedSamples);
+});
