@@ -19,6 +19,7 @@ export type WorkshopAction=
   |{type:'choose-worker';worker:WorkerId}
   |{type:'auto-assign'}
   |{type:'choose-machine';machine:Craft}
+  |{type:'select-plot';index:number}
   |{type:'toggle-move'}
   |{type:'salvage'}
   |{type:'upgrade'}
