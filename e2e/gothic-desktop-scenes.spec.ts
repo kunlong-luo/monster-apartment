@@ -7,6 +7,10 @@ test('PC workshop roster is readable and has one real button per worker',async({
   await expect(page.locator('#root.lab.gothic-workshop'))
     .toHaveAttribute('data-runtime-ready','true',{timeout:30000});
   await expect(page.locator('#stage canvas')).toBeVisible();
+  // R01 keeps the scene visually unobstructed until scheduling is requested.
+  await expect(page.getByTestId('console-roster')).toBeHidden();
+  await page.getByTestId('workshop-stage-layout-toggle').click();
+  await expect(page.getByTestId('next-workshop-shell')).toHaveAttribute('data-console-layout','expanded');
   await expect(page.getByTestId('console-roster')).toBeVisible();
   await expect(page.getByTestId('v2-worker-brook')).toBeVisible();
   await expect(page.locator('#actions.options > button')).toHaveCount(3);
