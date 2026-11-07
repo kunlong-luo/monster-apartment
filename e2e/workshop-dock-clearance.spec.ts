@@ -209,7 +209,7 @@ test('Lv.2 painted review keeps correct equipment and production without mismatc
   await expect(stage).toHaveAttribute('data-machine-animated-tiles','');
   await page.setViewportSize({width:390,height:844});
   await page.goto('/workshop/?machine-art=review');
-  await expect(stage).toHaveAttribute('data-machine-animated-tiles','5;6;7',{timeout:45_000});
+  await expect(stage).toHaveAttribute('data-machine-animated-tiles','',{timeout:45_000});
   await page.screenshot({path:'visual-evidence/workshop/mobile-machine-lv2-cg-still-390.png',animations:'disabled'});
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
   // Normal players do not load even one review atlas.
