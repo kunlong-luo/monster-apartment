@@ -1,5 +1,7 @@
 'use client';
-import {PanelBottomOpen,PanelBottomClose} from 'lucide-react';
+import {PanelBottomOpen,PanelBottomClose,Clapperboard,Grid3X3} from 'lucide-react';
+import {useSyncExternalStore} from 'react';
+import {WorkshopCinematicStage} from './workshop-cinematic-stage';
 
 import {
   workshopRank,
@@ -14,6 +16,16 @@ import {
 import type {Craft, WorkerId, WorkshopState} from '../../../v2/src/workshop-engine';
 import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
 
+function subscribeWideStage(callback:()=>void){
+  const query=window.matchMedia('(min-width:1100px) and (min-height:730px)');
+  query.addEventListener('change',callback);
+  return ()=>query.removeEventListener('change',callback);
+}
+function getWideStage(){
+  return typeof window!=='undefined'&&
+    window.matchMedia('(min-width:1100px) and (min-height:730px)').matches;
+}
+
 export function WorkshopStageContainer({
   world,onAction,
   chosenWorker,
@@ -22,10 +34,14 @@ export function WorkshopStageContainer({
   selectedPlot,
   expandedConsole,
   onToggleConsole,
+  sceneMode,
+  onSceneModeChange,
 }: {
   world: WorkshopState;
   expandedConsole:boolean;
   onToggleConsole:()=>void;
+  sceneMode:'cinematic'|'grid';
+  onSceneModeChange:(mode:'cinematic'|'grid')=>void;
   onAction:(action:WorkshopAction)=>void;
   chosenWorker: WorkerId | null;
   chosenMachine: Craft | null;
@@ -45,6 +61,11 @@ export function WorkshopStageContainer({
     selectedPlot !== null ? machineUpgradeQuote(world, selectedPlot) : null;
   const isMoving = movingFrom !== null;
   const hint = workshopHint(world);
+  const desktop=useSyncExternalStore(subscribeWideStage,getWideStage,()=>false);
+  // Construction, relocation, and worker assignments require exact tiles.
+  // The cinematic view returns automatically after the pending task completes.
+  const showCinematic=desktop&&sceneMode==='cinematic'&&
+    !chosenWorker&&!chosenMachine&&!isMoving;
 
   const selectedText = chosenWorker
     ? '待派工：' + WORKERS[chosenWorker].zh
@@ -73,10 +94,22 @@ export function WorkshopStageContainer({
   return (
     <div className="world" aria-label="生产与建设画布区域">
       <div className="stage-label">
-        <span>● 生产与建设区</span>
+        <span>{showCinematic?'月光工坊 · 生产全景':'生产与建设 · 15 格工位'}</span>
         <small id="rank" data-testid="v2-rank">
           {rankText}
         </small>
+        <div className="workshop-scene-choices" role="group" aria-label="工坊画面模式">
+          <button type="button" aria-pressed={showCinematic}
+            data-testid="workshop-view-cinematic"
+            onClick={()=>onSceneModeChange('cinematic')}>
+            <Clapperboard aria-hidden="true" size={13}/>生产全景
+          </button>
+          <button type="button" aria-pressed={!showCinematic}
+            data-testid="workshop-view-grid"
+            onClick={()=>onSceneModeChange('grid')}>
+            <Grid3X3 aria-hidden="true" size={13}/>精密建造
+          </button>
+        </div>
         <button type="button" onClick={onToggleConsole}
           aria-pressed={!expandedConsole} aria-label={expandedConsole?'切换到场景优先布局':'展开详细调度面板'}
           data-testid="workshop-stage-layout-toggle"
@@ -86,11 +119,18 @@ export function WorkshopStageContainer({
         </button>
       </div>
 
-      <div
-        id="stage"
-        data-testid="v2-stage"
-        aria-label="PixiJS WebGL 工坊场景：点击设备或空地进行操作"
-      ></div>
+      <div className="workshop-stage-composition"
+        data-testid="workshop-stage-composition"
+        data-view={showCinematic?'cinematic':'grid'}>
+        <div
+          id="stage"
+          data-testid="v2-stage"
+          aria-label="PixiJS WebGL 工坊场景：点击设备或空地进行操作"
+        ></div>
+        {showCinematic&&<WorkshopCinematicStage world={world}
+          selectedPlot={selectedPlot} onAction={onAction}
+          onOpenGrid={()=>onSceneModeChange('grid')}/>}
+      </div>
       <span className="sr-only" data-testid="v2-guide-instruction" aria-live="polite">
         {world.completed===0&&hint.target!==null
           ?'操作提示：目标 '+String(hint.target+1).padStart(2,'0')+' 号地块。'
