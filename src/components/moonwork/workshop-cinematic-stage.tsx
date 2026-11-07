@@ -1,5 +1,6 @@
 'use client';
 
+import './workshop-cinematic.css';
 import Image from 'next/image';
 import {useState,useSyncExternalStore} from 'react';
 import {ArrowUpRight,Grid3X3,MoveRight} from 'lucide-react';
