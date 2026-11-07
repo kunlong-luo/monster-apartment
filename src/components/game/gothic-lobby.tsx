@@ -50,12 +50,20 @@ export function GothicLobby(){
       ?'你的第一批晶核已经准备好了吗？我的特别委托需要认真安排。'
       :'欢迎来到夜色公寓。我是月纱。先经营好工坊，交付第一批委托，我们就会有更多故事。');
   };
-  const accept=()=>{
-    const result=commitWorldAction(window.localStorage,'accept');
-    if(result==='applied'){
-      window.dispatchEvent(new Event(CHANGE_EVENT));
-      setDialogue('契约已经成立。记得查看交付期限，别让我失望。');
-    }else setDialogue('现在还无法接受这份委托，请先完成普通订单。');
+  const [accepting,setAccepting]=useState(false);
+  const accept=async()=>{
+    if(accepting)return;
+    setAccepting(true);
+    const result=await commitWorldAction(
+      window.localStorage,'accept',navigator.locks,
+      ()=>window.dispatchEvent(new Event(CHANGE_EVENT))
+    );
+    setDialogue(result==='applied'
+      ?'契约已经成立。记得查看交付期限，别让我失望。'
+      :result==='unavailable'
+        ?'当前无法安全写入存档，请使用支持 Web Locks 的浏览器。'
+        :'现在还无法接受这份委托，请先完成普通订单。');
+    setAccepting(false);
   };
   const close=()=>setPanel(null);
   const moveLight=(event:React.PointerEvent<HTMLElement>)=>{
@@ -183,7 +191,7 @@ export function GothicLobby(){
           <h2>今晚，想和我聊些什么？</h2>
           <span className="gothic-lobby__story-rule" aria-hidden="true"/>
           <p className="gothic-lobby__story-quote" role="status">“{dialogue||'月光街的灯已经亮起，我正在等你。'}”</p>
-          {world.patron?.status==='offered'&&<button type="button" onClick={accept}
+          {world.patron?.status==='offered'&&<button type="button" onClick={accept} disabled={accepting}
             className="gothic-lobby__story-accept">
             接受月纱的特别委托
           </button>}
