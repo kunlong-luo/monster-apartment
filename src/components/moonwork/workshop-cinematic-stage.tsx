@@ -81,6 +81,7 @@ export function WorkshopCinematicStage({
           data-plot={station?.index??'unbuilt'}
           data-level={level}
           data-state={status??'unbuilt'}
+          data-art-tier={isReview?'review':'legacy'}
           aria-pressed={station?.index===selectedPlot}
           aria-label={station
             ?'选择'+MACHINES[craft].zh+'，'+String(station.index+1).padStart(2,'0')+'号工位，Lv.'+level
