@@ -111,6 +111,9 @@ export function WorkshopClient() {
   const [speechIndex, setSpeechIndex] = useState(0);
   // Presentation-only: switching scene/console priority never writes a save.
   const [expandedConsole,setExpandedConsole]=useState(false);
+  // PC composition only: keep the playable 15-plot board mounted beneath it.
+  // No localStorage or save schema changes for visual mode switching.
+  const [sceneMode,setSceneMode]=useState<'cinematic'|'grid'>('cinematic');
   const savedWorld = useWorkshopWorld();
   const world = savedWorld ?? newWorkshop();
   const rank=workshopRank(world.completed);
@@ -319,6 +322,8 @@ export function WorkshopClient() {
           <WorkshopStageContainer
             expandedConsole={expandedConsole}
             onToggleConsole={()=>setExpandedConsole(previous=>!previous)}
+            sceneMode={sceneMode}
+            onSceneModeChange={setSceneMode}
             onAction={onAction}
             world={world}
             chosenWorker={selection.worker}
