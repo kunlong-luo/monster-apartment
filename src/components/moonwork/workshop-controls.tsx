@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useState,useSyncExternalStore} from 'react';
 import Image from 'next/image';
 import type {ReactNode} from 'react';
 import {Waves,Sprout,Gem,Settings2,ClipboardList,ChevronRight,Play,Pause,MoveHorizontal,TriangleAlert} from 'lucide-react';
@@ -8,7 +8,8 @@ import type {LucideIcon} from 'lucide-react';
 import brookFace from '../../../public/art/beauty-beasts/characters/brook/face.webp';
 import fernFace from '../../../public/art/beauty-beasts/characters/fern/face.webp';
 import cinderFace from '../../../public/art/beauty-beasts/characters/cinder/face.webp';
-import {WORKERS, MACHINES, autoAssignWorkers} from '../../../v2/src/workshop-engine';
+import {WORKERS, MACHINES, autoAssignWorkers, machineLevel} from '../../../v2/src/workshop-engine';
+import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 import type {WorkshopState, Machine, Craft, WorkerId} from '../../../v2/src/workshop-engine';
 import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
 import wellArt from '../../../v2/art/well-art-review.avif';
@@ -25,6 +26,15 @@ const MACHINE_IMAGES = {
   garden: gardenArt,
   kiln: kilnArt,
 };
+
+function subscribeArtReview(callback:()=>void){
+  window.addEventListener('popstate',callback);
+  return ()=>window.removeEventListener('popstate',callback);
+}
+function reviewRequested(){
+  return typeof window!=='undefined'&&
+    new URLSearchParams(window.location.search).get('machine-art')==='review';
+}
 
 const MACHINE_OUTPUTS: Record<Craft, {name: string; icon: ReactNode; count: number}> = {
   well: {name: '清水', icon: <Waves size={13} strokeWidth={1.7}/>, count: 2},
@@ -54,6 +64,9 @@ export function WorkshopControls({
   const [activeTab, setActiveTab] = useState<'devices' | 'materials' | 'products'>('devices');
   const [logFilter, setLogFilter] = useState<'all' | 'output' | 'alert'>('all');
   const [activeConsole,setActiveConsole]=useState<'equipment'|'roster'|'logs'>('roster');
+  const [badMachineThumbnails,setBadMachineThumbnails]=useState<Partial<Record<Craft,boolean>>>({});
+  const reviewArt=useSyncExternalStore(subscribeArtReview,reviewRequested,()=>false);
+  const reviewBase=reviewArt?workshopAssetRoot(window.location.href):null;
 
   // This is a real production-state action, not an imitation of assignment.
   const suggested=autoAssignWorkers(world);
@@ -167,7 +180,14 @@ export function WorkshopControls({
               const isSelected = chosenMachine === id;
               const output = MACHINE_OUTPUTS[id];
               const MachineIcon=MACHINE_ICONS[id];
-              const countOnField = world.tiles.filter((t) => t?.craft === id).length;
+              const owned=world.tiles.filter((t) => t?.craft === id);
+              const countOnField=owned.length;
+              // A built upgraded machine must never be pictured as Lv.1.
+              const displayLevel=owned.reduce((level,tile)=>
+                Math.max(level,machineLevel(tile!)),1);
+              const paintedUrl=reviewBase?
+                new URL('assets/review/machines/'+id+'/lv'+displayLevel+'.webp',reviewBase).href:null;
+              const showPainted=Boolean(paintedUrl)&&!badMachineThumbnails[id];
 
               return (
                 <button
@@ -185,18 +205,38 @@ export function WorkshopControls({
                       : 'border-gothic-brass/65 hover:bg-gothic-wine/40'
                   }`}
                 >
-                  {/* Equipment Thumbnail Art */}
-                  <div className="relative h-14 w-full overflow-hidden rounded-lg bg-[#140c16] border border-gothic-brass/30">
+                  {/* Review sprites match the Pixi machine exactly. Ordinary
+                      players retain the existing approved catalog fallback. */}
+                  <div
+                    data-art-tier={showPainted?'cg-review':'legacy'}
+                    data-testid={'workshop-machine-thumbnail-frame-'+id}
+                    className={`relative w-full overflow-hidden rounded-lg border ${
+                      showPainted
+                        ?'h-16 border-[#c7a06f]/55 bg-[radial-gradient(ellipse_at_50%_60%,#493149,#140f20_74%)]'
+                        :'h-14 border-gothic-brass/30 bg-[#140c16]'
+                    }`}
+                  >
                     <Image
-                      src={MACHINE_IMAGES[id]}
-                      alt={info.zh}
+                      key={showPainted?paintedUrl:'legacy-'+id}
+                      data-testid={'workshop-machine-thumbnail-'+id}
+                      src={showPainted?paintedUrl!:MACHINE_IMAGES[id]}
+                      alt={info.zh+' Lv.'+displayLevel}
                       fill
-                      className="object-cover object-center transition-transform group-hover:scale-105"
-                      sizes="120px"
+                      unoptimized={showPainted}
+                      onError={()=>{
+                        if(showPainted)setBadMachineThumbnails(old=>({...old,[id]:true}));
+                      }}
+                      className={showPainted
+                        ?'object-contain object-center drop-shadow-[0_4px_7px_rgba(0,0,0,.8)]'
+                        :'object-cover object-center transition-transform group-hover:scale-105'}
+                      sizes="(max-width:640px) 110px, 150px"
                     />
                     <span className="absolute left-1 top-1 rounded bg-black/75 px-1 py-0.5 text-[8px] font-bold text-gothic-gold">
                       已建 {countOnField}
                     </span>
+                    {showPainted&&<span className="absolute bottom-0.5 right-1 rounded bg-[#1b1523]/90 px-1 text-[8px] text-[#f4d8a1]">
+                      Lv.{displayLevel} · 审核
+                    </span>}
                   </div>
 
                   {/* Info Header */}
