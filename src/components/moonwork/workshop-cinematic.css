@@ -101,6 +101,26 @@
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__machine-art img{
   object-fit:contain;object-position:center bottom;
 }
+/* Source sprites were padded for 512px plot icons. Enlarge the painted
+ * SUBJECT, not its transparent canvas, so the machinery reads at scene scale.
+ * The bitmap stays noninteractive; its parent real-state station button owns
+ * all pointer/keyboard input. Separate factors protect the reviewed CG detail. */
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station--well{--prop-zoom:2.65}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station--garden{--prop-zoom:1.95}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station--kiln{--prop-zoom:2.10}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station[data-art-tier="review"]{--prop-zoom:1.65}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station[data-art-tier="review"].workshop-cinematic__station--well{--prop-zoom:1.80}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__machine-art img{
+  transform:scale(var(--prop-zoom,1.65));
+  transform-origin:50% 55%;
+}
+
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station:is(:hover,:focus-visible)
 .workshop-cinematic__machine-art{transform:translateY(-4px) scale(1.025)}
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__identity{
