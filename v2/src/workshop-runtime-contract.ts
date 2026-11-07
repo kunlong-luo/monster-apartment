@@ -10,6 +10,8 @@ export type WorkshopSelectionSnapshot=Readonly<{
   selectedPlot:number|null;
 }>;
 
+/** Purely transient: never saved to V2 workshop JSON. */
+export type WorkshopPresentationMode='cinematic'|'grid';
 export type WorkshopSelectionListener=
   (selection:WorkshopSelectionSnapshot)=>void;
 /** Exhaustive React → game command protocol. The Pixi stage retains
@@ -30,5 +32,6 @@ export type WorkshopAction=
 
 export type WorkshopRuntimeController=Readonly<{
   dispatch:(action:WorkshopAction)=>void;
+  setPresentationMode:(mode:WorkshopPresentationMode)=>void;
   destroy:()=>void;
 }>;

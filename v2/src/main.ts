@@ -4,7 +4,7 @@ import { WORKERS, MACHINES, newWorkshop, validWorkshop, validIndex,
   PREMIUM_ORDER_PENALTY, STANDARD_ORDER_PENALTY } from './workshop-engine';
 import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
 import { mountWorkshopLab } from './workshop-lab-stage';
-import type {WorkshopAction,WorkshopRuntimeController,WorkshopSelectionListener} from './workshop-runtime-contract';
+import type {WorkshopAction,WorkshopRuntimeController,WorkshopSelectionListener,WorkshopPresentationMode} from './workshop-runtime-contract';
 
 const STORAGE='monster-apartment:workshop-v2-lab';
 /** Bind the Pixi stage and game actions to the single Next.js React shell.
@@ -12,7 +12,9 @@ const STORAGE='monster-apartment:workshop-v2-lab';
  * This runtime owns only Pixi, transient selection, status and persistence. */
 export async function mountWorkshopGame(root:HTMLElement,
   assetBase:string=document.baseURI,
-  onSelectionChange?:WorkshopSelectionListener):Promise<WorkshopRuntimeController>{
+  onSelectionChange?:WorkshopSelectionListener,
+  initialPresentationMode:WorkshopPresentationMode='grid'
+):Promise<WorkshopRuntimeController>{
 if(root.dataset.reactControls!=='true')
   throw Error('工坊必须由 Next.js React 界面挂载。');
 const $=(id:string)=>root.querySelector<HTMLElement>('#'+id)!;
@@ -104,7 +106,9 @@ function buyPatronCore(){
     ' 星币，货物已入共享仓库。','good');
   render();
 }
-const stage=await mountWorkshopLab($('stage'),world,{plot,patronTap:acceptPatron},assetBase);
+const stage=await mountWorkshopLab(
+  $('stage'),world,{plot,patronTap:acceptPatron},assetBase,initialPresentationMode
+);
 // Contextual navigation from /characters/ selects a genuine worker; the
 // player still has to choose an actual compatible machine for the assignment.
 const requestedWorker=new URLSearchParams(window.location.search).get('worker');
@@ -271,6 +275,7 @@ window.addEventListener('moonwork:v2-update',onLocalChange);
 render();
 return {
   dispatch,
+  setPresentationMode:stage.setPresentationMode,
   destroy:()=>{
     if(disposed)return;
     disposed=true;

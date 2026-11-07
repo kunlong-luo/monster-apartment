@@ -359,3 +359,37 @@ test('cinematic unbuilt machine opens the actual grid without changing saved inv
   await expect(page.getByTestId('v2-next-step')).toContainText('待建造：晶核熔炉');
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
 });
+
+// R03/R04: hidden Pixi must stop and panorama must expose each real plot.
+test('panorama pauses Pixi and exposes all same-craft machines',async({page})=>{
+  test.setTimeout(90_000);
+  const seed=newWorkshop();
+  seed.tiles[0]={craft:'well',worker:null,stored:0,level:2};
+  await page.addInitScript(saved=>{
+    window.localStorage.setItem('monster-apartment:workshop-v2-lab',saved);
+  },JSON.stringify(seed));
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:30_000});
+  const stage=page.getByTestId('v2-stage');
+  const view=page.getByTestId('workshop-stage-composition');
+  await expect(view).toHaveAttribute('data-view','cinematic');
+  await expect(stage).toHaveAttribute('data-presentation-mode','cinematic');
+  await expect(stage).toHaveAttribute('data-pixi-ticker','stopped');
+  const well=page.getByTestId('workshop-cinematic-machine-well');
+  await expect(well).toHaveAttribute('data-plot','0');
+  await well.click();
+  await expect(page.getByTestId('workshop-cinematic-picker-well')).toBeVisible();
+  await page.getByTestId('workshop-cinematic-choice-well-5').click();
+  await expect(well).toHaveAttribute('data-plot','5');
+  await expect(page.getByTestId('v2-next-step')).toContainText('06 号地块');
+  await expect(stage).toHaveAttribute('data-pixi-ticker','stopped');
+  await page.getByTestId('workshop-view-grid').click();
+  await expect(view).toHaveAttribute('data-view','grid');
+  await expect(stage).toHaveAttribute('data-pixi-ticker','running');
+  await expect(page.getByTestId('v2-next-step')).toContainText('06 号地块');
+  await page.getByTestId('workshop-view-cinematic').click();
+  await expect(stage).toHaveAttribute('data-pixi-ticker','stopped');
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
+    .toBe(JSON.stringify(seed));
+});

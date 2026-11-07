@@ -4,10 +4,10 @@ import './workshop-cinematic.css';
 import Image from 'next/image';
 import {useState,useSyncExternalStore} from 'react';
 import {ArrowUpRight,Grid3X3,MoveRight} from 'lucide-react';
-import {MACHINES,WORKERS,machineLevel} from '../../../v2/src/workshop-engine';
+import {MACHINES,WORKERS} from '../../../v2/src/workshop-engine';
+import {presentWorkshopStations} from '../../../v2/src/workshop-station-presenter';
 import type {Craft,WorkshopState} from '../../../v2/src/workshop-engine';
 import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
-import {inspectMachineSignals} from '../../../v2/src/workshop-machine-status';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 import hall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
 import wellLegacy from '../../../v2/art/well-art-review.avif';
@@ -49,7 +49,8 @@ export function WorkshopCinematicStage({
 }){
   const base=useSyncExternalStore(subscribeReview,getReviewBase,()=> '');
   const [failedImages,setFailedImages]=useState<Partial<Record<Craft,boolean>>>({});
-  const signals=inspectMachineSignals(world);
+  const [openCraft,setOpenCraft]=useState<Craft|null>(null);
+  const stations=presentWorkshopStations(world,selectedPlot).groups;
 
   return <div className="workshop-cinematic" data-testid="workshop-cinematic-scene"
     aria-label="月光工坊，三台主设备与真实生产工位"
@@ -61,13 +62,12 @@ export function WorkshopCinematicStage({
 
     <div className="workshop-cinematic__stations" role="group" aria-label="真实工坊设备">
       {CRAFTS.map(craft=>{
-        const candidates=world.tiles.map((tile,index)=>({tile,index}))
-          .filter((entry):entry is {tile:NonNullable<typeof entry.tile>;index:number}=>entry.tile?.craft===craft);
-        const station=candidates.reduce<(typeof candidates)[number]|null>((best,entry)=>
-          !best||machineLevel(entry.tile)>machineLevel(best.tile)?entry:best,null);
-        const level=station?machineLevel(station.tile):1;
-        const worker=station?.tile.worker??null;
-        const status=station?signals[station.index]?.state:null;
+        const group=stations[craft];
+        const candidates=group.instances;
+        const station=group.featured;
+        const level=station?.level??1;
+        const worker=station?.machine.worker??null;
+        const status=station?.signal.state??null;
         const statusText=status==='working'?'生产运行中':
           status==='blocked'?'材料供应受阻':station?'等待工匠派驻':'尚未建造';
         const art=base&&!failedImages[craft]
@@ -75,20 +75,22 @@ export function WorkshopCinematicStage({
           :DEFAULT_ART[craft];
         const isReview=typeof art==='string';
         const legend=LEGEND[craft];
-        return <button
-          type="button" key={craft}
+        return <div key={craft} className="workshop-cinematic__station-slot">
+          <button type="button"
           data-testid={'workshop-cinematic-machine-'+craft}
-          data-plot={station?.index??'unbuilt'}
+          data-plot={station?.plot??'unbuilt'}
           data-level={level}
           data-state={status??'unbuilt'}
           data-art-tier={isReview?'review':'legacy'}
-          aria-pressed={station?.index===selectedPlot}
+          aria-pressed={station?.plot===selectedPlot}
           aria-label={station
-            ?'选择'+MACHINES[craft].zh+'，'+String(station.index+1).padStart(2,'0')+'号工位，Lv.'+level
+            ?'选择'+MACHINES[craft].zh+'，'+String(station.plot+1).padStart(2,'0')+'号工位，Lv.'+level
             :'建设'+MACHINES[craft].zh+'，打开建造棋盘'}
           onClick={()=>{
-            if(station)onAction({type:'select-plot',index:station.index});
-            else{onAction({type:'choose-machine',machine:craft});onOpenGrid();}
+            if(station){
+              onAction({type:'select-plot',index:station.plot});
+              setOpenCraft(previous=>candidates.length>1&&previous!==craft?craft:null);
+            }else{onAction({type:'choose-machine',machine:craft});onOpenGrid();}
           }}
           className={'workshop-cinematic__station workshop-cinematic__station--'+craft}
         >
@@ -110,7 +112,7 @@ export function WorkshopCinematicStage({
             <span className="workshop-cinematic__identity-detail">{legend.material}</span>
             <span className={'workshop-cinematic__state'+(status==='working'?' workshop-cinematic__state--active':'')}>
               <i aria-hidden="true"/>{statusText}
-              {station&&<span> · {String(station.index+1).padStart(2,'0')}号地块</span>}
+              {station&&<span> · {String(station.plot+1).padStart(2,'0')}号地块</span>}
               <ArrowUpRight size={13} aria-hidden="true"/>
             </span>
           </div>
@@ -119,9 +121,27 @@ export function WorkshopCinematicStage({
             <span>{WORKERS[worker].zh}</span>
           </span>}
           {candidates.length>1&&<span className="workshop-cinematic__count">
-            共 {candidates.length} 台 · 点击查看最高等级
+            共 {candidates.length} 台 · 点击切换工位
           </span>}
-        </button>;
+          </button>
+          {openCraft===craft&&candidates.length>1&&
+            <div className="workshop-cinematic__station-picker"
+              role="group" aria-label={MACHINES[craft].zh+'的全部工位'}
+              data-testid={'workshop-cinematic-picker-'+craft}>
+              {candidates.map(candidate=>
+                <button type="button" key={candidate.plot}
+                  data-testid={'workshop-cinematic-choice-'+craft+'-'+candidate.plot}
+                  aria-pressed={selectedPlot===candidate.plot}
+                  aria-label={'选择'+MACHINES[craft].zh+' '+String(candidate.plot+1).padStart(2,'0')+'号工位，Lv.'+candidate.level}
+                  onClick={()=>{
+                    onAction({type:'select-plot',index:candidate.plot});
+                    setOpenCraft(null);
+                  }}>
+                  {String(candidate.plot+1).padStart(2,'0')} · Lv.{candidate.level}
+                </button>
+              )}
+            </div>}
+        </div>;
       })}
     </div>
 

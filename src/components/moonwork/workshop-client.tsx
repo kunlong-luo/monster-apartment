@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useRef, useState} from 'react';
+import {useCallback,useEffect, useRef, useState} from 'react';
 import {useMoonworkState,ensureWorkshopWorld,EMPTY_SELECTION} from '@/lib/moonwork/world-state';
 import Link from 'next/link';
 import '@/components/game/gothic-workshop.css';
@@ -22,7 +22,7 @@ import yueshaAvatar from '../../../public/art/yuesha-avatar-v3.webp';
 import Image from 'next/image';
 import {RotateCcw} from 'lucide-react';
 import type {
-  WorkshopAction,WorkshopRuntimeController,WorkshopSelectionListener
+  WorkshopAction,WorkshopRuntimeController,WorkshopSelectionListener,WorkshopPresentationMode
 } from '../../../v2/src/workshop-runtime-contract';
 
 declare global {
@@ -32,6 +32,7 @@ declare global {
         root: HTMLElement,
         assetBase?: string,
         onSelectionChange?: WorkshopSelectionListener,
+        initialPresentationMode?: WorkshopPresentationMode,
       ) => Promise<WorkshopRuntimeController>;
     };
     __moonworkRuntimeLoading?: Promise<void>;
@@ -93,6 +94,11 @@ const ASSISTANT_LINES = [
 export function WorkshopClient() {
   const host = useRef<HTMLDivElement>(null);
   const gameController = useRef<WorkshopRuntimeController|null>(null);
+  const presentationModeRef=useRef<WorkshopPresentationMode>('grid');
+  const onPresentationModeChange=useCallback((mode:WorkshopPresentationMode)=>{
+    presentationModeRef.current=mode;
+    gameController.current?.setPresentationMode(mode);
+  },[]);
   const onAction = (action:WorkshopAction) => gameController.current?.dispatch(action);
   const [autoError,setAutoError]=useState('');
   const onAutoToggle=()=>{
@@ -165,11 +171,14 @@ export function WorkshopClient() {
         const runtime = window.MoonworkRuntime;
         if (!runtime) throw Error('PixiJS runtime is missing.');
 
-        const controller = await runtime.mountWorkshopGame(root, base, onSelectionChange);
+        const controller = await runtime.mountWorkshopGame(
+          root, base, onSelectionChange, presentationModeRef.current
+        );
         if (cancelled) {
           controller.destroy();
         } else {
           gameController.current = controller;
+          controller.setPresentationMode(presentationModeRef.current);
           setRuntimeReady(true);
           // Pixi owns the initial ?worker= selection and publishes it during
           // mount. Dispatching again here toggled it OFF (double-selection bug).
@@ -325,6 +334,7 @@ export function WorkshopClient() {
             onToggleConsole={()=>setExpandedConsole(previous=>!previous)}
             sceneMode={sceneMode}
             onSceneModeChange={setSceneMode}
+            onPresentationModeChange={onPresentationModeChange}
             onAction={onAction}
             world={world}
             chosenWorker={selection.worker}

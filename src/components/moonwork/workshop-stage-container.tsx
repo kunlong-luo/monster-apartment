@@ -1,6 +1,6 @@
 'use client';
 import {PanelBottomOpen,PanelBottomClose,Clapperboard,Grid3X3} from 'lucide-react';
-import {useSyncExternalStore} from 'react';
+import {useEffect,useSyncExternalStore} from 'react';
 import {WorkshopCinematicStage} from './workshop-cinematic-stage';
 
 import {
@@ -14,7 +14,7 @@ import {
   MACHINES,
 } from '../../../v2/src/workshop-engine';
 import type {Craft, WorkerId, WorkshopState} from '../../../v2/src/workshop-engine';
-import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
+import type {WorkshopAction,WorkshopPresentationMode} from '../../../v2/src/workshop-runtime-contract';
 
 function subscribeWideStage(callback:()=>void){
   const query=window.matchMedia('(min-width:1100px) and (min-height:730px)');
@@ -36,12 +36,14 @@ export function WorkshopStageContainer({
   onToggleConsole,
   sceneMode,
   onSceneModeChange,
+  onPresentationModeChange,
 }: {
   world: WorkshopState;
   expandedConsole:boolean;
   onToggleConsole:()=>void;
   sceneMode:'cinematic'|'grid';
   onSceneModeChange:(mode:'cinematic'|'grid')=>void;
+  onPresentationModeChange:(mode:WorkshopPresentationMode)=>void;
   onAction:(action:WorkshopAction)=>void;
   chosenWorker: WorkerId | null;
   chosenMachine: Craft | null;
@@ -66,6 +68,10 @@ export function WorkshopStageContainer({
   // The cinematic view returns automatically after the pending task completes.
   const showCinematic=desktop&&sceneMode==='cinematic'&&
     !chosenWorker&&!chosenMachine&&!isMoving;
+  // The actual responsive view, not a stale preference, controls WebGL.
+  useEffect(()=>{
+    onPresentationModeChange(showCinematic?'cinematic':'grid');
+  },[showCinematic,onPresentationModeChange]);
 
   const selectedText = chosenWorker
     ? '待派工：' + WORKERS[chosenWorker].zh

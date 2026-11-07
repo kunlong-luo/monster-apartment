@@ -5,6 +5,8 @@ import { loadWorkshopPaintedArt } from './workshop-painted-art';
 import { createFloatingFeedback } from './workshop-floating-feedback';
 import { paintShiftFeedback } from './workshop-shift-effects';
 import {inspectMachineSignals} from './workshop-machine-status';
+import {presentWorkshopStations} from './workshop-station-presenter';
+import type {WorkshopPresentationMode} from './workshop-runtime-contract';
 import {projectMachineProduction} from './workshop-production';
 import type {MachineCycle} from './workshop-production';
 import {createMachineEffects} from './workshop-machine-effects';
@@ -12,11 +14,15 @@ import {createMachineMaterial} from './workshop-machine-materials';
 import {createMachineActuators} from './workshop-machine-actuators';
 import {projectedSupplyTrails} from './workshop-machine-presentation';
 import type {MachineVisualState} from './workshop-machine-status';
-import { BOARD_SIZE, WIDTH, MACHINES, linked, machineLevel, workshopHint } from './workshop-engine';
+import { BOARD_SIZE, WIDTH, MACHINES, linked, workshopHint } from './workshop-engine';
 import type { WorkshopState, Craft, WorkerId } from './workshop-engine';
 
 export type LabSelect={plot:(index:number)=>void; patronTap?:()=>void};
-export type LabView={sync:(state:WorkshopState,selected:number|null)=>void; destroy:()=>void};
+export type LabView={
+  sync:(state:WorkshopState,selected:number|null)=>void;
+  setPresentationMode:(mode:WorkshopPresentationMode)=>void;
+  destroy:()=>void;
+};
 
 /** A deliberately temporary, playable *greybox*, not the game's art direction.
  * Everything interactive lives in PixiJS/WebGL, including the plot hit areas.
@@ -37,7 +43,8 @@ function frame(x:number,y:number,w:number,h:number,fill:number,border:number){
 }
 export async function mountWorkshopLab(
   element:HTMLElement,state:WorkshopState,callbacks:LabSelect,
-  assetBase:string=document.baseURI
+  assetBase:string=document.baseURI,
+  initialPresentationMode:WorkshopPresentationMode='grid'
 ):Promise<LabView>{
   const app=new Application();
   await app.init({width:W,height:H,background:'#172233',preference:'webgl',
@@ -220,11 +227,12 @@ export async function mountWorkshopLab(
   const motionKey='monster-apartment:gothic-motion-reduced';
   const motionEvent='monster-apartment:motion-changed';
   let animationEnabled=false;
+  let presentationMode=initialPresentationMode;
   const allowMotion=()=>{
     let savedStill=false;
     try{savedStill=window.localStorage.getItem(motionKey)==='1';}
     catch{/* Private storage: still honor system preference. */}
-    return !document.hidden&&!reducedMotionQuery.matches&&!savedStill;
+    return presentationMode==='grid'&&!document.hidden&&!reducedMotionQuery.matches&&!savedStill;
   };
   const updateMotion=()=>{
     const allowed=allowMotion();
@@ -236,8 +244,10 @@ export async function mountWorkshopLab(
     for(const machine of machineAnimations){if(allowed)machine.play();else machine.stop();}
     if(!allowed)for(const actor of paintedActors)actor.sprite.y=actor.baseY;
     // Invisible tabs must not keep scheduling WebGL work.
-    if(document.hidden)app.ticker.stop();
+    if(document.hidden||presentationMode==='cinematic')app.ticker.stop();
     else app.ticker.start();
+    element.dataset.presentationMode=presentationMode;
+    element.dataset.pixiTicker=app.ticker.started?'running':'stopped';
   };
   const onMotionStorage=(event:StorageEvent)=>{
     if(!event.key||event.key===motionKey)updateMotion();
@@ -353,7 +363,8 @@ export async function mountWorkshopLab(
     flowPaths=[];
     stage.removeChildren().forEach(child=>child.destroy({children:true}));
     tutorialLayer.removeChildren().forEach(child=>child.destroy({children:true}));
-    const signals=inspectMachineSignals(current);
+    const stationModel=presentWorkshopStations(current,selected);
+    const signals=stationModel.byPlot.map(station=>station?.signal??null);
     element.dataset.machineAnimatedTiles='';
     // The live transport cues correspond to inputs a real next shift would
     // consume. Neighboring tiles alone do not imply that goods can flow.
@@ -394,7 +405,7 @@ export async function mountWorkshopLab(
     }
     for(let i=0;i<BOARD_SIZE;i++){
       const {x,y}=plotXY(i);
-      const machine=current.tiles[i];
+      const machine=stationModel.byPlot[i]?.machine??null;
       // Foundation sprites survive every world snapshot and every shift.
       const tile=floorTiles[i];
       tile.tint=machine?0xffffff:0xc9d6e0;
@@ -421,7 +432,7 @@ export async function mountWorkshopLab(
           marker.position.set(x+54,y+9);stage.addChild(marker);
         }
       }
-      const level=machineLevel(machine);
+      const level=stationModel.byPlot[i]!.level;
       const signal=signals[i]!;
       const glow=new Graphics().ellipse(x+CELL*.5,y+CELL*.78,CELL*.35,CELL*.19)
         .fill({color:signal.state==='working'?COLORS[machine.craft]:
@@ -659,7 +670,14 @@ export async function mountWorkshopLab(
     updateMotion();
   };
   render(state,null);
-  return {sync:render,destroy:()=>{
+  return {
+    sync:render,
+    setPresentationMode:(mode)=>{
+      if(presentationMode===mode)return;
+      presentationMode=mode;
+      updateMotion();
+    },
+    destroy:()=>{
     observer.disconnect();
     reducedMotionQuery.removeEventListener('change',updateMotion);
     document.removeEventListener('visibilitychange',updateMotion);
