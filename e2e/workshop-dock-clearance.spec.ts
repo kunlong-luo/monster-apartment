@@ -16,6 +16,21 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
     await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-machine-working-atlases','0');
     await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-machine-artwork-tier','review-avif');
     await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-supply-routes','');
+    const stageComposition=page.getByTestId('workshop-stage-composition');
+    if(viewport.width===1440){
+      // Desktop-first real cinematic scene, backed by the actual plot state.
+      await expect(stageComposition).toHaveAttribute('data-view','cinematic');
+      await expect(page.getByTestId('workshop-cinematic-scene')).toBeVisible();
+      await expect(page.getByTestId('workshop-cinematic-machine-well'))
+        .toHaveAttribute('data-plot','5');
+      await page.getByTestId('workshop-cinematic-machine-well').click();
+      await expect(page.getByTestId('v2-next-step')).toContainText('06 号地块');
+      await expect(page.getByTestId('workshop-cinematic-machine-well'))
+        .toHaveAttribute('aria-pressed','true');
+    }else{
+      await expect(stageComposition).toHaveAttribute('data-view','grid');
+      await expect(page.getByTestId('workshop-view-cinematic')).toBeHidden();
+    }
     const shift=page.getByTestId('v2-shift');
     const nav=page.getByTestId('scene-navigation');
     await expect(shift).toBeVisible();
@@ -80,6 +95,13 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
       await expect(page.getByTestId('v2-worker-cinder')).toBeVisible();
       await mkdir('visual-evidence/workshop',{recursive:true});
       await page.screenshot({path:'visual-evidence/workshop/desktop-workshop-scene-1440.png',animations:'disabled'});
+
+      await page.getByTestId('workshop-view-grid').click();
+      await expect(stageComposition).toHaveAttribute('data-view','grid');
+      await expect(page.getByTestId('workshop-cinematic-scene')).toHaveCount(0);
+      await page.screenshot({path:'visual-evidence/workshop/desktop-workshop-build-grid-1440.png',animations:'disabled'});
+      await page.getByTestId('workshop-view-cinematic').click();
+      await expect(stageComposition).toHaveAttribute('data-view','cinematic');
 
       await layoutToggle.click();
       await expect(shell).toHaveAttribute('data-console-layout','expanded');
@@ -311,4 +333,20 @@ test('review mode validates nine high-detail 512px machine CG candidates without
   await page.getByRole('button',{name:'关闭原画审查'}).click();
   await expect(dialog).not.toBeVisible();
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(before);
+});
+
+
+test('cinematic unbuilt machine opens the actual grid without changing saved inventory',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:35_000});
+  const saved=await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'));
+  await expect(page.getByTestId('workshop-stage-composition')).toHaveAttribute('data-view','cinematic');
+  const forge=page.getByTestId('workshop-cinematic-machine-kiln');
+  await expect(forge).toHaveAttribute('data-plot','unbuilt');
+  await forge.click();
+  await expect(page.getByTestId('workshop-stage-composition')).toHaveAttribute('data-view','grid');
+  await expect(page.getByTestId('v2-next-step')).toContainText('待建造：晶核熔炉');
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
 });
