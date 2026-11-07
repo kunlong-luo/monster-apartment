@@ -1,5 +1,13 @@
-import {test,expect} from '@playwright/test';
+import {test,expect,type Page} from '@playwright/test';
 import {navigateScene,expectSceneNavigation} from './helpers/scene-navigation';
+
+/** PC now opens in the cinematic scene. Old engine tests deliberately opt
+ * into the unchanged, precise 15-plot input surface before tapping canvas. */
+async function openPreciseGrid(page:Page){
+  const grid=page.getByTestId('workshop-view-grid');
+  if(await grid.isVisible())await grid.click();
+}
+
 
 test('automatic production runs from saved machines without advancing contract days',async({page})=>{
   test.setTimeout(90000);
@@ -165,6 +173,7 @@ test('Next workshop uses React-owned worker and machine controls with the origin
   const box=await canvas.boundingBox();
   expect(box).not.toBeNull();
   // Empty plot 07 (index 6) on the original 1050x645 Pixi stage.
+  await openPreciseGrid(page);
   await canvas.click({position:{
     x:(131+160+73)/1050*box!.width,
     y:(104+160+73)/645*box!.height
@@ -203,6 +212,7 @@ test('canceling machine movement does not alter the real factory save', async ({
   const box = await canvas.boundingBox();
   expect(box).not.toBeNull();
   // Plot 06 (index 5) starts with the water pump.
+  await openPreciseGrid(page);
   await canvas.click({position: {
     x: (131 + 73) / 1050 * box!.width,
     y: (104 + 160 + 73) / 645 * box!.height,
@@ -232,6 +242,7 @@ test('selected machine can be safely dismantled to recover money and rebuild',as
   const box=await canvas.boundingBox();
   expect(box).not.toBeNull();
   // Initial greenhouse is on plot 08 (index 7).
+  await openPreciseGrid(page);
   await canvas.click({position:{
     x:(131+2*160+73)/1050*box!.width,
     y:(104+160+73)/645*box!.height
@@ -266,11 +277,13 @@ test('first-shift scene highlights actual garden move and updates the next targe
   const box=await canvas.boundingBox();
   expect(box).not.toBeNull();
   // Initial garden 08 -> empty 07, using the actual Pixi stage coordinate grid.
+  await openPreciseGrid(page);
   await canvas.click({position:{
     x:(131+2*160+73)/1050*box!.width,
     y:(104+160+73)/645*box!.height
   }});
   await page.getByTestId('v2-move').click();
+  await openPreciseGrid(page);
   await canvas.click({position:{
     x:(131+160+73)/1050*box!.width,
     y:(104+160+73)/645*box!.height
@@ -296,11 +309,13 @@ test('plot selection only repaints focus without restarting the Pixi scene',asyn
   const baseline=await stage.getAttribute('data-scene-refreshes');
   const box=await canvas.boundingBox();
   expect(box).not.toBeNull();
+  await openPreciseGrid(page);
   await canvas.click({position:{
     x:(131+73)/1050*box!.width,y:(104+160+73)/645*box!.height,
   }});
   await expect(page.getByTestId('v2-next-step')).toContainText('06 号地块');
   await expect(stage).toHaveAttribute('data-scene-refreshes',baseline!);
+  await openPreciseGrid(page);
   await canvas.click({position:{
     x:(131+2*160+73)/1050*box!.width,y:(104+160+73)/645*box!.height,
   }});
