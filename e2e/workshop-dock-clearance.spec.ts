@@ -100,8 +100,9 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
       expect(compactConsole).not.toBeNull();
       expect(compactStage!.width).toBeGreaterThan(940);
       expect(compactStage!.height).toBeGreaterThan(380);
-      expect(compactConsole!.height).toBeLessThan(250);
-      await expect(page.getByTestId('v2-worker-cinder')).toBeVisible();
+      expect(compactConsole!.height).toBeLessThan(80);
+      await expect(page.getByTestId('console-roster')).toBeHidden();
+      await expect(page.getByTestId('v2-worker-cinder')).toBeHidden();
       await mkdir('visual-evidence/workshop',{recursive:true});
       await page.screenshot({path:'visual-evidence/workshop/desktop-workshop-scene-1440.png',animations:'disabled'});
 
@@ -114,6 +115,7 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
 
       await layoutToggle.click();
       await expect(shell).toHaveAttribute('data-console-layout','expanded');
+      await expect(page.getByTestId('v2-worker-cinder')).toBeVisible();
       const expandedStage=await stage.boundingBox();
       const expandedConsole=await consolePanel.boundingBox();
       expect(expandedStage).not.toBeNull();
@@ -393,3 +395,53 @@ test('panorama pauses Pixi and exposes all same-craft machines',async({page})=>{
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
     .toBe(JSON.stringify(seed));
 });
+
+
+test('PC selected machine has one contextual path to state and scheduling',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:30_000});
+  const shell=page.getByTestId('next-workshop-shell');
+  const well=page.getByTestId('workshop-cinematic-machine-well');
+  await expect(shell).toHaveAttribute('data-console-layout','scene');
+  await expect(page.getByTestId('console-roster')).toBeHidden();
+  await well.click();
+  const context=page.getByTestId('workshop-context-panel');
+  await expect(context).toBeVisible();
+  await expect(context).toContainText('水汽泵');
+  await expect(context).toContainText('06');
+  await expect(page.getByTestId('v2-salvage')).toHaveCount(1);
+  await expect(page.getByTestId('v2-move')).toBeVisible();
+  await page.getByTestId('workshop-context-manage').click();
+  await expect(shell).toHaveAttribute('data-console-layout','expanded');
+  await expect(page.getByTestId('v2-worker-cinder')).toBeVisible();
+});
+
+for(const width of [390,360]){
+  test('mobile camera has readable plot targets and bounded pan at '+width+'px',async({page})=>{
+    test.setTimeout(90_000);
+    await page.setViewportSize({width,height:844});
+    await page.goto('/workshop/');
+    await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:30_000});
+    const stage=page.getByTestId('v2-stage');
+    await expect(stage).toHaveAttribute('data-mobile-camera','pan');
+    const metrics=await stage.evaluate(el=>({
+      target:Number(el.dataset.plotTargetPx),
+      clientWidth:el.clientWidth,
+      clientHeight:el.clientHeight,
+      scrollWidth:el.scrollWidth,
+      scrollHeight:el.scrollHeight,
+      pageOverflow:document.documentElement.scrollWidth-innerWidth,
+    }));
+    expect(metrics.target).toBeGreaterThanOrEqual(70);
+    expect(metrics.clientHeight).toBeGreaterThan(220);
+    expect(metrics.scrollWidth).toBeGreaterThan(metrics.clientWidth);
+    expect(metrics.scrollHeight).toBeGreaterThan(metrics.clientHeight);
+    expect(metrics.pageOverflow).toBeLessThanOrEqual(2);
+    const before=await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'));
+    await stage.evaluate(el=>{el.scrollLeft=el.scrollWidth;el.scrollTop=el.scrollHeight;});
+    await expect.poll(()=>stage.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);
+    expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(before);
+  });
+}

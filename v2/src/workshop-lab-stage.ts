@@ -63,13 +63,31 @@ export async function mountWorkshopLab(
   }
   const canvas=app.canvas as HTMLCanvasElement;
   canvas.style.display='block';
-  canvas.style.touchAction='manipulation';
+  canvas.style.touchAction=MOBILE?'pan-x pan-y':'manipulation';
   element.appendChild(canvas);
+  // Mobile viewport chooses legible plot targets over fitting the entire
+  // 830x820 scene into a short rectangle. Native scroll provides both axes.
+  let cameraFocus=7;
+  let cameraScale=1;
+  const focusCamera=(index:number)=>{
+    if(!MOBILE)return;
+    const {x,y}=plotXY(index);
+    element.scrollLeft=Math.max(0,(x+CELL/2)*cameraScale-element.clientWidth/2);
+    element.scrollTop=Math.max(0,(y+CELL/2)*cameraScale-element.clientHeight/2);
+  };
   const resize=()=>{
     const box=element.getBoundingClientRect();
-    const factor=Math.min(box.width/W,box.height/H);
-    canvas.style.width=Math.floor(W*factor)+'px';
-    canvas.style.height=Math.floor(H*factor)+'px';
+    cameraScale=MOBILE
+      ?Math.max(.56,Math.min(.72,box.width/700))
+      :Math.min(box.width/W,box.height/H);
+    canvas.style.width=Math.floor(W*cameraScale)+'px';
+    canvas.style.height=Math.floor(H*cameraScale)+'px';
+    if(MOBILE){
+      element.dataset.mobileCamera='pan';
+      element.dataset.plotTargetPx=String(Math.floor(CELL*cameraScale));
+      // Defer until the new canvas dimensions have reached layout.
+      requestAnimationFrame(()=>focusCamera(cameraFocus));
+    }
   };
   const observer=new ResizeObserver(resize);
   observer.observe(element);resize();
@@ -344,6 +362,7 @@ export async function mountWorkshopLab(
       if(lastSelection!==selected){
         lastSelection=selected;
         paintFocus(selected);
+        if(selected!==null){cameraFocus=selected;focusCamera(selected);}
       }
       return;
     }
@@ -354,6 +373,7 @@ export async function mountWorkshopLab(
     lastShiftDay=current.day;
     lastSnapshot=current;lastSelection=selected;
     paintFocus(selected);
+    if(selected!==null){cameraFocus=selected;focusCamera(selected);}
     element.dataset.sceneRefreshes=String(++sceneRefreshes);
     for(const actor of actors)actor.stop();
     for(const machine of machineAnimations)machine.stop();

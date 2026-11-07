@@ -2,6 +2,7 @@
 import {PanelBottomOpen,PanelBottomClose,Clapperboard,Grid3X3} from 'lucide-react';
 import {useEffect,useSyncExternalStore} from 'react';
 import {WorkshopCinematicStage} from './workshop-cinematic-stage';
+import {presentWorkshopStations} from '../../../v2/src/workshop-station-presenter';
 
 import {
   workshopRank,
@@ -59,6 +60,8 @@ export function WorkshopStageContainer({
 
   const selectedTile =
     selectedPlot !== null ? world.tiles[selectedPlot] : null;
+  const selectedStation=selectedPlot!==null
+    ?presentWorkshopStations(world,selectedPlot).byPlot[selectedPlot]:null;
   const quote =
     selectedPlot !== null ? machineUpgradeQuote(world, selectedPlot) : null;
   const isMoving = movingFrom !== null;
@@ -97,6 +100,27 @@ export function WorkshopStageContainer({
           quote.cost
       : '设备升级';
 
+  // A single set of action nodes moves into the scenic context when selected;
+  // never expose two simultaneous Upgrade / Salvage buttons for one machine.
+  const selectedActions=<>
+    <button
+      type="button" id="salvage" data-testid="v2-salvage"
+      onClick={()=>onAction({type:'salvage'})}
+      hidden={!selectedTile}
+      data-tooltip="只返还设备原价的 60%，已储存材料、升级与派工不会保留"
+      className="workshop-selected-action shrink-0 rounded-md border border-gothic-brass/70 bg-gothic-panel/80 px-2 py-1 text-[10px] text-gothic-muted hover:border-gothic-glow hover:text-gothic-ivory"
+    >拆除返还 ✦{machineSalvageRefund(selectedTile)}</button>
+    <button
+      type="button" id="upgrade" data-testid="v2-upgrade"
+      onClick={()=>onAction({type:'upgrade'})}
+      hidden={!upgradeVisible}
+      disabled={upgradeDisabled}
+      data-tooltip="等级越高，每班水汽、孢子或晶核产量越多"
+      aria-label="设备升级"
+      className="workshop-selected-action"
+    >{upgradeText}</button>
+  </>;
+
   return (
     <div className="world" aria-label="生产与建设画布区域">
       <div className="stage-label">
@@ -127,7 +151,8 @@ export function WorkshopStageContainer({
 
       <div className="workshop-stage-composition"
         data-testid="workshop-stage-composition"
-        data-view={showCinematic?'cinematic':'grid'}>
+        data-view={showCinematic?'cinematic':'grid'}
+        data-selected={showCinematic&&Boolean(selectedTile)?'true':'false'}>
         <div
           id="stage"
           data-testid="v2-stage"
@@ -136,6 +161,21 @@ export function WorkshopStageContainer({
         {showCinematic&&<WorkshopCinematicStage world={world}
           selectedPlot={selectedPlot} onAction={onAction}
           onOpenGrid={()=>onSceneModeChange('grid')}/>}
+        {showCinematic&&selectedTile&&selectedStation&&
+          <aside className="workshop-context" data-testid="workshop-context-panel"
+            aria-label="当前设备情境操作">
+            <div className="workshop-context__eyebrow">SELECTED STATION · {String(selectedStation.plot+1).padStart(2,'0')}</div>
+            <strong>{MACHINES[selectedStation.machine.craft].zh} · Lv.{selectedStation.level}</strong>
+            <span>{selectedStation.signal.state==='working'?'生产运行中':
+              selectedStation.signal.state==='blocked'?'原料供应受阻':'等待工匠派驻'}</span>
+            <span>工匠：{selectedStation.machine.worker?
+              WORKERS[selectedStation.machine.worker].zh:'尚未派驻'} · 库存 {selectedStation.machine.stored}</span>
+            <div className="workshop-context__actions">{selectedActions}
+              {!expandedConsole&&<button type="button" onClick={onToggleConsole}
+                data-testid="workshop-context-manage">派工与设备管理</button>}
+            </div>
+          </aside>}
+
       </div>
       <span className="sr-only" data-testid="v2-guide-instruction" aria-live="polite">
         {world.completed===0&&hint.target!==null
@@ -145,29 +185,7 @@ export function WorkshopStageContainer({
 
       <div className="selection">
         <span id="selected" data-testid="v2-next-step" data-tooltip={selectedText}>{selectedText}</span>
-        <button
-          type="button"
-          id="salvage"
-          data-testid="v2-salvage"
-          onClick={()=>onAction({type:'salvage'})}
-          hidden={!selectedTile}
-          data-tooltip="只返还设备原价的 60%，已储存材料、升级与派工不会保留"
-          className="shrink-0 rounded-md border border-gothic-brass/70 bg-gothic-panel/80 px-2 py-1 text-[10px] text-gothic-muted transition-colors hover:border-gothic-glow hover:text-gothic-ivory focus-visible:outline-2 focus-visible:outline-gothic-glow motion-reduce:transition-none"
-        >
-          拆除返还 ✦{machineSalvageRefund(selectedTile)}
-        </button>
-        <button
-          type="button"
-          id="upgrade"
-          data-testid="v2-upgrade"
-          onClick={()=>onAction({type:'upgrade'})}
-          hidden={!upgradeVisible}
-          disabled={upgradeDisabled}
-          data-tooltip="等级越高，每班水汽、孢子或晶核产量越多"
-          aria-label="设备升级"
-        >
-          {upgradeText}
-        </button>
+        {!showCinematic&&selectedActions}
       </div>
       <p id="status" data-testid="v2-status" role="status"
         className="min-h-7 shrink-0 border-t border-gothic-brass/30 bg-gothic-panel/85 px-3 py-1 text-[11px] leading-5 text-gothic-muted data-[tone=bad]:text-rose-200 data-[tone=good]:text-emerald-200"

@@ -274,3 +274,115 @@
     font-size:9px;
   }
 }
+
+
+/* R01 · One scenic owner: a 64px production rail, no permanent desktop
+ * admin columns. Expanding detailed scheduling restores the proven console. */
+@media(min-width:1100px) and (min-height:730px){
+  .gothic-workshop-shell[data-console-layout="scene"]{
+    --workshop-console-height:64px;
+    --workshop-stage-gap:8px;
+  }
+  .gothic-workshop-shell[data-console-layout="scene"]
+  #root.lab.gothic-workshop .console.gothic-console-3col{
+    left:auto;right:clamp(12px,2vw,28px);
+    width:min(510px,calc(100% - 44px));
+    grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);
+    gap:0;align-items:stretch;
+  }
+  .gothic-workshop-shell[data-console-layout="scene"]
+  #root.lab.gothic-workshop .console .console-panel{display:none}
+  .gothic-workshop-shell[data-console-layout="scene"]
+  #root.lab.gothic-workshop .console .workshop-console-actions{
+    grid-row:1;grid-column:1;min-height:0;padding:5px 8px;align-items:stretch;
+  }
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .sidebar{display:none}
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .gothic-cameo-assistant{
+    top:63px;bottom:auto;left:12px;
+    width:clamp(88px,8vw,116px);height:153px;
+    pointer-events:none;
+  }
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .gothic-cameo-frame{
+    flex:none;min-height:0;height:153px;
+  }
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .gothic-cameo-bubble{display:none}
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .workshop-cinematic__stations{
+    padding-left:clamp(94px,9vw,135px);
+    padding-right:clamp(22px,3.5vw,56px);
+  }
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop
+  .workshop-stage-composition[data-selected="true"] .workshop-cinematic__stations{
+    padding-right:clamp(195px,18vw,250px);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-context{
+    position:absolute;right:12px;top:56px;z-index:7;
+    width:clamp(185px,17vw,235px);
+    display:flex;flex-direction:column;gap:8px;
+    max-height:calc(100% - 70px);overflow-y:auto;
+    padding:13px;
+    border:1px solid var(--craft-brass);
+    border-radius:12px;
+    background:linear-gradient(145deg,rgba(40,24,43,.96),rgba(17,11,23,.95));
+    color:var(--craft-ivory);
+    box-shadow:0 14px 35px rgba(4,2,8,.55);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-context__eyebrow{
+    font:600 9px/1.4 Georgia,serif;letter-spacing:.14em;
+    color:var(--craft-champagne);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-context strong{
+    font-size:14px;color:var(--craft-champagne);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-context span{
+    font-size:11px;line-height:1.5;color:var(--craft-ivory);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-context__actions{
+    display:flex;flex-direction:column;gap:7px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-context__actions button{
+    min-height:35px;white-space:normal;text-align:center;
+    border:1px solid var(--craft-brass);border-radius:7px;
+    padding:6px 9px;background:var(--craft-panel);
+    color:var(--craft-champagne);font-size:11px;cursor:pointer;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-context__actions button:is(:hover,:focus-visible){
+    border-color:var(--craft-champagne);outline-offset:2px;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .workshop-context__actions button:disabled{
+    opacity:.55;cursor:not-allowed;
+  }
+}
+
+/* R02 · Real 15-plot model, readable 80px+ targets, native pan inside a
+ * bounded viewport. Only the grid camera scrolls; page itself never does. */
+@media(max-width:610px){
+  .gothic-workshop-shell{
+    --workshop-console-height:clamp(216px,29dvh,246px);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .sidebar{display:none}
+  .gothic-workshop-shell #root.lab.gothic-workshop
+  .workshop-stage-composition #stage[data-mobile-camera="pan"]{
+    display:block;overflow:auto;scrollbar-width:none;
+    overscroll-behavior:contain;touch-action:pan-x pan-y;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop
+  .workshop-stage-composition #stage[data-mobile-camera="pan"]::-webkit-scrollbar{
+    display:none;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop
+  .workshop-stage-composition #stage[data-mobile-camera="pan"] canvas{
+    display:block;flex:none;max-width:none;max-height:none;object-fit:fill;
+    touch-action:pan-x pan-y;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop
+  .console.gothic-console-3col{
+    height:var(--workshop-console-height);
+    max-height:none;
+  }
+}
