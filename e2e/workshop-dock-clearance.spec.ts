@@ -527,7 +527,8 @@ for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
       await page.evaluate(()=>{
         const key='monster-apartment:workshop-v2-lab';
         const state=JSON.parse(localStorage.getItem(key)!);
-        state.tiles[5].level=1;
+        // V2 level one is represented by an absent level field.
+        delete state.tiles[5].level;
         localStorage.setItem(key,JSON.stringify(state));
         window.dispatchEvent(new Event('moonwork:v2-update'));
       });
@@ -566,3 +567,27 @@ for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
     }
   });
 }
+
+
+// R06: Before this consolidation 611-640px had a 182px legacy max-height
+// despite reserving 270-345px for the console. Verify the actual pixel box.
+test('R06 625px console matches reserved stage clearance',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:625,height:844});
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute(
+    'data-runtime-ready','true',{timeout:30_000});
+  await expect(page.getByTestId('v2-shift')).toBeVisible();
+  const layout=await page.evaluate(()=>{
+    const box=(selector:string)=>document.querySelector<HTMLElement>(selector)!
+      .getBoundingClientRect();
+    const dock=box('[data-testid="workshop-console"]');
+    const scene=box('#root .middle');
+    return {consoleHeight:dock.height,gap:dock.top-scene.bottom,
+      documentOverflow:document.documentElement.scrollWidth-window.innerWidth};
+  });
+  expect(layout.consoleHeight).toBeGreaterThan(260);
+  expect(layout.consoleHeight).toBeLessThan(346);
+  expect(layout.gap).toBeGreaterThanOrEqual(4);
+  expect(layout.documentOverflow).toBeLessThanOrEqual(2);
+});
