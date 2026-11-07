@@ -1113,14 +1113,12 @@
    Keep three meaningful columns on desktop; show ONE complete panel at a
    time on narrow screens instead of shrinking three rows into 180px. */
 .gothic-workshop-shell #root.lab.gothic-workshop .console.gothic-console-3col{
-  height:clamp(232px,30dvh,290px);
+  /* Height is set once by --workshop-console-height in the action-rail
+     section below; keep the dock clearance independent of presentation. */
   bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-scene-nav-clearance));
   grid-template-columns:minmax(0,1.15fr) minmax(285px,1fr) minmax(0,1fr);
   gap:12px;
   align-items:stretch;
-}
-.gothic-workshop-shell #root.lab.gothic-workshop .middle{
-  bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-scene-nav-clearance) + var(--workshop-stage-gap) + clamp(232px,30dvh,290px));
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .console .console-panel{
   flex:initial;min-width:0;min-height:0;max-width:none;
@@ -1469,4 +1467,54 @@
   .workshop-art-review__canvases{grid-template-columns:1fr;padding:0 14px;gap:9px}
   .workshop-art-review__timeline{padding:10px 14px}
   .workshop-art-review__foot{padding:0 14px 14px}
+}
+
+/* R06 owner: workshop console geometry belongs to the shared shell, not
+ * the panoramic machine art stylesheet. Scene modes only change data flags. */
+@media(min-width:1100px) and (min-height:730px){
+  .gothic-workshop-shell[data-console-layout="scene"]{
+    --workshop-console-height:64px;
+    --workshop-stage-gap:8px;
+  }
+  .gothic-workshop-shell[data-console-layout="scene"]
+  #root.lab.gothic-workshop .console.gothic-console-3col{
+    left:auto;right:clamp(12px,2vw,28px);
+    width:min(510px,calc(100% - 44px));
+    grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);
+    gap:0;align-items:stretch;
+  }
+  .gothic-workshop-shell[data-console-layout="scene"]
+  #root.lab.gothic-workshop .console .console-panel{display:none}
+  .gothic-workshop-shell[data-console-layout="scene"]
+  #root.lab.gothic-workshop .console .workshop-console-actions{
+    grid-row:1;grid-column:1;min-height:0;padding:5px 8px;align-items:stretch;
+  }
+}
+
+/* R02 · Real 15-plot model, readable 80px+ targets, native pan inside a
+ * bounded viewport. Only the grid camera scrolls; page itself never does. */
+@media(max-width:610px){
+  .gothic-workshop-shell{
+    --workshop-console-height:clamp(216px,29dvh,246px);
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop .sidebar{display:none}
+  .gothic-workshop-shell #root.lab.gothic-workshop
+  .workshop-stage-composition #stage[data-mobile-camera="pan"]{
+    display:block;overflow:auto;scrollbar-width:none;
+    overscroll-behavior:contain;touch-action:pan-x pan-y;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop
+  .workshop-stage-composition #stage[data-mobile-camera="pan"]::-webkit-scrollbar{
+    display:none;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop
+  .workshop-stage-composition #stage[data-mobile-camera="pan"] canvas{
+    display:block;flex:none;max-width:none;max-height:none;object-fit:fill;
+    touch-action:pan-x pan-y;
+  }
+  .gothic-workshop-shell #root.lab.gothic-workshop
+  .console.gothic-console-3col{
+    height:var(--workshop-console-height);
+    max-height:none;
+  }
 }

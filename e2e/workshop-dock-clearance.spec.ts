@@ -451,3 +451,34 @@ for(const width of [390,360]){
     expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(before);
   });
 }
+
+
+// R07: automatic inventory updates must not destroy and recreate every
+// Pixi Sprite; changed staffing/supply still requires a full visual refresh.
+test('Pixi updates stock labels in place but repaints changed machine state',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/workshop/');
+  const stage=page.getByTestId('v2-stage');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:30_000});
+  const before=Number(await stage.getAttribute('data-scene-refreshes'));
+  await page.evaluate(()=>{
+    const key='monster-apartment:workshop-v2-lab';
+    const state=JSON.parse(localStorage.getItem(key)!);
+    state.tiles[5].stored=4; // inventory only, no staffing/route change
+    localStorage.setItem(key,JSON.stringify(state));
+    window.dispatchEvent(new Event('moonwork:v2-update'));
+  });
+  await expect(stage).toHaveAttribute('data-last-stock-plots','5');
+  expect(Number(await stage.getAttribute('data-scene-refreshes'))).toBe(before);
+  await page.evaluate(()=>{
+    const key='monster-apartment:workshop-v2-lab';
+    const state=JSON.parse(localStorage.getItem(key)!);
+    state.tiles[5].worker='brook'; // machine signal and worker Sprite change
+    localStorage.setItem(key,JSON.stringify(state));
+    window.dispatchEvent(new Event('moonwork:v2-update'));
+  });
+  await expect.poll(async()=>Number(await stage.getAttribute('data-scene-refreshes')))
+    .toBe(before+1);
+  await expect(stage).toHaveAttribute('data-machine-states',/5:working/);
+});

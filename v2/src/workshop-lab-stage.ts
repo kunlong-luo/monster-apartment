@@ -6,6 +6,7 @@ import { createFloatingFeedback } from './workshop-floating-feedback';
 import { paintShiftFeedback } from './workshop-shift-effects';
 import {inspectMachineSignals} from './workshop-machine-status';
 import {presentWorkshopStations} from './workshop-station-presenter';
+import {workshopStageStockPatch,workshopMachineCaption} from './workshop-stage-diff';
 import type {WorkshopPresentationMode} from './workshop-runtime-contract';
 import {projectMachineProduction} from './workshop-production';
 import type {MachineCycle} from './workshop-production';
@@ -350,6 +351,8 @@ export async function mountWorkshopLab(
   let lastSnapshot:WorkshopState|null=null;
   let lastSelection:number|null=null;
   let sceneRefreshes=0;
+  let stockPatches=0;
+  const machineLabels:Array<Text|null>=Array.from({length:BOARD_SIZE},()=>null);
   const paintFocus=(selected:number|null)=>{
     focusLayer.clear();
     if(selected===null||selected<0||selected>=BOARD_SIZE)return;
@@ -367,6 +370,25 @@ export async function mountWorkshopLab(
       return;
     }
     const previousSnapshot=lastSnapshot;
+    // R07: automatic stock ticks, clock updates and market purchases must
+    // not rebuild 15 working sprites when their presentation is unchanged.
+    const patch=previousSnapshot
+      ?workshopStageStockPatch(previousSnapshot,current):null;
+    if(patch!==null&&patch.every(index=>machineLabels[index]!==null)){
+      const signals=inspectMachineSignals(current);
+      for(const index of patch){
+        const machine=current.tiles[index]!;
+        machineLabels[index]!.text=workshopMachineCaption(
+          machine.craft,machine.stored,signals[index]!
+        );
+      }
+      lastSnapshot=current;lastSelection=selected;
+      paintFocus(selected);
+      if(selected!==null){cameraFocus=selected;focusCamera(selected);}
+      element.dataset.sceneStockPatches=String(++stockPatches);
+      element.dataset.lastStockPlots=patch.join(',');
+      return;
+    }
     const previousPatronStatus=previousSnapshot?.patron?.status;
     const previousOrderReward=lastSnapshot?.order.reward??0;
     const completedShift=current.day>lastShiftDay&&!!current.last;
@@ -375,6 +397,8 @@ export async function mountWorkshopLab(
     paintFocus(selected);
     if(selected!==null){cameraFocus=selected;focusCamera(selected);}
     element.dataset.sceneRefreshes=String(++sceneRefreshes);
+    element.dataset.lastStockPlots='';
+    machineLabels.fill(null);
     for(const actor of actors)actor.stop();
     for(const machine of machineAnimations)machine.stop();
     actors.length=0;paintedActors.length=0;machineAnimations.length=0;
@@ -556,16 +580,16 @@ export async function mountWorkshopLab(
         star.position.set(x+CELL-62,y+11);
         stage.addChild(star);
       }
-      const stateLabel=signal.state==='idle'?'待派工':
-        signal.state==='blocked'?'缺'+(signal.problem==='water'?'水汽':'孢子'):'可生产';
       if(enlargedReview){
         const placard=new Graphics().roundRect(x+CELL*.05,y+CELL-23,
           CELL*.90,20,6).fill({color:0x171021,alpha:.89})
           .stroke({color:0xdbb582,alpha:.32,width:1});
         placard.eventMode='none';stage.addChild(placard);
       }
-      const label=glabel(MACHINES[machine.craft].zh+' · '+machine.stored+' · '+stateLabel,
-        11,signal.state==='blocked'?0xffac99:COLORS[machine.craft],true);
+      const label=glabel(workshopMachineCaption(
+        machine.craft,machine.stored,signal
+      ),11,signal.state==='blocked'?0xffac99:COLORS[machine.craft],true);
+      machineLabels[i]=label;
       label.anchor.set(.5,0);
       label.position.set(x+CELL/2,y+CELL-(enlargedReview?21:29));
       stage.addChild(label);
