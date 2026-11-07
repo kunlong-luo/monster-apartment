@@ -543,6 +543,24 @@ export async function mountWorkshopLab(
     element.dataset.machineAnimatedTiles=[...animatedPlots].sort((a,b)=>a-b).join(';');
     element.dataset.plotRevisions=plotRevisions.join(',');
   };
+  /** R07 measurement: count live Pixi display objects, not guesses about FPS
+   * or GPU memory. Invoked only after a save-driven scene update, never inside
+   * the animation ticker. No game state or texture ownership is modified. */
+  const publishSceneMetrics=()=>{
+    let live=0;
+    const pending:Container[]=[stage];
+    while(pending.length){
+      const item=pending.pop()!;
+      live++;
+      pending.push(...item.children);
+    }
+    element.dataset.sceneObjectCount=String(live);
+    element.dataset.sceneAnimatedCount=String(actors.length+machineAnimations.length);
+    element.dataset.sceneEffectCount=String(
+      deviceEffects.length+materialEffects.length+actuatorEffects.length
+    );
+    element.dataset.scenePlotContainerCount=String(plotLayers.filter(Boolean).length);
+  };
 
   const paintFocus=(selected:number|null)=>{
     focusLayer.clear();
@@ -603,6 +621,7 @@ export async function mountWorkshopLab(
       element.dataset.sceneStockPatches=String(++stockPatches);
       element.dataset.lastStockPlots=patch.stockPlots.join(',');
       element.dataset.lastPatchedPlots=patch.rebuildPlots.join(',');
+      publishSceneMetrics();
       return;
     }
     const previousPatronStatus=previousSnapshot?.patron?.status;
@@ -790,6 +809,7 @@ export async function mountWorkshopLab(
     // Shift settlement cues are bound to measured output, not animation RNG.
     // A paused device never emits a fake production pulse.
     updateMotion();
+    publishSceneMetrics();
   };
   render(state,null);
   return {

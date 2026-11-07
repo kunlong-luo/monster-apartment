@@ -204,7 +204,8 @@
   z-index: 2;
   top: 70px;
   right: clamp(10px, 1.5vw, 24px);
-  bottom: 286px;
+  /* One shared source of truth for stage clearance across all screen sizes. */
+  bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-scene-nav-clearance) + var(--workshop-stage-gap) + var(--workshop-console-height));
   left: clamp(10px, 1.5vw, 24px);
   display: grid;
   min-height: 0;
@@ -700,8 +701,6 @@
   z-index: 6;
   left: clamp(10px, 1.5vw, 24px);
   right: clamp(10px, 1.5vw, 24px);
-  bottom: 78px;
-  height: 198px;
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1.1fr) minmax(0, 1.05fr) auto;
   gap: 10px;
@@ -859,9 +858,6 @@
   .gothic-workshop-shell #root.lab.gothic-workshop .gothic-cameo-assistant {
     display: none;
   }
-  .gothic-workshop-shell #root.lab.gothic-workshop .console {
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr) auto;
-  }
   .gothic-workshop-shell #root.lab.gothic-workshop .gothic-logs-col {
     display: none;
   }
@@ -890,19 +886,10 @@
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .middle {
     top: 60px;
-    bottom: 260px;
     left: 8px;
     right: 8px;
     grid-template-columns: minmax(0, 1fr) minmax(170px, 30vw);
     gap: 8px;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .console {
-    bottom: 74px;
-    height: 178px;
-    left: 8px;
-    right: 8px;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 6px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .gothic-workers-col,
   .gothic-workshop-shell #root.lab.gothic-workshop .gothic-logs-col {
@@ -963,8 +950,7 @@
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .middle {
     top: 86px;
-    /* Clear zone: middle ends comfortably above console */
-    bottom: 256px;
+    /* Shared stage clearance comes from the root .middle rule. */
     left: 6px;
     right: 6px;
     display: flex;
@@ -994,16 +980,6 @@
   .gothic-workshop-shell #root.lab.gothic-workshop .panel h2 {
     font-size: 11px;
     margin: 1px 0 3px;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .console {
-    bottom: calc(max(6px, env(safe-area-inset-bottom)) + 62px);
-    height: 180px;
-    max-height: 182px;
-    left: 6px;
-    right: 6px;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 4px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console-panel {
     min-width: 0;
@@ -1100,11 +1076,6 @@
 }
 
 @media (max-width:360px) {
-  .gothic-workshop-shell #root.lab.gothic-workshop .middle { bottom: 248px; }
-  .gothic-workshop-shell #root.lab.gothic-workshop .console {
-    bottom: calc(max(6px, env(safe-area-inset-bottom)) + 58px);
-    height: 172px;
-  }
   .gothic-workshop-shell #root.lab.gothic-workshop .worker-miniature { width: 24px; height: 24px; }
 }
 
@@ -1116,6 +1087,8 @@
   /* Height is set once by --workshop-console-height in the action-rail
      section below; keep the dock clearance independent of presentation. */
   bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-scene-nav-clearance));
+  height:var(--workshop-console-height);
+  grid-template-rows:minmax(0,1fr) auto;
   grid-template-columns:minmax(0,1.15fr) minmax(285px,1fr) minmax(0,1fr);
   gap:12px;
   align-items:stretch;
@@ -1209,14 +1182,8 @@
   .gothic-workshop-shell #root.lab.gothic-workshop .console .worker-status span:first-child{display:none}
 }
 
-/* V3.22: one persistent production action row across all console tabs. */
-.gothic-workshop-shell #root.lab.gothic-workshop .console.gothic-console-3col{
-  height:var(--workshop-console-height);
-  grid-template-rows:minmax(0,1fr) auto;
-}
-.gothic-workshop-shell #root.lab.gothic-workshop .middle{
-  bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-scene-nav-clearance) + var(--workshop-stage-gap) + var(--workshop-console-height));
-}
+/* The production action row is persistent across all console tabs.
+ * The layout and its stage clearance are defined once above. */
 .gothic-workshop-shell #root.lab.gothic-workshop .console .console-panel{grid-row:1}
 .gothic-workshop-shell #root.lab.gothic-workshop .console .workshop-console-actions{
   grid-column:1/-1;grid-row:2;min-height:54px;min-width:0;
@@ -1511,10 +1478,5 @@
   .workshop-stage-composition #stage[data-mobile-camera="pan"] canvas{
     display:block;flex:none;max-width:none;max-height:none;object-fit:fill;
     touch-action:pan-x pan-y;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop
-  .console.gothic-console-3col{
-    height:var(--workshop-console-height);
-    max-height:none;
   }
 }

@@ -495,6 +495,11 @@ for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
       .toHaveAttribute('data-runtime-ready','true',{timeout:30_000});
     const stage=page.getByTestId('v2-stage');
     await expect(stage).toHaveAttribute('data-plot-revisions',/\d+,\d+/);
+    const baselineObjects=Number(await stage.getAttribute('data-scene-object-count'));
+    const baselineEffects=Number(await stage.getAttribute('data-scene-effect-count'));
+    const baselineAnimations=Number(await stage.getAttribute('data-scene-animated-count'));
+    expect(baselineObjects).toBeGreaterThan(30);
+    await expect(stage).toHaveAttribute('data-scene-plot-container-count','15');
     const refreshes=Number(await stage.getAttribute('data-scene-refreshes'));
     const before=(await stage.getAttribute('data-plot-revisions'))!
       .split(',').map(Number);
@@ -514,6 +519,33 @@ for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
       if(index!==5)expect(after[index]).toBe(before[index]);
     expect(Number(await stage.getAttribute('data-scene-refreshes'))).toBe(refreshes);
     await expect(stage).toHaveAttribute('data-machine-states',/5:idle/);
+    expect(Number(await stage.getAttribute('data-scene-object-count')))
+      .toBeGreaterThanOrEqual(baselineObjects);
+    // Return to the original level three times: a recycled plot must not
+    // accumulate hidden Pixi children or stale animation/effect callbacks.
+    for(let n=0;n<3;n++){
+      await page.evaluate(()=>{
+        const key='monster-apartment:workshop-v2-lab';
+        const state=JSON.parse(localStorage.getItem(key)!);
+        state.tiles[5].level=1;
+        localStorage.setItem(key,JSON.stringify(state));
+        window.dispatchEvent(new Event('moonwork:v2-update'));
+      });
+      await expect(stage).toHaveAttribute('data-last-patched-plots','5');
+      expect(Number(await stage.getAttribute('data-scene-object-count')))
+        .toBe(baselineObjects);
+      expect(Number(await stage.getAttribute('data-scene-effect-count')))
+        .toBe(baselineEffects);
+      expect(Number(await stage.getAttribute('data-scene-animated-count')))
+        .toBe(baselineAnimations);
+      if(n<2)await page.evaluate(()=>{
+        const key='monster-apartment:workshop-v2-lab';
+        const state=JSON.parse(localStorage.getItem(key)!);
+        state.tiles[5].level=2;
+        localStorage.setItem(key,JSON.stringify(state));
+        window.dispatchEvent(new Event('moonwork:v2-update'));
+      });
+    }
 
     // The worker presence row is global on mobile, so it intentionally
     // takes the complete-render fallback; desktop only replaces plot 7.
