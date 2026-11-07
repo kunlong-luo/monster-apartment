@@ -85,6 +85,15 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
       const consolePanel=page.getByTestId('workshop-console');
       const layoutToggle=page.getByTestId('workshop-stage-layout-toggle');
       const shell=page.getByTestId('next-workshop-shell');
+      // Scenic side panels must not cover the full-width stage toolbar.
+      for(const testId of ['workshop-stage-layout-toggle','workshop-view-cinematic','workshop-view-grid']){
+        const uncovered=await page.getByTestId(testId).evaluate(button=>{
+          const bounds=button.getBoundingClientRect();
+          const target=document.elementFromPoint(bounds.left+bounds.width/2,bounds.top+bounds.height/2);
+          return target===button||button.contains(target);
+        });
+        expect(uncovered,testId+' is occluded by a scenic overlay').toBe(true);
+      }
       const compactStage=await stage.boundingBox();
       const compactConsole=await consolePanel.boundingBox();
       expect(compactStage).not.toBeNull();
