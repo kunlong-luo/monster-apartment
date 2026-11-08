@@ -7,6 +7,7 @@ on:
       - 'e2e/workshop-performance-baseline.spec.ts'
       - 'v2/src/workshop-benchmark-fixtures.ts'
       - 'v2/src/workshop-frame-metrics.ts'
+      - 'v2/src/workshop-lab-stage.ts'
       - 'v2/src/workshop-plot-lifecycle.ts'
       - '.github/workflows/workshop-performance-baseline.yml'
   workflow_dispatch:

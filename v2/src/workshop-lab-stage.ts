@@ -286,7 +286,9 @@ export async function mountWorkshopLab(
     const startedAt=measure?performance.now():0;
     const finishSample=()=>{
       if(!measure)return;
-      const report=frameMeter.sample(ticker.deltaMS,performance.now()-startedAt);
+      // deltaMS is capped by Pixi minFPS (normally at 100ms). elapsedMS
+      // is the uncapped actual ticker interval for meaningful diagnostics.
+      const report=frameMeter.sample(ticker.elapsedMS,performance.now()-startedAt);
       if(!report)return;
       element.dataset.frameSamples=String(report.totalSamples);
       element.dataset.frameWindow=String(report.windowSamples);

@@ -15,8 +15,12 @@ type PerfRecord={
   workshopUpdateMaxMs:number;
   sampleCount:number;
   jsHeapBeforeBytes:number|null;
+  /** Post-GC JS heap after the first 12 display-tree mutations. */
   jsHeapAfterBytes:number|null;
   jsHeapDeltaBytes:number|null;
+  /** Post-GC JS heap after all 48 mutations (plateau vs growth check). */
+  jsHeapAfter48Bytes:number|null;
+  jsHeapDelta48Bytes:number|null;
   sceneObjectsAfterCycles:number;
   sceneRefreshesDuringCycles:number;
 };
@@ -75,10 +79,12 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
       const heapBefore=await heapAfterGC();
       const index=profile==='starter'?5:profile==='dense'?14:-1;
       const objectsBefore=reading.sceneObjects;
+      let heapAfter12:number|null=null;
       if(index>=0){
-        // 12 single-plot swaps (six level-2 / level-1 cycles), each awaited
-        // via the revision counter so updates cannot silently be skipped.
-        for(let turn=0;turn<12;turn++){
+        // 48 single-plot swaps (24 level-2 / level-1 cycles); collect a
+        // post-GC checkpoint at 12 to distinguish warmup from steady growth.
+        // Each revision is awaited so updates cannot silently be skipped.
+        for(let turn=0;turn<48;turn++){
           const oldRevisions=(await stage.getAttribute('data-plot-revisions'))!
             .split(',').map(Number);
           await page.evaluate(({index,upgraded})=>{
@@ -94,12 +100,14 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
               .split(',').map(Number);
             return revisions[index];
           },{timeout:10_000}).toBe(oldRevisions[index]+1);
+          if(turn===11)heapAfter12=await heapAfterGC();
         }
         await expect(stage).toHaveAttribute('data-scene-plot-container-count','15');
         expect(Number(await stage.getAttribute('data-scene-object-count')))
           .toBe(objectsBefore);
       }
-      const heapAfter=await heapAfterGC();
+      if(index<0)heapAfter12=await heapAfterGC();
+      const heapAfter48=await heapAfterGC();
       const objectsAfter=Number(await stage.getAttribute('data-scene-object-count'));
       const sceneRefreshesAfter=Number(await stage.getAttribute('data-scene-refreshes'));
       const record:PerfRecord={
@@ -113,8 +121,10 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
         workshopUpdateMaxMs:reading.workshopUpdateMaxMs,
         sampleCount:reading.sampleCount,
         jsHeapBeforeBytes:heapBefore,
-        jsHeapAfterBytes:heapAfter,
-        jsHeapDeltaBytes:heapBefore===null||heapAfter===null?null:Math.round(heapAfter-heapBefore),
+        jsHeapAfterBytes:heapAfter12,
+        jsHeapDeltaBytes:heapBefore===null||heapAfter12===null?null:Math.round(heapAfter12-heapBefore),
+        jsHeapAfter48Bytes:heapAfter48,
+        jsHeapDelta48Bytes:heapBefore===null||heapAfter48===null?null:Math.round(heapAfter48-heapBefore),
         sceneObjectsAfterCycles:objectsAfter,
         sceneRefreshesDuringCycles:sceneRefreshesAfter-reading.sceneRefreshes,
       };
@@ -126,9 +136,9 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
   expect(records.map(row=>row.machineCount)).toEqual([0,2,15]);
   const dir='visual-evidence/performance';
   await mkdir(dir,{recursive:true});
-  const report={schema:1,measuredAt:new Date().toISOString(),
+  const report={schema:2,measuredAt:new Date().toISOString(),
     browser:browser.version(),viewport:{width:1440,height:900},
-    methodology:'32 sampled ticker updates per fixture, one in four frames; GC around cycle measurement when CDP supports it. No GPU memory or draw-call measurement.',
+    methodology:'32 sampled uncapped Pixi ticker.elapsedMS values per fixture, one in four frames; post-GC JS heap checkpoints at 0/12/48 plot mutations. No GPU memory or draw-call measurement.',
     cases:records};
   await writeFile(dir+'/workshop-r09-baseline.json',
     JSON.stringify(report,null,2)+'\n','utf8');
@@ -137,15 +147,15 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
     '',
     'CI data is comparative only; readings are not a device-level FPS or GPU benchmark.',
     '',
-    '| Machines | Objects | Effects | Actors | Frame p95 (ms) | Workshop update p95 (ms) | JS heap delta (MiB) |',
-    '| ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
-    ...records.map(x=>`| ${x.machineCount} | ${x.sceneObjects} | ${x.sceneEffects} | ${x.sceneAnimations} | ${x.frameIntervalP95Ms} | ${x.workshopUpdateP95Ms} | ${x.jsHeapDeltaBytes===null?'n/a':(x.jsHeapDeltaBytes/1024/1024).toFixed(2)} |`),
+    '| Machines | Objects | Effects | Actors | Raw frame interval p95 (ms) | Workshop update p95 (ms) | JS heap Δ12 (MiB) | JS heap Δ48 (MiB) |',
+    '| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
+    ...records.map(x=>`| ${x.machineCount} | ${x.sceneObjects} | ${x.sceneEffects} | ${x.sceneAnimations} | ${x.frameIntervalP95Ms} | ${x.workshopUpdateP95Ms} | ${x.jsHeapDeltaBytes===null?'n/a':(x.jsHeapDeltaBytes/1024/1024).toFixed(2)} | ${x.jsHeapDelta48Bytes===null?'n/a':(x.jsHeapDelta48Bytes/1024/1024).toFixed(2)} |`),
     '',
-    'Heap delta is Chromium page JS heap after optional GC around repeated plot refreshes, not GPU memory or a controlled leak test.',
+    'Heap deltas are Chromium page JS heap after optional GC around 12 and 48 repeated plot refreshes, not GPU memory or conclusive leak detection.',
   ].join('\n');
   await writeFile(dir+'/workshop-r09-baseline.md',table+'\n','utf8');
   console.log('R09_PERF_SUMMARY '+JSON.stringify(records.map(
-    ({profile,machineCount,sceneObjects,frameIntervalP95Ms,workshopUpdateP95Ms,jsHeapDeltaBytes})=>
-      ({profile,machineCount,sceneObjects,frameIntervalP95Ms,workshopUpdateP95Ms,jsHeapDeltaBytes})
+    ({profile,machineCount,sceneObjects,frameIntervalP95Ms,workshopUpdateP95Ms,jsHeapDeltaBytes,jsHeapDelta48Bytes})=>
+      ({profile,machineCount,sceneObjects,frameIntervalP95Ms,workshopUpdateP95Ms,jsHeapDeltaBytes,jsHeapDelta48Bytes})
   )));
 });

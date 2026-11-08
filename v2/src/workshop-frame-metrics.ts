@@ -1,4 +1,5 @@
 /** Bounded, non-visual diagnostics for the workshop's Pixi ticker.
+ * Supply raw, uncapped Ticker.elapsedMS, never clamped Ticker.deltaMS.
  * Frame interval includes browser scheduling; callback time measures only
  * this workshop update callback, not rendering or GPU cost. */
 export type WorkshopFrameReport=Readonly<{
