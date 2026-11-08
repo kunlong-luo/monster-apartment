@@ -53,3 +53,11 @@
 - 将工坊单地块回收、全场景重绘和页面销毁改为逐层递归 `destroyWorkshopDisplayChildren()`：先回收子节点，再逐个调用 **不带 options 的 `destroy()`**。这样自有 GraphicsContext 会被释放，而外部/共享 GraphicsContext 与角色贴图仍由原所有者管理，不使用具有破坏性的全局纹理清空。
 - 新增单元测试确保销毁顺序、子节点清空、不传显式销毁选项、独立地块和共享纹理不受影响。原有完整回归还检查升级↔恢复后显示对象数稳定，以及真实自动生产、PC/手机布局。
 - 将上述修复与之前 `e2fb508`（相同 0/2/15 固定存档、48 次重绘）做真实基准对照。GPU 缓存仍需独立 GPU profiling 验证，不可仅凭 JS heap 宣称全部解决。
+
+## R09.4 · GraphicsContext 回收修复已获两轮实测验证
+- [修复前基准（`139e4fd`）](https://github.com/kunlong-luo/monster-apartment/actions/runs/42443980584)：12→48 次重绘 V8 节点 **451,616 → 477,335**（+25,719），`array:(object elements)` 浅表内存 **+594,848 bytes**，`JSArrayBufferData` **+36 个 / +138,456 bytes**。堆引用链将一部分增长追踪到 `.renderer → .graphics → .items` 与 `.renderer → .buffer → .items → Float32Array → ArrayBuffer`。
+- PixiJS 固定版本 **8.22.0** 的 `Graphics.destroy()` 在不传选项时释放自有 GraphicsContext；原代码 `destroy({children:true})` 无法保证该上下文释放。改为先递归释放 children、再逐个无参数调用 `destroy()`，覆盖局部重绘、完整场景重绘和工坊销毁，保留共享贴图和外部共享上下文。
+- [修复后基准（`231a919`）](https://github.com/kunlong-luo/monster-apartment/actions/runs/42444728981)：12→48 次 V8 节点 **443,576 → 446,026**（+2,450，相比修复前增量下降约 **90.5%**）；对象元素数组浅表内存 **+7,204 bytes**（增量下降约 **98.8%**）；`JSArrayBufferData` **新增 0 个**。
+- 同环境 48 次刷新后的页面 JS 堆相对于初始：新手 2 台从修复前约 **3.04 MB** 下降至约 **1.43 MB**；15 台从约 **2.57 MB** 下降至约 **1.37 MB**。这是两次独立 CI 运行，不是跨硬件 FPS 改善结论。
+- `sceneObjectCount` 在 0/2/15 台基准分别保持 **32/85/435** 且地块更新未触发完整场景重绘。最新 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/42444728986)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/42444729014) 和 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/42444771458) 均为成功。
+- 上述改善有明确的原因和可复现的测量，但堆中仍有 InstructionStream 等代码/运行时缓存增长（本轮 12→48 次 +259,008 bytes）。继续保留该监测，不应把每一次 V8 堆增长解读为新泄漏，也不应盲目调用全局 texture cache 清空。
