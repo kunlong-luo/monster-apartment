@@ -118,7 +118,7 @@ export function WorkshopCinematicStage({
             {station&&<span className="workshop-cinematic__stock"
               data-testid={'workshop-cinematic-stock-'+craft}>
               设备暂存 <strong>{station.machine.stored}</strong>
-            </span>
+            </span>}
           </div>
           {worker&&<span className="workshop-cinematic__worker">
             <Image src={WORKER_ART[worker]} alt="" aria-hidden="true" width={30} height={30}/>
