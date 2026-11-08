@@ -30,3 +30,12 @@
 - `e2e/helpers/workshop-heap-census.ts` 按 V8 snapshot node metadata 动态解析类名/类型、数量和 shallow bytes，输出各检查点的类统计及增长最多的对象类型。**浅表大小不等于保留大小**，也不覆盖纹理显存。
 - 只对 **密集固定场景**执行原始堆快照，避免对常规浏览器视觉检查和实际玩家游戏产生额外运行成本；原有 0/2/15 设备帧间隔基准及 48 次局部重建断言仍保持。
 - 该阶段首先定位缓存及对象保留者，不冒然 destroy 共享 texture；下一步结合类统计及 retaining path 再定向移除实际泄漏引用。
+
+## R09.3 两次独立 Chrome 堆快照实测（2026-11-08）
+- [首次可用的堆快照运行](https://github.com/kunlong-luo/monster-apartment/actions/runs/42442682858) 与 [修正 JSON 后的复测](https://github.com/kunlong-luo/monster-apartment/actions/runs/42442891486) 均已 **success**。后者还强制将生成的报告重新读取并用 `JSON.parse` 验证。
+- 复测的固定 15 台设备场景：0 / 12 / 48 次重绘时，V8 snapshot 节点数约为 **436,969 / 451,708 / 477,992**；V8 节点浅表大小分别约为 **30.70 / 32.28 / 33.80 MB**。这些不是 Chrome 进程 RSS 或 GPU 显存。
+- 复测中 12 → 48 次最主要的三个增长类别：`array:(object elements)` **+2,828 / +605,768 bytes**，`code:system / InstructionStream` **+124 / +242,048 bytes**，`native:system / JSArrayBufferData` **+36 / +138,456 bytes**。首次运行也呈现高度接近的分布。
+- 同轮显示对象数未增长：0 / 2 / 15 台机器对应 **32 / 85 / 435** 个 Pixi 场景节点，12/48 次等级切换后的节点数恢复基线，且 **没有完整场景重绘**。因此目前的主要问题不是应用层 DisplayObject 列表无限累积。
+- 不能据此断言 Pixi Text/Graphics 纹理泄漏。V8 指令流增长可能涉及 JIT/代码缓存，而 `(object elements)` 与 ArrayBuffer 仅是内存类别，必须沿 Chrome DevTools Memory 的 **retaining path** 查找实际对象所有者。
+- [复测工作流](https://github.com/kunlong-luo/monster-apartment/actions/runs/42442891486) 包含 `workshop-r09-performance` 工件，含 `workshop-dense-{0,12,48}.heapsnapshot.gz`、`workshop-dense-heap-census.json` 与性能基准 JSON/Markdown。原始快照仅包含 CI 合成存档，不含真实用户数据，工件保留 30 天。
+- **下一轮 R09.4 优先级**：先比对 12 → 48 新增对象的引用链与根节点；重点核查 Pixi 文本缓存、Graphics 对象、BaseTexture/TextureSource 与渲染器内部缓冲区。只有确认已不再使用、且未被其他场景共享的资源，才调整生命周期销毁规则，避免首屏贴图丢失。
