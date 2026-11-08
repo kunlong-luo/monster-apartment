@@ -724,3 +724,74 @@ test('cinematic feedback features actual working equipment before idle high-leve
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
     .toBe(original);
 });
+
+
+test('R10.2 shows real linked production and recognizable worker portraits',async({page})=>{
+  test.setTimeout(100_000);
+  let world=newWorkshop();
+  world=moveMachine(world,7,6);
+  world=placeMachine(world,7,'kiln');
+  world=assignWorker(world,'brook',5);
+  world=assignWorker(world,'fern',6);
+  world=assignWorker(world,'cinder',7);
+  const saved=JSON.stringify(world);
+  await page.addInitScript(seed=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab')){
+      localStorage.setItem('monster-apartment:workshop-v2-lab',seed);
+    }
+  },saved);
+  await page.setViewportSize({width:1440,height:900});
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.goto('/workshop/');
+  const scene=page.getByTestId('workshop-cinematic-scene');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  await expect(scene).toHaveAttribute('data-motion','running');
+  await expect(page.getByTestId('workshop-route-water')).toHaveAttribute('data-active','true');
+  await expect(page.getByTestId('workshop-route-fiber')).toHaveAttribute('data-active','true');
+  for(const craft of ['well','garden','kiln']){
+    const worker=page.getByTestId('workshop-cinematic-worker-'+craft);
+    await expect(worker).toBeVisible();
+    const image=worker.locator('img');
+    await expect.poll(()=>image.evaluate(img=>(img as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0);
+    await expect.poll(()=>worker.evaluate(el=>getComputedStyle(el).animationName))
+      .toBe('workshop-worker-breathe');
+    await expect(page.getByTestId('workshop-cinematic-forecast-'+craft))
+      .toContainText('本班预计 +2');
+  }
+  await expect(page.getByTestId('workshop-cinematic-stock-kiln')).toContainText('晶核直入仓库');
+  await page.evaluate(()=>{
+    localStorage.setItem('monster-apartment:gothic-motion-reduced','1');
+    window.dispatchEvent(new Event('monster-apartment:motion-changed'));
+  });
+  await expect(scene).toHaveAttribute('data-motion','paused');
+  await expect.poll(()=>page.getByTestId('workshop-cinematic-worker-well')
+    .evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({path:'visual-evidence/workshop/desktop-workshop-worker-production-r102-1440.png',animations:'disabled'});
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
+    .toBe(saved);
+});
+
+test('R10.2 art review can compare existing 512px candidates to fallback without promoting',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  await expect(page.getByTestId('workshop-art-compare')).toHaveCount(0);
+  await page.goto('/workshop/?machine-art=review');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  const saved=await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'));
+  const well=page.getByTestId('workshop-cinematic-machine-well');
+  const compare=page.getByTestId('workshop-art-compare');
+  await expect(compare).toBeVisible();
+  await expect(well).toHaveAttribute('data-art-tier','review');
+  await page.getByTestId('workshop-art-compare-legacy').click();
+  await expect(well).toHaveAttribute('data-art-tier','legacy');
+  await page.getByTestId('workshop-art-compare-review').click();
+  await expect(well).toHaveAttribute('data-art-tier','review');
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({path:'visual-evidence/workshop/desktop-workshop-review-candidate-r102-1440.png',animations:'disabled'});
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
+    .toBe(saved);
+});
