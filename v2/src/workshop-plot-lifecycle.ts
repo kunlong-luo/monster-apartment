@@ -1,4 +1,5 @@
 import type {AnimatedSprite,Container,Graphics,Sprite,Text} from 'pixi.js';
+import {destroyWorkshopDisplayChildren} from './workshop-display-disposal';
 
 /** Only the references needed to dispose a single plot's Pixi display tree.
  * Pools are shared with the ticker; stale entries must never reach it. */
@@ -14,20 +15,6 @@ export type WorkshopPlotPools={
   animatedPlots:Set<number>;
   machineLabels:Array<Text|null>;
 };
-
-/** Pixi 8 Graphics.destroy({children:true}) can leave an owned GraphicsContext
- * alive because passing destroy options without `context:true` disables
- * automatic owned-context disposal. Recursively destroy children first and
- * call destroy() WITHOUT options on every node: Pixi disposes self-owned
- * GraphicsContexts but preserves external/shared contexts and Sprite textures.
- * This is safe for floor/worker art cached outside of a plot. */
-export function destroyWorkshopDisplayChildren(parent:Container):void{
-  const children=parent.removeChildren();
-  for(const child of children){
-    destroyWorkshopDisplayChildren(child);
-    child.destroy();
-  }
-}
 
 /** Dispose a plot without touching the visitor/mobile actors or siblings.
  * Shared textures and shared GraphicsContexts are NOT destroyed here. */

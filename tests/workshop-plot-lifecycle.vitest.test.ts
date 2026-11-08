@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {destroyWorkshopDisplayChildren} from '../v2/src/workshop-plot-lifecycle';
+import {destroyWorkshopDisplayChildren} from '../v2/src/workshop-display-disposal';
 
 type FakeNode={
   children:FakeNode[];
