@@ -23,3 +23,10 @@
 - 首次 CI 运行成功完成 0/2/15 台设备对照，报告显示 32/85/435 个 Pixi display objects，且 12 次单地块刷新后对象数回归原值；对应的工坊更新回调 p95 分别约 0.1/0.1/0.3 ms。
 - 首份报告的帧间隔在三组场景中均为 **100ms**。追踪后确认数据使用了 `ticker.deltaMS`，它受 Pixi `minFPS` 的最大时间步长钳制，无法如实表示低帧率下的实际帧间隔。现已切换为未经裁剪的 `ticker.elapsedMS`，与 Pixi 官方文档的原始时间定义一致。此前 100ms 数字只用于定位测量错误，不用于性能结论。
 - 新基准将 JS heap 后 GC 的检查点扩展到 0/12/48 次地块更新，识别首次缓存预热与继续增长的趋势。浏览器 JS 堆仍无法代表 WebGL 纹理占用，且单轮数据不能判定泄漏。
+
+## R09.3 · 真实 V8 Heap Snapshot 对象归因（2026-11-08）
+- 固定密集存档（15 设备、3 工匠）在采样完成后及第 12 / 48 次单地块重建后保存 **3 份 V8 Heap Snapshot**，仅在隔离的 CI 合成存档中执行，不对玩家采集数据。
+- Chrome CDP `HeapProfiler.takeHeapSnapshot` 把原始快照按 `*.heapsnapshot.gz` 压缩并上传到 Actions Artifact，30 天内可下载解压，在 Chrome DevTools Memory 中检查 retaining path。
+- `e2e/helpers/workshop-heap-census.ts` 按 V8 snapshot node metadata 动态解析类名/类型、数量和 shallow bytes，输出各检查点的类统计及增长最多的对象类型。**浅表大小不等于保留大小**，也不覆盖纹理显存。
+- 只对 **密集固定场景**执行原始堆快照，避免对常规浏览器视觉检查和实际玩家游戏产生额外运行成本；原有 0/2/15 设备帧间隔基准及 48 次局部重建断言仍保持。
+- 该阶段首先定位缓存及对象保留者，不冒然 destroy 共享 texture；下一步结合类统计及 retaining path 再定向移除实际泄漏引用。
