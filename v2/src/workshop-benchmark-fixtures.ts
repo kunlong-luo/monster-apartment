@@ -1,5 +1,5 @@
 import {BOARD_SIZE,newWorkshop,validWorkshop} from './workshop-engine';
-import type {WorkshopState,Machine,Craft} from './workshop-engine';
+import type {WorkshopState,Machine} from './workshop-engine';
 
 /** Read-only browser benchmark seeds; never added to game save migrations.
  * Three deterministic geometry densities, no paid progression/auto clock. */
