@@ -1,7 +1,8 @@
 import {expect,test} from '@playwright/test';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {gzipSync} from 'node:zlib';
-import {summarizeWorkshopHeap,workshopHeapGrowth} from './helpers/workshop-heap-census';
+import {summarizeWorkshopHeap,workshopHeapGrowth,workshopHeapClassIds,
+  traceWorkshopHeapRetainers,WORKSHOP_RETAINER_CLASSES} from './helpers/workshop-heap-census';
 import type {WorkshopHeapCensus} from './helpers/workshop-heap-census';
 import {workshopBenchmarkFixture,WORKSHOP_BENCHMARK_PROFILES} from '../v2/src/workshop-benchmark-fixtures';
 import type {WorkshopBenchmarkProfile} from '../v2/src/workshop-benchmark-fixtures';
@@ -67,6 +68,23 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
         if(!raw)throw Error('Chrome did not emit heap snapshot chunks');
         const parsed=JSON.parse(raw);
         const census=summarizeWorkshopHeap(parsed);
+        if(checkpoint===12)
+          snapshot12Ids=workshopHeapClassIds(parsed,WORKSHOP_RETAINER_CLASSES);
+        if(checkpoint===48){
+          if(!snapshot12Ids)throw Error('12-cycle heap snapshot missing');
+          retainingPaths=traceWorkshopHeapRetainers(
+            parsed,snapshot12Ids,WORKSHOP_RETAINER_CLASSES);
+          await writeFile(dir+'/workshop-dense-retainers.json',
+            JSON.stringify({schema:1,from:12,to:48,
+              interpretation:'Shortest strong GC-root paths, not unique retainers, dominators, retained bytes or a leak verdict.',
+              classes:retainingPaths},null,2)+'\n','utf8');
+          console.log('R09_RETAINERS '+JSON.stringify(
+            retainingPaths.map(x=>({
+              classKey:x.classKey,newlyPresentCount:x.newlyPresentCount,
+              firstPath:x.samples[0]?.path.map(node=>node.classKey),
+            }))
+          ));
+        }
         const filename=`${dir}/workshop-dense-${checkpoint}.heapsnapshot.gz`;
         await writeFile(filename,gzipSync(Buffer.from(raw,'utf8')));
         console.log('R09_HEAP_SNAPSHOT '+JSON.stringify({
@@ -78,6 +96,8 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
       let heap0:WorkshopHeapCensus|null=null;
       let heap12:WorkshopHeapCensus|null=null;
       let heap48:WorkshopHeapCensus|null=null;
+      let snapshot12Ids:ReturnType<typeof workshopHeapClassIds>|null=null;
+      let retainingPaths:ReturnType<typeof traceWorkshopHeapRetainers>|null=null;
       if(profile==='dense')await cdp.send('HeapProfiler.enable');
       const heapAfterGC=async():Promise<number|null>=>{
         try{await cdp.send('HeapProfiler.collectGarbage');}catch{return null;}
@@ -148,6 +168,7 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
       const heapAfter48=await heapAfterGC();
       if(profile==='dense')heap48=await captureDenseHeap(48);
       if(heap0&&heap12&&heap48){
+        expect(retainingPaths).not.toBeNull();
         const delta12=workshopHeapGrowth(heap0,heap12);
         const delta48=workshopHeapGrowth(heap0,heap48);
         const incremental=workshopHeapGrowth(heap12,heap48);
@@ -198,6 +219,7 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
     methodology:'32 sampled uncapped Pixi ticker.elapsedMS values per fixture, one in four frames; post-GC JS heap checkpoints at 0/12/48 plot mutations. No GPU memory or draw-call measurement.',
     cases:records,heapCensusFiles:heapReports.length
       ?['workshop-dense-heap-census.json',
+        'workshop-dense-retainers.json',
         'workshop-dense-0.heapsnapshot.gz',
         'workshop-dense-12.heapsnapshot.gz',
         'workshop-dense-48.heapsnapshot.gz']:[]};
@@ -214,7 +236,7 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
     '',
     'Heap deltas are Chromium page JS heap after optional GC around 12 and 48 repeated plot refreshes, not GPU memory or conclusive leak detection.',
     '',
-    'The dense-scene V8 snapshot class census and three gzip-compressed raw heap snapshots are retained as artifacts. Open a decompressed .heapsnapshot in Chrome DevTools > Memory to inspect retaining paths; class shallow bytes alone do not prove a leak.',
+    'The dense-scene V8 class census, selected strong GC-root paths, and three gzip-compressed snapshots are retained as artifacts. Paths show one shortest reachability chain, NOT a dominator or an exclusive owner. Open raw snapshots in DevTools for true retaining paths.',
     ...(heapReports.length?[
       '',
       '### Top V8 class growth, dense scene (12 to 48 plot updates)',
@@ -232,6 +254,10 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
     .toMatchObject({schema:3});
   expect(JSON.parse(await readFile(dir+'/workshop-dense-heap-census.json','utf8')))
     .toMatchObject({profile:'dense'});
+  const retainerJson=JSON.parse(await readFile(
+    dir+'/workshop-dense-retainers.json','utf8'));
+  expect(retainerJson).toMatchObject({schema:1,from:12,to:48});
+  expect(retainerJson.classes).toHaveLength(WORKSHOP_RETAINER_CLASSES.length);
   console.log('R09_PERF_SUMMARY '+JSON.stringify(records.map(
     ({profile,machineCount,sceneObjects,frameIntervalP95Ms,workshopUpdateP95Ms,jsHeapDeltaBytes,jsHeapDelta48Bytes})=>
       ({profile,machineCount,sceneObjects,frameIntervalP95Ms,workshopUpdateP95Ms,jsHeapDeltaBytes,jsHeapDelta48Bytes})

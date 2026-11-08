@@ -39,3 +39,10 @@
 - 不能据此断言 Pixi Text/Graphics 纹理泄漏。V8 指令流增长可能涉及 JIT/代码缓存，而 `(object elements)` 与 ArrayBuffer 仅是内存类别，必须沿 Chrome DevTools Memory 的 **retaining path** 查找实际对象所有者。
 - [复测工作流](https://github.com/kunlong-luo/monster-apartment/actions/runs/42442891486) 包含 `workshop-r09-performance` 工件，含 `workshop-dense-{0,12,48}.heapsnapshot.gz`、`workshop-dense-heap-census.json` 与性能基准 JSON/Markdown。原始快照仅包含 CI 合成存档，不含真实用户数据，工件保留 30 天。
 - **下一轮 R09.4 优先级**：先比对 12 → 48 新增对象的引用链与根节点；重点核查 Pixi 文本缓存、Graphics 对象、BaseTexture/TextureSource 与渲染器内部缓冲区。只有确认已不再使用、且未被其他场景共享的资源，才调整生命周期销毁规则，避免首屏贴图丢失。
+
+## R09.4 · 对象 ID 和强引用链归因
+- 通过 `node_fields`/`edge_fields` 动态解析 Chrome 堆图，按 *同一次浏览器运行* 的 V8 `id` 比较 12/48 次重绘快照中新增对象；不跨进程、跨运行假设 ID 稳定。
+- 从堆图的 GC 根（ordinal 0）遍历所有 **非 weak** 引用边。对数组元素、指令流、ArrayBuffer Data 和典型 Pixi Text/Graphics/Texture/Container 类输出少量新增对象的最短强可达路径到 `workshop-dense-retainers.json`，与完整压缩快照一起归档。
+- 报告中的路径仅表示 GC 根 **一条最短强引用可达链**，不等价于 DevTools 的 dominator/retained size，也不是泄漏证明。若对象仅通过弱引用可达则标记 `rootReachable:false`。
+- 输出仅包含对象类型和受控白名单的边名称，不输出堆中的任意属性值、页面文案或合成存档内容。测试覆盖强/弱边区分、节点 ID、边表损坏，以及不泄露陌生属性名。
+- 如果结果显示大量对象经同一缓存/闭包被持有，再确认其是否预期复用；**不直接销毁共享的 Pixi textures**。
