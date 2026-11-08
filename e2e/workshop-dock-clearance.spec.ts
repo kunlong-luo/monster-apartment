@@ -410,12 +410,14 @@ test('desktop cinematic fallback art is legible without enormous card highlights
   await well.click();
   await expect(well).toHaveAttribute('aria-pressed','true');
   await expect(page.getByTestId('workshop-context-panel')).toBeVisible();
-  const selected=await well.evaluate(item=>({
-    border:getComputedStyle(item).borderColor,
-    floorIndicator:getComputedStyle(item,'::after').opacity,
-  }));
-  expect(selected.border).toBe('rgba(0, 0, 0, 0)');
-  expect(Number(selected.floorIndicator)).toBeGreaterThan(.9);
+  const selectedBorder=await well.evaluate(item=>getComputedStyle(item).borderColor);
+  expect(selectedBorder).toBe('rgba(0, 0, 0, 0)');
+  // Selection uses a 200ms optical fade; test the settled visible state.
+  // Reading in the same animation frame as click only captures a mid-fade
+  // number such as 0.21, which is not a visual defect.
+  await expect.poll(async()=>Number(await well.evaluate(item=>
+    getComputedStyle(item,'::after').opacity
+  )),{timeout:5000}).toBeGreaterThan(.9);
   await page.screenshot({
     path:'visual-evidence/workshop/desktop-workshop-selected-prop-1440.png',
     animations:'disabled',
