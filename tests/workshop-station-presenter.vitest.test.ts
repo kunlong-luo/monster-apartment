@@ -16,7 +16,7 @@ describe('shared workshop station presenter',()=>{
     expect(view.groups.garden.instances.map(item=>item.plot)).toEqual([2,3,7]);
     expect(view.groups.kiln.instances.map(item=>item.plot)).toEqual([4,9]);
     expect(view.groups.well.featured?.plot).toBe(0);
-    expect(view.groups.garden.featured?.plot).toBe(2);
+    expect(view.groups.garden.featured?.plot).toBe(3); // blocked outranks idle
     expect(view.groups.kiln.featured?.plot).toBe(4);
     expect(view.byPlot[0]?.machine).toBe(world.tiles[0]);
     expect(view.byPlot[5]?.level).toBe(1);
@@ -32,6 +32,19 @@ describe('shared workshop station presenter',()=>{
     expect(focus.groups.well.instances.map(x=>x.level)).toEqual([3,1]);
     expect(presentWorkshopStations(world,7).groups.well.featured?.plot).toBe(0);
     expect(presentWorkshopStations(world,6).groups.well.selected).toBeNull();
+  });
+  it('features a working machine ahead of a higher-level idle one, while preserving selection',()=>{
+    const world=newWorkshop();
+    world.tiles[0]={craft:'well',worker:null,stored:9,level:3};
+    world.tiles[5]!.worker='brook';
+    world.tiles[5]!.stored=4;
+    const before=JSON.stringify(world);
+    const display=presentWorkshopStations(world,null).groups.well;
+    expect(display.featured?.plot).toBe(5);
+    expect(display.featured?.signal.state).toBe('working');
+    expect(display.featured?.machine.stored).toBe(4);
+    expect(presentWorkshopStations(world,0).groups.well.featured?.plot).toBe(0);
+    expect(JSON.stringify(world)).toBe(before);
   });
   it('reuses actual production signals for Pixi and the panorama',()=>{
     const world=newWorkshop();

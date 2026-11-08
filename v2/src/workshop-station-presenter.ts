@@ -32,9 +32,16 @@ export function presentWorkshopStations(
   const makeGroup=(craft:Craft):WorkshopStationGroup=>{
     const instances=lists[craft];
     const selected=instances.find(item=>item.plot===selectedPlot)??null;
-    const highest=instances.reduce<WorkshopStationInstance|null>((best,item)=>
-      !best||item.level>best.level?item:best,null);
-    return {craft,instances,selected,featured:selected??highest};
+    // Feature the most useful real production state, not merely highest Lv.
+    // A player's explicitly selected plot always overrides this preference.
+    const priority=(item:WorkshopStationInstance)=>
+      item.signal.state==='working'?2:item.signal.state==='blocked'?1:0;
+    const featured=instances.reduce<WorkshopStationInstance|null>((best,item)=>{
+      if(!best)return item;
+      const delta=priority(item)-priority(best);
+      return delta>0||(delta===0&&item.level>best.level)?item:best;
+    },null);
+    return {craft,instances,selected,featured:selected??featured};
   };
   return {byPlot,groups:{
     well:makeGroup('well'),garden:makeGroup('garden'),kiln:makeGroup('kiln'),

@@ -126,6 +126,27 @@
   background:radial-gradient(ellipse at 50% 60%,color-mix(in srgb,var(--station-glow) 18%,transparent),transparent 68%);
   filter:blur(8px);
 }
+/* State light follows the real production projection. No new Pixi objects. */
+@keyframes workshop-operating-floor{
+  0%,100%{opacity:.48;transform:scale(.97)}
+  50%{opacity:.88;transform:scale(1.035)}
+}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station[data-state="working"] .workshop-cinematic__station-halo{
+  animation:workshop-operating-floor 4.6s ease-in-out infinite;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station[data-state="blocked"] .workshop-cinematic__station-halo{
+  opacity:.22;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station[data-state="blocked"] .workshop-cinematic__machine-art{
+  filter:drop-shadow(0 16px 18px #080510dd) saturate(.7) brightness(.85);
+}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station[data-state="idle"] .workshop-cinematic__machine-art{
+  filter:drop-shadow(0 16px 18px #080510dd) saturate(.86) brightness(.93);
+}
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__machine-art{
   position:relative;width:100%;max-width:400px;flex:1;min-height:0;margin-top:20px;
   filter:drop-shadow(0 16px 18px #080510dd);transition:transform .25s ease;
@@ -197,6 +218,22 @@
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__state--active i{
   background:#98ddb9;box-shadow:0 0 9px #8ee5ab;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__state--blocked{
+  color:#e9b5a3;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__state--blocked i{
+  background:#c17c6b;box-shadow:0 0 7px #b76f5b66;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__state--idle{
+  color:var(--craft-muted);
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__stock{
+  color:var(--craft-muted);font:500 10px/1.3 "Noto Sans CJK SC",sans-serif;
+  font-variant-numeric:tabular-nums;letter-spacing:.045em;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__stock strong{
+  color:var(--craft-champagne);font-weight:600;
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__worker{
   position:absolute;top:10px;right:3px;display:flex;gap:5px;
@@ -271,6 +308,8 @@
   }
   .gothic-workshop-shell #root.lab.gothic-workshop
   .workshop-cinematic__station::after{transition:none!important}
+  .gothic-workshop-shell #root.lab.gothic-workshop
+  .workshop-cinematic__station-halo{animation:none!important}
 }
 
 /* The desktop panorama owns the WHOLE middle stage, rather than a small

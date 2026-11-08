@@ -84,7 +84,7 @@ export function WorkshopCinematicStage({
           data-art-tier={isReview?'review':'legacy'}
           aria-pressed={station?.plot===selectedPlot}
           aria-label={station
-            ?'选择'+MACHINES[craft].zh+'，'+String(station.plot+1).padStart(2,'0')+'号工位，Lv.'+level
+            ?'选择'+MACHINES[craft].zh+'，'+String(station.plot+1).padStart(2,'0')+'号工位，Lv.'+level+'，'+statusText+'，暂存'+station.machine.stored
             :'建设'+MACHINES[craft].zh+'，打开建造棋盘'}
           onClick={()=>{
             if(station){
@@ -110,10 +110,14 @@ export function WorkshopCinematicStage({
               <span>{MACHINES[craft].zh}</span><span className="workshop-cinematic__level">Lv.{level}</span>
             </span>
             <span className="workshop-cinematic__identity-detail">{legend.material}</span>
-            <span className={'workshop-cinematic__state'+(status==='working'?' workshop-cinematic__state--active':'')}>
+            <span className={'workshop-cinematic__state'+(status==='working'?' workshop-cinematic__state--active':status==='blocked'?' workshop-cinematic__state--blocked':' workshop-cinematic__state--idle')}>
               <i aria-hidden="true"/>{statusText}
               {station&&<span> · {String(station.plot+1).padStart(2,'0')}号地块</span>}
               <ArrowUpRight size={13} aria-hidden="true"/>
+            </span>
+            {station&&<span className="workshop-cinematic__stock"
+              data-testid={'workshop-cinematic-stock-'+craft}>
+              设备暂存 <strong>{station.machine.stored}</strong>
             </span>
           </div>
           {worker&&<span className="workshop-cinematic__worker">

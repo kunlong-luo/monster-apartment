@@ -689,3 +689,38 @@ test('R09 Pixi samples running grid frames and freezes diagnostics in cinematic 
   await page.waitForTimeout(350);
   expect(await stage.getAttribute('data-frame-samples')).toBe(stoppedSamples);
 });
+
+
+test('cinematic feedback features actual working equipment before idle high-level art',async({page})=>{
+  test.setTimeout(90_000);
+  const world=newWorkshop();
+  world.tiles[0]={craft:'well',worker:null,stored:9,level:3};
+  world.tiles[5]!.worker='brook';
+  world.tiles[5]!.stored=4;
+  const original=JSON.stringify(world);
+  await page.setViewportSize({width:1440,height:900});
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.addInitScript(saved=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab')){
+      localStorage.setItem('monster-apartment:workshop-v2-lab',saved);
+    }
+  },original);
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  const well=page.getByTestId('workshop-cinematic-machine-well');
+  await expect(well).toBeVisible();
+  await expect(well).toHaveAttribute('data-plot','5');
+  await expect(well).toHaveAttribute('data-state','working');
+  await expect(well).toHaveAttribute('data-level','1');
+  await expect(page.getByTestId('workshop-cinematic-stock-well')).toContainText('设备暂存 4');
+  const halo=well.locator('.workshop-cinematic__station-halo');
+  await expect.poll(()=>halo.evaluate(el=>getComputedStyle(el).animationName))
+    .toBe('workshop-operating-floor');
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect.poll(()=>halo.evaluate(el=>getComputedStyle(el).animationName))
+    .toBe('none');
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({path:'visual-evidence/workshop/desktop-workshop-production-feedback-1440.png',animations:'disabled'});
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
+    .toBe(original);
+});
