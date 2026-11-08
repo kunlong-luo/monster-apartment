@@ -109,7 +109,7 @@ export function installWorkshopWebGLProbe():void{
     }
   }
   const originalGetContext=HTMLCanvasElement.prototype.getContext;
-  HTMLCanvasElement.prototype.getContext=function(...args:unknown[]){
+  HTMLCanvasElement.prototype.getContext=function(this:HTMLCanvasElement,...args:unknown[]){
     const gl=(originalGetContext as (...a:unknown[])=>unknown).apply(this,args);
     const kind=String(args[0]);
     if(gl&&typeof gl==='object'&&
