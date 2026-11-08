@@ -597,7 +597,7 @@ test('R06 625px console matches reserved stage clearance',async({page})=>{
 // cinematic canvas is paused. Only compare measured values for finiteness,
 // not synthetic FPS thresholds from variable CI hardware.
 test('R09 Pixi samples running grid frames and freezes diagnostics in cinematic mode',async({page})=>{
-  test.setTimeout(90_000);
+  test.setTimeout(150_000);
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/workshop/');
   await expect(page.locator('#root')).toHaveAttribute(
@@ -607,8 +607,11 @@ test('R09 Pixi samples running grid frames and freezes diagnostics in cinematic 
   expect(await stage.getAttribute('data-frame-samples')).toBeNull();
   await page.getByTestId('workshop-view-grid').click();
   await expect(stage).toHaveAttribute('data-pixi-ticker','running');
+  // Reports publish every 32 samples, one in four Pixi frames (128 frames).
+  // Software WebGL on shared CI can exceed 20s for those frames; this is a
+  // cadence wait, not an FPS performance gate.
   await expect.poll(async()=>Number(
-    await stage.getAttribute('data-frame-samples')),{timeout:20000})
+    await stage.getAttribute('data-frame-samples')),{timeout:60000})
     .toBeGreaterThanOrEqual(32);
   const readings=await stage.evaluate(element=>{
     const keys=['frameSamples','frameWindow','frameIntervalP50Ms',
