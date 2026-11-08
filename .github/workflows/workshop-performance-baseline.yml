@@ -5,11 +5,14 @@ on:
     branches: [main]
     paths:
       - 'e2e/workshop-performance-baseline.spec.ts'
+      - 'e2e/workshop-webgl-lifecycle.spec.ts'
+      - 'e2e/helpers/workshop-webgl-probe.ts'
       - 'e2e/helpers/workshop-heap-census.ts'
       - 'v2/src/workshop-benchmark-fixtures.ts'
       - 'v2/src/workshop-frame-metrics.ts'
       - 'v2/src/workshop-lab-stage.ts'
       - 'v2/src/workshop-plot-lifecycle.ts'
+      - 'v2/src/workshop-display-disposal.ts'
       - '.github/workflows/workshop-performance-baseline.yml'
   workflow_dispatch:
 permissions:
@@ -24,7 +27,7 @@ env:
 jobs:
   measured-browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 22
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -40,8 +43,8 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y fonts-noto-cjk
-      - name: Measure 0/2/15 machines and compare dense V8 heap snapshots
-        run: pnpm exec playwright test e2e/workshop-performance-baseline.spec.ts --workers=1 --retries=0
+      - name: Measure 0/2/15 machines, compare dense V8 heap snapshots, and audit WebGL lifecycle
+        run: pnpm exec playwright test e2e/workshop-performance-baseline.spec.ts e2e/workshop-webgl-lifecycle.spec.ts --workers=1 --retries=0
       - name: Upload per-fixture performance measurements
         if: always()
         uses: actions/upload-artifact@v4

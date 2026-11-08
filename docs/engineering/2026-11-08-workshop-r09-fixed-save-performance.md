@@ -61,3 +61,11 @@
 - 同环境 48 次刷新后的页面 JS 堆相对于初始：新手 2 台从修复前约 **3.04 MB** 下降至约 **1.43 MB**；15 台从约 **2.57 MB** 下降至约 **1.37 MB**。这是两次独立 CI 运行，不是跨硬件 FPS 改善结论。
 - `sceneObjectCount` 在 0/2/15 台基准分别保持 **32/85/435** 且地块更新未触发完整场景重绘。最新 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/42444728986)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/42444729014) 和 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/42444771458) 均为成功。
 - 上述改善有明确的原因和可复现的测量，但堆中仍有 InstructionStream 等代码/运行时缓存增长（本轮 12→48 次 +259,008 bytes）。继续保留该监测，不应把每一次 V8 堆增长解读为新泄漏，也不应盲目调用全局 texture cache 清空。
+
+
+## R09.5 · WebGL API 资源与多次装卸基准（2026-11-08）
+- **测量目的**：R09.4 已改善 V8 JS 堆、Pixi GraphicsContext 与 Buffer 的重复重绘回收；但不能从 JS 堆推导 GPU 显存。真实 GPU resident bytes 需 GPU/驱动专用 profiler，浏览器 WebGL API 没有通用接口。
+- \`e2e/helpers/workshop-webgl-probe.ts\` 在 Playwright init script 注入，使用 \`WeakMap\` 跟踪 WebGL \`create*/delete*\` 调用，统计 texture/buffer/framebuffer/renderbuffer/shader/program/vertexArray 等对象的创建、删除、高水位与“API 尚未 delete 的数量”；并记录 \`drawArrays/drawElements\` 提交调用数。**不在正式游戏中注入、不持有资源对象强引用**。
+- \`e2e/workshop-webgl-lifecycle.spec.ts\` 用固定 15 台设备合成存档进行 **3 次客户端导航进入与退出工坊**，每次执行 **16 次单地块升级/恢复**，检查同一浏览器文档、各次建立的真实 WebGL 上下文、渲染器提交过绘制调用、地块对象数及局部刷新没有触发完整场景重绘。
+- 记录退出后已脱离 DOM 的 Canvas 关联状态；**当 Canvas 已分离或 WebGL 上下文失效时，即使没有观察到一一对应的 \`delete*\`，这些历史计数也不能当作仍占用显存的对象数**。不以共享 CI 的 FPS 或跨设备显存绝对值作门禁。
+- 生成 \`visual-evidence/performance/workshop-r09-webgl-lifecycle.json\` 和 \`.md\`，保留 30 天。原 \`0/2/15\` 固定存档及 V8 0/12/48 堆快照基准继续独立运行。此阶段先确立资源生命周期观测基线，若发现明显增长再做定向修复；不主动清空全局纹理缓存。
