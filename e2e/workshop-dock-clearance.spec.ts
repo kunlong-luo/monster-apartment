@@ -385,13 +385,18 @@ test('desktop cinematic fallback art is legible without enormous card highlights
       return {
         artTier:item.getAttribute('data-art-tier'),
         zoom:img?new DOMMatrix(getComputedStyle(img).transform).a:NaN,
+        verticalOffset:img?new DOMMatrix(getComputedStyle(img).transform).f:NaN,
         borderColor:s.borderColor,
         backgroundImage:s.backgroundImage,
         shadow:getComputedStyle(item,'::before').backgroundImage,
       };
     }));
   expect(machines).toHaveLength(3);
-  for(const machine of machines){
+  for(const [i,machine] of machines.entries()){
+    // Legacy props have uneven transparent margins: align their actual
+    // silhouettes towards the same floor rather than moving hit targets.
+    if(i<2)expect(machine.verticalOffset).toBeGreaterThan(20);
+    else expect(machine.verticalOffset).toBeGreaterThanOrEqual(0);
     // Unreviewed CGs remain gated. Legacy fallback art is not overstretched
     // into a blurry 1.9x hero image and selection is not a giant card border.
     expect(machine.artTier).toBe('legacy');

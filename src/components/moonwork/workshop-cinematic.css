@@ -143,13 +143,24 @@
 .workshop-cinematic__station--garden{--prop-zoom:1.18}
 .gothic-workshop-shell #root.lab.gothic-workshop
 .workshop-cinematic__station--kiln{--prop-zoom:1.25}
+/* Legacy alpha margins differ by craft. Level variants in the opt-in CG
+ * review use their own unshifted 512px canvas and must not inherit this. */
 .gothic-workshop-shell #root.lab.gothic-workshop
-.workshop-cinematic__station[data-art-tier="review"]{--prop-zoom:1.45}
+.workshop-cinematic__station--well[data-art-tier="legacy"]{--prop-drop:34%}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station--garden[data-art-tier="legacy"]{--prop-drop:22%}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station--kiln[data-art-tier="legacy"]{--prop-drop:2%}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station[data-art-tier="review"]{--prop-zoom:1.45;--prop-drop:0%}
 .gothic-workshop-shell #root.lab.gothic-workshop
 .workshop-cinematic__station[data-art-tier="review"].workshop-cinematic__station--well{--prop-zoom:1.52}
 .gothic-workshop-shell #root.lab.gothic-workshop
 .workshop-cinematic__machine-art img{
-  transform:scale(var(--prop-zoom,1.25));
+  /* Move only the painted subject inside its native transparent canvas.
+   * The water pump has far more blank pixels below its body than the kiln.
+   * Percent offsets scale with the scene instead of being fixed viewport px. */
+  transform:translateY(var(--prop-drop,0%)) scale(var(--prop-zoom,1.25));
   transform-origin:50% 58%;
   image-rendering:auto;
 }
