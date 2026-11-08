@@ -368,6 +368,60 @@ test('cinematic unbuilt machine opens the actual grid without changing saved inv
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
 });
 
+
+test('desktop cinematic fallback art is legible without enormous card highlights',
+  async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute(
+    'data-runtime-ready','true',{timeout:45_000});
+  const scene=page.getByTestId('workshop-cinematic-scene');
+  await expect(scene).toBeVisible();
+  const machines=await page.locator('.workshop-cinematic__station')
+    .evaluateAll(items=>items.map(item=>{
+      const img=item.querySelector<HTMLImageElement>('.workshop-cinematic__machine-art img');
+      const s=getComputedStyle(item);
+      return {
+        artTier:item.getAttribute('data-art-tier'),
+        zoom:img?new DOMMatrix(getComputedStyle(img).transform).a:NaN,
+        borderColor:s.borderColor,
+        backgroundImage:s.backgroundImage,
+        shadow:getComputedStyle(item,'::before').backgroundImage,
+      };
+    }));
+  expect(machines).toHaveLength(3);
+  for(const machine of machines){
+    // Unreviewed CGs remain gated. Legacy fallback art is not overstretched
+    // into a blurry 1.9x hero image and selection is not a giant card border.
+    expect(machine.artTier).toBe('legacy');
+    expect(machine.zoom).toBeGreaterThanOrEqual(1);
+    expect(machine.zoom).toBeLessThanOrEqual(1.35);
+    expect(machine.borderColor).toBe('rgba(0, 0, 0, 0)');
+    expect(machine.backgroundImage).toBe('none');
+    expect(machine.shadow).toContain('radial-gradient');
+  }
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({
+    path:'visual-evidence/workshop/desktop-workshop-integrated-props-1440.png',
+    animations:'disabled',
+  });
+  const well=page.getByTestId('workshop-cinematic-machine-well');
+  await well.click();
+  await expect(well).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByTestId('workshop-context-panel')).toBeVisible();
+  const selected=await well.evaluate(item=>({
+    border:getComputedStyle(item).borderColor,
+    floorIndicator:getComputedStyle(item,'::after').opacity,
+  }));
+  expect(selected.border).toBe('rgba(0, 0, 0, 0)');
+  expect(Number(selected.floorIndicator)).toBeGreaterThan(.9);
+  await page.screenshot({
+    path:'visual-evidence/workshop/desktop-workshop-selected-prop-1440.png',
+    animations:'disabled',
+  });
+});
+
 // R03/R04: hidden Pixi must stop and panorama must expose each real plot.
 test('panorama pauses Pixi and exposes all same-craft machines',async({page})=>{
   test.setTimeout(90_000);

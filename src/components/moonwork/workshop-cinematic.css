@@ -71,9 +71,11 @@
   --station-glow:#79c8d9;
   position:relative;display:flex;flex-direction:column;align-items:center;
   justify-content:flex-end;min-width:0;min-height:0;isolation:isolate;
-  text-align:center;border:1px solid transparent;border-radius:15px;
+  text-align:center;border:1px solid transparent;border-radius:0;
   background:transparent;color:#f8e5c8;cursor:pointer;padding:0 3px 6px;
-  transition:border-color .18s ease,background .18s ease;
+  transition:filter .2s ease;
+  /* A giant outline makes a machine read as a web card rather than a prop.
+   * Keep the semantic full-tile button, but draw selection only on the floor. */
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station--garden{
   --station-glow:#9edebc;
@@ -82,10 +84,36 @@
   --station-glow:#f8a66d;
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station:is(:hover,:focus-visible,[aria-pressed="true"]){
-  border-color:#d2a9777c;background:linear-gradient(180deg,transparent 10%,#3d284b29 63%,#2315277a);
+  border-color:transparent;background:transparent;
+  filter:brightness(1.06);
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station:focus-visible{
-  outline:2px solid #ffdda9;outline-offset:-3px;
+  /* Keyboard users still get an explicit indicator, but only at the floor. */
+  outline:2px dashed #ffdda9;outline-offset:-3px;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station::before{
+  content:"";position:absolute;left:7%;right:7%;bottom:14%;height:21%;
+  z-index:-1;pointer-events:none;border-radius:50%;
+  background:radial-gradient(ellipse at center,
+    color-mix(in srgb,var(--station-glow) 24%,transparent) 0%,
+    #0a0716a8 55%,transparent 81%);
+  filter:blur(13px);opacity:.68;
+  transform:perspective(260px) rotateX(61deg);
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station::after{
+  content:"";position:absolute;left:22%;right:22%;bottom:12%;height:2px;
+  pointer-events:none;z-index:1;opacity:0;
+  background:linear-gradient(90deg,transparent,
+    var(--station-glow) 38%,#efd7af 50%,var(--station-glow) 62%,transparent);
+  box-shadow:0 0 13px var(--station-glow);transition:opacity .2s ease;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station:is(:hover,:focus-visible,[aria-pressed="true"])::after{
+  opacity:.95;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop
+.workshop-cinematic__station[aria-pressed="true"] .workshop-cinematic__identity-title{
+  color:#fff2cf;
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__ordinal{
   position:absolute;top:4%;left:50%;transform:translateX(-50%);
@@ -95,34 +123,35 @@
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station-halo{
   position:absolute;inset:12% 0 25%;z-index:-1;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 60%,color-mix(in srgb,var(--station-glow) 33%,transparent),transparent 68%);
-  filter:blur(5px);
+  background:radial-gradient(ellipse at 50% 60%,color-mix(in srgb,var(--station-glow) 18%,transparent),transparent 68%);
+  filter:blur(8px);
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__machine-art{
-  position:relative;width:100%;flex:1;min-height:0;margin-top:20px;
-  filter:drop-shadow(0 13px 13px #080510d0);transition:transform .25s ease;
+  position:relative;width:100%;max-width:400px;flex:1;min-height:0;margin-top:20px;
+  filter:drop-shadow(0 16px 18px #080510dd);transition:transform .25s ease;
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__machine-art img{
   object-fit:contain;object-position:center bottom;
 }
-/* Source sprites were padded for 512px plot icons. Enlarge the painted
- * SUBJECT, not its transparent canvas, so the machinery reads at scene scale.
- * The bitmap stays noninteractive; its parent real-state station button owns
- * all pointer/keyboard input. Separate factors protect the reviewed CG detail. */
+/* The legacy AVIFs are tiny fallback illustrations, not scene-resolution art.
+ * The previous 1.6–1.9 zoom was amplifying compression artifacts into giant,
+ * blurry machinery. Show the actual image closer to its usable pixel size.
+ * The explicit art-review route can still enlarge 512px CG candidates. */
 .gothic-workshop-shell #root.lab.gothic-workshop
-.workshop-cinematic__station--well{--prop-zoom:1.90}
+.workshop-cinematic__station--well{--prop-zoom:1.28}
 .gothic-workshop-shell #root.lab.gothic-workshop
-.workshop-cinematic__station--garden{--prop-zoom:1.60}
+.workshop-cinematic__station--garden{--prop-zoom:1.18}
 .gothic-workshop-shell #root.lab.gothic-workshop
-.workshop-cinematic__station--kiln{--prop-zoom:1.70}
+.workshop-cinematic__station--kiln{--prop-zoom:1.25}
 .gothic-workshop-shell #root.lab.gothic-workshop
-.workshop-cinematic__station[data-art-tier="review"]{--prop-zoom:1.65}
+.workshop-cinematic__station[data-art-tier="review"]{--prop-zoom:1.45}
 .gothic-workshop-shell #root.lab.gothic-workshop
-.workshop-cinematic__station[data-art-tier="review"].workshop-cinematic__station--well{--prop-zoom:1.80}
+.workshop-cinematic__station[data-art-tier="review"].workshop-cinematic__station--well{--prop-zoom:1.52}
 .gothic-workshop-shell #root.lab.gothic-workshop
 .workshop-cinematic__machine-art img{
-  transform:scale(var(--prop-zoom,1.65));
-  transform-origin:50% 55%;
+  transform:scale(var(--prop-zoom,1.25));
+  transform-origin:50% 58%;
+  image-rendering:auto;
 }
 
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__station:is(:hover,:focus-visible)
@@ -134,7 +163,7 @@
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__identity::before{
   content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 75%,#0f0b1dea,transparent 78%);
+  background:radial-gradient(ellipse at 50% 80%,#0f0b1de6,transparent 80%);
 }
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__identity-title{
   display:flex;align-items:center;justify-content:center;gap:9px;
@@ -229,6 +258,8 @@
   .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__machine-art{
     transition:none!important;
   }
+  .gothic-workshop-shell #root.lab.gothic-workshop
+  .workshop-cinematic__station::after{transition:none!important}
 }
 
 /* The desktop panorama owns the WHOLE middle stage, rather than a small
