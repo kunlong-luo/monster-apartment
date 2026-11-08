@@ -69,3 +69,10 @@
 - \`e2e/workshop-webgl-lifecycle.spec.ts\` 用固定 15 台设备合成存档进行 **3 次客户端导航进入与退出工坊**，每次执行 **16 次单地块升级/恢复**，检查同一浏览器文档、各次建立的真实 WebGL 上下文、渲染器提交过绘制调用、地块对象数及局部刷新没有触发完整场景重绘。
 - 记录退出后已脱离 DOM 的 Canvas 关联状态；**当 Canvas 已分离或 WebGL 上下文失效时，即使没有观察到一一对应的 \`delete*\`，这些历史计数也不能当作仍占用显存的对象数**。不以共享 CI 的 FPS 或跨设备显存绝对值作门禁。
 - 生成 \`visual-evidence/performance/workshop-r09-webgl-lifecycle.json\` 和 \`.md\`，保留 30 天。原 \`0/2/15\` 固定存档及 V8 0/12/48 堆快照基准继续独立运行。此阶段先确立资源生命周期观测基线，若发现明显增长再做定向修复；不主动清空全局纹理缓存。
+
+## R09.5 首次 WebGL API 三次装卸实测
+- [首次通过的完整基准 (a764a79)](https://github.com/kunlong-luo/monster-apartment/actions/runs/42449249781)：三次真实 Next.js 客户端进入／退出工坊，每次完成 16 次地块升级／恢复；各次活动 WebGL2 context ID 为 3、4、5（其他两个初始化上下文不能当作工坊资源）。每次显示对象为 435，测得 152 次额外 draw* 调用。
+- 三轮观测一致：进入后的纹理为 65、Buffer 为 2、Program 为 1、Vertex Array 为 1；16 次变更后分别为 66 / 4 / 2 / 2。离开工坊后，本上下文历史计数中的纹理 0、Buffer 0、Vertex Array 0、Program 2。Program 的残留记录属于**已脱离 DOM 的旧 Canvas**；并不直接表示仍然占用 GPU 显存。
+- 退出后 CDP 强制 GC 的页面 JS heap 为 14.80 / 15.76 / 16.29 MB；单轮三个点仍不足以证明平台期或泄漏，包含浏览器编译和资源加载预热。跨真实设备的显存计量仍需驱动／GPU 性能工具。
+- CI 拆分：WebGL 轻量资源基准独立至 `.github/workflows/workshop-webgl-lifecycle.yml`，原 `workshop-performance-baseline.yml` 只执行 0/2/15 台设备 V8 固定存档的完整 0/12/48 堆快照。两种 CI 可分别按路径触发或手动运行，避免仅更改 WebGL 探针时重复捕获大型 V8 快照。
+- 不引入绝对 FPS / GPU 字节阈值，不在正式游戏运行 WebGL API 包装。此阶段排查的 API 数量与 draw 调用仅用于生命周期比较，不等于 GPU 显存。

@@ -1,0 +1,55 @@
+name: Workshop WebGL Lifecycle
+# Independent WebGL API resource probe, not a GPU memory benchmark.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'e2e/workshop-webgl-lifecycle.spec.ts'
+      - 'e2e/helpers/workshop-webgl-probe.ts'
+      - 'v2/src/workshop-lab-stage.ts'
+      - 'v2/src/workshop-display-disposal.ts'
+      - 'v2/src/workshop-plot-lifecycle.ts'
+      - '.github/workflows/workshop-webgl-lifecycle.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: workshop-webgl-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  CI: '1'
+  NEXT_TELEMETRY_DISABLED: '1'
+  PLAYWRIGHT_USE_SYSTEM_CHROME: '1'
+jobs:
+  webgl-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.13.0
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: npm --prefix v2 install --no-audit --no-fund
+      - name: Install Chinese scene fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-noto-cjk
+      - name: Compare WebGL API resource counts over 3 real workshop mounts
+        run: pnpm exec playwright test e2e/workshop-webgl-lifecycle.spec.ts --workers=1 --retries=0
+      - name: Upload resource-count and draw-call comparison
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workshop-r09-webgl-lifecycle
+          path: |
+            visual-evidence/performance/workshop-r09-webgl-lifecycle.json
+            visual-evidence/performance/workshop-r09-webgl-lifecycle.md
+            test-results/**/error-context.md
+            test-results/**/test-failed-*.png
+          retention-days: 30
+          if-no-files-found: warn
