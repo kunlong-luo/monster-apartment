@@ -15,8 +15,22 @@ export type WorkshopPlotPools={
   machineLabels:Array<Text|null>;
 };
 
+/** Pixi 8 Graphics.destroy({children:true}) can leave an owned GraphicsContext
+ * alive because passing destroy options without `context:true` disables
+ * automatic owned-context disposal. Recursively destroy children first and
+ * call destroy() WITHOUT options on every node: Pixi disposes self-owned
+ * GraphicsContexts but preserves external/shared contexts and Sprite textures.
+ * This is safe for floor/worker art cached outside of a plot. */
+export function destroyWorkshopDisplayChildren(parent:Container):void{
+  const children=parent.removeChildren();
+  for(const child of children){
+    destroyWorkshopDisplayChildren(child);
+    child.destroy();
+  }
+}
+
 /** Dispose a plot without touching the visitor/mobile actors or siblings.
- * Textures belong to the shared art cache and are NOT destroyed here. */
+ * Shared textures and shared GraphicsContexts are NOT destroyed here. */
 export function releaseWorkshopPlot(
   index:number,layer:Container,pools:WorkshopPlotPools
 ):void{
@@ -38,5 +52,5 @@ export function releaseWorkshopPlot(
   prune(pools.actuatorEffects,item=>item.node.parent===layer);
   pools.animatedPlots.delete(index);
   pools.machineLabels[index]=null;
-  layer.removeChildren().forEach(child=>child.destroy({children:true}));
+  destroyWorkshopDisplayChildren(layer);
 }

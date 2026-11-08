@@ -8,7 +8,7 @@ import {inspectMachineSignals} from './workshop-machine-status';
 import {presentWorkshopStations} from './workshop-station-presenter';
 import {workshopStagePlotPatch,workshopMachineCaption} from './workshop-stage-diff';
 import {createWorkshopFrameMeter} from './workshop-frame-metrics';
-import {releaseWorkshopPlot} from './workshop-plot-lifecycle';
+import {destroyWorkshopDisplayChildren,releaseWorkshopPlot} from './workshop-plot-lifecycle';
 import type {WorkshopPresentationMode} from './workshop-runtime-contract';
 import {projectMachineProduction} from './workshop-production';
 import type {MachineCycle} from './workshop-production';
@@ -653,8 +653,10 @@ export async function mountWorkshopLab(
     machineArt.length=0;machineEffects.length=0;deviceEffects.length=0;
     materialEffects.length=0;actuatorEffects.length=0;
     flowPaths=[];
-    stage.removeChildren().forEach(child=>child.destroy({children:true}));
-    tutorialLayer.removeChildren().forEach(child=>child.destroy({children:true}));
+    // Dispose each Graphics without options to release its owned context.
+    // Passing only {children:true} to Pixi 8 can retain geometry caches.
+    destroyWorkshopDisplayChildren(stage);
+    destroyWorkshopDisplayChildren(tutorialLayer);
     const stationModel=presentWorkshopStations(current,selected);
     const signals=stationModel.byPlot.map(station=>station?.signal??null);
     // The live transport cues correspond to inputs a real next shift would
@@ -836,6 +838,10 @@ export async function mountWorkshopLab(
     window.removeEventListener(motionEvent,updateMotion);
     window.removeEventListener('storage',onMotionStorage);
     actors.forEach(actor=>actor.stop());
+    machineAnimations.forEach(actor=>actor.stop());
+    // Teardown also walks the persistent foundation, effects, and hit areas.
+    // All Sprite textures are retained for art-cache reuse on next mount.
+    destroyWorkshopDisplayChildren(app.stage);
     app.destroy(true,{children:true});
     canvas.remove();
   }};

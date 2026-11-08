@@ -46,3 +46,10 @@
 - 报告中的路径仅表示 GC 根 **一条最短强引用可达链**，不等价于 DevTools 的 dominator/retained size，也不是泄漏证明。若对象仅通过弱引用可达则标记 `rootReachable:false`。
 - 输出仅包含对象类型和受控白名单的边名称，不输出堆中的任意属性值、页面文案或合成存档内容。测试覆盖强/弱边区分、节点 ID、边表损坏，以及不泄露陌生属性名。
 - 如果结果显示大量对象经同一缓存/闭包被持有，再确认其是否预期复用；**不直接销毁共享的 Pixi textures**。
+
+## R09.4 · 渲染器缓存归因与第一轮修复
+- [引用链基准](https://github.com/kunlong-luo/monster-apartment/actions/runs/42443980584) 与三份原始堆快照已成功完成。在 12→48 次重绘的新增对象样本中，最大数组类通过 `.renderer → .graphics → .items` 可达；Float32Array 内存通过 `.renderer → .buffer → .items → Float32Array → ArrayBuffer` 可达。另一部分 InstructionStream 通过 PerformanceObserver / React 路径可达，不能归为 Pixi 泄漏。
+- 核对项目固定的 **PixiJS 8.22.0** 官方 API：`Graphics.destroy()` 不传参会自动销毁自有 GraphicsContext；但 `destroy({children:true})` 未显式设置 `context:true`，可能不释放自有绘图上下文。这与从 renderer.graphics 及 buffer 项发现的强引用链具有一致性，属于需要修复的真实生命周期错误。
+- 将工坊单地块回收、全场景重绘和页面销毁改为逐层递归 `destroyWorkshopDisplayChildren()`：先回收子节点，再逐个调用 **不带 options 的 `destroy()`**。这样自有 GraphicsContext 会被释放，而外部/共享 GraphicsContext 与角色贴图仍由原所有者管理，不使用具有破坏性的全局纹理清空。
+- 新增单元测试确保销毁顺序、子节点清空、不传显式销毁选项、独立地块和共享纹理不受影响。原有完整回归还检查升级↔恢复后显示对象数稳定，以及真实自动生产、PC/手机布局。
+- 将上述修复与之前 `e2fb508`（相同 0/2/15 固定存档、48 次重绘）做真实基准对照。GPU 缓存仍需独立 GPU profiling 验证，不可仅凭 JS heap 宣称全部解决。
