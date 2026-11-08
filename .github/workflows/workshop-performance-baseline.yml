@@ -1,0 +1,53 @@
+name: Workshop Performance Baseline
+# Independent exploratory benchmark, not a release gate or a CI FPS target.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'e2e/workshop-performance-baseline.spec.ts'
+      - 'v2/src/workshop-benchmark-fixtures.ts'
+      - 'v2/src/workshop-frame-metrics.ts'
+      - 'v2/src/workshop-plot-lifecycle.ts'
+      - '.github/workflows/workshop-performance-baseline.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: workshop-performance-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  CI: '1'
+  NEXT_TELEMETRY_DISABLED: '1'
+  PLAYWRIGHT_USE_SYSTEM_CHROME: '1'
+jobs:
+  measured-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.13.0
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: npm --prefix v2 install --no-audit --no-fund
+      - name: Install Chinese scene fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-noto-cjk
+      - name: Measure 0/2/15 machines in Chromium, capture JSON and markdown
+        run: pnpm exec playwright test e2e/workshop-performance-baseline.spec.ts --workers=1 --retries=0
+      - name: Upload per-fixture performance measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workshop-r09-performance
+          path: |
+            visual-evidence/performance/**
+            test-results/**/error-context.md
+            test-results/**/test-failed-*.png
+          retention-days: 30
+          if-no-files-found: warn

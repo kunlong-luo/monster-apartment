@@ -8,6 +8,7 @@ import {inspectMachineSignals} from './workshop-machine-status';
 import {presentWorkshopStations} from './workshop-station-presenter';
 import {workshopStagePlotPatch,workshopMachineCaption} from './workshop-stage-diff';
 import {createWorkshopFrameMeter} from './workshop-frame-metrics';
+import {releaseWorkshopPlot} from './workshop-plot-lifecycle';
 import type {WorkshopPresentationMode} from './workshop-runtime-contract';
 import {projectMachineProduction} from './workshop-production';
 import type {MachineCycle} from './workshop-production';
@@ -536,30 +537,15 @@ export async function mountWorkshopLab(
 
     plotRevisions[i]++;
   };
-  /** Evict only references from the selected plot before destroying its old
-   * display children. Global actors (the visitor and mobile portrait row)
-   * and all other machine updates continue undisturbed. */
+  // Global actors (the visitor/mobile portrait row) never belong to a plot.
+  // The isolated lifecycle layer disposes only references owned by this plot.
   const resetPlot=(index:number)=>{
     const layer=plotLayers[index];
     if(!layer)return;
-    const prune=<T>(list:T[],belongs:(item:T)=>boolean,stop?:(item:T)=>void)=>{
-      for(let i=list.length-1;i>=0;i--){
-        if(!belongs(list[i]))continue;
-        stop?.(list[i]);
-        list.splice(i,1);
-      }
-    };
-    prune(actors,actor=>actor.parent===layer,actor=>actor.stop());
-    prune(paintedActors,entry=>entry.sprite.parent===layer);
-    prune(machineAnimations,actor=>actor.parent===layer,actor=>actor.stop());
-    prune(machineArt,entry=>entry.sprite.parent===layer);
-    prune(machineEffects,entry=>entry.ring.parent===layer);
-    prune(deviceEffects,entry=>entry.node.parent===layer);
-    prune(materialEffects,entry=>entry.node.parent===layer);
-    prune(actuatorEffects,entry=>entry.node.parent===layer);
-    animatedPlots.delete(index);
-    machineLabels[index]=null;
-    layer.removeChildren().forEach(child=>child.destroy({children:true}));
+    releaseWorkshopPlot(index,layer,{
+      actors,paintedActors,machineAnimations,machineArt,machineEffects,
+      deviceEffects,materialEffects,actuatorEffects,animatedPlots,machineLabels,
+    });
   };
   const publishPlotState=()=>{
     element.dataset.machineAnimatedTiles=[...animatedPlots].sort((a,b)=>a-b).join(';');
