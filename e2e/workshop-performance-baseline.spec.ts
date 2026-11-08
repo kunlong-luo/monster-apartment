@@ -1,5 +1,5 @@
 import {expect,test} from '@playwright/test';
-import {mkdir,writeFile} from 'node:fs/promises';
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {gzipSync} from 'node:zlib';
 import {summarizeWorkshopHeap,workshopHeapGrowth} from './helpers/workshop-heap-census';
 import type {WorkshopHeapCensus} from './helpers/workshop-heap-census';
@@ -161,7 +161,7 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
         };
         heapReports.push(report);
         await writeFile(dir+'/workshop-dense-heap-census.json',
-          JSON.stringify(report,null,2)+'\\n','utf8');
+          JSON.stringify(report,null,2)+'\n','utf8');
         console.log('R09_HEAP_GROWTH '+JSON.stringify({
           from12To48:report.topGrowth12To48.slice(0,12),
         }));
@@ -192,6 +192,7 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
     }finally{await page.close();}
   }
   expect(records.map(row=>row.machineCount)).toEqual([0,2,15]);
+  expect(heapReports).toHaveLength(1);
   const report={schema:3,measuredAt:new Date().toISOString(),
     browser:browser.version(),viewport:{width:1440,height:900},
     methodology:'32 sampled uncapped Pixi ticker.elapsedMS values per fixture, one in four frames; post-GC JS heap checkpoints at 0/12/48 plot mutations. No GPU memory or draw-call measurement.',
@@ -226,6 +227,11 @@ test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context
     ]:[]),
   ].join('\n');
   await writeFile(dir+'/workshop-r09-baseline.md',table+'\n','utf8');
+  // The generated performance artifacts must be valid machine-readable JSON.
+  expect(JSON.parse(await readFile(dir+'/workshop-r09-baseline.json','utf8')))
+    .toMatchObject({schema:3});
+  expect(JSON.parse(await readFile(dir+'/workshop-dense-heap-census.json','utf8')))
+    .toMatchObject({profile:'dense'});
   console.log('R09_PERF_SUMMARY '+JSON.stringify(records.map(
     ({profile,machineCount,sceneObjects,frameIntervalP95Ms,workshopUpdateP95Ms,jsHeapDeltaBytes,jsHeapDelta48Bytes})=>
       ({profile,machineCount,sceneObjects,frameIntervalP95Ms,workshopUpdateP95Ms,jsHeapDeltaBytes,jsHeapDelta48Bytes})
