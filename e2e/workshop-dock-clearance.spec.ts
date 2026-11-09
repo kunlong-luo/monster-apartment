@@ -1057,3 +1057,36 @@ test('R10.6 displays independently approved full-body worker art on PC with opt-
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
     .toBe(saved);
 });
+
+
+test('R10.7 Moonveil dialogue follows real machine, staff and order state without touching a save',async({page})=>{
+  test.setTimeout(100_000);
+  const start=newWorkshop();
+  await page.addInitScript(seed=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',seed);
+  },JSON.stringify(start));
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  const line=page.getByTestId('workshop-yuesha-dialogue');
+  const next=page.locator('button.gothic-cameo-bubble');
+  const saved=await page.evaluate(()=>
+    localStorage.getItem('monster-apartment:workshop-v2-lab'));
+  await expect(line).toHaveAttribute('data-beat-id','welcome');
+  await next.click();
+  await expect(line).toHaveAttribute('data-beat-id','missing-kiln');
+  await expect(line).toContainText('还没有熔炉');
+  await next.click();
+  await expect(line).toHaveAttribute('data-beat-id','worker-invitation');
+  await next.click();
+  await expect(line).toHaveAttribute('data-beat-id','contract-countdown');
+  await expect(line).toContainText('仓库现有 0 枚');
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({
+    path:'visual-evidence/workshop/desktop-workshop-true-dialogue-r107-1440.png',
+    animations:'disabled'
+  });
+  expect(await page.evaluate(()=>
+    localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
+});

@@ -14,6 +14,7 @@ import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
 import {WorkshopMachineArtReview} from './workshop-machine-art-review';
 import {WorkshopControls} from './workshop-controls';
+import {workshopDialogue} from '@/lib/moonwork/workshop-dialogue';
 import {newWorkshop,workshopRank} from '../../../v2/src/workshop-engine';
 import workshopHall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
@@ -83,14 +84,6 @@ async function loadRuntimeResilient(base:string):Promise<void>{
   }
 }
 
-const ASSISTANT_LINES = [
-  '今天的工坊运转非常顺利呢~ 我们再加把劲吧！',
-  '晶核熔炉与水汽泵正在稳定产出，阁下请放心~',
-  '别忘了为工匠们安排合适的工位哦，工效会大幅提升呢！',
-  '月光街的委托人随时可能来访，多储备一些晶核吧~',
-  '原料充足时生产效率最高，注意检查仓储消耗哦！',
-];
-
 export function WorkshopClient() {
   const host = useRef<HTMLDivElement>(null);
   const gameController = useRef<WorkshopRuntimeController|null>(null);
@@ -122,6 +115,9 @@ export function WorkshopClient() {
   const [sceneMode,setSceneMode]=useState<'cinematic'|'grid'>('cinematic');
   const savedWorld = useWorkshopWorld();
   const world = savedWorld ?? newWorkshop();
+  // Each line reacts to the actual saved machines, shift projection and
+  // deadlines. No fabricated production claims or new story save field.
+  const dialogue=workshopDialogue(world);
   const rank=workshopRank(world.completed);
 
   const selection=useMoonworkState(state=>state.selection);
@@ -316,7 +312,7 @@ export function WorkshopClient() {
 
             <button
               type="button"
-              onClick={() => setSpeechIndex((prev) => (prev + 1) % ASSISTANT_LINES.length)}
+              onClick={() => setSpeechIndex((prev) => (prev + 1) % dialogue.length)}
               className="gothic-cameo-bubble text-left"
               data-tooltip="点击倾听工坊见闻"
               aria-label="看板娘台词，点击切换"
@@ -325,7 +321,11 @@ export function WorkshopClient() {
                 <span className="bubble-tag">月纱</span>
                 <span className="bubble-hint" aria-hidden="true">点击倾听 ✎</span>
               </div>
-              <p className="bubble-content">{ASSISTANT_LINES[speechIndex]}</p>
+              <p className="bubble-content"
+                data-testid="workshop-yuesha-dialogue"
+                data-beat-id={dialogue[speechIndex%dialogue.length]?.id??'welcome'}>
+                {dialogue[speechIndex%dialogue.length]?.text}
+              </p>
             </button>
           </aside>
 
