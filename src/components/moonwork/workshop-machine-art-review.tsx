@@ -53,7 +53,9 @@ export function WorkshopMachineArtReview(){
   const [level,setLevel]=useState<Level>(2);
   const [frame,setFrame]=useState(0);
   const [playing,setPlaying]=useState(false);
-  const [availableAtlases,setAvailableAtlases]=useState<Partial<Record<Craft,boolean>>>({});
+  const [availableAtlases,setAvailableAtlases]=useState<
+    Partial<Record<Craft,'artist'|'light-study'>>
+  >({});
   const motionAllowed=useSyncExternalStore(subscribeMotionPreference,readMotionPreference,()=>false);
   const dialog=useRef<HTMLDialogElement>(null);
   const launcher=useRef<HTMLButtonElement>(null);
@@ -77,10 +79,15 @@ export function WorkshopMachineArtReview(){
         if(!active)return;
         const records=index&&typeof index==='object'&&'reviewWorking' in index
           ?(index as {reviewWorking?:Record<string,unknown>}).reviewWorking:null;
-        const allowed:Partial<Record<Craft,boolean>>={};
+        const studies=index&&typeof index==='object'&&'reviewLightStudies' in index
+          ?(index as {reviewLightStudies?:Record<string,unknown>}).reviewLightStudies:null;
+        const allowed:Partial<Record<Craft,'artist'|'light-study'>>={};
         for(const machine of CRAFTS){
-          allowed[machine.id]=records?.[machine.id]===
-            'review/machines/'+machine.id+'/working.webp';
+          if(records?.[machine.id]==='review/machines/'+machine.id+'/working.webp')
+            allowed[machine.id]='artist';
+          else if(studies?.[machine.id]===
+            'review/machines/'+machine.id+'/light-study.webp')
+            allowed[machine.id]='light-study';
         }
         setAvailableAtlases(allowed);
       })
@@ -100,8 +107,11 @@ export function WorkshopMachineArtReview(){
 
   const machine=CRAFTS.find(item=>item.id===craft)!;
   const still=new URL('assets/review/machines/'+craft+'/lv'+level+'.webp',base).href;
-  const atlas=new URL('assets/review/machines/'+craft+'/working.webp',base).href;
-  const showAtlas=level===2&&availableAtlases[craft]===true;
+  const atlasKind=availableAtlases[craft]??null;
+  const isLightStudy=atlasKind==='light-study';
+  const atlas=new URL('assets/review/machines/'+craft+'/' +
+    (isLightStudy?'light-study.webp':'working.webp'),base).href;
+  const showAtlas=level===2&&atlasKind!==null;
   return <>
     <button
       type="button" ref={launcher}
@@ -123,7 +133,8 @@ export function WorkshopMachineArtReview(){
         <div>
           <p className="workshop-art-review__eyebrow">ART QA · ONLY IN REVIEW MODE</p>
           <h2 id="workshop-art-review-title">设备原画 · 原尺寸审查</h2>
-          <p>9 张独立设备 CG 为审核候选，Lv.2 四帧动画尚待匹配新机体；本面板只检查图像，不修改存档。</p>
+          <p>9 张 512px 独立设备候选可逐级审查；Lv.2 仅有同机体光效研究帧，
+            独立机械动作仍待绘制。本面板不修改存档，也不代表正式美术通过。</p>
         </div>
         <button type="button" onClick={close} aria-label="关闭原画审查" className="workshop-art-review__close"><X size={19}/></button>
       </header>
@@ -168,6 +179,8 @@ export function WorkshopMachineArtReview(){
                 aria-label={machine.name+' 第'+(frame+1)+'帧 '+FRAME_LABELS[frame]}
                 data-testid="workshop-review-working-frame"
                 data-frame={frame}
+                data-animation-tier={isLightStudy?'light-study':'artist-review'}
+                data-testid-status="review-only"
                 className="workshop-art-review__atlas-frame"
                 style={{
                   backgroundImage:'url('+JSON.stringify(atlas)+')',
@@ -180,7 +193,11 @@ export function WorkshopMachineArtReview(){
               <p>缺少配套的四帧素材时保留当前等级的机体，避免播放旧造型或发生跳帧。</p>
             </div>
           }
-          <figcaption>{showAtlas?'2048 × 512 · 四帧局部机械工作态':'Lv.'+level+' · 保留独立机体结构'}</figcaption>
+          <figcaption>{showAtlas
+            ?isLightStudy
+              ?'2048 × 512 · 同机体四帧光效研究（轮廓固定，非机械动作，未批准）'
+              :'2048 × 512 · 四帧机械工作态 · 等待审核'
+            :'Lv.'+level+' · 保留独立机体结构'}</figcaption>
         </figure>
       </div>
       <div className="workshop-art-review__timeline">
@@ -202,7 +219,8 @@ export function WorkshopMachineArtReview(){
         </button>
       </div>
       <p className="workshop-art-review__foot">
-        透明棋盘用于识别白边、烟雾残影与底座瑕疵。这里的 CG 是九宫格概念板分离的审核候选，尚未经最终美术批准。
+        透明棋盘用于识别白边、烟雾残影与底座瑕疵。四帧光效研究保持相同机体透明轮廓，
+        不能当作手绘机械作业动画。所有 CG 均是审核候选，尚未经最终美术批准。
         {(!motionAllowed&&showAtlas)&&' 系统或游戏已降低动态效果，请用逐帧按钮检查。'}
       </p>
     </dialog>

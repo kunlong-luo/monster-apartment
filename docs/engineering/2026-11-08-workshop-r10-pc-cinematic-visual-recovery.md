@@ -40,3 +40,24 @@
 - PC 全景不仅尊重系统 `prefers-reduced-motion`，还遵重游戏内 `monster-apartment:gothic-motion-reduced` 用户设置；通过事件订阅同步停止工匠与地面动效，不额外建立 Pixi ticker 或引入 WebGL 资源。
 - `?machine-art=review` 现可在 512px 九张透明候选与旧素材之间原地对照，并带有“仅供原画审查”标识；普通玩家没有这组控件。所有候选 `status:review` 不变，Lv.2 工作图集仍 pending，不把尚未经人工美术审核的图像提升为正式资源。
 - 浏览器定向回归覆盖 1440×900 的角色解码、真实预期产量、材料路线、减少动效、候选对照、没有意外存档写入，并输出独立截图。未声称创作全新正式原画。
+
+## R10.3 · 真实机体光效研究与工匠全身 CG 发布门禁（2026-11-09）
+本阶段严格区分三类东西：**九张 512px 静态设备候选图**、**针对其中 Lv.2 候选的四帧光效研究图集**与**真正的手绘机械工作帧**。第三类目前仍未交付；第二类不冒充机械移动，不写入正式游戏。
+
+### 可重复生成与只读审核
+- `v2/scripts/prepare-painted-machine-light-study.mjs` 读取已经清洁底部白边的 Lv.2 512×512 审核图片，按设备真实色材（水蓝、植绿、炉火）对**机体已有像素**进行少量亮度与扫光调整。四帧的 Alpha 轮廓完全一致，没有悬浮新零件，也不会将旧程序绘制的活塞叠上新机体。
+- `v2/scripts/build.mjs` 在独立的 `dist/assets/review/machines/{craft}/light-study.webp` 生成三个 2048×512 的 WebP 图集，索引名为 `reviewLightStudies`。这是**构建产生的 QA 研究件**，不新增仓库正式美术文件；不填 `working`、`reviewWorking`，也不修改 `machine.*.working` 的 `pending` 状态。
+- `/workshop/?machine-art=review` 的设备原画审核面板可逐帧检查四种光效状态或按 320ms 自动回放，且清晰标注“同机体光效研究 / 非机械动作 / 未批准”；系统与游戏内减少动态效果仍会阻止自动播放。普通 `/workshop/` 没有入口、不请求这些资源。
+- 原画正式审核仍需检查：三类设备各三级独立结构、暗金和红紫材质、透明边缘、地面锚点、比例与 1440×900 设计稿构图。光效通过不能取代完整机械运动、审批或未来角色全身 CG。
+
+### 工匠全身 CG 资源合同
+- 已在 `v2/art/asset-pack.v1.json` 注册泉泡 brook / 青枝 fern / 炽角 cinder 三张独立 `worker.*.full`：每张 512×768 **真实透明** WebP，底部锚点 (0.5, 0.98)，初始 `status:pending`。它们**尚未创作或入库**，不能使用 512px 头像拉伸假装全身工匠，也不能将三个角色复用一张脸。
+- 后续收到三张独立原图时，运行 `cd v2 && npm run art:import-workers -- /path/to/candidates`。脚本批次检查图片尺寸/大小、透明度、边缘裁切、三张是否重复和 SHA-256，**仅置为 `review`**。
+- QA 的工作项包括成年人体比例、三人脸型差异、服装与手持工具、完整鞋底、透明残边、月夜材质与机器比例；经过人为比对并记录审核证据后才允许显式填写 `approval.visualReviewed=true`、`approval.evidence` 和 `status:ready`。
+- `v2/scripts/audit-art.mjs` 会阻止缺 SHA/Alpha/人工批准的 `ready` 工匠或设备 CG。构建读取相同清单而非检测文件是否存在；未审核的全身图片只能生成 `review/workers`，正式版仅部署 `workers` 的已批准图片。Pixi 已接入静态 512×768 全身图加载，画作缺失时保持经过验证的八帧人形过渡精灵，不产生资源 404。
+- 构建会清掉之前 `dist/assets` 里可能残留的机器、工匠正式/审核输出，避免审批撤回后旧文件继续公开。没有引入 Pixi 新纹理的逐帧分配、新 ticker 或存档升级。
+
+### 交付与验收
+- `npm --prefix v2 run audit:art`、`npm --prefix v2 run typecheck`、`npm --prefix v2 run build`，以及原有 Next/TS/Lint/Vitest 检查。
+- Desktop Visual Review 在 1440×900 验证图集实际为 2048×512、四帧颜色发生变化但透明轮廓一致、每帧可选、减少动态设置有效、存档无写入、普通玩家依然没有审核图集/工匠正式资源；保存独立浏览器截图。
+- 结论仍为 **R10.3 光效技术预览与资源发布门禁完成，不代表正式设备 CG、全身工匠 CG 或机械动画完成。**

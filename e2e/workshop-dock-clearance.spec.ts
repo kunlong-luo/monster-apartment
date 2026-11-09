@@ -795,3 +795,77 @@ test('R10.2 art review can compare existing 512px candidates to fallback without
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
     .toBe(saved);
 });
+
+
+test('R10.3 previews matched painted-light frames without publishing an unapproved atlas',async({page})=>{
+  test.setTimeout(100_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.goto('/workshop/?machine-art=review');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  const saved=await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'));
+  const index=await page.evaluate(async()=>{
+    const response=await fetch(new URL('assets/machine-art-index.json',location.href));
+    if(!response.ok)throw Error('No review art index');
+    return response.json() as Promise<{
+      workers:Record<string,string>;
+      working:Record<string,string>;
+      reviewWorking:Record<string,string>;
+      reviewLightStudies:Record<string,string>;
+    }>;
+  });
+  expect(Object.keys(index.reviewLightStudies).sort()).toEqual(['garden','kiln','well']);
+  // Four light-only frames do not become real mechanical animation.
+  expect(index.working).toEqual({});
+  expect(index.reviewWorking).toEqual({});
+  // Three workers still need original transparent full-body drawings.
+  expect(index.workers).toEqual({});
+
+  const sheet=await page.evaluate(async()=>{
+    const url=new URL('assets/review/machines/well/light-study.webp',location.href);
+    const image=new Image();image.src=url.href;await image.decode();
+    const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;
+    canvas.height=image.naturalHeight;
+    const g=canvas.getContext('2d')!;
+    g.drawImage(image,0,0);
+    const pixels=g.getImageData(0,0,canvas.width,canvas.height).data;
+    let alphaMismatch=0,rgbChanged=0;
+    for(let y=10;y<502;y+=6)for(let x=10;x<502;x+=6){
+      const first=(y*2048+x)*4;
+      const second=(y*2048+x+1024)*4;
+      if(pixels[first+3]!==pixels[second+3])alphaMismatch++;
+      if(Math.abs(pixels[first]-pixels[second])+
+        Math.abs(pixels[first+1]-pixels[second+1])+
+        Math.abs(pixels[first+2]-pixels[second+2])>4)rgbChanged++;
+    }
+    return {width:image.naturalWidth,height:image.naturalHeight,alphaMismatch,rgbChanged};
+  });
+  expect(sheet.width).toBe(2048);
+  expect(sheet.height).toBe(512);
+  expect(sheet.alphaMismatch).toBe(0);
+  expect(sheet.rgbChanged).toBeGreaterThan(10);
+
+  await page.getByTestId('workshop-art-review-launcher').click();
+  const dialog=page.getByTestId('workshop-art-review-dialog');
+  await expect(dialog).toBeVisible();
+  await expect(page.getByTestId('workshop-review-working-frame'))
+    .toHaveAttribute('data-animation-tier','light-study');
+  await expect(dialog).toContainText('非机械动作');
+  await page.getByTestId('workshop-review-frame-2').click();
+  await expect(page.getByTestId('workshop-review-working-frame'))
+    .toHaveAttribute('data-frame','2');
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({
+    path:'visual-evidence/workshop/desktop-workshop-painted-light-study-r103-1440.png',
+    animations:'disabled'
+  });
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect(page.getByTestId('workshop-review-playback')).toBeDisabled();
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
+    .toBe(saved);
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  await expect(page.getByTestId('workshop-art-review-launcher')).toHaveCount(0);
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-machine-working-atlases','0');
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-worker-paintings','0');
+});

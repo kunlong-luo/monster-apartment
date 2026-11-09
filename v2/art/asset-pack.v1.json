@@ -445,6 +445,60 @@
         "y": 1
       },
       "minBytes": 48000
+    },
+    {
+      "id": "worker.brook.full",
+      "role": "worker",
+      "workerId": "brook",
+      "status": "pending",
+      "path": "art/production/workers/brook.webp",
+      "canvas": {
+        "width": 512,
+        "height": 768
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.98
+      },
+      "minBytes": 32000,
+      "generatedFrom": "await-painted-fully-dressed-human-figure",
+      "notes": "泉泡 · 水汽技师。独立透明全身作业 CG 尚待提交及人工美术 QA；不可用面部头像拼接或替代透明全身素材。"
+    },
+    {
+      "id": "worker.fern.full",
+      "role": "worker",
+      "workerId": "fern",
+      "status": "pending",
+      "path": "art/production/workers/fern.webp",
+      "canvas": {
+        "width": 512,
+        "height": 768
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.98
+      },
+      "minBytes": 32000,
+      "generatedFrom": "await-painted-fully-dressed-human-figure",
+      "notes": "青枝 · 温室培植师。独立透明全身作业 CG 尚待提交及人工美术 QA；不可用面部头像拼接或替代透明全身素材。"
+    },
+    {
+      "id": "worker.cinder.full",
+      "role": "worker",
+      "workerId": "cinder",
+      "status": "pending",
+      "path": "art/production/workers/cinder.webp",
+      "canvas": {
+        "width": 512,
+        "height": 768
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.98
+      },
+      "minBytes": 32000,
+      "generatedFrom": "await-painted-fully-dressed-human-figure",
+      "notes": "炽角 · 晶核锻造师。独立透明全身作业 CG 尚待提交及人工美术 QA；不可用面部头像拼接或替代透明全身素材。"
     }
   ],
   "approval": {

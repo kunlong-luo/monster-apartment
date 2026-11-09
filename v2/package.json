@@ -8,7 +8,8 @@
     "audit:art": "node scripts/prepare-machine-working-art.mjs && node scripts/audit-art.mjs",
     "build": "node scripts/build.mjs",
     "dev": "node scripts/build.mjs && node scripts/serve.mjs",
-    "check": "npm run typecheck"
+    "check": "npm run typecheck",
+    "art:import-workers": "node scripts/import-painted-workers.mjs"
   },
   "dependencies": {
     "pixi.js": "8.22.0",

@@ -30,7 +30,12 @@ async function loadPaintedTexture(assetBase:string,filename:string,attempts=2):P
 type MachineLevelKey='1'|'2'|'3';
 type MasterMachineArt=Partial<Record<Craft,Partial<Record<MachineLevelKey,Texture>>>>;
 type WorkingMachineArt=Partial<Record<Craft,Texture[]>>;
-type MachineArtPack={masters:MasterMachineArt;working:WorkingMachineArt;review:boolean};
+type MachineArtPack={
+  masters:MasterMachineArt;
+  working:WorkingMachineArt;
+  workers:Partial<Record<WorkerId,Texture>>;
+  review:boolean;
+};
 
 /** The manifest is emitted at build time from audited `status: ready` artwork.
  * It is always present, even when no formal machine paintings are approved.
@@ -39,7 +44,8 @@ type MachineArtPack={masters:MasterMachineArt;working:WorkingMachineArt;review:b
 async function loadMachineMasterArt(assetBase:string):Promise<MachineArtPack>{
   const result:MasterMachineArt={};
   const working:WorkingMachineArt={};
-  const pack:MachineArtPack={masters:result,working,review:false};
+  const workers:Partial<Record<WorkerId,Texture>>={};
+  const pack:MachineArtPack={masters:result,working,workers,review:false};
   const previewRequested=typeof window!=='undefined'&&
     new URLSearchParams(window.location.search).get('machine-art')==='review';
   try{
@@ -73,6 +79,24 @@ async function loadMachineMasterArt(assetBase:string):Promise<MachineArtPack>{
           if(previewRequested)pack.review=true;
         }catch{/* Failed master: retain the working AVIF / raster fallback. */}
       }
+    }
+    // Approved full-body 512x768 humans; the URL gate also prevents review
+    // sprites being loaded on a normal player visit. No speculative 404s.
+    const workerList=previewRequested
+      ?('reviewWorkers' in index?index.reviewWorkers:null)
+      :('workers' in index?index.workers:null);
+    const workerRecords=workerList&&typeof workerList==='object'
+      ?workerList as Record<string,unknown>:{};
+    for(const worker of ['brook','fern','cinder'] as const){
+      const filename=workerRecords[worker];
+      const expected=previewRequested
+        ?'review/workers/'+worker+'.webp':'workers/'+worker+'.webp';
+      if(filename!==expected)continue;
+      try{
+        const texture=await loadPaintedTexture(assetBase,filename);
+        if(texture.width!==512||texture.height!==768)continue;
+        workers[worker]=texture;
+      }catch{/* An invalid full-body CG must never hide the raster character. */}
     }
     // Four fixed-position 512px frames, sliced from a single audited
     // 2048x512 WebP texture. No per-tick texture allocation or frame probing.
@@ -109,8 +133,7 @@ export async function loadWorkshopPaintedArt(assetBase:string){
   let paintedFloor:Texture|null=null;
   let kilnArtReview:Texture|null=null;
   let patronPortrait:Texture|null=null;
-  // Do not reload old pet-shaped worker assets into the real human roster.
-  const workerPaintings:Partial<Record<WorkerId,Texture>>={};
+  // Worker art comes from the SAME audited manifest request as machine art.
   const paintedDetail:Partial<Record<'well'|'garden',Texture>>={};
   const machineMastersPromise=loadMachineMasterArt(assetBase);
   // Independent room painting is a visual backdrop, never an engine input.
@@ -148,6 +171,9 @@ export async function loadWorkshopPaintedArt(assetBase:string){
       paintedDetail[kind]=await loadPaintedTexture(assetBase,kind+'-art-review.avif');
     }catch{/* the corresponding machine retains its default sprite */}
   }
-  const {masters:machineMasters,working:machineWorking,review:machinePreviewActive}=await machineMastersPromise;
+  const {
+    masters:machineMasters,working:machineWorking,
+    workers:workerPaintings,review:machinePreviewActive
+  }=await machineMastersPromise;
   return {painted,backdropSource,paintedFloor,kilnArtReview,paintedDetail,patronPortrait,workerPaintings,machineMasters,machineWorking,machinePreviewActive};
 }

@@ -72,8 +72,29 @@ for(const item of manifest.productionAssets??[]){
   if(item.status==='ready'||item.status==='review'){
     const result=await checkFile(item.path,item.minBytes??16000);
     if(result){
-      if((item.role==='machine'||item.role==='machine-animation')&&!result.hasAlpha)
-        errors.push('Machine painting or atlas must have real alpha transparency: '+item.path);
+      if(['machine','machine-animation','worker'].includes(item.role)&&!result.hasAlpha)
+        errors.push('Machine/worker painting or atlas needs real alpha transparency: '+item.path);
+      if(['machine','machine-animation','worker'].includes(item.role)&&
+         item.status==='ready'&&
+         (item.approval?.visualReviewed!==true||
+          typeof item.approval?.evidence!=='string'||
+          item.approval.evidence.length<12))
+        errors.push('Unreviewed painting cannot be marked ready: '+item.path);
+      if(item.role==='worker'){
+        const expected='art/production/workers/'+item.workerId+'.webp';
+        if(!['brook','fern','cinder'].includes(item.workerId)||item.path!==expected||
+           item.canvas.width!==512||item.canvas.height!==768)
+          errors.push('Worker art needs independent 512x768 full-body CG: '+item.path);
+        if(typeof item.sourceSha256!=='string'||!/^[a-f0-9]{64}$/.test(item.sourceSha256))
+          errors.push('Review/ready worker CG requires SHA-256 provenance: '+item.path);
+        else{
+          const absolute=checkedPath(item.path);
+          if(absolute){
+            const actual=createHash('sha256').update(await readFile(absolute)).digest('hex');
+            if(actual!==item.sourceSha256)errors.push('Worker painting source changed: '+item.path);
+          }
+        }
+      }
       if(item.role==='machine'&&item.generatedFrom==='curated-cg-import'){
         const expected=item.sourceSha256;
         if(typeof expected!=='string'||!/^[a-f0-9]{64}$/.test(expected))

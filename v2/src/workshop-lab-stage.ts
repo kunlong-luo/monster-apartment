@@ -128,6 +128,7 @@ export async function mountWorkshopLab(
   element.dataset.renderer='pixi-webgl-bitmap';
   element.dataset.workerFrames='8';
   element.dataset.workerArt=Object.keys(workerPaintings).length===3?'painted-transparent-humanoid':'hi-dpi-transparent-humanoid';
+  element.dataset.workerPaintings=String(Object.keys(workerPaintings).length);
   // Immutable foundation: ground, numbered plaques and borders are built
   // exactly once. Only machine-dependent floor tint/opacity changes on sync.
   const foundation=new Container();app.stage.addChild(foundation);
