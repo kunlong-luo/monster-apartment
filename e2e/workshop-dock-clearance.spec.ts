@@ -297,10 +297,12 @@ test('review mode validates nine high-detail 512px machine CG candidates without
   const dialog=page.getByTestId('workshop-art-review-dialog');
   await expect(dialog).toBeVisible();
   await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',new RegExp('review/machines/well/lv2[.]webp'));
-  // The old procedural Lv.2 atlases would render an incompatible flat machine.
-  await expect(page.getByTestId('workshop-review-no-atlas')).toBeVisible();
-  await expect(page.getByTestId('workshop-review-playback')).toBeDisabled();
-  await expect(page.getByTestId('workshop-review-frame-2')).toBeDisabled();
+  // R10.3 adds a matching light-only study, NOT the mismatched old procedural
+  // mechanical atlas. The still chassis never morphs into a foreign machine.
+  await expect(page.getByTestId('workshop-review-working-frame'))
+    .toHaveAttribute('data-animation-tier','light-study');
+  await expect(page.getByTestId('workshop-review-playback')).toBeEnabled();
+  await expect(page.getByTestId('workshop-review-frame-2')).toBeEnabled();
 
   await page.getByTestId('workshop-review-craft-garden').click();
   await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',new RegExp('review/machines/garden/lv2[.]webp'));
@@ -311,7 +313,8 @@ test('review mode validates nine high-detail 512px machine CG candidates without
   await page.getByTestId('workshop-review-craft-kiln').click();
   await expect(page.getByTestId('workshop-review-static-image')).toHaveAttribute('src',new RegExp('review/machines/kiln/lv3[.]webp'));
   await page.getByTestId('workshop-review-level-2').click();
-  await expect(page.getByTestId('workshop-review-no-atlas')).toBeVisible();
+  await expect(page.getByTestId('workshop-review-working-frame'))
+    .toHaveAttribute('data-animation-tier','light-study');
   // Prove all nine actual imported WebPs decode at native dimensions.
   for(const craft of ['well','garden','kiln']){
     await page.getByTestId('workshop-review-craft-'+craft).click();
@@ -804,16 +807,25 @@ test('R10.3 previews matched painted-light frames without publishing an unapprov
   await page.goto('/workshop/?machine-art=review');
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
   const saved=await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'));
-  const index=await page.evaluate(async()=>{
-    const response=await fetch(new URL('assets/machine-art-index.json',location.href));
-    if(!response.ok)throw Error('No review art index');
+  await page.getByTestId('workshop-art-review-launcher').click();
+  const dialog=page.getByTestId('workshop-art-review-dialog');
+  await expect(dialog).toBeVisible();
+  // Next's local dev server loads Pixi assets from :3901, while Pages serves
+  // them at /workshop/assets/. Infer the root from an actual decoded review
+  // still; never assume location.href and asset origin have the same port.
+  const still=await page.getByTestId('workshop-review-static-image').getAttribute('src');
+  if(!still)throw Error('No candidate still src');
+  const assetRoot=still.replace(/review\/machines\/well\/lv2\.webp(?:\?.*)?$/,'');
+  const index=await page.evaluate(async root=>{
+    const response=await fetch(new URL('machine-art-index.json',root));
+    if(!response.ok)throw Error('No review art index at '+root);
     return response.json() as Promise<{
       workers:Record<string,string>;
       working:Record<string,string>;
       reviewWorking:Record<string,string>;
       reviewLightStudies:Record<string,string>;
     }>;
-  });
+  },assetRoot);
   expect(Object.keys(index.reviewLightStudies).sort()).toEqual(['garden','kiln','well']);
   // Four light-only frames do not become real mechanical animation.
   expect(index.working).toEqual({});
@@ -821,9 +833,10 @@ test('R10.3 previews matched painted-light frames without publishing an unapprov
   // Three workers still need original transparent full-body drawings.
   expect(index.workers).toEqual({});
 
-  const sheet=await page.evaluate(async()=>{
-    const url=new URL('assets/review/machines/well/light-study.webp',location.href);
-    const image=new Image();image.src=url.href;await image.decode();
+  const sheet=await page.evaluate(async root=>{
+    const url=new URL('review/machines/well/light-study.webp',root);
+    const image=new Image();image.crossOrigin='anonymous';
+    image.src=url.href;await image.decode();
     const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;
     canvas.height=image.naturalHeight;
     const g=canvas.getContext('2d')!;
@@ -839,15 +852,12 @@ test('R10.3 previews matched painted-light frames without publishing an unapprov
         Math.abs(pixels[first+2]-pixels[second+2])>4)rgbChanged++;
     }
     return {width:image.naturalWidth,height:image.naturalHeight,alphaMismatch,rgbChanged};
-  });
+  },assetRoot);
   expect(sheet.width).toBe(2048);
   expect(sheet.height).toBe(512);
   expect(sheet.alphaMismatch).toBe(0);
   expect(sheet.rgbChanged).toBeGreaterThan(10);
 
-  await page.getByTestId('workshop-art-review-launcher').click();
-  const dialog=page.getByTestId('workshop-art-review-dialog');
-  await expect(dialog).toBeVisible();
   await expect(page.getByTestId('workshop-review-working-frame'))
     .toHaveAttribute('data-animation-tier','light-study');
   await expect(dialog).toContainText('非机械动作');
