@@ -996,3 +996,64 @@ test('R10.5 panorama chooses only approved machine paintings and handles a broke
   expect(await fallback.locator('.workshop-cinematic__machine-art img')
     .evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
 });
+
+
+test('R10.6 displays independently approved full-body worker art on PC with opt-in review and portrait fallback',async({page})=>{
+  test.setTimeout(115_000);
+  const world=assignWorker(newWorkshop(),'brook',5);
+  const saved=JSON.stringify(world);
+  await page.addInitScript(seed=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',seed);
+  },saved);
+  await page.setViewportSize({width:1440,height:900});
+  // A generated transparent canvas is TEST DATA ONLY. It is never committed
+  // as a player-facing full-body CG, and never changes review/ready art state.
+  const mockBytes=Buffer.from((await page.evaluate(()=>{
+    const c=document.createElement('canvas');c.width=512;c.height=768;
+    const ctx=c.getContext('2d')!;
+    ctx.clearRect(0,0,512,768);
+    ctx.fillStyle='#435879';ctx.beginPath();ctx.ellipse(256,112,58,69,0,0,2*Math.PI);ctx.fill();
+    ctx.fillStyle='#ac8d72';ctx.fillRect(185,180,140,300);
+    ctx.fillStyle='#201a35';ctx.fillRect(198,465,42,250);ctx.fillRect(268,465,42,250);
+    return c.toDataURL('image/webp',.9).split(',')[1];
+  })),'base64');
+  await page.route('**/assets/machine-art-index.json',async route=>{
+    const fetched=await route.fetch();
+    const index=await fetched.json() as Record<string,unknown>;
+    index.workers={brook:'workers/brook.webp'};
+    index.reviewWorkers={brook:'review/workers/brook.webp'};
+    await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(index)});
+  });
+  for(const path of ['workers/brook.webp','review/workers/brook.webp']){
+    await page.route('**/assets/'+path,route=>
+      route.fulfill({body:mockBytes,contentType:'image/webp'}));
+  }
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  const worker=page.getByTestId('workshop-cinematic-worker-well');
+  const image=page.getByTestId('workshop-cinematic-worker-img-well');
+  await expect(worker).toHaveAttribute('data-art-tier','ready');
+  await expect.poll(()=>image.evaluate(el=>(el as HTMLImageElement).naturalHeight)).toBe(768);
+  await expect(image).toHaveAttribute('src',/\/assets\/workers\/brook\.webp/);
+  // This does not bypass Pixi's independently gated full-body picture loader.
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-worker-paintings','1');
+
+  await page.goto('/workshop/?machine-art=review');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  await expect(worker).toHaveAttribute('data-art-tier','review');
+  await expect(image).toHaveAttribute('src',/\/assets\/review\/workers\/brook\.webp/);
+  await page.getByTestId('workshop-art-compare-legacy').click();
+  await expect(worker).toHaveAttribute('data-art-tier','portrait');
+  await expect(image).not.toHaveAttribute('src',/\/review\/workers\//);
+
+  await page.route('**/assets/workers/brook.webp',route=>
+    route.fulfill({status:404,body:'not approved',contentType:'text/plain'}));
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  await expect(worker).toHaveAttribute('data-art-tier','portrait',{timeout:15_000});
+  expect(await image.evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  // The review simulation does not edit inventories, art approval or saves.
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
+    .toBe(saved);
+});
