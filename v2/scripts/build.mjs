@@ -1,4 +1,7 @@
 import {preparePaintedMachineLightStudy} from './prepare-painted-machine-light-study.mjs';
+import {
+  validateMachineMotionContract,inspectPaintedMachineMotion,sha256
+} from './machine-motion-audit.mjs';
 import {build} from 'esbuild';
 import {mkdir,copyFile,readFile,writeFile,rm} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
@@ -111,6 +114,16 @@ for(const item of pack.productionAssets??[]){
     continue;
   }
   if(item.role==='machine-animation'&&item.status==='review'){
+    const painting=pack.productionAssets.find(
+      p=>p.id==='machine.'+item.craft+'.lv2');
+    validateMachineMotionContract(item,painting);
+    const masterBytes=await readFile(resolve(root,painting.path));
+    if(sha256(masterBytes)!==painting.sourceSha256)
+      throw Error('Matching review machine painting changed: '+item.craft);
+    const atlasBytes=await readFile(resolve(root,item.path));
+    if(sha256(atlasBytes)!==item.sourceSha256)
+      throw Error('Machine review atlas changed: '+item.craft);
+    await inspectPaintedMachineMotion(masterBytes,atlasBytes);
     if(!['well','garden','kiln'].includes(item.craft)||item.level!==2||
        item.path!==`art/production/machines/${item.craft}/working.webp`||
        item.canvas?.width!==2048||item.canvas?.height!==512||
@@ -126,6 +139,16 @@ for(const item of pack.productionAssets??[]){
   }
   if(item.status!=='ready'||!['machine','machine-animation'].includes(item.role))continue;
   if(item.role==='machine-animation'){
+    const painting=pack.productionAssets.find(
+      p=>p.id==='machine.'+item.craft+'.lv2');
+    validateMachineMotionContract(item,painting);
+    const masterBytes=await readFile(resolve(root,painting.path));
+    if(sha256(masterBytes)!==painting.sourceSha256)
+      throw Error('Approved Lv.2 master changed: '+item.craft);
+    const atlasBytes=await readFile(resolve(root,item.path));
+    if(sha256(atlasBytes)!==item.sourceSha256)
+      throw Error('Approved machine atlas changed: '+item.craft);
+    await inspectPaintedMachineMotion(masterBytes,atlasBytes);
     if(item.level!==2||!['well','garden','kiln'].includes(item.craft)||
        item.path!==`art/production/machines/${item.craft}/working.webp`||
        item.canvas?.width!==2048||item.canvas?.height!==512||

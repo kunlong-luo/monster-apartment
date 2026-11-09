@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "audit:art": "node scripts/prepare-machine-working-art.mjs && node scripts/audit-art.mjs",
+    "audit:art": "node scripts/prepare-machine-working-art.mjs && node --test scripts/__tests__/machine-motion-audit.test.mjs && node scripts/audit-art.mjs",
     "build": "node scripts/build.mjs",
     "dev": "node scripts/build.mjs && node scripts/serve.mjs",
     "check": "pnpm run typecheck",
-    "art:import-workers": "node scripts/import-painted-workers.mjs"
+    "art:import-workers": "node scripts/import-painted-workers.mjs",
+    "art:import-machine-motion": "node scripts/import-painted-machine-motion.mjs"
   },
   "dependencies": {
     "pixi.js": "8.22.0",

@@ -10,6 +10,9 @@ import {presentWorkshopStations} from '../../../v2/src/workshop-station-presente
 import type {Craft,DailyProduction,WorkshopState} from '../../../v2/src/workshop-engine';
 import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
+import {
+  approvedMachineUrls,type ApprovedMachineUrls
+} from '@/lib/moonwork/workshop-machine-art-index';
 import hall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
 import wellLegacy from '../../../v2/art/well-art-review.avif';
 import gardenLegacy from '../../../v2/art/garden-art-review.avif';
@@ -72,7 +75,23 @@ export function WorkshopCinematicStage({
   const motionEnabled=useSyncExternalStore(subscribeSceneMotion,allowSceneMotion,()=>false);
   const [reviewCandidate,setReviewCandidate]=useState(true);
   const [failedImages,setFailedImages]=useState<Partial<Record<Craft,boolean>>>({});
+  const [failedReadyImages,setFailedReadyImages]=useState<Partial<Record<Craft,boolean>>>({});
+  const [approvedPaintings,setApprovedPaintings]=useState<ApprovedMachineUrls>({});
   const [openCraft,setOpenCraft]=useState<Craft|null>(null);
+  useEffect(()=>{
+    let active=true;
+    // Production and Pixi share the audited READY-only index. Legacy AVIFs
+    // remain when no painting has passed human QA or a fetch/decode fails.
+    const root=workshopAssetRoot(window.location.href);
+    void fetch(new URL('assets/machine-art-index.json',root),{cache:'no-store'})
+      .then(response=>{
+        if(!response.ok)throw Error('Machine art index unavailable');
+        return response.json() as Promise<unknown>;
+      })
+      .then(index=>{if(active)setApprovedPaintings(approvedMachineUrls(index,root));})
+      .catch(()=>{if(active)setApprovedPaintings({});});
+    return ()=>{active=false;};
+  },[]);
   // A transient VIEW of an actual completed shift. Initial hydration must not
   // replay the persisted last report as if production just happened.
   const observedDay=useRef<number|null>(null);
@@ -141,10 +160,15 @@ export function WorkshopCinematicStage({
         const outputName=craft==='well'?'水汽':craft==='garden'?'孢子':'晶核';
         const statusText=status==='working'?'生产运行中':
           status==='blocked'?'材料供应受阻':station?'等待工匠派驻':'尚未建造';
-        const art=base&&reviewCandidate&&!failedImages[craft]
+        const reviewArt=base&&reviewCandidate&&!failedImages[craft]
           ?new URL('assets/review/machines/'+craft+'/lv'+level+'.webp',base).href
-          :DEFAULT_ART[craft];
-        const isReview=typeof art==='string';
+          :null;
+        const readyArt=!base&&!failedReadyImages[craft]
+          ?approvedPaintings[craft]?.[String(level) as '1'|'2'|'3']
+          :null;
+        const art=reviewArt??readyArt??DEFAULT_ART[craft];
+        const isReview=Boolean(reviewArt);
+        const isReady=Boolean(readyArt);
         const legend=LEGEND[craft];
         return <div key={craft} className="workshop-cinematic__station-slot">
           <button type="button"
@@ -152,7 +176,7 @@ export function WorkshopCinematicStage({
           data-plot={station?.plot??'unbuilt'}
           data-level={level}
           data-state={status??'unbuilt'}
-          data-art-tier={isReview?'review':'legacy'}
+          data-art-tier={isReview?'review':isReady?'ready':'legacy'}
           aria-pressed={station?.plot===selectedPlot}
           aria-label={station
             ?'选择'+MACHINES[craft].zh+'，'+String(station.plot+1).padStart(2,'0')+'号工位，Lv.'+level+'，'+statusText+'，'+(worker?'工匠'+WORKERS[worker].zh:'未派工')
@@ -169,8 +193,11 @@ export function WorkshopCinematicStage({
           <span className="workshop-cinematic__ordinal" aria-hidden="true">{legend.serial}</span>
           <div className="workshop-cinematic__machine-art">
             <Image src={art} fill alt="" aria-hidden="true"
-              unoptimized={isReview}
-              onError={()=>{if(isReview)setFailedImages(old=>({...old,[craft]:true}));}}
+              unoptimized={isReview||isReady}
+              onError={()=>{
+                if(isReview)setFailedImages(old=>({...old,[craft]:true}));
+                else if(isReady)setFailedReadyImages(old=>({...old,[craft]:true}));
+              }}
               sizes="(min-width:1600px) 350px, 29vw"
               className={isReview?'object-contain drop-shadow-[0_12px_14px_rgba(0,0,0,.8)]':
                 'object-contain opacity-90 drop-shadow-[0_12px_15px_rgba(0,0,0,.85)]'}

@@ -445,7 +445,7 @@ export async function mountWorkshopLab(
       // machine is actually staffed and supplied; blocked devices stay still.
       // The existing working.webp contract depicts a Lv.2 mechanism only.
       // Never show a lower-level machine during a Lv.1/Lv.3 production cycle.
-      const atlas=signal.state==='working'&&level===2
+      const atlas=signal.state==='working'&&level===2&&master
         ?machineWorking[machine.craft]:undefined;
       const fixture:Sprite=atlas?new AnimatedSprite(atlas):
         new Sprite(master??(machine.craft==='kiln'&&kilnArtReview

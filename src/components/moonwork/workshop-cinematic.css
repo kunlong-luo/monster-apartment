@@ -218,9 +218,9 @@
 .gothic-workshop-shell #root.lab.gothic-workshop
 .workshop-cinematic__station--kiln[data-art-tier="legacy"]{--prop-drop:2%}
 .gothic-workshop-shell #root.lab.gothic-workshop
-.workshop-cinematic__station[data-art-tier="review"]{--prop-zoom:1.45;--prop-drop:0%}
+.workshop-cinematic__station:is([data-art-tier="review"],[data-art-tier="ready"]){--prop-zoom:1.45;--prop-drop:0%}
 .gothic-workshop-shell #root.lab.gothic-workshop
-.workshop-cinematic__station[data-art-tier="review"].workshop-cinematic__station--well{--prop-zoom:1.52}
+.workshop-cinematic__station:is([data-art-tier="review"],[data-art-tier="ready"]).workshop-cinematic__station--well{--prop-zoom:1.52}
 .gothic-workshop-shell #root.lab.gothic-workshop
 .workshop-cinematic__machine-art img{
   /* Move only the painted subject inside its native transparent canvas.

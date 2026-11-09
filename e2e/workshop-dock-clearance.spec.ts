@@ -942,3 +942,41 @@ test('R10.4 shows only settled shift output, not a fake effect from page hydrati
   });
   expect(day3).toBe(3);
 });
+
+
+test('R10.5 panorama chooses only approved machine paintings and handles a broken file',async({page})=>{
+  test.setTimeout(110_000);
+  await page.setViewportSize({width:1440,height:900});
+  // Browser-only simulation. Does not change art manifest or promote images.
+  await page.route('**/assets/machine-art-index.json',async route=>{
+    const response=await route.fetch();
+    const index=await response.json() as {machines:Record<string,unknown>};
+    index.machines={...index.machines,well:{'1':'production/machines/well/lv1.webp'}};
+    await route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify(index)});
+  });
+  await page.route('**/assets/production/machines/well/lv1.webp',route=>
+    route.fulfill({path:'v2/art/production/machines/well/lv1.webp',
+      contentType:'image/webp'}));
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  const well=page.getByTestId('workshop-cinematic-machine-well');
+  await expect(well).toHaveAttribute('data-art-tier','ready');
+  const image=well.locator('.workshop-cinematic__machine-art img');
+  await expect.poll(()=>image.evaluate(el=>(el as HTMLImageElement).naturalWidth))
+    .toBe(512);
+  await expect(page.getByTestId('workshop-cinematic-machine-garden'))
+    .toHaveAttribute('data-art-tier','legacy');
+  await expect(page.getByTestId('workshop-art-compare')).toHaveCount(0);
+  await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-machine-working-atlases','0');
+
+  // A READY index alone must never leave a broken illustration visible.
+  await page.route('**/assets/production/machines/well/lv1.webp',route=>
+    route.fulfill({status:404,contentType:'text/plain',body:'not found'}));
+  await page.reload();
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  const fallback=page.getByTestId('workshop-cinematic-machine-well');
+  await expect(fallback).toHaveAttribute('data-art-tier','legacy',{timeout:15_000});
+  expect(await fallback.locator('.workshop-cinematic__machine-art img')
+    .evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+});

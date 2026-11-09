@@ -110,7 +110,9 @@ async function loadMachineMasterArt(assetBase:string):Promise<MachineArtPack>{
       const expectedAtlas=previewRequested
         ?`review/machines/${craft}/working.webp`
         :`production/machines/${craft}/working.webp`;
-      if(filename!==expectedAtlas)continue;
+      if(filename!==expectedAtlas||!result[craft]?.['2'])continue;
+      // Never decode an atlas for a machine without its matching Lv.2 master.
+      // This prevents stale/missing painting and animated chassis mismatch.
       try{
         const sheet=await loadPaintedTexture(assetBase,filename);
         if(sheet.width!==2048||sheet.height!==512)continue;

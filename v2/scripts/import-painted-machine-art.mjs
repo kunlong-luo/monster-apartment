@@ -94,6 +94,9 @@ for(const asset of verified){
 for(const craft of ['well','garden','kiln']){
   const working=entries.find(x=>x.id==='machine.'+craft+'.working');
   working.status='pending';
+  delete working.sourceSha256;
+  delete working.matchedPaintingSha256;
+  delete working.approval;
   working.generatedFrom='await-matched-painting-animation';
   working.notes='Needs a new four-frame 2048x512 atlas aligned to this painted Lv.2 chassis; do not reuse old prototype atlas.';
 }

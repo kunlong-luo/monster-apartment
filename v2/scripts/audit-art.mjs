@@ -1,6 +1,10 @@
 import {readFile, stat} from 'node:fs/promises';
 import sharp from 'sharp';
 import {createHash} from 'node:crypto';
+import {
+  validateMachineMotionContract,inspectPaintedMachineMotion,sha256,
+  WORKSHOP_CRAFTS
+} from './machine-motion-audit.mjs';
 import {resolve, dirname, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
@@ -148,6 +152,29 @@ for(const item of manifest.productionAssets??[]){
         }catch(error){errors.push('Cannot inspect atlas: '+item.path+' '+error.message);}
       }
     }
+  }
+}
+// An animated machine must be tied to the exact SHA of a painting of the
+// same approval tier. No motion atlas may independently become "ready".
+for(const craft of WORKSHOP_CRAFTS){
+  const atlas=manifest.productionAssets.find(
+    item=>item.id==='machine.'+craft+'.working');
+  const painting=manifest.productionAssets.find(
+    item=>item.id==='machine.'+craft+'.lv2');
+  try{
+    validateMachineMotionContract(atlas,painting);
+    if(atlas.status!=='pending'){
+      const a=checkedPath(atlas.path),p=checkedPath(painting.path);
+      if(a&&p){
+        const [atlasBytes,paintingBytes]=await Promise.all([readFile(a),readFile(p)]);
+        if(sha256(paintingBytes)!==painting.sourceSha256||
+          sha256(atlasBytes)!==atlas.sourceSha256)
+          throw Error('Working art SHA differs from manifest provenance');
+        await inspectPaintedMachineMotion(paintingBytes,atlasBytes);
+      }
+    }
+  }catch(error){
+    errors.push('Machine motion compatibility '+craft+': '+error.message);
   }
 }
 for(const message of warnings)console.warn('[art] '+message);
