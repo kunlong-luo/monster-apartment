@@ -955,9 +955,18 @@ test('R10.5 panorama chooses only approved machine paintings and handles a broke
     await route.fulfill({status:200,contentType:'application/json',
       body:JSON.stringify(index)});
   });
-  await page.route('**/assets/production/machines/well/lv1.webp',route=>
-    route.fulfill({path:'v2/art/production/machines/well/lv1.webp',
-      contentType:'image/webp'}));
+  await page.route('**/assets/production/machines/well/lv1.webp',async route=>{
+    // The development Pixi asset server publishes the audited 512px review
+    // preview, but (correctly) has no production file until human approval.
+    // Serve its real decoded 512px bytes at a fake READY path for this test.
+    const source=route.request().url().replace(
+      '/production/machines/well/lv1.webp',
+      '/review/machines/well/lv1.webp'
+    );
+    const preview=await route.fetch({url:source});
+    expect(preview.ok()).toBe(true);
+    await route.fulfill({response:preview,contentType:'image/webp'});
+  });
   await page.goto('/workshop/');
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
   const well=page.getByTestId('workshop-cinematic-machine-well');
