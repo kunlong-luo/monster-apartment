@@ -52,13 +52,13 @@
 
 ### 工匠全身 CG 资源合同
 - 已在 `v2/art/asset-pack.v1.json` 注册泉泡 brook / 青枝 fern / 炽角 cinder 三张独立 `worker.*.full`：每张 512×768 **真实透明** WebP，底部锚点 (0.5, 0.98)，初始 `status:pending`。它们**尚未创作或入库**，不能使用 512px 头像拉伸假装全身工匠，也不能将三个角色复用一张脸。
-- 后续收到三张独立原图时，运行 `cd v2 && npm run art:import-workers -- /path/to/candidates`。脚本批次检查图片尺寸/大小、透明度、边缘裁切、三张是否重复和 SHA-256，**仅置为 `review`**。
+- 后续收到三张独立原图时，运行 `cd v2 && pnpm run art:import-workers -- /path/to/candidates`。脚本批次检查图片尺寸/大小、透明度、边缘裁切、三张是否重复和 SHA-256，**仅置为 `review`**。
 - QA 的工作项包括成年人体比例、三人脸型差异、服装与手持工具、完整鞋底、透明残边、月夜材质与机器比例；经过人为比对并记录审核证据后才允许显式填写 `approval.visualReviewed=true`、`approval.evidence` 和 `status:ready`。
 - `v2/scripts/audit-art.mjs` 会阻止缺 SHA/Alpha/人工批准的 `ready` 工匠或设备 CG。构建读取相同清单而非检测文件是否存在；未审核的全身图片只能生成 `review/workers`，正式版仅部署 `workers` 的已批准图片。Pixi 已接入静态 512×768 全身图加载，画作缺失时保持经过验证的八帧人形过渡精灵，不产生资源 404。
 - 构建会清掉之前 `dist/assets` 里可能残留的机器、工匠正式/审核输出，避免审批撤回后旧文件继续公开。没有引入 Pixi 新纹理的逐帧分配、新 ticker 或存档升级。
 
 ### 交付与验收
-- `npm --prefix v2 run audit:art`、`npm --prefix v2 run typecheck`、`npm --prefix v2 run build`，以及原有 Next/TS/Lint/Vitest 检查。
+- `pnpm --dir v2 run audit:art`、`pnpm --dir v2 run typecheck`、`pnpm --dir v2 run build`，以及原有 Next/TS/Lint/Vitest 检查。
 - Desktop Visual Review 在 1440×900 验证图集实际为 2048×512、四帧颜色发生变化但透明轮廓一致、每帧可选、减少动态设置有效、存档无写入、普通玩家依然没有审核图集/工匠正式资源；保存独立浏览器截图。
 - 结论仍为 **R10.3 光效技术预览与资源发布门禁完成，不代表正式设备 CG、全身工匠 CG 或机械动画完成。**
 
@@ -74,7 +74,7 @@
 ## R10.5 · 匹配设备机体的动画交付合同 + 正式 PC 资源接入（2026-11-09）
 - **补齐旧审核漏洞**：此前仅凭 working.webp 名字、2048×512 尺寸与 ready 标记，就可能用不属于当前 Lv.2 机体的运动帧覆盖高清设备。现在每套动画必须登记 matchedPaintingSha256 与 sourceSha256，和当前同类 Lv.2 静态机体严格一致；审核版与正式版状态也必须配套。正式动画不能覆盖尚处 review 的机体，反之亦然。
 - **真实四帧技术预检**：使用 Sharp 检查 4×512 帧的来源、RGBA 透明、与静态机体的轮廓重合度、边缘裁切和帧间差异。技术预检不能判定零件运动是否自然；人工仍需逐帧确认活塞、叶片或炉芯在物理上连续、画风与造型一致。失败就保留静态绘景，绝不播放错机体动画。
-- **工坊动作图集实际导入命令**：cd v2 && npm run art:import-machine-motion -- /path/to/atlases 接收 well-working.webp、garden-working.webp、kiln-working.webp，整体预检后仅导入 review，记录精确来源指纹与匹配机体指纹，永不自动批准正式上架。后续重导入九张设备原画会同时清除旧图集指纹与审批记录。新增 Node 内置测试覆盖成功、错机体、静态重复帧及错 SHA/状态。
+- **工坊动作图集实际导入命令**：cd v2 && pnpm run art:import-machine-motion -- /path/to/atlases 接收 well-working.webp、garden-working.webp、kiln-working.webp，整体预检后仅导入 review，记录精确来源指纹与匹配机体指纹，永不自动批准正式上架。后续重导入九张设备原画会同时清除旧图集指纹与审批记录。新增 Node 内置测试覆盖成功、错机体、静态重复帧及错 SHA/状态。
 - **构建与运行双层安全回退**：audit:art 及 Pixi 构建都核对动画和 Lv.2 静态画的内容 SHA 与透明轮廓；运行时只在对应静态机体真实解码后才分配四张子纹理。Pixi 网格再次检查 master 存在；缺失、审核撤回或首次加载失败时不显示不匹配的工作动画。
 - **正式 PC 原画自动接入**：原 PC 全景只读固定 legacy AVIF，即使画作已经人工批准也一直无法升级。现改为只从 Pixi 共用的 machine-art-index.json.machines 读取精确的 production/machines/{craft}/lv{1,2,3}.webp，批准后不需再改 React；Next 本地资源端口 :3901 和 GitHub Pages 子路径均受支持。网页资源 404 自动退回旧图，?machine-art=review 仍与正式索引分离，未审核资源绝不出现在普通玩家视图。
 - **验证**：Vitest 检验精确 URL 白名单及跨站、目录穿越和旧 schema 拒绝；独立 Node 测试检验 4 帧图集与真实机体匹配条件；Playwright 用仅在浏览器内的模拟 READY 索引验证 512px 成功显示、404 回退及其它机器仍显示已发布的旧素材。此次没有把九张 review 绘景改成 ready；三张全身工匠 CG 和真正的手绘机械动作依旧待产出与美术签核。持续用同 SHA 的 Quality、Desktop Visual Review 与 Pages 验收代码和视觉不退化。
