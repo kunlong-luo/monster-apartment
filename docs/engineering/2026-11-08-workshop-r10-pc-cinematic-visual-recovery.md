@@ -78,3 +78,7 @@
 - **构建与运行双层安全回退**：audit:art 及 Pixi 构建都核对动画和 Lv.2 静态画的内容 SHA 与透明轮廓；运行时只在对应静态机体真实解码后才分配四张子纹理。Pixi 网格再次检查 master 存在；缺失、审核撤回或首次加载失败时不显示不匹配的工作动画。
 - **正式 PC 原画自动接入**：原 PC 全景只读固定 legacy AVIF，即使画作已经人工批准也一直无法升级。现改为只从 Pixi 共用的 machine-art-index.json.machines 读取精确的 production/machines/{craft}/lv{1,2,3}.webp，批准后不需再改 React；Next 本地资源端口 :3901 和 GitHub Pages 子路径均受支持。网页资源 404 自动退回旧图，?machine-art=review 仍与正式索引分离，未审核资源绝不出现在普通玩家视图。
 - **验证**：Vitest 检验精确 URL 白名单及跨站、目录穿越和旧 schema 拒绝；独立 Node 测试检验 4 帧图集与真实机体匹配条件；Playwright 用仅在浏览器内的模拟 READY 索引验证 512px 成功显示、404 回退及其它机器仍显示已发布的旧素材。此次没有把九张 review 绘景改成 ready；三张全身工匠 CG 和真正的手绘机械动作依旧待产出与美术签核。持续用同 SHA 的 Quality、Desktop Visual Review 与 Pages 验收代码和视觉不退化。
+
+### R10.5 浏览器回归复核（同日）
+- 首次浏览器回归 22/23 通过；模拟正式原画切换时图片仍报告旧 384px 宽度，说明不能仅以外层数据状态 ready 判断真正完成了资源切换。
+- 显式按 legacy/review/ready + craft + level 为 Next Image 设置身份 key；源切换时强制建立匹配的 img 元素，防止保留旧 AVIF 的 load/srcSet 状态。Playwright 同时观察 img 实际 URL、模拟正式资源的真实请求及最终 decoded naturalWidth=512；并保留 404 自动回退验证。不删除失败用例、不把 review 候选改为 ready。

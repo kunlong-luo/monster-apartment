@@ -192,7 +192,10 @@ export function WorkshopCinematicStage({
           <div className="workshop-cinematic__station-halo" aria-hidden="true"/>
           <span className="workshop-cinematic__ordinal" aria-hidden="true">{legend.serial}</span>
           <div className="workshop-cinematic__machine-art">
-            <Image src={art} fill alt="" aria-hidden="true"
+            <Image
+              key={isReview?'review-'+craft+'-'+level:
+                isReady?'ready-'+craft+'-'+level:'legacy-'+craft}
+              src={art} fill alt="" aria-hidden="true"
               unoptimized={isReview||isReady}
               onError={()=>{
                 if(isReview)setFailedImages(old=>({...old,[craft]:true}));

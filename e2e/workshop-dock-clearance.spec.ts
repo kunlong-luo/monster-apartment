@@ -955,7 +955,9 @@ test('R10.5 panorama chooses only approved machine paintings and handles a broke
     await route.fulfill({status:200,contentType:'application/json',
       body:JSON.stringify(index)});
   });
+  let servedApprovedImage=0;
   await page.route('**/assets/production/machines/well/lv1.webp',async route=>{
+    servedApprovedImage++;
     // The development Pixi asset server publishes the audited 512px review
     // preview, but (correctly) has no production file until human approval.
     // Serve its real decoded 512px bytes at a fake READY path for this test.
@@ -972,8 +974,13 @@ test('R10.5 panorama chooses only approved machine paintings and handles a broke
   const well=page.getByTestId('workshop-cinematic-machine-well');
   await expect(well).toHaveAttribute('data-art-tier','ready');
   const image=well.locator('.workshop-cinematic__machine-art img');
-  await expect.poll(()=>image.evaluate(el=>(el as HTMLImageElement).naturalWidth))
-    .toBe(512);
+  // Distinguish a failure to request READY art from an image decode failure.
+  await expect.poll(()=>image.getAttribute('src')).toContain(
+    '/assets/production/machines/well/lv1.webp'
+  );
+  await expect.poll(()=>servedApprovedImage).toBeGreaterThan(0);
+  await expect.poll(()=>image.evaluate(el=>(el as HTMLImageElement).naturalWidth),
+    {timeout:15000}).toBe(512);
   await expect(page.getByTestId('workshop-cinematic-machine-garden'))
     .toHaveAttribute('data-art-tier','legacy');
   await expect(page.getByTestId('workshop-art-compare')).toHaveCount(0);
