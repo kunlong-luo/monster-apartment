@@ -480,7 +480,16 @@
     flex:none;min-height:0;height:153px;
   }
   .gothic-workshop-shell[data-cinematic-layout="true"]
-  #root.lab.gothic-workshop .gothic-cameo-bubble{display:none}
+  #root.lab.gothic-workshop .gothic-cameo-bubble{
+    display:block;
+    position:relative;
+    width:clamp(175px,17vw,235px);
+    max-height:170px;
+    overflow-y:auto;
+    pointer-events:auto;
+  }
+  .gothic-workshop-shell[data-cinematic-layout="true"]
+  #root.lab.gothic-workshop .gothic-cameo-assistant{pointer-events:auto}
   .gothic-workshop-shell[data-cinematic-layout="true"]
   #root.lab.gothic-workshop .workshop-cinematic__stations{
     padding-left:clamp(94px,9vw,135px);
