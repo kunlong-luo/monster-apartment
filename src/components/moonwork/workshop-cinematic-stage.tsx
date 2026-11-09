@@ -11,7 +11,8 @@ import type {Craft,DailyProduction,WorkshopState} from '../../../v2/src/workshop
 import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 import {
-  approvedMachineUrls,type ApprovedMachineUrls
+  approvedMachineUrls,workerPaintingUrls,
+  type ApprovedMachineUrls,type WorkerPaintingUrls
 } from '@/lib/moonwork/workshop-machine-art-index';
 import hall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
 import wellLegacy from '../../../v2/art/well-art-review.avif';
@@ -77,6 +78,10 @@ export function WorkshopCinematicStage({
   const [failedImages,setFailedImages]=useState<Partial<Record<Craft,boolean>>>({});
   const [failedReadyImages,setFailedReadyImages]=useState<Partial<Record<Craft,boolean>>>({});
   const [approvedPaintings,setApprovedPaintings]=useState<ApprovedMachineUrls>({});
+  const [workerPaintings,setWorkerPaintings]=useState<{
+    ready:WorkerPaintingUrls;review:WorkerPaintingUrls
+  }>({ready:{},review:{}});
+  const [failedWorkerImages,setFailedWorkerImages]=useState<Record<string,boolean>>({});
   const [openCraft,setOpenCraft]=useState<Craft|null>(null);
   useEffect(()=>{
     let active=true;
@@ -88,8 +93,19 @@ export function WorkshopCinematicStage({
         if(!response.ok)throw Error('Machine art index unavailable');
         return response.json() as Promise<unknown>;
       })
-      .then(index=>{if(active)setApprovedPaintings(approvedMachineUrls(index,root));})
-      .catch(()=>{if(active)setApprovedPaintings({});});
+      .then(index=>{
+        if(!active)return;
+        setApprovedPaintings(approvedMachineUrls(index,root));
+        setWorkerPaintings({
+          ready:workerPaintingUrls(index,root,'ready'),
+          review:workerPaintingUrls(index,root,'review')
+        });
+      })
+      .catch(()=>{
+        if(!active)return;
+        setApprovedPaintings({});
+        setWorkerPaintings({ready:{},review:{}});
+      });
     return ()=>{active=false;};
   },[]);
   // A transient VIEW of an actual completed shift. Initial hydration must not
@@ -151,6 +167,15 @@ export function WorkshopCinematicStage({
         const station=group.featured;
         const level=station?.level??1;
         const worker=station?.machine.worker??null;
+        // Never display an unapproved worker in normal gameplay. Review
+        // paintings are eligible only on the explicit ?machine-art=review
+        // route, and that route's "旧版" toggle returns to the portrait.
+        const workerTier=base?(reviewCandidate?'review':null):'ready';
+        const candidateWorkerArt=worker&&workerTier
+          ?workerPaintings[workerTier][worker]:undefined;
+        const fullWorkerArt=worker&&workerTier&&
+          !failedWorkerImages[workerTier+':'+worker]
+          ?candidateWorkerArt:undefined;
         const status=station?.signal.state??null;
         const cycle=production.cycles.find(c=>c.index===station?.plot);
         const shiftedOutput=settledShift
@@ -246,9 +271,21 @@ export function WorkshopCinematicStage({
             </span>}
           </div>
           {worker&&<span className="workshop-cinematic__worker"
-            data-testid={'workshop-cinematic-worker-'+craft} data-state={status??'idle'}>
-            <Image src={WORKER_ART[worker]} alt="" aria-hidden="true"
-              width={72} height={88} sizes="72px"/>
+            data-testid={'workshop-cinematic-worker-'+craft}
+            data-state={status??'idle'}
+            data-art-tier={fullWorkerArt?workerTier:'portrait'}>
+            <Image
+              key={fullWorkerArt?workerTier+'-'+worker:'portrait-'+worker}
+              data-testid={'workshop-cinematic-worker-img-'+craft}
+              src={fullWorkerArt??WORKER_ART[worker]} alt="" aria-hidden="true"
+              unoptimized={Boolean(fullWorkerArt)}
+              width={fullWorkerArt?512:72} height={fullWorkerArt?768:88}
+              sizes={fullWorkerArt?'(min-width:1600px) 128px, 10vw':'72px'}
+              onError={()=>{
+                if(fullWorkerArt&&workerTier)
+                  setFailedWorkerImages(old=>({...old,[workerTier+':'+worker]:true}));
+              }}
+            />
             <span className="workshop-cinematic__worker-label">{WORKERS[worker].zh}</span>
           </span>}
           {candidates.length>1&&<span className="workshop-cinematic__count">

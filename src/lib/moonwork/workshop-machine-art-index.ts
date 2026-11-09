@@ -1,4 +1,4 @@
-import type {Craft} from '../../../v2/src/workshop-model';
+import type {Craft,WorkerId} from '../../../v2/src/workshop-model';
 
 type Level='1'|'2'|'3';
 export type ApprovedMachineUrls=Partial<Record<Craft,Partial<Record<Level,string>>>>;
@@ -32,6 +32,30 @@ export function approvedMachineUrls(index:unknown,assetRoot:string):ApprovedMach
       if(path!==expected)continue;
       (result[craft]??={})[level]=new URL('assets/'+expected,base).href;
     }
+  }
+  return result;
+}
+
+/** Shares the audited machine-art-index.json but NEVER reads the review tier
+ * unless its caller is in an explicit review route. This is a URL whitelist,
+ * not a mechanism for granting artistic approval; that happens during build.
+ */
+export type WorkerPaintingUrls=Partial<Record<WorkerId,string>>;
+export function workerPaintingUrls(
+  index:unknown,assetRoot:string,tier:'ready'|'review'='ready'
+):WorkerPaintingUrls{
+  if(!record(index)||index.schemaVersion!==1)return {};
+  const entries=index[tier==='ready'?'workers':'reviewWorkers'];
+  if(!record(entries))return {};
+  let root:URL;
+  try{
+    root=new URL(assetRoot);
+    if(!['http:','https:'].includes(root.protocol))return {};
+  }catch{return {};}
+  const result:WorkerPaintingUrls={};
+  for(const worker of ['brook','fern','cinder'] as const){
+    const file=(tier==='ready'?'workers/':'review/workers/')+worker+'.webp';
+    if(entries[worker]===file)result[worker]=new URL('assets/'+file,root).href;
   }
   return result;
 }

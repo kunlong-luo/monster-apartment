@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {approvedMachineUrls} from '../src/lib/moonwork/workshop-machine-art-index';
+import {approvedMachineUrls,workerPaintingUrls} from '../src/lib/moonwork/workshop-machine-art-index';
 
 describe('approved PC machine painting resolution',()=>{
   const root='https://kunlong-luo.github.io/monster-apartment/workshop/';
@@ -30,6 +30,33 @@ describe('approved PC machine painting resolution',()=>{
       kiln:{'3':'production/machines/kiln/lv3.webp'}
     }},dev)).toEqual({
       kiln:{'3':'http://127.0.0.1:3901/assets/production/machines/kiln/lv3.webp'}
+    });
+  });
+});
+
+describe('worker CG is gated independently by art approval tier',()=>{
+  const root='https://kunlong-luo.github.io/monster-apartment/workshop/';
+  it('serves only approved full-body worker URLs to normal players',()=>{
+    const index={schemaVersion:1,
+      workers:{brook:'workers/brook.webp',
+        fern:'review/workers/fern.webp',
+        cinder:'https://example.org/cinder.webp'},
+      reviewWorkers:{fern:'review/workers/fern.webp',brook:'workers/brook.webp'}
+    };
+    expect(workerPaintingUrls(index,root)).toEqual({
+      brook:root+'assets/workers/brook.webp'
+    });
+    expect(workerPaintingUrls(index,root,'review')).toEqual({
+      fern:root+'assets/review/workers/fern.webp'
+    });
+  });
+  it('rejects invalid indexes and unsafe hosts',()=>{
+    const index={schemaVersion:1,workers:{brook:'workers/brook.webp'}};
+    expect(workerPaintingUrls({...index,schemaVersion:2},root)).toEqual({});
+    expect(workerPaintingUrls(index,'data:text/html,evil')).toEqual({});
+    expect(workerPaintingUrls({schemaVersion:1,workers:[]},root)).toEqual({});
+    expect(workerPaintingUrls(index,'http://127.0.0.1:3901/')).toEqual({
+      brook:'http://127.0.0.1:3901/assets/workers/brook.webp'
     });
   });
 });
