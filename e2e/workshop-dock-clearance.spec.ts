@@ -879,3 +879,66 @@ test('R10.3 previews matched painted-light frames without publishing an unapprov
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-machine-working-atlases','0');
   await expect(page.getByTestId('v2-stage')).toHaveAttribute('data-worker-paintings','0');
 });
+
+
+test('R10.4 shows only settled shift output, not a fake effect from page hydration',async({page})=>{
+  test.setTimeout(110_000);
+  let world=newWorkshop();
+  world=moveMachine(world,7,6);
+  world=placeMachine(world,7,'kiln');
+  world=assignWorker(world,'brook',5);
+  world=assignWorker(world,'fern',6);
+  world=assignWorker(world,'cinder',7);
+  const original=JSON.stringify(world);
+  await page.addInitScript(seed=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',seed);
+  },original);
+  await page.setViewportSize({width:1440,height:900});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  const scene=page.getByTestId('workshop-cinematic-scene');
+  await expect(scene).toHaveAttribute('data-motion','paused');
+  await expect(page.getByTestId('workshop-shift-output-well')).toHaveCount(0);
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('workshop-cinematic-shift-announcement'))
+    .toContainText('第1日生产完成，水汽 2，孢子 2，晶核 2');
+  for(const craft of ['well','garden','kiln']){
+    await expect(page.getByTestId('workshop-shift-output-'+craft)).toBeVisible();
+    await expect(page.getByTestId('workshop-shift-output-'+craft))
+      .toContainText((craft==='well'?'水汽':craft==='garden'?'孢子':'晶核')+' +2');
+  }
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({
+    path:'visual-evidence/workshop/desktop-workshop-real-settlement-r104-1440.png',
+    animations:'disabled'
+  });
+  const persisted=await page.evaluate(()=>{
+    return localStorage.getItem('monster-apartment:workshop-v2-lab');
+  });
+  const snapshot=JSON.parse(persisted!) as {day:number;last:{
+    water:number;fiber:number;cores:number
+  }};
+  expect(snapshot.day).toBe(2);
+  expect(snapshot.last).toMatchObject({water:2,fiber:2,cores:2});
+  // A reload is NOT a new shift. Rehydrating day 2 must never fabricate
+  // another floating reward receipt from the persisted last report.
+  await page.reload();
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  await expect(page.getByTestId('workshop-shift-output-well')).toHaveCount(0);
+  await expect(page.getByTestId('workshop-cinematic-shift-announcement')).toBeEmpty();
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
+    .toBe(persisted);
+  // Normal motion is a one-shot Motion transition, not an idle loop.
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await expect(scene).toHaveAttribute('data-motion','running');
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('workshop-shift-output-well')).toBeVisible();
+  await expect(page.getByTestId('workshop-shift-output-well')).toHaveCount(0,{timeout:12_000});
+  const day3=await page.evaluate(()=>{
+    const raw=localStorage.getItem('monster-apartment:workshop-v2-lab');
+    return raw?JSON.parse(raw).day:null;
+  });
+  expect(day3).toBe(3);
+});

@@ -175,6 +175,30 @@
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__machine-art img{
   object-fit:contain;object-position:center bottom;
 }
+/* R10.4: brief, authentic settlement report over the corresponding machine.
+ * Numbers come from the committed runShift report, never a CSS counter.
+ * Motion for React owns the one-shot animation; reduced-motion users get
+ * static legible feedback, and this layer cannot steal station clicks. */
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__shift-output{
+  position:absolute;left:50%;top:36%;z-index:4;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  width:max-content;max-width:95%;padding:5px 10px;
+  translate:-50% 0;pointer-events:none;
+  border-radius:5px;border:1px solid color-mix(in srgb,var(--station-glow) 42%,var(--craft-brass));
+  background:color-mix(in srgb,var(--craft-panel) 88%,transparent);
+  box-shadow:0 7px 18px #08040fc0,0 0 19px color-mix(in srgb,var(--station-glow) 15%,transparent);
+  color:var(--craft-ivory);text-align:center;
+  text-shadow:0 1px 5px #07040d;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__shift-output strong{
+  font:600 clamp(11px,1.1vw,15px)/1.2 "Noto Sans CJK SC",sans-serif;
+  font-variant-numeric:tabular-nums;
+  color:var(--craft-champagne);
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__shift-caption{
+  font:500 9px/1.2 "Noto Sans CJK SC",sans-serif;
+  color:var(--craft-muted);
+}
 /* The legacy AVIFs are tiny fallback illustrations, not scene-resolution art.
  * The previous 1.6–1.9 zoom was amplifying compression artifacts into giant,
  * blurry machinery. Show the actual image closer to its usable pixel size.

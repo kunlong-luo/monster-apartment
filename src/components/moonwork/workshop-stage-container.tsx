@@ -28,7 +28,7 @@ function getWideStage(){
 }
 
 export function WorkshopStageContainer({
-  world,onAction,
+  world,worldReady,onAction,
   chosenWorker,
   chosenMachine,
   movingFrom,
@@ -40,6 +40,7 @@ export function WorkshopStageContainer({
   onPresentationModeChange,
 }: {
   world: WorkshopState;
+  worldReady:boolean;
   expandedConsole:boolean;
   onToggleConsole:()=>void;
   sceneMode:'cinematic'|'grid';
@@ -159,6 +160,7 @@ export function WorkshopStageContainer({
           aria-label="PixiJS WebGL 工坊场景：点击设备或空地进行操作"
         ></div>
         {showCinematic&&<WorkshopCinematicStage world={world}
+          worldReady={worldReady}
           selectedPlot={selectedPlot} onAction={onAction}
           onOpenGrid={()=>onSceneModeChange('grid')}/>}
         {showCinematic&&selectedTile&&selectedStation&&

@@ -2,11 +2,12 @@
 
 import './workshop-cinematic.css';
 import Image from 'next/image';
-import {useState,useSyncExternalStore} from 'react';
+import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
+import {motion} from 'motion/react';
 import {ArrowUpRight,Grid3X3,MoveRight} from 'lucide-react';
 import {MACHINES,WORKERS,projectMachineProduction} from '../../../v2/src/workshop-engine';
 import {presentWorkshopStations} from '../../../v2/src/workshop-station-presenter';
-import type {Craft,WorkshopState} from '../../../v2/src/workshop-engine';
+import type {Craft,DailyProduction,WorkshopState} from '../../../v2/src/workshop-engine';
 import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 import hall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
@@ -59,9 +60,10 @@ function subscribeSceneMotion(onChange:()=>void){
  * game board. The fixed 15-tile Pixi board remains mounted underneath.
  * This view never mutates saves or simulates production. */
 export function WorkshopCinematicStage({
-  world,selectedPlot,onAction,onOpenGrid,
+  world,worldReady,selectedPlot,onAction,onOpenGrid,
 }:{
   world:WorkshopState;
+  worldReady:boolean;
   selectedPlot:number|null;
   onAction:(action:WorkshopAction)=>void;
   onOpenGrid:()=>void;
@@ -71,6 +73,26 @@ export function WorkshopCinematicStage({
   const [reviewCandidate,setReviewCandidate]=useState(true);
   const [failedImages,setFailedImages]=useState<Partial<Record<Craft,boolean>>>({});
   const [openCraft,setOpenCraft]=useState<Craft|null>(null);
+  // A transient VIEW of an actual completed shift. Initial hydration must not
+  // replay the persisted last report as if production just happened.
+  const observedDay=useRef<number|null>(null);
+  const [settledShift,setSettledShift]=useState<{
+    day:number;report:DailyProduction
+  }|null>(null);
+  useEffect(()=>{
+    // Connect the real persisted world before tracking days. Otherwise the
+    // initial fallback newWorkshop() -> hydrated day N looks like an earned shift.
+    if(!worldReady){
+      observedDay.current=null;
+      return;
+    }
+    const previous=observedDay.current;
+    observedDay.current=world.day;
+    if(previous!==null&&world.day>previous&&world.last)
+      setSettledShift({day:world.day,report:world.last});
+    else if(previous!==null&&world.day<previous)
+      setSettledShift(null);
+  },[worldReady,world.day,world.last]);
   const stations=presentWorkshopStations(world,selectedPlot).groups;
   // Use the exact deterministic settlement projection; never calculate a
   // second fake visual throughput. No economy mutation or animation ticker.
@@ -97,6 +119,12 @@ export function WorkshopCinematicStage({
       <span className="workshop-cinematic__chapter">第 {world.day} 日 · 月光工坊</span>
     </div>
 
+    <span className="sr-only" aria-live="polite" aria-atomic="true"
+      data-testid="workshop-cinematic-shift-announcement">
+      {settledShift&&'第'+(settledShift.day-1)+'日生产完成，'+
+        '水汽 '+settledShift.report.water+'，孢子 '+settledShift.report.fiber+
+        '，晶核 '+settledShift.report.cores}
+    </span>
     <div className="workshop-cinematic__stations" role="group" aria-label="真实工坊设备">
       {CRAFTS.map(craft=>{
         const group=stations[craft];
@@ -106,6 +134,11 @@ export function WorkshopCinematicStage({
         const worker=station?.machine.worker??null;
         const status=station?.signal.state??null;
         const cycle=production.cycles.find(c=>c.index===station?.plot);
+        const shiftedOutput=settledShift
+          ?(craft==='well'?settledShift.report.water:
+            craft==='garden'?settledShift.report.fiber:settledShift.report.cores)
+          :0;
+        const outputName=craft==='well'?'水汽':craft==='garden'?'孢子':'晶核';
         const statusText=status==='working'?'生产运行中':
           status==='blocked'?'材料供应受阻':station?'等待工匠派驻':'尚未建造';
         const art=base&&reviewCandidate&&!failedImages[craft]
@@ -142,6 +175,25 @@ export function WorkshopCinematicStage({
               className={isReview?'object-contain drop-shadow-[0_12px_14px_rgba(0,0,0,.8)]':
                 'object-contain opacity-90 drop-shadow-[0_12px_15px_rgba(0,0,0,.85)]'}
             />
+            {shiftedOutput>0&&<motion.span
+              key={settledShift!.day+'-'+craft}
+              data-testid={'workshop-shift-output-'+craft}
+              className="workshop-cinematic__shift-output"
+              initial={motionEnabled?{opacity:0,y:12}:{opacity:1,y:0}}
+              animate={motionEnabled
+                ?{opacity:[0,1,1,0],y:[12,0,-2,-20]}
+                :{opacity:1,y:0}}
+              transition={motionEnabled
+                ?{duration:3.1,times:[0,.15,.76,1],ease:'easeOut'}
+                :{duration:0}}
+              onAnimationComplete={()=>{
+                if(motionEnabled)
+                  setSettledShift(current=>current?.day===settledShift?.day?null:current);
+              }}
+            >
+              <span className="workshop-cinematic__shift-caption">本班合计</span>
+              <strong>{outputName} +{shiftedOutput}</strong>
+            </motion.span>}
           </div>
           <div className="workshop-cinematic__identity">
             <span className="workshop-cinematic__identity-title">

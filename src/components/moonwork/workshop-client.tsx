@@ -337,6 +337,7 @@ export function WorkshopClient() {
             onPresentationModeChange={onPresentationModeChange}
             onAction={onAction}
             world={world}
+            worldReady={Boolean(savedWorld)&&runtimeReady}
             chosenWorker={selection.worker}
             chosenMachine={selection.machine}
             movingFrom={selection.movingFrom}
