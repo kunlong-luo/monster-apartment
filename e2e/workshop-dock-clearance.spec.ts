@@ -1147,3 +1147,30 @@ test('R10.7 Moonveil dialogue follows real machine, staff and order state withou
   expect(await page.evaluate(()=>
     localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
 });
+
+
+test('R10.7 mobile 390x844 workshop remains usable with reduced motion and unchanged save',async({page})=>{
+  test.setTimeout(100_000);
+  await page.setViewportSize({width:390,height:844});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  const seed=JSON.stringify(newWorkshop());
+  await page.addInitScript(value=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',value);
+  },seed);
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  const saved=await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'));
+  const bounds=await page.evaluate(()=>({
+    viewport:document.documentElement.clientWidth,
+    scroll:document.documentElement.scrollWidth,
+    stage:document.querySelector('#root')?.getBoundingClientRect().toJSON()
+  }));
+  expect(bounds.viewport).toBe(390);
+  expect(bounds.scroll).toBeLessThanOrEqual(bounds.viewport+1);
+  expect(bounds.stage).toBeTruthy();
+  expect(bounds.stage!.width).toBeGreaterThan(250);
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({path:'visual-evidence/workshop/mobile-workshop-reduced-motion-r107-390.png',animations:'disabled'});
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
+});
