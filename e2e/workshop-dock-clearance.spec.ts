@@ -1186,6 +1186,11 @@ test('R10.8 workshop production log never fabricates gains before a real shift',
   },seed);
   await page.goto('/workshop/');
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  // Desktop scene-priority mode intentionally hides all three control
+  // columns. Open the existing "详细调度" mode before inspecting the log.
+  await page.getByTestId('workshop-stage-layout-toggle').click();
+  await expect(page.getByTestId('next-workshop-shell'))
+    .toHaveAttribute('data-console-layout','expanded');
   await expect(page.getByTestId('workshop-production-log-not-started')).toBeVisible();
   await expect(page.getByTestId('workshop-production-log-not-started'))
     .toContainText('尚未完成生产班次');
@@ -1206,6 +1211,7 @@ test('R10.8 workshop production log never fabricates gains before a real shift',
   expect(JSON.parse(saved!).day).toBe(2);
   await page.reload();
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  await page.getByTestId('workshop-stage-layout-toggle').click();
   await expect(page.getByTestId('workshop-production-log-no-output')).toBeVisible();
   expect(await page.evaluate(()=>
     localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
@@ -1228,6 +1234,9 @@ test('R10.8 workshop production log lists only settled material outputs and hone
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/workshop/');
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  await page.getByTestId('workshop-stage-layout-toggle').click();
+  await expect(page.getByTestId('next-workshop-shell'))
+    .toHaveAttribute('data-console-layout','expanded');
   for(const [id,caption] of [
     ['output-water','实际产出 水汽 ×2'],
     ['output-fiber','实际产出 孢子纤维 ×2'],
