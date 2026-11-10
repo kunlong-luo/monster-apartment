@@ -1113,6 +1113,32 @@ test('R10.7 Moonveil dialogue follows real machine, staff and order state withou
   await next.click();
   await expect(line).toHaveAttribute('data-beat-id','contract-countdown');
   await expect(line).toContainText('仓库现有 0 枚');
+  // The first short line fitting does not prove that later, longer dialogue
+  // remains readable or clickable. Inspect the actual final rendered bubble.
+  const finalBubble=await next.evaluate(element=>{
+    const rect=element.getBoundingClientRect();
+    const style=getComputedStyle(element);
+    const pointX=rect.left+rect.width/2;
+    const pointY=rect.top+Math.min(rect.height/2,20);
+    return {
+      width:rect.width,height:rect.height,
+      left:rect.left,right:rect.right,top:rect.top,bottom:rect.bottom,
+      viewportWidth:innerWidth,viewportHeight:innerHeight,
+      overflowY:style.overflowY,
+      scrollHeight:element.scrollHeight,clientHeight:element.clientHeight,
+      clickable:element.contains(document.elementFromPoint(pointX,pointY))
+    };
+  });
+  expect(finalBubble.width).toBeGreaterThan(150);
+  expect(finalBubble.height).toBeGreaterThan(20);
+  expect(finalBubble.left).toBeGreaterThanOrEqual(0);
+  expect(finalBubble.top).toBeGreaterThanOrEqual(0);
+  expect(finalBubble.right).toBeLessThanOrEqual(finalBubble.viewportWidth);
+  expect(finalBubble.bottom).toBeLessThanOrEqual(finalBubble.viewportHeight);
+  expect(finalBubble.clickable).toBe(true);
+  // A long line may scroll within the bubble, but must not be silently clipped.
+  expect(finalBubble.scrollHeight<=finalBubble.clientHeight ||
+    ['auto','scroll'].includes(finalBubble.overflowY)).toBe(true);
   await mkdir('visual-evidence/workshop',{recursive:true});
   await page.screenshot({
     path:'visual-evidence/workshop/desktop-workshop-true-dialogue-r107-1440.png',
