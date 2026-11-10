@@ -1071,6 +1071,37 @@ test('R10.7 Moonveil dialogue follows real machine, staff and order state withou
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
   const line=page.getByTestId('workshop-yuesha-dialogue');
   const next=page.locator('button.gothic-cameo-bubble');
+  // A clickable DOM node alone did not catch the R10.7 cropped-cameo regression.
+  // Verify real desktop geometry and the pointer target before advancing dialogue.
+  const cameo=page.locator('.gothic-cameo-assistant');
+  const frame=page.locator('.gothic-cameo-frame');
+  await expect(cameo).toBeVisible();
+  await expect(frame).toBeVisible();
+  await expect(next).toBeVisible();
+  const geometry=await page.evaluate(()=>{
+    const portrait=document.querySelector('.gothic-cameo-frame');
+    const bubble=document.querySelector('button.gothic-cameo-bubble');
+    if(!(portrait instanceof HTMLElement)||!(bubble instanceof HTMLElement))return null;
+    const a=portrait.getBoundingClientRect(),b=bubble.getBoundingClientRect();
+    const x=b.left+b.width/2,y=b.top+Math.min(b.height/2,20);
+    return {
+      portraitWidth:a.width,portraitHeight:a.height,
+      bubbleWidth:b.width,bubbleHeight:b.height,
+      bubbleLeft:b.left,portraitRight:a.right,
+      bubbleRight:b.right,bubbleBottom:b.bottom,
+      viewportWidth:innerWidth,viewportHeight:innerHeight,
+      pointerInside:b.contains(document.elementFromPoint(x,y))
+    };
+  });
+  expect(geometry).not.toBeNull();
+  expect(geometry!.portraitWidth).toBeGreaterThan(70);
+  expect(geometry!.portraitHeight).toBeGreaterThan(120);
+  expect(geometry!.bubbleWidth).toBeGreaterThan(150);
+  expect(geometry!.bubbleHeight).toBeGreaterThan(20);
+  expect(geometry!.bubbleLeft).toBeGreaterThanOrEqual(geometry!.portraitRight-2);
+  expect(geometry!.bubbleRight).toBeLessThanOrEqual(geometry!.viewportWidth);
+  expect(geometry!.bubbleBottom).toBeLessThanOrEqual(geometry!.viewportHeight);
+  expect(geometry!.pointerInside).toBe(true);
   const saved=await page.evaluate(()=>
     localStorage.getItem('monster-apartment:workshop-v2-lab'));
   await expect(line).toHaveAttribute('data-beat-id','welcome');
