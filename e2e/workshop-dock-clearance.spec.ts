@@ -1170,6 +1170,34 @@ test('R10.7 mobile 390x844 workshop remains usable with reduced motion and uncha
   expect(bounds.scroll).toBeLessThanOrEqual(bounds.viewport+1);
   expect(bounds.stage).toBeTruthy();
   expect(bounds.stage!.width).toBeGreaterThan(250);
+  // On mobile the cameo may intentionally collapse into a compact control.
+  // When rendered, verify the real hit target and readable dialogue rather
+  // than inferring success from Pixi readiness or the desktop screenshot.
+  const mobileBubble=page.locator('button.gothic-cameo-bubble');
+  if(await mobileBubble.isVisible()){
+    const check=async()=>mobileBubble.evaluate(element=>{
+      const r=element.getBoundingClientRect(),style=getComputedStyle(element);
+      const x=r.left+r.width/2,y=r.top+Math.min(r.height/2,20);
+      return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,
+        width:r.width,height:r.height,viewportWidth:innerWidth,viewportHeight:innerHeight,
+        scrollHeight:element.scrollHeight,clientHeight:element.clientHeight,
+        overflowY:style.overflowY,hit:element.contains(document.elementFromPoint(x,y))};
+    });
+    for(let beat=0;beat<4;beat++){
+      const box=await check();
+      expect(box.width).toBeGreaterThan(90);
+      expect(box.height).toBeGreaterThan(20);
+      expect(box.left).toBeGreaterThanOrEqual(0);
+      expect(box.top).toBeGreaterThanOrEqual(0);
+      expect(box.right).toBeLessThanOrEqual(box.viewportWidth+1);
+      expect(box.bottom).toBeLessThanOrEqual(box.viewportHeight+1);
+      expect(box.hit).toBe(true);
+      expect(box.scrollHeight<=box.clientHeight||['auto','scroll'].includes(box.overflowY)).toBe(true);
+      if(beat<3)await mobileBubble.click();
+    }
+    await expect(page.getByTestId('workshop-yuesha-dialogue'))
+      .toHaveAttribute('data-beat-id','contract-countdown');
+  }
   await mkdir('visual-evidence/workshop',{recursive:true});
   await page.screenshot({path:'visual-evidence/workshop/mobile-workshop-reduced-motion-r107-390.png',animations:'disabled'});
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
