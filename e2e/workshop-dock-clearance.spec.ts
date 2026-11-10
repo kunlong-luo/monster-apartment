@@ -1090,7 +1090,7 @@ test('R10.7 Moonveil dialogue follows real machine, staff and order state withou
       bubbleLeft:b.left,portraitRight:a.right,
       bubbleRight:b.right,bubbleBottom:b.bottom,
       viewportWidth:innerWidth,viewportHeight:innerHeight,
-      pointerInside:b.contains(document.elementFromPoint(x,y))
+      pointerInside:bubble.contains(document.elementFromPoint(x,y))
     };
   });
   expect(geometry).not.toBeNull();
