@@ -473,7 +473,9 @@
   #root.lab.gothic-workshop .gothic-cameo-assistant{
     top:63px;bottom:auto;left:12px;
     width:clamp(88px,8vw,116px);height:153px;
-    pointer-events:none;
+    /* The dialogue sits beside the portrait, not inside its 116px column. */
+    overflow:visible;
+    pointer-events:auto;
   }
   .gothic-workshop-shell[data-cinematic-layout="true"]
   #root.lab.gothic-workshop .gothic-cameo-frame{
@@ -482,7 +484,9 @@
   .gothic-workshop-shell[data-cinematic-layout="true"]
   #root.lab.gothic-workshop .gothic-cameo-bubble{
     display:block;
-    position:relative;
+    position:absolute;
+    left:calc(100% + 10px);
+    top:0;
     width:clamp(175px,17vw,235px);
     max-height:170px;
     overflow-y:auto;
