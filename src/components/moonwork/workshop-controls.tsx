@@ -10,6 +10,9 @@ import fernFace from '../../../public/art/beauty-beasts/characters/fern/face.web
 import cinderFace from '../../../public/art/beauty-beasts/characters/cinder/face.webp';
 import {WORKERS, MACHINES, autoAssignWorkers, machineLevel} from '../../../v2/src/workshop-engine';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
+import {
+  workshopProductionLog,type WorkshopLogKind
+} from '@/lib/moonwork/workshop-production-log';
 import type {WorkshopState, Machine, Craft, WorkerId} from '../../../v2/src/workshop-engine';
 import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
 import wellArt from '../../../v2/art/well-art-review.avif';
@@ -35,6 +38,15 @@ function reviewRequested(){
   return typeof window!=='undefined'&&
     new URLSearchParams(window.location.search).get('machine-art')==='review';
 }
+
+const LOG_ICONS:Record<WorkshopLogKind,ReactNode>={
+  water:<Waves size={13} strokeWidth={1.7}/>,
+  fiber:<Sprout size={13} strokeWidth={1.7}/>,
+  core:<Gem size={13} strokeWidth={1.7}/>,
+  warning:<TriangleAlert size={13} strokeWidth={1.7}/>,
+  contract:<ClipboardList size={13} strokeWidth={1.7}/>,
+  note:<ClipboardList size={13} strokeWidth={1.7}/>
+};
 
 const MACHINE_OUTPUTS: Record<Craft, {name: string; icon: ReactNode; count: number}> = {
   well: {name: '清水', icon: <Waves size={13} strokeWidth={1.7}/>, count: 2},
@@ -73,53 +85,13 @@ export function WorkshopControls({
   const assignableCount=suggested.tiles.filter((tile,index)=>
     tile?.worker!==null && tile?.worker!==world.tiles[index]?.worker).length;
 
-  // Build live production log entries from world state and reports
-  const report = world.last;
+  // The ledger is derived only from the last saved shift. A newly created
+  // world must never show imagined gains or a misleading healthy status.
   const waterStock=world.tiles.reduce((total,tile)=>total+(tile?.craft==='well'?(tile.stored??0):0),0);
   const fiberStock=world.tiles.reduce((total,tile)=>total+(tile?.craft==='garden'?(tile.stored??0):0),0);
-  const logs = [
-    {
-      time: '本班次',
-      type: 'output',
-      icon: <Gem size={13} strokeWidth={1.7}/>,
-      text: report?.cores && report.cores > 0 ? `生产完成：获得 精制晶核 x${report.cores}` : '晶核熔炉等待原料输入中',
-      tone: 'good',
-    },
-    {
-      time: '本班次',
-      type: 'output',
-      icon: <Sprout size={13} strokeWidth={1.7}/>,
-      text: report?.fiber && report.fiber > 0 ? `温室培育产出：获得 孢子纤维 x${report.fiber}` : '银叶苗床持续光合作用',
-      tone: 'good',
-    },
-    {
-      time: '本班次',
-      type: 'output',
-      icon: <Waves size={13} strokeWidth={1.7}/>,
-      text: report?.water && report.water > 0 ? `水汽泵抽提：产出 清水 x${report.water}` : '月井地下水脉充盈',
-      tone: 'good',
-    },
-    ...(report?.blocked && report.blocked.length > 0
-      ? report.blocked.map((b, idx) => ({
-          time: `异常 ${idx+1}`,
-          type: 'alert',
-          icon: <TriangleAlert size={13} strokeWidth={1.7}/>,
-          text: b.includes(':water') ? '银叶苗床告警：水汽供应不足，需靠近水泵' : '夜光熔炉告警：原料短缺，需两份孢子炼核',
-          tone: 'bad',
-        }))
-      : [
-          {
-            time: '本班次',
-            type: 'all',
-            icon: <ClipboardList size={13} strokeWidth={1.7}/>,
-            text: world.completed > 0 ? `契约达成结算：工坊总交付 ${world.completed} 单` : '工坊处于第一生产周期，排班稳定',
-            tone: 'neutral',
-          },
-        ]),
-  ];
-
-  const filteredLogs = logs.filter(
-    (item) => logFilter === 'all' || item.type === logFilter || (logFilter === 'output' && item.tone === 'good'),
+  const logs=workshopProductionLog(world);
+  const filteredLogs=logs.filter(
+    item=>logFilter==='all'||item.type===logFilter
   );
 
   return (
@@ -423,15 +395,22 @@ export function WorkshopControls({
         </div>
 
         {/* Live Timeline List */}
-        <div className="options workshop-log-list mt-2 flex min-h-0 flex-col gap-1 overflow-y-auto pr-0.5 scrollbar-thin">
-          {filteredLogs.map((item, idx) => (
+        <div className="options workshop-log-list mt-2 flex min-h-0 flex-col gap-1 overflow-y-auto pr-0.5 scrollbar-thin"
+          data-testid="workshop-production-log-list">
+          {filteredLogs.length===0&&
+            <p className="rounded-md border border-gothic-brass/25 bg-black/30 p-2 text-[10.5px] text-gothic-muted"
+              data-testid="workshop-production-log-empty">
+              {logFilter==='output'?'上一班没有实际产出记录': '上一班没有缺料或交付告警'}
+            </p>}
+          {filteredLogs.map(item => (
             <div
-              key={idx}
+              key={item.id}
+              data-testid={'workshop-production-log-'+item.id}
               className="flex items-center justify-between rounded-lg border border-gothic-brass/25 bg-black/35 px-2 py-1 text-[10.5px]"
             >
               <div className="flex items-center gap-1.5 truncate">
                 <span className="text-[9px] text-gothic-muted">{item.time}</span>
-                <span className="text-gothic-gold">{item.icon}</span>
+                <span className="text-gothic-gold">{LOG_ICONS[item.kind]}</span>
                 <span
                   className={`truncate ${
                     item.tone === 'good'

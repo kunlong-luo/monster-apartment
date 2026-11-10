@@ -1,6 +1,6 @@
 import {expect,test} from '@playwright/test';
 import {mkdir} from 'node:fs/promises';
-import {assignWorker,moveMachine,newWorkshop,placeMachine} from '../v2/src/workshop-engine';
+import {assignWorker,moveMachine,newWorkshop,placeMachine,runShift} from '../v2/src/workshop-engine';
 
 // The smaller persistent scene launcher must not steal the real factory shift
 // button hit target at either PC or mobile widths.
@@ -1173,4 +1173,76 @@ test('R10.7 mobile 390x844 workshop remains usable with reduced motion and uncha
   await mkdir('visual-evidence/workshop',{recursive:true});
   await page.screenshot({path:'visual-evidence/workshop/mobile-workshop-reduced-motion-r107-390.png',animations:'disabled'});
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
+});
+
+
+test('R10.8 workshop production log never fabricates gains before a real shift',async({page})=>{
+  test.setTimeout(90000);
+  await page.setViewportSize({width:1440,height:900});
+  const seed=JSON.stringify(newWorkshop());
+  await page.addInitScript(value=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',value);
+  },seed);
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  await expect(page.getByTestId('workshop-production-log-not-started')).toBeVisible();
+  await expect(page.getByTestId('workshop-production-log-not-started'))
+    .toContainText('尚未完成生产班次');
+  await expect(page.getByTestId('workshop-production-log-list'))
+    .not.toContainText('持续光合作用');
+  await expect(page.getByTestId('workshop-production-log-list'))
+    .not.toContainText('水脉充盈');
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('workshop-production-log-no-output'))
+    .toContainText('上一班没有产出');
+  await expect(page.getByTestId('workshop-production-log-list'))
+    .not.toContainText('实际产出');
+  await page.getByRole('button',{name:'产出',exact:true}).click();
+  await expect(page.getByTestId('workshop-production-log-empty'))
+    .toContainText('没有实际产出');
+  const saved=await page.evaluate(()=>
+    localStorage.getItem('monster-apartment:workshop-v2-lab'));
+  expect(JSON.parse(saved!).day).toBe(2);
+  await page.reload();
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  await expect(page.getByTestId('workshop-production-log-no-output')).toBeVisible();
+  expect(await page.evaluate(()=>
+    localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
+});
+
+test('R10.8 workshop production log lists only settled material outputs and honest alarms',async({page})=>{
+  test.setTimeout(90000);
+  let world=newWorkshop();
+  world=moveMachine(world,7,6);
+  world=placeMachine(world,7,'kiln');
+  world=assignWorker(world,'brook',5);
+  world=assignWorker(world,'fern',6);
+  world=assignWorker(world,'cinder',7);
+  world=runShift(world);
+  const seed=JSON.stringify(world);
+  await page.addInitScript(value=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',value);
+  },seed);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  for(const [id,caption] of [
+    ['output-water','实际产出 水汽 ×2'],
+    ['output-fiber','实际产出 孢子纤维 ×2'],
+    ['output-cores','实际产出 晶核 ×2']
+  ]){
+    await expect(page.getByTestId('workshop-production-log-'+id)).toContainText(caption);
+  }
+  await expect(page.getByTestId('workshop-production-log-list'))
+    .not.toContainText('缺料告警');
+  const saved=await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'));
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({
+    path:'visual-evidence/workshop/desktop-workshop-honest-log-r108-1440.png',
+    animations:'disabled'
+  });
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
+    .toBe(saved);
 });
