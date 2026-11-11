@@ -1,6 +1,9 @@
 import {expect,test} from '@playwright/test';
 import {mkdir} from 'node:fs/promises';
 import {assignWorker,moveMachine,newWorkshop,placeMachine,runShift} from '../v2/src/workshop-engine';
+import {
+  startWorkshopAuto,simulateWorkshopAutoUntil,pauseWorkshopAuto
+} from '../v2/src/workshop-auto-production';
 
 // The smaller persistent scene launcher must not steal the real factory shift
 // button hit target at either PC or mobile widths.
@@ -1282,4 +1285,50 @@ test('R10.8 workshop production log lists only settled material outputs and hone
   });
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
     .toBe(saved);
+});
+
+
+test('R10.9 actually earned automatic production appears separately from manual shift',async({page})=>{
+  test.setTimeout(100_000);
+  let state=newWorkshop();
+  state=moveMachine(state,7,6);
+  state=placeMachine(state,7,'kiln');
+  state=assignWorker(state,'brook',5);
+  state=assignWorker(state,'fern',6);
+  state=assignWorker(state,'cinder',7);
+  // Pause after a real simulated auto cycle to freeze the test's ledger.
+  // While enabled, the global timer would correctly catch up to Date.now().
+  const produced=simulateWorkshopAutoUntil(startWorkshopAuto(state,1000),61000);
+  const frozen=pauseWorkshopAuto(produced);
+  const snapshot=JSON.stringify(frozen);
+  await page.setViewportSize({width:1440,height:900});
+  await page.addInitScript(value=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',value);
+  },snapshot);
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  await page.getByTestId('workshop-stage-layout-toggle').click();
+  const log=page.getByTestId('workshop-production-log-list');
+  for(const [id,description] of [
+    ['auto-water','自动实际累计 水汽 ×4'],
+    ['auto-fiber','自动实际累计 孢子纤维 ×2'],
+    ['auto-cores','自动实际累计 晶核 ×2']
+  ]){
+    await expect(page.getByTestId('workshop-production-log-'+id)).toContainText(description);
+  }
+  await expect(log).toContainText('历史产出，非当前库存');
+  await expect(page.getByTestId('workshop-production-log-not-started'))
+    .toContainText('尚未完成生产班次');
+  await page.getByRole('button',{name:'产出',exact:true}).click();
+  await expect(page.getByTestId('workshop-production-log-not-started')).toBeHidden();
+  await expect(page.getByTestId('workshop-production-log-auto-cores')).toBeVisible();
+  await expect(log).not.toContainText('上一班委托实际交付');
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({
+    path:'visual-evidence/workshop/desktop-workshop-autoproduction-actual-r109-1440.png',
+    animations:'disabled'
+  });
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
+    .toBe(snapshot);
 });
