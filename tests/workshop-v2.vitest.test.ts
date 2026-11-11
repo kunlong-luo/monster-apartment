@@ -69,10 +69,11 @@ describe('V2 workshop: positioning and staffing are the gameplay',()=>{
     world=assignWorker(world,'brook',5);
     world=assignWorker(world,'fern',6);
     world=assignWorker(world,'cinder',7);
-    expect(workshopNextStep(world)).toContain('开始一天生产');
+    expect(workshopNextStep(world)).toContain('点击「手动轮班」');
     expect(workshopHint(world)).toMatchObject({action:'shift',source:null,target:null});
     world=runShift(world);
-    expect(workshopNextStep(world)).toContain('自动交付');
+    expect(workshopNextStep(world)).toContain('点击「手动轮班」推进至第5日结算');
+    expect(workshopNextStep(world)).not.toContain('自动交付');
   });
   it('salvages wrong machine investments to recover from a soft lock',()=>{
     let world=moveMachine(newWorkshop(),7,6);
