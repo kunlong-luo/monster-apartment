@@ -8,7 +8,7 @@ import type {Craft,WorkerId,WorkshopState} from './workshop-model';
 /** One spatial hint derived from the same authoritative save as the engine.
  * Never auto-move machines, mint currency or bypass player decisions. */
 export type WorkshopHint={
-  action:'move'|'build'|'staff'|'shift'|'recover';
+  action:'move'|'build'|'staff'|'shift'|'recover'|'wait';
   source:number|null;target:number|null;
   craft?:Craft;worker?:WorkerId;
 };
@@ -65,6 +65,10 @@ export function workshopHint(s:WorkshopState):WorkshopHint {
       return {action:'staff',source:null,target,worker};
     }
   }
+  // Auto cycles are the active action here. The explicit manual shift
+  // button is disabled while auto production is running; never suggest
+  // a click that cannot succeed or pretend that auto time advances orders.
+  if(s.auto?.enabled)return {action:'wait',source:null,target:null};
   return {action:'shift',source:null,target:null};
 }
 export function workshopNextStep(s:WorkshopState):string {
@@ -89,7 +93,12 @@ export function workshopNextStep(s:WorkshopState):string {
     if(!s.tiles.some(m=>m?.craft===craft&&m.worker))
       return '第4步 · 选择工匠'+WORKERS[worker].zh+'，点击对应设备派工';
   }
+  if(s.auto?.enabled){
+    return s.warehouse.core>=s.order.cores
+      ?'晶核已备齐 · 自动节拍不推进委托日；暂停后手动轮班结算'
+      :'自动产线运行中 · 材料按节拍入仓；委托日需暂停后手动轮班推进';
+  }
   if(s.warehouse.core>=s.order.cores)
-    return '晶核已达标 · 继续生产至第'+s.order.due+'天自动交付';
-  return '第5步 · 点击「开始一天生产」，积攒晶核完成订单';
+    return '晶核已达标 · 点击「手动轮班」推进至第'+s.order.due+'日结算';
+  return '第5步 · 点击「手动轮班」积攒晶核完成订单';
 }

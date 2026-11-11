@@ -1332,3 +1332,65 @@ test('R10.9 actually earned automatic production appears separately from manual 
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')))
     .toBe(snapshot);
 });
+
+
+test('R10.10 PC auto production guidance and Moonveil reflect real receipts and safe pause',async({page})=>{
+  test.setTimeout(110_000);
+  let world=newWorkshop();
+  world=moveMachine(world,7,6);
+  world=placeMachine(world,7,'kiln');
+  world=assignWorker(world,'brook',5);
+  world=assignWorker(world,'fern',6);
+  world=assignWorker(world,'cinder',7);
+  // Derive all output from the real deterministic auto engine first.
+  // The future-only test clock then prevents timed writes during assertions.
+  const recorded=simulateWorkshopAutoUntil(startWorkshopAuto(world,1000),61000);
+  const safeNow=Date.now()+10*60*1000;
+  const stable={
+    ...recorded,
+    auto:{...recorded.auto!,lastSimulatedAt:safeNow,
+      nextDue:recorded.auto!.nextDue.map(t=>t>0?t+safeNow:0)}
+  };
+  const saved=JSON.stringify(stable);
+  await page.addInitScript(seed=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',seed);
+  },saved);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  await expect(page.getByTestId('v2-next-step'))
+    .toContainText('自动节拍不推进委托日');
+  await expect(page.getByTestId('v2-shift')).toBeDisabled();
+
+  const bubble=page.locator('button.gothic-cameo-bubble');
+  const line=page.getByTestId('workshop-yuesha-dialogue');
+  // Welcome -> connected-chain -> genuine auto-state reaction.
+  await bubble.click();
+  await bubble.click();
+  await expect(line).toHaveAttribute('data-beat-id','auto-running');
+  await expect(line).toContainText('自动累计水汽 4、孢子 2、晶核 2');
+  await expect(line).toContainText('现有晶核 2');
+  expect(await page.evaluate(()=>
+    localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
+
+  await page.getByTestId('workshop-auto-toggle').click();
+  await expect(page.getByTestId('workshop-auto-toggle'))
+    .toHaveAttribute('aria-pressed','false');
+  await expect(page.getByTestId('v2-shift')).toBeEnabled();
+  await expect(page.getByTestId('v2-next-step'))
+    .toContainText('点击「手动轮班」');
+  await expect(line).toHaveAttribute('data-beat-id','auto-paused');
+  await expect(line).toContainText('历史产量');
+  const after=JSON.parse((await page.evaluate(()=>
+    localStorage.getItem('monster-apartment:workshop-v2-lab')))!);
+  expect(after.day).toBe(1);
+  expect(after.coins).toBe(stable.coins);
+  expect(after.auto.produced).toEqual({water:4,fiber:2,cores:2});
+  expect(after.auto.enabled).toBe(false);
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({
+    path:'visual-evidence/workshop/desktop-workshop-real-auto-guidance-r1010-1440.png',
+    animations:'disabled'
+  });
+});

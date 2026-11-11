@@ -59,6 +59,28 @@ export function workshopDialogue(world:WorkshopState):readonly WorkshopDialogueL
       '设备已经有人值守，但本班还没有晶核产出。检查工位是否相邻，以及熔炉是否派工。');
   }
 
+  // Automatic production stores real cumulative receipts and does not
+  // advance the manual contract calendar. Only react to persisted facts.
+  const auto=world.auto;
+  if(auto){
+    const totals=auto.produced;
+    const produced=totals.water+totals.fiber+totals.cores;
+    if(auto.enabled&&produced===0)
+      append('auto-waiting',
+        '自动生产已开启，设备尚在等待各自的生产周期。没有到账记录，委托日期也不会自动推进。');
+    else if(auto.enabled)
+      append('auto-running',
+        '月纱翻开真实账页：“自动累计水汽 '+totals.water+
+        '、孢子 '+totals.fiber+'、晶核 '+totals.cores+
+        '；现有晶核 '+world.warehouse.core+
+        '。自动节拍不推进委托日，交付前须暂停后手动轮班。”');
+    else if(produced>0)
+      append('auto-paused',
+        '自动生产已暂停；此前累计水汽 '+totals.water+
+        '、孢子 '+totals.fiber+'、晶核 '+totals.cores+
+        ' 是历史产量，不是当前库存。');
+  }
+
   const inexperienced=assigned.find(({machine})=>
     WORKERS[machine.worker!].skill!==MACHINES[machine.craft].skill);
   if(inexperienced){
