@@ -1174,11 +1174,22 @@ test('R10.7 mobile 390x844 workshop remains usable with reduced motion and uncha
   expect(bounds.scroll).toBeLessThanOrEqual(bounds.viewport+1);
   expect(bounds.stage).toBeTruthy();
   expect(bounds.stage!.width).toBeGreaterThan(250);
-  // On mobile the cameo may intentionally collapse into a compact control.
-  // When rendered, verify the real hit target and readable dialogue rather
-  // than inferring success from Pixi readiness or the desktop screenshot.
+  // R11.3: never silently skip mobile Moonveil. CSS reserves an explicit
+  // row before the Pixi stage, so the dialogue is reachable without overlay.
   const mobileBubble=page.locator('button.gothic-cameo-bubble');
-  if(await mobileBubble.isVisible()){
+  const mobileCameo=page.locator('.gothic-cameo-assistant');
+  await expect(mobileCameo).toBeVisible();
+  await expect(mobileBubble).toBeVisible();
+  await expect(page.getByTestId('workshop-yuesha-dialogue')).toBeVisible();
+  const cameoBox=await mobileCameo.boundingBox();
+  const stageBox=await page.locator('#root .world').boundingBox();
+  expect(cameoBox).not.toBeNull();
+  expect(stageBox).not.toBeNull();
+  expect(cameoBox!.width).toBeGreaterThan(300);
+  expect(cameoBox!.height).toBeGreaterThan(60);
+  expect(stageBox!.y).toBeGreaterThanOrEqual(cameoBox!.y+cameoBox!.height-2);
+  await expect(page.getByTestId('workshop-yuesha-dialogue')).toHaveAttribute('data-beat-id','welcome');
+  {
     const check=async()=>mobileBubble.evaluate(element=>{
       const r=element.getBoundingClientRect(),style=getComputedStyle(element);
       const x=r.left+r.width/2,y=r.top+Math.min(r.height/2,20);
@@ -1204,6 +1215,7 @@ test('R10.7 mobile 390x844 workshop remains usable with reduced motion and uncha
   }
   await mkdir('visual-evidence/workshop',{recursive:true});
   await page.screenshot({path:'visual-evidence/workshop/mobile-workshop-reduced-motion-r107-390.png',animations:'disabled'});
+  await page.screenshot({path:'visual-evidence/workshop/mobile-workshop-true-dialogue-r113-390.png',animations:'disabled'});
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
 });
 
