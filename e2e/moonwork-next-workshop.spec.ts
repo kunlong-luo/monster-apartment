@@ -71,7 +71,7 @@ test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',asy
   const stage=page.getByTestId('v2-stage');
   await expect(stage.locator('canvas')).toBeVisible({timeout:25_000});
   await expect(stage).toHaveAttribute('data-renderer','pixi-webgl-bitmap');
-  await expect(stage).toHaveAttribute('data-backdrop-source','high-res-webp');
+  await expect(stage).toHaveAttribute('data-backdrop-source','world-hall-2k');
   await expect(stage).toHaveAttribute('data-foundation-tiles','15');
   await expect(page.getByTestId('v2-day')).toHaveCount(1);
   await expect(page.getByTestId('v2-coins')).toHaveCount(1);
@@ -388,7 +388,7 @@ test('factory honors system and in-game reduced motion while preserving gameplay
   const stage=page.getByTestId('v2-stage');
   await expect(stage.locator('canvas')).toBeVisible({timeout:25_000});
   await expect(stage).toHaveAttribute('data-motion-state','paused');
-  await expect(stage).toHaveAttribute('data-backdrop-source','high-res-webp');
+  await expect(stage).toHaveAttribute('data-backdrop-source','world-hall-2k');
   const baseline=await stage.getAttribute('data-scene-refreshes');
   await page.emulateMedia({reducedMotion:'no-preference'});
   await expect(stage).toHaveAttribute('data-motion-state','running');
@@ -497,7 +497,8 @@ test('workshop roster remains legible and operable at desktop and phone widths',
       return {
         display:list?getComputedStyle(list).display:'',
         column:getComputedStyle(list!).flexDirection,
-        rowOverlap:bounds.some((box,index)=>index>0&&box.top<bounds[index-1].bottom-1),
+        rowOverlap:bounds.some((a,index)=>bounds.some((b,j)=>j>index&&
+          a.left<b.right-1&&a.right>b.left+1&&a.top<b.bottom-1&&a.bottom>b.top+1)),
         horizontalOverflow:bounds.some(box=>box.right>window.innerWidth+1||box.left<0),
         panelWidth:panel?.getBoundingClientRect().width,
         widths:bounds.map(box=>box.width),
