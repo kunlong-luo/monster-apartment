@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+import {GAME_UI_RELEASE} from '../src/core/game-release';
 // An empty first-visit browser is intentional; the other E2E flows use a
 // continuing-player storageState, so existing route and gameplay tests stay realistic.
 test.use({storageState:{cookies:[],origins:[]}});
@@ -7,7 +8,7 @@ test('fresh visitor sees a full-screen welcome and enters the real saved lobby',
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
   await expect(page.getByTestId('gothic-welcome')).toBeVisible();
-  await expect(page.getByTestId('game-release')).toContainText('V3.77');
+  await expect(page.getByTestId('game-release')).toContainText(GAME_UI_RELEASE);
   await expect(page.getByTestId('welcome-heroine-lineup').locator('img')).toHaveCount(4);
   for(const image of await page.getByTestId('welcome-heroine-lineup').locator('img').all()){
     await expect.poll(()=>image.evaluate((img:HTMLImageElement)=>
@@ -34,7 +35,7 @@ test('phone welcome preserves touch target and does not scroll',async({page})=>{
   await page.goto('/');
   const start=page.getByTestId('welcome-enter');
   await expect(start).toBeVisible();
-  await expect(page.getByTestId('game-release')).toContainText('V3.77');
+  await expect(page.getByTestId('game-release')).toContainText(GAME_UI_RELEASE);
   await expect(page.getByTestId('welcome-heroine-lineup')).toBeVisible();
   await expect(page.getByTestId('welcome-cover-image'))
     .toHaveJSProperty('loading','eager');
