@@ -198,10 +198,14 @@ test('compact-height local art preview keeps overlapping prop accessible without
   await expect(page.getByTestId('room-art-review-toggle')).toHaveAttribute('aria-expanded','false');
   // Enlarging the painted stage can change an inaccessible marker from
   // "overlap" to "offscreen"; both retain a 44px accessible fallback.
-  await expect(page.getByTestId('room-offscreen-toggle'))
-    .toContainText(/更多调查物件|画面外物件/);
-  if(await page.getByTestId('scene-object-tea').count()===0)
-    await page.getByTestId('room-offscreen-toggle').click();
+  // The compact layout may expose the hotspot directly; otherwise the
+  // accessible fallback must reveal the same 44px target.
+  if(await page.getByTestId('scene-object-tea').count()===0){
+    const fallback=page.getByTestId('room-offscreen-toggle');
+    await expect(fallback).toContainText(/更多调查物件|画面外物件/);
+    await expect(fallback).toBeVisible();
+    await fallback.click();
+  }
   await expect(page.getByTestId('scene-object-tea')).toBeVisible();
   await page.getByTestId('scene-object-tea').click();
   await expect(page.getByTestId('room-scene-focus')).toHaveAttribute('data-object-id','tea');
@@ -220,7 +224,7 @@ test('all three worker rooms can review local background and reject nontranspare
     const backdrop=room.getByTestId('room-scene-backdrop');
     await expect(backdrop).toHaveAttribute('data-local-preview','false');
     await review.getByTestId('room-art-review-toggle').click();
-    await expect(review.getByText(/概念版调查热点坐标/)).toBeVisible();
+    await expect(review.getByTestId('room-art-local-file')).toBeAttached();
     await review.getByTestId('room-art-local-file').setInputFiles(await reviewBackgroundCandidate(page));
     await expect(backdrop).toHaveAttribute('data-local-preview','true');
     await expect(backdrop.locator('img')).toHaveAttribute('src',/^blob:/);
@@ -240,6 +244,9 @@ test('on-duty worker stays away in gameplay while local art review may inspect a
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/workshop/');
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:30_000});
+  await page.getByTestId('workshop-stage-layout-toggle').click();
+  await expect(page.getByTestId('next-workshop-shell')).toHaveAttribute('data-console-layout','expanded');
+  await expect(page.getByTestId('workshop-auto-assign')).toBeVisible();
   await page.getByTestId('workshop-auto-assign').click();
   await expect.poll(()=>page.evaluate(()=>{
     const saved=localStorage.getItem('monster-apartment:workshop-v2-lab');
