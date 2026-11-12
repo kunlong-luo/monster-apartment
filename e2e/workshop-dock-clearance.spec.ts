@@ -1361,7 +1361,7 @@ test('R10.10 PC auto production guidance and Moonveil reflect real receipts and 
   await page.goto('/workshop/');
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
   await expect(page.getByTestId('v2-next-step'))
-    .toContainText('自动节拍不推进委托日');
+    .toContainText('可开启自动履约');
   await expect(page.getByTestId('v2-shift')).toBeDisabled();
 
   const bubble=page.locator('button.gothic-cameo-bubble');
@@ -1415,6 +1415,11 @@ test('R11 safe automatic contract switch is opt-in and does not immediately spen
   },saved);
   await page.goto('/workshop/');
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  // The approved panoramic layout hides the sidebar until "详细调度" is
+  // opened. Test the real player path rather than adding a duplicate HUD.
+  await page.getByTestId('workshop-stage-layout-toggle').click();
+  await expect(page.getByTestId('next-workshop-shell'))
+    .toHaveAttribute('data-console-layout','expanded');
   const button=page.getByTestId('workshop-auto-contract-toggle');
   await expect(button).toBeVisible();
   await expect(button).toHaveAttribute('aria-pressed','false');
@@ -1430,6 +1435,8 @@ test('R11 safe automatic contract switch is opt-in and does not immediately spen
   expect(updated.warehouse).toEqual(initial.warehouse);
   await page.reload();
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  await page.getByTestId('workshop-stage-layout-toggle').click();
+  await expect(button).toBeVisible();
   await expect(button).toHaveAttribute('aria-pressed','true');
   await button.click();
   await expect(button).toHaveAttribute('aria-pressed','false');
@@ -1470,6 +1477,8 @@ test('R11 real browser auto contract dispatch survives reload without duplicate 
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
   await expect(page.getByTestId('v2-completed')).toHaveText('1',{timeout:15000});
   await expect(page.getByTestId('v2-stock')).toHaveText('4');
+  await page.getByTestId('workshop-stage-layout-toggle').click();
+  await expect(page.getByTestId('workshop-auto-contract-toggle')).toBeVisible();
   await expect(page.getByTestId('workshop-auto-contract-toggle'))
     .toHaveAttribute('aria-pressed','true');
   const completed=JSON.parse((await page.evaluate(()=>localStorage.getItem(
