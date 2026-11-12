@@ -2,7 +2,8 @@ import {expect,test} from '@playwright/test';
 import {mkdir} from 'node:fs/promises';
 import {assignWorker,moveMachine,newWorkshop,placeMachine,runShift} from '../v2/src/workshop-engine';
 import {
-  startWorkshopAuto,simulateWorkshopAutoUntil,pauseWorkshopAuto
+  startWorkshopAuto,simulateWorkshopAutoUntil,pauseWorkshopAuto,
+  toggleWorkshopAutoDelivery,workshopAutoLayout
 } from '../v2/src/workshop-auto-production';
 
 // The smaller persistent scene launcher must not steal the real factory shift
@@ -1393,4 +1394,102 @@ test('R10.10 PC auto production guidance and Moonveil reflect real receipts and 
     path:'visual-evidence/workshop/desktop-workshop-real-auto-guidance-r1010-1440.png',
     animations:'disabled'
   });
+});
+
+
+test('R11 safe automatic contract switch is opt-in and does not immediately spend stock',async({page})=>{
+  test.setTimeout(90000);
+  let world=newWorkshop();
+  world=moveMachine(world,7,6);
+  world=placeMachine(world,7,'kiln');
+  world=assignWorker(world,'brook',5);
+  world=assignWorker(world,'fern',6);
+  world=assignWorker(world,'cinder',7);
+  const now=Date.now();
+  const initial=startWorkshopAuto(world,now);
+  const saved=JSON.stringify(initial);
+  await page.setViewportSize({width:1440,height:900});
+  await page.addInitScript(seed=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',seed);
+  },saved);
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  const button=page.getByTestId('workshop-auto-contract-toggle');
+  await expect(button).toBeVisible();
+  await expect(button).toHaveAttribute('aria-pressed','false');
+  await button.click();
+  await expect(button).toHaveAttribute('aria-pressed','true');
+  let updated=JSON.parse((await page.evaluate(()=>localStorage.getItem(
+    'monster-apartment:workshop-v2-lab')))!);
+  expect(updated.auto.autoDeliver).toBe(true);
+  expect(updated.auto.nextContractAt).toBeGreaterThan(now);
+  expect(updated.day).toBe(1);
+  expect(updated.coins).toBe(initial.coins);
+  expect(updated.completed).toBe(0);
+  expect(updated.warehouse).toEqual(initial.warehouse);
+  await page.reload();
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  await expect(button).toHaveAttribute('aria-pressed','true');
+  await button.click();
+  await expect(button).toHaveAttribute('aria-pressed','false');
+  updated=JSON.parse((await page.evaluate(()=>localStorage.getItem(
+    'monster-apartment:workshop-v2-lab')))!);
+  expect(updated.auto.autoDeliver).toBe(false);
+  expect(updated.auto.nextContractAt).toBe(0);
+  expect(updated.day).toBe(1);
+  expect(updated.completed).toBe(0);
+});
+
+test('R11 real browser auto contract dispatch survives reload without duplicate payment',async({page})=>{
+  test.setTimeout(95000);
+  let world=newWorkshop();
+  world=moveMachine(world,7,6);
+  world=placeMachine(world,7,'kiln');
+  world=assignWorker(world,'brook',5);
+  world=assignWorker(world,'fern',6);
+  world=assignWorker(world,'cinder',7);
+  const now=Date.now();
+  const withClock=toggleWorkshopAutoDelivery(
+    startWorkshopAuto({...world,day:5,warehouse:{core:6}},now-1000),now-1000);
+  const seeded={
+    ...withClock,auto:{
+      ...withClock.auto!,layout:workshopAutoLayout(withClock),
+      lastSimulatedAt:now-1000,
+      nextDue:withClock.auto!.nextDue.map(t=>t?now+600000:0),
+      nextContractAt:now-100
+    }
+  };
+  const original=JSON.stringify(seeded);
+  await page.setViewportSize({width:1440,height:900});
+  await page.addInitScript(saved=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',saved);
+  },original);
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  await expect(page.getByTestId('v2-completed')).toHaveText('1',{timeout:15000});
+  await expect(page.getByTestId('v2-stock')).toHaveText('4');
+  await expect(page.getByTestId('workshop-auto-contract-toggle'))
+    .toHaveAttribute('aria-pressed','true');
+  const completed=JSON.parse((await page.evaluate(()=>localStorage.getItem(
+    'monster-apartment:workshop-v2-lab')))!);
+  expect(completed.day).toBe(6);
+  expect(completed.completed).toBe(1);
+  expect(completed.failed).toBe(0);
+  expect(completed.coins).toBe(world.coins+70);
+  expect(completed.last).toBeNull();
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({
+    path:'visual-evidence/workshop/desktop-workshop-auto-contract-r11-1440.png',
+    animations:'disabled'
+  });
+  await page.reload();
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  await expect(page.getByTestId('v2-completed')).toHaveText('1');
+  const reloaded=JSON.parse((await page.evaluate(()=>localStorage.getItem(
+    'monster-apartment:workshop-v2-lab')))!);
+  expect(reloaded.day).toBe(6);
+  expect(reloaded.completed).toBe(1);
+  expect(reloaded.coins).toBe(world.coins+70);
 });

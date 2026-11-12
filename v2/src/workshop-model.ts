@@ -43,6 +43,10 @@ export type DailyProduction={
 export type WorkshopAutoClock={
   version:1;enabled:boolean;lastSimulatedAt:number;layout:string;
   nextDue:number[];produced:{water:number;fiber:number;cores:number};
+  /** Explicit opt-in, never inferred for existing active auto saves. */
+  autoDeliver?:boolean;
+  /** Timestamp of the next safe calendar tick, zero/absent while disabled. */
+  nextContractAt?:number;
 };
 export type WorkshopState={
   version:2;day:number;coins:number;

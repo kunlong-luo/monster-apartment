@@ -94,9 +94,13 @@ export function workshopNextStep(s:WorkshopState):string {
       return '第4步 · 选择工匠'+WORKERS[worker].zh+'，点击对应设备派工';
   }
   if(s.auto?.enabled){
+    if(s.auto.autoDeliver)
+      return s.day>=s.order.due&&s.warehouse.core<s.order.cores
+        ?'自动履约等待晶核补足 · 缺货不扣罚，库存达标后按节拍结算'
+        :'自动履约已开启 · 每4分钟安全推进1天，缺货不扣罚';
     return s.warehouse.core>=s.order.cores
-      ?'晶核已备齐 · 自动节拍不推进委托日；暂停后手动轮班结算'
-      :'自动产线运行中 · 材料按节拍入仓；委托日需暂停后手动轮班推进';
+      ?'晶核已备齐 · 可开启自动履约，或暂停后手动轮班结算'
+      :'自动产线运行中 · 可开启自动履约；否则暂停后手动轮班推进委托日';
   }
   if(s.warehouse.core>=s.order.cores)
     return '晶核已达标 · 点击「手动轮班」推进至第'+s.order.due+'日结算';

@@ -9,7 +9,7 @@ import type {
 } from './workshop-model';
 import {runShift} from './workshop-production';
 export * from './workshop-model';
-export {runShift, projectMachineProduction, type MachineCycle} from './workshop-production';
+export {runShift,advanceSafeAutoContractDay,projectMachineProduction,type MachineCycle} from './workshop-production';
 export {workshopHint,workshopNextStep} from './workshop-guidance';
 export type {WorkshopHint} from './workshop-guidance';
 export {
@@ -236,6 +236,9 @@ export function validWorkshop(value:unknown):value is WorkshopState {
       ||typeof a.layout!=='string'||a.layout.length>600
       ||!Array.isArray(a.nextDue)||a.nextDue.length!==BOARD_SIZE
       ||!a.nextDue.every(t=>Number.isSafeInteger(t)&&t>=0)
+      ||(a.autoDeliver!==undefined&&typeof a.autoDeliver!=='boolean')
+      ||(a.nextContractAt!==undefined&&
+        (!Number.isSafeInteger(a.nextContractAt)||a.nextContractAt<0))
       ||!a.produced||!['water','fiber','cores'].every(k=>{
         const n=a.produced?.[k as keyof typeof a.produced];
         return Number.isSafeInteger(n)&&n>=0;

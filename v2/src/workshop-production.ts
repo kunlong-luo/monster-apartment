@@ -76,10 +76,14 @@ export function projectMachineProduction(s:WorkshopState):{
   return {tiles,report,cycles};
 }
 
-/** Advance one game day atomically. Equipment outcome and presentation are
- * computed from the exact same immutable production projector. */
-export function runShift(s:WorkshopState):WorkshopState {
-  const {tiles,report}=projectMachineProduction(s);
+/** Both modes share exactly ONE authoritative contract settlement path.
+ * Manual shifts project machinery before settling. A timed calendar tick
+ * does NOT run the physical projector again: realtime machinery has already
+ * delivered its stock independently. */
+function settleWorkshopDay(
+  s:WorkshopState,tiles:WorkshopState['tiles'],report:DailyProduction,
+  source:'manual'|'auto'
+):WorkshopState {
   let warehouse=s.warehouse.core+report.cores;
   let coins=s.coins;
   let completed=s.completed,failed=s.failed;
@@ -125,5 +129,30 @@ export function runShift(s:WorkshopState):WorkshopState {
     }
   }
   return {...s,day:s.day+1,coins,tiles,warehouse:{core:warehouse},
-    order,completed,failed,last:report,patron};
+    order,completed,failed,last:source==='manual'?report:s.last,patron};
+}
+
+/** Explicit/manual production has not changed: it still settles one whole
+ * factory day including all three source-connected machine steps. */
+export function runShift(s:WorkshopState):WorkshopState {
+  const {tiles,report}=projectMachineProduction(s);
+  return settleWorkshopDay(s,tiles,report,'manual');
+}
+
+/** Opt-in automated calendar: progress WITHOUT another factory cycle.
+ * Never auto-apply a loss or let a due patron steal stock from a normal
+ * order. If a due delivery cannot be satisfied, leave the day/stock/coins
+ * unchanged until the real production line produces sufficient cores.
+ * Contract results remain normal earned results; no special bonus.
+ */
+export function advanceSafeAutoContractDay(s:WorkshopState):WorkshopState {
+  const normalDue=s.day>=s.order.due;
+  const normalCost=normalDue?s.order.cores:0;
+  if(s.warehouse.core<normalCost)return s;
+  if(s.patron?.status==='active'&&s.day>=s.patron.due &&
+      s.warehouse.core<normalCost+s.patron.cores)return s;
+  const blank:DailyProduction={
+    water:0,fiber:0,cores:0,blocked:[],fulfilled:false,lost:false
+  };
+  return settleWorkshopDay(s,s.tiles,blank,'auto');
 }

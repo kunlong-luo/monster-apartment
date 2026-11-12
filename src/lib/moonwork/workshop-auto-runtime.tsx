@@ -1,6 +1,7 @@
 'use client';
 import {useEffect} from 'react';
-import {simulateWorkshopAutoUntil,startWorkshopAuto,pauseWorkshopAuto} from '../../../v2/src/workshop-auto-production';
+import {simulateWorkshopAutoUntil,startWorkshopAuto,pauseWorkshopAuto,
+  toggleWorkshopAutoDelivery} from '../../../v2/src/workshop-auto-production';
 import {CHANGE_EVENT} from './world-store';
 import {WORKSHOP_SAVE_LOCK,transactWorkshopSave} from '../../../v2/src/workshop-save-transaction';
 
@@ -15,6 +16,24 @@ export async function toggleWorkshopAuto():Promise<AutoToggleResult>{
       const next=world.auto?.enabled
         ?pauseWorkshopAuto(world):startWorkshopAuto(world,Date.now());
       enabled=Boolean(next.auto?.enabled);
+      return next;
+    },()=>window.dispatchEvent(new Event(CHANGE_EVENT))
+  );
+  return result==='applied'?(enabled?'enabled':'paused'):
+    result==='missing'?'missing':
+    result==='unchanged'||result==='unavailable'?'unavailable':'error';
+}
+
+/** A separate, explicit player choice. The same Web Lock and atomic
+ * world transaction protects order dispatch, passive production and manual
+ * purchases against cross-tab double settlement. */
+export async function toggleWorkshopAutoContract():Promise<AutoToggleResult>{
+  if(typeof navigator==='undefined'||!navigator.locks)return 'unavailable';
+  let enabled=false;
+  const result=await transactWorkshopSave(
+    window.localStorage,navigator.locks,world=>{
+      const next=toggleWorkshopAutoDelivery(world,Date.now());
+      enabled=next.auto?.autoDeliver===true;
       return next;
     },()=>window.dispatchEvent(new Event(CHANGE_EVENT))
   );

@@ -8,7 +8,7 @@ import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 import {GothicResourcePill} from '@/components/game/gothic-hud';
 import {useWorkshopWorld} from './world-save-react';
 import {SAVE_KEY, CHANGE_EVENT, parseSavedWorld} from '@/lib/moonwork/world-store';
-import {toggleWorkshopAuto} from '@/lib/moonwork/workshop-auto-runtime';
+import {toggleWorkshopAuto,toggleWorkshopAutoContract} from '@/lib/moonwork/workshop-auto-runtime';
 import {WorkshopContractPanel} from './workshop-contract-panel';
 import {WorkshopShiftPanel} from './workshop-shift-panel';
 import {WorkshopStageContainer} from './workshop-stage-container';
@@ -94,6 +94,14 @@ export function WorkshopClient() {
   },[]);
   const onAction = (action:WorkshopAction) => gameController.current?.dispatch(action);
   const [autoError,setAutoError]=useState('');
+  const [autoContractError,setAutoContractError]=useState('');
+  const onAutoContractToggle=()=>{
+    void toggleWorkshopAutoContract().then(result=>{
+      setAutoContractError(result==='unavailable'?'自动履约要求先开启自动生产和安全多标签协调。':
+        result==='missing'?'工坊存档尚未就绪。':
+        result==='error'?'自动委托操作未能写入存档，请重试。':'');
+    });
+  };
   const onAutoToggle=()=>{
     void toggleWorkshopAuto().then(outcome=>{
       setAutoError(outcome==='unavailable'?'请先派工，或使用支持安全多标签协调的浏览器。':
@@ -345,7 +353,9 @@ export function WorkshopClient() {
           />
 
           <aside className="sidebar">
-            <WorkshopContractPanel world={world} portraitSrc={portraitUrl} onAction={onAction} />
+            <WorkshopContractPanel world={world} portraitSrc={portraitUrl}
+              onAction={onAction} onAutoContractToggle={onAutoContractToggle}
+              autoContractError={autoContractError} />
             <WorkshopShiftPanel world={world} />
           </aside>
         </section>

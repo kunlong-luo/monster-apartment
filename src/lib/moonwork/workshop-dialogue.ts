@@ -65,7 +65,16 @@ export function workshopDialogue(world:WorkshopState):readonly WorkshopDialogueL
   if(auto){
     const totals=auto.produced;
     const produced=totals.water+totals.fiber+totals.cores;
-    if(auto.enabled&&produced===0)
+    if(auto.enabled&&auto.autoDeliver&&produced===0)
+      append('auto-contract-waiting',
+        '自动履约已经启用，每四分钟安全推进一天；如果到期时晶核不足，就等真实生产补齐，不会暗中扣罚。');
+    else if(auto.enabled&&auto.autoDeliver)
+      append('auto-contract-running',
+        '月纱翻开真实账页：“自动累计水汽 '+totals.water+
+        '、孢子 '+totals.fiber+'、晶核 '+totals.cores+
+        '；当前仓库晶核 '+world.warehouse.core+
+        '。自动履约每四分钟推进一天，缺货不会罚款。”');
+    else if(auto.enabled&&produced===0)
       append('auto-waiting',
         '自动生产已开启，设备尚在等待各自的生产周期。没有到账记录，委托日期也不会自动推进。');
     else if(auto.enabled)
