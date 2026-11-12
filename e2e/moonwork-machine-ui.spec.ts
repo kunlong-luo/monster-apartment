@@ -67,27 +67,25 @@ test('three adult heroine portraits are distinct and gallery uses real WebP imag
   await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
   for(const id of ['brook','fern','cinder'] as const){
     const card=page.getByTestId('worker-card-'+id);
-    const photo=card.locator('img[data-art-source="dedicated-heroine-face"]');
+    const photo=card.locator('img.cg-card__image');
+    await expect(card).toHaveAttribute('data-art-layout',/portrait|figure/);
     await expect(photo).toBeVisible();
     await expect.poll(()=>photo.evaluate(img=>(img as HTMLImageElement).naturalWidth))
       .toBeGreaterThan(0);
-    await expect(card.locator('.mw-worker-portrait')).toHaveAttribute('data-figure-kind','humanoid');
-    await expect(card.locator('.mw-worker-portrait')).not.toHaveCSS('background-size','300% 100%');
+    await expect(photo).toHaveAttribute('alt',/人物肖像/);
   }
-  const faces=await page.locator('[data-testid^="worker-card-"] .mw-worker-portrait-photo')
-    .evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-face-morphology')));
-  expect(new Set(faces).size).toBe(3);
-  expect(faces).toEqual(['heart-wide-almond','diamond-cat-freckles','square-heavy-brow-scar']);
-  const urls=await page.locator('[data-testid^="worker-card-"] .mw-worker-portrait-photo')
+  // V3.90 A05 has independent reliable portrait images. Verify their decoded
+  // sources and identity rather than old removed mw-worker-portrait nodes.
+  const urls=await page.locator('[data-testid^="worker-card-"] img.cg-card__image')
     .evaluateAll(nodes=>nodes.map(node=>(node as HTMLImageElement).currentSrc));
+  expect(urls).toHaveLength(3);
   expect(new Set(urls).size).toBe(3);
-  await page.getByTestId('worker-card-brook').getByRole('link').click();
+  await page.getByRole('button',{name:/选择泉泡/}).click();
+  await page.getByRole('tab',{name:'养成'}).click();
+  await page.getByRole('link',{name:'安排泉泡到工坊'}).click();
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
-  // The actual factory remains animated, not replaced with a static gallery photo.
-  for(const id of ['brook','fern','cinder'] as const){
-    const sprite=page.getByTestId('v2-worker-'+id).locator('.worker-artwork');
-    await expect(sprite).toHaveAttribute('data-art-source',/transparent/);
-  }
+  await expect(page.getByTestId('v2-stage'))
+    .toHaveAttribute('data-worker-art','hi-dpi-transparent-humanoid');
 });
 
 test('daily output visuals use exact machine and input source, not fabricated totals',async({page})=>{
