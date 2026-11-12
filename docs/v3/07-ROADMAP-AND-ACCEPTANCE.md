@@ -84,7 +84,7 @@
 | 生产视觉 | 缺料真的停、产出数字真实、资源动画来源正确 | E2E data hooks + 视频回看 |
 | 稳定性 | 20min 前台、反复切页/挂载/卸载、低端机 | 性能记录 + 手测 |
 
-**CI 门禁：** `pnpm install --frozen-lockfile`、`pnpm typecheck`、`pnpm lint`、`pnpm test`、`npm --prefix v2 run typecheck`、`NEXT_STATIC_EXPORT=1 pnpm build`、`pnpm e2e`。全部通过后再检查 GitHub Pages 部署结果；不得只因本地可编译就宣称已上线。
+**CI 门禁：** `bun install --frozen-lockfile`（仓库使用 `bun.lock`，没有 `pnpm-lock.yaml`）、`pnpm typecheck`、`pnpm lint`、`pnpm test`、`npm --prefix v2 run typecheck`、`NEXT_STATIC_EXPORT=1 pnpm build`、`pnpm e2e`。全部通过后再检查 GitHub Pages 部署结果；不得只因本地可编译就宣称已上线。
 
 ## 7. 本轮与下一轮落地的区别
 

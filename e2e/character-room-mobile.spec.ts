@@ -196,10 +196,17 @@ test('compact-height local art preview keeps overlapping prop accessible without
   await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-local-preview','true');
   await page.getByTestId('room-art-review-toggle').click();
   await expect(page.getByTestId('room-art-review-toggle')).toHaveAttribute('aria-expanded','false');
-  // Enlarging the painted stage can change an inaccessible marker from
-  // "overlap" to "offscreen"; both retain a 44px accessible fallback.
-  // The compact layout may expose the hotspot directly; otherwise the
-  // accessible fallback must reveal the same 44px target.
+  // Uploaded background candidates have no approved object coordinates.
+  // Collapsing the review controls does not approve or reset that preview.
+  await expect(page.getByTestId('scene-object-tea')).toHaveCount(0);
+  await expect(page.getByTestId('room-offscreen-toggle')).toHaveCount(0);
+  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-local-preview','true');
+  await page.getByTestId('room-art-review-toggle').click();
+  await page.getByTestId('room-art-local-reset').click();
+  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-local-preview','false');
+  await page.getByTestId('room-art-review-toggle').click();
+  // Real concept-scene hotspots must be reachable again after reset,
+  // directly or through a >=44px accessible offscreen fallback.
   if(await page.getByTestId('scene-object-tea').count()===0){
     const fallback=page.getByTestId('room-offscreen-toggle');
     await expect(fallback).toContainText(/更多调查物件|画面外物件/);

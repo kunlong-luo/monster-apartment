@@ -67,7 +67,7 @@
 需要 Node.js 24、pnpm 12，开发模式下 PixiJS 资源由独立静态服务器提供。
 
 ```bash
-pnpm install --frozen-lockfile
+bun install --frozen-lockfile
 npm --prefix v2 ci
 # 终端一
 pnpm dev
