@@ -68,7 +68,7 @@ V040-12,无障碍,P1,DONE,降低动态效果,V0.4.0,系统reduced-motion开启�
 V040-13,玩法,P0,DOING,五天策略路线自动平衡回归,V0.4.0,关怀可挽救失配布局且逐利增加金币降低满意度；全套CI通过
 R112-BASE,工坊,P0,DONE,R11.2独立合同日历及布局指纹补丁,2026-11-12,代码已在246f6c87发布；不代表完整浏览器验收
 R113-01,项目管理,P0,DOING,建立R11.3状态矩阵并对齐路线图,2026-11-12,README与V3及任务记录无自动生产状态冲突；历史任务ID不重复
-R113-02,测试,P0,TODO,同SHA完成里程碑全量浏览器回归,R11.3,Quality和Desktop Visual Review及Gameplay Browser Review full与Pages均通过同一提交
+R113-02,测试,P0,DOING,同SHA完成里程碑全量浏览器回归,R11.3,PR及main自动触发full浏览器测试；Quality与Desktop Visual Review及Pages需核对同一提交
 R113-03,体验,P0,DOING,390及1440月纱对话与reduced-motion验收,R11.3,对话在手机强制可见；截图和几何命中经实际审核后才关闭Issue7
 R113-04,工程,P0,TODO,main保护与required checks,R11.3,实际开启PR合入规则和Quality及Desktop Visual Review必需检查
 R113-05,产品,P1,TODO,十名独立玩家首次试玩,R11.3,记录首次完成率自动经营发现率卡点及重玩意愿

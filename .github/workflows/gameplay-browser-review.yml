@@ -1,8 +1,19 @@
 name: Gameplay Browser Review
 
-# Expensive browser testing is optional during early development.
-# Trigger manually for targeted smoke or milestone/full visual acceptance.
+# R11.3 release milestone: run full suite on workshop dialogue/baseline PRs
+# and on the matching main push. Other full runs remain manually dispatchable.
 on:
+  pull_request:
+    paths:
+      - 'e2e/workshop-dock-clearance.spec.ts'
+      - 'src/components/game/gothic-workshop.css'
+      - '.github/workflows/gameplay-browser-review.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'e2e/workshop-dock-clearance.spec.ts'
+      - 'src/components/game/gothic-workshop.css'
+      - '.github/workflows/gameplay-browser-review.yml'
   workflow_dispatch:
     inputs:
       suite:
@@ -46,10 +57,10 @@ jobs:
         if: ${{ inputs.suite == 'smoke' }}
         run: pnpm exec playwright test e2e/route-health.spec.ts e2e/gothic-desktop-hud.spec.ts e2e/gothic-desktop-scenes.spec.ts --workers=1 --retries=0
       - name: Full gameplay/visual regression (milestone)
-        if: ${{ inputs.suite == 'full' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.suite == 'full' }}
         run: pnpm e2e
       - name: Upload milestone screenshots
-        if: ${{ always() && inputs.suite == 'full' }}
+        if: ${{ always() && (github.event_name != 'workflow_dispatch' || inputs.suite == 'full') }}
         uses: actions/upload-artifact@v4
         with:
           name: gothic-game-art-review
@@ -64,6 +75,11 @@ jobs:
             test-results/gothic-apartment-mobile.png
             test-results/room-*-desktop.png
             test-results/room-*-mobile.png
+            visual-evidence/workshop/desktop-workshop-true-dialogue-r107-1440.png
+            visual-evidence/workshop/mobile-workshop-true-dialogue-r113-390.png
+            visual-evidence/workshop/mobile-workshop-reduced-motion-r107-390.png
+            test-results/**/test-failed-*.png
+            test-results/**/error-context.md
           if-no-files-found: warn
           retention-days: 14
 

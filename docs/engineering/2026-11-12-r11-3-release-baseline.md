@@ -46,8 +46,8 @@
 
 ### 发布判定
 
-1. 将本 PR 合并到 `main` 前必须看清本 PR 的 Quality、Desktop Visual Review 结果；本 PR 添加 `pull_request` 触发，以便 Required Check 可以配置。工作流路径过滤仍仅应用于 `main` push。
-2. 手动在 GitHub Actions 对同一 `main` SHA 运行 **Gameplay Browser Review → Run workflow → suite: full**（默认是 smoke）；核对 `head_sha`、全部 job 结论和产生的截图。**尚未运行，不得伪称完成**。
+1. 将本 PR 合并到 `main` 前必须看清本 PR 的 Quality、Desktop Visual Review 结果；本 PR 添加视觉 `pull_request` 触发，以便 Required Check 可以配置。对于 R11.3 触及的工坊 CSS/E2E/里程碑工作流，`Gameplay Browser Review` 会在 PR 和 `main` push **自动运行 full**，其它场景仍可手动 dispatch；CI 尚未真正成功前保持待验。
+2. 对同一 `main` SHA 验证自动触发的 **Gameplay Browser Review full**（若对应更改未触发，则通过 Run workflow → suite: full 手动运行；默认是 smoke）。核对 `head_sha`、全部 job 结论和产生的截图。**实际运行成功前不得伪称完成**。
 3. 复核该 SHA 的 Quality、Desktop Visual Review、Pages；如 Desktop Visual Review 因路径过滤没触发，需针对该 SHA 手动运行（工作流有 workflow_dispatch），不能把缺席当绿灯。
 4. 下载新视觉工件，分别人工查看 `desktop-workshop-true-dialogue-r107-1440.png` 与 `mobile-workshop-true-dialogue-r113-390.png` 的真实像素，以及其它主要工坊状态。确认可点击、完整、不卡文字、不挡机器/主要控制；再关闭 Issue #7。
 5. GitHub Settings → Branches/Rulesets：为 `main` 开启禁止直接推送 / 仅 PR 合入，并要求 Quality 的 `checks`、`pixi-v2-scaffold`、`static-export` 及 Desktop Visual Review 的 `desktop-review`（按 GitHub 实际上报的 Check Context 名称核实）。**本连接器没有分支保护写接口；规则必须由仓库管理员操作并读取确认。**
