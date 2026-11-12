@@ -62,12 +62,16 @@ export function WorkshopControls({
   isMoving,
   onAction,
   onAutoToggle,
+  onAutoContractToggle,
   autoError,
+  autoContractError,
 }: {
   world: WorkshopState;
   onAction: (action: WorkshopAction) => void;
   onAutoToggle: () => void;
+  onAutoContractToggle: () => void;
   autoError: string;
+  autoContractError: string;
   chosenWorker: WorkerId | null;
   chosenMachine: Craft | null;
   selectedTile: Machine | null;
@@ -440,13 +444,27 @@ export function WorkshopControls({
         <button type="button" data-testid="workshop-auto-toggle"
           aria-pressed={Boolean(world.auto?.enabled)}
           onClick={onAutoToggle}
-          title="自动产线按 30/45/60 秒设备节拍生产，不会推进委托日或重复扣款"
+          title="自动产线按 30/45/60 秒设备节拍生产。委托履约需单独主动开启；暂停自动生产时履约也暂停。"
           className="min-h-11 flex-1 rounded-md border border-gothic-gold/70 bg-gothic-wine px-2 text-xs font-medium text-gothic-ivory hover:border-gothic-glow focus-visible:outline-2">
           <span className="inline-flex items-center gap-1.5">
             {world.auto?.enabled?<Pause aria-hidden="true" size={15}/>:<Play aria-hidden="true" size={15}/>}
-            {world.auto?.enabled?'暂停自动生产':'开启自动生产'}
+            {world.auto?.enabled
+              ?<>暂停<span className="max-[440px]:hidden">自动</span>生产</>
+              :<><span className="max-[440px]:hidden">开启</span>自动生产</>}
           </span>
         </button>
+        {world.auto?.enabled&&<button type="button"
+          data-testid="workshop-auto-contract-toggle"
+          onClick={onAutoContractToggle}
+          aria-pressed={Boolean(world.auto.autoDeliver)}
+          aria-label={world.auto.autoDeliver?'暂停自动履约':'开启自动履约'}
+          title="每 4 分钟推进 1 个委托日；缺货不扣罚；离线最多补进 4 天。仍使用真实晶核库存结算。"
+          className="workshop-auto-contract-action min-h-11 min-w-0 flex-1 rounded-md border border-gothic-brass/70 bg-gothic-panel/90 px-2 text-xs font-medium text-gothic-glow hover:border-gothic-glow focus-visible:outline-2">
+          <span className="inline-flex items-center justify-center gap-1.5">
+            <ClipboardList aria-hidden="true" size={15} strokeWidth={1.7}/>
+            {world.auto.autoDeliver?'暂停履约':'自动履约'}
+          </span>
+        </button>}
         <button type="button" id="shift" data-testid="v2-shift"
           disabled={Boolean(world.auto?.enabled)}
           onClick={()=>onAction({type:'shift'})} aria-label="开始一天生产轮班"
@@ -455,9 +473,15 @@ export function WorkshopControls({
         </button>
         {world.auto?.enabled&&<span data-testid="workshop-auto-status"
           className="sr-only" role="status">
-          自动产线：水汽 30 秒 / 温室 45 秒 / 熔炉 60 秒，委托天数不自动推进。
+          自动产线：水汽 30 秒 / 温室 45 秒 / 熔炉 60 秒。
+          {world.auto?.autoDeliver
+            ?'自动履约已启用，每 4 分钟推进 1 天，缺货不扣罚。'
+            :'委托天数不会自动推进，可单独开启自动履约。'}
         </span>}
-        {autoError&&<span role="alert" className="text-[10px] text-rose-200">{autoError}</span>}
+        {(autoError||autoContractError)&&<span role="alert"
+          className="text-[10px] text-rose-200">
+          {autoError||autoContractError}
+        </span>}
       </div>
     </section>
   );

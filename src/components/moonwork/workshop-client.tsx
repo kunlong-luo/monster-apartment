@@ -354,8 +354,7 @@ export function WorkshopClient() {
 
           <aside className="sidebar">
             <WorkshopContractPanel world={world} portraitSrc={portraitUrl}
-              onAction={onAction} onAutoContractToggle={onAutoContractToggle}
-              autoContractError={autoContractError} />
+              onAction={onAction} />
             <WorkshopShiftPanel world={world} />
           </aside>
         </section>
@@ -364,7 +363,9 @@ export function WorkshopClient() {
         <WorkshopControls
           onAction={onAction}
           onAutoToggle={onAutoToggle}
+          onAutoContractToggle={onAutoContractToggle}
           autoError={autoError}
+          autoContractError={autoContractError}
           world={world}
           chosenWorker={selection.worker}
           chosenMachine={selection.machine}

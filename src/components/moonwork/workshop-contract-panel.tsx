@@ -17,14 +17,10 @@ export function WorkshopContractPanel({
   world,
   portraitSrc,
   onAction,
-  onAutoContractToggle,
-  autoContractError='',
 }: {
   world: WorkshopState;
   portraitSrc: string;
   onAction:(action:WorkshopAction)=>void;
-  onAutoContractToggle?:()=>void;
-  autoContractError?:string;
 }) {
   const patron = world.patron ?? null;
   const forecast = patron ? forecastPatronCommission(world) : null;
@@ -85,23 +81,6 @@ export function WorkshopContractPanel({
         </span>
       </div>
 
-      {world.auto?.enabled&&
-        <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-gothic-brass/30 pt-2"
-          data-testid="workshop-auto-contract">
-          <button type="button" onClick={onAutoContractToggle}
-            disabled={!onAutoContractToggle}
-            aria-pressed={Boolean(world.auto.autoDeliver)}
-            data-testid="workshop-auto-contract-toggle"
-            className="rounded-md border border-gothic-brass/65 bg-gothic-panel/85 px-2.5 py-1.5 text-[11px] font-semibold text-gothic-glow hover:border-gothic-glow focus-visible:outline-2 disabled:opacity-50">
-            {world.auto.autoDeliver?'暂停自动履约':'开启自动履约'}
-          </button>
-          <span className="text-[10px] leading-snug text-gothic-muted">
-            每 4 分钟推进 1 天 · 缺货不扣罚 · 离线最多补进 4 天
-          </span>
-          {autoContractError&&<span role="alert" className="basis-full text-[10px] text-rose-200">
-            {autoContractError}
-          </span>}
-        </div>}
 
       {/* 月夜魔女月纱委托卡片 */}
       <div

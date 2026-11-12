@@ -1415,8 +1415,10 @@ test('R11 safe automatic contract switch is opt-in and does not immediately spen
   },saved);
   await page.goto('/workshop/');
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
-  // The approved panoramic layout hides the sidebar until "详细调度" is
-  // opened. Test the real player path rather than adding a duplicate HUD.
+  // The single persistent operation rail must be reachable even before
+  // opening "详细调度", because cinematic PC intentionally hides .sidebar.
+  await expect(page.getByTestId('workshop-auto-contract-toggle')).toHaveCount(1);
+  await expect(page.getByTestId('workshop-auto-contract-toggle')).toBeVisible();
   await page.getByTestId('workshop-stage-layout-toggle').click();
   await expect(page.getByTestId('next-workshop-shell'))
     .toHaveAttribute('data-console-layout','expanded');
@@ -1435,6 +1437,7 @@ test('R11 safe automatic contract switch is opt-in and does not immediately spen
   expect(updated.warehouse).toEqual(initial.warehouse);
   await page.reload();
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  await expect(button).toBeVisible();
   await page.getByTestId('workshop-stage-layout-toggle').click();
   await expect(button).toBeVisible();
   await expect(button).toHaveAttribute('aria-pressed','true');
@@ -1477,6 +1480,8 @@ test('R11 real browser auto contract dispatch survives reload without duplicate 
   await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
   await expect(page.getByTestId('v2-completed')).toHaveText('1',{timeout:15000});
   await expect(page.getByTestId('v2-stock')).toHaveText('4');
+  await expect(page.getByTestId('workshop-auto-contract-toggle')).toBeVisible();
+  await expect(page.getByTestId('workshop-auto-contract-toggle')).toHaveCount(1);
   await page.getByTestId('workshop-stage-layout-toggle').click();
   await expect(page.getByTestId('workshop-auto-contract-toggle')).toBeVisible();
   await expect(page.getByTestId('workshop-auto-contract-toggle'))
@@ -1501,4 +1506,52 @@ test('R11 real browser auto contract dispatch survives reload without duplicate 
   expect(reloaded.day).toBe(6);
   expect(reloaded.completed).toBe(1);
   expect(reloaded.coins).toBe(world.coins+70);
+});
+
+
+test('R11.1 automatic contract toggle is reachable in the 390px mobile production rail',async({page})=>{
+  test.setTimeout(90000);
+  let state=newWorkshop();
+  state=moveMachine(state,7,6);
+  state=placeMachine(state,7,'kiln');
+  state=assignWorker(state,'brook',5);
+  state=assignWorker(state,'fern',6);
+  state=assignWorker(state,'cinder',7);
+  const seed=JSON.stringify(startWorkshopAuto(state,Date.now()));
+  await page.setViewportSize({width:390,height:844});
+  await page.addInitScript(saved=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',saved);
+  },seed);
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  const action=page.getByTestId('workshop-auto-contract-toggle');
+  await expect(action).toHaveCount(1);
+  await expect(action).toBeVisible();
+  await expect(action).toHaveAttribute('aria-pressed','false');
+  const box=await action.boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.width).toBeGreaterThanOrEqual(44);
+  expect(box!.height).toBeGreaterThanOrEqual(40);
+  expect(box!.x).toBeGreaterThanOrEqual(0);
+  expect(box!.x+box!.width).toBeLessThanOrEqual(390);
+  await action.click();
+  await expect(action).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByTestId('v2-shift')).toBeDisabled();
+  const saved=JSON.parse((await page.evaluate(()=>localStorage.getItem(
+    'monster-apartment:workshop-v2-lab')))!);
+  expect(saved.auto.autoDeliver).toBe(true);
+  expect(saved.day).toBe(1);
+  expect(saved.completed).toBe(0);
+  await mkdir('visual-evidence/workshop',{recursive:true});
+  await page.screenshot({
+    path:'visual-evidence/workshop/mobile-workshop-auto-contract-r111-390.png',
+    animations:'disabled'
+  });
+  await page.reload();
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45000});
+  await expect(action).toBeVisible();
+  await expect(action).toHaveAttribute('aria-pressed','true');
+  expect((await page.evaluate(()=>JSON.parse(localStorage.getItem(
+    'monster-apartment:workshop-v2-lab')!))).completed).toBe(0);
 });
