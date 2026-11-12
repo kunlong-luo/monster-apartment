@@ -15,7 +15,7 @@ test('four personal suites reveal one cross-character investigation without extr
     await dialog.getByTestId('scene-object-'+item.second).click();
     await dialog.getByRole('button',{name:'离开'+item.name+'的房间'}).click();
   }
-  await page.getByRole('link',{name:'个人房间'}).click();
+  await page.getByRole('link',{name:'进入房间'}).click();
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
   await page.getByRole('button',{name:'月纹蜡封'}).click();
   await page.getByRole('button',{name:'旧账簿'}).click();
