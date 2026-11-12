@@ -205,8 +205,12 @@ test('choosing an illustrated guild worker preselects their real Pixi factory as
   await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
   await expect(page.getByTestId('v2-worker-fern')).toHaveClass(/active/);
   await expect(page.locator('#selected')).toContainText('待派工');
-  const img=page.getByTestId('v2-worker-fern').getByRole('img');
-  await expect(img).toHaveAttribute('data-art-source',/transparent/);
+  // V3.90 uses a real portrait within the worker miniature. The Pixi stage
+  // also independently reports its transparent humanoid worker presentation.
+  await expect(page.getByTestId('v2-worker-fern').locator('.worker-miniature img'))
+    .toHaveCount(1);
+  await expect(page.getByTestId('v2-stage'))
+    .toHaveAttribute('data-worker-art','hi-dpi-transparent-humanoid');
   // Complete the real interaction: choosing a machine assigns the selected
   // worker and persists it for all other routes, not merely changing a label.
   const canvas=page.getByTestId('v2-stage').locator('canvas');
