@@ -25,7 +25,8 @@ describe('R10.10 truthful auto-play guidance and dialogue',()=>{
     const snapshot=JSON.stringify(running);
     expect(workshopHint(running)).toEqual({action:'wait',source:null,target:null});
     expect(workshopNextStep(running)).toContain('自动产线运行中');
-    expect(workshopNextStep(running)).toContain('委托日需暂停后手动轮班推进');
+    expect(workshopNextStep(running)).toContain('可开启自动履约');
+    expect(workshopNextStep(running)).toContain('暂停后手动轮班推进委托日');
     expect(workshopNextStep(running)).not.toContain('点击「手动轮班」');
     const waiting=workshopDialogue(running);
     expect(waiting.find(line=>line.id==='auto-waiting')?.text)
