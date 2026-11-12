@@ -138,6 +138,9 @@ export function simulateWorkshopAutoUntil(world:WorkshopState,now:number):Worksh
       nextDue[i]=now+AUTO_PERIOD_MS[current.tiles[i]!.craft];
   if(!layoutChanged&&processed===0&&nextDue.every((due,i)=>due===prior.nextDue[i])
       &&nextContractAt===(prior.nextContractAt??0))return world;
-  return {...current,auto:{...prior,lastSimulatedAt:now,nextDue,produced,
+  // Persist the newly observed layout fingerprint. Without this write
+  // every subsequent tick would detect the same rearrangement again and
+  // endlessly postpone the equipment's first production cycle.
+  return {...current,auto:{...prior,lastSimulatedAt:now,layout,nextDue,produced,
     nextContractAt}};
 }

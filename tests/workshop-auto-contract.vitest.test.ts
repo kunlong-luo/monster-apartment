@@ -183,8 +183,14 @@ describe('R11.2 independent contract calendar during workshop rearrangement',()=
     expect(mid.auto?.nextContractAt).toBe(deadline);
     expect(mid.auto?.produced).toEqual({water:0,fiber:0,cores:0});
     expect(mid.day).toBe(1);
+    // A second ordinary timer wake MUST respect the newly persisted layout
+    // and allow its first scheduled water cycle to complete.
+    const firstCycle=simulateWorkshopAutoUntil(mid,midTime+30000);
+    expect(firstCycle.auto?.produced.water).toBe(2);
+    expect(firstCycle.auto?.nextDue[5]).toBe(midTime+60000);
+    expect(firstCycle.auto?.nextContractAt).toBe(deadline);
 
-    const restored=moveMachine(mid,8,7);
+    const restored=moveMachine(firstCycle,8,7);
     const second=simulateWorkshopAutoUntil(restored,deadline-30000);
     expect(second.auto?.nextContractAt).toBe(deadline);
     expect(second.day).toBe(1);
