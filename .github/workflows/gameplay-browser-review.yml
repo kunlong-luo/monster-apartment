@@ -1,7 +1,9 @@
 name: Gameplay Browser Review
 
-# R11.3 release milestone: run full suite on workshop dialogue/baseline PRs
-# and on the matching main push. Other full runs remain manually dispatchable.
+# R11.3 release milestone: full gameplay/visual tests run for workshop dialogue PRs
+# and the matching main push. Isolated R09 frame/heap/WebGL diagnostic specs
+# opt in via R09_DIAGNOSTICS in their dedicated workflows; do not treat noisy
+# shared-runner FPS samples as gameplay acceptance. Manual full remains available.
 on:
   pull_request:
     paths:
