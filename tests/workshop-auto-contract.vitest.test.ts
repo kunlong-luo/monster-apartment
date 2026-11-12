@@ -165,3 +165,80 @@ describe('R11 safe opt-in automatic contract calendar',()=>{
     expect(actual.warehouse.core).toBe(4);
   });
 });
+
+
+describe('R11.2 independent contract calendar during workshop rearrangement',()=>{
+  it('preserves the already-earned deadline across repeated layout changes',()=>{
+    const initialTime=1000;
+    const original=toggleWorkshopAutoDelivery(
+      startWorkshopAuto(line(),initialTime),initialTime);
+    const deadline=initialTime+AUTO_CONTRACT_DAY_MS;
+    expect(original.auto?.nextContractAt).toBe(deadline);
+
+    const moved=moveMachine(original,7,8);
+    const midTime=initialTime+2*60*1000;
+    const mid=simulateWorkshopAutoUntil(moved,midTime);
+    expect(mid.auto?.layout).not.toBe(original.auto?.layout);
+    expect(mid.auto?.nextDue[8]).toBe(midTime+60*1000);
+    expect(mid.auto?.nextContractAt).toBe(deadline);
+    expect(mid.auto?.produced).toEqual({water:0,fiber:0,cores:0});
+    expect(mid.day).toBe(1);
+
+    const restored=moveMachine(mid,8,7);
+    const second=simulateWorkshopAutoUntil(restored,deadline-30000);
+    expect(second.auto?.nextContractAt).toBe(deadline);
+    expect(second.day).toBe(1);
+    expect(second.completed).toBe(0);
+    expect(second.coins).toBe(original.coins);
+
+    const settled=simulateWorkshopAutoUntil(second,deadline);
+    expect(settled.day).toBe(2);
+    expect(settled.auto?.nextContractAt).toBe(deadline+AUTO_CONTRACT_DAY_MS);
+    expect(settled.completed).toBe(0);
+    expect(settled.last).toBeNull();
+    expect(validWorkshop(settled)).toBe(true);
+    expect(simulateWorkshopAutoUntil(settled,deadline)).toBe(settled);
+  });
+
+  it('settles a due calendar tick even when equipment is rearranged at that exact instant',()=>{
+    const t0=1000;
+    const auto=toggleWorkshopAutoDelivery(startWorkshopAuto(line(),t0),t0);
+    const deadline=t0+AUTO_CONTRACT_DAY_MS;
+    const moved=moveMachine(auto,7,8);
+    const result=simulateWorkshopAutoUntil(moved,deadline);
+    expect(result.day).toBe(2);
+    expect(result.auto?.nextContractAt).toBe(deadline+AUTO_CONTRACT_DAY_MS);
+    // Moving an already-running machine is not a way to mint the cycles it
+    // would have completed during the layout transition.
+    expect(result.auto?.produced).toEqual({water:0,fiber:0,cores:0});
+    expect(result.warehouse.core).toBe(0);
+    expect(result.coins).toBe(auto.coins);
+    expect(result.auto?.nextDue[8]).toBe(deadline+60000);
+    expect(simulateWorkshopAutoUntil(result,deadline)).toBe(result);
+  });
+
+  it('still caps long offline calendar catch-up after a layout change',()=>{
+    const t0=1000;
+    const auto=toggleWorkshopAutoDelivery(startWorkshopAuto(line(),t0),t0);
+    const changed=moveMachine(auto,7,8);
+    const now=t0+MAX_AUTO_CATCHUP_MS+1000000;
+    const restored=simulateWorkshopAutoUntil(changed,now);
+    expect(restored.day).toBe(1+MAX_AUTO_CATCHUP_DAYS);
+    expect(restored.auto?.nextContractAt).toBe(now+AUTO_CONTRACT_DAY_MS);
+    expect(restored.auto?.produced).toEqual({water:0,fiber:0,cores:0});
+    expect(restored.auto?.nextDue[8]).toBe(now+60000);
+    expect(validWorkshop(restored)).toBe(true);
+  });
+
+  it('never opts a legacy automatic-production save into contract calendar',()=>{
+    const old=startWorkshopAuto(line(),1000);
+    expect(old.auto?.autoDeliver).toBe(false);
+    const moved=moveMachine(old,7,8);
+    const now=1000+AUTO_CONTRACT_DAY_MS+3000;
+    const replay=simulateWorkshopAutoUntil(moved,now);
+    expect(replay.day).toBe(1);
+    expect(replay.completed).toBe(0);
+    expect(replay.auto?.nextContractAt).toBe(0);
+    expect(validWorkshop(replay)).toBe(true);
+  });
+});

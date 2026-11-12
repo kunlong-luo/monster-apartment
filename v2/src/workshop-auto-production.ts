@@ -68,16 +68,19 @@ export function simulateWorkshopAutoUntil(world:WorkshopState,now:number):Worksh
   const prior=world.auto;
   if(!prior?.enabled||!safeTime(now)||now<=prior.lastSimulatedAt)return world;
   const layout=workshopAutoLayout(world);
-  if(prior.layout!==layout){
-    return {...world,auto:{...prior,lastSimulatedAt:now,layout,
-      nextDue:dueAfter(world,now),
-      nextContractAt:prior.autoDeliver?now+AUTO_CONTRACT_DAY_MS:0}};
-  }
+  const layoutChanged=prior.layout!==layout;
   const from=Math.max(prior.lastSimulatedAt,now-MAX_AUTO_CATCHUP_MS);
-  const nextDue=prior.nextDue.map((due,index)=>{
-    if(!due||!world.tiles[index]?.worker)return 0;
-    return due<=from?from+AUTO_PERIOD_MS[world.tiles[index]!.craft]:due;
-  });
+  // Only *physical machine* cycles depend on positions and staff. A workshop
+  // rearrangement must not erase the independent four-minute contract clock:
+  // otherwise repeatedly moving a machine can postpone earned dispatch
+  // indefinitely. Reschedule machine cycles from now, never backfill moved
+  // equipment with production that did not happen at its new location.
+  const nextDue=layoutChanged
+    ?dueAfter(world,now)
+    :prior.nextDue.map((due,index)=>{
+      if(!due||!world.tiles[index]?.worker)return 0;
+      return due<=from?from+AUTO_PERIOD_MS[world.tiles[index]!.craft]:due;
+    });
   let current=world;
   const produced={...prior.produced};
   let nextContractAt=prior.autoDeliver
@@ -133,7 +136,7 @@ export function simulateWorkshopAutoUntil(world:WorkshopState,now:number):Worksh
   if(processed===MAX_EVENTS)
     for(let i=0;i<BOARD_SIZE;i++)if(nextDue[i]&&nextDue[i]<=now)
       nextDue[i]=now+AUTO_PERIOD_MS[current.tiles[i]!.craft];
-  if(processed===0&&nextDue.every((due,i)=>due===prior.nextDue[i])
+  if(!layoutChanged&&processed===0&&nextDue.every((due,i)=>due===prior.nextDue[i])
       &&nextContractAt===(prior.nextContractAt??0))return world;
   return {...current,auto:{...prior,lastSimulatedAt:now,nextDue,produced,
     nextContractAt}};
