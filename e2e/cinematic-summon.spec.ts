@@ -1,4 +1,5 @@
 import {expect,test} from '@playwright/test';
+import {GAME_UI_RELEASE} from '../src/core/game-release';
 
 test('the image-guided full-screen summon is a real scene with one persisted pull',async({page})=>{
   test.setTimeout(90_000);
@@ -6,7 +7,7 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await page.goto('/characters/#summon-screen');
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:25_000});
   await expect(page.getByTestId('summon-featured-portrait')).toBeVisible();
-  await expect(page.getByTestId('game-release')).toContainText('V3.77');
+  await expect(page.getByTestId('game-release')).toContainText(GAME_UI_RELEASE);
   const paintedBackground=page.getByTestId('summon-background-painting');
   await expect(paintedBackground).toBeVisible();
   await expect.poll(()=>paintedBackground.evaluate((image:HTMLImageElement)=>image.naturalWidth)).toBeGreaterThan(0);
