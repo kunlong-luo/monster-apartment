@@ -22,6 +22,7 @@ env:
   CI: '1'
   NEXT_TELEMETRY_DISABLED: '1'
   PLAYWRIGHT_USE_SYSTEM_CHROME: '1'
+  R09_DIAGNOSTICS: '1'
 jobs:
   measured-browser:
     runs-on: ubuntu-latest
