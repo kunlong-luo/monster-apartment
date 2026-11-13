@@ -2,7 +2,18 @@
 
 初建日期：2026-11-12；最新验收记录：2026-11-13。本记录区分**历史冻结前基线**、**已经证明的正式发布技术回归**和**仍需管理员/真人完成的治理及产品验证**。
 
-## 0. 2026-11-13 · 正式 main 同 SHA 技术验收证据
+## 0. 2026-11-13 · 最新可证明的功能发布基线（PR #14 / #15 后）
+
+> 本节记录**最近一次经四工作流同 SHA 完整验收的游戏代码**，不等同于“GitHub 保护规则已配置”或“真人试玩已完成”。后续纯文档提交可能改变 main HEAD；不能据此冒认该文档提交本身已经执行完整浏览器回归。
+
+- 经检查的功能发布 SHA：[`b88f97a5684`](https://github.com/kunlong-luo/monster-apartment/commit/b88f97a5684b6416eb32c1aff671705ca5e23612)，[PR #14](https://github.com/kunlong-luo/monster-apartment/pull/14) 于 `2dec503d` 合入损坏工坊存档的原数据导出、已校验 IndexedDB 备份恢复和无备份时手动重置；[PR #15](https://github.com/kunlong-luo/monster-apartment/pull/15) 于 `b88f97a` 合入跨标签页覆盖保护。
+- [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/43375154838)：`checks`、`pixi-v2-scaffold`、`static-export` 均通过；[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/43375154812)：`desktop-review` 通过；[Gameplay Browser Review full](https://github.com/kunlong-luo/monster-apartment/actions/runs/43375154923)：`browser-review` 通过，日志为 **161 passed / 2 skipped / 0 failed**；[GitHub Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/43375237214)：部署成功。四项工作流 `head_sha` 都是 `b88f97a5684b6416eb32c1aff671705ca5e23612`。
+- PR #15 新增回归模拟：错误弹窗出现后，另一标签页恢复到有效“第 2 天”存档；旧标签页点击“确认重新开始”和“恢复备份”均不得覆盖有效存档，刷新后仍为第 2 天。静态审查确认两项操作在现有 Web Lock 下比对最初损坏内容；**没有调整存档格式、生产和订单结算**。
+- **证据边界**：最新 `b88f97a` 的视觉工作流为成功，但未在本次记录中宣称已逐张人工审看最新 artifact；[Issue #7](https://github.com/kunlong-luo/monster-apartment/issues/7) 的 PC/手机人工像素审查来自此前 `68dc7550` 的正式截图。自动化全绿不等于全部美术资产可标记 ready。
+- 2026-11-13 再查 GitHub：`branches/main` 为 `protected:false`、required checks 为空、`/rulesets` 返回空数组。仓库管理员仍须完成 [Issue #9](https://github.com/kunlong-luo/monster-apartment/issues/9)；[Issue #10](https://github.com/kunlong-luo/monster-apartment/issues/10) 暂无 10 人真实试玩数据；[Issue #16](https://github.com/kunlong-luo/monster-apartment/issues/16) 是独立场景美术后续任务，尚未交付。
+- **发布判定**：此 SHA 的自动化技术发布证据齐备；R11.3 整体依旧 **IN PROGRESS**（治理 + 真人产品验收未完成），不得将 Issue #9/#10/#16 标记完成。
+
+## 0A. 2026-11-13 · 初次里程碑功能基线（历史 SHA `68dc7550`）
 
 - 正式分支提交：[`68dc7550`](https://github.com/kunlong-luo/monster-apartment/commit/68dc7550a7d5a088f199e43a448959cfe59d9b3d)，合并自 [PR #8](https://github.com/kunlong-luo/monster-apartment/pull/8)。
 - [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689351)：`checks` / `pixi-v2-scaffold` / `static-export` 全部成功；[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689353)：`desktop-review` 成功；[Gameplay Browser Review full](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689400)：`browser-review` 成功，**158 passed / 2 skipped**；[GitHub Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353772800)：成功。四条工作流均为此 `head_sha`。
@@ -27,7 +38,7 @@
 | R10.1–R10.10 工坊迭代 | 已实现与发布过的功能迭代 | 不等于正式美术交付 | 历史 Quality / visual / Pages；候选 CG 仍 review |
 | R11/R11.1 显式自动履约及 PC/手机操作 | 已实现、已发布 | 正式 main full 已通过（非真人试玩） | 旧档 opt-out、点击不即时结算、唯一操作入口 |
 | R11.2 独立合同日历/布局指纹 | 已实现，起始基线为 246f6c87 | **正式 main browser full 已通过** | 布局变化不得刷新截止时间，下一轮真实生产仅一次 |
-| R11.3 计划、视觉、CI 收口 | PR #8 已合并；技术与截图回归完成 | **技术已验收；治理未完成** | 本台账、第 0 节，同 SHA CI；主分支保护 #9 未实施 |
+| R11.3 计划、视觉、CI 收口 | PR #8/#14/#15 已合并；最新功能基线为 b88f97a | **四工作流同 SHA 自动化已验收；治理未完成** | 本台账第 0 节；#9 未实施、#10 待真人试玩 |
 | V3 全站自主调度/权威 Dexie V3 存档 | 仅部分 V2 工坊规则落地；完整 V3 未实现 | 不可标记 Released | 跨七页统一账本、迁移与真实试玩未完成 |
 | Issue #7 月纱对话 | PC/手机修复已合并 | **已按主分支截图和断言关闭** | PC 1440×900，手机 390×844，reduced-motion；见第 0 节 |
 | 正式美术 | 9 张设备静态图 review；3 人工匠全身 CG、三组四帧机器工作动画、月纱正式资源 pending | **阻塞** | `v2/art/asset-pack.v1.json`: paintingDelivered / browserVisualReviewPassed / releaseReady 均 false |
@@ -64,12 +75,12 @@
 ### 发布判定（执行结果与剩余任务）
 
 1. **已完成**：[PR #8](https://github.com/kunlong-luo/monster-apartment/pull/8) 合并前 Quality、Desktop Visual Review 与 Gameplay Browser Review full 均验证成功，PR 对所有页面设计审查有明确触发规则。
-2. **已完成**：正式 `main` `68dc7550` 的 Gameplay Browser Review full 自动运行成功；日志为 158 passed / 2 skipped。不能把 `smoke`、其它 SHA 或仅三条质量任务当作完整回归。
-3. **已完成**：上述同 SHA 的 Quality、Desktop Visual Review、GitHub Pages 与两条专项性能/WebGL 工作流均已核验成功。
+2. **已完成**：首次冻结 `68dc7550` 的 full 为 158 passed / 2 skipped；后续最新功能版本 `b88f97a` 的 full 为 **161 passed / 2 skipped / 0 failed**。不能把 `smoke`、其它 SHA 或仅质量任务当作完整回归。
+3. **已完成**：`b88f97a` 的 Quality、Desktop Visual Review、Gameplay Browser Review full、GitHub Pages 均同 SHA 通过。性能与 WebGL 专项仍仅引用历史 `68dc7550` 的合格运行，不冒称在新 SHA 运行过。
 4. **已完成**：从正式 `main` workflow 下载截图，人工检查月纱 1440×900 与 390×844 的对话、减少动态效果模式与生产布局后，附证据关闭 Issue #7。
 5. **未完成，须仓库管理员执行**：GitHub Settings → Rulesets/Branches 对 `main` 启用 PR-only、禁直推/force push，并要求 `checks`、`pixi-v2-scaffold`、`static-export`、`desktop-review` 通过且 up to date。通过读取 `branches/main` 的 `protected:true` 与实际 required checks 核验后才可关闭 [Issue #9](https://github.com/kunlong-luo/monster-apartment/issues/9)。本连接器无管理员写接口，不可假报已配置。
 6. **未完成，需真实玩家参与**：发布治理收口后按 [首次试玩协议](../research/2026-11-13-r113-first-session-protocol.md) 招募至少 10 名首次玩家，观察自动生产、显式履约、首单和重玩意愿；记录真实卡点后才决定 R12 与正式美术量产，不要用 E2E 代替真人数据。
 
 ### 完成定义
 
-**当前 R11.3 技术与截图门槛已完成，但整体仍未完成**：同一 SHA 的 Gameplay Browser Review full + Quality + Desktop Visual Review + Pages 证据已齐备；Issue #7 已关闭；**主分支 ruleset/required checks 尚未实际生效（Issue #9）**。必须由管理员配置并读取确认后才能标记完整 R11.3 发布治理 DONE。独立十人试玩与正式美术分别按 Issue #10 / 资产审核另行验收，不得从 CI 结果推定完成。
+**R11.3 最新功能版 `b88f97a` 自动化技术验收已完成，但整体仍未完成**：同一 SHA 的 Gameplay Browser Review full + Quality + Desktop Visual Review + Pages 证据已齐备；Issue #7 已关闭（人工截图验收属较早里程碑）；**主分支 ruleset/required checks 尚未实际生效（Issue #9）**。必须由管理员配置并读取确认后才能标记完整 R11.3 发布治理 DONE。独立十人试玩与正式美术分别按 Issue #10 / 资产审核另行验收，不得从 CI 结果推定完成。
