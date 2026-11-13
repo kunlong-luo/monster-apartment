@@ -39,10 +39,16 @@ function readCozySave():CozyState{
 export function GothicApartment(){
   const ready=useSyncExternalStore(subscribeClient,clientSnapshot,serverSnapshot);
   const [world,setWorld]=useState<CozyState>(readCozySave);
-  const [corruptSave,setCorruptSave]=useState(()=>{
-    if(typeof window==='undefined')return false;
-    try{return invalidCozySave(localStorage.getItem(KEY));}catch{return false;}
+  // Retain the exact damaged snapshot seen by this tab. A recovery dialog
+  // must never reset a different save that another tab wrote meanwhile.
+  const [corruptRaw,setCorruptRaw]=useState<string|null>(()=>{
+    if(typeof window==='undefined')return null;
+    try{
+      const raw=localStorage.getItem(KEY);
+      return invalidCozySave(raw)?raw:null;
+    }catch{return null;}
   });
+  const corruptSave=corruptRaw!==null;
   const [saveRecoveryError,setSaveRecoveryError]=useState('');
   const [selected,setSelected]=useState<number|null>(null);
   const [moving,setMoving]=useState<number|null>(null);
@@ -78,11 +84,13 @@ export function GothicApartment(){
         const raw=window.localStorage.getItem(KEY);
         if(invalidCozySave(raw)){
           // A remote bad write is never replaced with an empty apartment.
-          setCorruptSave(true);
+          // Keep the first damaged snapshot while the same warning is open;
+          // a newer but still-invalid save belongs to another tab too.
+          setCorruptRaw(previous=>previous??raw);
           return;
         }
         setWorld(raw?resumeCozySave(JSON.parse(raw) as CozyState):newCozyGame());
-        setCorruptSave(false);
+        setCorruptRaw(null);
       }catch{
         // A storage-read failure is not evidence that the save was deleted.
       }
@@ -118,9 +126,16 @@ export function GothicApartment(){
             // An unreadable player save must not be overwritten by one accidental tap.
             if(!window.confirm('现有公寓存档无法读取。确认永久覆盖原始存档并重新开始吗？此操作无法撤销。'))return;
             try{
+              // window.confirm may leave the dialogue open while another tab
+              // repairs or replaces this save. Never overwrite that update.
+              const current=localStorage.getItem(KEY);
+              if(current!==corruptRaw||!invalidCozySave(current)){
+                setSaveRecoveryError('其它标签页已更新公寓存档。重新开始未执行，请刷新页面检查最新进度。');
+                return;
+              }
               const fresh=newCozyGame();
               localStorage.setItem(KEY,JSON.stringify(fresh));
-              setWorld(fresh);setCorruptSave(false);setSaveRecoveryError('');
+              setWorld(fresh);setCorruptRaw(null);setSaveRecoveryError('');
             }catch{setSaveRecoveryError('无法写入新存档，请检查浏览器存储权限。');}
           }}>确认重新开始</button>
         <Link href="/" className="rounded-lg border border-gothic-brass/60 px-4 py-2 text-sm">返回大厅</Link>
