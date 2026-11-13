@@ -24,14 +24,16 @@
 
 不再包含旧版 `/classic`、`/legacy`、`/survival` 和独立 `/workshop-lab` 实验室。
 
-## 当前发布状态（2026-11-12 · R11.3 校准中）
+## 当前发布状态（2026-11-13 · R11.3 技术回归已验收，治理与试玩待办）
 
-- **已发布的代码功能**：R09.5 WebGL 生命周期观测基础设施、R10.1–R10.10 工坊视觉/生产迭代，以及 R11–R11.2 的**显式启用**自动履约、独立合同日历和设备布局重排后的计时指纹持久化。基线 `main` 为 [`246f6c87`](https://github.com/kunlong-luo/monster-apartment/commit/246f6c87ca1fec6548afd8b83535702e6343a568)；这些是有限范围的已实现功能，**不等于完整 V3 自动经营架构已交付**。
-- **待里程碑验收**：R11.2 的同 SHA 全量浏览器回归、1440×900/390×844 月纱对话截图审查、Issue #7 收口，以及 `main` required checks。当前成功的 Quality、Desktop Visual Review、Pages 不能代替 full E2E。
-- **尚未交付**：V3 跨七页统一生产/剧情、Dexie V3 权威存档迁移、完整剧情/CG/锻造与正式美术；九张机器静态候选仍是 `review`，工匠/月纱正式素材和机器四帧工作图仍是 `pending`。美术资产包 `releaseReady=false`。
-- **下一决策门槛**：R11.3 发布证据同 SHA 对齐后先做不少于 10 名玩家的无引导试玩，再判断 R12 与量产美术。
+- **正式发布证据**：`main` [`68dc7550`](https://github.com/kunlong-luo/monster-apartment/commit/68dc7550a7d5a088f199e43a448959cfe59d9b3d) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689351)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689353)、[Gameplay Browser Review full](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689400) 和 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353772800) **全部通过同一 SHA**；完整浏览器日志为 **158 passed / 2 skipped**。专项 [Performance](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689407) 与 [WebGL Lifecycle](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689415) 也通过。
+- **真实截图审查**：已下载并查看正式 `main` 的 1440×900 和 390×844 月纱真实对话截图与 reduced-motion 模式，不再出现人物被挤成窄条的情况；[Issue #7](https://github.com/kunlong-luo/monster-apartment/issues/7) 已关闭。
+- **尚未满足的发布治理门槛**：`main` 目前仍为 `protected:false`；需要管理员按 [Issue #9](https://github.com/kunlong-luo/monster-apartment/issues/9) 配置 PR-only 与 required checks，并经 API 复核。CI 绿灯不等于已保护主分支。
+- **玩家验证待办**：尚无 10 名独立玩家的真实数据；[Issue #10](https://github.com/kunlong-luo/monster-apartment/issues/10) 和 [首次试玩执行协议](docs/research/2026-11-13-r113-first-session-protocol.md) 记录方法与空白数据模板，未验证前不宣称达标。
+- **已发布的有限代码范围**：R09.5 WebGL API 生命周期观测、R10.1–R10.10 工坊迭代、R11–R11.2 显式自动履约、独立合同日历和设备布局指纹持久化。**这仍不是 V3 的跨七页统一存档与自动经营完整交付**。
+- **正式美术尚未量产交付**：九张机器静态候选仍为 `review`，工匠/月纱正式资源和机器工作图仍为 `pending`；`releaseReady=false`。
 
-详见 [R11.3 状态矩阵与发布验收台账](docs/engineering/2026-11-12-r11-3-release-baseline.md)；早期任务的 `DONE` 是历史阶段记录，不应推定现行 V3 完工。
+详见 [R11.3 发布证据与状态矩阵](docs/engineering/2026-11-12-r11-3-release-baseline.md)。历史任务的 `DONE` 是旧版阶段事实，不意味着 V3 全部完成。
 
 
 ## V3.4 人物与剧情长期策划（经营核心已有阶段性实现）
