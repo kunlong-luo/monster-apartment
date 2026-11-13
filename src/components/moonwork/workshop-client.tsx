@@ -8,6 +8,8 @@ import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 import {GothicResourcePill} from '@/components/game/gothic-hud';
 import {useWorkshopWorld} from './world-save-react';
 import {SAVE_KEY, CHANGE_EVENT, parseSavedWorld} from '@/lib/moonwork/world-store';
+import {readWorkshopBackup} from '@/lib/moonwork/world-database';
+import {withWorkshopSaveLock} from '../../../v2/src/workshop-save-transaction';
 import {toggleWorkshopAuto,toggleWorkshopAutoContract} from '@/lib/moonwork/workshop-auto-runtime';
 import {WorkshopContractPanel} from './workshop-contract-panel';
 import {WorkshopShiftPanel} from './workshop-shift-panel';
@@ -15,7 +17,7 @@ import {WorkshopStageContainer} from './workshop-stage-container';
 import {WorkshopMachineArtReview} from './workshop-machine-art-review';
 import {WorkshopControls} from './workshop-controls';
 import {workshopDialogue} from '@/lib/moonwork/workshop-dialogue';
-import {newWorkshop,workshopRank} from '../../../v2/src/workshop-engine';
+import {newWorkshop,workshopRank,type WorkshopState} from '../../../v2/src/workshop-engine';
 import workshopHall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import yueshaBust from '../../../public/art/yuesha-bust-v3.webp';
@@ -114,6 +116,8 @@ export function WorkshopClient() {
   // Keep React and Pixi actions inert until dispatch can actually apply them.
   const [runtimeReady,setRuntimeReady] = useState(false);
   const [blockedSave, setBlockedSave] = useState(false);
+  const [recoveryBackup,setRecoveryBackup]=useState<WorkshopState|null>(null);
+  const [backupChecked,setBackupChecked]=useState(false);
   const [recoveryVersion, setRecoveryVersion] = useState(0);
   const [speechIndex, setSpeechIndex] = useState(0);
   // Presentation-only: switching scene/console priority never writes a save.
@@ -135,6 +139,44 @@ export function WorkshopClient() {
   // Pixi sidecar portrait remains only for its separate internal textures.
   const portraitUrl=moonveilPortrait.src;
 
+  // Recover only on explicit player action. An invalid primary save always
+  // wins over automatic backup restoration; never erase evidence silently.
+  const restoreVerifiedBackup=()=>{
+    if(!recoveryBackup)return;
+    const backup=recoveryBackup;
+    setError('');
+    void withWorkshopSaveLock(navigator.locks,()=>{
+      const latest=window.localStorage.getItem(SAVE_KEY);
+      // Another tab may already have recovered or replaced this save.
+      if(latest===null||parseSavedWorld(latest))return false;
+      window.localStorage.setItem(SAVE_KEY,JSON.stringify(backup));
+      return true;
+    }).then(result=>{
+      if(result.status!=='ok'||!result.value){
+        setError('存档恢复未完成：请确认当前页面未在其它标签页修改，或检查浏览器存储权限。');
+        return;
+      }
+      window.dispatchEvent(new Event(CHANGE_EVENT));
+      setBlockedSave(false);
+      setRuntimeReady(false);
+      setRecoveryVersion(version=>version+1);
+    }).catch(()=>setError('无法读取或写入本地备份，原存档仍被保留。'));
+  };
+  const downloadOriginalSave=()=>{
+    try{
+      const raw=window.localStorage.getItem(SAVE_KEY);
+      if(raw===null)throw new Error('Missing original save');
+      const url=URL.createObjectURL(new Blob([raw],{type:'text/plain;charset=utf-8'}));
+      const link=document.createElement('a');
+      link.href=url;
+      link.download='monster-apartment-workshop-original.txt';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+    }catch{setError('原存档导出失败，浏览器内原数据没有被更改。');}
+  };
+
   useEffect(() => {
     const root = host.current?.querySelector<HTMLElement>('#root');
     if (!root) return;
@@ -145,7 +187,15 @@ export function WorkshopClient() {
     try { raw = window.localStorage.getItem(SAVE_KEY); } catch { /* Storage may be blocked. */ }
     if (raw !== null && !parseSavedWorld(raw)) {
       setBlockedSave(true);
-      return;
+      setBackupChecked(false);
+      setRecoveryBackup(null);
+      let active=true;
+      void readWorkshopBackup().then(backup=>{
+        if(!active)return;
+        setRecoveryBackup(backup);
+        setBackupChecked(true);
+      }).catch(()=>{if(active)setBackupChecked(true);});
+      return ()=>{active=false;};
     }
     setBlockedSave(false);
     setError('');
@@ -394,8 +444,19 @@ export function WorkshopClient() {
         <div className="absolute inset-0 z-[100] flex items-center justify-center bg-[#09050ce8] px-5 backdrop-blur-md" role="alertdialog" aria-modal="true" aria-labelledby="workshop-save-error">
           <div className="w-full max-w-md rounded-xl border border-gothic-brass/70 bg-gothic-panel p-6 text-gothic-ivory shadow-2xl">
             <h2 id="workshop-save-error" className="text-xl font-semibold text-gothic-glow">工坊存档需要处理</h2>
-            <p className="mt-3 text-sm leading-7 text-gothic-muted">检测到已有但无法读取的工坊存档。为避免意外丢失进度，游戏没有自动覆盖它。只有你确认重新开始后才会创建新存档。</p>
+            <p className="mt-3 text-sm leading-7 text-gothic-muted">检测到已有但无法读取的工坊存档，原数据尚未覆盖。可以先导出副本；如果检测到有效的本地备份，可由你决定是否恢复。重新开始会覆盖损坏存档。</p>
+            <p className="mt-2 text-xs text-gothic-muted" data-testid="workshop-backup-status" role="status">
+              {!backupChecked?'正在检查本地备份…':recoveryBackup
+                ?'检测到第 '+recoveryBackup.day+' 天的有效备份；可能早于最后一次游玩。'
+                :'未找到可用的本地备份。'}
+            </p>
             <div className="mt-5 flex flex-wrap gap-3">
+              {recoveryBackup&&<button type="button" data-testid="workshop-restore-backup"
+                className="min-h-11 rounded-lg border border-gothic-gold bg-gothic-wine px-4 py-2 text-sm text-gothic-ivory hover:brightness-110"
+                onClick={restoreVerifiedBackup}>恢复本地备份</button>}
+              <button type="button" data-testid="workshop-download-broken-save"
+                className="min-h-11 rounded-lg border border-gothic-brass/60 px-4 py-2 text-sm text-gothic-ivory"
+                onClick={downloadOriginalSave}>导出原存档</button>
               <button type="button" className="rounded-lg border border-gothic-gold bg-gothic-wine px-4 py-2 text-sm text-gothic-ivory hover:brightness-110" onClick={() => {
                 try {
                   window.localStorage.setItem(SAVE_KEY, JSON.stringify(newWorkshop()));
