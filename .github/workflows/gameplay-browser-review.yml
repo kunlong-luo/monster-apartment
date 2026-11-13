@@ -1,20 +1,51 @@
 name: Gameplay Browser Review
 
-# R11.3 release milestone: full gameplay/visual tests run for workshop dialogue PRs
-# and the matching main push. Isolated R09 frame/heap/WebGL diagnostic specs
-# opt in via R09_DIAGNOSTICS in their dedicated workflows; do not treat noisy
-# shared-runner FPS samples as gameplay acceptance. Manual full remains available.
+# Full gameplay/browser regression automatically runs on gameplay, engine,
+# save, navigation, dependency and E2E changes on both PR and matching main.
+# Documentation and art-only changes keep the fast Quality + visual PR gate
+# without spending ~12 minutes on the full browser suite. Manual full remains
+# available for release milestones; R09 diagnostics run in dedicated workflows.
 on:
   pull_request:
     paths:
-      - 'e2e/workshop-dock-clearance.spec.ts'
-      - 'src/components/game/gothic-workshop.css'
+      - 'app/**/*.tsx'
+      - 'app/**/*.css'
+      - 'src/components/game/**'
+      - 'src/components/moonwork/**'
+      - 'src/components/summon/**'
+      - 'src/lib/moonwork/**'
+      - 'src/lib/game/**'
+      - 'src/core/**'
+      - 'v2/src/**'
+      - 'v2/scripts/**'
+      - 'e2e/**'
+      - 'playwright.config.ts'
+      - 'next.config.ts'
+      - 'package.json'
+      - 'bun.lock'
+      - 'v2/package.json'
+      - 'v2/package-lock.json'
       - '.github/workflows/gameplay-browser-review.yml'
   push:
     branches: [main]
     paths:
-      - 'e2e/workshop-dock-clearance.spec.ts'
-      - 'src/components/game/gothic-workshop.css'
+      - 'app/**/*.tsx'
+      - 'app/**/*.css'
+      - 'src/components/game/**'
+      - 'src/components/moonwork/**'
+      - 'src/components/summon/**'
+      - 'src/lib/moonwork/**'
+      - 'src/lib/game/**'
+      - 'src/core/**'
+      - 'v2/src/**'
+      - 'v2/scripts/**'
+      - 'e2e/**'
+      - 'playwright.config.ts'
+      - 'next.config.ts'
+      - 'package.json'
+      - 'bun.lock'
+      - 'v2/package.json'
+      - 'v2/package-lock.json'
       - '.github/workflows/gameplay-browser-review.yml'
   workflow_dispatch:
     inputs:
