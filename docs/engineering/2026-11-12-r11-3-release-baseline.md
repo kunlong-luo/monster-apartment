@@ -1,12 +1,21 @@
 # R11.3 · 发布收口、全量回归与计划校准
 
-日期：2026-11-12。记录类型：阶段状态矩阵与验收台账，不是“全量通过”声明。
+初建日期：2026-11-12；最新验收记录：2026-11-13。本记录区分**历史冻结前基线**、**已经证明的正式发布技术回归**和**仍需管理员/真人完成的治理及产品验证**。
 
-## 1. 冻结前的事实基线
+## 0. 2026-11-13 · 正式 main 同 SHA 技术验收证据
 
-- 当前已核实的 `main`：[`246f6c87ca1f`](https://github.com/kunlong-luo/monster-apartment/commit/246f6c87ca1fec6548afd8b83535702e6343a568)，补丁：设备布局改变后持久化 `auto.layout` 指纹，避免反复推迟下一次设备周期。
-- 该 SHA 已有成功的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/43185784401)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/43185784376)、[GitHub Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/43185890463)。**不包含当前 SHA 的 Gameplay Browser Review full 证明**。
-- [Issue #7](https://github.com/kunlong-luo/monster-apartment/issues/7) 未完成 390×844 对话可见性与像素验收。历史截图仅能说明桌面裁切问题未再次复现，不能替代当前回归。
+- 正式分支提交：[`68dc7550`](https://github.com/kunlong-luo/monster-apartment/commit/68dc7550a7d5a088f199e43a448959cfe59d9b3d)，合并自 [PR #8](https://github.com/kunlong-luo/monster-apartment/pull/8)。
+- [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689351)：`checks` / `pixi-v2-scaffold` / `static-export` 全部成功；[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689353)：`desktop-review` 成功；[Gameplay Browser Review full](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689400)：`browser-review` 成功，**158 passed / 2 skipped**；[GitHub Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353772800)：成功。四条工作流均为此 `head_sha`。
+- [Workshop Performance Baseline](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689407) 与 [WebGL Lifecycle](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689415) 同 SHA 成功；API 观测不等于 GPU 显存泄漏的绝对证明。
+- 人工下载并检查正式分支 [Desktop Visual artifact 14005620855](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689353/artifacts/14005620855) 的 `desktop-workshop-true-dialogue-r107-1440.png`、`mobile-workshop-true-dialogue-r113-390.png` 和 `mobile-workshop-reduced-motion-r107-390.png`；PC 角色完整、对话可读、手机对话独立显示在 15 格舞台上方。[Issue #7](https://github.com/kunlong-luo/monster-apartment/issues/7) 已按真实像素和浏览器断言关闭。
+- **未完成**：[Issue #9](https://github.com/kunlong-luo/monster-apartment/issues/9) 主分支保护，API 复查仍为 `protected:false`；[Issue #10](https://github.com/kunlong-luo/monster-apartment/issues/10) 10 名真实非作者玩家试玩尚无结果。试玩协议及空白结果模板见 [研究文档](../research/2026-11-13-r113-first-session-protocol.md)。
+- **判定**：R113-01/02/03 的资料、技术与视觉验收已满足；R113-04/05/06 保持待完成。R11.3 **整体不得标记完全结束**，更不意味着 V3 或正式美术已交付。
+
+## 1. 冻结前的事实基线（历史记录）
+
+- 2026-11-12 当时已核实的 `main`：[`246f6c87ca1f`](https://github.com/kunlong-luo/monster-apartment/commit/246f6c87ca1fec6548afd8b83535702e6343a568)，补丁：设备布局改变后持久化 `auto.layout` 指纹，避免反复推迟下一次设备周期。
+- 该 SHA 已有成功的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/43185784401)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/43185784376)、[GitHub Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/43185890463)。**当时不包含该旧 SHA 的 Gameplay Browser Review full 证明**，现有正式 SHA 验收见第 0 节。
+- 当时 [Issue #7](https://github.com/kunlong-luo/monster-apartment/issues/7) 尚未完成 390×844 对话像素验收；**已于 2026-11-13 按第 0 节证据关闭**。
 - `main` 基线未受保护、required checks 为空。仅修改工作流本身不能开启规则集；管理员必须在 GitHub Settings 中设置并复核。
 - R09.5 覆盖三次真实进入/离开、48 次设备变化与 WebGL API 对象/调用观测；不是 GPU 显存采样，更不是“完全无 GPU 泄漏”证明。本阶段不启动 R09.6。
 
@@ -16,11 +25,11 @@
 | --- | --- | --- | --- |
 | R09.5 生命周期观测 | 已实现、已发布 | 已有专项成功运行；非显存泄漏结论 | [阶段记录](2026-11-08-workshop-r09-fixed-save-performance.md) |
 | R10.1–R10.10 工坊迭代 | 已实现与发布过的功能迭代 | 不等于正式美术交付 | 历史 Quality / visual / Pages；候选 CG 仍 review |
-| R11/R11.1 显式自动履约及 PC/手机操作 | 已实现、已发布 | 本里程碑组合回归待核 | 旧档 opt-out、点击不即时结算、唯一操作入口 |
-| R11.2 独立合同日历/布局指纹 | 已实现，基线为 246f6c87 | **完整 browser full 未验收** | 布局变化不得刷新截止时间，下一轮真实生产仅一次 |
-| R11.3 计划、视觉、CI 收口 | 本分支执行中 | **未完成** | 本文档、手机对话强制断言、PR CI 触发 |
+| R11/R11.1 显式自动履约及 PC/手机操作 | 已实现、已发布 | 正式 main full 已通过（非真人试玩） | 旧档 opt-out、点击不即时结算、唯一操作入口 |
+| R11.2 独立合同日历/布局指纹 | 已实现，起始基线为 246f6c87 | **正式 main browser full 已通过** | 布局变化不得刷新截止时间，下一轮真实生产仅一次 |
+| R11.3 计划、视觉、CI 收口 | PR #8 已合并；技术与截图回归完成 | **技术已验收；治理未完成** | 本台账、第 0 节，同 SHA CI；主分支保护 #9 未实施 |
 | V3 全站自主调度/权威 Dexie V3 存档 | 仅部分 V2 工坊规则落地；完整 V3 未实现 | 不可标记 Released | 跨七页统一账本、迁移与真实试玩未完成 |
-| Issue #7 月纱对话 | 历史桌面修复已存在；手机显示原先被隐藏 | **待新截图与计算几何/命中人工审核** | PC 1440×900，手机 390×844，reduced-motion |
+| Issue #7 月纱对话 | PC/手机修复已合并 | **已按主分支截图和断言关闭** | PC 1440×900，手机 390×844，reduced-motion；见第 0 节 |
 | 正式美术 | 9 张设备静态图 review；3 人工匠全身 CG、三组四帧机器工作动画、月纱正式资源 pending | **阻塞** | `v2/art/asset-pack.v1.json`: paintingDelivered / browserVisualReviewPassed / releaseReady 均 false |
 | 玩家验证 P016/P021/P041 | 尚无 10 名真实玩家记录 | **待外部试玩** | 完成率、无提示启动自动生产/履约、卡点、重玩意愿 |
 
@@ -38,7 +47,7 @@
 - README 与 V3 路线图的安装命令已统一为 `bun install --frozen-lockfile`（跟踪 `bun.lock`），避免已证实的 frozen pnpm 锁文件错误。
 - 此记录只是修复记录，**不代表新提交 full 已通过**，R11.3 完成定义与 Issue #7 保持不变。
 
-## 3. 里程碑测试矩阵（全量通过前保持待验）
+## 3. 里程碑测试矩阵（同 SHA 自动化已通过，治理门禁待验）
 
 | 必测场景 | 覆盖 / 验收方式 |
 | --- | --- |
@@ -63,4 +72,4 @@
 
 ### 完成定义
 
-**R11.3 未完成，直至**主分支的同一 SHA 全量浏览器 + Quality + Desktop Visual Review + Pages 证据齐备、Issue #7 截图/交互验收关闭、主分支 ruleset/required checks 实际生效，并且上述状态表同步更新。不因 PR 合入或 CI 中三个局部工作流变绿而提前完结。
+**当前 R11.3 技术与截图门槛已完成，但整体仍未完成**：同一 SHA 的 Gameplay Browser Review full + Quality + Desktop Visual Review + Pages 证据已齐备；Issue #7 已关闭；**主分支 ruleset/required checks 尚未实际生效（Issue #9）**。必须由管理员配置并读取确认后才能标记完整 R11.3 发布治理 DONE。独立十人试玩与正式美术分别按 Issue #10 / 资产审核另行验收，不得从 CI 结果推定完成。
