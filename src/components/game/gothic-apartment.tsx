@@ -88,7 +88,12 @@ export function GothicApartment(){
     // Initialize missing and legacy-complete V1 saves under the SAME lock as
     // gameplay. Never persist a stale React snapshot in an effect.
     const store=getCozyStorage();
-    if(!store){setSaveError('无法访问公寓存档，请检查浏览器存储权限。');return;}
+    if(!store){
+      void Promise.resolve().then(()=>{
+        if(active)setSaveError('无法访问公寓存档，请检查浏览器存储权限。');
+      });
+      return ()=>{active=false;};
+    }
     void transactCozySave(store,navigator.locks,resumeCozySave).then(result=>{
       if(!active)return;
       if(result.status==='applied'||result.status==='unchanged')syncSaved();
