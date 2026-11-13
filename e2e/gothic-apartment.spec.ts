@@ -85,6 +85,38 @@ test('apartment never silently destroys an unreadable existing player save',asyn
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'{}'))).toHaveProperty('version');
 });
 
+
+test('stale apartment recovery cannot erase progress repaired after the warning opened',async({page})=>{
+  await page.goto('/apartment/');
+  await expect(page.getByTestId('gothic-apartment')).toBeVisible();
+  await page.getByRole('button',{name:'暂停公寓时间'}).click();
+  await page.getByTestId('ga-room-2').click();
+  await page.getByTestId('ga-build-bath').click();
+  await expect(page.getByTestId('ga-coins')).toHaveText('71');
+  const repaired=await page.evaluate(()=>
+    localStorage.getItem('monster-apartment:cozy:v1')!
+  );
+  await page.evaluate(()=>localStorage.setItem('monster-apartment:cozy:v1','{broken-in-old-tab'));
+  await page.reload();
+  const recovery=page.getByRole('alertdialog',{name:'公寓存档需要处理'});
+  await expect(recovery).toBeVisible();
+
+  // A separate tab can repair or replace the original save while the old
+  // confirmation remains open. Writing in this page simulates the shared
+  // storage update without firing a same-tab StorageEvent.
+  await page.evaluate(saved=>
+    localStorage.setItem('monster-apartment:cozy:v1',saved),repaired);
+  page.once('dialog',dialog=>dialog.accept());
+  await recovery.getByRole('button',{name:'确认重新开始'}).click();
+  await expect(recovery.getByRole('alert')).toContainText('其它标签页已更新');
+  expect(await page.evaluate(()=>
+    localStorage.getItem('monster-apartment:cozy:v1'))).toBe(repaired);
+
+  await page.reload();
+  await expect(page.getByTestId('ga-coins')).toHaveText('71');
+  await expect(page.getByTestId('ga-room-2')).toContainText('浴池');
+});
+
 test('another open tab receives housing progress without overwriting a newer save',async({page,context})=>{
   test.setTimeout(90000);
   await page.goto('/apartment/');
