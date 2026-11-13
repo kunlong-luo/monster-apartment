@@ -84,7 +84,9 @@ export function GothicApartment(){
         const raw=window.localStorage.getItem(KEY);
         if(invalidCozySave(raw)){
           // A remote bad write is never replaced with an empty apartment.
-          setCorruptRaw(raw);
+          // Keep the first damaged snapshot while the same warning is open;
+          // a newer but still-invalid save belongs to another tab too.
+          setCorruptRaw(previous=>previous??raw);
           return;
         }
         setWorld(raw?resumeCozySave(JSON.parse(raw) as CozyState):newCozyGame());
