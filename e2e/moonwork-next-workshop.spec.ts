@@ -192,6 +192,44 @@ test('Next workshop uses React-owned worker and machine controls with the origin
   await expect(page.getByTestId('world-coins')).toHaveText('62');
 });
 
+test('workshop reset keeps the save when cancelled and only resets after confirmation', async ({page}) => {
+  test.setTimeout(90_000);
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+  const snapshot=()=>page.evaluate(()=>{
+    const saved=JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')!);
+    return {day:saved.day,coins:saved.coins,completed:saved.completed,tiles:saved.tiles};
+  });
+  const before=await snapshot();
+  const reset=page.getByTestId('v2-reset');
+
+  let cancelPromptSeen=false;
+  page.once('dialog',dialog=>{
+    expect(dialog.type()).toBe('confirm');
+    expect(dialog.message()).toContain('覆盖当前工坊存档');
+    cancelPromptSeen=true;
+    void dialog.dismiss();
+  });
+  await reset.click();
+  expect(cancelPromptSeen).toBe(true);
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+  expect(await snapshot()).toEqual(before);
+
+  let acceptPromptSeen=false;
+  page.once('dialog',dialog=>{
+    expect(dialog.type()).toBe('confirm');
+    acceptPromptSeen=true;
+    void dialog.accept();
+  });
+  await reset.click();
+  expect(acceptPromptSeen).toBe(true);
+  await expect(page.getByTestId('v2-day')).toHaveText('1');
+  await expect(page.getByTestId('v2-coins')).toHaveText('100');
+  await expect.poll(async()=> (await snapshot()).day).toBe(1);
+});
+
 test('invalid save is preserved until the player explicitly confirms recovery', async ({page}) => {
   test.setTimeout(90_000);
   await page.addInitScript(() => {
