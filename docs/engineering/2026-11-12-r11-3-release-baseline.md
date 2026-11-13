@@ -39,13 +39,13 @@
 
 历史 `management/TASKS.csv` 以 V0.4 及更早版本为主，其 DONE/DOING 是**历史快照**，不自动推定 R11/V3 现在的完成状态。R11.3 增补 R113 系列唯一 ID；移除重复 V040-04 与 V040-05 的旧 TODO 行，保留较新的 DOING 行供追溯。
 
-## 2026-11-13 · full E2E 最终两项回归收口
+## 2026-11-13 · PR #8 失败用例修复历史（非最终状态）
 
 - [PR head `ab66bd2c` 的完整浏览器回归](https://github.com/kunlong-luo/monster-apartment/actions/runs/43288202634)：**156 passed、2 failed、2 R09 专项 skipped**。两项失败都经真实 CI 日志和错误 DOM 快照确认；必须修复并在**新的同一 SHA** 复测。
 - 390×550 月纱私室的本地美术候选会在 `candidatePreview` 时**主动隐藏未经校准的物件热点**，这是防止旧坐标污染新背景的正确行为；折叠 QA 面板并没有退出候选预览。Playwright 现在先断言未审稿背景**没有**旧热点，然后通过真实「恢复原概念背景」按钮退出预览，再验证茶杯热点/可访问菜单以及调查反馈。**没有绕开人工美术审核门禁**。
 - 召唤页五张卡的图片来源已有 5 个不同 URL。月纱两种稀有形态可用两张原创肖像；仍要求至少四个唯一来源、每张都实际解码，而不是强制两种稀有形态共用同一张图。
 - README 与 V3 路线图的安装命令已统一为 `bun install --frozen-lockfile`（跟踪 `bun.lock`），避免已证实的 frozen pnpm 锁文件错误。
-- 此记录只是修复记录，**不代表新提交 full 已通过**，R11.3 完成定义与 Issue #7 保持不变。
+- 以上是 PR #8 中途的历史修复记录。**后续新 SHA 已通过正式完整回归**，最终数据见第 0 节；Issue #7 现已关闭。
 
 ## 3. 里程碑测试矩阵（同 SHA 自动化已通过，治理门禁待验）
 
@@ -61,14 +61,14 @@
 | 月纱 390×844 对话 + reduced-motion | **强制**可见；不允许 `if(isVisible())` 跳过；不遮挡机器舞台和主操作、截图审查 |
 | 多页与最终上线 | 7 个路由 E2E、Quality、Desktop Visual Review、Gameplay Browser Review full、Pages **同一 SHA** 均成功 |
 
-### 发布判定
+### 发布判定（执行结果与剩余任务）
 
-1. 将本 PR 合并到 `main` 前必须看清本 PR 的 Quality、Desktop Visual Review 结果；本 PR 添加视觉 `pull_request` 触发，以便 Required Check 可以配置。对于 R11.3 触及的工坊 CSS/E2E/里程碑工作流，`Gameplay Browser Review` 会在 PR 和 `main` push **自动运行 full**，其它场景仍可手动 dispatch；CI 尚未真正成功前保持待验。
-2. 对同一 `main` SHA 验证自动触发的 **Gameplay Browser Review full**（若对应更改未触发，则通过 Run workflow → suite: full 手动运行；默认是 smoke）。核对 `head_sha`、全部 job 结论和产生的截图。**实际运行成功前不得伪称完成**。
-3. 复核该 SHA 的 Quality、Desktop Visual Review、Pages；如 Desktop Visual Review 因路径过滤没触发，需针对该 SHA 手动运行（工作流有 workflow_dispatch），不能把缺席当绿灯。
-4. 下载新视觉工件，分别人工查看 `desktop-workshop-true-dialogue-r107-1440.png` 与 `mobile-workshop-true-dialogue-r113-390.png` 的真实像素，以及其它主要工坊状态。确认可点击、完整、不卡文字、不挡机器/主要控制；再关闭 Issue #7。
-5. GitHub Settings → Branches/Rulesets：为 `main` 开启禁止直接推送 / 仅 PR 合入，并要求 Quality 的 `checks`、`pixi-v2-scaffold`、`static-export` 及 Desktop Visual Review 的 `desktop-review`（按 GitHub 实际上报的 Check Context 名称核实）。**本连接器没有分支保护写接口；规则必须由仓库管理员操作并读取确认。**
-6. 里程碑全绿后招募至少 10 名作者以外玩家；记录第一单完成率、自动生产/履约发现率、主要卡点和愿不愿再次游玩，作为 R12/美术量产的实际决策依据。
+1. **已完成**：[PR #8](https://github.com/kunlong-luo/monster-apartment/pull/8) 合并前 Quality、Desktop Visual Review 与 Gameplay Browser Review full 均验证成功，PR 对所有页面设计审查有明确触发规则。
+2. **已完成**：正式 `main` `68dc7550` 的 Gameplay Browser Review full 自动运行成功；日志为 158 passed / 2 skipped。不能把 `smoke`、其它 SHA 或仅三条质量任务当作完整回归。
+3. **已完成**：上述同 SHA 的 Quality、Desktop Visual Review、GitHub Pages 与两条专项性能/WebGL 工作流均已核验成功。
+4. **已完成**：从正式 `main` workflow 下载截图，人工检查月纱 1440×900 与 390×844 的对话、减少动态效果模式与生产布局后，附证据关闭 Issue #7。
+5. **未完成，须仓库管理员执行**：GitHub Settings → Rulesets/Branches 对 `main` 启用 PR-only、禁直推/force push，并要求 `checks`、`pixi-v2-scaffold`、`static-export`、`desktop-review` 通过且 up to date。通过读取 `branches/main` 的 `protected:true` 与实际 required checks 核验后才可关闭 [Issue #9](https://github.com/kunlong-luo/monster-apartment/issues/9)。本连接器无管理员写接口，不可假报已配置。
+6. **未完成，需真实玩家参与**：发布治理收口后按 [首次试玩协议](../research/2026-11-13-r113-first-session-protocol.md) 招募至少 10 名首次玩家，观察自动生产、显式履约、首单和重玩意愿；记录真实卡点后才决定 R12 与正式美术量产，不要用 E2E 代替真人数据。
 
 ### 完成定义
 
