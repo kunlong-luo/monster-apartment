@@ -287,7 +287,10 @@ export function WorkshopClient() {
               type="button"
               id="reset"
               data-testid="v2-reset"
-              onClick={()=>onAction({type:'reset'})}
+              onClick={()=>{
+                if(window.confirm('将重新开始月光工坊并覆盖当前工坊存档，无法撤销。确定继续吗？'))
+                  onAction({type:'reset'});
+              }}
               aria-label="重新开始"
               data-tooltip="重新开始工坊"
             >
