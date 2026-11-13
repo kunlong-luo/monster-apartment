@@ -252,6 +252,31 @@ test('invalid save is preserved until the player explicitly confirms recovery', 
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab') || '{}').version)).toBe(2);
 });
 
+test('corrupt-save reset cannot erase progress repaired by another tab',async({page})=>{
+  test.setTimeout(90_000);
+  await page.goto('/workshop/');
+  await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+  const original=await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab')!);
+  await page.evaluate(()=>localStorage.setItem('monster-apartment:workshop-v2-lab','{broken'));
+  await page.reload();
+  const recovery=page.getByRole('alertdialog',{name:'工坊存档需要处理'});
+  await expect(recovery).toBeVisible();
+  await expect(recovery.getByTestId('workshop-backup-status')).toContainText('第 2 天',{timeout:15_000});
+  // Simulate a second tab safely repairing the primary while this modal
+  // remains open. Neither "reset" nor "restore backup" may overwrite it.
+  await page.evaluate(saved=>localStorage.setItem('monster-apartment:workshop-v2-lab',saved),original);
+  await recovery.getByRole('button',{name:'确认重新开始'}).click();
+  await expect(recovery.getByRole('alert')).toContainText('其它标签页更新');
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(original);
+  await recovery.getByTestId('workshop-restore-backup').click();
+  await expect(recovery.getByRole('alert')).toContainText('存档恢复未完成');
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(original);
+  await page.reload();
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+});
+
 test('a corrupt workshop save can restore its verified IndexedDB backup without wiping progress',async({page})=>{
   test.setTimeout(90_000);
   await page.goto('/workshop/');
