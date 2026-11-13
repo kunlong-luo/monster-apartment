@@ -1,5 +1,5 @@
-import {advanceCozy,newCozyGame,resumeCozySave,validCozySave} from '@/core/cozy-engine';
-import type {CozyState} from '@/core/cozy-engine';
+import {advanceCozy,newCozyGame,resumeCozySave,validCozySave} from '../../core/cozy-engine';
+import type {CozyState} from '../../core/cozy-engine';
 
 /** Keep the existing V1 save key and serialized room/economy fields. */
 export const COZY_SAVE_KEY='monster-apartment:cozy:v1';
