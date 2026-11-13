@@ -133,7 +133,7 @@ export function GothicApartment(){
           onClick={()=>{
             // An unreadable player save must not be overwritten by one accidental tap.
             if(!window.confirm('现有公寓存档无法读取。确认永久覆盖原始存档并重新开始吗？此操作无法撤销。'))return;
-            void resetCorruptCozySave(window.localStorage,navigator.locks,corruptRaw).then(result=>{
+            void resetCorruptCozySave(window.localStorage,navigator.locks,corruptRaw!).then(result=>{
               if(result.status==='applied'){
                 syncSaved();setSaveRecoveryError('');setSaveError('');
               }else if(result.status==='stale'){
