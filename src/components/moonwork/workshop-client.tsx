@@ -116,6 +116,7 @@ export function WorkshopClient() {
   // Keep React and Pixi actions inert until dispatch can actually apply them.
   const [runtimeReady,setRuntimeReady] = useState(false);
   const [blockedSave, setBlockedSave] = useState(false);
+  const invalidSaveRawRef=useRef<string|null>(null);
   const [recoveryBackup,setRecoveryBackup]=useState<WorkshopState|null>(null);
   const [backupChecked,setBackupChecked]=useState(false);
   const [recoveryVersion, setRecoveryVersion] = useState(0);
@@ -144,11 +145,13 @@ export function WorkshopClient() {
   const restoreVerifiedBackup=()=>{
     if(!recoveryBackup)return;
     const backup=recoveryBackup;
+    const expectedRaw=invalidSaveRawRef.current;
+    if(expectedRaw===null)return;
     setError('');
     void withWorkshopSaveLock(navigator.locks,()=>{
       const latest=window.localStorage.getItem(SAVE_KEY);
       // Another tab may already have recovered or replaced this save.
-      if(latest===null||parseSavedWorld(latest))return false;
+      if(latest!==expectedRaw||parseSavedWorld(latest))return false;
       window.localStorage.setItem(SAVE_KEY,JSON.stringify(backup));
       return true;
     }).then(result=>{
@@ -156,11 +159,34 @@ export function WorkshopClient() {
         setError('存档恢复未完成：请确认当前页面未在其它标签页修改，或检查浏览器存储权限。');
         return;
       }
+      invalidSaveRawRef.current=null;
       window.dispatchEvent(new Event(CHANGE_EVENT));
       setBlockedSave(false);
       setRuntimeReady(false);
       setRecoveryVersion(version=>version+1);
     }).catch(()=>setError('无法读取或写入本地备份，原存档仍被保留。'));
+  };
+  const resetCorruptWorkshopSave=()=>{
+    const expectedRaw=invalidSaveRawRef.current;
+    if(expectedRaw===null)return;
+    setError('');
+    // Even a deliberate reset must not destroy progress another tab has
+    // recovered since this modal first detected the broken save.
+    void withWorkshopSaveLock(navigator.locks,()=>{
+      if(window.localStorage.getItem(SAVE_KEY)!==expectedRaw)return false;
+      window.localStorage.setItem(SAVE_KEY,JSON.stringify(newWorkshop()));
+      return true;
+    }).then(result=>{
+      if(result.status!=='ok'||!result.value){
+        setError('重新开始未执行：存档可能已在其它标签页更新。请刷新后检查。');
+        return;
+      }
+      invalidSaveRawRef.current=null;
+      window.dispatchEvent(new Event(CHANGE_EVENT));
+      setBlockedSave(false);
+      setRuntimeReady(false);
+      setRecoveryVersion(version=>version+1);
+    }).catch(()=>setError('无法安全重建工坊存档，原数据仍被保留。'));
   };
   const downloadOriginalSave=()=>{
     try{
@@ -186,6 +212,7 @@ export function WorkshopClient() {
     let raw: string | null = null;
     try { raw = window.localStorage.getItem(SAVE_KEY); } catch { /* Storage may be blocked. */ }
     if (raw !== null && !parseSavedWorld(raw)) {
+      invalidSaveRawRef.current=raw;
       setBlockedSave(true);
       setBackupChecked(false);
       setRecoveryBackup(null);
@@ -197,6 +224,7 @@ export function WorkshopClient() {
       }).catch(()=>{if(active)setBackupChecked(true);});
       return ()=>{active=false;};
     }
+    invalidSaveRawRef.current=null;
     setBlockedSave(false);
     setError('');
 
@@ -457,17 +485,7 @@ export function WorkshopClient() {
               <button type="button" data-testid="workshop-download-broken-save"
                 className="min-h-11 rounded-lg border border-gothic-brass/60 px-4 py-2 text-sm text-gothic-ivory"
                 onClick={downloadOriginalSave}>导出原存档</button>
-              <button type="button" className="rounded-lg border border-gothic-gold bg-gothic-wine px-4 py-2 text-sm text-gothic-ivory hover:brightness-110" onClick={() => {
-                try {
-                  window.localStorage.setItem(SAVE_KEY, JSON.stringify(newWorkshop()));
-                  window.dispatchEvent(new Event(CHANGE_EVENT));
-                  setBlockedSave(false);
-                  setRuntimeReady(false);
-                  setRecoveryVersion((v) => v + 1);
-                } catch {
-                  setError('无法写入新存档，请检查浏览器存储权限。');
-                }
-              }}>确认重新开始</button>
+              <button type="button" className="rounded-lg border border-gothic-gold bg-gothic-wine px-4 py-2 text-sm text-gothic-ivory hover:brightness-110" onClick={resetCorruptWorkshopSave}>确认重新开始</button>
               <Link href="/" className="rounded-lg border border-gothic-brass/60 px-4 py-2 text-sm text-gothic-ivory">返回大厅</Link>
             </div>
             {error && <p className="mt-3 text-sm text-red-200" role="alert">{error}</p>}
