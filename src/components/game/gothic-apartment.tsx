@@ -21,6 +21,9 @@ import {GothicRoomDrawer} from './gothic-room-drawer';
 import {YueshaPrivateRoom} from './yuesha-private-room';
 import './gothic-apartment.css';
 const KEY=COZY_SAVE_KEY;
+function getCozyStorage():Storage|null{
+  try{return window.localStorage;}catch{return null;}
+}
 function invalidCozySave(raw:string|null):boolean {
   if(raw===null)return false;
   try{return !validCozySave(JSON.parse(raw));}catch{return true;}
@@ -84,7 +87,9 @@ export function GothicApartment(){
     let active=true;
     // Initialize missing and legacy-complete V1 saves under the SAME lock as
     // gameplay. Never persist a stale React snapshot in an effect.
-    void transactCozySave(window.localStorage,navigator.locks,resumeCozySave).then(result=>{
+    const store=getCozyStorage();
+    if(!store){setSaveError('无法访问公寓存档，请检查浏览器存储权限。');return;}
+    void transactCozySave(store,navigator.locks,resumeCozySave).then(result=>{
       if(!active)return;
       if(result.status==='applied'||result.status==='unchanged')syncSaved();
       else if(result.status==='corrupt')setCorruptRaw(previous=>previous??result.raw);
@@ -95,7 +100,8 @@ export function GothicApartment(){
   useEffect(()=>{
     if(!ready)return;
     const onStorage=(event:StorageEvent)=>{
-      if(event.storageArea!==window.localStorage||
+      const store=getCozyStorage();
+      if(!store||event.storageArea!==store||
         (event.key!==KEY&&event.key!==null))return;
       syncSaved();
     };
@@ -108,7 +114,9 @@ export function GothicApartment(){
     if(!ready||corruptSave||paused||witchOpen||notices||selected!==null||world.phase!=='playing')return;
     const clock=window.setInterval(()=>{
       if(document.visibilityState!=='visible')return;
-      void tickCozySave(window.localStorage,navigator.locks).then(result=>{
+      const store=getCozyStorage();
+      if(!store){setSaveError('公寓计时已暂停：无法读取浏览器存储。');return;}
+      void tickCozySave(store,navigator.locks).then(result=>{
         if(result.status==='applied'||result.status==='unchanged')syncSaved();
         else if(result.status==='corrupt')setCorruptRaw(previous=>previous??result.raw);
         else setSaveError('公寓计时已暂停：无法安全保存进度，请检查浏览器存储权限。');
@@ -133,7 +141,9 @@ export function GothicApartment(){
           onClick={()=>{
             // An unreadable player save must not be overwritten by one accidental tap.
             if(!window.confirm('现有公寓存档无法读取。确认永久覆盖原始存档并重新开始吗？此操作无法撤销。'))return;
-            void resetCorruptCozySave(window.localStorage,navigator.locks,corruptRaw!).then(result=>{
+            const store=getCozyStorage();
+            if(!store){setSaveRecoveryError('无法读取公寓存档，请检查浏览器存储权限。');return;}
+            void resetCorruptCozySave(store,navigator.locks,corruptRaw!).then(result=>{
               if(result.status==='applied'){
                 syncSaved();setSaveRecoveryError('');setSaveError('');
               }else if(result.status==='stale'){
@@ -153,7 +163,9 @@ export function GothicApartment(){
   const change=(reducer:CozyReducer)=>{
     // UI callbacks supply an intent, not a possibly stale serialized snapshot.
     // Only committed results may update the scene or announce a story reward.
-    void transactCozySave(window.localStorage,navigator.locks,reducer).then(result=>{
+    const store=getCozyStorage();
+    if(!store){setSaveError('本次操作未保存：无法读取浏览器存储。');return;}
+    void transactCozySave(store,navigator.locks,reducer).then(result=>{
       if(result.status==='applied'||result.status==='unchanged'){
         syncSaved();
         if(result.status==='applied'){
