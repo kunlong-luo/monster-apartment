@@ -70,6 +70,9 @@ on:
       - 'src/components/moonwork/world-town.tsx'
       - 'e2e/gothic-desktop-*.spec.ts'
       - '.github/workflows/desktop-visual-review.yml'
+  # Required PR check must run on every PR, including changes outside the
+  # main-branch visual path filter. GitHub branch rules are configured separately.
+  pull_request:
   workflow_dispatch:
 permissions:
   contents: read

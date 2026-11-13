@@ -1,6 +1,6 @@
 # V3.1 开发路线图、任务拆解和验收清单
 
-> **规划状态，不是已完成工作清单。** 必须先跑通稳定的自动生产，再铺开剧情和美术。README 的现有游戏入口及 V2 功能仍为当前发布事实。
+> **原始 V3 规划快照，不是已完成工作清单。** 截至 2026-11-12，R10.9–R11.2 已在 V2 工坊落地部分自动设备周期与显式自动履约；P0-01～P0-08 所描述的**完整 V3 跨七页/Dexie 迁移**尚不能整体勾选。先完成 [R11.3 发布基线、同 SHA 全量回归和玩家验证](../engineering/2026-11-12-r11-3-release-baseline.md)，再决定剧情与美术扩量。下文历史“本轮/下一轮”保留为当时策划语境。
 
 ## 1. 发布原则
 
@@ -84,7 +84,7 @@
 | 生产视觉 | 缺料真的停、产出数字真实、资源动画来源正确 | E2E data hooks + 视频回看 |
 | 稳定性 | 20min 前台、反复切页/挂载/卸载、低端机 | 性能记录 + 手测 |
 
-**CI 门禁：** `pnpm install --frozen-lockfile`、`pnpm typecheck`、`pnpm lint`、`pnpm test`、`npm --prefix v2 run typecheck`、`NEXT_STATIC_EXPORT=1 pnpm build`、`pnpm e2e`。全部通过后再检查 GitHub Pages 部署结果；不得只因本地可编译就宣称已上线。
+**CI 门禁：** `bun install --frozen-lockfile`（仓库使用 `bun.lock`，没有 `pnpm-lock.yaml`）、`pnpm typecheck`、`pnpm lint`、`pnpm test`、`npm --prefix v2 run typecheck`、`NEXT_STATIC_EXPORT=1 pnpm build`、`pnpm e2e`。全部通过后再检查 GitHub Pages 部署结果；不得只因本地可编译就宣称已上线。
 
 ## 7. 本轮与下一轮落地的区别
 

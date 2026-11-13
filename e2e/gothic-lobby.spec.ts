@@ -1,11 +1,12 @@
 import {test,expect} from '@playwright/test';
+import {GAME_UI_RELEASE} from '../src/core/game-release';
 import {navigateScene} from './helpers/scene-navigation';
 
 test('lobby fills the viewport and keeps meaningful controls at screen edges',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
-  await expect(page.getByTestId('game-release')).toContainText('V3.77');
+  await expect(page.getByTestId('game-release')).toContainText(GAME_UI_RELEASE);
   await expect(page.getByTestId('gothic-eclipse-feature')).toContainText('神话 · 月蚀');
   await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link')).toHaveCount(7);
   await expect(page.getByRole('navigation',{name:'快捷功能'})).toHaveCount(0);
@@ -52,10 +53,10 @@ test('real saved draws change the introductory contract into an accurate collect
   await page.goto('/');
   await expect(page.getByTestId('gothic-eclipse-feature')).toHaveAttribute('data-first-contract','false');
   await expect(page.getByTestId('lobby-summon-guide-title')).toHaveText('神话 · 月蚀');
-  await expect(page.getByTestId('lobby-summon-guide-detail')).toContainText('2 张信物');
+  await expect(page.getByTestId('lobby-summon-guide-detail')).toContainText('2 张召唤券');
   await page.getByTestId('gothic-eclipse-feature').click();
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
-  await expect(page.getByTestId('game-release')).toContainText('V3.77');
+  await expect(page.getByTestId('game-release')).toContainText(GAME_UI_RELEASE);
   await expect(page.getByTestId('summon-owned-progress')).toContainText('1/5');
 });
 
@@ -292,7 +293,7 @@ test('original black-gold reference keeps left quests, central painting, right a
   await page.goto('/');
   const stage=page.locator('.gothic-lobby__painting');
   const quests=page.locator('.gothic-lobby__mission-rail');
-  const actions=page.locator('.gothic-lobby__character-actions');
+  const actions=page.getByTestId('gothic-design-right');
   const dock=page.getByRole('navigation',{name:'主要游戏功能'});
   await expect(stage).toBeVisible();
   await expect(quests).toBeVisible();
@@ -304,7 +305,7 @@ test('original black-gold reference keeps left quests, central painting, right a
   expect(painting.height).toBeGreaterThanOrEqual(898);
   expect(left.x+left.width).toBeLessThan(1440*.4);
   expect(right.x).toBeGreaterThan(1440*.75);
-  expect(right.width).toBeLessThanOrEqual(136);
+  expect(right.width).toBeLessThanOrEqual(1440*.27);
   expect(right.x).toBeGreaterThan(left.x+left.width+400);
   expect(bottom.y+bottom.height).toBeLessThanOrEqual(900);
   expect(bottom.y).toBeGreaterThan(900*.80);

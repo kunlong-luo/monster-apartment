@@ -1174,11 +1174,22 @@ test('R10.7 mobile 390x844 workshop remains usable with reduced motion and uncha
   expect(bounds.scroll).toBeLessThanOrEqual(bounds.viewport+1);
   expect(bounds.stage).toBeTruthy();
   expect(bounds.stage!.width).toBeGreaterThan(250);
-  // On mobile the cameo may intentionally collapse into a compact control.
-  // When rendered, verify the real hit target and readable dialogue rather
-  // than inferring success from Pixi readiness or the desktop screenshot.
+  // R11.3: never silently skip mobile Moonveil. CSS reserves an explicit
+  // row before the Pixi stage, so the dialogue is reachable without overlay.
   const mobileBubble=page.locator('button.gothic-cameo-bubble');
-  if(await mobileBubble.isVisible()){
+  const mobileCameo=page.locator('.gothic-cameo-assistant');
+  await expect(mobileCameo).toBeVisible();
+  await expect(mobileBubble).toBeVisible();
+  await expect(page.getByTestId('workshop-yuesha-dialogue')).toBeVisible();
+  const cameoBox=await mobileCameo.boundingBox();
+  const stageBox=await page.locator('#root .world').boundingBox();
+  expect(cameoBox).not.toBeNull();
+  expect(stageBox).not.toBeNull();
+  expect(cameoBox!.width).toBeGreaterThan(300);
+  expect(cameoBox!.height).toBeGreaterThan(60);
+  expect(stageBox!.y).toBeGreaterThanOrEqual(cameoBox!.y+cameoBox!.height-2);
+  await expect(page.getByTestId('workshop-yuesha-dialogue')).toHaveAttribute('data-beat-id','welcome');
+  {
     const check=async()=>mobileBubble.evaluate(element=>{
       const r=element.getBoundingClientRect(),style=getComputedStyle(element);
       const x=r.left+r.width/2,y=r.top+Math.min(r.height/2,20);
@@ -1204,6 +1215,7 @@ test('R10.7 mobile 390x844 workshop remains usable with reduced motion and uncha
   }
   await mkdir('visual-evidence/workshop',{recursive:true});
   await page.screenshot({path:'visual-evidence/workshop/mobile-workshop-reduced-motion-r107-390.png',animations:'disabled'});
+  await page.screenshot({path:'visual-evidence/workshop/mobile-workshop-true-dialogue-r113-390.png',animations:'disabled'});
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:workshop-v2-lab'))).toBe(saved);
 });
 
@@ -1508,6 +1520,73 @@ test('R11 real browser auto contract dispatch survives reload without duplicate 
   expect(reloaded.coins).toBe(world.coins+70);
 });
 
+
+test('R11.3 browser regression: moving a running machine persists layout without shifting contract deadline or duplicating cycles',async({page})=>{
+  test.setTimeout(110_000);
+  let state=newWorkshop();
+  state=moveMachine(state,7,6);
+  state=placeMachine(state,7,'kiln');
+  state=assignWorker(state,'brook',5);
+  state=assignWorker(state,'fern',6);
+  state=assignWorker(state,'cinder',7);
+  const t0=Date.now()-45_000;
+  const running=toggleWorkshopAutoDelivery(startWorkshopAuto(state,t0),t0);
+  const deadline=running.auto!.nextContractAt;
+  const moved=moveMachine(running,7,8);
+  // The persisted fingerprint was written before the player moved the machine.
+  // Opening this save must rebase machine clocks only, never the contract.
+  expect(moved.auto?.layout).not.toBe(workshopAutoLayout(moved));
+  await page.addInitScript(seed=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',seed);
+  },JSON.stringify(moved));
+  await page.goto('/workshop/');
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  await expect(page.getByTestId('workshop-auto-contract-toggle')).toHaveAttribute('aria-pressed','true');
+  const read=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')!));
+  await expect.poll(async()=>{
+    const s=await read();
+    return s.auto.layout;
+  }).toBe(workshopAutoLayout(moved));
+  const rebased=await read();
+  expect(rebased.auto.nextContractAt).toBe(deadline);
+  expect(rebased.day).toBe(1);
+  expect(rebased.coins).toBe(moved.coins);
+  expect(rebased.completed).toBe(0);
+  expect(rebased.auto.produced.water).toBe(0);
+  expect(rebased.auto.nextDue[5]).toBeGreaterThan(t0+30_000);
+  // Reproduce the *next* due machine tick by advancing only the saved clock,
+  // not by faking a balance or a UI output indicator.
+  await page.evaluate(()=>{
+    const key='monster-apartment:workshop-v2-lab';
+    const s=JSON.parse(localStorage.getItem(key)!);
+    const now=Date.now();
+    s.auto.nextDue[5]=now-1000;
+    s.auto.lastSimulatedAt=now-31000;
+    localStorage.setItem(key,JSON.stringify(s));
+    window.dispatchEvent(new Event('moonwork:v2-update'));
+  });
+  await expect.poll(async()=>{
+    const s=await read();
+    return s.auto.produced.water;
+  },{timeout:15_000}).toBe(2);
+  const produced=await read();
+  expect(produced.auto.nextContractAt).toBe(deadline);
+  expect(produced.tiles[5].stored).toBe(2);
+  expect(produced.day).toBe(1);
+  expect(produced.completed).toBe(0);
+  expect(produced.coins).toBe(moved.coins);
+  await page.evaluate(()=>window.dispatchEvent(new Event('moonwork:v2-update')));
+  await page.reload();
+  await expect(page.locator('#root')).toHaveAttribute('data-runtime-ready','true',{timeout:45_000});
+  const after=await read();
+  expect(after.auto.layout).toBe(workshopAutoLayout(moved));
+  expect(after.auto.nextContractAt).toBe(deadline);
+  expect(after.auto.produced.water).toBe(2);
+  expect(after.tiles[5].stored).toBe(2);
+  expect(after.completed).toBe(0);
+  expect(after.coins).toBe(moved.coins);
+});
 
 test('R11.1 automatic contract toggle is reachable in the 390px mobile production rail',async({page})=>{
   test.setTimeout(90000);

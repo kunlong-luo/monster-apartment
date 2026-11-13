@@ -13,6 +13,10 @@ import {navigateScene} from './helpers/scene-navigation';
  */
 test('R09.5 WebGL resources across repeated workshop mounts and plot changes',
   async({page,context,browser})=>{
+  // Dedicated isolated benchmark jobs set this explicitly; normal gameplay
+  // E2E must not turn machine-load-sensitive frame sampling into a release gate.
+  test.skip(process.env.R09_DIAGNOSTICS !== '1',
+    'R09 performance and GPU API diagnostics run in their dedicated workflows');
   test.setTimeout(330_000);
   await page.setViewportSize({width:1440,height:900});
   await page.addInitScript(installWorkshopWebGLProbe);

@@ -30,6 +30,10 @@ type PerfRecord={
 };
 
 test('R09 fixed-save 0/2/15-machine browser performance baseline',async({context,browser})=>{
+  // Dedicated isolated benchmark jobs set this explicitly; normal gameplay
+  // E2E must not turn machine-load-sensitive frame sampling into a release gate.
+  test.skip(process.env.R09_DIAGNOSTICS !== '1',
+    'R09 performance and GPU API diagnostics run in their dedicated workflows');
   test.setTimeout(420_000);
   const records:PerfRecord[]=[];
   const heapReports:Record<string,unknown>[]=[];
