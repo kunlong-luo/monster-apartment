@@ -3,13 +3,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {Pause,Play,ScrollText,X} from 'lucide-react';
 import {AnimatePresence} from 'motion/react';
-import {useEffect,useState,useSyncExternalStore} from 'react';
+import {useCallback,useEffect,useState,useSyncExternalStore} from 'react';
 import moonveil from '../../../public/art/yuesha-avatar-v3.webp';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
-import {newCozyGame,validCozySave,resumeCozySave,advanceCozy,
+import {newCozyGame,validCozySave,resumeCozySave,
   relocateCozyResident,cozyDay,cozyGoal,cozyDailyIncome} from '@/core/cozy-engine';
 import type {CozyState} from '@/core/cozy-engine';
+import {COZY_SAVE_KEY,transactCozySave,tickCozySave,resetCorruptCozySave} from '@/lib/game/cozy-save-transaction';
+import type {CozyReducer} from '@/lib/game/cozy-save-transaction';
 import {GothicAtmosphere} from './gothic-atmosphere';
 import {GothicSceneIllumination} from './gothic-scene-illumination';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
@@ -18,7 +20,10 @@ import {GothicRoomDoors} from './gothic-room-doors';
 import {GothicRoomDrawer} from './gothic-room-drawer';
 import {YueshaPrivateRoom} from './yuesha-private-room';
 import './gothic-apartment.css';
-const KEY='monster-apartment:cozy:v1';
+const KEY=COZY_SAVE_KEY;
+function getCozyStorage():Storage|null{
+  try{return window.localStorage;}catch{return null;}
+}
 function invalidCozySave(raw:string|null):boolean {
   if(raw===null)return false;
   try{return !validCozySave(JSON.parse(raw));}catch{return true;}
@@ -50,6 +55,7 @@ export function GothicApartment(){
   });
   const corruptSave=corruptRaw!==null;
   const [saveRecoveryError,setSaveRecoveryError]=useState('');
+  const [saveError,setSaveError]=useState('');
   const [selected,setSelected]=useState<number|null>(null);
   const [moving,setMoving]=useState<number|null>(null);
   const [paused,setPaused]=useState(false);
@@ -64,50 +70,65 @@ export function GothicApartment(){
     const frame=window.requestAnimationFrame(()=>{setWitchRoom(true);setWitchOpen(true);});
     return ()=>window.cancelAnimationFrame(frame);
   },[]);
+  const syncSaved=useCallback(()=>{
+    try{
+      const raw=window.localStorage.getItem(KEY);
+      if(invalidCozySave(raw)){
+        // Another tab's damaged payload is never overwritten by this page.
+        setCorruptRaw(previous=>previous??raw);
+        return;
+      }
+      setWorld(raw?resumeCozySave(JSON.parse(raw) as CozyState):newCozyGame());
+      setCorruptRaw(null);
+    }catch{setSaveError('无法读取公寓存档，请检查浏览器存储权限。');}
+  },[]);
   useEffect(()=>{
     if(!ready)return;
-    try{
-      // Never overwrite a corrupt save. An unchanged snapshot also must not
-      // echo a cross-tab storage event back to the browser's shared storage.
-      const current=localStorage.getItem(KEY);
-      if(invalidCozySave(current))return;
-      const next=JSON.stringify(world);
-      if(current!==next)localStorage.setItem(KEY,next);
-    }catch{/* Storage can be unavailable; play remains possible in memory. */}
-  },[ready,world]);
+    let active=true;
+    // Initialize missing and legacy-complete V1 saves under the SAME lock as
+    // gameplay. Never persist a stale React snapshot in an effect.
+    const store=getCozyStorage();
+    if(!store){
+      void Promise.resolve().then(()=>{
+        if(active)setSaveError('无法访问公寓存档，请检查浏览器存储权限。');
+      });
+      return ()=>{active=false;};
+    }
+    void transactCozySave(store,navigator.locks,resumeCozySave).then(result=>{
+      if(!active)return;
+      if(result.status==='applied'||result.status==='unchanged')syncSaved();
+      else if(result.status==='corrupt')setCorruptRaw(previous=>previous??result.raw);
+      else setSaveError('当前无法安全保存公寓进度。请使用支持 Web Locks 且允许本地存储的浏览器。');
+    });
+    return ()=>{active=false;};
+  },[ready,syncSaved]);
   useEffect(()=>{
     if(!ready)return;
     const onStorage=(event:StorageEvent)=>{
-      if(event.storageArea!==window.localStorage||
+      const store=getCozyStorage();
+      if(!store||event.storageArea!==store||
         (event.key!==KEY&&event.key!==null))return;
-      try{
-        const raw=window.localStorage.getItem(KEY);
-        if(invalidCozySave(raw)){
-          // A remote bad write is never replaced with an empty apartment.
-          // Keep the first damaged snapshot while the same warning is open;
-          // a newer but still-invalid save belongs to another tab too.
-          setCorruptRaw(previous=>previous??raw);
-          return;
-        }
-        setWorld(raw?resumeCozySave(JSON.parse(raw) as CozyState):newCozyGame());
-        setCorruptRaw(null);
-      }catch{
-        // A storage-read failure is not evidence that the save was deleted.
-      }
+      syncSaved();
     };
     window.addEventListener('storage',onStorage);
     return ()=>window.removeEventListener('storage',onStorage);
-  },[ready]);
+  },[ready,syncSaved]);
   useEffect(()=>{
     // Do not let the day clock penalize players who are reading dialogue,
     // inspecting room actions, or switching away from the browser tab.
     if(!ready||corruptSave||paused||witchOpen||notices||selected!==null||world.phase!=='playing')return;
     const clock=window.setInterval(()=>{
-      if(document.visibilityState==='visible')
-        setWorld(current=>advanceCozy(current));
+      if(document.visibilityState!=='visible')return;
+      const store=getCozyStorage();
+      if(!store){setSaveError('公寓计时已暂停：无法读取浏览器存储。');return;}
+      void tickCozySave(store,navigator.locks).then(result=>{
+        if(result.status==='applied'||result.status==='unchanged')syncSaved();
+        else if(result.status==='corrupt')setCorruptRaw(previous=>previous??result.raw);
+        else setSaveError('公寓计时已暂停：无法安全保存进度，请检查浏览器存储权限。');
+      });
     },2000);
     return ()=>window.clearInterval(clock);
-  },[ready,corruptSave,paused,witchOpen,notices,selected,world.phase]);
+  },[ready,corruptSave,paused,witchOpen,notices,selected,world.phase,syncSaved]);
   useEffect(()=>{
     if(!feedback)return;
     const timer=window.setTimeout(()=>setFeedback(current=>
@@ -125,18 +146,17 @@ export function GothicApartment(){
           onClick={()=>{
             // An unreadable player save must not be overwritten by one accidental tap.
             if(!window.confirm('现有公寓存档无法读取。确认永久覆盖原始存档并重新开始吗？此操作无法撤销。'))return;
-            try{
-              // window.confirm may leave the dialogue open while another tab
-              // repairs or replaces this save. Never overwrite that update.
-              const current=localStorage.getItem(KEY);
-              if(current!==corruptRaw||!invalidCozySave(current)){
+            const store=getCozyStorage();
+            if(!store){setSaveRecoveryError('无法读取公寓存档，请检查浏览器存储权限。');return;}
+            void resetCorruptCozySave(store,navigator.locks,corruptRaw!).then(result=>{
+              if(result.status==='applied'){
+                syncSaved();setSaveRecoveryError('');setSaveError('');
+              }else if(result.status==='stale'){
                 setSaveRecoveryError('其它标签页已更新公寓存档。重新开始未执行，请刷新页面检查最新进度。');
-                return;
+              }else{
+                setSaveRecoveryError('无法安全写入新存档。请检查浏览器 Web Locks 和存储权限。');
               }
-              const fresh=newCozyGame();
-              localStorage.setItem(KEY,JSON.stringify(fresh));
-              setWorld(fresh);setCorruptRaw(null);setSaveRecoveryError('');
-            }catch{setSaveRecoveryError('无法写入新存档，请检查浏览器存储权限。');}
+            });
           }}>确认重新开始</button>
         <Link href="/" className="rounded-lg border border-gothic-brass/60 px-4 py-2 text-sm">返回大厅</Link>
       </div>
@@ -145,16 +165,28 @@ export function GothicApartment(){
   </main>;
   const goal=cozyGoal(world);
   const latest=world.journal[world.journal.length-1];
-  const change=(next:CozyState)=>{
-    if(next===world)return;
-    setWorld(next);
-    const story=next.journal[next.journal.length-1];
-    if(story?.key!==world.journal[world.journal.length-1]?.key)
-      setFeedback(previous=>({id:(previous?.id??0)+1,text:story.zh}));
+  const change=(reducer:CozyReducer)=>{
+    // UI callbacks supply an intent, not a possibly stale serialized snapshot.
+    // Only committed results may update the scene or announce a story reward.
+    const store=getCozyStorage();
+    if(!store){setSaveError('本次操作未保存：无法读取浏览器存储。');return;}
+    void transactCozySave(store,navigator.locks,reducer).then(result=>{
+      if(result.status==='applied'||result.status==='unchanged'){
+        syncSaved();
+        if(result.status==='applied'){
+          setSaveError('');
+          const story=result.state.journal[result.state.journal.length-1];
+          if(story?.key!==result.previous.journal[result.previous.journal.length-1]?.key)
+            setFeedback(previous=>({id:(previous?.id??0)+1,text:story.zh}));
+        }else setSaveError('公寓状态已更新，本次操作未执行。请查看最新房间状态。');
+      }else if(result.status==='corrupt'){
+        setCorruptRaw(previous=>previous??result.raw);
+      }else setSaveError('本次操作未保存。请检查浏览器 Web Locks 和存储权限。');
+    });
   };
   const choose=(index:number)=>{
     if(moving!==null&&index!==moving){
-      change(relocateCozyResident(world,moving,index));
+      change(current=>relocateCozyResident(current,moving,index));
       setMoving(null);setSelected(index);
     }else setSelected(value=>value===index?null:index);
   };
@@ -164,6 +196,10 @@ export function GothicApartment(){
     <div className="ga-light" aria-hidden="true"/>
     <div className="ga-shade" aria-hidden="true"/>
     <div className="ga-dust" aria-hidden="true"/>
+    {saveError&&<div role="alert" data-testid="cozy-save-error"
+      className="absolute top-[72px] left-3 z-[20] max-w-[min(360px,85vw)] rounded-lg border border-rose-300/60 bg-[#361b28f2] p-3 text-xs leading-5 text-rose-100 shadow-xl">
+      {saveError}<button type="button" aria-label="关闭存档提示" className="ml-2 underline" onClick={()=>setSaveError('')}>关闭</button>
+    </div>}
     <GothicSceneIllumination variant="apartment" paused={paused||reducedMotion}/>
     <GothicAtmosphere paused={paused||reducedMotion}/>
     <header className="ga-red-gold-header absolute inset-x-0 top-0 z-[5] flex min-h-[56px] items-start gap-1.5 bg-[linear-gradient(#08060ad3,transparent)] px-2 py-2.5 sm:gap-3 sm:px-6" aria-label="公寓资源与操作">

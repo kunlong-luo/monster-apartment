@@ -151,6 +151,48 @@ test('an older apartment recovery dialog cannot reset a newer damaged payload fr
   }
 });
 
+
+test('simultaneous housing builds in two tabs both survive without a lost update',async({page,context})=>{
+  test.setTimeout(90000);
+  await page.goto('/apartment/');
+  await expect(page.getByTestId('gothic-apartment')).toBeVisible();
+  await page.getByRole('button',{name:'暂停公寓时间'}).click();
+  const second=await context.newPage();
+  await second.goto('/apartment/');
+  try{
+    await expect(second.getByTestId('gothic-apartment')).toBeVisible();
+    await second.getByRole('button',{name:'暂停公寓时间'}).click();
+    await page.getByTestId('ga-room-0').click();
+    await second.getByTestId('ga-room-2').click();
+    await Promise.all([
+      page.getByTestId('ga-build-nest').click(),
+      second.getByTestId('ga-build-bath').click(),
+    ]);
+    await expect(page.getByTestId('ga-coins')).toHaveText('41');
+    await expect(second.getByTestId('ga-coins')).toHaveText('41');
+    await page.reload();
+    await expect(page.getByTestId('ga-room-0')).toContainText('私人卧室');
+    await expect(page.getByTestId('ga-room-2')).toContainText('水汽浴室');
+    await expect(page.getByTestId('ga-coins')).toHaveText('41');
+    expect(await page.evaluate(()=>JSON.parse(
+      localStorage.getItem('monster-apartment:cozy:v1')||'{}').rooms[0]?.type)).toBe('nest');
+  }finally{await second.close();}
+});
+
+test('apartment refuses normal writes without cross-tab locks',async({page})=>{
+  await page.addInitScript(()=>{
+    Object.defineProperty(navigator,'locks',{configurable:true,value:undefined});
+  });
+  await page.goto('/apartment/');
+  await expect(page.getByTestId('gothic-apartment')).toBeVisible();
+  await page.getByTestId('ga-room-2').click();
+  await page.getByTestId('ga-build-bath').click();
+  await expect(page.getByTestId('cozy-save-error')).toContainText('本次操作未保存');
+  expect(await page.evaluate(()=>
+    localStorage.getItem('monster-apartment:cozy:v1'))).toBeNull();
+  await expect(page.getByTestId('ga-coins')).toHaveText('105');
+});
+
 test('another open tab receives housing progress without overwriting a newer save',async({page,context})=>{
   test.setTimeout(90000);
   await page.goto('/apartment/');
