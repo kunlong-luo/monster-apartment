@@ -114,7 +114,7 @@ test('stale apartment recovery cannot erase progress repaired after the warning 
 
   await page.reload();
   await expect(page.getByTestId('ga-coins')).toHaveText('71');
-  await expect(page.getByTestId('ga-room-2')).toContainText('浴池');
+  await expect(page.getByTestId('ga-room-2')).toContainText('水汽浴室');
 });
 
 test('another open tab receives housing progress without overwriting a newer save',async({page,context})=>{
