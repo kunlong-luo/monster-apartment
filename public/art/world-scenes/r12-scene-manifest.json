@@ -41,8 +41,17 @@
     "warehouse": {
       "id": "S06",
       "route": "/warehouse/",
-      "status": "pending",
-      "candidate": null,
+      "status": "review",
+      "candidate": {
+        "sourceType": "ai-generated",
+        "sourceReference": "R12 S06 dedicated magical warehouse 2026-11-14; original only in conversation S06 review ZIP, not the repository",
+        "sourceSHA256": "f84ac996a287cc35ecf4210210329fdc71c7ec6cb7c7247d42389aef3732b009",
+        "nativeWidth": 1672,
+        "nativeHeight": 941,
+        "availableInRepo": false,
+        "humanVisualReview": false,
+        "hasNativeMobileArt": false
+      },
       "desktop": "public/art/world-scenes/r12/warehouse-desktop.webp",
       "mobile": "public/art/world-scenes/r12/warehouse-mobile.webp",
       "review": null
