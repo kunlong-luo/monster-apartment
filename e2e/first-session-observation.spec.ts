@@ -12,7 +12,8 @@ test('unlisted R11.3 observer route exports one anonymous participant without a 
   await page.getByTestId('research-would-replay').selectOption('unsure');
   await page.getByRole('button',{name:'生成单人 CSV'}).click();
   const csv=await page.getByTestId('research-csv-preview').inputValue();
-  const lines=csv.split('\r\n');
+  // HTML textarea values normalize CRLF to LF even when the exported CSV uses CRLF.
+  const lines=csv.split(/\r?\n/);
   expect(lines).toHaveLength(3);
   expect(lines[0]).toBe('participant_id,device,viewport,browser,session_minutes,'+
     'entered_workshop,assigned_worker_without_help,enabled_auto_production_without_help,'+
