@@ -4,7 +4,7 @@
 
 ## 测试前门槛
 
-- 最近一次完成同 SHA 全量验收的**游戏代码**为 [`b88f97a`](https://github.com/kunlong-luo/monster-apartment/commit/b88f97a5684b6416eb32c1aff671705ca5e23612)：Quality、Desktop Visual Review、Gameplay Browser Review full（**161 passed / 2 skipped / 0 failed**）和 Pages 全部成功。后续文档提交不自动代表另一个 SHA 通过 full；正式招募前重新确认线上版本。
+- 截至 2026-11-14，最近一次正式发布且完成同 SHA **Quality、Gameplay Browser Review full、Pages** 的游戏代码为 [`fdcaae05`](https://github.com/kunlong-luo/monster-apartment/commit/fdcaae058263ab500262488cd8f1950942f9ab5f)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/43431196724)、[Gameplay Browser Review full](https://github.com/kunlong-luo/monster-apartment/actions/runs/43431196734)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/43431323323) 均成功。对应 [PR #21](https://github.com/kunlong-luo/monster-apartment/pull/21) 最终 head `6a0aad48` 的 [Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/43428176678) 通过；**不能冒称该合并 SHA 自身重新跑过 main 视觉审核**。后续研究页面与文档提交不改变已核验的玩法逻辑，但仍须招募前确认线上版本。
 - [Issue #7](https://github.com/kunlong-luo/monster-apartment/issues/7) 月纱 PC/手机对话像素审查已完成并关闭。
 - **尚未完成**：[Issue #9](https://github.com/kunlong-luo/monster-apartment/issues/9) 的实际主分支保护与 required checks；完成前不宣称 R11.3 发布治理验收结束。
 - 正式测试入口：https://kunlong-luo.github.io/monster-apartment/ 。每位受测者使用全新浏览器配置文件或清除该站点测试数据；不要清除其真实个人存档。
@@ -33,6 +33,14 @@
 - 重玩意愿：分别计 `yes` / `no` / `unsure`，不能当成真实次日留存率。
 
 结束后由负责人出具一页 **R12 决策记录**：先优化新手引导、深化自动经营反馈、修复导航/性能，还是进入正式人物/机器美术量产。每项结论附原始匿名样本数和真实观察。未招满 10 人、规则未保护或结果尚无证据时，只标记**待验证**。
+
+
+## 匿名观察工具（不替代真实招募）
+
+- 本次工具开发 PR 合并并成功发布后，主持人可在 `/research/first-session/` 访问**独立的观察记录页**；正式完整地址为 `https://kunlong-luo.github.io/monster-apartment/research/first-session/`。它不在游戏七个主要入口中，也没有后端数据库；未完成部署前不要假定该路由已对外可用。
+- 一位玩家对应一份 CSV。主持人输入 `T01`、`T02` 等匿名编号、设备与真实观察结果，点「生成单人 CSV」后应**下载文件**并自行保管；页面重载不会恢复未导出的观察数据。需要将 10 份记录按同一表头合并进工作表（保留一行表头），不可将空记录或自动化跑测填成真实人次。
+- 这个页面不上传、不持久化**观察数据**，不能提供自动远程汇总、后台通知或玩家招募。主持人应优先使用自己的独立设备记录，避免在受测玩家的游戏设备上切换路由而影响观察与游戏自动进程。
+- 主持人记录资料时不输入真实姓名、联系方式、账号、个人存档或未经许可的图像。若参与者中途退出，记录其退出原因（匿名）和实际分钟数，但不算已完成 15–20 分钟的有效访谈。
 
 ## 招募和执行准备（计划，不是已经获得参与者）
 
