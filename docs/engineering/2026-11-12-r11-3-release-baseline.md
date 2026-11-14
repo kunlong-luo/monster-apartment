@@ -1,8 +1,20 @@
 # R11.3 · 发布收口、全量回归与计划校准
 
-初建日期：2026-11-12；最新验收记录：2026-11-13。本记录区分**历史冻结前基线**、**已经证明的正式发布技术回归**和**仍需管理员/真人完成的治理及产品验证**。
+初建日期：2026-11-12；最新验收记录：2026-11-14。本记录区分**历史冻结前基线**、**已经证明的正式发布技术回归**和**仍需管理员/真人完成的治理及产品验证**。
 
-## 0. 2026-11-14 · 当前已发布功能基线（PR #19 / #21 后）
+## 0. 2026-11-14 · 已核验的 R11.3 正式技术发布（PR #22 后）
+
+> **本节仅冻结实际已经验收的功能代码和部署证据，不声称 GitHub 管理员设置或真人试玩已完成。** 随后的纯文档提交会使 `main` HEAD 不同于下面的功能 SHA；不能把此前测试“挪用”为文档提交本身的 full 结果。
+
+- **正式功能发布 SHA**：[ `6d997e4d0b2a8229d989f5643bcd4bc19f311e08` ](https://github.com/kunlong-luo/monster-apartment/commit/6d997e4d0b2a8229d989f5643bcd4bc19f311e08)，已合并 [PR #22](https://github.com/kunlong-luo/monster-apartment/pull/22)。它在原先 [PR #19](https://github.com/kunlong-luo/monster-apartment/pull/19) / [PR #21](https://github.com/kunlong-luo/monster-apartment/pull/21) 的存档事务化基线之上加入独立的匿名试玩记录页面、CSV 校验及本地导出，以及非游戏路由隐藏场景导航。
+- **四工作流同 SHA 验收**：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/43551717561) `checks` / `pixi-v2-scaffold` / `static-export` 均成功；[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/43551717522) `desktop-review` 成功；[Gameplay Browser Review full](https://github.com/kunlong-luo/monster-apartment/actions/runs/43551717531) `browser-review` 成功（完成日志 **166 passed / 2 skipped / 0 failed**）；[GitHub Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/43551776453) `deploy` 成功。全部 `head_sha` 均为上述正式 SHA。
+- **研究辅助工具**：正式 Pages 已构建并发布 `/research/first-session/` 静态路由，自动化包括 390×844 页面不横向溢出、匿名单人 CSV、选择设备及下载、刷新无记录持久化。它**不自动采集观察或保存姓名**；主持人须自行归档已取得同意的匿名观察记录。
+- **尚未满足的治理门禁**：GitHub 实时 `branches/main` 返回 `protected:false`，`/rulesets` 返回空数组；[Issue #9](https://github.com/kunlong-luo/monster-apartment/issues/9) 仍须管理员实际设置 PR-only、required checks、禁止强推，并重新读取 API 核验。工作流自身成功不是保护规则。
+- **尚未满足的真人产品验收**：[Issue #10](https://github.com/kunlong-luo/monster-apartment/issues/10) 尚无 10 位独立首次玩家的经过验证的观察数据；不能把 166 个浏览器断言当成真人样本或使用未观察字段推导失败率。[首次试玩协议](../research/2026-11-13-r113-first-session-protocol.md) 明确 15–20 分钟、PC/手机覆盖和 CSV 模板。
+- **独立美术待办**：[Issue #16](https://github.com/kunlong-luo/monster-apartment/issues/16) 的公寓/委托/仓库三处独立高清绘景及候选人物/机器美术仍未人工审核完成，不能标记 `ready`。
+- **阶段判定**：R11.3 **技术发布、同 SHA 完整回归与正式部署完成**；**发布治理、真人验证仍 IN PROGRESS**。下一步优先解除 #9 并开展 #10；缺真实玩家反馈前不擅自启动大批量 R12 CG 或声称留存达标。
+
+## 0A. 2026-11-14 · PR #19 / #21 后的历史功能基线（已被 #22 后续发布替代）
 
 > 最新已确认的正式游戏代码 `main` 为 [`fdcaae05`](https://github.com/kunlong-luo/monster-apartment/commit/fdcaae058263ab500262488cd8f1950942f9ab5f)。此状态由 GitHub 实时检查及 Actions 结果支持，不代表 GitHub 主分支规则、真人试玩或 R12 正式美术已经完成。
 
@@ -12,7 +24,7 @@
 - 2026-11-14 最新检查：默认分支依然 `protected:false`，`rulesets=[]`；[Issue #9](https://github.com/kunlong-luo/monster-apartment/issues/9) 未解决。尚无 10 名真实独立玩家试玩；[Issue #10](https://github.com/kunlong-luo/monster-apartment/issues/10) 未完成。公寓、委托及仓库独立高清环境仍由 [Issue #16](https://github.com/kunlong-luo/monster-apartment/issues/16) 跟进，未交付批准素材。
 - **本轮结论**：功能技术发布基线已推进，R11.3 治理与真实玩家验证仍为 **IN PROGRESS**。研究表单只帮助匿名记录，不会自动获得真实样本或解除管理员 Rulesets 门槛。
 
-## 0A. 2026-11-13 · 先前功能发布基线（PR #14 / #15 后，历史 SHA）
+## 0B. 2026-11-13 · 先前功能发布基线（PR #14 / #15 后，历史 SHA）
 
 > 本节记录**最近一次经四工作流同 SHA 完整验收的游戏代码**，不等同于“GitHub 保护规则已配置”或“真人试玩已完成”。后续纯文档提交可能改变 main HEAD；不能据此冒认该文档提交本身已经执行完整浏览器回归。
 
@@ -23,7 +35,7 @@
 - 2026-11-13 再查 GitHub：`branches/main` 为 `protected:false`、required checks 为空、`/rulesets` 返回空数组。仓库管理员仍须完成 [Issue #9](https://github.com/kunlong-luo/monster-apartment/issues/9)；[Issue #10](https://github.com/kunlong-luo/monster-apartment/issues/10) 暂无 10 人真实试玩数据；[Issue #16](https://github.com/kunlong-luo/monster-apartment/issues/16) 是独立场景美术后续任务，尚未交付。
 - **发布判定**：此 SHA 的自动化技术发布证据齐备；R11.3 整体依旧 **IN PROGRESS**（治理 + 真人产品验收未完成），不得将 Issue #9/#10/#16 标记完成。
 
-## 0B. 2026-11-13 · 初次里程碑功能基线（历史 SHA `68dc7550`）
+## 0C. 2026-11-13 · 初次里程碑功能基线（历史 SHA `68dc7550`）
 
 - 正式分支提交：[`68dc7550`](https://github.com/kunlong-luo/monster-apartment/commit/68dc7550a7d5a088f199e43a448959cfe59d9b3d)，合并自 [PR #8](https://github.com/kunlong-luo/monster-apartment/pull/8)。
 - [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689351)：`checks` / `pixi-v2-scaffold` / `static-export` 全部成功；[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689353)：`desktop-review` 成功；[Gameplay Browser Review full](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689400)：`browser-review` 成功，**158 passed / 2 skipped**；[GitHub Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353772800)：成功。四条工作流均为此 `head_sha`。
@@ -48,7 +60,7 @@
 | R10.1–R10.10 工坊迭代 | 已实现与发布过的功能迭代 | 不等于正式美术交付 | 历史 Quality / visual / Pages；候选 CG 仍 review |
 | R11/R11.1 显式自动履约及 PC/手机操作 | 已实现、已发布 | 正式 main full 已通过（非真人试玩） | 旧档 opt-out、点击不即时结算、唯一操作入口 |
 | R11.2 独立合同日历/布局指纹 | 已实现，起始基线为 246f6c87 | **正式 main browser full 已通过** | 布局变化不得刷新截止时间，下一轮真实生产仅一次 |
-| R11.3 计划、视觉、CI 收口 | PR #8/#14/#15/#19/#21 已合并；最新功能发布 SHA 为 fdcaae05 | **main Quality / full browser / Pages 同 SHA 成功；PR head 视觉另已通过；治理未完成** | 本台账第 0 节；#9 未实施、#10 待真人试玩 |
+| R11.3 计划、视觉、CI 收口 | PR #22 已合并，正式功能发布 SHA 为 6d997e4d | **同 SHA Quality / desktop / browser full / Pages 全部成功；治理与真人未完成** | 本台账第 0 节；#9 未实施、#10 待真人试玩 |
 | V3 全站自主调度/权威 Dexie V3 存档 | 仅部分 V2 工坊规则落地；完整 V3 未实现 | 不可标记 Released | 跨七页统一账本、迁移与真实试玩未完成 |
 | Issue #7 月纱对话 | PC/手机修复已合并 | **已按主分支截图和断言关闭** | PC 1440×900，手机 390×844，reduced-motion；见第 0 节 |
 | 正式美术 | 9 张设备静态图 review；3 人工匠全身 CG、三组四帧机器工作动画、月纱正式资源 pending | **阻塞** | `v2/art/asset-pack.v1.json`: paintingDelivered / browserVisualReviewPassed / releaseReady 均 false |
@@ -93,4 +105,4 @@
 
 ### 完成定义
 
-**R11.3 已发布游戏代码更新至 `fdcaae05`，但整体仍未完成**：同一 main SHA 的 Gameplay Browser Review full + Quality + Pages 证据齐备；对应 PR head 的 Desktop Visual Review 已通过（不同 SHA）；Issue #7 已关闭（人工截图验收属较早里程碑）；**主分支 ruleset/required checks 尚未实际生效（Issue #9）**。必须由管理员配置并读取确认后才能标记完整 R11.3 发布治理 DONE。独立十人试玩与正式美术分别按 Issue #10 / 资产审核另行验收，不得从 CI 结果推定完成。
+**R11.3 正式游戏代码发布基线更新至 `6d997e4d`，但整体仍未完成**：正式 main 同一 SHA 的 Gameplay Browser Review full + Quality + Desktop Visual Review + Pages 全部成功；Issue #7 已关闭（人工截图验收属较早里程碑）；**主分支 ruleset/required checks 尚未实际生效（Issue #9）**。必须由管理员配置并读取确认后才能标记完整 R11.3 发布治理 DONE。独立十人试玩与正式美术分别按 Issue #10 / 资产审核另行验收，不得从 CI 结果推定完成。
