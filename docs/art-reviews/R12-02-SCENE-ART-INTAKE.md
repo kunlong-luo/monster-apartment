@@ -17,9 +17,20 @@
 | --- | --- | --- | --- | --- |
 | S02 公寓建筑公共空间 | review，已打包供审稿，未导入仓库 | 1672×941 PNG | `ce7c4f924ca18c0480bd2064e5507912021e417397706b2cb2c8e8af58af90cf` | 原生 PC 不足 2560×1440，缺原生手机 1080×1920，人工审稿、权限核验待完成 |
 | S05 契约委托大厅 | review，已打包供审稿，未导入仓库 | 1672×941 PNG | `ae97b5f40161a3b40bc6732a453c0b3af6bc379872a7ec13e0dac59557399530` | 同上；不能只使用 390×844 裁切图作为原生手机 CG |
-| S06 魔法仓库 | pending | 无符合主题、经审查的独立原画 | — | 必须重新绘制货架、晶核容器、物资收发路线，与 S05 视觉明显不同 |
+| S06 魔法仓库 | review，候选原图未导入仓库 | 1672×941 PNG | `f84ac996a287cc35ecf4210210329fdc71c7ec6cb7c7247d42389aef3732b009` | 缺原生 2560×1440 与 1080×1920 双构图、人工画质/来源审核及游戏截图 |
 
 上述 S02/S05 原画与裁切预览打包在本次聊天导出的 `r12-s02-s05-review-only.zip`。**档案没有写入 GitHub，因此此文档不提供虚构的仓库路径或公开下载 URL。** 审稿包包含 `review-manifest.json`，记录原图/候选 WebP 哈希，来源类型、原始尺寸及权限与人工检查状态。
+
+## 2026-11-14 · S06 审稿候选与正式页面接线
+
+**最新状态：三处皆是 review，不是 production。** S06 魔法仓库的独立环境候选已生成，以晶核货架、封印储箱、仓储吊装架、盘点台构成与 S05 契约大厅不同的场景身份。原始图为 1672×941，SHA-256 `f84ac996a287cc35ecf4210210329fdc71c7ec6cb7c7247d42389aef3732b009`，候选 WebP SHA-256 `84c8bfad00980bdcfe227a8fa488a6e4b0f8fa9f0a7da01294600cfb66f57579`。原图/候选 WebP/1440×900 PC 与 390×844、390×550 手机裁切预览保存在本轮对话的 `r12-s06-warehouse-review-only.zip`，**未传入 GitHub 仓库**。手机图片为裁切检查，不是独立竖版原画；无权限核验和人工签字，不能晋级。
+
+本轮另外把 **已审核场景的真实调用路径**接入代码：
+- `src/lib/game/r12-scene-assets.ts` 唯独对 `manifest.status=production` 返回按 GitHub Pages `basePath` 解析的桌面与手机文件 URL。
+- `src/components/game/r12-scene-painting.tsx` 用独立 PC/手机画幅加载背景与地点横幅，沿用既有 `ReliableImage` 的失败重试及旧图回退。
+- 公寓 `gothic-apartment.tsx`、委托/仓库 `world-ui.tsx`、`world-orders.tsx`、`world-warehouse.tsx` 已接线；其他地点、库存、委托、导航、存档不变。
+- 新 `e2e/r12-scene-production-wiring.spec.ts` 逐一核验未晋级图不得进入浏览器；晋级后两端真正加载、解码并展示对应独立画稿。`e2e/route-health.spec.ts` 也会在未来真正晋级时验证新图，而非继续只寻找旧大厅的背景字符串。
+- 当前所有 `status` 仍是 `review`，**合并上述代码不会让旧图在主站视觉上突然替换成未批准图**。需要独立原生画稿和签署才能进行最终可见切换。
 
 ## 自动晋级门禁
 

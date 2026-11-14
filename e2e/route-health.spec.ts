@@ -1,4 +1,9 @@
 import {test,expect} from '@playwright/test';
+import {readFileSync} from 'node:fs';
+const sceneManifest=JSON.parse(readFileSync(
+  new URL('../public/art/world-scenes/r12-scene-manifest.json',import.meta.url),
+  'utf8',
+)) as {scenes:Record<'apartment'|'orders'|'warehouse',{status:string}>};
 
 /**
  * Fast, actionable release gate: distinguish a broken route/hydration from a
@@ -33,10 +38,23 @@ test('seven production routes boot with interactive game surfaces',async({page})
           route.path==='/characters/'?'.cg-scene__background':'.mw-gothic-scene';
         const expected=route.path==='/characters/'?'workshop-gothic-hall':
           route.path==='/town/'?'town-moonlit-gate':'lobby-hero';
-        const background=await page.locator(selector).evaluate(el=>getComputedStyle(el).backgroundImage);
-        expect(background,route.path+' painted background must resolve with Pages basePath')
-          .toContain(expected);
-        expect(background).not.toContain('../'+expected);
+        const artArea=route.path==='/apartment/'?'apartment':
+          route.path==='/orders/'?'orders':
+          route.path==='/warehouse/'?'warehouse':null;
+        const production=artArea!==null&&sceneManifest.scenes[artArea].status==='production';
+        if(production){
+          const backdrop=page.locator(selector);
+          await expect(backdrop).toHaveAttribute('data-r12-scene-art','production');
+          const desktop=backdrop.locator('img[data-r12-art-image="desktop"]');
+          await expect(desktop).toHaveAttribute('data-image-load','original');
+          await expect.poll(()=>desktop.evaluate(el=>(el as HTMLImageElement).naturalWidth),
+            {timeout:20000}).toBeGreaterThan(0);
+        }else{
+          const background=await page.locator(selector).evaluate(el=>getComputedStyle(el).backgroundImage);
+          expect(background,route.path+' painted background must resolve with Pages basePath')
+            .toContain(expected);
+          expect(background).not.toContain('../'+expected);
+        }
       }
     }catch(error){
       const body=await page.locator('body').innerText().catch(()=>'<unavailable>');

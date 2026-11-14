@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import {WORLD_LINK_CLASS} from './world-primitives';
 import Image from 'next/image';
+import {R12SceneHeroPainting} from '@/components/game/r12-scene-painting';
 import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import kilnPainted from '../../../v2/art/kiln-art-review.avif';
 import {PATRON_IMPORT_PRICE} from '../../../v2/src/workshop-engine';
@@ -21,8 +22,7 @@ export function Warehouse({s}:{s:WorkshopState}){
   const p=s.patron;const canBuy=!!p&&['offered','active'].includes(p.status)&&s.day<=p.due&&s.coins>=PATRON_IMPORT_PRICE;
   return <>
     <section className="mw-world-art-hero mw-warehouse-hero" data-testid="painted-warehouse-hero">
-      <Image src={moonWorkshopPainting} fill unoptimized sizes="(max-width: 760px) 100vw, 1200px"
-        className="mw-world-hero-painting" alt="月光工坊仓储背景绘景"/>
+      <R12SceneHeroPainting area="warehouse" fallbackSrc={moonWorkshopPainting} alt="月光工坊仓储背景绘景"/>
       <Image src={kilnPainted} width={180} height={180} unoptimized
         className="mw-warehouse-art" alt="月光晶核熔炉绘景"/>
       <div className="mw-world-hero-copy">

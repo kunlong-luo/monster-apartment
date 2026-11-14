@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import {WORLD_LINK_CLASS} from './world-primitives';
-import Image from 'next/image';
+import {R12SceneHeroPainting} from '@/components/game/r12-scene-painting';
 import moonWorkshopPainting from '../../../v2/art/moon-workshop.avif';
 import {forecastPatronCommission,forecastOrderChoice,PREMIUM_EXTRA_CORES,PREMIUM_EXTRA_REWARD,PREMIUM_ORDER_PENALTY,STANDARD_ORDER_PENALTY} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
@@ -13,8 +13,7 @@ export function Orders({s}:{s:WorkshopState}){
   const choice=forecastOrderChoice(s);
   return <>
     <section className="mw-world-art-hero mw-order-hero" data-testid="painted-order-hero">
-      <Image src={moonWorkshopPainting} fill unoptimized sizes="(max-width: 760px) 100vw, 1200px"
-        className="mw-world-hero-painting" alt="月夜工坊绘制场景"/>
+      <R12SceneHeroPainting area="orders" fallbackSrc={moonWorkshopPainting} alt="月夜工坊绘制场景"/>
       <div className="mw-world-hero-copy">
         <span className="mw-eyebrow">MOONLIT COMMISSION GUILD</span>
         <h2>月夜委托所</h2>
