@@ -38,19 +38,19 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
 /** No 360×228 workshop prototype is rendered once this scene is promoted.
  * The original painting remains a safe retry/fallback during asset errors.
  */
-export function R12SceneHeroPainting({area,fallbackSrc}:Props){
+export function R12SceneHeroPainting({area,fallbackSrc,alt}:Props&{alt:string}){
   const sources=approvedR12Scene(area);
   if(!sources)return <ReliableImage src={fallbackSrc} fill unoptimized
-    sizes="(max-width:760px) 100vw, 1200px" alt=""
+    sizes="(max-width:760px) 100vw, 1200px" alt={alt}
     data-r12-hero-art="legacy" className="mw-world-hero-painting"/>;
 
   return <>
     <ReliableImage src={sources.desktop} fallbackSrc={fallbackSrc}
-      fill unoptimized sizes="(max-width:760px) 100vw, 1200px" alt=""
+      fill unoptimized sizes="(max-width:760px) 100vw, 1200px" alt={alt}
       data-r12-hero-art="desktop"
       className="mw-world-hero-painting max-[700px]:hidden"/>
     <ReliableImage src={sources.mobile} fallbackSrc={fallbackSrc}
-      fill unoptimized sizes="100vw" alt=""
+      fill unoptimized sizes="100vw" alt={alt}
       data-r12-hero-art="mobile"
       className="mw-world-hero-painting hidden max-[700px]:block"/>
   </>;
