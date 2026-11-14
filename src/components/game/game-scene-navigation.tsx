@@ -48,7 +48,9 @@ export function GameSceneNavigation(){
     };
   },[open]);
 
-  if(route==='/')return null;
+  // The compact world navigator belongs only to the seven game scenes,
+  // never unlisted research/admin pages or unknown routes.
+  if(route==='/'||!active)return null;
 
   return <div ref={root} className="game-scene-nav" data-testid="scene-navigation"
     data-current-route={route}>

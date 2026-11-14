@@ -80,4 +80,5 @@ jobs:
       - run: pnpm build
       - run: node scripts/audit-exported-images.mjs
       - run: test -f out/index.html
+      - run: test -s out/research/first-session/index.html
       - run: test -s out/apartment/index.html && test -s out/town/index.html && test -s out/orders/index.html && test -s out/characters/index.html && test -s out/warehouse/index.html && test -s out/workshop/index.html
