@@ -104,7 +104,7 @@ jobs:
           fc-match 'Noto Serif SC'
           fc-match ':lang=zh-cn'
       - name: Verify PC and mobile scene navigation, direct travel and overlays
-        run: pnpm exec playwright test e2e/route-health.spec.ts e2e/scene-navigation.spec.ts --grep "lobby owns seven-item dock|compact scene navigation|gallery art viewer hides" --workers=1 --retries=0
+        run: pnpm exec playwright test e2e/route-health.spec.ts e2e/scene-navigation.spec.ts --grep "lobby owns compact routes|compact scene navigation|gallery art viewer hides" --workers=1 --retries=0
       - name: Run four-scene desktop browser smoke
         run: pnpm exec playwright test e2e/gothic-desktop-hud.spec.ts e2e/gothic-desktop-scenes.spec.ts e2e/summon-result-desktop.spec.ts --workers=1 --retries=0
       # Each Playwright invocation clears test-results. Preserve these captures
