@@ -18,7 +18,7 @@ test('R12 lobby world menu exposes every canonical place and restores keyboard f
   await expect(world.getByRole('link')).toHaveCount(7);
   const paths=await world.getByRole('link').evaluateAll(elements=>elements.map(el=>el.getAttribute('data-destination')));
   expect(paths).toEqual(['/', '/apartment/', '/workshop/', '/characters/', '/orders/', '/town/', '/warehouse/']);
-  await expect(world.getByRole('link',{name:'大厅'})).toHaveAttribute('aria-current','page');
+  await expect(world.getByRole('link',{name:'大厅',exact:true})).toHaveAttribute('aria-current','page');
   await page.keyboard.press('Escape');
   await expect(world).toHaveCount(0);
   await expect(toggle).toBeFocused();
