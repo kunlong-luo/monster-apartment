@@ -71,7 +71,13 @@
 
 **发布原则**：先在 PR 分支按改动范围做最小可证明的测试；涉及游戏路由或资产表现时跑必要的真实浏览器/视觉审核，发版后核对 Pages。保留稳定库而不为简单图层自写新渲染引擎；动画仅在有必要时用已有 Motion/Pixi，遵守 `prefers-reduced-motion`。禁止 Sparkles 图标，遵守 `DESIGN.md`、`docs/IMPECCABLE.md`。新一轮每次仅解决一个可证明的视觉缺陷，不再追加不可控覆盖层。
 
-## 5. 状态与决策边界
+## 5. 追踪问题与状态边界
+
+- [#24 高清图清晰度真实测量](https://github.com/kunlong-luo/monster-apartment/issues/24) · R120-01
+- [#25 首页轻量导航重构](https://github.com/kunlong-luo/monster-apartment/issues/25) · R120-02
+- [#16 公寓/委托/仓库独立场景](https://github.com/kunlong-luo/monster-apartment/issues/16) · R120-04
+
+
 
 | 工作 | 此文档提交时状态 |
 | --- | --- |
