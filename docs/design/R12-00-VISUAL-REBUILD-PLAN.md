@@ -4,6 +4,15 @@
 > 触发：玩家反馈「很多图模糊、场景图少、首页菜单不好看」。本计划不是像素实测报告，不把设计方案或 CI 全绿冒称视觉完成。
 > 核对基线：功能版 [`6d997e4d`](https://github.com/kunlong-luo/monster-apartment/commit/6d997e4d0b2a8229d989f5643bcd4bc19f311e08) 的 Quality、Desktop Visual Review、Gameplay Browser Review full（166 passed / 2 skipped）与 Pages 同 SHA 成功；随后纯文档 PR #23 已合并，不能把 `be3dc43c` 本身当成重复执行的全量浏览器结果。
 
+## 2026-11-14 · R12 状态更新（覆盖本计划最初 TODO 状态）
+
+本计划最初的“尚无导航代码/尚未实测画质”属于建档时状态，不再代表最新事实。
+
+- **已合并**：[PR #27](https://github.com/kunlong-luo/monster-apartment/pull/27) 首页轻量导航；[PR #28](https://github.com/kunlong-luo/monster-apartment/pull/28) 图片像素取证；[PR #29](https://github.com/kunlong-luo/monster-apartment/pull/29) 七路由像素报告。
+- **已取证**：七路由、四档位的浏览器数据；完整原始记录参阅 [R12-01](../art-reviews/R12-01-REAL-BROWSER-PIXEL-EVIDENCE.md)。
+- **正在建门禁**：S02 公寓、S05 委托大厅的首批候选图片为 1672×941，仅为 review；S06 仓库仍 pending。入库与晋级规格参阅 [R12-02](../art-reviews/R12-02-SCENE-ART-INTAKE.md)。
+- **仍未完成**：S02/S05/S06 原生高清桌面与独立手机原画的实际审核、进入 Git 仓库并替换页面，用户主观的图片模糊与场景重复尚未宣告解决。该计划最末尾“此文档提交时状态”表仅是历史快照。
+
 ## 1. 本阶段目标与不做的事
 
 目标是将 **「满屏场景 + 可识别的人物 + 清晰的空间差异 + 低干扰的游戏导航」** 变成真实可玩页面，而不是为旧结构继续叠加 CSS。R11.3 的成功说明当时已有覆盖的代码功能可发布，**不代表原画像素质量达标**。
