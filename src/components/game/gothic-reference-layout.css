@@ -277,37 +277,7 @@
   .gothic-lobby__character-hit{z-index:1}
 
   /* Bottom dock: seven canonical destinations in one slim ornament. */
-  body .gothic-lobby .gothic-dock--cinematic{
-    width:min(980px,calc(100vw - 52px));
-    max-width:980px;bottom:12px;min-height:75px;
-    padding:5px 8px;gap:2px;
-    border:1px solid var(--craft-hairline);
-    border-radius:12px;
-    background:linear-gradient(180deg,#201420ed,#0f0b14f3);
-    box-shadow:0 -8px 29px #000a,inset 0 1px #e3c59d22;
-  }
-  .gothic-lobby .gothic-dock--cinematic a{
-    min-height:62px;gap:1px;padding:5px 4px;
-    border:1px solid transparent;
-    border-right:1px solid #9476533c;
-    background:transparent;box-shadow:none;
-  }
-  .gothic-lobby .gothic-dock--cinematic a:last-child{border-right:0}
-  .gothic-lobby .gothic-dock--cinematic a .gothic-dock__icon{
-    width:30px;height:30px;
-    border:0;border-radius:0;background:transparent;box-shadow:none;
-    color:var(--craft-champagne);
-  }
-  .gothic-lobby .gothic-dock--cinematic a .gothic-dock__label{
-    font-size:12px;letter-spacing:.055em;font-weight:500;
-  }
-  .gothic-lobby .gothic-dock--cinematic .gothic-dock__subtitle{display:none}
-  .gothic-lobby .gothic-dock--cinematic a[aria-current="page"]{
-    border-color:var(--craft-hairline);
-    background:var(--craft-surface-selected);
-    box-shadow:inset 0 1px #ebcaa43c;
-  }
-  /* The reference image keeps both side panels above the navigation band. */
+                /* The reference image keeps both side panels above the navigation band. */
   .gothic-lobby .gothic-lobby__vignette{
     background:linear-gradient(180deg,#09070b70 0%,transparent 24%,transparent 70%,#09070cc9 100%),
       linear-gradient(90deg,#0a070d65,transparent 24%,transparent 71%,#0906107c);
@@ -325,6 +295,5 @@
 }
 @media(prefers-reduced-motion:reduce){
   .gothic-lobby__reference-resident,
-  .gothic-lobby__reference-postcard,
-  .gothic-lobby .gothic-dock--cinematic a{transition:none;transform:none}
+  .gothic-lobby__reference-postcard{transition:none;transform:none}
 }
