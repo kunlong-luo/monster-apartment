@@ -26,6 +26,7 @@ import {GothicLobbyDestinations} from './gothic-lobby-destinations';
 import './gothic-lobby.css';
 import './gothic-polish.css';
 import './gothic-reference-layout.css';
+import './gothic-lobby-navigation.css';
 
 type Panel='profile'|'bond'|'updates'|'memories'|null;
 
@@ -174,7 +175,7 @@ export function GothicLobby(){
 
 
     <GothicDock items={WORLD_NAV.map(n=>({href:n.href,icon:n.glyph,label:n.label,ariaLabel:n.full,description:n.purpose}))}
-      label="主要游戏功能" activeHref="/" compact className="gothic-dock--cinematic"/>
+      label="主要游戏功能" activeHref="/" compact className="gothic-dock--r12"/>
 
     <AnimatePresence mode="wait">
     {panel&&<GothicModal key={panel} title={panel==='bond'?'与月纱交谈':panel==='profile'?'玩家资料':panel==='memories'?'剧情回顾':'委托消息'}

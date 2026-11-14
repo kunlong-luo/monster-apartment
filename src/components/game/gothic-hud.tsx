@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import {useEffect,useRef} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import type {ReactNode} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
@@ -22,6 +22,7 @@ import {
   Moon,
   Heart,
   UsersRound,
+  ChevronUp,
 } from 'lucide-react';
 
 export type GothicDestination={
@@ -129,60 +130,89 @@ export function GothicResourcePill({
   );
 }
 
+/**
+ * R12: lobby alone owns this compact destination rail. Four quick routes are
+ * visible on desktop (three on narrow phones); the canonical registry remains
+ * available in its entirety through one keyboard-accessible world menu.
+ */
 export function GothicDock({
   items,label,className='',activeHref,testId
 }:{
   items:readonly GothicDestination[];
   label:string;
   className?:string;
-  /** The full-size Dock belongs only to the Lobby route. */
   activeHref:'/';
   testId?:string;
   compact?:boolean;
 }){
-  // Intentionally no no-op fallback for other routes. A typed, lobby-only
-  // component makes accidental reintroduction of scene-wide docks detectable.
-  return <nav data-testid={testId} aria-label={label} className={
-    'gothic-dock-bar absolute bottom-[max(8px,env(safe-area-inset-bottom))] left-1/2 z-[20] '+
-    'flex w-[calc(100vw-16px)] max-w-[1400px] -translate-x-1/2 items-center justify-between gap-1 '+
-    'rounded-2xl border border-gothic-brass/55 bg-gothic-panel/95 '+
-    'p-1.5 shadow-lg backdrop-blur-xl sm:p-2 '+className
-  }>
-    {items.map(item => {
-      const isActive = activeHref === item.href;
-      return (
-        <Link
-          key={item.href}
-          href={item.href}
+  const [open,setOpen]=useState(false);
+  const shellRef=useRef<HTMLDivElement>(null);
+  const triggerRef=useRef<HTMLButtonElement>(null);
+  const quickRoutes=['/apartment/','/workshop/','/characters/','/town/'];
+  const quick=quickRoutes.map(href=>items.find(item=>item.href===href)).filter(
+    (item):item is GothicDestination=>Boolean(item)
+  );
+
+  useEffect(()=>{
+    if(!open)return;
+    const outside=(event:PointerEvent)=>{
+      if(!shellRef.current?.contains(event.target as Node))setOpen(false);
+    };
+    const onKey=(event:KeyboardEvent)=>{
+      if(event.key==='Escape'){
+        event.stopPropagation();
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+    document.addEventListener('pointerdown',outside,true);
+    document.addEventListener('keydown',onKey,true);
+    return ()=>{
+      document.removeEventListener('pointerdown',outside,true);
+      document.removeEventListener('keydown',onKey,true);
+    };
+  },[open]);
+  return <div className="gothic-lobby__navigation" ref={shellRef} data-testid="lobby-navigation">
+    <nav data-testid={testId??'lobby-primary-nav'} aria-label={label}
+      className={'gothic-dock-bar gothic-dock--r12 '+className}>
+      {quick.map((item,index)=><Link key={item.href} href={item.href}
+        data-destination={item.href} data-testid="lobby-quick-destination"
+        aria-label={item.ariaLabel??item.label}
+        className={'gothic-dock__quick'+(index===3?' gothic-dock__quick--desktop':'')}
+        onClick={()=>setOpen(false)}>
+        <span className="gothic-dock__quick-icon" aria-hidden="true">{getCanonicalDockIcon(item.href,item.icon)}</span>
+        <span className="gothic-dock__quick-label">{item.label}</span>
+      </Link>)}
+      <button ref={triggerRef} type="button" className="gothic-dock__more"
+        data-testid="lobby-world-toggle" aria-label="全部地点"
+        aria-haspopup="true" aria-expanded={open} aria-controls="lobby-world-menu"
+        onClick={()=>setOpen(v=>!v)}>
+        <Map aria-hidden="true" size={20} strokeWidth={1.6}/>
+        <span>全部地点</span>
+        <ChevronUp aria-hidden="true" size={14} strokeWidth={1.6}
+          className={open?'gothic-dock__more-arrow gothic-dock__more-arrow--open':'gothic-dock__more-arrow'}/>
+      </button>
+    </nav>
+    {open&&<nav id="lobby-world-menu" aria-label="全部地点导航"
+      data-testid="lobby-world-menu" className="gothic-dock__map">
+      <div className="gothic-dock__map-header">
+        <strong>月蚀领地</strong><span>选择要前往的地点</span>
+      </div>
+      <div className="gothic-dock__map-grid">
+        {items.map(item=><Link key={item.href} href={item.href}
+          onClick={()=>setOpen(false)}
           data-destination={item.href}
-          aria-label={item.ariaLabel ?? (item.description ? item.label + ' · ' + item.description : item.label)}
-          aria-current={isActive ? 'page' : undefined}
-          data-tooltip={item.description || item.label}
-          className={
-            'gothic-dock__link group flex flex-1 min-w-0 flex-col items-center justify-center rounded-xl py-1 px-0.5 sm:px-1 border transition-colors duration-200'
-          }
-        >
-          <span
-            aria-hidden="true"
-            className="gothic-dock__icon flex size-8 sm:size-9 items-center justify-center rounded-lg border transition-colors"
-          >
-            {getCanonicalDockIcon(item.href, item.icon)}
-          </span>
-          <span className="gothic-dock__label mt-1 text-[10px] sm:text-xs font-bold tracking-wider truncate max-w-full">
-            {item.label}
-          </span>
-          {item.description && (
-            <span className="gothic-dock__subtitle hidden md:block text-[9px] truncate max-w-full opacity-80" aria-hidden="true">
-              {item.description}
-            </span>
-          )}
-        </Link>
-      );
-    })}
-  </nav>;
+          aria-current={activeHref===item.href?'page':undefined}
+          aria-label={item.ariaLabel??item.label}
+          className="gothic-dock__map-link">
+          <span className="gothic-dock__map-icon" aria-hidden="true">{getCanonicalDockIcon(item.href,item.icon)}</span>
+          <span><strong>{item.label}</strong><small>{item.description}</small></span>
+        </Link>)}
+      </div>
+    </nav>}
+  </div>;
 }
 
-/** Compact contextual action used inside the room drawer, never a permanent tile. */
 export function GothicActionButton({
   rune,label,detail,onClick,disabled,testId,pressed
 }:{

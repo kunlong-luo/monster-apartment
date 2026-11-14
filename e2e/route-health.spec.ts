@@ -49,7 +49,7 @@ test('seven production routes boot with interactive game surfaces',async({page})
   }
 });
 
-test('lobby owns seven-item dock; all other scenes share one optional map',async({page})=>{
+test('lobby owns compact routes and a seven-place map; others share one optional map',async({page})=>{
   test.setTimeout(150_000);
   const pages=[
     {path:'/',test:'gothic-lobby'},
@@ -65,7 +65,7 @@ test('lobby owns seven-item dock; all other scenes share one optional map',async
     await expect(page.getByTestId(entry.test)).toBeVisible({timeout:20000});
     if(entry.path==='/'){
       await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link'))
-        .toHaveCount(7);
+        .toHaveCount(4);
       await expect(page.getByTestId('scene-navigation')).toHaveCount(0);
     }else{
       await expect(page.locator('.gothic-dock-bar')).toHaveCount(0);

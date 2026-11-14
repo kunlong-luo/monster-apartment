@@ -1,22 +1,22 @@
 import {expect,test} from '@playwright/test';
 
-test('PC HUD keeps seven icon destinations and compact summon actions',async({page})=>{
+test('PC HUD keeps four cinematic quick destinations plus an accessible seven-place map',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
   const dock=page.getByRole('navigation',{name:'主要游戏功能'});
-  await expect(dock.getByRole('link')).toHaveCount(7);
-  await expect(dock.locator('svg')).toHaveCount(7);
+  await expect(dock.getByRole('link')).toHaveCount(4);
+  await expect(dock.locator('.gothic-dock__quick svg')).toHaveCount(4);
   const box=await dock.boundingBox();
   expect(box).not.toBeNull();
-  expect(box!.width).toBeGreaterThan(850);
-  expect(box!.width).toBeLessThan(1010);
+  expect(box!.width).toBeGreaterThan(600);
+  expect(box!.width).toBeLessThan(800);
   expect(Math.abs(box!.x-(1440-box!.width)/2)).toBeLessThan(3);
   // Global world chrome no longer overrides this dedicated reference dock.
   const dockStyle=await dock.evaluate(element=>{
     const style=getComputedStyle(element);
     return {maxWidth:style.maxWidth,background:style.backgroundImage};
   });
-  expect(dockStyle.maxWidth).toBe('980px');
+  expect(dockStyle.maxWidth).toBe('none');
   expect(dockStyle.background).toContain('linear-gradient');
   await expect(page.getByRole('button',{name:'切换动态特效'}).locator('svg')).toBeVisible();
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
@@ -148,7 +148,8 @@ test('mobile lobby shows exactly two storyline entries with a working small inbo
   await page.getByRole('button',{name:'关闭面板'}).click();
   await expect(dialog).toHaveCount(0);
   const dock=page.getByRole('navigation',{name:'主要游戏功能'});
-  await expect(dock.getByRole('link')).toHaveCount(7);
+  await expect(dock.getByRole('link')).toHaveCount(3);
+  await expect(dock.getByRole('button',{name:'全部地点'})).toBeVisible();
   const issues=await page.evaluate(()=>({
     x:document.documentElement.scrollWidth-window.innerWidth,
     y:document.documentElement.scrollHeight-window.innerHeight,
