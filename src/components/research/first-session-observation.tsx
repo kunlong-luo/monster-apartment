@@ -86,7 +86,7 @@ export function FirstSessionObservation(){
                 onChange={e=>update('participant_id',e.target.value)}/>
             </label>
             <label className="grid gap-2 text-sm">设备
-              <select required className={inputClass} value={record.device}
+              <select required aria-label="设备" data-testid="research-device" className={inputClass} value={record.device}
                 onChange={e=>update('device',e.target.value)}>
                 <option value="">请选择</option><option value="PC">PC / 桌面</option>
                 <option value="mobile">手机 / 移动设备</option>
