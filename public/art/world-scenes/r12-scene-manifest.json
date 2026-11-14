@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "policy": "No review-only image can be used at runtime. The production paths must be separate native desktop and mobile WebP paintings, reviewed and checksum pinned.",
+  "scenes": {
+    "apartment": {
+      "id": "S02",
+      "route": "/apartment/",
+      "status": "review",
+      "candidate": {
+        "sourceType": "ai-generated",
+        "sourceReference": "R12 S02 apartment atrium generated 2026-11-14; source is contained in conversation review ZIP, not in repository",
+        "sourceSHA256": "ce7c4f924ca18c0480bd2064e5507912021e417397706b2cb2c8e8af58af90cf",
+        "nativeWidth": 1672,
+        "nativeHeight": 941,
+        "availableInRepo": false,
+        "humanVisualReview": false,
+        "hasNativeMobileArt": false
+      },
+      "desktop": "public/art/world-scenes/r12/apartment-desktop.webp",
+      "mobile": "public/art/world-scenes/r12/apartment-mobile.webp",
+      "review": null
+    },
+    "orders": {
+      "id": "S05",
+      "route": "/orders/",
+      "status": "review",
+      "candidate": {
+        "sourceType": "ai-generated",
+        "sourceReference": "R12 S05 contract hall generated 2026-11-14; source is contained in conversation review ZIP, not in repository",
+        "sourceSHA256": "ae97b5f40161a3b40bc6732a453c0b3af6bc379872a7ec13e0dac59557399530",
+        "nativeWidth": 1672,
+        "nativeHeight": 941,
+        "availableInRepo": false,
+        "humanVisualReview": false,
+        "hasNativeMobileArt": false
+      },
+      "desktop": "public/art/world-scenes/r12/orders-desktop.webp",
+      "mobile": "public/art/world-scenes/r12/orders-mobile.webp",
+      "review": null
+    },
+    "warehouse": {
+      "id": "S06",
+      "route": "/warehouse/",
+      "status": "pending",
+      "candidate": null,
+      "desktop": "public/art/world-scenes/r12/warehouse-desktop.webp",
+      "mobile": "public/art/world-scenes/r12/warehouse-mobile.webp",
+      "review": null
+    }
+  }
+}
