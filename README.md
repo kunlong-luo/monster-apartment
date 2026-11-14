@@ -24,14 +24,15 @@
 
 不再包含旧版 `/classic`、`/legacy`、`/survival` 和独立 `/workshop-lab` 实验室。
 
-## 当前发布状态（2026-11-13 · R11.3 技术回归已验收，治理与试玩待办）
+## 当前发布状态（2026-11-14 · R11.3 技术发布完成，治理与真人试玩待办）
 
-- **正式发布证据**：`main` [`68dc7550`](https://github.com/kunlong-luo/monster-apartment/commit/68dc7550a7d5a088f199e43a448959cfe59d9b3d) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689351)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689353)、[Gameplay Browser Review full](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689400) 和 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353772800) **全部通过同一 SHA**；完整浏览器日志为 **158 passed / 2 skipped**。专项 [Performance](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689407) 与 [WebGL Lifecycle](https://github.com/kunlong-luo/monster-apartment/actions/runs/43353689415) 也通过。
-- **真实截图审查**：已下载并查看正式 `main` 的 1440×900 和 390×844 月纱真实对话截图与 reduced-motion 模式，不再出现人物被挤成窄条的情况；[Issue #7](https://github.com/kunlong-luo/monster-apartment/issues/7) 已关闭。
-- **尚未满足的发布治理门槛**：`main` 目前仍为 `protected:false`；需要管理员按 [Issue #9](https://github.com/kunlong-luo/monster-apartment/issues/9) 配置 PR-only 与 required checks，并经 API 复核。CI 绿灯不等于已保护主分支。
-- **玩家验证待办**：尚无 10 名独立玩家的真实数据；[Issue #10](https://github.com/kunlong-luo/monster-apartment/issues/10) 和 [首次试玩执行协议](docs/research/2026-11-13-r113-first-session-protocol.md) 记录方法与空白数据模板，未验证前不宣称达标。
-- **已发布的有限代码范围**：R09.5 WebGL API 生命周期观测、R10.1–R10.10 工坊迭代、R11–R11.2 显式自动履约、独立合同日历和设备布局指纹持久化。**这仍不是 V3 的跨七页统一存档与自动经营完整交付**。
-- **正式美术尚未量产交付**：九张机器静态候选仍为 `review`，工匠/月纱正式资源和机器工作图仍为 `pending`；`releaseReady=false`。
+- **最新核实的正式游戏代码基线**：`main` [`6d997e4d`](https://github.com/kunlong-luo/monster-apartment/commit/6d997e4d0b2a8229d989f5643bcd4bc19f311e08) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/43551717561)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/43551717522)、[Gameplay Browser Review full](https://github.com/kunlong-luo/monster-apartment/actions/runs/43551717531) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/43551776453) **全部成功、四工作流同一 SHA**；完整浏览器日志为 **166 passed / 2 skipped / 0 failed**。随后若只合入文档，不代表新文档 SHA 再跑过 full；请以此功能代码 SHA 为准。
+- **存档正确性**：[PR #19](https://github.com/kunlong-luo/monster-apartment/pull/19) 与 [PR #21](https://github.com/kunlong-luo/monster-apartment/pull/21) 已处理公寓损坏存档恢复、跨标签页正常操作与计时事务化。仍保留公寓 V1、工坊 V2 各自既有存档键，**并未**完成全游戏跨七页 V3 统一账本。
+- **真人试玩准备工具已上线**：[PR #22](https://github.com/kunlong-luo/monster-apartment/pull/22) 的 [匿名观察记录页](https://kunlong-luo.github.io/monster-apartment/research/first-session/) 可供主持人手动输入 T01 等匿名编号并在本地导出单人 CSV；它不招募玩家、不上传或持久化观察记录。协议及字段模板见 [首次试玩执行协议](docs/research/2026-11-13-r113-first-session-protocol.md)。
+- **主分支保护未完成**：GitHub `branches/main` 仍为 `protected:false`，`rulesets=[]`。管理员须按 [Issue #9](https://github.com/kunlong-luo/monster-apartment/issues/9) 设置 PR-only 与实际 required checks，再由 API 复核；CI 全绿不等于仓库规则已经生效。
+- **真实玩家验证未完成**：尚无 10 名首次玩家的经过验证的独立观察记录；[Issue #10](https://github.com/kunlong-luo/monster-apartment/issues/10) 保持 open。不能用 E2E、主持人自己的试玩或空白表单计算玩家完成率／留存率。
+- **正式美术未交付**：独立公寓、委托和仓库绘景仍由 [Issue #16](https://github.com/kunlong-luo/monster-apartment/issues/16) 跟进；九张机器静态候选为 `review`，工匠／月纱正式资源和机器动画仍为 `pending`，不可标记 `releaseReady`。
+- **仍不等于 V3 全部交付**：此前的 R09.5 WebGL API 生命周期观测、R10.x 工坊迭代、R11–R11.2 显式自动履约与日历已经通过阶段性发布，但完整跨七页统一存档、人物 CG 量产及完整章节仍是后续目标。R11.3 的**技术发布门禁完成**不意味着治理、真实试玩或美术量产已经结束。
 
 详见 [R11.3 发布证据与状态矩阵](docs/engineering/2026-11-12-r11-3-release-baseline.md)。历史任务的 `DONE` 是旧版阶段事实，不意味着 V3 全部完成。
 
