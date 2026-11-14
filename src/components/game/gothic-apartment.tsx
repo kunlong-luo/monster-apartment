@@ -7,6 +7,7 @@ import {useCallback,useEffect,useState,useSyncExternalStore} from 'react';
 import moonveil from '../../../public/art/yuesha-avatar-v3.webp';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
+import {R12SceneBackdrop} from './r12-scene-painting';
 import {newCozyGame,validCozySave,resumeCozySave,
   relocateCozyResident,cozyDay,cozyGoal,cozyDailyIncome} from '@/core/cozy-engine';
 import type {CozyState} from '@/core/cozy-engine';
@@ -192,7 +193,7 @@ export function GothicApartment(){
   };
   return <main className={reducedMotion?'ga ga--still ga--red-gold':'ga ga--red-gold'} data-testid="gothic-apartment" aria-label="哥特公寓经营"
     onKeyDown={event=>{if(event.key==='Escape'){setWitchOpen(false);setNotices(false);}}}>
-    <div className="ga-backdrop" style={{backgroundImage:'url('+JSON.stringify(lobbyHero.src)+')'}} aria-hidden="true"/>
+    <R12SceneBackdrop area="apartment" className="ga-backdrop" fallbackSrc={lobbyHero}/>
     <div className="ga-light" aria-hidden="true"/>
     <div className="ga-shade" aria-hidden="true"/>
     <div className="ga-dust" aria-hidden="true"/>
