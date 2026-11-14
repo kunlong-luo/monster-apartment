@@ -1,5 +1,9 @@
 import {test,expect} from '@playwright/test';
-import sceneManifest from '../public/art/world-scenes/r12-scene-manifest.json';
+import {readFileSync} from 'node:fs';
+const sceneManifest=JSON.parse(readFileSync(
+  new URL('../public/art/world-scenes/r12-scene-manifest.json',import.meta.url),
+  'utf8',
+)) as {scenes:Record<'apartment'|'orders'|'warehouse',{status:string}>};
 
 /**
  * Fast, actionable release gate: distinguish a broken route/hydration from a
