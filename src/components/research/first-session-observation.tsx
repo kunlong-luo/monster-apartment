@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import {useState} from 'react';
 import type {FormEvent} from 'react';
 import {emptyFirstSessionRecord,firstSessionCsv} from '@/lib/research/first-session-csv';
@@ -68,7 +69,7 @@ export function FirstSessionObservation(){
         </p>
         <div className="rounded-lg border border-[#b9966d78] bg-[#382536] p-4 text-sm leading-7">
           <strong className="text-[#f9d3a2]">隐私与数据处理</strong>
-          <p>本页只在当前浏览器内生成 CSV，<b>不提交到服务器、不写入浏览器存储</b>。
+          <p>本页只在当前浏览器内生成匿名观察 CSV，<b>不会上传或持久化观察记录</b>。
             不要填写姓名、联系方式、账号、真实玩家存档或未经允许的录屏信息。
             导出文件须由主持人自行保管；离开页面前请先下载。</p>
         </div>
@@ -191,7 +192,7 @@ export function FirstSessionObservation(){
       <footer className="border-t border-[#a98b6855] pt-5 text-xs leading-6 text-[#c5ad92]">
         <p>这是主持人观察工具，不是十人试玩的真实结果或自动统计。测试完成须人工核对匿名样本，
           再决定是否进入 R12 美术量产；不上传任何个人信息。</p>
-        <a href="/monster-apartment/" className="mt-3 inline-block underline underline-offset-4 hover:text-[#ffe0ab]">返回游戏大厅</a>
+        <Link href="/" className="mt-3 inline-block underline underline-offset-4 hover:text-[#ffe0ab]">返回游戏大厅</Link>
       </footer>
     </div>
   </main>;
