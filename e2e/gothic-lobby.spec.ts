@@ -8,7 +8,7 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await expect(page.getByTestId('game-release')).toContainText(GAME_UI_RELEASE);
   await expect(page.getByTestId('gothic-eclipse-feature')).toContainText('神话 · 月蚀');
-  await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link')).toHaveCount(7);
+  await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link')).toHaveCount(4);
   await expect(page.getByRole('navigation',{name:'快捷功能'})).toHaveCount(0);
   await expect(page.getByTestId('lobby-coins')).toHaveText('100');
   // Lobby uses the compact HUD; ordinary destinations remain fully labeled.
@@ -270,7 +270,7 @@ test('cinematic lobby maintains one usable dock and compact context panels on a 
   await page.setViewportSize({width:390,height:844});
   await page.goto('/');
   const dock=page.getByRole('navigation',{name:'主要游戏功能'});
-  await expect(dock.getByRole('link')).toHaveCount(7);
+  await expect(dock.getByRole('link')).toHaveCount(3);
   await expect(page.getByTestId('gothic-eclipse-feature')).toBeVisible();
   await expect(page.getByTestId('gothic-character-room')).toBeVisible();
   await expect(page.getByRole('button',{name:'委托消息'})).toHaveCount(1);
@@ -309,5 +309,5 @@ test('original black-gold reference keeps left quests, central painting, right a
   expect(right.x).toBeGreaterThan(left.x+left.width+400);
   expect(bottom.y+bottom.height).toBeLessThanOrEqual(900);
   expect(bottom.y).toBeGreaterThan(900*.80);
-  await expect(dock.getByRole('link')).toHaveCount(7);
+  await expect(dock.getByRole('link')).toHaveCount(4);
 });
