@@ -51,8 +51,13 @@ if(/#[a-fA-F0-9]{3,8}\b/.test(shared)){
 if(!layout.includes("import '@/components/game/gothic-premium-tokens.css';")){
   console.error('[design] Root layout must load the palette for all pages');problems++;
 }
-for(const c of ['gothic-dock__link','gothic-modal__surface','gothic-resource-pill','gothic-action-button']){
+for(const c of ['gothic-dock__quick','gothic-dock__more','gothic-dock__map-link','gothic-modal__surface','gothic-resource-pill','gothic-action-button']){
   if(!shared.includes(c)){console.error('[design] Shared HUD missing '+c);problems++;}
+}
+// The reduced lobby rail may not discard a canonical destination or invent
+// a separate router; verify the entire map is generated from the same items.
+if(!shared.includes('items.map(item=><Link') || !shared.includes('quickRoutes.map(href=>items.find')){
+  console.error('[design] Lobby world menu must use the canonical destination list');problems++;
 }
 if(problems)process.exit(1);
 console.log('[design] '+inspected+' game UI components checked; no starburst icons. Context documents ready.');
