@@ -44,7 +44,7 @@
 - [R12 视觉重制执行计划](docs/design/R12-00-VISUAL-REBUILD-PLAN.md)：七大世界场景、四间私室、高清资产批次与逐阶段验收。
 - [图片清晰度与重复场景资源清单](docs/art-reviews/R12-00-IMAGE-AND-SCENE-AUDIT.md)：列出大厅 1587×991 主图、两页重复工坊原型 AVIF、临时世界绘景、概念 SVG 与待人工审核角色/机器图，并要求记录 DPR、实际解码尺寸与截图。
 - [首页菜单重制规范](docs/design/R12-01-LOBBY-NAVIGATION-REDESIGN.md)：保留七条路由和原已批准四区画面，但拟用更小的常用入口和「全部地点」展开菜单替换厚重七项平铺 Dock；PC 与手机都需验收。
-- [美术相关待办 #16](https://github.com/kunlong-luo/monster-apartment/issues/16) 与 `management/TASKS.csv` 的 R120 系列任务继续跟踪；未审核素材不得标 `production`。
+- **对应问题单**：[图片模糊诊断 #24](https://github.com/kunlong-luo/monster-apartment/issues/24)、[首页导航重构 #25](https://github.com/kunlong-luo/monster-apartment/issues/25)、[独立场景绘景 #16](https://github.com/kunlong-luo/monster-apartment/issues/16) 与 `management/TASKS.csv` R120 系列；未审核素材不得标 `production`。
 
 按顺序先验证真实糊点和首页可读性，再优先处理大厅/委托/仓库，随后逐步扩充工坊、月光街与四间私室。R11.3 技术回归全绿不能代替 R12 高品质艺术验收；不改变存档、角色身份、经营和掉落概率。
 
