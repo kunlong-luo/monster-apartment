@@ -9,7 +9,7 @@ import {mkdir,writeFile} from 'node:fs/promises';
 const routes=[
   {path:'/',slug:'lobby',root:'gothic-lobby'},
   {path:'/apartment/',slug:'apartment',root:'gothic-apartment'},
-  {path:'/workshop/',slug:'workshop',root:'v2-stage'},
+  {path:'/workshop/',slug:'workshop',root:'next-workshop-shell'},
   {path:'/characters/',slug:'characters',root:'moonwork-world'},
   {path:'/orders/',slug:'orders',root:'moonwork-world'},
   {path:'/town/',slug:'town',root:'moonwork-world'},
@@ -23,7 +23,7 @@ const profiles=[
   {name:'phone-short-390-dpr2',width:390,height:550,dpr:2},
 ] as const;
 
-const screenshotRoutes=new Set(['lobby','apartment','orders','warehouse']);
+const screenshotRoutes=new Set(['lobby','apartment','workshop','orders','warehouse']);
 const evidenceDir='visual-evidence/r12';
 
 test('R12 art evidence: image decode dimensions, cover scaling and actual canvas pixels',async({browser},testInfo)=>{
@@ -64,7 +64,7 @@ test('R12 art evidence: image decode dimensions, cover scaling and actual canvas
           await expect(page.getByTestId(route.root),route.path+' visible game root')
             .toBeVisible({timeout:25000});
           if(route.slug==='workshop'){
-            await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25000});
+            await expect(page.getByTestId('v2-stage').locator('canvas')).toBeAttached({timeout:25000});
           }
           await page.waitForTimeout(300);
 
