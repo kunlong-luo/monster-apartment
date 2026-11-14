@@ -22,7 +22,7 @@ export function Warehouse({s}:{s:WorkshopState}){
   const p=s.patron;const canBuy=!!p&&['offered','active'].includes(p.status)&&s.day<=p.due&&s.coins>=PATRON_IMPORT_PRICE;
   return <>
     <section className="mw-world-art-hero mw-warehouse-hero" data-testid="painted-warehouse-hero">
-      <R12SceneHeroPainting area="warehouse" fallbackSrc={moonWorkshopPainting}/>
+      <R12SceneHeroPainting area="warehouse" fallbackSrc={moonWorkshopPainting} alt="月光工坊仓储背景绘景"/>
       <Image src={kilnPainted} width={180} height={180} unoptimized
         className="mw-warehouse-art" alt="月光晶核熔炉绘景"/>
       <div className="mw-world-hero-copy">
