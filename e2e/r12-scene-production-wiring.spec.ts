@@ -34,7 +34,7 @@ test('R12 scene review candidates cannot leak into game; approved art uses respo
         const target=background.locator('img[data-r12-art-image="'+variant+'"]');
         await expect(target).toBeVisible();
         await expect(target).toHaveAttribute('data-image-load','original',{timeout:20_000});
-        await expect.poll(()=>target.evaluate((img:HTMLImageElement)=>img.naturalWidth),
+        await expect.poll(()=>target.evaluate((element)=>(element as HTMLImageElement).naturalWidth),
           {timeout:20000,message:entry.area+' needs decoded original '+variant+' art'}).toBeGreaterThan(0);
       }
       if(entry.hero){
@@ -44,7 +44,7 @@ test('R12 scene review candidates cannot leak into game; approved art uses respo
         if(approved){
           const target=hero.locator('img[data-r12-hero-art="'+(viewport.width<=700?'mobile':'desktop')+'"]');
           await expect(target).toBeVisible();
-          await expect.poll(()=>target.evaluate((img:HTMLImageElement)=>img.naturalWidth),
+          await expect.poll(()=>target.evaluate((element)=>(element as HTMLImageElement).naturalWidth),
             {timeout:20000}).toBeGreaterThan(0);
           await expect(target).toHaveAttribute('data-image-load','original');
         }else await expect(hero.locator('img[data-r12-hero-art="legacy"]')).toBeVisible();
