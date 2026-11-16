@@ -87,15 +87,15 @@ export function validateSceneManifest(manifest,{read=readFileSync,exists=existsS
     assert(SHA.test(review.sourceSHA256??'')&&
       typeof review.sourceReference==='string'&&review.sourceReference.length>=30,
       'source provenance required '+area);
-    assert(review.sourceSHA256===entry.candidate.sourceSHA256&&
-      review.mobileSourceSHA256===entry.mobileCandidate.sourceSHA256,
-      'review source hashes must match both original compositions '+area);
     // Compare the native source masters, not merely the exported WebP headers.
     // Enlarging a 1672x941 PNG to 2560x1440 cannot satisfy this source gate.
     assert(entry.candidate?.nativeWidth>=2560&&entry.candidate?.nativeHeight>=1440,
       'native desktop source below production threshold '+area);
     assert(entry.mobileCandidate?.nativeWidth>=1080&&entry.mobileCandidate?.nativeHeight>=1920,
       'native independent mobile source below production threshold '+area);
+    assert(review.sourceSHA256===entry.candidate.sourceSHA256&&
+      review.mobileSourceSHA256===entry.mobileCandidate.sourceSHA256,
+      'review source hashes must match both original compositions '+area);
     assert(review.crops?.['desktop-1440x900']===true&&
       review.crops?.['desktop-1648x928-dpr2']===true&&
       review.crops?.['mobile-390x844']===true&&
