@@ -182,3 +182,46 @@ test('S02 941px portrait is correctly rejected as native production mobile art',
   entry.candidate.nativeHeight=1440;
   assert.throws(()=>validateSceneManifest(wrong),/native independent mobile source below production threshold/);
 });
+
+test('S02, S05 and S06 all have separate desktop and mobile review masters',()=>{
+  const scenes=clone().scenes;
+  const hashes=new Set();
+  for(const [area,entry] of Object.entries(scenes)){
+    assert.equal(entry.status,'review',area+' must not be production');
+    assert.equal(entry.review,null,area+' must not claim human approval');
+    assert.ok(entry.mobileCandidate,area+' needs independent portrait review art');
+    assert.equal(entry.mobileCandidate.independentComposition,true);
+    assert.equal(entry.mobileCandidate.availableInRepo,false);
+    assert.equal(entry.mobileCandidate.humanVisualReview,false);
+    for(const art of [entry.candidate,entry.mobileCandidate]){
+      assert.equal(hashes.has(art.sourceSHA256),false,area+' source must be unique');
+      hashes.add(art.sourceSHA256);
+    }
+  }
+  assert.equal(hashes.size,6);
+});
+
+test('S05 separate mobile master cannot reuse the S05 desktop source SHA',()=>{
+  const bad=clone();
+  bad.scenes.orders.mobileCandidate.sourceSHA256=bad.scenes.orders.candidate.sourceSHA256;
+  assert.throws(()=>validateSceneManifest(bad),/independent mobile source hash required for orders/);
+});
+
+test('S05 review-only portrait is rejected as a native production original',()=>{
+  const bad=clone();
+  const entry=bad.scenes.orders;
+  entry.status='production';
+  entry.review={
+    approved:true,humanVisualReview:true,rightsConfirmed:true,commercialUse:true,
+    noBakedUI:true,noBakedText:true,nativeDesktopArtwork:true,nativeMobileArtwork:true,
+    notUpscaledFromSmallerImage:true,reviewer:'Fixture Reviewer',
+    notes:'This test fixture only verifies source-size rejection, never actual rights approval.',
+    reviewedAt:'2026-11-16T12:00:00Z',
+    sourceSHA256:entry.candidate.sourceSHA256,
+    mobileSourceSHA256:entry.mobileCandidate.sourceSHA256,
+    sourceReference:entry.candidate.sourceReference,
+  };
+  entry.candidate.nativeWidth=2560;
+  entry.candidate.nativeHeight=1440;
+  assert.throws(()=>validateSceneManifest(bad),/native independent mobile source below production threshold orders/);
+});
