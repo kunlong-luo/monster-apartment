@@ -103,3 +103,14 @@ test('human review must fingerprint each separate original master',()=>{
   entry.review.mobileSourceSHA256=entry.candidate.sourceSHA256;
   assert.throws(()=>validateSceneManifest(wrong),/review source hashes must match both original compositions/);
 });
+
+test('cannot promote with a signed review but no independent mobile original',()=>{
+  const wrong=clone();
+  const entry=wrong.scenes.warehouse;
+  entry.status='production';
+  entry.review=signedReview(entry);
+  entry.candidate.nativeWidth=2560;
+  entry.candidate.nativeHeight=1440;
+  delete entry.mobileCandidate;
+  assert.throws(()=>validateSceneManifest(wrong),/native independent mobile source below production threshold/);
+});
