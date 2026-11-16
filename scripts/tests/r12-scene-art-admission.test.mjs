@@ -162,5 +162,5 @@ test('S02 apartment has a separately composed mobile original, still unapproved'
 test('S02 original mobile hash cannot be copied from the desktop asset',()=>{
   const changed=clone();
   changed.scenes.apartment.mobileCandidate.sourceSHA256=changed.scenes.apartment.candidate.sourceSHA256;
-  assert.throws(()=>validateSceneManifest(changed),/independent mobile source hash required apartment/);
+  assert.throws(()=>validateSceneManifest(changed),/independent mobile source hash required for apartment/);
 });
