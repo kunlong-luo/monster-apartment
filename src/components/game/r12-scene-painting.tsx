@@ -35,6 +35,15 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
   useEffect(()=>()=>{
     if(preview)URL.revokeObjectURL(preview.url);
   },[preview]);
+  // The matching S05/S06 banner must preview the same original image rather
+  // than continuing to show the unrelated 360px workshop placeholder.
+  useEffect(()=>{
+    if(!reviewMode)return;
+    const notify=(url:string|null)=>window.dispatchEvent(
+      new CustomEvent('r12:local-art-change',{detail:{area,url}}));
+    notify(preview?.url??null);
+    return ()=>notify(null);
+  },[area,preview,reviewMode]);
   const chooseFile=(file:File|undefined)=>{
     if(!file)return;
     if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>20*1024*1024){
@@ -111,7 +120,19 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
  * The original painting remains a safe retry/fallback during asset errors.
  */
 export function R12SceneHeroPainting({area,fallbackSrc,alt}:Props&{alt:string}){
+  const [localPreview,setLocalPreview]=useState<string|null>(null);
+  useEffect(()=>{
+    const onReview=(event:Event)=>{
+      const detail=(event as CustomEvent<{area:R12SceneArea;url:string|null}>).detail;
+      if(detail?.area===area)setLocalPreview(detail.url);
+    };
+    window.addEventListener('r12:local-art-change',onReview);
+    return ()=>window.removeEventListener('r12:local-art-change',onReview);
+  },[area]);
   const sources=approvedR12Scene(area);
+  if(localPreview)return <ReliableImage src={localPreview} fallbackSrc={fallbackSrc}
+    fill unoptimized sizes="(max-width:760px) 100vw, 1200px" alt={alt}
+    data-r12-hero-art="local-review" className="mw-world-hero-painting"/>;
   if(!sources)return <ReliableImage src={fallbackSrc} fill unoptimized
     sizes="(max-width:760px) 100vw, 1200px" alt={alt}
     data-r12-hero-art="legacy" className="mw-world-hero-painting"/>;
