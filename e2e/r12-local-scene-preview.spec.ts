@@ -24,8 +24,15 @@ test('R12 local art reviewer previews file bytes without publishing or persistin
     .toContain('blob:');
   // A transient local backdrop must not promote an image or duplicate R12 assets.
   await expect(backdrop.locator('img[data-r12-art-image]')).toHaveCount(0);
+  // The old 360px workshop hero is replaced by the same temporary scene art
+  // for an accurate in-game layout inspection (not a production asset).
+  const hero=page.locator('[data-r12-hero-art="local-review"]');
+  await expect(hero).toBeVisible();
+  await expect.poll(()=>hero.evaluate(el=>(el as HTMLImageElement).naturalWidth))
+    .toBeGreaterThan(0);
 
   await reviewer.getByRole('button',{name:'恢复原场景'}).click();
+  await expect(page.locator('[data-r12-hero-art="local-review"]')).toHaveCount(0);
   await expect(backdrop).toHaveAttribute('data-r12-scene-art','legacy');
   await page.reload();
   await expect(reviewer).toBeVisible();
