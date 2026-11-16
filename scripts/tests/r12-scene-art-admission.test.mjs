@@ -43,3 +43,63 @@ test('a candidate needs an immutable source fingerprint',()=>{
   wrong.scenes.apartment.candidate.sourceSHA256='pending';
   assert.throws(()=>validateSceneManifest(wrong),/candidate source hash required/);
 });
+
+test('S06 warehouse has a separately generated portrait master, not a wide-screen crop',()=>{
+  const entry=clone().scenes.warehouse;
+  assert.equal(entry.status,'review');
+  assert.equal(entry.candidate.nativeWidth,1672);
+  assert.equal(entry.mobileCandidate.nativeWidth,941);
+  assert.equal(entry.mobileCandidate.nativeHeight,1672);
+  assert.equal(entry.mobileCandidate.independentComposition,true);
+  assert.notEqual(entry.mobileCandidate.sourceSHA256,entry.candidate.sourceSHA256);
+});
+
+test('portrait source cannot reuse the desktop original hash',()=>{
+  const wrong=clone();
+  wrong.scenes.warehouse.mobileCandidate.sourceSHA256=wrong.scenes.warehouse.candidate.sourceSHA256;
+  assert.throws(()=>validateSceneManifest(wrong),/independent mobile source hash required/);
+});
+
+function signedReview(entry){
+  return {
+    approved:true,humanVisualReview:true,rightsConfirmed:true,commercialUse:true,
+    noBakedUI:true,noBakedText:true,nativeDesktopArtwork:true,
+    nativeMobileArtwork:true,notUpscaledFromSmallerImage:true,
+    reviewer:'QA reviewer',reviewedAt:'2026-11-16T00:00:00Z',
+    notes:'A signed placeholder used exclusively to test admission rejections; not a real approval.',
+    sourceSHA256:entry.candidate.sourceSHA256,
+    mobileSourceSHA256:entry.mobileCandidate.sourceSHA256,
+    sourceReference:entry.candidate.sourceReference,
+    crops:{
+      'desktop-1440x900':true,'desktop-1648x928-dpr2':true,
+      'mobile-390x844':true,'mobile-390x550':true,
+    },
+  };
+}
+
+test('cannot claim upscaled 1672-pixel desktop source as native 2560 art',()=>{
+  const wrong=clone();
+  const entry=wrong.scenes.warehouse;
+  entry.status='production';
+  entry.review=signedReview(entry);
+  assert.throws(()=>validateSceneManifest(wrong),/native desktop source below production threshold/);
+});
+
+test('cannot claim 941-pixel portrait master as native 1080 art',()=>{
+  const wrong=clone();
+  const entry=wrong.scenes.warehouse;
+  entry.status='production';
+  entry.review=signedReview(entry);
+  entry.candidate.nativeWidth=2560;
+  entry.candidate.nativeHeight=1440;
+  assert.throws(()=>validateSceneManifest(wrong),/native independent mobile source below production threshold/);
+});
+
+test('human review must fingerprint each separate original master',()=>{
+  const wrong=clone();
+  const entry=wrong.scenes.warehouse;
+  entry.status='production';
+  entry.review=signedReview(entry);
+  entry.review.mobileSourceSHA256=entry.candidate.sourceSHA256;
+  assert.throws(()=>validateSceneManifest(wrong),/review source hashes must match both original compositions/);
+});
