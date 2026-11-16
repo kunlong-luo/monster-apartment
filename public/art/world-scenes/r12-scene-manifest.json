@@ -54,7 +54,17 @@
       },
       "desktop": "public/art/world-scenes/r12/warehouse-desktop.webp",
       "mobile": "public/art/world-scenes/r12/warehouse-mobile.webp",
-      "review": null
+      "review": null,
+      "mobileCandidate": {
+        "sourceType": "ai-generated",
+        "sourceReference": "R12 S06 original separate portrait warehouse composition generated 2026-11-16; source PNG is in conversation review ZIP and is not committed to the repository",
+        "sourceSHA256": "882de33135914fdac8a5b9d1a280a7a603df472d698b00875393780e654a708b",
+        "nativeWidth": 941,
+        "nativeHeight": 1672,
+        "independentComposition": true,
+        "availableInRepo": false,
+        "humanVisualReview": false
+      }
     }
   }
 }
