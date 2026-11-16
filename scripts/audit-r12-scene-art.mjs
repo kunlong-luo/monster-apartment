@@ -19,6 +19,19 @@ const SHA=/^[0-9a-f]{64}$/;
 const assert=(ok,message)=>{if(!ok)throw new Error('[r12-art] '+message);};
 const checksum=bytes=>createHash('sha256').update(bytes).digest('hex');
 
+/** Inspect the actual original PNG bytes (not a claimed filename or WebP export).
+ * The trusted SHA links this file to the signed review of the same master.
+ */
+export function pngNativeDimensions(bytes){
+  assert(Buffer.isBuffer(bytes)&&bytes.length>=24,'incomplete original PNG');
+  assert(bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])),
+    'original master is not a PNG');
+  assert(bytes.toString('ascii',12,16)==='IHDR','original PNG lacks IHDR');
+  const width=bytes.readUInt32BE(16),height=bytes.readUInt32BE(20);
+  assert(width>0&&height>0,'invalid original PNG dimensions');
+  return {width,height};
+}
+
 export function validateSceneManifest(manifest,{read=readFileSync,exists=existsSync,root=ROOT}={}){
   assert(manifest?.version===1,'unsupported scene manifest version');
   assert(Object.keys(manifest.scenes??{}).sort().join(',')===
@@ -46,6 +59,21 @@ export function validateSceneManifest(manifest,{read=readFileSync,exists=existsS
         c.nativeWidth>0&&c.nativeHeight>0,'candidate native dimensions required '+area);
     }else assert(entry.status==='pending','non-pending scene lacks candidate '+area);
 
+    if(entry.mobileCandidate){
+      const mobile=entry.mobileCandidate;
+      assert(entry.candidate,'mobile art requires a desktop candidate '+area);
+      assert(['ai-generated','artist-original','licensed'].includes(mobile.sourceType),
+        'mobile candidate origin required for '+area);
+      assert(typeof mobile.sourceReference==='string'&&mobile.sourceReference.trim().length>=30,
+        'mobile candidate provenance required for '+area);
+      assert(SHA.test(mobile.sourceSHA256??'')&&
+        mobile.sourceSHA256!==entry.candidate.sourceSHA256,
+        'independent mobile source hash required for '+area);
+      assert(Number.isInteger(mobile.nativeWidth)&&Number.isInteger(mobile.nativeHeight)&&
+        mobile.nativeWidth>0&&mobile.nativeHeight>0&&mobile.independentComposition===true,
+        'separately composed mobile source dimensions required for '+area);
+    }
+
     for(const field of ['desktop','mobile']){
       const path=entry[field];
       assert(!path.includes('..')&&path.startsWith('public/art/world-scenes/r12/'),
@@ -72,6 +100,33 @@ export function validateSceneManifest(manifest,{read=readFileSync,exists=existsS
     assert(SHA.test(review.sourceSHA256??'')&&
       typeof review.sourceReference==='string'&&review.sourceReference.length>=30,
       'source provenance required '+area);
+    // Compare the native source masters, not merely the exported WebP headers.
+    // Enlarging a 1672x941 PNG to 2560x1440 cannot satisfy this source gate.
+    assert(entry.candidate?.nativeWidth>=2560&&entry.candidate?.nativeHeight>=1440,
+      'native desktop source below production threshold '+area);
+    assert(entry.mobileCandidate?.nativeWidth>=1080&&entry.mobileCandidate?.nativeHeight>=1920,
+      'native independent mobile source below production threshold '+area);
+
+    assert(review.sourceSHA256===entry.candidate.sourceSHA256&&
+      review.mobileSourceSHA256===entry.mobileCandidate.sourceSHA256,
+      'review source hashes must match both original compositions '+area);
+    // Proof must be present in Git: declared original pixels alone are not
+    // verifiable. Source masters live outside /public and aren't shipped.
+    for(const [field,meta,minW,minH] of [
+      ['desktop',entry.candidate,2560,1440],
+      ['mobile',entry.mobileCandidate,1080,1920],
+    ]){
+      const sourcePath='art-sources/r12/'+area+'-'+field+'.png';
+      assert(meta.originalPath===sourcePath,'original source path required '+area+'/'+field);
+      assert(exists(join(root,sourcePath)),'missing original source PNG '+sourcePath);
+      const sourceBytes=read(join(root,sourcePath));
+      assert(checksum(sourceBytes)===meta.sourceSHA256,
+        'original source hash drift '+sourcePath);
+      const size=pngNativeDimensions(sourceBytes);
+      assert(size.width===meta.nativeWidth&&size.height===meta.nativeHeight&&
+        size.width>=minW&&size.height>=minH,
+        'native original file resolution mismatch '+sourcePath);
+    }
     assert(review.crops?.['desktop-1440x900']===true&&
       review.crops?.['desktop-1648x928-dpr2']===true&&
       review.crops?.['mobile-390x844']===true&&
