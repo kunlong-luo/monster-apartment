@@ -46,6 +46,21 @@ export function validateSceneManifest(manifest,{read=readFileSync,exists=existsS
         c.nativeWidth>0&&c.nativeHeight>0,'candidate native dimensions required '+area);
     }else assert(entry.status==='pending','non-pending scene lacks candidate '+area);
 
+    if(entry.mobileCandidate){
+      const mobile=entry.mobileCandidate;
+      assert(entry.candidate,'mobile art requires a desktop candidate '+area);
+      assert(['ai-generated','artist-original','licensed'].includes(mobile.sourceType),
+        'mobile candidate origin required for '+area);
+      assert(typeof mobile.sourceReference==='string'&&mobile.sourceReference.trim().length>=30,
+        'mobile candidate provenance required for '+area);
+      assert(SHA.test(mobile.sourceSHA256??'')&&
+        mobile.sourceSHA256!==entry.candidate.sourceSHA256,
+        'independent mobile source hash required for '+area);
+      assert(Number.isInteger(mobile.nativeWidth)&&Number.isInteger(mobile.nativeHeight)&&
+        mobile.nativeWidth>0&&mobile.nativeHeight>0&&mobile.independentComposition===true,
+        'separately composed mobile source dimensions required for '+area);
+    }
+
     for(const field of ['desktop','mobile']){
       const path=entry[field];
       assert(!path.includes('..')&&path.startsWith('public/art/world-scenes/r12/'),
@@ -57,6 +72,12 @@ export function validateSceneManifest(manifest,{read=readFileSync,exists=existsS
       assert(entry.review===null,'unpromoted scenes must not claim approval '+area);
       continue;
     }
+    // Compare the native source masters, not merely the exported WebP headers.
+    // Enlarging a 1672x941 PNG to 2560x1440 cannot satisfy this source gate.
+    assert(entry.candidate?.nativeWidth>=2560&&entry.candidate?.nativeHeight>=1440,
+      'native desktop source below production threshold '+area);
+    assert(entry.mobileCandidate?.nativeWidth>=1080&&entry.mobileCandidate?.nativeHeight>=1920,
+      'native independent mobile source below production threshold '+area);
     const review=entry.review;
     assert(review?.approved===true&&review.humanVisualReview===true&&
       review.rightsConfirmed===true&&review.commercialUse===true,
@@ -72,6 +93,9 @@ export function validateSceneManifest(manifest,{read=readFileSync,exists=existsS
     assert(SHA.test(review.sourceSHA256??'')&&
       typeof review.sourceReference==='string'&&review.sourceReference.length>=30,
       'source provenance required '+area);
+    assert(review.sourceSHA256===entry.candidate.sourceSHA256&&
+      review.mobileSourceSHA256===entry.mobileCandidate.sourceSHA256,
+      'review source hashes must match both original compositions '+area);
     assert(review.crops?.['desktop-1440x900']===true&&
       review.crops?.['desktop-1648x928-dpr2']===true&&
       review.crops?.['mobile-390x844']===true&&
