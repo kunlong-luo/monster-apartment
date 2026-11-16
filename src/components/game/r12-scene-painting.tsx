@@ -39,8 +39,9 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
   // than continuing to show the unrelated 360px workshop placeholder.
   useEffect(()=>{
     if(!reviewMode)return;
-    const notify=(url:string|null)=>window.dispatchEvent(
-      new CustomEvent('r12:local-art-change',{detail:{area,url}}));
+    const notify=(url:string|null)=>{
+      window.dispatchEvent(new CustomEvent('r12:local-art-change',{detail:{area,url}}));
+    };
     notify(preview?.url??null);
     return ()=>notify(null);
   },[area,preview,reviewMode]);
