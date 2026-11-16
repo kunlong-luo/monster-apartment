@@ -10,7 +10,7 @@ const manifest=JSON.parse(readFileSync(
 ));
 const clone=()=>structuredClone(manifest);
 
-test('S02/S05 candidates cannot accidentally become production',()=>{
+test('S02/S05/S06 review candidates cannot accidentally become production',()=>{
   const result=validateSceneManifest(manifest);
   assert.deepEqual(result,{promoted:0,pending:3});
 });
@@ -144,4 +144,41 @@ test('actual PNG dimensions must come from the source file header',()=>{
   assert.deepEqual(pngNativeDimensions(fake),{width:1672,height:941});
   fake[0]=0;
   assert.throws(()=>pngNativeDimensions(fake),/original master is not a PNG/);
+});
+
+test('S02 has a different independently composed portrait source, not a screenshot crop',()=>{
+  const entry=manifest.scenes.apartment;
+  assert.equal(entry.status,'review');
+  assert.equal(entry.candidate.nativeWidth,1672);
+  assert.equal(entry.candidate.nativeHeight,941);
+  assert.equal(entry.mobileCandidate.nativeWidth,941);
+  assert.equal(entry.mobileCandidate.nativeHeight,1672);
+  assert.equal(entry.mobileCandidate.independentComposition,true);
+  assert.notEqual(entry.mobileCandidate.sourceSHA256,entry.candidate.sourceSHA256);
+  assert.equal(entry.mobileCandidate.availableInRepo,false);
+});
+
+test('S02 portrait candidate cannot be approved by reusing the desktop SHA',()=>{
+  const wrong=clone();
+  wrong.scenes.apartment.mobileCandidate.sourceSHA256=wrong.scenes.apartment.candidate.sourceSHA256;
+  assert.throws(()=>validateSceneManifest(wrong),/independent mobile source hash required/);
+});
+
+test('S02 941px portrait is correctly rejected as native production mobile art',()=>{
+  const wrong=clone();
+  const entry=wrong.scenes.apartment;
+  entry.status='production';
+  entry.review={
+    approved:true,humanVisualReview:true,rightsConfirmed:true,commercialUse:true,
+    noBakedUI:true,noBakedText:true,nativeDesktopArtwork:true,nativeMobileArtwork:true,
+    notUpscaledFromSmallerImage:true,reviewer:'Test reviewer',
+    notes:'A test fixture, not a real visual signoff or artwork rights approval.',
+    reviewedAt:'2026-11-16T00:00:00Z',
+    sourceSHA256:entry.candidate.sourceSHA256,
+    sourceReference:entry.candidate.sourceReference,
+    mobileSourceSHA256:entry.mobileCandidate.sourceSHA256,
+  };
+  entry.candidate.nativeWidth=2560;
+  entry.candidate.nativeHeight=1440;
+  assert.throws(()=>validateSceneManifest(wrong),/native independent mobile source below production threshold/);
 });
