@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
-import {validateSceneManifest} from '../audit-r12-scene-art.mjs';
+import {validateSceneManifest,pngNativeDimensions} from '../audit-r12-scene-art.mjs';
 
 const manifest=JSON.parse(readFileSync(
   resolve(import.meta.dirname,'../../public/art/world-scenes/r12-scene-manifest.json'),
@@ -118,4 +118,30 @@ test('cannot promote with a signed review but no independent mobile original',()
   entry.candidate.nativeHeight=1440;
   delete entry.mobileCandidate;
   assert.throws(()=>validateSceneManifest(wrong),/native independent mobile source below production threshold/);
+});
+
+test('declared native dimensions are insufficient without original files in Git',()=>{
+  const wrong=clone();
+  const entry=wrong.scenes.warehouse;
+  entry.status='production';
+  entry.review=signedReview(entry);
+  entry.candidate.nativeWidth=2560;
+  entry.candidate.nativeHeight=1440;
+  entry.mobileCandidate.nativeWidth=1080;
+  entry.mobileCandidate.nativeHeight=1920;
+  assert.throws(()=>validateSceneManifest(wrong),/original source path required/);
+  entry.candidate.originalPath='art-sources/r12/warehouse-desktop.png';
+  entry.mobileCandidate.originalPath='art-sources/r12/warehouse-mobile.png';
+  assert.throws(()=>validateSceneManifest(wrong),/missing original source PNG/);
+});
+
+test('actual PNG dimensions must come from the source file header',()=>{
+  const fake=Buffer.alloc(30);
+  Buffer.from([137,80,78,71,13,10,26,10]).copy(fake,0);
+  fake.write('IHDR',12,'ascii');
+  fake.writeUInt32BE(1672,16);
+  fake.writeUInt32BE(941,20);
+  assert.deepEqual(pngNativeDimensions(fake),{width:1672,height:941});
+  fake[0]=0;
+  assert.throws(()=>pngNativeDimensions(fake),/original master is not a PNG/);
 });
