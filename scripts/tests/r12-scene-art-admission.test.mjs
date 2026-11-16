@@ -100,6 +100,11 @@ test('human review must fingerprint each separate original master',()=>{
   const entry=wrong.scenes.warehouse;
   entry.status='production';
   entry.review=signedReview(entry);
+  // Isolate the fingerprint rule: otherwise native-size admission fails first.
+  entry.candidate.nativeWidth=2560;
+  entry.candidate.nativeHeight=1440;
+  entry.mobileCandidate.nativeWidth=1080;
+  entry.mobileCandidate.nativeHeight=1920;
   entry.review.mobileSourceSHA256=entry.candidate.sourceSHA256;
   assert.throws(()=>validateSceneManifest(wrong),/review source hashes must match both original compositions/);
 });
