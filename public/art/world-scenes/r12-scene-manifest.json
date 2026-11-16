@@ -18,7 +18,17 @@
       },
       "desktop": "public/art/world-scenes/r12/apartment-desktop.webp",
       "mobile": "public/art/world-scenes/r12/apartment-mobile.webp",
-      "review": null
+      "review": null,
+      "mobileCandidate": {
+        "sourceType": "ai-generated",
+        "sourceReference": "R12 S02 newly generated separate portrait apartment atrium composition on 2026-11-16, original in conversation R12 S02 dual-composition review ZIP, not checked into this repository",
+        "sourceSHA256": "ebba8a12cead870457a64ae211d1f5ebd529ee56e291f494ffdce369588f4dd0",
+        "nativeWidth": 941,
+        "nativeHeight": 1672,
+        "independentComposition": true,
+        "availableInRepo": false,
+        "humanVisualReview": false
+      }
     },
     "orders": {
       "id": "S05",
