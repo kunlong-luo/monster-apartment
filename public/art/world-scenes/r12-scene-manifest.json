@@ -18,7 +18,17 @@
       },
       "desktop": "public/art/world-scenes/r12/apartment-desktop.webp",
       "mobile": "public/art/world-scenes/r12/apartment-mobile.webp",
-      "review": null
+      "review": null,
+      "mobileCandidate": {
+        "sourceType": "ai-generated",
+        "sourceReference": "ChatGPT ImageGen 2026-11-16; S02 independently composed gothic apartment atrium portrait artwork in conversation review ZIP; original not committed",
+        "sourceSHA256": "dc05ae069898db55f374ce36ac68c98708dd63475693ba353590a483c1f4f0a7",
+        "nativeWidth": 941,
+        "nativeHeight": 1672,
+        "independentComposition": true,
+        "availableInRepo": false,
+        "humanVisualReview": false
+      }
     },
     "orders": {
       "id": "S05",

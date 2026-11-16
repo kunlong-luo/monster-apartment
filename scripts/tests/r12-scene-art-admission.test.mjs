@@ -145,3 +145,22 @@ test('actual PNG dimensions must come from the source file header',()=>{
   fake[0]=0;
   assert.throws(()=>pngNativeDimensions(fake),/original master is not a PNG/);
 });
+
+
+test('S02 apartment has a separately composed mobile original, still unapproved',()=>{
+  const entry=clone().scenes.apartment;
+  assert.equal(entry.status,'review');
+  assert.equal(entry.candidate.nativeWidth,1672);
+  assert.equal(entry.mobileCandidate.nativeWidth,941);
+  assert.equal(entry.mobileCandidate.nativeHeight,1672);
+  assert.equal(entry.mobileCandidate.independentComposition,true);
+  assert.equal(entry.mobileCandidate.availableInRepo,false);
+  assert.notEqual(entry.mobileCandidate.sourceSHA256,entry.candidate.sourceSHA256);
+  assert.deepEqual(validateSceneManifest(clone()),{promoted:0,pending:3});
+});
+
+test('S02 original mobile hash cannot be copied from the desktop asset',()=>{
+  const changed=clone();
+  changed.scenes.apartment.mobileCandidate.sourceSHA256=changed.scenes.apartment.candidate.sourceSHA256;
+  assert.throws(()=>validateSceneManifest(changed),/independent mobile source hash required apartment/);
+});
