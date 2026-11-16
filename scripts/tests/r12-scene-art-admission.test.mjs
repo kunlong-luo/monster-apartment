@@ -183,16 +183,16 @@ test('S02 941px portrait is correctly rejected as native production mobile art',
   assert.throws(()=>validateSceneManifest(wrong),/native independent mobile source below production threshold/);
 });
 
-test('S02, S05 and S06 all have separate desktop and mobile review masters',()=>{
+test('S02, S05 and S06 maintain distinct original sources through production',()=>{
   const scenes=clone().scenes;
   const hashes=new Set();
   for(const [area,entry] of Object.entries(scenes)){
-    assert.equal(entry.status,'review',area+' must not be production');
-    assert.equal(entry.review,null,area+' must not claim human approval');
-    assert.ok(entry.mobileCandidate,area+' needs independent portrait review art');
+    assert.ok(entry.mobileCandidate,area+' needs independent portrait source');
     assert.equal(entry.mobileCandidate.independentComposition,true);
-    assert.equal(entry.mobileCandidate.availableInRepo,false);
-    assert.equal(entry.mobileCandidate.humanVisualReview,false);
+    if(entry.status!=='production'){
+      assert.equal(entry.review,null,area+' unapproved art needs null review');
+      assert.equal(entry.mobileCandidate.humanVisualReview,false);
+    }
     for(const art of [entry.candidate,entry.mobileCandidate]){
       assert.equal(hashes.has(art.sourceSHA256),false,area+' source must be unique');
       hashes.add(art.sourceSHA256);
@@ -223,5 +223,9 @@ test('S05 review-only portrait is rejected as a native production original',()=>
   };
   entry.candidate.nativeWidth=2560;
   entry.candidate.nativeHeight=1440;
+  // Pin the intentionally low-resolution test master: legitimate future HD
+  // promotion must not make this negative test fail.
+  entry.mobileCandidate.nativeWidth=941;
+  entry.mobileCandidate.nativeHeight=1672;
   assert.throws(()=>validateSceneManifest(bad),/native independent mobile source below production threshold orders/);
 });
