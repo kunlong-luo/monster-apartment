@@ -52,7 +52,7 @@ export function CharacterGalleryArtwork({
       <motion.div key={active.key} className="cg-art-view__painting"
         style={portraitStyle}
         data-native-portrait={!hasFigureArt?'true':'false'}
-        initial={reducedMotion?false:{opacity:0,scale:1.025}}
+        initial={reducedMotion?false:{opacity:0,scale:hasFigureArt?1.025:1}}
         animate={{opacity:1,scale:1}}
         transition={{duration:reducedMotion?0:.25,ease:'easeOut'}}>
         {source&&<ReliableImage src={source}
