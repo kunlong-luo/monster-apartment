@@ -31,6 +31,14 @@ test('R12 local art reviewer previews file bytes without publishing or persistin
   await expect.poll(()=>hero.evaluate(el=>(el as HTMLImageElement).naturalWidth))
     .toBeGreaterThan(0);
 
+  // A failed reviewed hero is never replaced by the unrelated blurry 360px
+  // workshop prototype, even after Next Image's built-in retry is exhausted.
+  await hero.evaluate(el=>el.dispatchEvent(new Event('error',{bubbles:true})));
+  await expect(hero).toHaveAttribute('data-image-load','retry');
+  await hero.evaluate(el=>el.dispatchEvent(new Event('error',{bubbles:true})));
+  await expect(page.locator('[data-r12-hero-art="local-review-failed"]')).toBeVisible();
+  await expect(page.locator('img[src*="moon-workshop"]')).toHaveCount(0);
+
   await reviewer.getByRole('button',{name:'恢复原场景'}).click();
   await expect(page.locator('[data-r12-hero-art="local-review"]')).toHaveCount(0);
   await expect(backdrop).toHaveAttribute('data-r12-scene-art','legacy');
