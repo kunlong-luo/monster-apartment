@@ -248,3 +248,47 @@ test('A05 mobile card strip remains operable without page overflow',async({page}
     document.documentElement.scrollWidth-window.innerWidth);
   expect(narrowOverflow).toBeLessThanOrEqual(2);
 });
+
+
+test('A05 portrait-only artwork stays within its source pixel budget at DPR2',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1648,height:928});
+  await page.goto('/characters/');
+  await page.getByRole('button',{name:'欣赏立绘'}).click();
+
+  const viewer=page.getByTestId('a05-art-viewer');
+  await expect(viewer).toBeVisible();
+  // Select an ordinary 512x512 resident face, not the mythic CG candidate.
+  await viewer.locator('.cg-art-view__thumb').last().click();
+  await expect(viewer.locator('.cg-art-view__stage')).toHaveAttribute('data-art-kind','portrait');
+  const mat=viewer.locator('.cg-art-view__painting');
+  await expect(mat).toHaveAttribute('data-native-portrait','true');
+  await expect(viewer.locator('.cg-art-view__portrait-caption')).toBeVisible();
+  const image=viewer.locator('.cg-art-view__photo');
+  await expect.poll(()=>image.evaluate((el:HTMLImageElement)=>el.naturalWidth),
+    {timeout:15000}).toBeGreaterThan(0);
+  const evidence=await image.evaluate((el:HTMLImageElement)=>{
+    const frame=el.closest('.cg-art-view__painting')!;
+    const bounds=frame.getBoundingClientRect();
+    return {sourceWidth:el.naturalWidth,sourceHeight:el.naturalHeight,
+      renderWidth:bounds.width,renderHeight:bounds.height};
+  });
+  expect(evidence.sourceWidth).toBe(512);
+  expect(evidence.sourceHeight).toBe(512);
+  expect(evidence.renderWidth).toBeLessThanOrEqual(evidence.sourceWidth/2+1);
+  expect(evidence.renderHeight).toBeLessThanOrEqual(evidence.sourceHeight/2+1);
+
+  // A real figure painting is not forced into the 256px avatar frame.
+  await viewer.locator('.cg-art-view__thumb').first().click();
+  await expect(viewer.locator('.cg-art-view__stage')).toHaveAttribute('data-art-kind','figure');
+  await expect(viewer.locator('.cg-art-view__painting')).toHaveAttribute('data-native-portrait','false');
+  await expect(viewer.locator('.cg-art-view__portrait-caption')).toHaveCount(0);
+  const full=await viewer.locator('.cg-art-view__painting').boundingBox();
+  expect(full!.width).toBeGreaterThan(420);
+
+  await page.setViewportSize({width:390,height:844});
+  await viewer.locator('.cg-art-view__thumb').last().click();
+  await expect(viewer.locator('.cg-art-view__painting')).toHaveAttribute('data-native-portrait','true');
+  const mobileOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+  expect(mobileOverflow).toBeLessThanOrEqual(2);
+});
