@@ -305,6 +305,23 @@
   background:radial-gradient(ellipse at 50% 28%,#53354d,#241627 68%,#100912);
 }
 .cg-art-view__painting{position:absolute;inset:12px;overflow:hidden}
+/* Portrait-only cards use the actual image's pixel budget, not the
+ * full-bleed CG stage. 512 source pixels -> at most 256 CSS px at DPR2.
+ * Full figure paintings keep their existing immersive stage. */
+.cg-art-view__painting[data-native-portrait="true"]{
+  inset:0;margin:auto;
+  width:min(var(--cg-portrait-width,256px),calc(100% - 36px));
+  height:min(var(--cg-portrait-height,256px),calc(100% - 100px));
+  border:1px solid #dbb888a8;border-radius:16px;
+  background:#1e111f;
+  box-shadow:0 0 0 7px #8c5b4b25,0 0 0 8px #d5a77460,
+    0 18px 48px #050207bd;
+}
+.cg-art-view__portrait-caption{
+  position:absolute;bottom:24px;left:12px;right:12px;
+  color:#ddbc99;font:11px/1.5 Georgia,serif;
+  text-align:center;letter-spacing:.13em;pointer-events:none;
+}
 .cg-art-view__photo{object-fit:contain;object-position:center center}
 .cg-art-view__stage-ornament{position:absolute;pointer-events:none;z-index:4;
   top:0;left:50%;width:70px;height:17px;transform:translateX(-50%);
