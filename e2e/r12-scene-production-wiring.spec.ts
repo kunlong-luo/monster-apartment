@@ -40,14 +40,18 @@ test('R12 scene review candidates cannot leak into game; approved art uses respo
       if(entry.hero){
         const hero=page.getByTestId(entry.hero);
         await expect(hero).toBeVisible({timeout:20000});
-        await expect(hero.locator('img[data-r12-hero-art]')).toHaveCount(approved?2:1);
+        await expect(hero.locator('img[data-r12-hero-art]')).toHaveCount(approved?2:0);
+        await expect(hero.locator('[data-r12-hero-art="pending"]')).toHaveCount(approved?0:1);
         if(approved){
           const target=hero.locator('img[data-r12-hero-art="'+(viewport.width<=700?'mobile':'desktop')+'"]');
           await expect(target).toBeVisible();
           await expect.poll(()=>target.evaluate((element)=>(element as HTMLImageElement).naturalWidth),
             {timeout:20000}).toBeGreaterThan(0);
           await expect(target).toHaveAttribute('data-image-load','original');
-        }else await expect(hero.locator('img[data-r12-hero-art="legacy"]')).toBeVisible();
+        }else{
+          await expect(hero.locator('[data-r12-hero-art="pending"]')).toBeVisible();
+          await expect(hero.locator('img[src*="moon-workshop"]')).toHaveCount(0);
+        }
       }
     }
   }
