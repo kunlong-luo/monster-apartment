@@ -117,12 +117,33 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
   </>;
 }
 
-/** Never stretch the old 360×228 workshop prototype across an orders
- * or warehouse banner: it is both blurry and semantically the wrong room.
- * A restrained native-rendered panel is used while art remains in review.
- * Production and opt-in local preview keep their real scene imagery.
+/** A failed original must never expose the legacy 360×228 workshop thumbnail.
+ * Retry once via ReliableImage; then fall back to the crisp built-in panel,
+ * rather than silently restoring the blurred, wrong-location raster.
  */
-export function R12SceneHeroPainting({area,fallbackSrc,alt}:Props&{alt:string}){
+type HeroArtKind='desktop'|'mobile'|'local-review';
+function R12VerifiedHeroImage({src,alt,kind}:{
+  src:string;alt:string;kind:HeroArtKind;
+}){
+  const [failures,setFailures]=useState(0);
+  const responsiveClass=kind==='desktop'?' max-[700px]:hidden':
+    kind==='mobile'?' hidden max-[700px]:block':'';
+  if(failures>=2)return <div aria-hidden="true"
+    data-r12-hero-art={kind+'-failed'}
+    className={'mw-world-hero-pending'+responsiveClass}/>;
+
+  return <ReliableImage src={src} fill unoptimized
+    sizes={kind==='mobile'?'100vw':'(max-width:760px) 100vw, 1200px'}
+    alt={alt} data-r12-hero-art={kind}
+    className={'mw-world-hero-painting'+responsiveClass}
+    onError={()=>setFailures(count=>Math.min(2,count+1))}/>;
+}
+
+/** The reviewed independent environment will replace this placeholder only
+ * after both source images are admitted. There is no low-resolution fallback. */
+export function R12SceneHeroPainting({area,alt}:{
+  area:R12SceneArea;alt:string;
+}){
   const [localPreview,setLocalPreview]=useState<string|null>(null);
   useEffect(()=>{
     const onReview=(event:Event)=>{
@@ -133,20 +154,15 @@ export function R12SceneHeroPainting({area,fallbackSrc,alt}:Props&{alt:string}){
     return ()=>window.removeEventListener('r12:local-art-change',onReview);
   },[area]);
   const sources=approvedR12Scene(area);
-  if(localPreview)return <ReliableImage src={localPreview} fallbackSrc={fallbackSrc}
-    fill unoptimized sizes="(max-width:760px) 100vw, 1200px" alt={alt}
-    data-r12-hero-art="local-review" className="mw-world-hero-painting"/>;
+  if(localPreview)return <R12VerifiedHeroImage key={localPreview}
+    src={localPreview} alt={alt} kind="local-review"/>;
   if(!sources)return <div aria-hidden="true"
     data-r12-hero-art="pending" className="mw-world-hero-pending"/>;
 
   return <>
-    <ReliableImage src={sources.desktop} fallbackSrc={fallbackSrc}
-      fill unoptimized sizes="(max-width:760px) 100vw, 1200px" alt={alt}
-      data-r12-hero-art="desktop"
-      className="mw-world-hero-painting max-[700px]:hidden"/>
-    <ReliableImage src={sources.mobile} fallbackSrc={fallbackSrc}
-      fill unoptimized sizes="100vw" alt={alt}
-      data-r12-hero-art="mobile"
-      className="mw-world-hero-painting hidden max-[700px]:block"/>
+    <R12VerifiedHeroImage key={sources.desktop}
+      src={sources.desktop} alt={alt} kind="desktop"/>
+    <R12VerifiedHeroImage key={sources.mobile}
+      src={sources.mobile} alt={alt} kind="mobile"/>
   </>;
 }
