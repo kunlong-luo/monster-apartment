@@ -130,7 +130,13 @@
   overflow:hidden;border:1px solid #bc9a74;border-radius:10px}.mw-witch-painting img{object-fit:cover;object-position:center 19%}.mw-world-art-hero{position:relative;isolation:isolate;min-height:238px;
   display:flex;align-items:end;justify-content:space-between;gap:12px;
   padding:32px;border:2px solid #bda078;border-radius:17px;overflow:hidden;
-  box-shadow:0 19px 40px #0c1324a6;background:#243249}.mw-world-hero-painting{object-fit:cover;object-position:center 47%;z-index:-2;
+  box-shadow:0 19px 40px #0c1324a6;background:#243249}/* Until an independently reviewed original arrives, use a crisp native
+   treatment rather than scale the unrelated 360x228 workshop thumbnail. */
+.mw-world-hero-pending{position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background:radial-gradient(ellipse at 78% 29%,#91476073,transparent 54%),linear-gradient(112deg,#3b2339,#191e39)}
+.mw-warehouse-hero .mw-world-hero-pending{
+  background:radial-gradient(ellipse at 78% 29%,#415e706f,transparent 54%),linear-gradient(112deg,#222d3f,#1b2436)}
+.mw-world-hero-painting{object-fit:cover;object-position:center 47%;z-index:-2;
   filter:saturate(1.2) contrast(1.04)}.mw-world-art-hero:after{content:'';position:absolute;z-index:-1;inset:0;
   background:linear-gradient(95deg,#142038ed 0%,#1d2f3e9c 62%,#162942a3)}.mw-world-hero-copy{position:relative;max-width:700px}.mw-world-hero-copy h2{font:700 36px Georgia,serif;color:#ffe4b5;margin:7px 0;
   text-shadow:0 4px 14px #10101a}.mw-world-hero-copy p{font-size:14px;line-height:1.75;color:#f3efe3;margin:0}.mw-warehouse-art{position:absolute;z-index:0;top:9px;right:23%;max-width:23%;
