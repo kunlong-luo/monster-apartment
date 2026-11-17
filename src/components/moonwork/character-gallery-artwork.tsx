@@ -2,6 +2,7 @@
 
 import {ChevronLeft,ChevronRight,Image as ImageIcon} from 'lucide-react';
 import {motion} from 'motion/react';
+import type {CSSProperties} from 'react';
 import {ReliableImage} from '@/components/game/reliable-image';
 import {
   getCardFace,getCardPortraitFallback,getCollectibleCardArt,
@@ -26,6 +27,14 @@ export function CharacterGalleryArtwork({
   const active=cards[activeIndex]??cards[0];
   const source=getCardFace(active.key,'feature');
   const hasFigureArt=Boolean(getCollectibleCardArt(active.key));
+  // For unapproved/portrait-only artwork, prevent the gallery from stretching
+  // a 512px source across a 700px+ stage on DPR2 desktop monitors. Reserve
+  // full-bleed framing for an actual separately reviewed figure CG.
+  const rawPortrait=!hasFigureArt&&source&&typeof source!=='string'?source:null;
+  const portraitStyle:CSSProperties|undefined=rawPortrait?({
+    '--cg-portrait-width':Math.max(1,Math.min(Math.floor(rawPortrait.width/2),460))+'px',
+    '--cg-portrait-height':Math.max(1,Math.min(Math.floor(rawPortrait.height/2),460))+'px',
+  } as CSSProperties):undefined;
   const owned=collectedKeys.includes(active.key);
   const change=(delta:number)=>{
     const next=(activeIndex+delta+cards.length)%cards.length;
@@ -41,6 +50,8 @@ export function CharacterGalleryArtwork({
     }}>
     <div className="cg-art-view__stage" data-art-kind={hasFigureArt?'figure':'portrait'}>
       <motion.div key={active.key} className="cg-art-view__painting"
+        style={portraitStyle}
+        data-native-portrait={!hasFigureArt?'true':'false'}
         initial={reducedMotion?false:{opacity:0,scale:1.025}}
         animate={{opacity:1,scale:1}}
         transition={{duration:reducedMotion?0:.25,ease:'easeOut'}}>
@@ -50,6 +61,9 @@ export function CharacterGalleryArtwork({
           sizes="(max-width:800px) 92vw, 70vw"
           className="cg-art-view__photo"/>}
       </motion.div>
+      {!hasFigureArt&&<span className="cg-art-view__portrait-caption" aria-hidden="true">
+        肖像原稿 · 以原始像素鉴赏
+      </span>}
       <span className="cg-art-view__stage-ornament" aria-hidden="true"/>
     </div>
     <aside className="cg-art-view__side">
