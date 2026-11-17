@@ -117,8 +117,10 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
   </>;
 }
 
-/** No 360×228 workshop prototype is rendered once this scene is promoted.
- * The original painting remains a safe retry/fallback during asset errors.
+/** Never stretch the old 360×228 workshop prototype across an orders
+ * or warehouse banner: it is both blurry and semantically the wrong room.
+ * A restrained native-rendered panel is used while art remains in review.
+ * Production and opt-in local preview keep their real scene imagery.
  */
 export function R12SceneHeroPainting({area,fallbackSrc,alt}:Props&{alt:string}){
   const [localPreview,setLocalPreview]=useState<string|null>(null);
@@ -134,9 +136,8 @@ export function R12SceneHeroPainting({area,fallbackSrc,alt}:Props&{alt:string}){
   if(localPreview)return <ReliableImage src={localPreview} fallbackSrc={fallbackSrc}
     fill unoptimized sizes="(max-width:760px) 100vw, 1200px" alt={alt}
     data-r12-hero-art="local-review" className="mw-world-hero-painting"/>;
-  if(!sources)return <ReliableImage src={fallbackSrc} fill unoptimized
-    sizes="(max-width:760px) 100vw, 1200px" alt={alt}
-    data-r12-hero-art="legacy" className="mw-world-hero-painting"/>;
+  if(!sources)return <div aria-hidden="true"
+    data-r12-hero-art="pending" className="mw-world-hero-pending"/>;
 
   return <>
     <ReliableImage src={sources.desktop} fallbackSrc={fallbackSrc}
