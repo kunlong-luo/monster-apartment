@@ -21,6 +21,13 @@ type LocalPreview={url:string;name:string;width:number;height:number};
 const noSubscription=()=>()=>{};
 const readReviewQuery=()=>new URLSearchParams(window.location.search).get('r12-art-review')==='1';
 const serverReviewQuery=()=>false;
+const subscribeMobileViewport=(update:()=>void)=>{
+  const query=window.matchMedia('(max-width:700px)');
+  query.addEventListener('change',update);
+  return ()=>query.removeEventListener('change',update);
+};
+const readMobileViewport=()=>window.matchMedia('(max-width:700px)').matches;
+
 
 /** Opt-in, entirely local reviewer surface. User-selected images never leave
  * the browser, and never change the production manifest or stored game data.
@@ -30,11 +37,19 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
 }){
   const sources=approvedR12Scene(area);
   const reviewMode=useSyncExternalStore(noSubscription,readReviewQuery,serverReviewQuery);
-  const [preview,setPreview]=useState<LocalPreview|null>(null);
+  const mobileViewport=useSyncExternalStore(
+    subscribeMobileViewport,readMobileViewport,serverReviewQuery);
+  const [desktopPreview,setDesktopPreview]=useState<LocalPreview|null>(null);
+  const [mobilePreview,setMobilePreview]=useState<LocalPreview|null>(null);
   const [message,setMessage]=useState('');
-  useEffect(()=>()=>{
-    if(preview)URL.revokeObjectURL(preview.url);
-  },[preview]);
+  // Both source object URLs remain alive while switching viewport, then are
+  // individually released on replacement, clear and route unmount.
+  useEffect(()=>()=>{if(desktopPreview)URL.revokeObjectURL(desktopPreview.url);},[desktopPreview]);
+  useEffect(()=>()=>{if(mobilePreview)URL.revokeObjectURL(mobilePreview.url);},[mobilePreview]);
+  // If no independent portrait has been chosen, the desktop source can still
+  // be cropped for layout preview — explicitly flagged as NOT mobile approval.
+  const preview=mobileViewport?(mobilePreview??desktopPreview):desktopPreview;
+  const portraitMissing=mobileViewport&&!!desktopPreview&&!mobilePreview;
   // The matching S05/S06 banner must preview the same original image rather
   // than continuing to show the unrelated 360px workshop placeholder.
   useEffect(()=>{
@@ -45,7 +60,7 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
     notify(preview?.url??null);
     return ()=>notify(null);
   },[area,preview,reviewMode]);
-  const chooseFile=(file:File|undefined)=>{
+  const chooseFile=(file:File|undefined,kind:'desktop'|'mobile')=>{
     if(!file)return;
     if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>20*1024*1024){
       setMessage('仅支持 20 MB 内的 PNG、JPEG 或 WebP 环境原图。');
@@ -59,7 +74,9 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
         setMessage('图片无法读取，请更换有效的原始图片。');
         return;
       }
-      setPreview({url,name:file.name,width:probe.naturalWidth,height:probe.naturalHeight});
+      const next={url,name:file.name,width:probe.naturalWidth,height:probe.naturalHeight};
+      if(kind==='desktop')setDesktopPreview(next);
+      else setMobilePreview(next);
       setMessage('');
     };
     probe.onerror=()=>{
@@ -69,10 +86,10 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
     probe.src=url;
   };
   const showProduction=!!sources&&!preview;
-  const isPortrait=preview?preview.height>preview.width:false;
-  const targetWidth=isPortrait?1080:2560;
-  const targetHeight=isPortrait?1920:1440;
-  const hasPixels=preview?preview.width>=targetWidth&&preview.height>=targetHeight:false;
+  const previewKind=mobileViewport&&!!mobilePreview?'mobile':'desktop';
+  const targetWidth=previewKind==='mobile'?1080:2560;
+  const targetHeight=previewKind==='mobile'?1920:1440;
+  const hasPixels=!!preview&&preview.width>=targetWidth&&preview.height>=targetHeight;
   return <>
     <div className={className} aria-hidden="true"
       data-testid={testId}
@@ -96,21 +113,43 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
         <p className="text-xs font-semibold tracking-wider">R12 · {area} 本地场景审稿</p>
         <p className="mt-1 text-xs text-[#d8bf9f]">只在当前浏览器显示。不会上传、保存或发布图片。</p>
         <label className="mt-3 block cursor-pointer rounded-md border border-[#b99c7d] px-3 py-2 text-center text-sm hover:bg-[#61402a]/40">
-          选择原始 PNG / WebP
+          选择 PC 横版原图
           <input data-testid="r12-local-art-file" type="file" accept="image/png,image/jpeg,image/webp"
             className="sr-only" onChange={event=>{
-              chooseFile(event.currentTarget.files?.[0]);
+              chooseFile(event.currentTarget.files?.[0],'desktop');
               event.currentTarget.value='';
             }}/>
         </label>
-        {preview&&<div className="mt-2 text-xs" aria-live="polite">
-          <p className="break-all">{preview.name} · {preview.width}×{preview.height}</p>
-          <p className={hasPixels?'text-[#c4e3b2]':'text-[#ffd29b]'}>
-            {hasPixels?'尺寸达到本画幅最低像素要求；仍需人工审核':
-              '低于当前画幅的原生最低尺寸，仅供构图预览'}
+        <label className="mt-2 block cursor-pointer rounded-md border border-[#b99c7d] px-3 py-2 text-center text-sm hover:bg-[#61402a]/40">
+          选择手机独立竖版原图
+          <input data-testid="r12-local-art-file-mobile" type="file" accept="image/png,image/jpeg,image/webp"
+            className="sr-only" onChange={event=>{
+              chooseFile(event.currentTarget.files?.[0],'mobile');
+              event.currentTarget.value='';
+            }}/>
+        </label>
+        {(desktopPreview||mobilePreview)&&<div className="mt-2 grid gap-1 text-xs" aria-live="polite">
+          <p className="break-all" data-testid="r12-local-desktop-meta">
+            PC：{desktopPreview?desktopPreview.name+' · '+desktopPreview.width+'×'+desktopPreview.height:'未选择'}
           </p>
-          <button type="button" onClick={()=>setPreview(null)}
-            className="mt-2 rounded border border-[#b99c7d] px-3 py-1">恢复原场景</button>
+          <p className="break-all" data-testid="r12-local-mobile-meta">
+            手机：{mobilePreview?mobilePreview.name+' · '+mobilePreview.width+'×'+mobilePreview.height:'未选择'}
+          </p>
+          {preview&&<p className="break-all" data-testid="r12-local-active">
+            当前预览：{previewKind==='mobile'?'手机独立原图':'PC 横版原图'} · {preview.width}×{preview.height}
+          </p>}
+          {portraitMissing&&<p className="text-[#ffd29b]">
+            手机暂无独立竖图，正在查看 PC 原图裁切；不得作为手机美术验收。
+          </p>}
+          {preview&&<p className={hasPixels?'text-[#c4e3b2]':'text-[#ffd29b]'}>
+            {hasPixels?'尺寸达到当前画幅最低像素要求；仍需人工审核':
+              '低于当前画幅的原生最低尺寸，仅供构图预览'}
+          </p>}
+          <button type="button" onClick={()=>{
+            setDesktopPreview(null);setMobilePreview(null);setMessage('');
+          }} className="mt-2 rounded border border-[#b99c7d] px-3 py-1">
+            恢复原场景
+          </button>
         </div>}
         {message&&<p role="alert" className="mt-2 text-xs text-[#ffd29b]">{message}</p>}
       </aside>,document.body)}
