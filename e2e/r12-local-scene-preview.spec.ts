@@ -7,6 +7,7 @@ const sample=Buffer.from(
 
 test('R12 local art reviewer previews file bytes without publishing or persisting them',async({page})=>{
   test.setTimeout(60_000);
+  await page.setViewportSize({width:1440,height:900});
   await page.goto('/orders/?r12-art-review=1');
   const reviewer=page.getByTestId('r12-local-art-review');
   await expect(reviewer).toBeVisible();
@@ -24,6 +25,31 @@ test('R12 local art reviewer previews file bytes without publishing or persistin
     .toContain('blob:');
   // A transient local backdrop must not promote an image or duplicate R12 assets.
   await expect(backdrop.locator('img[data-r12-art-image]')).toHaveCount(0);
+  const pcUrl=await backdrop.evaluate(el=>getComputedStyle(el).backgroundImage);
+  // Mobile without its own artwork is explicitly marked as a crop-only review.
+  await page.setViewportSize({width:390,height:844});
+  await expect(reviewer).toContainText('不得作为手机美术验收');
+  await expect.poll(()=>backdrop.evaluate(el=>getComputedStyle(el).backgroundImage))
+    .toBe(pcUrl);
+
+  // The phone source is a different object URL and changes both background
+  // and the matching live hero when crossing the 700px breakpoint.
+  await page.getByTestId('r12-local-art-file-mobile').setInputFiles({
+    name:'portrait-review.png',mimeType:'image/png',buffer:sample,
+  });
+  await expect(reviewer.getByTestId('r12-local-mobile-meta')).toContainText('portrait-review.png');
+  await expect(reviewer.getByTestId('r12-local-active')).toContainText('手机独立原图');
+  await expect.poll(()=>backdrop.evaluate(el=>getComputedStyle(el).backgroundImage))
+    .not.toBe(pcUrl);
+  const portraitUrl=await backdrop.evaluate(el=>getComputedStyle(el).backgroundImage);
+  const phoneHero=page.locator('img[data-r12-hero-art="local-review"]');
+  await expect(phoneHero).toBeVisible();
+  await expect.poll(()=>phoneHero.getAttribute('src')).toContain('blob:');
+  await page.setViewportSize({width:1440,height:900});
+  await expect(reviewer.getByTestId('r12-local-active')).toContainText('PC 横版原图');
+  await expect.poll(()=>backdrop.evaluate(el=>getComputedStyle(el).backgroundImage))
+    .toBe(pcUrl);
+  expect(portraitUrl).not.toBe(pcUrl);
   // The old 360px workshop hero is replaced by the same temporary scene art
   // for an accurate in-game layout inspection (not a production asset).
   const hero=page.locator('[data-r12-hero-art="local-review"]');
@@ -46,6 +72,7 @@ test('R12 local art reviewer previews file bytes without publishing or persistin
   await expect(reviewer).toBeVisible();
   await expect(backdrop).toHaveAttribute('data-r12-scene-art','legacy');
   await expect(reviewer).not.toContainText('local-review.png');
+  await expect(reviewer).not.toContainText('portrait-review.png');
 
   await page.goto('/orders/');
   await expect(page.getByTestId('r12-local-art-review')).toHaveCount(0);
