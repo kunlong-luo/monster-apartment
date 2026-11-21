@@ -12,7 +12,14 @@ test('mobile lobby prioritizes heroine painting without losing summon or seven r
   await expect(mainQuest).toBeVisible();
   await expect(feature).toContainText('神话 · 月蚀');
   await expect(feature).toHaveAttribute('href',/characters/);
-  await expect(dock.getByRole('link')).toHaveCount(4);
+  // On phones the fourth dock control is the seven-destination map toggle,
+  // not a fourth direct anchor. Assert the actual user journey.
+  await expect(dock.getByRole('link')).toHaveCount(3);
+  const worldToggle=dock.getByRole('button',{name:'全部地点'});
+  await expect(worldToggle).toBeVisible();
+  await worldToggle.click();
+  await expect(page.getByRole('navigation',{name:'全部地点导航'}).getByRole('link')).toHaveCount(7);
+  await worldToggle.click();
   const featureBox=await feature.boundingBox();
   const questBox=await mainQuest.boundingBox();
   const dockBox=await dock.boundingBox();
