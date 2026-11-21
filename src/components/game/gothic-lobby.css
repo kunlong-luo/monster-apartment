@@ -322,3 +322,34 @@
 @media(prefers-reduced-motion:reduce){
   .gothic-lobby__story-accept{transition:none}
 }
+
+
+/* R12.3 · Mobile art clearance: the first contract stays a real, accessible
+ * summon link, but its small portrait mosaic must not cover Moonveil's eyes.
+ * Desktop reference keeps the approved full illustrated feature card.
+ */
+@media(max-width:600px){
+  .gothic-lobby__mission-rail{gap:6px}
+  .gothic-lobby__mission-card--eclipse{
+    min-height:65px;max-height:70px;
+    padding:7px 10px;gap:3px;
+    justify-content:center;
+    background:linear-gradient(112deg,var(--craft-wine),var(--craft-panel, #1b161d));
+    border-color:var(--craft-hairline);
+  }
+  .gothic-lobby__mission-card--eclipse .gothic-lobby__card-kicker{
+    font-size:10px;line-height:1.2;min-height:0;
+  }
+  .gothic-lobby__mission-card--eclipse strong{
+    font-size:15px;line-height:1.16;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;
+    letter-spacing:.04em;text-shadow:0 2px 8px #000a;
+  }
+  .gothic-lobby__mission-card--eclipse .gothic-lobby__mission-detail{
+    font-size:9px;line-height:1.2;min-height:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .gothic-lobby__mission-card--eclipse :is(
+    .gothic-lobby__contract-faces,.gothic-lobby__summon-verse,
+    .gothic-lobby__chapter-mark,.gothic-lobby__summon-illustration){display:none}
+}
