@@ -6,6 +6,7 @@ import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import {motion} from 'motion/react';
 import {ArrowUpRight,Grid3X3,MoveRight} from 'lucide-react';
 import {MACHINES,WORKERS,projectMachineProduction} from '../../../v2/src/workshop-engine';
+import {gothicMotionStorage} from '@/lib/game/storage-service';
 import {presentWorkshopStations} from '../../../v2/src/workshop-station-presenter';
 import type {Craft,DailyProduction,WorkshopState} from '../../../v2/src/workshop-engine';
 import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
@@ -43,7 +44,7 @@ function getReviewBase(){
 function allowSceneMotion(){
   if(typeof window==='undefined')return false;
   try{
-    if(window.localStorage.getItem('monster-apartment:gothic-motion-reduced')==='1')
+    if(gothicMotionStorage.readRaw()==='1')
       return false;
   }catch{/* Storage can be unavailable; system preference still applies. */}
   return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;

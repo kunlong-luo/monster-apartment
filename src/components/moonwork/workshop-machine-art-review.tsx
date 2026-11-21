@@ -4,6 +4,7 @@ import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import Image from 'next/image';
 import {Eye,Pause,Play,X} from 'lucide-react';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
+import {gothicMotionStorage} from '@/lib/game/storage-service';
 import type {Craft} from '../../../v2/src/workshop-engine';
 
 const CRAFTS:{id:Craft;name:string;material:string}[]=[
@@ -27,7 +28,7 @@ function subscribeReviewRoute(onChange:()=>void){
 function readMotionPreference(){
   if(typeof window==='undefined')return false;
   let userPaused=false;
-  try{userPaused=window.localStorage.getItem('monster-apartment:gothic-motion-reduced')==='1';}
+  try{userPaused=gothicMotionStorage.readRaw()==='1';}
   catch{/* Private storage still respects system motion preference. */}
   return !window.matchMedia('(prefers-reduced-motion: reduce)').matches&&!userPaused;
 }

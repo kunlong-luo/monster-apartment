@@ -6,15 +6,16 @@ import coverMobile from '../../../public/art/beauty-beasts/cover/world-cover-mob
 import coverFallback from '../../../public/art/lobby-hero-v2.webp';
 import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import {GAME_UI_RELEASE,GAME_UI_CHAPTER} from '@/core/game-release';
+import {workshopStorage,collectionStorage,cozyStorage} from '@/lib/game/storage-service';
 import './gothic-welcome.css';
 
 function readExistingSave(){
   if(typeof window==='undefined')return false;
   try{
     return Boolean(
-      window.localStorage.getItem('monster-apartment:workshop-v2-lab')||
-      window.localStorage.getItem('monster-apartment:character-collection:v1')||
-      window.localStorage.getItem('monster-apartment:cozy:v1')
+      workshopStorage.readRaw()||
+      collectionStorage.readRaw()||
+      cozyStorage.readRaw()
     );
   }catch{return false;}
 }
