@@ -160,6 +160,16 @@
       "approved": false,
       "status": "research-only",
       "notes": "单人、低重心火链挥击与锻炉战甲研究稿；火焰镰刃触底边，未达到正式规格"
+    },
+    "fern-spring": {
+      "path": "public/art/beauty-beasts/characters/fern/cg-spring-pose-study-v1.webp",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 581470,
+      "sha256": "d67bdc55becc0cee88407e16743479343dc7bdcf9f91049720cded420acaa1cc",
+      "approved": false,
+      "status": "research-only",
+      "notes": "单人侧身拉藤弓与游侠轻甲；上方弓梢和箭头边距需修正，原生尺寸不足，身份待审"
     }
   }
 }
