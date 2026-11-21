@@ -1,14 +1,16 @@
 'use client';
+
+import {memo} from 'react';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {HEROINE_FACE_ART} from './heroine-portrait-assets';
 import {GACHA_POOLS} from '@/lib/summon/gacha-engine';
 
 export type FeaturedWorker='brook'|'fern'|'cinder';
 /** Visual pool selection, not a second gacha engine. */
-export function SummonPoolRail({activePoolId,featuredWorkers,disabled,onSelectPool}:{
+const SummonPoolRailInner=({activePoolId,featuredWorkers,disabled,onSelectPool}:{
   activePoolId:string;featuredWorkers:Partial<Record<string,FeaturedWorker>>;
   disabled:boolean;onSelectPool:(id:string)=>void;
-}){
+})=>{
   return (
         <aside className="summon-cinematic-pools relative flex w-full shrink-0 flex-row gap-2 overflow-x-auto py-1 lg:w-56 lg:flex-col lg:justify-center lg:gap-2 lg:overflow-visible lg:py-4 xl:w-64 z-20">
           {GACHA_POOLS.map((pool) => {
@@ -51,12 +53,11 @@ export function SummonPoolRail({activePoolId,featuredWorkers,disabled,onSelectPo
                     {pool.badge}
                   </span>
                 </div>
-
               </button>
             );
           })}
-
-
         </aside>
   );
 }
+
+export const SummonPoolRail=memo(SummonPoolRailInner);

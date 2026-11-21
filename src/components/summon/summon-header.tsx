@@ -1,13 +1,14 @@
 'use client';
+import {memo} from 'react';
 import {Backpack,Droplets,Gem,Mail,Megaphone,Settings,Ticket} from 'lucide-react';
 import {GAME_UI_RELEASE} from '@/core/game-release';
 
 export type SummonUtility='bag'|'mail'|'notice'|'settings';
 /** Displays actual resource balances supplied by the summon screen. */
-export function SummonHeader({tickets,crystals,moonstones,onOpenResources,onUtility}:{
+const SummonHeaderInner=({tickets,crystals,moonstones,onOpenResources,onUtility}:{
   tickets:number;crystals:number;moonstones:number;
   onOpenResources:()=>void;onUtility:(kind:SummonUtility)=>void;
-}){
+})=>{
   return (
       <header className="summon-cinematic-header relative z-20 flex h-14 sm:h-16 w-full items-center justify-between px-3 sm:px-6 bg-gradient-to-b from-[#120713cc] to-transparent">
         {/* Logo */}
@@ -105,4 +106,6 @@ export function SummonHeader({tickets,crystals,moonstones,onOpenResources,onUtil
         </div>
       </header>
   );
-}
+};
+
+export const SummonHeader=memo(SummonHeaderInner);

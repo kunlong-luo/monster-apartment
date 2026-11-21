@@ -1,10 +1,12 @@
 'use client';
+
+import {memo} from 'react';
 import {History,Ticket,Droplets} from 'lucide-react';
 /** Button surface only: the parent owns payout and reveal state. */
-export function SummonActionBar({disabled,pityCountdown,onHistory,onSingle,onTen}:{
+const SummonActionBarInner=({disabled,pityCountdown,onHistory,onSingle,onTen}:{
   disabled:boolean;pityCountdown:number;
   onHistory:()=>void;onSingle:()=>void;onTen:()=>void;
-}){
+})=>{
   return (
           <div className="w-full max-w-2xl flex flex-col items-center gap-2 mb-2">
             <div className="flex w-full items-center justify-center gap-2 sm:gap-4">
@@ -39,9 +41,9 @@ export function SummonActionBar({disabled,pityCountdown,onHistory,onSingle,onTen
               {/* Ten-Fold Summon Button */}
               <button
                 type="button"
-                onClick={onTen}
                 data-testid="collection-summon-ten"
                 disabled={disabled}
+                onClick={onTen}
                 className="group relative flex min-h-12 sm:min-h-14 flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-[#f5b86b] bg-gradient-to-r from-[#9b1834] via-[#b61d40] to-[#7f1128] px-4 py-2 text-[#fff3db] shadow-[0_6px_25px_#9b1834aa] hover:brightness-110 active:scale-95 transition"
               >
                 <div className="text-left">
@@ -53,7 +55,6 @@ export function SummonActionBar({disabled,pityCountdown,onHistory,onSingle,onTen
                   </span>
                 </div>
               </button>
-
             </div>
 
             {/* Pity Indicator */}
@@ -62,6 +63,7 @@ export function SummonActionBar({disabled,pityCountdown,onHistory,onSingle,onTen
               <span className="text-[#ffd700]">SSR</span> 角色
             </p>
           </div>
-
   );
 }
+
+export const SummonActionBar=memo(SummonActionBarInner);
