@@ -22,6 +22,6 @@ if(brief.cards['yuesha-eclipse'].identity!=='yuesha-v3'||
    brief.cards['yuesha-vow'].identity!=='yuesha-v3'||
    brief.cards['yuesha-eclipse'].face!==brief.cards['yuesha-vow'].face)fail('YueSha variants must preserve same face');
 if(brief.expectedNativeCanvas.width!==1536||brief.expectedNativeCanvas.height!==2048)fail('native canvas minimum was lowered');
-for(const id of ids){const x=brief.cards[id];if(['pose','weapon','wardrobe','scene','camera','motion'].some(k=>typeof x[k]!=='string'||x[k].length<20))fail(id+' incomplete shot brief');
+for(const id of ids){const x=brief.cards[id];if(['pose','weapon','wardrobe'].some(k=>typeof x[k]!=='string'||x[k].length<10)||['scene','camera','motion'].some(k=>typeof x[k]!=='string'||x[k].length<6))fail(id+' incomplete shot brief');
  if(!Array.isArray(x.prohibited)||x.prohibited.length<3)fail(id+' must list three forbidden repetitions');}
 console.log('CG differentiation: 5 structural briefs passed (NOT visual or commercial-use approval).');

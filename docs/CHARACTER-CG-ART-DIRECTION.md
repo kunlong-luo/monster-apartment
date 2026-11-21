@@ -130,3 +130,8 @@ pnpm check:design && pnpm test && pnpm build
 旧 `yuesha/cg-eclipse-candidate.webp` 的黑发双角身份与现行 V3 银发月纱冲突。已将**同一候选路径**替换为银白长发、赤瞳、蔷薇王冠的独立 3:4 月蚀绘景，并更新 `cg-manifest.json` 的 `previewSha256`；旧版可从 Git 历史追溯。
 
 新候选原生 **1086×1448**，足以通过当前仅供 QA 的预览像素门槛，但**未达到正式 1536×2048 原生 CG 要求**，`yuesha-eclipse` 的 `status` 仍为 `portrait`；不得借此绕过人审或把候选宣称为正式上线。SHA-256、生成方式、原版哈希和未完成人工核对项目见 `docs/art-reviews/2026-11-21-yuesha-eclipse-silver-hair-candidate.md`。
+
+
+## 2026-11-21 · 动作、姿势、服装与武器剪影差异化冻结
+
+已建立 [角色 CG 差异化制作规范](CHARACTER-CG-DIFFERENTIATION-V1.md) 和 [`CG-DIFFERENTIATION-SHOT-LIST.json`](art-reviews/CG-DIFFERENTIATION-SHOT-LIST.json)。五张卡必须区分动作、身体重心、武器受力、衣装结构与构图剪影；两张月纱维持一致脸部身份但使用不同服装和姿势。`pnpm audit:character-cg-brief` 只检查镜头表条目齐全和唯一性，**不能证明图像已经按照镜头表重绘，不能代替真实图片人审**。正式入库门槛、哈希、权限与三种视口审查不变。
