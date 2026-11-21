@@ -10,6 +10,8 @@ on:
       - 'src/components/game/r12-scene-painting.tsx'
       - 'e2e/r12-local-scene-preview.spec.ts'
       - 'src/components/game/gothic-lobby.css'
+      - 'src/components/game/gothic-lobby-navigation.css'
+      - 'e2e/r12-lobby-mobile-art-clearance.spec.ts'
       - 'src/components/game/gothic-reference-layout.css'
       - 'src/components/game/gothic-premium-tokens.css'
       - 'src/components/game/gothic-red-gold.css'
@@ -115,6 +117,8 @@ jobs:
         run: pnpm exec playwright test e2e/r12-apartment-mobile-hud.spec.ts --workers=1 --retries=0
       - name: Verify mobile room chooser shows painting without losing real room actions
         run: pnpm exec playwright test e2e/r12-mobile-room-chooser.spec.ts --workers=1 --retries=0
+      - name: Keep lobby character art visible above mobile summon and floating dock
+        run: pnpm exec playwright test e2e/r12-lobby-mobile-art-clearance.spec.ts --workers=1 --retries=0
       - name: Run four-scene desktop browser smoke
         run: pnpm exec playwright test e2e/gothic-desktop-hud.spec.ts e2e/gothic-desktop-scenes.spec.ts e2e/summon-result-desktop.spec.ts --workers=1 --retries=0
       # Each Playwright invocation clears test-results. Preserve these captures
