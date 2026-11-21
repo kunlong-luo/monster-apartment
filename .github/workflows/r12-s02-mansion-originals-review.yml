@@ -33,22 +33,23 @@ jobs:
               downloadDirectory:process.env.PACK_DIR,
               writeMetaData:false,
               resume:true,
+              // Direct downloader v1.1.0 matches this substring against
+              // the publisher's named uploads on the actual download page.
+              // The inspector independently enforces original 3840x2160
+              // pixel dimensions, never trusting a chosen filename alone.
+              platform:'2160p_WEBP',
             });
             console.log('Source download status:',result.status,
               'original:',result.filePath,
               'downloaded bytes:',result.bytesDownloaded);
             if(!result.status)throw new Error(
               'Could not access original creator download: '+result.message);
-            const path=require('path');
-            const original=path.basename(result.filePath||'');
-            // Never accidentally take an unverified 1080p pack or a ZIP with
-            // renamed filename as evidence of real 4K source pixels.
-            if(!original.toLowerCase().includes('2160p')||
-               !original.toLowerCase().includes('webp')){
-              throw new Error('Publisher returned '+original+
-                ' rather than the explicitly listed 2160p WEBP original. '+
-                'No 4K source review was fabricated; selector is required.');
-            }
+            // The CDN is allowed to call this game-<upload-id>.zip.
+            // Confirm the actual 4K source by decoding all constituent
+            // images instead of confusing arbitrary filenames with pixels.
+            if(!result.sizeVerified)throw new Error('Source download size not verified');
+            if(!result.bytesDownloaded||result.bytesDownloaded>80_000_000)
+              throw new Error('Unexpected 4K WebP archive transfer size');
           })().catch(err=>{console.error(err.message);process.exitCode=1;});
           JS
       - name: Measure real publisher pixels, record hashes and contact-sheet only
