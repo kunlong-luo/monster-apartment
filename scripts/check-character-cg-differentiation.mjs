@@ -1,8 +1,10 @@
 import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
+import {webpDimensions} from './prepare-room-background.mjs';
 
-// This only validates that distinct art briefs are specified; it CANNOT judge generated pixels.
+// Check brief structure and immutable pose-study file bytes. This cannot assess artistic quality or identity visually.
 const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
 const brief=JSON.parse(readFileSync(resolve(root,'docs/art-reviews/CG-DIFFERENTIATION-SHOT-LIST.json'),'utf8'));
 const manifest=JSON.parse(readFileSync(resolve(root,'public/art/beauty-beasts/characters/cg-manifest.json'),'utf8'));
@@ -24,4 +26,22 @@ if(brief.cards['yuesha-eclipse'].identity!=='yuesha-v3'||
 if(brief.expectedNativeCanvas.width!==1536||brief.expectedNativeCanvas.height!==2048)fail('native canvas minimum was lowered');
 for(const id of ids){const x=brief.cards[id];if(['pose','weapon','wardrobe'].some(k=>typeof x[k]!=='string'||x[k].length<10)||['scene','camera','motion'].some(k=>typeof x[k]!=='string'||x[k].length<6))fail(id+' incomplete shot brief');
  if(!Array.isArray(x.prohibited)||x.prohibited.length<3)fail(id+' must list three forbidden repetitions');}
-console.log('CG differentiation: 5 structural briefs passed (NOT visual or commercial-use approval).');
+
+// Optional research-only sources must be explicitly whitelisted, hash-locked and distinct
+// from approved production slots. Checking bytes does not constitute human art approval.
+for(const [id,study] of Object.entries(brief.poseStudies??{})){
+  if(!ids.includes(id))fail('research art references unknown card '+id);
+  const [resident,cardSlug]=id.split('-');
+  const expected='public/art/beauty-beasts/characters/'+resident+'/cg-'+cardSlug+'-pose-study-v1.webp';
+  if(study.path!==expected)fail('unapproved pose study path cannot point into a live or arbitrary slot '+id);
+  if(study.status!=='research-only'||study.approved!==false)fail('pose study must remain unapproved '+id);
+  const bytes=readFileSync(resolve(root,study.path));
+  const dim=webpDimensions(bytes);
+  if(dim.width!==study.width||dim.height!==study.height||bytes.length!==study.bytes)
+    fail('pose study dimensions or byte count changed '+id);
+  const actual=createHash('sha256').update(bytes).digest('hex');
+  if(study.sha256!==actual)fail('pose study checksum mismatch '+id);
+  if(manifest.cards[id].status!=='portrait')fail('research art must not bypass production review '+id);
+}
+
+console.log('CG differentiation: 5 structural briefs and '+Object.keys(brief.poseStudies??{}).length+' checksum-locked research studies passed (NOT visual or commercial-use approval).');

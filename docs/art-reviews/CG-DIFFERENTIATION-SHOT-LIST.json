@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "title": "怪物公寓角色 CG 差异化制作镜头表",
   "created": "2026-11-21",
-  "stage": "brief-only",
+  "stage": "pose-studies-in-progress",
   "productionApproved": false,
   "expectedNativeCanvas": {
     "width": 1536,
@@ -128,6 +128,38 @@
         "horns": "黑曜石与深红渐层的两只弯曲魔角，禁止换成普通金属发冠",
         "face": "保持原头像可辨识的粉赤瞳与眉眼弧线，避免一味追求成熟脸而换脸"
       }
+    }
+  },
+  "poseStudies": {
+    "yuesha-eclipse": {
+      "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v1.webp",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 526334,
+      "sha256": "1a94aa3b7f4a89abd3347b2fdd28e9509de4a11ef7f9c255f751d633ff9f36e0",
+      "approved": false,
+      "status": "research-only",
+      "notes": "镰刃边距、原生分辨率及身份待审"
+    },
+    "brook-tide": {
+      "path": "public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v1.webp",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 514656,
+      "sha256": "5a182181b0a562ec9be81546bbb227ded7ec7480d0f6ed2c247cd312e3dd54fa",
+      "approved": false,
+      "status": "research-only",
+      "notes": "蓝发过饱和、缺失蓝色毛绒兽耳，待身份重绘"
+    },
+    "cinder-ember": {
+      "path": "public/art/beauty-beasts/characters/cinder/cg-ember-pose-study-v1.webp",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 591622,
+      "sha256": "37b1865233799c582aea5917655bc27b9f2deaa928b633becceeeb41814fb808",
+      "approved": false,
+      "status": "research-only",
+      "notes": "单人、低重心火链挥击与锻炉战甲研究稿；火焰镰刃触底边，未达到正式规格"
     }
   }
 }
