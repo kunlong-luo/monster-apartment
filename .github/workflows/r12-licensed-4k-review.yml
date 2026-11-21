@@ -1,0 +1,58 @@
+name: R12 Licensed Native 4K Source Review
+on:
+  push:
+    paths:
+      - ".github/workflows/r12-licensed-4k-review.yml"
+      - "scripts/inspect-r12-licensed-4k-pack.py"
+  workflow_dispatch:
+
+# The publisher pack is reviewed ONLY. No contents:write; no production art.
+permissions:
+  contents: read
+
+jobs:
+  inspect-licensed-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Download publisher's CC BY 4.0 pack via normal itch.io source endpoint
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/r12-source-tool" "$RUNNER_TEMP/r12-native4k-source"
+          cd "$RUNNER_TEMP/r12-source-tool"
+          npm init -y >/dev/null
+          npm install --no-save --ignore-scripts --no-audit --no-fund itchio-downloader@1.1.0
+          PACK_DIR="$RUNNER_TEMP/r12-native4k-source" node - <<'JS'
+          const {downloadGameDirect}=require('itchio-downloader');
+          (async()=>{
+            const result=await downloadGameDirect({
+              itchGameUrl:'https://ebbasuke.itch.io/gloomy-mansion-background-pack',
+              downloadDirectory:process.env.PACK_DIR,
+              writeMetaData:false,
+              resume:true
+            });
+            console.log('Publisher download:',result.status,
+              'bytes:',result.bytesDownloaded,
+              'reason:',result.failReason||'none');
+            if(!result.status)throw Error('Original pack download unavailable: '+result.message);
+          })().catch(error=>{console.error(error.message);process.exitCode=1});
+          JS
+      - name: Inspect actual originals and create review-only contact sheet
+        shell: bash
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 scripts/inspect-r12-licensed-4k-pack.py \
+            --archive-dir "$RUNNER_TEMP/r12-native4k-source" \
+            --out "$RUNNER_TEMP/r12-4k-review"
+      - name: Upload image dimensions, attribution and contact sheet only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r12-ebbasuke-native-4k-review-only
+          path: ${{ runner.temp }}/r12-4k-review/
+          if-no-files-found: warn
+          retention-days: 14
