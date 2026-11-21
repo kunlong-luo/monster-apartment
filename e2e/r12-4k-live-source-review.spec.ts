@@ -75,7 +75,7 @@ test('R12 original 4K source rendered inside actual PC and mobile game UI',async
         // The screenshot of the game excludes the developer-only uploader.
         // The full HUD, room controls and actual production layout stay visible.
         const reviewStyle=await page.addStyleTag({
-          content:'[data-testid="r12-local-art-review"]{visibility:hidden!important}',
+          content:'[data-testid="r12-local-art-review"],nextjs-portal{visibility:hidden!important}',
         });
         const screenshotName=scene.id+'-'+v.id+'-game-ui.png';
         await page.screenshot({
