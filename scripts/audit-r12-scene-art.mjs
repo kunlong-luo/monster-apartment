@@ -33,6 +33,64 @@ function assertNoRetinaUpsample(width,height,kind,path){
 }
 
 
+/** The six actual S02 room buttons need distinct anchor sites in BOTH
+ * original compositions. Coordinates are normalized on the un-cropped master,
+ * not percentage values on a particular viewport. Cover projection preserves
+ * correct door positions when the phone and desktop ratios differ.
+ */
+export function sceneCoverAnchor(point,source,viewport){
+  const scale=Math.max(viewport.width/source.width,viewport.height/source.height);
+  return {
+    x:point.x*source.width*scale-
+      (source.width*scale-viewport.width)/2,
+    y:point.y*source.height*scale-
+      (source.height*scale-viewport.height)/2,
+  };
+}
+
+function assertApartmentRoomHotspots(review,entry){
+  const groups=review.roomHotspots;
+  assert(groups&&typeof groups==='object'&&!Array.isArray(groups),
+    'S02 six room art hotspots required on both compositions');
+  const viewports={
+    desktop:[{width:1440,height:900},{width:1648,height:928}],
+    mobile:[{width:390,height:844},{width:390,height:550}],
+  };
+  for(const kind of ['desktop','mobile']){
+    const points=groups[kind];
+    assert(Array.isArray(points)&&points.length===6,
+      'S02 requires exactly six '+kind+' room art hotspots');
+    const source=kind==='desktop'?entry.candidate:entry.mobileCandidate;
+    const ids=new Set();
+    for(const point of points){
+      assert(Number.isInteger(point?.roomIndex)&&point.roomIndex>=0&&
+        point.roomIndex<6&&!ids.has(point.roomIndex),
+        'S02 room art hotspot ID must be unique and match rooms 0-5');
+      ids.add(point.roomIndex);
+      assert(Number.isFinite(point.x)&&Number.isFinite(point.y)&&
+        point.x>=0&&point.x<=1&&point.y>=0&&point.y<=1,
+        'S02 room hotspot position must be normalized to original artwork');
+    }
+    for(const viewport of viewports[kind]){
+      const positions=points.map(point=>sceneCoverAnchor(point,source,viewport));
+      for(let i=0;i<positions.length;i++){
+        const point=positions[i];
+        // The 22px clearance gives a room a 44px minimum tap target.
+        assert(point.x>=22&&point.x<=viewport.width-22&&
+          point.y>=22&&point.y<=viewport.height-22,
+          'S02 room hotspot cropped outside safe '+kind+' viewport');
+        for(let j=0;j<i;j++){
+          assert(Math.hypot(point.x-positions[j].x,point.y-positions[j].y)>=44,
+            'S02 '+kind+' room hotspots overlap at viewport '+viewport.width+'x'+viewport.height);
+        }
+      }
+    }
+  }
+  assert(review.roomHotspotBrowserProof?.desktop===true&&
+    review.roomHotspotBrowserProof?.mobile===true,
+    'S02 room hotspot browser interaction review required on both devices');
+}
+
 /** Inspect the actual original PNG bytes (not a claimed filename or WebP export).
  * The trusted SHA links this file to the signed review of the same master.
  */
@@ -166,6 +224,7 @@ export function validateSceneManifest(manifest,{read=readFileSync,exists=existsS
         'two distinct scenes/compositions share image bytes '+path);
       productionHashes.add(pinned.sha256);
     }
+    if(area==='apartment')assertApartmentRoomHotspots(review,entry);
     promoted++;
   }
   return {promoted,pending:3-promoted};
