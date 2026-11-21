@@ -15,7 +15,7 @@ function fallbackUrl(src:ImageProps['src']):string{
 
 /** Environment art is separate from all gameplay, dialogs and hit targets.
  * The existing backdrop is preserved until an approved desktop AND mobile
- * painting is present. ReliableImage falls back on a real loading error.
+ * painting is present. Failed approved originals reveal a neutral backdrop.
  */
 type LocalPreview={url:string;name:string;width:number;height:number};
 const noSubscription=()=>()=>{};
@@ -28,6 +28,25 @@ const subscribeMobileViewport=(update:()=>void)=>{
 };
 const readMobileViewport=()=>window.matchMedia('(max-width:700px)').matches;
 
+
+/** Use the exact production image/retry path for opt-in local review as well.
+ * A failed scene must not silently become the unrelated, blurry lobby image.
+ * On two errors, reveal a clear native fallback plane behind the real HUD.
+ */
+type BackdropArtKind='desktop'|'mobile'|'local-review';
+function R12VerifiedBackdropImage({src,kind}:{src:string;kind:BackdropArtKind}){
+  const [failures,setFailures]=useState(0);
+  const responsiveClass=kind==='desktop'?' max-[700px]:hidden':
+    kind==='mobile'?' hidden max-[700px]:block':'';
+  if(failures>=2)return <div aria-hidden="true"
+    data-r12-art-failed={kind}
+    className={'pointer-events-none absolute inset-0'+responsiveClass}
+    style={{background:'linear-gradient(125deg,#21182a,#100e1a 65%,#2b1930)'}}/>;
+  return <ReliableImage src={src} fill unoptimized sizes="100vw" alt=""
+    data-r12-art-image={kind}
+    className={'pointer-events-none absolute inset-0 h-full w-full object-cover'+responsiveClass}
+    onError={()=>setFailures(count=>Math.min(2,count+1))}/>;
+}
 
 /** Opt-in, entirely local reviewer surface. User-selected images never leave
  * the browser, and never change the production manifest or stored game data.
@@ -94,17 +113,15 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
     <div className={className} aria-hidden="true"
       data-testid={testId}
       data-r12-scene-art={preview?'local-review':sources?'production':'legacy'}
-      style={preview?{backgroundImage:'url('+JSON.stringify(preview.url)+')'}:
-        sources?undefined:{backgroundImage:'url('+JSON.stringify(fallbackUrl(fallbackSrc))+')'}}>
+      style={sources||preview?undefined:
+        {backgroundImage:'url('+JSON.stringify(fallbackUrl(fallbackSrc))+')'}}>
+      {preview&&<R12VerifiedBackdropImage key={preview.url}
+        src={preview.url} kind="local-review"/>}
       {showProduction&&<>
-        <ReliableImage src={sources.desktop} fallbackSrc={fallbackSrc}
-          fill unoptimized sizes="100vw" alt=""
-          data-r12-art-image="desktop"
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover max-[700px]:hidden"/>
-        <ReliableImage src={sources.mobile} fallbackSrc={fallbackSrc}
-          fill unoptimized sizes="100vw" alt=""
-          data-r12-art-image="mobile"
-          className="pointer-events-none absolute inset-0 hidden h-full w-full object-cover max-[700px]:block"/>
+        <R12VerifiedBackdropImage key={sources.desktop}
+          src={sources.desktop} kind="desktop"/>
+        <R12VerifiedBackdropImage key={sources.mobile}
+          src={sources.mobile} kind="mobile"/>
       </>}
     </div>
     {reviewMode&&createPortal(
