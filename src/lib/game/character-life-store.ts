@@ -2,6 +2,7 @@
 import {useSyncExternalStore} from 'react';
 import {decideWorker,decideYuesha,inspectCharacterRoom,newCharacterLife,validCharacterLife,visitCharacter} from '../../core/character-life';
 import type {CharacterId,CharacterLifeState,RoomObjectId,WorkerCharacterId,WorkerChoice,YueshaChoice} from '../../core/character-life';
+import {characterLifeStorage} from './storage-service';
 export const CHARACTER_LIFE_KEY='monster-apartment:character-life:v1';
 export const CHARACTER_LIFE_EVENT='monster-apartment:character-life-change';
 const UNAVAILABLE='__character-life-unavailable__';
@@ -17,7 +18,7 @@ export function decodeCharacterLife(raw:string|null):ReadResult{
 }
 export function readLifeSnapshot():string|null{
   if(typeof window==='undefined')return null;
-  try{return window.localStorage.getItem(CHARACTER_LIFE_KEY);}catch{return UNAVAILABLE;}
+  return characterLifeStorage.readRaw();
 }
 function subscribe(onChange:()=>void):()=>void{
   const onStorage=(e:StorageEvent)=>{if(e.key===CHARACTER_LIFE_KEY||e.key===null)onChange();};
@@ -46,7 +47,7 @@ export function commitCharacterLife(action:Action):LifeActionStatus{
     inspectCharacterRoom(previous,action.id,action.item);
   if(next===previous)return 'duplicate';
   try{
-    window.localStorage.setItem(CHARACTER_LIFE_KEY,JSON.stringify(next));
+    characterLifeStorage.writeRaw(JSON.stringify(next));
     window.dispatchEvent(new Event(CHARACTER_LIFE_EVENT));
     return 'applied';
   }catch{return 'unavailable';}
