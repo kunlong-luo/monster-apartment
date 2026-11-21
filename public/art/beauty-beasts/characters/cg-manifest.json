@@ -5,31 +5,31 @@
       "status": "portrait",
       "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse.webp",
       "previewPath": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp",
-      "previewSha256": "7f2f34b205b156f08c02be683244175951c45da6cbab1113930bee0ae971b8ae"
+      "previewSha256": "c82a0226df6b4f78bcf821dd86a385f8446ecf1319e7aecb3b895d20ea1d69c1"
     },
     "yuesha-vow": {
       "status": "portrait",
       "path": "public/art/beauty-beasts/characters/yuesha/cg-vow.webp",
       "previewPath": "public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp",
-      "previewSha256": "PENDING"
+      "previewSha256": "cc7ebbe9a66ffc2a92b7c5addb9a4a0638ccb9c3c146e777aaa89fca7afbb7aa"
     },
     "brook-tide": {
       "status": "portrait",
       "path": "public/art/beauty-beasts/characters/brook/cg-tide.webp",
       "previewPath": "public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp",
-      "previewSha256": "PENDING"
+      "previewSha256": "d16b47a1d16ef6bb2af26f30bd05157d1b2299e1125dfdd0d92e4fa7845546e8"
     },
     "fern-spring": {
       "status": "portrait",
       "path": "public/art/beauty-beasts/characters/fern/cg-spring.webp",
       "previewPath": "public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp",
-      "previewSha256": "PENDING"
+      "previewSha256": "78986c9e58d58a92eb1945011f38bcc183a5f0b890d16528ce1019c7902e37c9"
     },
     "cinder-ember": {
       "status": "portrait",
       "path": "public/art/beauty-beasts/characters/cinder/cg-ember.webp",
       "previewPath": "public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp",
-      "previewSha256": "PENDING"
+      "previewSha256": "de43bfc55a389805191b352d730f0ac983ae6d9c940b95edb9b9ca85e2c5ba3b"
     }
   }
 }

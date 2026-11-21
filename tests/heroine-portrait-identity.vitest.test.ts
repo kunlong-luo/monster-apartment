@@ -18,38 +18,31 @@ describe('character portrait visual identity',()=>{
       else expect(getApprovedCardCg(id)).toMatch(/^\/art\/beauty-beasts\/characters\//);
     }
   });
-  it('keeps the player-selected YueSha preview separate from official CG approval',()=>{
+  it('verifies all five opt-in previews against real image bytes without granting production approval',()=>{
     expect(YUESHA_ECLIPSE_PREVIEW_PATH).toBe('public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp');
-    const preview=readFileSync(resolve(YUESHA_ECLIPSE_PREVIEW_PATH));
-    expect(preview.toString('ascii',0,4)).toBe('RIFF');
-    expect(preview.toString('ascii',8,12)).toBe('WEBP');
-    expect(statSync(resolve(YUESHA_ECLIPSE_PREVIEW_PATH)).size).toBe(456622);
-    expect(createHash('sha256').update(preview).digest('hex'))
-      .toBe('7f2f34b205b156f08c02be683244175951c45da6cbab1113930bee0ae971b8ae');
-    expect(getSelectedCardPreview('yuesha-eclipse'))
-      .toMatch(/\/art\/beauty-beasts\/characters\/yuesha\/cg-eclipse-candidate\.webp$/);
-    expect(getCardFace('yuesha-eclipse','feature'))
-      .toBe(getSelectedCardPreview('yuesha-eclipse'));
-    expect(getCardFace('yuesha-eclipse','thumbnail'))
-      .not.toBe(getSelectedCardPreview('yuesha-eclipse'));
-    for(const id of ['yuesha-vow','brook-tide','fern-spring','cinder-ember']){
-      expect(getSelectedCardPreview(id)).toBeNull();
-      expect(getCollectibleCardArt(id)).toBeNull();
-      expect(getCardFace(id,'feature')).toBeTruthy();
-    }
     expect(Object.keys(CARD_PREVIEW_PATHS).sort()).toEqual(Object.keys(cgManifest.cards).sort());
-    expect(getCollectibleCardArt('yuesha-eclipse')).toBe(getSelectedCardPreview('yuesha-eclipse'));
-    expect(getCollectibleCardArt('no-such-card')).toBeNull();
-    // This commit only introduces an opt-in preview resolver. The binary
-    // and manifest flag must be installed together; a partial upload
-    // must never create a broken asset request in the published game.
-    if(cgManifest.cards['yuesha-eclipse'].status==='portrait'
-      &&!('previewPath' in cgManifest.cards['yuesha-eclipse'])){
-      expect(getSelectedCardPreview('yuesha-eclipse')).toBeNull();
-      expect(getCardFace('yuesha-eclipse','feature')).toEqual(getCardFace('yuesha-eclipse','thumbnail'));
+    for(const id of Object.keys(CARD_PREVIEW_PATHS)){
+      const entry=cgManifest.cards[id as keyof typeof cgManifest.cards];
+      const expectedPath=CARD_PREVIEW_PATHS[id as keyof typeof CARD_PREVIEW_PATHS];
+      expect(entry.status).toBe('portrait');
+      expect(entry.previewPath).toBe(expectedPath);
+      expect(entry.previewSha256).toMatch(/^[a-f0-9]{64}$/);
+      const preview=readFileSync(resolve(expectedPath));
+      expect(preview.toString('ascii',0,4)).toBe('RIFF');
+      expect(preview.toString('ascii',8,12)).toBe('WEBP');
+      expect(statSync(resolve(expectedPath)).size).toBe(preview.length);
+      expect(preview.length).toBeGreaterThanOrEqual(100000);
+      expect(preview.length).toBeLessThanOrEqual(12*1024*1024);
+      expect(createHash('sha256').update(preview).digest('hex')).toBe(entry.previewSha256);
+      const url=getSelectedCardPreview(id);
+      expect(url).toContain('/art/beauty-beasts/characters/');
+      expect(url).toContain(expectedPath.slice('public/'.length));
+      expect(getCardFace(id,'feature')).toBe(url);
+      expect(getCardFace(id,'thumbnail')).not.toBe(url);
+      expect(getCollectibleCardArt(id)).toBe(url);
+      expect(getApprovedCardCg(id)).toBeNull();
     }
-    if(cgManifest.cards['yuesha-eclipse'].status==='portrait')
-      expect(getApprovedCardCg('yuesha-eclipse')).toBeNull();
+    expect(getCollectibleCardArt('no-such-card')).toBeNull();
   });
   it('keeps each themed pool avatar identical to its real resident identity',()=>{
     const expected={
@@ -65,7 +58,7 @@ describe('character portrait visual identity',()=>{
     }
     expect(GACHA_POOLS).toHaveLength(5);
   });
-  it('uses the established horned, dark-haired YueSha identity across both summons and fallback',()=>{
+  it('keeps YueSha fallback identity stable without approving the preview as production',()=>{
     const mythic=getCardFace('yuesha-eclipse');
     const vow=getCardFace('yuesha-vow');
     expect(mythic).toBeTruthy();
@@ -76,7 +69,7 @@ describe('character portrait visual identity',()=>{
     expect(getCardPortraitFallback('yuesha-eclipse')).toEqual(HEROINE_FACE_ART.yuesha);
     expect(getCardPortraitFallback('yuesha-vow')).toEqual(HEROINE_FACE_ART.yuesha);
   });
-  it('keeps the other three heroines distinct and honestly classed as face crops',()=>{
+  it('keeps other heroines distinct with unapproved previews classified below production CG',()=>{
     const ids=['brook-tide','fern-spring','cinder-ember'];
     const portraits=ids.map(id=>getCardFace(id));
     expect(portraits.every(Boolean)).toBe(true);

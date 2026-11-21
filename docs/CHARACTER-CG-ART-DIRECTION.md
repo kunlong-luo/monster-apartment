@@ -123,3 +123,10 @@ pnpm check:design && pnpm test && pnpm build
 已完成月纱「月下誓约」、泉泡「潮汐契约」、青枝「春芽契约」、炽角「余烬契约」共 4 张**独立 3:4 候选**的外部美术交付。源图 1086×1448px，**不足项目规定的原生 1536×2048px**。当前四张候选 WebP 已通过提交 `5304201595af` 进入 GitHub 的 `public/` 文件夹；仓库同时保留文件清单、原生规格与 SHA-256，详见 `docs/art-reviews/CG-CANDIDATES-2026-11-21.md` 和同名 JSON。
 
 继续保留 `cg-manifest.json` 的五张 `status: portrait`；不得把已生成的候选图、浏览器样张或外部图像副本说成已上线正式角色 CG。二进制资源同步及哈希复核已完成。下一步仍需独立正式规格补绘、逐张人工审核签署与正式晋级流程；仅入库不等于正式上线。
+
+
+## 2026-11-21 · 月纱月蚀银发身份修复（仅候选）
+
+旧 `yuesha/cg-eclipse-candidate.webp` 的黑发双角身份与现行 V3 银发月纱冲突。已将**同一候选路径**替换为银白长发、赤瞳、蔷薇王冠的独立 3:4 月蚀绘景，并更新 `cg-manifest.json` 的 `previewSha256`；旧版可从 Git 历史追溯。
+
+新候选原生 **1086×1448**，足以通过当前仅供 QA 的预览像素门槛，但**未达到正式 1536×2048 原生 CG 要求**，`yuesha-eclipse` 的 `status` 仍为 `portrait`；不得借此绕过人审或把候选宣称为正式上线。SHA-256、生成方式、原版哈希和未完成人工核对项目见 `docs/art-reviews/2026-11-21-yuesha-eclipse-silver-hair-candidate.md`。

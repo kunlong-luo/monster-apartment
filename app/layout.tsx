@@ -30,11 +30,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="zh-CN">
       <body>
-        <ErrorBoundary
-          onError={(error, info) => {
-            console.error('[Game Error Boundary]', error, info.componentStack);
-          }}
-        >
+        <ErrorBoundary>
           {children}
         </ErrorBoundary>
         <GameSceneNavigation/><GothicRouteTransition/><GameReleaseNotice/><WorkshopAutoRuntime/>
