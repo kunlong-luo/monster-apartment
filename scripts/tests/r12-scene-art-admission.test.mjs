@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {createHash} from 'node:crypto';
 import {coverUpsampleProfiles} from '../r12-pixel-geometry.mjs';
-import {validateSceneManifest,pngNativeDimensions} from '../audit-r12-scene-art.mjs';
+import {validateSceneManifest,pngNativeDimensions,sceneCoverAnchor} from '../audit-r12-scene-art.mjs';
 
 const manifest=JSON.parse(readFileSync(
   resolve(import.meta.dirname,'../../public/art/world-scenes/r12-scene-manifest.json'),
@@ -303,4 +303,117 @@ test('R12 production also rejects a downsampled WebP that reintroduces DPR2 blur
   const sample=fakeSignedWarehouse({sourceDesktopWidth:3296,outputDesktopWidth:2560});
   assert.throws(()=>validateSceneManifest(sample.manifest,sample.options),
     /DPR\/cover upsampling at public\/art\/world-scenes\/r12\/warehouse-desktop.webp/);
+});
+
+
+function signedS02SixRoomFixture(){
+  const m=clone();
+  const entry=m.scenes.apartment;
+  const originalPaths={
+    desktop:'art-sources/r12/apartment-desktop.png',
+    mobile:'art-sources/r12/apartment-mobile.png',
+  };
+  const outputPaths={
+    desktop:'public/art/world-scenes/r12/apartment-desktop.webp',
+    mobile:'public/art/world-scenes/r12/apartment-mobile.webp',
+  };
+  const bytes={
+    [originalPaths.desktop]:testPng(3296,1856),
+    [originalPaths.mobile]:testPng(1080,1920),
+    [outputPaths.desktop]:testWebp(3296,1856),
+    [outputPaths.mobile]:testWebp(1080,1920),
+  };
+  const hash=b=>createHash('sha256').update(b).digest('hex');
+  entry.candidate.nativeWidth=3296;entry.candidate.nativeHeight=1856;
+  entry.candidate.originalPath=originalPaths.desktop;
+  entry.candidate.sourceSHA256=hash(bytes[originalPaths.desktop]);
+  entry.mobileCandidate.nativeWidth=1080;entry.mobileCandidate.nativeHeight=1920;
+  entry.mobileCandidate.originalPath=originalPaths.mobile;
+  entry.mobileCandidate.sourceSHA256=hash(bytes[originalPaths.mobile]);
+  entry.status='production';
+  entry.review=signedReview(entry);
+  entry.review.output=Object.fromEntries(['desktop','mobile'].map(kind=>{
+    const data=bytes[outputPaths[kind]];
+    const meta=kind==='desktop'?{width:3296,height:1856}:{width:1080,height:1920};
+    return [kind,{...meta,sha256:hash(data),bytes:data.length}];
+  }));
+  const match=full=>Object.keys(bytes).find(path=>full.endsWith(path));
+  const options={
+    exists:path=>!!match(path),
+    read:path=>{
+      const key=match(path);
+      if(!key)throw new Error('Missing test original '+path);
+      return bytes[key];
+    },
+  };
+  return {manifest:m,review:entry.review,options};
+}
+
+function validSixRoomAnchors(){
+  return {
+    desktop:[
+      {roomIndex:0,x:.18,y:.42},{roomIndex:1,x:.30,y:.42},
+      {roomIndex:2,x:.42,y:.42},{roomIndex:3,x:.58,y:.42},
+      {roomIndex:4,x:.70,y:.42},{roomIndex:5,x:.82,y:.42},
+    ],
+    mobile:[
+      {roomIndex:0,x:.30,y:.28},{roomIndex:1,x:.50,y:.28},
+      {roomIndex:2,x:.70,y:.28},{roomIndex:3,x:.30,y:.66},
+      {roomIndex:4,x:.50,y:.66},{roomIndex:5,x:.70,y:.66},
+    ],
+  };
+}
+
+test('scene cover point projects independent mobile source center to viewport center',()=>{
+  assert.deepEqual(sceneCoverAnchor({x:.5,y:.5},
+    {width:1080,height:1920},{width:390,height:844}),
+    {x:195,y:422});
+});
+
+test('S02 source QA cannot approve all six rooms without hotspot maps',()=>{
+  const fixture=signedS02SixRoomFixture();
+  assert.throws(()=>validateSceneManifest(fixture.manifest,fixture.options),
+    /S02 six room art hotspots required/);
+});
+
+test('S02 must map all six unique room IDs on both desktop and phone compositions',()=>{
+  const fixture=signedS02SixRoomFixture();
+  fixture.review.roomHotspots=validSixRoomAnchors();
+  fixture.review.roomHotspotBrowserProof={desktop:true,mobile:true};
+  fixture.review.roomHotspots.mobile[3].roomIndex=2;
+  assert.throws(()=>validateSceneManifest(fixture.manifest,fixture.options),
+    /S02 room art hotspot ID must be unique/);
+});
+
+test('S02 rejects phone room doors cropped out by 390px cover geometry',()=>{
+  const fixture=signedS02SixRoomFixture();
+  fixture.review.roomHotspots=validSixRoomAnchors();
+  fixture.review.roomHotspotBrowserProof={desktop:true,mobile:true};
+  fixture.review.roomHotspots.mobile[0].x=.01;
+  assert.throws(()=>validateSceneManifest(fixture.manifest,fixture.options),
+    /S02 room hotspot cropped outside safe mobile viewport/);
+});
+
+test('S02 rejects neighboring hotspots with overlapping 44px click targets',()=>{
+  const fixture=signedS02SixRoomFixture();
+  fixture.review.roomHotspots=validSixRoomAnchors();
+  fixture.review.roomHotspotBrowserProof={desktop:true,mobile:true};
+  fixture.review.roomHotspots.desktop[1].x=fixture.review.roomHotspots.desktop[0].x;
+  assert.throws(()=>validateSceneManifest(fixture.manifest,fixture.options),
+    /S02 desktop room hotspots overlap/);
+});
+
+test('S02 six mapped room entrances need both PC and mobile real-browser signoff',()=>{
+  const fixture=signedS02SixRoomFixture();
+  fixture.review.roomHotspots=validSixRoomAnchors();
+  assert.throws(()=>validateSceneManifest(fixture.manifest,fixture.options),
+    /S02 room hotspot browser interaction review required/);
+});
+
+test('S02 accepts six safely mapped room-entrance anchors only with full original proof',()=>{
+  const fixture=signedS02SixRoomFixture();
+  fixture.review.roomHotspots=validSixRoomAnchors();
+  fixture.review.roomHotspotBrowserProof={desktop:true,mobile:true};
+  assert.deepEqual(validateSceneManifest(fixture.manifest,fixture.options),
+    {promoted:1,pending:2});
 });
