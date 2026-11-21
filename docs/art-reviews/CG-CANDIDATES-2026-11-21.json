@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-21",
+  "schema_version": 1,
+  "source": "OpenAI image generation; WebP exports from original PNG, no upscaling",
+  "file_location": "external-review-copy; not committed to GitHub repository",
+  "production_manifest_modified": false,
+  "manual_art_approval": false,
+  "images": [
+    {
+      "card": "yuesha-vow",
+      "character": "yuesha",
+      "intended_path": "public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 400180,
+      "sha256": "cc7ebbe9a66ffc2a92b7c5addb9a4a0638ccb9c3c146e777aaa89fca7afbb7aa",
+      "approved": false,
+      "meets_native_1536x2048_requirement": false
+    },
+    {
+      "card": "brook-tide",
+      "character": "brook",
+      "intended_path": "public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 523470,
+      "sha256": "d16b47a1d16ef6bb2af26f30bd05157d1b2299e1125dfdd0d92e4fa7845546e8",
+      "approved": false,
+      "meets_native_1536x2048_requirement": false
+    },
+    {
+      "card": "fern-spring",
+      "character": "fern",
+      "intended_path": "public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 506680,
+      "sha256": "78986c9e58d58a92eb1945011f38bcc183a5f0b890d16528ce1019c7902e37c9",
+      "approved": false,
+      "meets_native_1536x2048_requirement": false
+    },
+    {
+      "card": "cinder-ember",
+      "character": "cinder",
+      "intended_path": "public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 477194,
+      "sha256": "de43bfc55a389805191b352d730f0ac983ae6d9c940b95edb9b9ca85e2c5ba3b",
+      "approved": false,
+      "meets_native_1536x2048_requirement": false
+    }
+  ]
+}
