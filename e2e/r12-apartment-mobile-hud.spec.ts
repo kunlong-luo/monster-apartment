@@ -5,9 +5,9 @@ test('apartment status and controls remain reachable in 390px mobile viewport',a
   test.setTimeout(60_000);
   await page.setViewportSize({width:390,height:844});
   await page.goto('/apartment/',{waitUntil:'domcontentloaded'});
-  const header=page.getByRole('banner',{name:'公寓资源与操作'});
+  const header=page.locator('header[aria-label="公寓资源与操作"]');
   const label=header.getByTestId('game-location');
-  const resources=header.getByLabel('公寓真实存档');
+  const resources=header.locator('[aria-label="公寓真实存档"]');
   const pause=header.getByRole('button',{name:'暂停公寓时间'});
   const journal=header.getByRole('button',{name:'公寓日志'});
   await expect(header).toBeVisible();
