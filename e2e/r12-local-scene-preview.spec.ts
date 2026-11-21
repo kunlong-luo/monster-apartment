@@ -21,16 +21,18 @@ test('R12 local art reviewer previews file bytes without publishing or persistin
   await expect(backdrop).toHaveAttribute('data-r12-scene-art','local-review');
   await expect(reviewer).toContainText('2×2');
   await expect(reviewer).toContainText('仅供构图预览');
-  await expect.poll(()=>backdrop.evaluate(el=>getComputedStyle(el).backgroundImage))
-    .toContain('blob:');
-  // A transient local backdrop must not promote an image or duplicate R12 assets.
-  await expect(backdrop.locator('img[data-r12-art-image]')).toHaveCount(0);
-  const pcUrl=await backdrop.evaluate(el=>getComputedStyle(el).backgroundImage);
+  // Local review now exercises the same decoded image/retry path as approved
+  // production art rather than a different CSS background-image code path.
+  const backdropArt=backdrop.locator('img[data-r12-art-image="local-review"]');
+  await expect(backdropArt).toHaveCount(1);
+  await expect.poll(()=>backdropArt.evaluate(el=>(el as HTMLImageElement).naturalWidth))
+    .toBeGreaterThan(0);
+  const pcUrl=await backdropArt.getAttribute('src');
+  expect(pcUrl).toContain('blob:');
   // Mobile without its own artwork is explicitly marked as a crop-only review.
   await page.setViewportSize({width:390,height:844});
   await expect(reviewer).toContainText('不得作为手机美术验收');
-  await expect.poll(()=>backdrop.evaluate(el=>getComputedStyle(el).backgroundImage))
-    .toBe(pcUrl);
+  await expect.poll(()=>backdropArt.getAttribute('src')).toBe(pcUrl);
 
   // The phone source is a different object URL and changes both background
   // and the matching live hero when crossing the 700px breakpoint.
@@ -39,16 +41,14 @@ test('R12 local art reviewer previews file bytes without publishing or persistin
   });
   await expect(reviewer.getByTestId('r12-local-mobile-meta')).toContainText('portrait-review.png');
   await expect(reviewer.getByTestId('r12-local-active')).toContainText('手机独立原图');
-  await expect.poll(()=>backdrop.evaluate(el=>getComputedStyle(el).backgroundImage))
-    .not.toBe(pcUrl);
-  const portraitUrl=await backdrop.evaluate(el=>getComputedStyle(el).backgroundImage);
+  await expect.poll(()=>backdropArt.getAttribute('src')).not.toBe(pcUrl);
+  const portraitUrl=await backdropArt.getAttribute('src');
   const phoneHero=page.locator('img[data-r12-hero-art="local-review"]');
   await expect(phoneHero).toBeVisible();
   await expect.poll(()=>phoneHero.getAttribute('src')).toContain('blob:');
   await page.setViewportSize({width:1440,height:900});
   await expect(reviewer.getByTestId('r12-local-active')).toContainText('PC 横版原图');
-  await expect.poll(()=>backdrop.evaluate(el=>getComputedStyle(el).backgroundImage))
-    .toBe(pcUrl);
+  await expect.poll(()=>backdropArt.getAttribute('src')).toBe(pcUrl);
   expect(portraitUrl).not.toBe(pcUrl);
   // The old 360px workshop hero is replaced by the same temporary scene art
   // for an accurate in-game layout inspection (not a production asset).
@@ -64,6 +64,15 @@ test('R12 local art reviewer previews file bytes without publishing or persistin
   await hero.evaluate(el=>el.dispatchEvent(new Event('error',{bubbles:true})));
   await expect(page.locator('[data-r12-hero-art="local-review-failed"]')).toBeVisible();
   await expect(page.locator('img[src*="moon-workshop"]')).toHaveCount(0);
+
+  // Full-page production art must also avoid the old 1587px lobby fallback.
+  // The local review uses the same component, so a real error path is testable
+  // without putting unapproved images in the production asset manifest.
+  await backdropArt.evaluate(el=>el.dispatchEvent(new Event('error',{bubbles:true})));
+  await expect(backdropArt).toHaveAttribute('data-image-load','retry');
+  await backdropArt.evaluate(el=>el.dispatchEvent(new Event('error',{bubbles:true})));
+  await expect(backdrop.locator('[data-r12-art-failed="local-review"]')).toBeVisible();
+  await expect(backdrop.locator('img[src*="lobby-hero"]')).toHaveCount(0);
 
   await reviewer.getByRole('button',{name:'恢复原场景'}).click();
   await expect(page.locator('[data-r12-hero-art="local-review"]')).toHaveCount(0);
