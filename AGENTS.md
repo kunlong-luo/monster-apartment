@@ -38,3 +38,13 @@
 
 ## V3.77 · 单一设计系统
 唯一 UI 色板由 `app/layout.tsx` 引入 `gothic-premium-tokens.css` 的 `:root`；`--moon-ui-*`、Tailwind `--color-gothic-*` 不允许另起颜色定义。通用导航、按钮、资源胶囊、弹窗、面板请复用 `gothic-hud.tsx` 和全站材质变量；各页面允许独立的绘景、角色和稀有度语义色。禁止 Sparkles/WandSparkles。每次提交跑 `pnpm check:design` 与质量检查，跨页面修改运行至少一个真实 PC 视觉浏览器检查。
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
