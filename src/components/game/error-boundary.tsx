@@ -32,6 +32,7 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    console.error('[Game Error Boundary]', error, errorInfo.componentStack);
     this.props.onError?.(error, errorInfo);
   }
 
