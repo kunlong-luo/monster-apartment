@@ -7,6 +7,7 @@ import '@/components/game/gothic-desktop-ui.css';
 import {GothicRouteTransition} from '@/components/game/gothic-route-transition';
 import {GameSceneNavigation} from '@/components/game/game-scene-navigation';
 import {GameReleaseNotice} from '@/components/game/game-release-notice';
+import {ErrorBoundary} from '@/components/game/error-boundary';
 import {WorkshopAutoRuntime} from '@/lib/moonwork/workshop-auto-runtime';
 
 export const metadata: Metadata = {
@@ -28,7 +29,16 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="zh-CN">
-      <body>{children}<GameSceneNavigation/><GothicRouteTransition/><GameReleaseNotice/><WorkshopAutoRuntime/></body>
+      <body>
+        <ErrorBoundary
+          onError={(error, info) => {
+            console.error('[Game Error Boundary]', error, info.componentStack);
+          }}
+        >
+          {children}
+        </ErrorBoundary>
+        <GameSceneNavigation/><GothicRouteTransition/><GameReleaseNotice/><WorkshopAutoRuntime/>
+      </body>
     </html>
   );
 }

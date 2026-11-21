@@ -6,17 +6,15 @@ import {SummonPoolRail} from './summon-pool-rail';
 import {SummonActionBar} from './summon-action-bar';
 import {SummonShowcase} from './summon-showcase';
 import {SummonCollectionArchive} from './summon-collection-archive';
+import {SummonHeroineSpotlight} from './SummonHeroineSpotlight';
 import './summon-screen.css';
 import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
 import lobbyHeroBackup from '../../../public/art/lobby-hero-v2.webp';
-import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
-import {HEROINE_FACE_ART} from './heroine-portrait-assets';
 import {useCharacterLife} from '@/lib/game/character-life-store';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
 import {claimProgressTickets,claimTrialTicket,gachaSaveStatus,GACHA_CHARACTERS} from '@/lib/summon/gacha-engine';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import Link from 'next/link';
-import {AlertTriangle,Search} from 'lucide-react';
 import { useGacha } from '@/lib/summon/use-gacha';
 import { GACHA_POOLS, type SummonableCharacter } from '@/lib/summon/gacha-engine';
 import { SummonRitualModal } from './summon-ritual-modal';
@@ -59,27 +57,13 @@ export function GothicSummonScreen() {
   const featuredWorker=featuredWorkers[activePoolId]??null;
   const featuredName=featuredWorker==='brook'?'泉泡':featuredWorker==='fern'?'青枝':featuredWorker==='cinder'?'炽角':'月纱';
   const featuredBeast=COVENANT_BEASTS[featuredWorker??'yuesha'];
-  const featuredTier=featuredWorker==='cinder'?3:featuredWorker==='fern'?2:featuredWorker==='brook'?1:5;
   // Use the actual gacha catalog grade, not a guessed label from potential
   // tier. Brook is N, not R; visual themes never change draw weights.
   const featuredCardKey=featuredWorker==='brook'?'brook-tide':
     featuredWorker==='fern'?'fern-spring':
     featuredWorker==='cinder'?'cinder-ember':'yuesha-eclipse';
   const featuredCard=GACHA_CHARACTERS.find(c=>c.id===featuredCardKey)??GACHA_CHARACTERS[0];
-  const otherQuotes={
-    brook:['「听见了吗？水脉正在向我们讲述故事。」','「银月下的霜狼，从来不会忘记归途。」'],
-    fern:['「荆棘守护的花，总有自己的绽放时刻。」','「跟我去看看真正的月光温室。」'],
-    cinder:['「我的锻锤，不是拿来做装饰的。」','「如果你不怕火，就跟上我的脚步。」'],
-  } as const;
-  // Active dialogue line
-  const quotes = [
-    '「……你也想，成为我的所有物吗？」',
-    '「沉入永夜吧—— 这一次，换我来拥抱你。」',
-    '「别把视线移开，今夜你只属于我。」',
-    '「这份契约已烙入灵魂，你无法反悔了。」',
-  ];
-  const [quoteIndex, setQuoteIndex] = useState(0);
-  const visibleQuotes=featuredWorker?otherQuotes[featuredWorker]:quotes;
+
 
   // Active modals
   const [ritualModal, setRitualModal] = useState<{open:boolean;characters:SummonableCharacter[];sequence:number}>({
@@ -92,6 +76,7 @@ export function GothicSummonScreen() {
   const [utilityModal, setUtilityModal] = useState<'bag' | 'mail' | 'notice' | 'settings' | null>(null);
   const [summonError, setSummonError] = useState('');
   const [showGalleryTab, setShowGalleryTab] = useState(false);
+  const [currentQuote, setCurrentQuote] = useState('「……你也想，成为我的所有物吗？」');
 
   // Featured character for preview
 
@@ -154,76 +139,30 @@ export function GothicSummonScreen() {
         {/* ----------------------------------------------------------- */}
         {/* CENTER STAGE: HEROINE, TITLE, QUOTE & SUMMON BUTTONS       */}
         {/* ----------------------------------------------------------- */}
-        <section className="summon-cinematic-center relative flex min-w-0 flex-1 flex-col items-center justify-between px-2 sm:px-4 py-2 z-10">
-          <div className={'summon-cinematic-character pointer-events-none absolute inset-0 z-[-1]'+(featuredWorker?' summon-cinematic-character--worker':'')}
-            data-testid="summon-featured-portrait" data-featured-character={featuredWorker??'yuesha'}
-            data-tier={featuredTier} aria-hidden="true">
-            {featuredWorker ? (
-              <Image src={HEROINE_FACE_ART[featuredWorker]} alt="" fill loading="eager"
-                sizes="(max-width:900px) 90vw, (max-width:1449px) 50vw, 770px"
-                className="summon-cinematic-heroine-image"
-                data-portrait-source="dedicated-heroine"/>
-            ) : (
-              <Image src={moonveilBust} alt="" fill loading="eager" unoptimized
-                sizes="(max-width:900px) 65vw,700px"
-                className="object-contain object-bottom opacity-95"/>
-            )}
-          </div>
-          {/* Interactive Heroine Dialogue Bubble */}
-          <button type="button" aria-label={'与'+featuredName+'对话，切换台词'}
-            onClick={() => setQuoteIndex(prev => prev + 1)}
-            className="summon-cinematic-quote relative z-[2] cursor-pointer self-end mr-1 mt-2 rounded border border-[#c99f6b77] px-3 py-2 text-[11px] text-[#ffeed5] shadow-[0_8px_22px_#0009] transition-colors hover:border-[#ffe0b5] focus-visible:outline-2 focus-visible:outline-[#ffe0b5] motion-reduce:transition-none"
-          >
-            <p className="italic font-serif leading-relaxed">{visibleQuotes[quoteIndex % visibleQuotes.length]}</p>
-            <span className="block text-right text-[9px] text-[#bfa084]">—— {featuredName} ☾</span>
-          </button>
+        <SummonHeroineSpotlight
+          featuredWorker={featuredWorker}
+          featuredBeastName={featuredBeast.name}
+          poolTitle={currentPool.bannerTitle}
+          poolSub={currentPool.bannerSub}
+          dateRange={currentPool.dateRange}
+          quoteIndex={0}
+          onQuoteClick={() => {}}
+          onQuoteChange={(quote) => setCurrentQuote(quote)}
+          saveStatus={saveStatus}
+          onShowDetails={() => setShowDetails(true)}
+          summonError={summonError}
+        />
 
-          {/* Central Title Typography */}
-          <div className="summon-cinematic-title text-center my-auto">
-            <div className="inline-block">
-              <span className="text-[10px] tracking-[.3em] text-[#dca66e] uppercase">
-                ✦ {featuredName} · {featuredBeast.name} ✦
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-[.18em] text-[#fff0d6] drop-shadow-[0_4px_12px_#000]">
-                {currentPool.bannerTitle}
-              </h2>
-              <p className="mt-1 text-xs sm:text-sm tracking-widest text-[#e8cbb0]">
-                {currentPool.bannerSub}
-              </p>
-
-              {/* Event Pill & Details Button */}
-              <div className="mt-3 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-[#ad7a4f77] bg-[#230f1fd8] px-4 py-1 text-[11px] text-[#f5d9bd]">
-                <span>同池概率 · 无独立 UP ·</span>
-                <span className="text-[#c9a786]">{currentPool.dateRange}</span>
-                <button
-                  type="button"
-                  onClick={() => setShowDetails(true)}
-                  className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[#ffc66e] hover:underline"
-                >
-                  查看详情 <Search aria-hidden="true" size={12} strokeWidth={1.8}/>
-                </button>
-              </div>
-            </div>
-
-            {saveStatus!=='ok'&&<p role="alert" data-testid="summon-save-error" className="rounded border border-red-500 bg-[#3f1228] p-2 text-xs">召唤存档异常，已停止抽取以保护进度。</p>}
-          {/* Error Message if insufficient currency */}
-            {summonError && (
-              <div className="mt-2 text-xs font-semibold text-[#ff5577] bg-black/60 px-3 py-1 rounded-full">
-                <AlertTriangle aria-hidden="true" size={13} strokeWidth={1.7} className="mr-1 inline"/> {summonError}
-              </div>
-            )}
-          </div>
-
-          <SummonActionBar disabled={saveStatus!=='ok'||ritualModal.open}
-            pityCountdown={state.pityCountdown} onHistory={()=>setShowHistory(true)}
-            onSingle={handleSingleSummon} onTen={handleTenSummon}/>        </section>
+        <SummonActionBar disabled={saveStatus!=='ok'||ritualModal.open}
+          pityCountdown={state.pityCountdown} onHistory={()=>setShowHistory(true)}
+          onSingle={handleSingleSummon} onTen={handleTenSummon}/>
 
         {/* ----------------------------------------------------------- */}
         {/* RIGHT COLUMN: SSR CARD SHOWCASE & PROBABILITIES             */}
         {/* ----------------------------------------------------------- */}
         <SummonShowcase featuredWorker={featuredWorker} featuredName={featuredName}
           featuredBeastName={featuredBeast.name} featuredCard={featuredCard}
-          quote={visibleQuotes[quoteIndex % visibleQuotes.length]}
+          quote={currentQuote}
           ownedCharactersCount={ownedCharacters.length} onOpenTrial={()=>setShowTrial(true)}
           onOpenCollection={()=>setShowGalleryTab(true)}
           onOpenResources={()=>setShowReplenish(true)}/>

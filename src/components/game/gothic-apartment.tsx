@@ -79,7 +79,13 @@ export function GothicApartment(){
         setCorruptRaw(previous=>previous??raw);
         return;
       }
-      setWorld(raw?resumeCozySave(JSON.parse(raw) as CozyState):newCozyGame());
+      if(!raw){
+        setWorld(newCozyGame());
+      } else {
+        const parsed:unknown=JSON.parse(raw);
+        if(validCozySave(parsed))setWorld(resumeCozySave(parsed));
+        else setCorruptRaw(previous=>previous??raw);
+      }
       setCorruptRaw(null);
     }catch{setSaveError('无法读取公寓存档，请检查浏览器存储权限。');}
   },[]);

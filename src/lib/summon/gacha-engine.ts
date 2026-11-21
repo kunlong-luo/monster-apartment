@@ -174,7 +174,7 @@ export function readGachaState(): GachaState {
     if (!raw) return INITIAL_GACHA_STATE;
     const parsed = JSON.parse(raw);
     if (validGachaState(parsed)) {
-      return parsed as GachaState;
+      return parsed;
     }
   } catch {
     /* fallback to initial */
