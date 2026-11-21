@@ -72,7 +72,8 @@ function assertApartmentRoomHotspots(review,entry){
         'S02 room hotspot position must be normalized to original artwork');
     }
     for(const viewport of viewports[kind]){
-      const positions=points.map(point=>sceneCoverAnchor(point,source,viewport));
+      const positions=points.map(point=>sceneCoverAnchor(point,
+        {width:source.nativeWidth,height:source.nativeHeight},viewport));
       for(let i=0;i<positions.length;i++){
         const point=positions[i];
         // The 22px clearance gives a room a 44px minimum tap target.
