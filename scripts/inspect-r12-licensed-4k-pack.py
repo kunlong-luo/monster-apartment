@@ -57,8 +57,11 @@ def inspect(zip_path: Path, out: Path) -> dict:
                     for key, css_w, css_h, dpr, _ in TARGETS
                 }
                 index = len(entries) + 1
+                stem = Path(item.filename).stem.lower()
+                is_scene = stem not in {"metal_grunge", "bg_wallpaper"}
                 entries.append({
                     "index": index, "sourceFile": item.filename,
+                    "compositionId": stem, "role": "scene" if is_scene else "texture",
                     "width": width, "height": height,
                     "bytes": len(contents), "sha256": checksum,
                     "nativeDesktop4k": width >= 3840 and height >= 2160,
@@ -93,6 +96,16 @@ def inspect(zip_path: Path, out: Path) -> dict:
                        fill=(238, 190, 149))
     sheet.save(out / "contact-sheet.webp", "WEBP", quality=83, method=5)
 
+    # A JPG and WebP of the same composition count as one scene, not two.
+    grouped_scenes = {}
+    for entry in entries:
+        if entry["role"] != "scene":
+            continue
+        grouped_scenes.setdefault(entry["compositionId"], []).append(entry)
+    unique_retina_scenes = sum(
+        any(item["passesDesktopRetinaCover"] for item in versions)
+        for versions in grouped_scenes.values()
+    )
     report = {
         "schemaVersion": 1,
         "status": "review-only-not-production",
@@ -102,7 +115,9 @@ def inspect(zip_path: Path, out: Path) -> dict:
         "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
         "originalZipSHA256": hashlib.sha256(zip_path.read_bytes()).hexdigest(),
         "sourceImages": len(entries),
-        "retinaDesktopCandidates": sum(e["passesDesktopRetinaCover"] for e in entries),
+        "uniqueSceneCompositions": len(grouped_scenes),
+        "retinaDesktopSceneCompositions": unique_retina_scenes,
+        "retinaDesktopFiles": sum(e["passesDesktopRetinaCover"] for e in entries),
         "minimumNativeDesktop": list(MIN_DESKTOP),
         "notes": [
             "Publisher claims 19 4K filtered-photo backgrounds; verify actual individual files.",
@@ -123,7 +138,8 @@ def inspect(zip_path: Path, out: Path) -> dict:
         "Publisher: https://ebbasuke.itch.io/gloomy-mansion-background-pack",
         "License claim: CC BY 4.0; attribution is required; do not redistribute the pack as-is.",
         "",
-        f"Parsed originals: {len(entries)}; PC DPR2 pixel candidates: {report['retinaDesktopCandidates']}.",
+        f"Parsed files: {len(entries)}; distinct scene compositions: {len(grouped_scenes)}; "
+        f"PC DPR2 distinct scene candidates: {unique_retina_scenes}.",
         "Pixel fit is not quality or license sign-off. No independent mobile composition is included or approved.",
         "",
         "| # | Publisher file | Native pixels | PC DPR2 cover scale | Status |",
@@ -135,8 +151,10 @@ def inspect(zip_path: Path, out: Path) -> dict:
                   f"{entry['coverScale']['pc-1648-dpr2']}× | Review only |")
     md.append("")
     (out / "candidate-evidence.md").write_text("\n".join(md), encoding="utf-8")
-    print(f"Review report: {len(entries)} images, {report['retinaDesktopCandidates']} "
-          "PC DPR2 pixel candidates. No image promoted.")
+    print(f"Review report: {len(entries)} raster files; "
+          f"{len(grouped_scenes)} distinct scenes; "
+          f"{unique_retina_scenes} scenes meeting PC DPR2 pixel sampling. "
+          "No image promoted.")
     return report
 
 
