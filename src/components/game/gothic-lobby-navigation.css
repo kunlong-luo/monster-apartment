@@ -6,7 +6,7 @@
   bottom:max(10px,env(safe-area-inset-bottom));
   left:50%;
   transform:translateX(-50%);
-  width:min(750px,calc(100vw - 32px));
+  width:min(670px,calc(100vw - 32px));
   font-family:"Trebuchet MS","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
 }
 .gothic-lobby nav.gothic-dock-bar.gothic-dock--r12{
@@ -133,9 +133,9 @@
   overflow-wrap:anywhere;
 }
 @media(max-width:600px){
-  .gothic-lobby__navigation{bottom:max(5px,env(safe-area-inset-bottom));width:calc(100vw - 12px)}
+  .gothic-lobby__navigation{bottom:max(8px,env(safe-area-inset-bottom));width:min(358px,calc(100vw - 24px))}
   .gothic-lobby nav.gothic-dock-bar.gothic-dock--r12{
-    min-height:52px;padding:3px;gap:1px;border-radius:8px;
+    min-height:52px;padding:4px;gap:2px;border-radius:12px;
   }
   .gothic-lobby .gothic-dock__quick,.gothic-lobby .gothic-dock__more{
     min-height:44px;gap:3px;flex-direction:column;padding:3px;
