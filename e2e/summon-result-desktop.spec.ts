@@ -69,12 +69,17 @@ test('PC single pull reveals a large face card with real persisted award',async(
   await expect(card).toBeVisible();
   await expect(page.getByTestId('collection-reveal-award')).toContainText('首次收录');
   await expect(page.getByTestId('collection-reveal-award')).toContainText('+1 锻造碎片');
-  // The approved YueSha eclipse PREVIEW is deliberately shown after this
-  // covenant is drawn; do not expect the obsolete generic portrait label.
-  // Other covenant draws must still describe their actual art tier.
+  // Each preview must display its actual heroine theme without claiming production approval.
   const awardedCard=await card.getAttribute('data-card-id');
+  const previewStatuses:Record<string,string>={
+    'yuesha-eclipse':'契约典藏 · 月蚀候选立绘',
+    'yuesha-vow':'契约典藏 · 誓约候选立绘',
+    'brook-tide':'契约典藏 · 潮汐候选立绘',
+    'fern-spring':'契约典藏 · 春芽候选立绘',
+    'cinder-ember':'契约典藏 · 余烬候选立绘',
+  };
   await expect(card.locator('.contract-card__art-status')).toHaveText(
-    awardedCard==='yuesha-eclipse'?'契约典藏 · 月蚀立绘':'契约典藏 · 人物肖像',
+    previewStatuses[awardedCard??'']??'契约典藏 · 人物肖像',
   );
   await expect(card.locator('svg.lucide-sparkles')).toHaveCount(0);
   await expect.poll(()=>card.locator('img').evaluate(img=>(img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0)).toBe(true);

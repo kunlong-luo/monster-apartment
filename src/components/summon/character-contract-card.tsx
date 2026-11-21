@@ -10,6 +10,15 @@ export const SUMMON_RARITY_RANK:Record<GachaRarity,number>={
   'N':1,'R':2,'SR':3,'SSR-Legend':4,'SSR-Mythic':5,
 };
 
+/** Preview labels describe artwork without implying human production approval. */
+const CANDIDATE_ART_LABELS:Record<string,string>={
+  'yuesha-eclipse':'月蚀候选立绘',
+  'yuesha-vow':'誓约候选立绘',
+  'brook-tide':'潮汐候选立绘',
+  'fern-spring':'春芽候选立绘',
+  'cinder-ember':'余烬候选立绘',
+};
+
 /** The artwork slot is a portrait crop until independent card CG is approved.
  * Never stretch a thumbnail into a fictitious full-body illustration.
  * The one award record below is the result of an already committed draw. */
@@ -53,7 +62,7 @@ export function CharacterContractCard({character,mode='feature',awardTestId}:{
           <span className="contract-card__shards"><Gem aria-hidden="true" size={13}/> +{character.awardedShards??0} 锻造碎片</span>
         </p>
         {mode==='feature'&&<p className="contract-card__art-status">{portraitKind==='full-body-cg'?'契约典藏 · 角色原画':
-          candidate?'契约典藏 · 月蚀立绘':'契约典藏 · 人物肖像'}</p>}
+          candidate?'契约典藏 · '+(CANDIDATE_ART_LABELS[character.id]??'候选立绘'):'契约典藏 · 人物肖像'}</p>}
       </div>
     </div>
   </article>;
