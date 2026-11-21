@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
+import {createHash} from 'node:crypto';
+import {coverUpsampleProfiles} from '../r12-pixel-geometry.mjs';
 import {validateSceneManifest,pngNativeDimensions} from '../audit-r12-scene-art.mjs';
 
 const manifest=JSON.parse(readFileSync(
@@ -228,4 +230,77 @@ test('S05 review-only portrait is rejected as a native production original',()=>
   entry.mobileCandidate.nativeWidth=941;
   entry.mobileCandidate.nativeHeight=1672;
   assert.throws(()=>validateSceneManifest(bad),/native independent mobile source below production threshold orders/);
+});
+
+
+function testPng(width,height){
+  const b=Buffer.alloc(30);
+  Buffer.from([137,80,78,71,13,10,26,10]).copy(b,0);
+  b.write('IHDR',12,'ascii');
+  b.writeUInt32BE(width,16);
+  b.writeUInt32BE(height,20);
+  return b;
+}
+
+function testWebp(width,height){
+  const b=Buffer.alloc(120000);
+  b.write('RIFF',0,'ascii');
+  b.writeUInt32LE(b.length-8,4);
+  b.write('WEBP',8,'ascii');
+  b.write('VP8X',12,'ascii');
+  b.writeUIntLE(width-1,24,3);
+  b.writeUIntLE(height-1,27,3);
+  return b;
+}
+
+function fakeSignedWarehouse({sourceDesktopWidth,outputDesktopWidth}){
+  const m=clone();
+  const entry=m.scenes.warehouse;
+  const originals={
+    'art-sources/r12/warehouse-desktop.png':testPng(sourceDesktopWidth,1856),
+    'art-sources/r12/warehouse-mobile.png':testPng(1080,1920),
+  };
+  const outputs={
+    'public/art/world-scenes/r12/warehouse-desktop.webp':testWebp(outputDesktopWidth,1856),
+    'public/art/world-scenes/r12/warehouse-mobile.webp':testWebp(1080,1920),
+  };
+  const files={...originals,...outputs};
+  const hash=b=>createHash('sha256').update(b).digest('hex');
+  entry.candidate.nativeWidth=sourceDesktopWidth;
+  entry.candidate.nativeHeight=1856;
+  entry.candidate.originalPath='art-sources/r12/warehouse-desktop.png';
+  entry.candidate.sourceSHA256=hash(originals[entry.candidate.originalPath]);
+  entry.mobileCandidate.nativeWidth=1080;
+  entry.mobileCandidate.nativeHeight=1920;
+  entry.mobileCandidate.originalPath='art-sources/r12/warehouse-mobile.png';
+  entry.mobileCandidate.sourceSHA256=hash(originals[entry.mobileCandidate.originalPath]);
+  entry.status='production';
+  entry.review=signedReview(entry);
+  const matchPath=full=>Object.keys(files).find(key=>full.endsWith(key));
+  return {
+    manifest:m,
+    options:{
+      exists:path=>!!matchPath(path),
+      read:path=>{
+        const key=matchPath(path);
+        if(!key)throw new Error('Unrecognized test file '+path);
+        return files[key];
+      },
+    },
+  };
+}
+
+test('R12 production rejects a nominal 2560px original that still upscales at DPR2',()=>{
+  assert.deepEqual(coverUpsampleProfiles(3296,1856,'desktop'),[]);
+  assert.ok(coverUpsampleProfiles(2560,1440,'desktop')
+    .some(profile=>profile.id==='pc-1648-dpr2'&&profile.scale>1.28));
+  const sample=fakeSignedWarehouse({sourceDesktopWidth:2560,outputDesktopWidth:3296});
+  assert.throws(()=>validateSceneManifest(sample.manifest,sample.options),
+    /DPR\/cover upsampling at art-sources\/r12\/warehouse-desktop.png/);
+});
+
+test('R12 production also rejects a downsampled WebP that reintroduces DPR2 blur',()=>{
+  const sample=fakeSignedWarehouse({sourceDesktopWidth:3296,outputDesktopWidth:2560});
+  assert.throws(()=>validateSceneManifest(sample.manifest,sample.options),
+    /DPR\/cover upsampling at public\/art\/world-scenes\/r12\/warehouse-desktop.webp/);
 });

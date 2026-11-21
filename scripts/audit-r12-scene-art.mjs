@@ -3,6 +3,7 @@ import {createHash} from 'node:crypto';
 import {resolve,join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {webpDimensions} from './prepare-room-background.mjs';
+import {coverUpsampleProfiles} from './r12-pixel-geometry.mjs';
 
 /**
  * R12 #16/#24: review-only generated images MUST NOT be implicitly promoted.
@@ -18,6 +19,19 @@ const MANIFEST_PATH='public/art/world-scenes/r12-scene-manifest.json';
 const SHA=/^[0-9a-f]{64}$/;
 const assert=(ok,message)=>{if(!ok)throw new Error('[r12-art] '+message);};
 const checksum=bytes=>createHash('sha256').update(bytes).digest('hex');
+
+/** Compare real native source and published output pixels with the same
+ * CSS cover viewport/DPR matrix as the independent ZIP review inspector.
+ * This prevents a nominal 2560×1440 image passing while still being enlarged
+ * on the supported 1648×928 DPR2 monitor.
+ */
+function assertNoRetinaUpsample(width,height,kind,path){
+  const failures=coverUpsampleProfiles(width,height,kind);
+  assert(failures.length===0,
+    'DPR/cover upsampling at '+path+': '+
+    failures.map(x=>x.id+' '+x.scale.toFixed(3)+'x').join(', '));
+}
+
 
 /** Inspect the actual original PNG bytes (not a claimed filename or WebP export).
  * The trusted SHA links this file to the signed review of the same master.
@@ -126,6 +140,7 @@ export function validateSceneManifest(manifest,{read=readFileSync,exists=existsS
       assert(size.width===meta.nativeWidth&&size.height===meta.nativeHeight&&
         size.width>=minW&&size.height>=minH,
         'native original file resolution mismatch '+sourcePath);
+      assertNoRetinaUpsample(size.width,size.height,field,sourcePath);
     }
     assert(review.crops?.['desktop-1440x900']===true&&
       review.crops?.['desktop-1648x928-dpr2']===true&&
@@ -142,6 +157,7 @@ export function validateSceneManifest(manifest,{read=readFileSync,exists=existsS
       const {width,height}=webpDimensions(bytes);
       assert(width>=minW&&height>=minH,
         'insufficient native source pixels '+path+': '+width+'x'+height);
+      assertNoRetinaUpsample(width,height,field,path);
       const pinned=review.output?.[field];
       assert(pinned?.sha256===checksum(bytes)&&
         pinned?.width===width&&pinned?.height===height&&pinned?.bytes===bytes.length,

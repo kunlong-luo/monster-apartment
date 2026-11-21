@@ -3,25 +3,14 @@ import {createHash} from 'node:crypto';
 import {resolve,join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {pngNativeDimensions} from './audit-r12-scene-art.mjs';
+import {effectiveCoverScale,R12_REFERENCE_VIEWPORTS} from './r12-pixel-geometry.mjs';
+export {effectiveCoverScale};
 
 const ROOT=resolve(import.meta.dirname,'..');
 const AREAS=['apartment','orders','warehouse'];
 const KINDS=['desktop','mobile'];
 const MINIMUM={desktop:[2560,1440],mobile:[1080,1920]};
-const VIEWPORTS=[
-  {id:'pc-1440-dpr1',width:1440,height:900,dpr:1,kind:'desktop'},
-  {id:'pc-1648-dpr2',width:1648,height:928,dpr:2,kind:'desktop'},
-  {id:'phone-390x844-dpr2',width:390,height:844,dpr:2,kind:'mobile'},
-  {id:'phone-390x550-dpr2',width:390,height:550,dpr:2,kind:'mobile'},
-];
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
-
-/** CSS background-size: cover (or object-fit: cover), in actual device pixels. */
-export function effectiveCoverScale(w,h,viewport){
-  if(!(w>0&&h>0&&viewport.width>0&&viewport.height>0&&viewport.dpr>0))
-    throw new Error('Invalid positive image or viewport dimensions');
-  return Math.max(viewport.width*viewport.dpr/w,viewport.height*viewport.dpr/h);
-}
 
 export function inspectSourcePack({sourceDir,pack,manifest,read=readFileSync}){
   if(pack?.schemaVersion!==1||pack.status!=='review'||pack.artApproval!==false)
@@ -55,7 +44,7 @@ export function inspectSourcePack({sourceDir,pack,manifest,read=readFileSync}){
         throw new Error(area+'/'+kind+': claimed native source dimensions do not match PNG IHDR');
       const [minW,minH]=MINIMUM[kind];
       const nativePass=width>=minW&&height>=minH;
-      const samples=VIEWPORTS.filter(v=>v.kind===kind).map(v=>{
+      const samples=R12_REFERENCE_VIEWPORTS.filter(v=>v.kind===kind).map(v=>{
         const scale=effectiveCoverScale(width,height,v);
         return {profile:v.id,effectiveCoverScale:Number(scale.toFixed(3)),
           upsample:scale>1.001};
