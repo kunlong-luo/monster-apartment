@@ -1,0 +1,68 @@
+name: R12 S02 Real 4K Mansion Source Intake
+on:
+  push:
+    paths:
+      - '.github/workflows/r12-s02-mansion-originals-review.yml'
+      - 'scripts/inspect-r12-s02-mansion-pack.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Request FREE publisher original directly from itch.io
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/r12-source-helper" "$RUNNER_TEMP/r12-s02-source"
+          cd "$RUNNER_TEMP/r12-source-helper"
+          npm init -y >/dev/null
+          npm install --no-save --ignore-scripts --no-audit --no-fund itchio-downloader@1.1.0
+          PACK_DIR="$RUNNER_TEMP/r12-s02-source" node - <<'JS'
+          const {downloadGameDirect}=require('itchio-downloader');
+          (async()=>{
+            const result=await downloadGameDirect({
+              itchGameUrl:'https://potat0master.itch.io/free-visual-novel-backgrounds-mansion-pack',
+              downloadDirectory:process.env.PACK_DIR,
+              writeMetaData:false,
+              resume:true,
+            });
+            console.log('Source download status:',result.status,
+              'original:',result.filePath,
+              'downloaded bytes:',result.bytesDownloaded);
+            if(!result.status)throw new Error(
+              'Could not access original creator download: '+result.message);
+            const path=require('path');
+            const original=path.basename(result.filePath||'');
+            // Never accidentally take an unverified 1080p pack or a ZIP with
+            // renamed filename as evidence of real 4K source pixels.
+            if(!original.toLowerCase().includes('2160p')||
+               !original.toLowerCase().includes('webp')){
+              throw new Error('Publisher returned '+original+
+                ' rather than the explicitly listed 2160p WEBP original. '+
+                'No 4K source review was fabricated; selector is required.');
+            }
+          })().catch(err=>{console.error(err.message);process.exitCode=1;});
+          JS
+      - name: Measure real publisher pixels, record hashes and contact-sheet only
+        shell: bash
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 scripts/inspect-r12-s02-mansion-pack.py \
+            --input-dir "$RUNNER_TEMP/r12-s02-source" \
+            --out "$RUNNER_TEMP/r12-s02-report"
+      - name: Upload ONLY compact source index and review metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r12-s02-royalty-free-mansion-pixel-review-only
+          path: ${{ runner.temp }}/r12-s02-report/
+          retention-days: 14
+          if-no-files-found: warn
