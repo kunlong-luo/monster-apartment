@@ -2,7 +2,7 @@
   "date": "2026-11-21",
   "schema_version": 1,
   "source": "OpenAI image generation; WebP exports from original PNG, no upscaling",
-  "file_location": "external-review-copy; not committed to GitHub repository",
+  "file_location": "GitHub main, four candidate WebPs committed at 5304201595afb3ead5f8b0d0c3d7a7c6ff10654b",
   "production_manifest_modified": false,
   "manual_art_approval": false,
   "images": [
@@ -50,5 +50,7 @@
       "approved": false,
       "meets_native_1536x2048_requirement": false
     }
-  ]
+  ],
+  "repository_commit_sha": "5304201595afb3ead5f8b0d0c3d7a7c6ff10654b",
+  "repository_binary_uploaded": true
 }
