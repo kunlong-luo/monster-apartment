@@ -4,6 +4,7 @@ on:
     paths:
       - ".github/workflows/r12-licensed-4k-review.yml"
       - "scripts/inspect-r12-licensed-4k-pack.py"
+      - "e2e/r12-4k-live-source-review.spec.ts"
   workflow_dispatch:
 
 # The publisher pack is reviewed ONLY. No contents:write; no production art.
@@ -13,7 +14,7 @@ permissions:
 jobs:
   inspect-licensed-source:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -48,7 +49,25 @@ jobs:
           python3 scripts/inspect-r12-licensed-4k-pack.py \
             --archive-dir "$RUNNER_TEMP/r12-native4k-source" \
             --out "$RUNNER_TEMP/r12-4k-review"
-      - name: Upload image dimensions, attribution and contact sheet only
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.13.0
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: npm --prefix v2 install --no-audit --no-fund
+      - name: Check system Chromium and CJK text rendering
+        run: |
+          google-chrome --version
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-noto-cjk
+      - name: Capture REAL PC and mobile Chromium game screenshots using local 4K review sources
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          PLAYWRIGHT_USE_SYSTEM_CHROME: "1"
+          R12_SOURCE_REVIEW_DIR: ${{ runner.temp }}/r12-4k-review/local-preview-only
+          R12_LIVE_SCREENSHOT_DIR: ${{ runner.temp }}/r12-4k-review/live-screenshots
+        run: pnpm exec playwright test e2e/r12-4k-live-source-review.spec.ts --workers=1 --retries=0
+      - name: Upload reviewed source evidence and real browser screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
