@@ -34,8 +34,8 @@ def inspect(archive: Path, out: Path):
     out.mkdir(parents=True, exist_ok=True)
     if archive.stat().st_size > 150 * 1024 * 1024:
         raise ValueError("Refusing large/mismatched publisher archive")
-    if "2160p" not in archive.name.lower() or "webp" not in archive.name.lower():
-        raise ValueError("Expected publisher 2160p WEBP zip, got " + archive.name)
+    # Itch.io CDN may name the signed download game-<upload-id>.zip.
+    # Genuine native image headers, not a filename, are the source-of-truth.
     images = []
     previews = []
     with zipfile.ZipFile(archive) as z:
@@ -70,8 +70,13 @@ def inspect(archive: Path, out: Path):
                 })
             except (OSError, ValueError, UnidentifiedImageError) as exc:
                 print("Skipped invalid image:", info.filename, str(exc)[:130])
-    if not images or not any(item["pcRetinaPass"] for item in images):
-        raise ValueError("Publisher archive did not yield real 4K eligible images")
+    genuine_4k = [item for item in images
+                  if item["width"] >= 3840 and item["height"] >= 2160]
+    if len(genuine_4k) < 8 or len(genuine_4k) != len(images):
+        raise ValueError(
+            "Requested original 2160p archive but decoded only "
+            + str(len(genuine_4k)) + " genuine 4K images out of "
+            + str(len(images)) + ". Do not promote 1080p or renamed files.")
 
     cols, cell_w, cell_h = 5, 264, 178
     rows = (len(previews) + cols - 1) // cols
