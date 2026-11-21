@@ -27,6 +27,8 @@ on:
       - 'src/components/summon/summon-screen.css'
       - 'src/components/game/gothic-hud.tsx'
       - 'src/components/game/gothic-room-doors.tsx'
+      - 'src/components/game/gothic-apartment.tsx'
+      - 'e2e/r12-apartment-mobile-hud.spec.ts'
       - 'src/components/game/room-art-*.tsx'
       - 'src/components/game/*-private-room.tsx'
       - 'src/components/game/room-scene-*.tsx'
@@ -109,6 +111,10 @@ jobs:
         run: pnpm exec playwright test e2e/route-health.spec.ts e2e/scene-navigation.spec.ts --grep "lobby owns compact routes|compact scene navigation|gallery art viewer hides" --workers=1 --retries=0
       - name: Check opt-in local scene art review never publishes drafts
         run: pnpm exec playwright test e2e/r12-local-scene-preview.spec.ts --workers=1 --retries=0
+      - name: Check compact apartment mobile HUD stays fully visible
+        run: pnpm exec playwright test e2e/r12-apartment-mobile-hud.spec.ts --workers=1 --retries=0
+      - name: Verify mobile room chooser shows painting without losing real room actions
+        run: pnpm exec playwright test e2e/r12-mobile-room-chooser.spec.ts --workers=1 --retries=0
       - name: Run four-scene desktop browser smoke
         run: pnpm exec playwright test e2e/gothic-desktop-hud.spec.ts e2e/gothic-desktop-scenes.spec.ts e2e/summon-result-desktop.spec.ts --workers=1 --retries=0
       # Each Playwright invocation clears test-results. Preserve these captures
