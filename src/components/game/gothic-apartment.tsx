@@ -203,16 +203,16 @@ export function GothicApartment(){
     </div>}
     <GothicSceneIllumination variant="apartment" paused={paused||reducedMotion}/>
     <GothicAtmosphere paused={paused||reducedMotion}/>
-    <header className="ga-red-gold-header absolute inset-x-0 top-0 z-[5] flex min-h-[56px] items-start gap-1.5 bg-[linear-gradient(#08060ad3,transparent)] px-2 py-2.5 sm:gap-3 sm:px-6" aria-label="公寓资源与操作">
-      <span className="flex min-h-9 shrink-0 items-center rounded-full border border-gothic-brass/50 bg-gothic-panel/80 px-3 text-xs text-gothic-ivory"
+    <header className="ga-red-gold-header absolute inset-x-0 top-0 z-[5] flex min-h-[56px] items-start gap-1.5 bg-[linear-gradient(#08060ad3,transparent)] px-2 py-2.5 max-[700px]:flex-wrap max-[700px]:gap-y-1 max-[700px]:pb-2 sm:gap-3 sm:px-6" aria-label="公寓资源与操作">
+      <span className="flex min-h-9 shrink-0 items-center rounded-full border border-gothic-brass/50 bg-gothic-panel/80 px-3 text-xs text-gothic-ivory max-[700px]:order-1"
         data-testid="game-location" aria-label="当前位置：大厅 / 公寓">公寓 · 经营住客</span>
-      <div className="ml-auto flex items-start gap-1 sm:gap-2" aria-label="公寓真实存档">
+      <div className="ml-auto flex items-start gap-1 sm:gap-2 max-[700px]:order-3 max-[700px]:ml-0 max-[700px]:w-full max-[700px]:min-w-0 max-[700px]:justify-between" aria-label="公寓真实存档">
         <GothicResourcePill symbol="☾" amount={cozyDay(world.tick)} label="公寓天数"/>
         <GothicResourcePill symbol="✦" amount={world.coins} label="星币" testId="ga-coins"/>
         <GothicResourcePill symbol="♡" amount={goal.happiness} label="幸福度"/>
         <GothicResourcePill symbol="♟" amount={goal.guests+'/6'} label="入住"/>
       </div>
-      <div className="flex shrink-0 gap-1 sm:gap-2">
+      <div className="flex shrink-0 gap-1 sm:gap-2 max-[700px]:order-2 max-[700px]:ml-auto">
         <GothicIconButton label={paused?'继续公寓时间':'暂停公寓时间'} pressed={paused}
           onClick={()=>setPaused(x=>!x)}>{paused?<Play aria-hidden="true" size={16} strokeWidth={1.7}/>:<Pause aria-hidden="true" size={16} strokeWidth={1.7}/>}</GothicIconButton>
         <GothicIconButton label="公寓日志" expanded={notices} onClick={()=>setNotices(x=>!x)}><ScrollText aria-hidden="true" size={17} strokeWidth={1.7}/></GothicIconButton>
