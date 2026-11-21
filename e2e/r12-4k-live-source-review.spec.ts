@@ -81,7 +81,7 @@ test('R12 original 4K source rendered inside actual PC and mobile game UI',async
         await page.screenshot({
           path:join(evidenceDir,screenshotName),fullPage:false,animations:'disabled',
         });
-        await reviewStyle.evaluate(el=>el.remove());
+        await reviewStyle.evaluate(el=>{el.parentNode?.removeChild(el);});
         evidence.push({
           scene:scene.id,description:scene.description,sourceFile:scene.source,
           sha256:sourceSHA256,sourcePixels:[natural.width,natural.height],
