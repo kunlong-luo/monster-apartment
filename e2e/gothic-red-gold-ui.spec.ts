@@ -7,6 +7,9 @@ test('shared cinematic palette reaches apartment, workshop and commission screen
   await page.goto('/apartment/');
   await expect(page.getByTestId('gothic-apartment')).toHaveClass(/ga--red-gold/);
   await expectSceneNavigation(page,'/apartment/');
+  // The mobile room list intentionally starts closed after R12.2.
+  await expect(page.getByTestId('ga-room-2')).toBeHidden();
+  await page.getByTestId('ga-room-menu-toggle').click();
   await expect(page.getByTestId('ga-room-2')).toBeVisible();
   await page.getByTestId('ga-room-2').click();
   await expect(page.getByTestId('ga-room-drawer')).toBeVisible();
