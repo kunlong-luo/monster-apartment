@@ -113,6 +113,8 @@ jobs:
         run: pnpm exec playwright test e2e/r12-local-scene-preview.spec.ts --workers=1 --retries=0
       - name: Check compact apartment mobile HUD stays fully visible
         run: pnpm exec playwright test e2e/r12-apartment-mobile-hud.spec.ts --workers=1 --retries=0
+      - name: Verify mobile room chooser shows painting without losing real room actions
+        run: pnpm exec playwright test e2e/r12-mobile-room-chooser.spec.ts --workers=1 --retries=0
       - name: Run four-scene desktop browser smoke
         run: pnpm exec playwright test e2e/gothic-desktop-hud.spec.ts e2e/gothic-desktop-scenes.spec.ts e2e/summon-result-desktop.spec.ts --workers=1 --retries=0
       # Each Playwright invocation clears test-results. Preserve these captures
