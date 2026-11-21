@@ -73,7 +73,13 @@
         "女王尖脸与赤瞳妆",
         "双脚平行正面端戟",
         "使用玫瑰王冠或重铠"
-      ]
+      ],
+      "identityAnchors": {
+        "canonicalPortrait": "public/art/beauty-beasts/characters/brook/face.webp",
+        "hair": "偏银白的浅蓝发，柔和蓝色发尾/挑染；不可漂移为纯高饱和蓝发",
+        "ears": "蓝色毛绒兽耳，禁止用尖长精灵耳代替",
+        "face": "圆润鹅蛋脸，偏柔和下垂眼；不可套用月纱细长上挑凤眼"
+      }
     },
     "fern-spring": {
       "id": "fern-spring",
@@ -115,7 +121,13 @@
         "优雅并腿宫廷站姿",
         "薄纱礼裙/花冠",
         "与月纱同款细下巴脸"
-      ]
+      ],
+      "identityAnchors": {
+        "canonicalPortrait": "public/art/beauty-beasts/characters/cinder/face.webp",
+        "hair": "玫瑰粉红—深红渐层长发，保留侧刘海与头顶卷曲方向",
+        "horns": "黑曜石与深红渐层的两只弯曲魔角，禁止换成普通金属发冠",
+        "face": "保持原头像可辨识的粉赤瞳与眉眼弧线，避免一味追求成熟脸而换脸"
+      }
     }
   }
 }
