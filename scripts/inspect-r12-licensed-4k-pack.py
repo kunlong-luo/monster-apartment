@@ -151,6 +151,62 @@ def inspect(zip_path: Path, out: Path) -> dict:
                   f"{entry['coverScale']['pc-1648-dpr2']}× | Review only |")
     md.append("")
     (out / "candidate-evidence.md").write_text("\n".join(md), encoding="utf-8")
+
+    # Release exactly TWO individually attributed native-4K review samples,
+    # not the publisher's whole pack. They are not approved scene replacements.
+    sample_targets = {
+        "bbg_entrance": ("S02-apartment-foyer", "公寓入口的空间透视候选"),
+        "bbg_library": ("S05-orders-library", "委托档案室氛围候选；非正式契约大厅"),
+    }
+    examples = []
+    sample_dir = out / "local-preview-only"
+    sample_dir.mkdir(exist_ok=True)
+    with zipfile.ZipFile(zip_path) as archive:
+        for stem, (slug, role) in sample_targets.items():
+            matching = [entry for entry in entries
+                        if entry["compositionId"] == stem
+                        and entry["sourceFile"].lower().endswith(".webp")]
+            if len(matching) != 1:
+                raise ValueError("Expected exactly one original WebP for " + stem)
+            entry = matching[0]
+            original = archive.read(entry["sourceFile"])
+            if hashlib.sha256(original).hexdigest() != entry["sha256"]:
+                raise ValueError("Selected WebP fingerprint mismatch")
+            target = sample_dir / (slug + ".webp")
+            target.write_bytes(original)
+            examples.append({
+                "previewFile": str(target.relative_to(out)),
+                "sourceFile": entry["sourceFile"],
+                "description": role,
+                "pixels": [entry["width"], entry["height"]],
+                "sha256": entry["sha256"],
+                "reviewOnly": True,
+                "rightsHumanApproved": False,
+                "gameVisualApproved": False,
+            })
+    credits = [
+        "# R12 本地高清绘景审稿样本 / CC BY 4.0",
+        "",
+        "Author: Ebbasuke · Gloomy Mansion Background Pack (4K)",
+        "Source: https://ebbasuke.itch.io/gloomy-mansion-background-pack",
+        "License: https://creativecommons.org/licenses/by/4.0/",
+        "No art modification was applied. Two WebP images were renamed only.",
+        "These are two individually selected images, not the publisher source pack.",
+        "",
+        "仅用于本地浏览器里的构图、源像素与风格审稿。没有经过人工",
+        "画风/契约物件/商业权益最终复核，**不得作为正式游戏生产资源**。",
+        "不包含独立手机竖版；手机端仅能观察 PC 横图裁切。",
+        "",
+        "可打开 /apartment/?r12-art-review=1 或 /orders/?r12-art-review=1",
+        "使用第一项 PC 横版文件选择器预览；审稿工具不会上传或保存文件。",
+        "",
+    ]
+    (sample_dir / "CREDITS.md").write_text(
+        "\n".join(credits), encoding="utf-8")
+    (sample_dir / "review-samples.json").write_text(
+        json.dumps(examples, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8")
+
     print(f"Review report: {len(entries)} raster files; "
           f"{len(grouped_scenes)} distinct scenes; "
           f"{unique_retina_scenes} scenes meeting PC DPR2 pixel sampling. "
