@@ -111,6 +111,7 @@ jobs:
             test-results/gothic-apartment-mobile.png
             test-results/room-*-desktop.png
             test-results/room-*-mobile.png
+            visual-evidence/apartment/*.png
             visual-evidence/workshop/desktop-workshop-true-dialogue-r107-1440.png
             visual-evidence/workshop/mobile-workshop-true-dialogue-r113-390.png
             visual-evidence/workshop/mobile-workshop-reduced-motion-r107-390.png
