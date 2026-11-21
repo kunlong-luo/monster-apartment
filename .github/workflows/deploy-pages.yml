@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  actions: read # deploy-pages reads the uploaded artifact through the Actions API
   pages: write
   id-token: write
 
