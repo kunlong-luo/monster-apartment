@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "title": "怪物公寓角色 CG 差异化制作镜头表",
+  "created": "2026-11-21",
+  "stage": "brief-only",
+  "productionApproved": false,
+  "expectedNativeCanvas": {
+    "width": 1536,
+    "height": 2048,
+    "ratio": "3:4"
+  },
+  "cardCount": 5,
+  "rule": "五张卡面四位人物；月纱两张同一脸部身份但武器/姿态/服装/镜头差异化。每张图完成后仍需独立人审。",
+  "cards": {
+    "yuesha-eclipse": {
+      "id": "yuesha-eclipse",
+      "name": "月纱·月蚀",
+      "identity": "yuesha-v3",
+      "face": "心形脸、银白长发、赤瞳、细长上挑凤眼（与誓约版同一张脸）",
+      "poseId": "forward-scythe-rule",
+      "pose": "前脚落在台阶边缘，重心朝前，躯干三分之二侧转，左手前伸操纵血月、右手提起巨型长镰形成高对角线",
+      "silhouetteId": "tall-diagonal-crescent",
+      "weaponId": "eclipse-scythe",
+      "weapon": "月蚀长镰，镰刃沿画幅右上至左下切出独立弧线",
+      "wardrobeId": "battle-court-armored",
+      "wardrobe": "黑金铠饰战斗礼服：硬挺束腰、分叉裙摆、非对称长披风、红宝石胸甲饰片；非婚礼礼服",
+      "motion": "下摆与长发被血月风暴卷向画面左侧，镰刃映出反向红色光轨",
+      "scene": "血月哥特高塔/破碎玫瑰花窗",
+      "camera": "略低机位 3/4 正面",
+      "prohibited": [
+        "双脚并拢正面站桩",
+        "把权杖当成镰刀",
+        "与誓约版共用裙装/姿态"
+      ]
+    },
+    "yuesha-vow": {
+      "id": "yuesha-vow",
+      "name": "月纱·誓约",
+      "identity": "yuesha-v3",
+      "face": "心形脸、银白长发、赤瞳、细长上挑凤眼（必须与月蚀版保持同一身份）",
+      "poseId": "seated-offer-vow",
+      "pose": "侧坐在低矮祭坛边缘，膝盖朝左、上身朝镜头转回，左手掌心向上邀请缔约，右手让誓约细剑剑尖朝下轻触地面",
+      "silhouetteId": "soft-seated-veil-curve",
+      "weaponId": "vow-rapier",
+      "weapon": "纤细誓约剑与悬浮圣印，手腕必须有承重/连接关系",
+      "wardrobeId": "ceremonial-soft-veil",
+      "wardrobe": "酒红银白色仪式礼服：细致刺绣、轻纱长袖、短拖尾、蔷薇胸针；无硬甲、分叉战裙或月蚀战斗披风",
+      "motion": "纱袖柔缓垂落，手指与悬浮圣印形成柔和闭环",
+      "scene": "月光誓约礼堂/银色烛台与拱窗",
+      "camera": "与坐姿齐平的 3/4 机位",
+      "prohibited": [
+        "换成另一张脸或换成黑发",
+        "举镰刀战斗",
+        "复制月蚀的高机位站立姿势"
+      ]
+    },
+    "brook-tide": {
+      "id": "brook-tide",
+      "name": "泉泡·潮汐",
+      "identity": "brook",
+      "face": "圆润鹅蛋脸、较宽眼距、柔和下垂大眼、自然圆润眉骨，保留原角色蓝色系耳朵特征",
+      "poseId": "wave-step-pivot",
+      "pose": "脚尖踏上起伏水浪，身体扭转呈 S 曲线，左臂拨出水环，右手把三叉戟向后上方斜举",
+      "silhouetteId": "s-curve-wave-trident",
+      "weaponId": "tidal-trident",
+      "weapon": "珍珠镶嵌潮汐三叉戟，戟尖和水流相连形成动态引导",
+      "wardrobeId": "pearl-flowing-tunic",
+      "wardrobe": "海蓝到珍珠白渐层的短外披、非对称多层薄纱水纹裙、贝壳护肩、水晶腰带，水润轻盈而非黑金宫廷裙",
+      "motion": "水流向两侧旋涡扩散，水蓝头发向后扬起，衣摆随浪倾斜",
+      "scene": "月夜水上宫殿/潮汐台阶",
+      "camera": "略高的斜角动态镜头",
+      "prohibited": [
+        "女王尖脸与赤瞳妆",
+        "双脚平行正面端戟",
+        "使用玫瑰王冠或重铠"
+      ]
+    },
+    "fern-spring": {
+      "id": "fern-spring",
+      "name": "青枝·春芽",
+      "identity": "fern",
+      "face": "长椭圆脸、平直清秀眉、自然杏眼、略宽下颌角，绿瞳、花叶冠与浅金发保持辨识度",
+      "poseId": "forest-archer-draw",
+      "pose": "侧身弓步站在苔石上，前腿屈膝稳住重心，双手真实搭箭拉满藤弓，视线沿箭尖而非看镜头",
+      "silhouetteId": "triangular-drawn-bow",
+      "weaponId": "living-vine-bow",
+      "weapon": "藤蔓活木弓与花苞灵箭，弓弦、箭羽、握弓/拉弦手指清楚且合理",
+      "wardrobeId": "ranger-leather-leaf",
+      "wardrobe": "绿金森林游侠轻甲、皮革护臂、叶片拼接短斗篷、便于拉弓的长靴与层叠短裙/裤装；不穿拖地宫廷礼服",
+      "motion": "拉弓形成强张力，披风往后展，枝叶被弦风推动",
+      "scene": "晨光林地/盘根温室与古树",
+      "camera": "水平侧面 3/4 广角",
+      "prohibited": [
+        "手持三叉戟",
+        "正面对称站桩",
+        "和泉泡采用相同柔软大眼/纱裙"
+      ]
+    },
+    "cinder-ember": {
+      "id": "cinder-ember",
+      "name": "炽角·余烬",
+      "identity": "cinder",
+      "face": "宽颧骨和鲜明下颌转折、略厚眉、尖锐猫眼、成熟挑衅的嘴角，保留红发与独特魔角",
+      "poseId": "wide-stance-chain-sweep",
+      "pose": "双脚大幅分立并弯膝，身体明显前倾，右臂甩出火焰锁链镰，左手回收链尾以控制弧线",
+      "silhouetteId": "angular-lunge-chain-arc",
+      "weaponId": "forged-chain-sickle",
+      "weapon": "熔火锁链镰，链节有重量方向和正确握法，镰刃绕出完整外弧",
+      "wardrobeId": "asymmetric-forge-armor",
+      "wardrobe": "炭黑赤铜非对称锻炉战甲、单侧金属肩甲、厚实护腰、分节护腿与战靴；衣片短而结构硬朗，与四张裙装区分",
+      "motion": "铁链由远向近形成速度线，红发逆风扬起，火花和碎炭从脚边炸开",
+      "scene": "熔岩锻炉/铁砧桥与裂纹金属",
+      "camera": "低机位近距离广角但保持整个人及武器完整",
+      "prohibited": [
+        "优雅并腿宫廷站姿",
+        "薄纱礼裙/花冠",
+        "与月纱同款细下巴脸"
+      ]
+    }
+  }
+}
