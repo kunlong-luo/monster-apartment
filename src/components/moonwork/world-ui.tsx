@@ -70,7 +70,7 @@ export function MoonworkWorld({area}:{area:WorldArea}){
         <WorkshopLink>进入工坊开始经营</WorkshopLink>
       </Panel>:area==='town'?<Town s={s}/>:area==='orders'?<Orders s={s}/>:area==='characters'?<Characters s={s} onVisit={id=>setVisiting(id)}/>:<Warehouse s={s}/>}
     </div>
-    {area==='characters'&&s&&visiting&&<WorkerPrivateRoom id={visiting}
+    {area==='characters'&&s&&visiting&&<WorkerPrivateRoom id={visiting} completedOrders={s.completed}
       working={s.tiles.some(tile=>tile?.worker===visiting)}
       onClose={closeVisit}/>}
   </main>;
