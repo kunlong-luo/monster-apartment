@@ -32,8 +32,15 @@ for(const id of ids){const x=brief.cards[id];if(['pose','weapon','wardrobe'].som
 for(const [id,study] of Object.entries(brief.poseStudies??{})){
   if(!ids.includes(id))fail('research art references unknown card '+id);
   const [resident,cardSlug]=id.split('-');
-  const expected='public/art/beauty-beasts/characters/'+resident+'/cg-'+cardSlug+'-pose-study-v1.webp';
-  if(study.path!==expected)fail('unapproved pose study path cannot point into a live or arbitrary slot '+id);
+  // Revisioned pose studies are never the playable candidate or production slot.
+  const revision=study.revision??1;
+  if(!Number.isInteger(revision)||revision<1||revision>99)
+    fail('invalid pose study revision '+id);
+  const expected='public/art/beauty-beasts/characters/'+resident+'/cg-'+cardSlug+'-pose-study-v'+revision+'.webp';
+  if(study.path!==expected)
+    fail('unapproved pose study path cannot point into a live or arbitrary slot '+id);
+  if(revision>1&&study.supersedes!=='public/art/beauty-beasts/characters/'+resident+'/cg-'+cardSlug+'-pose-study-v'+(revision-1)+'.webp')
+    fail('revised pose study must preserve an explicit predecessor '+id);
   if(study.status!=='research-only'||study.approved!==false)fail('pose study must remain unapproved '+id);
   const bytes=readFileSync(resolve(root,study.path));
   const dim=webpDimensions(bytes);
