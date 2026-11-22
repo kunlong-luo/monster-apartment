@@ -29,7 +29,7 @@ export function CharacterContractCard({character,mode='feature',awardTestId}:{
 }){
   const candidate=mode==='feature'&&Boolean(getSelectedCardPreview(character.id));
   const image=getCardFace(character.id,mode)??siteAssetUrl(character.avatar);
-  const portraitKind=getCardPortraitKind(character.id);
+  const portraitKind=getCardPortraitKind(character.id,mode);
   const fallback=getCardPortraitFallback(character.id)??siteAssetUrl(character.avatar);
   return <article
     className={'contract-card contract-card--'+mode}

@@ -97,7 +97,11 @@ export function getCardPortraitFallback(id:string){
   if(id==='cinder-ember')return cinder;
   return null;
 }
-export function getCardPortraitKind(id:string):CardPortraitKind{
+export function getCardPortraitKind(id:string,view:'feature'|'thumbnail'='feature'):CardPortraitKind{
+  // Thumbnails show canonical identity portraits even while a selected
+  // feature card displays a separate themed 3:4 review candidate.
+  if(view==='thumbnail')return id==='yuesha-eclipse'||id==='yuesha-vow'
+    ?'scene-portrait':'face-crop';
   const tier=getCardArtTier(id);
   if(tier==='production')return 'full-body-cg';
   if(tier==='candidate')return 'candidate-figure';

@@ -79,23 +79,24 @@
   background:radial-gradient(ellipse at 50% 37%,var(--portrait-light),var(--portrait-shadow) 68%,var(--craft-night) 100%)}
 .contract-card__halo{position:absolute;inset:10% 8% 2%;
   background:radial-gradient(ellipse at 50% 43%,var(--contract-aura),transparent 69%)}
-/* Portrait crops are shown as collectible framed paintings, not fake
- * full-body characters. No blur, enlargement filter or image distortion. */
+/* Identity portraits and 3:4 candidate figures use a deliberate matte.
+ * Candidates remain unapproved and must be contained without limb clipping,
+ * raster enlargement filters or pretending the image is production CG. */
 .contract-card__portrait-frame{position:absolute;inset:0;isolation:isolate}
 .contract-card__portrait{object-fit:contain;object-position:center center;filter:none}
-.contract-card__art[data-portrait-kind="face-crop"] .contract-card__portrait-frame{
+.contract-card__art:is([data-portrait-kind="face-crop"],[data-portrait-kind="candidate-figure"]) .contract-card__portrait-frame{
   inset:clamp(12px,5%,32px) clamp(7px,4%,22px) clamp(8px,3%,16px);
   border:1px solid color-mix(in srgb,var(--contract-edge) 64%,transparent);
   border-radius:9px;
   background:linear-gradient(180deg,var(--portrait-shadow),var(--craft-night));
   box-shadow:0 16px 30px #0008,0 0 0 6px #0f0c1238;
 }
-.contract-card__art[data-portrait-kind="face-crop"] .contract-card__portrait-frame::after{
+.contract-card__art:is([data-portrait-kind="face-crop"],[data-portrait-kind="candidate-figure"]) .contract-card__portrait-frame::after{
   content:"";position:absolute;inset:7px;z-index:2;pointer-events:none;
   border:1px solid color-mix(in srgb,var(--contract-edge) 36%,transparent);
   border-radius:5px;
 }
-.contract-card__art[data-portrait-kind="face-crop"] .contract-card__portrait{
+.contract-card__art:is([data-portrait-kind="face-crop"],[data-portrait-kind="candidate-figure"]) .contract-card__portrait{
   object-fit:contain;object-position:center 35%;
 }
 /* Production CG is a real 3:4 authored image (not a scaled-up face crop).
@@ -139,10 +140,10 @@
  * of the entire result ledger. Rewards stay in the DOM for accessibility
  * and testing, and are fully readable on the selected feature card. */
 .contract-card--thumbnail .contract-card__art{bottom:18%}
-.contract-card--thumbnail .contract-card__art[data-portrait-kind="face-crop"] .contract-card__portrait-frame{
+.contract-card--thumbnail .contract-card__art:is([data-portrait-kind="face-crop"],[data-portrait-kind="candidate-figure"]) .contract-card__portrait-frame{
   inset:0;border:0;border-radius:0;box-shadow:none;background:transparent;
 }
-.contract-card--thumbnail .contract-card__art[data-portrait-kind="face-crop"] .contract-card__portrait-frame::after{
+.contract-card--thumbnail .contract-card__art:is([data-portrait-kind="face-crop"],[data-portrait-kind="candidate-figure"]) .contract-card__portrait-frame::after{
   display:none;
 }
 .contract-card--thumbnail .contract-card__caption{padding:5px 5px 6px;min-height:18%;gap:0}

@@ -43,6 +43,7 @@ describe('character portrait visual identity',()=>{
       expect(getApprovedCardCg(id)).toBeNull();
       expect(getCardArtTier(id)).toBe('candidate');
       expect(getCardPortraitKind(id)).toBe('candidate-figure');
+      expect(getCardPortraitKind(id,'thumbnail')).toBe('face-crop');
     }
     expect(getCollectibleCardArt('no-such-card')).toBeNull();
     expect(getCardArtTier('no-such-card')).toBe('portrait');
@@ -77,6 +78,8 @@ describe('character portrait visual identity',()=>{
     expect(mythic).not.toEqual(vow);
     expect(getCardPortraitKind('yuesha-eclipse')).toBe('candidate-figure');
     expect(getCardPortraitKind('yuesha-vow')).toBe('candidate-figure');
+    expect(getCardPortraitKind('yuesha-eclipse','thumbnail')).toBe('scene-portrait');
+    expect(getCardPortraitKind('yuesha-vow','thumbnail')).toBe('scene-portrait');
     expect(getCardPortraitFallback('yuesha-eclipse')).toEqual(HEROINE_FACE_ART.yuesha);
     expect(getCardPortraitFallback('yuesha-vow')).toEqual(HEROINE_FACE_ART.yuesha);
   });
@@ -87,6 +90,7 @@ describe('character portrait visual identity',()=>{
     expect(new Set(portraits)).toHaveProperty('size',3);
     for(const id of ids){
       expect(getCardPortraitKind(id)).toBe('candidate-figure');
+      expect(getCardPortraitKind(id,'thumbnail')).toBe('face-crop');
       const resident=id.split('-')[0] as 'brook'|'fern'|'cinder';
       expect(getCardPortraitFallback(id)).toEqual(HEROINE_FACE_ART[resident]);
       // The published catalog must not point to the lobby heroine if the
