@@ -21,6 +21,7 @@ for(const entry of data.entries){
       failures.push('Missing '+file.path+'; files must be unpacked from the review ZIP first');continue;
     }
     const bytes=readFileSync(file.path);
+    if(bytes.length!==file.bytes)failures.push('Byte length mismatch '+file.path+': '+bytes.length);
     const digest=createHash('sha256').update(bytes).digest('hex');
     if(digest!==file.sha256)failures.push('SHA mismatch '+file.path);
     let w=0,h=0;
@@ -46,8 +47,8 @@ for(const entry of data.entries){
       failures.push('Pixel dimensions mismatch '+file.path+': '+w+'x'+h);
     console.log(entry.taskId,kind,w+'x'+h,digest);
   }
-  if(entry.productionApproved!==false||entry.availableInGit!==false)
-    failures.push('Do not claim production or Git binary availability in research manifest '+entry.taskId);
+  if(entry.productionApproved!==false||entry.availableInGit!==true)
+    failures.push('Review binaries must be committed, but not production-approved: '+entry.taskId);
 }
 if(failures.length){
   for(const failure of failures)console.error('ERROR',failure);

@@ -11,8 +11,8 @@
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |
 | 新角色、立绘、CG、换装、武器 | [角色 G0–G7 SOP](CHARACTER-CREATION-SOP.md) → [任务模板](templates/CHARACTER-DESIGN-BRIEF-TEMPLATE.md) | [逐卡镜头表](CHARACTER-CG-DIFFERENTIATION-V1.md)、[原生高清可选管线](CHARACTER-CG-NATIVE-PIPELINE.md) |
 | 全站美术要重做哪些 / 制作任务 | [R12.7 全站资源重制审计](art-reviews/R12-07-ASSET-REBUILD-AUDIT-2026-11-22.md) → [可执行 CSV 台账](art-reviews/R12-07-ASSET-REBUILD-BACKLOG.csv) | [像素取证](art-reviews/R12-01-REAL-BROWSER-PIXEL-EVIDENCE.md)、[五卡差异化](CHARACTER-CG-DIFFERENTIATION-V1.md) |
-| 首张 S05 独立绘景样板（候选） | [R12.8 S05 契约大厅审稿报告](art-reviews/R12-08-S05-CONTRACT-HALL-REVIEW-2026-11-22.md) | 1672×941 原生图在对话 ZIP，未进入 Git/未上线、手机独立画与人审仍缺 |
-| S05 双端 + 青枝拉弓真实美术文件（待远端复制） | [R12.9 美术资源包及校验](art-reviews/R12-09-ART-PACK-2026-11-22.md) | 3 PNG + 3 WebP 在对话 ZIP，Git 仅含校验清单与文档；尚未入游戏 |
+| 首张 S05 独立绘景样板（候选） | [R12.8 S05 契约大厅审稿报告](art-reviews/R12-08-S05-CONTRACT-HALL-REVIEW-2026-11-22.md) | 1672×941 原生图已入 Git review；尚未通过生产尺寸/人审 |
+| S05 双端 + 青枝拉弓（已入 Git 审稿目录） | [R12.9 美术资源与校验](art-reviews/R12-09-ART-PACK-2026-11-22.md) | 3 PNG + 3 WebP + [联系表](art-reviews/R12-09-ART-CONTACT-SHEET-REVIEW-ONLY.jpg) 均在 main；**不是 production** |
 | 场景原画 / 私室 | [R12 原画入库规则](art-reviews/R12-02-SCENE-ART-INTAKE.md) | [房间视觉规则](v3/23-ROOM-ART-PIPELINE-AND-CINEMATIC-PERFORMANCE.md) |
 | 当前缺口、下一步 | [缺口与风险台账](engineering/GAP-REGISTER-2026-11-22.md)、[GitHub Issues](https://github.com/kunlong-luo/monster-apartment/issues)、[任务表](../management/TASKS.csv) | [R11.3 已核实历史基线](engineering/2026-11-12-r11-3-release-baseline.md) |
 | 技术及产品决策 | [ADR 决策表](DECISIONS.md) | [早期 V0.1 开发计划（历史）](DEVELOPMENT_PLAN.md) |

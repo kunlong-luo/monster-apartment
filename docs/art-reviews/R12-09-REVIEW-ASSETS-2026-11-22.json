@@ -13,7 +13,7 @@
       "reviewId": "orders-desktop-v1",
       "stage": "research-review",
       "productionApproved": false,
-      "availableInGit": false,
+      "availableInGit": true,
       "source": {
         "path": "art-sources/review/2026-11-22/orders-desktop-v1.png",
         "format": "PNG",
@@ -38,7 +38,8 @@
         "rightsReviewed": false,
         "browserDPRReview": false
       },
-      "notes": "New 16:9 image, below original-pixel release gate. No browser review."
+      "notes": "New 16:9 image, below original-pixel release gate. No browser review.",
+      "gitBinaryStatus": "review-assets-committed-no-production-promotion"
     },
     {
       "taskId": "ART-S05-M",
@@ -46,7 +47,7 @@
       "reviewId": "orders-mobile-v1",
       "stage": "research-review",
       "productionApproved": false,
-      "availableInGit": false,
+      "availableInGit": true,
       "source": {
         "path": "art-sources/review/2026-11-22/orders-mobile-v1.png",
         "format": "PNG",
@@ -71,7 +72,8 @@
         "rightsReviewed": false,
         "browserDPRReview": false
       },
-      "notes": "Separately generated portrait composition; do not count a cropped desktop image as native mobile."
+      "notes": "Separately generated portrait composition; do not count a cropped desktop image as native mobile.",
+      "gitBinaryStatus": "review-assets-committed-no-production-promotion"
     },
     {
       "taskId": "ART-CG-fern-spring",
@@ -79,7 +81,7 @@
       "reviewId": "fern-spring-bow-v1",
       "stage": "research-review",
       "productionApproved": false,
-      "availableInGit": false,
+      "availableInGit": true,
       "source": {
         "path": "art-sources/review/2026-11-22/fern-spring-bow-v1.png",
         "format": "PNG",
@@ -104,7 +106,9 @@
         "rightsReviewed": false,
         "browserDPRReview": false
       },
-      "notes": "Adult forest ranger holding drawn living-vine bow. Identity, anatomy, bow-tip safety, provenance and mobile crop await human review."
+      "notes": "Adult forest ranger holding drawn living-vine bow. Identity, anatomy, bow-tip safety, provenance and mobile crop await human review.",
+      "gitBinaryStatus": "review-assets-committed-no-production-promotion"
     }
-  ]
+  ],
+  "binaryCommitEvidence": "Git SHA 1 verified for each original image and WebP; see R12.10 release note. Confirm Git tree paths of the resulting commit."
 }

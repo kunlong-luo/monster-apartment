@@ -91,3 +91,9 @@
 - 已新生成 **S05 独立手机场景 941×1672** 和 **青枝藤弓拉弓 1086×1448**，并复用 S05 独立桌面 1672×941；每张提供原生 PNG 和未经插值的 WebP，总计 6 个实物文件，SHA 在 [R12.9](../art-reviews/R12-09-ART-PACK-2026-11-22.md) 以及 [资源签名 JSON](../art-reviews/R12-09-REVIEW-ASSETS-2026-11-22.json)。
 - 文件已置于对话 ZIP 的**项目相对路径**中，可在仓库根目录解压；当前 GitHub 连接不支持读取并上传本地二进制，**原画尚未进入远端 Git commit，亦未改变线上画面**。本轮提交的只是项目内校验代码、manifest 文档和进度台账。绝不将其标成「CG 正式晋级」「4K 图片已上线」。
 - S05 PC 和手机原生像素门槛均未达；青枝通过 1086×1448 像素门槛，但身份/弓弦/权利/浏览器人审仍待办。三个生产状态维持 review / portrait。下一轮优先完成真实素材远端入库及审核，再修正 PC/手机原生尺寸不足。
+
+## 2026-11-22 R12.10 图片真实入库（后续更正）
+
+- 已将 R12.9 的 **三张原生 PNG、三张 WebP 及 JPG 联系表**实际创建为 Git 二进制 blob，并合并到 `main` 的 `art-sources/review/...`、`public/art/world-scenes/review/...`、`public/art/beauty-beasts/characters/fern/review/...` 和 `docs/art-reviews/...`。每个 Git blob SHA 与本地原始字节 SHA 核对相符；不再要求用户手动解压、复制、上传。
+- 已将 `availableInGit` 设为 **true**、`productionApproved` 仍为 **false**，并新增 Quality 门禁 `pnpm audit:r12-review-art`，检查真文件长度、SHA-256、像素及资源状态。R12.9 之前“只有聊天附件”陈述属于历史时点，已被本轮更正。
+- **不代表正式可用**：S05 PC 1672×941 与手机 941×1672 的原生尺寸不达标；青枝 1086×1448 尺寸通过但身份、武器受力、人审未完成。CG 正式晋级仍 0/5，S05 生产清单仍为 review，线上委托所场景并未替换。
