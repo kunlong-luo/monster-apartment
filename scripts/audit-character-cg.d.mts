@@ -6,6 +6,7 @@ export declare const CG_PREVIEW_PATHS:typeof CG_PATHS;
 /** Current resident likeness for each production approval; YueSha V3 only. */
 export declare const CG_IDENTITY_REFERENCE_PATHS:typeof CG_PATHS;
 export declare const CG_VIEWPORTS:readonly string[];
+export declare const CG_MIN_NATIVE_SIZE:Readonly<{width:number;height:number}>;
 export declare function inspectCharacterCg(bytes:Buffer):{
   width:number;height:number;bytes:number;sha256:string;
 };
