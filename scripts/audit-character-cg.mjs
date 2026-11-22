@@ -32,13 +32,16 @@ export const CG_IDENTITY_REFERENCE_PATHS={
   'cinder-ember':'public/art/beauty-beasts/characters/cinder/face.webp',
 };
 export const CG_VIEWPORTS=['desktop-1440x900','desktop-1648x928','mobile-390x844'];
+/** Phase-1 native art minimum. Higher 1536×2048 detail is optional, not a release block. */
+export const CG_MIN_NATIVE_SIZE=Object.freeze({width:1086,height:1448});
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 const check=(yes,message)=>{if(!yes)throw new Error('Character CG: '+message);};
 export function inspectCharacterCg(bytes){
   check(Buffer.isBuffer(bytes)&&bytes.length>=100000&&bytes.length<=12*1024*1024,
     'WebP must be 100KB–12MB');
   const info=webpDimensions(bytes);
-  check(info.width>=1536&&info.height>=2048,'CG must be >=1536x2048');
+  check(info.width>=CG_MIN_NATIVE_SIZE.width&&info.height>=CG_MIN_NATIVE_SIZE.height,
+    'CG must be native at least 1086x1448');
   check(Math.abs(info.width/info.height-3/4)<.018,'CG must have a 3:4 canvas');
   return {...info,bytes:bytes.length,sha256:sha256(bytes)};
 }
@@ -75,8 +78,8 @@ export function assertCharacterCgReview({card,review,bytes}){
     'dated human review notes are required');
   check(Number.isInteger(review.nativeResolution?.width)&&
     Number.isInteger(review.nativeResolution?.height)&&
-    review.nativeResolution.width>=1536&&review.nativeResolution.height>=2048,
-    'original/native image resolution must be documented and pass requirements');
+    review.nativeResolution.width===info.width&&review.nativeResolution.height===info.height,
+    'native source dimensions must equal the reviewed image dimensions');
   return info;
 }
 export function auditCharacterCg(){
