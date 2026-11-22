@@ -43,7 +43,8 @@ describe('character portrait visual identity',()=>{
       expect(getApprovedCardCg(id)).toBeNull();
       expect(getCardArtTier(id)).toBe('candidate');
       expect(getCardPortraitKind(id)).toBe('candidate-figure');
-      expect(getCardPortraitKind(id,'thumbnail')).toBe('face-crop');
+      expect(getCardPortraitKind(id,'thumbnail')).toBe(
+        id.startsWith('yuesha')?'scene-portrait':'face-crop');
     }
     expect(getCollectibleCardArt('no-such-card')).toBeNull();
     expect(getCardArtTier('no-such-card')).toBe('portrait');
