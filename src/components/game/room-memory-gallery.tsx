@@ -22,6 +22,8 @@ export function RoomMemoryGallery(){
   const entries=roomInvestigations(progress);
   const [selected,setSelected]=useState<CharacterId|null>(null);
   const complete=entries.filter(entry=>entry.complete).length;
+  const workerChapters=(['brook','fern','cinder'] as const)
+    .reduce((total,id)=>total+(progress.workerChapters?.[id]??0),0);
   const expanded=entries.find(entry=>entry.characterId===selected&&entry.complete);
   return <section aria-label="人物记忆卡收藏" data-testid="room-memory-gallery"
     className="space-y-3 rounded-xl border border-[#b892735e] bg-[#170e1bdc] p-3 text-[#f3dbc0]">
@@ -68,5 +70,8 @@ export function RoomMemoryGallery(){
     {status!=='ok'&&<p role="alert" className="text-xs text-rose-200">
       人物档案目前无法读取或写入；请先保护当前存档，避免覆盖。</p>}
     <p className="text-[10px] leading-5 text-[#bca895]">在四位角色的私人房间中找到两件关联物品，即可永久收录对应的故事记忆。</p>
+    <p data-testid="worker-story-collection-total" className="text-[10px] leading-5 text-gothic-muted">
+      工坊牵绊 {workerChapters}/6 幕 · 真实完成工坊委托后，回到三位工匠的房间收录新故事；不消耗库存。
+    </p>
   </section>;
 }

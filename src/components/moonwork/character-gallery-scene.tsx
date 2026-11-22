@@ -363,7 +363,7 @@ export function CharacterGalleryScene(){
     </GothicModal>}
     <SummonCollectionArchive open={archiveOpen} collection={collection}
       collectionStatus={status} onClose={()=>setArchiveOpen(false)}/>
-    {world&&visiting&&<WorkerPrivateRoom id={visiting}
+    {world&&visiting&&<WorkerPrivateRoom id={visiting} completedOrders={world.completed}
       working={world.tiles.some(tile=>tile?.worker===visiting)} onClose={closeVisit}/>}
   </main>;
 }

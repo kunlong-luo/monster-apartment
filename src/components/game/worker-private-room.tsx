@@ -3,7 +3,7 @@ import Link from 'next/link';
 import {useEffect,useRef,useState} from 'react';
 import {useRoomStageSize} from './use-room-stage-size';
 import {RoomArtLocalPreviewPanel,useRoomArtLocalPreview} from './room-art-local-preview';
-import {CHARACTER_PROFILES,WORKER_DIALOGUES} from '@/core/character-life';
+import {CHARACTER_PROFILES,WORKER_DIALOGUES,WORKER_STORY_CHAPTERS,workerStoryProgress,workerStoryChapterText} from '@/core/character-life';
 import type {WorkerCharacterId,RoomObjectId,WorkerChoice} from '@/core/character-life';
 import {commitCharacterLife,useCharacterLife} from '@/lib/game/character-life-store';
 import {CharacterLifePortrait} from './character-life-portrait';
@@ -27,8 +27,8 @@ const SCENE_PALETTES={
   cinder:{ribbon:'border-amber-200/50 text-amber-100',roomDetail:'炉火台 · 黄铜修理间'},
 } as const;
 
-export function WorkerPrivateRoom({id,onClose,working}:{
-  id:WorkerCharacterId;onClose:()=>void;working:boolean;
+export function WorkerPrivateRoom({id,onClose,working,completedOrders}:{
+  id:WorkerCharacterId;onClose:()=>void;working:boolean;completedOrders:number;
 }){
   const stageRef=useRef<HTMLDivElement>(null);
   const stageSize=useRoomStageSize(stageRef);
@@ -42,9 +42,11 @@ export function WorkerPrivateRoom({id,onClose,working}:{
   const [theater,setTheater]=useState<RoomConversationTopic|null>(null);
   const [notice,setNotice]=useState('');
   const [scenicMode,setScenicMode]=useState(false);
+  const [storyOpen,setStoryOpen]=useState(false);
   const {status,progress}=useCharacterLife();
   const choice=progress.workerDecisions?.[id];
   const observed=progress.observations?.[id]??[];
+  const story=workerStoryProgress(progress,id,completedOrders);
   useEffect(()=>{
     if(status==='ok')commitCharacterLife({type:'visit',id});
   },[status,id]);
@@ -63,6 +65,12 @@ export function WorkerPrivateRoom({id,onClose,working}:{
     setNotice(result==='applied'?'这次交谈成为了你们共同的回忆。':result==='duplicate'?'你们已经谈过这件事。':'选择未能保存，原档不会被覆盖。');
   };
   const foundHint=observed.includes(scene.objects[0].id)&&observed.includes(scene.objects[1].id);
+  const collectStory=()=>{
+    const result=commitCharacterLife({type:'worker-chapter',id});
+    setNotice(result==='applied'?'已将工坊往事写入人物故事档案。':
+      result==='duplicate'?'条件尚未达成，或这一幕已经收录。':'暂时无法保存故事；原有记录已保留。');
+    if(result==='applied')setStoryOpen(true);
+  };
   const shownPose=artReview.enabled&&artReview.selectedPose?artReview.selectedPose:pose;
   // Review candidates have no authenticated object locations. No false
   // hotspots and no game-state inspection while a new background is staged.
@@ -133,6 +141,37 @@ export function WorkerPrivateRoom({id,onClose,working}:{
           setTheater(topic);
           stageRef.current?.scrollIntoView({block:'center',behavior:'auto'});
         }}/>
+      <section className="space-y-2 border-t border-gothic-brass/35 pt-3"
+        aria-label={profile.name+'的工坊牵绊支线'} data-testid={'worker-story-'+id}>
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="font-serif text-sm text-gothic-gold">工坊牵绊 · {profile.name}的信笺</h3>
+          <small data-testid={'worker-story-progress-'+id} className="text-xs tabular-nums text-gothic-muted">{story.current} / 2 幕</small>
+        </div>
+        <p data-testid={'worker-story-hint-'+id} className="text-[11px] leading-5 text-gothic-muted">
+          {story.hint} {completedOrders===0?'先去工坊完成首单，故事才会继续。':''}
+        </p>
+        {story.ready&&status==='ok'&&
+          <button type="button" data-testid={'worker-story-collect-'+id}
+            disabled={!story.ready||status!=='ok'} onClick={collectStory}
+            className="min-h-10 rounded-md border border-gothic-brass/70 bg-gothic-wine px-3 py-2 text-left text-xs font-semibold text-gothic-ivory hover:brightness-110 focus-visible:outline-2 focus-visible:outline-gothic-glow">
+            收录第{story.next===1?'一':'二'}幕 · {WORKER_STORY_CHAPTERS[id][(story.next??1)-1].title.split(' · ')[1]}
+          </button>}
+        {story.current>0&&
+          <details open={storyOpen} onToggle={event=>setStoryOpen(event.currentTarget.open)}
+            className="rounded-lg border border-gothic-brass/40 bg-gothic-panel/75 p-3"
+            data-testid={'worker-story-memory-'+id}>
+            <summary className="cursor-pointer text-xs font-semibold text-gothic-ivory focus-visible:outline-2 focus-visible:outline-gothic-glow">
+              已收藏 {story.current} 幕 · 阅读回忆
+            </summary>
+            <div className="mt-2 space-y-3">
+              {([1,2] as const).filter(chapter=>chapter<=story.current).map(chapter=>
+                <article key={chapter} className="space-y-1">
+                  <h4 className="font-serif text-xs text-gothic-gold">{WORKER_STORY_CHAPTERS[id][chapter-1].title}</h4>
+                  <p className="text-xs leading-6 text-gothic-ivory">{workerStoryChapterText(progress,id,chapter)}</p>
+                </article>)}
+            </div>
+          </details>}
+      </section>
       <section className="space-y-2" aria-label="观察人物房间">
         <h3 className="text-xs tracking-wider text-gothic-gold">房间观察 · 在画面中选择感兴趣的物件</h3>
         {selectedItem&&<p data-testid={'worker-room-object-'+id} className="rounded-lg bg-gothic-wine/35 p-3 text-xs leading-6">
