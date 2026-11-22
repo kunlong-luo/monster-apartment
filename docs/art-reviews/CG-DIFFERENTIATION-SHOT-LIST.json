@@ -170,6 +170,16 @@
       "approved": false,
       "status": "research-only",
       "notes": "单人侧身拉藤弓与游侠轻甲；上方弓梢和箭头边距需修正，原生尺寸不足，身份待审"
+    },
+    "yuesha-vow": {
+      "path": "public/art/beauty-beasts/characters/yuesha/cg-vow-pose-study-v1.webp",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 474174,
+      "sha256": "876ff5783fe7ffe940dc65f79f05b729c110a850f8495234da8fbe94f35b9dc9",
+      "approved": false,
+      "status": "research-only",
+      "notes": "单人侧坐月光祭坛、邀请手势、细剑与银白酒红仪式礼服；仍需与银发 V3 身份和镰刀月蚀版并排审查；原生低于正式门槛"
     }
   }
 }

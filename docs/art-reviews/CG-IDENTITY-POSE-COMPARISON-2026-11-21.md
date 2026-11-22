@@ -18,11 +18,11 @@
 | **泉泡·潮汐** | ![泉泡现行头像](../../public/art/beauty-beasts/characters/brook/face.webp) | ![泉泡单人踏浪](../../public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v1.webp) | **身份未通过**：浅银蓝发和毛绒蓝色兽耳变成鲜蓝发、精灵尖耳，不能晋级 |
 | **炽角·余烬** | ![炽角现行头像](../../public/art/beauty-beasts/characters/cinder/face.webp) | ![炽角单人火链镰](../../public/art/beauty-beasts/characters/cinder/cg-ember-pose-study-v1.webp) | **单人战斗姿态完成**：粉红红发、双角、甲胄和宽弓步符合重制方向；镰刃边距和骨相仍需复核 |
 | **青枝·春芽** | ![青枝现行头像](../../public/art/beauty-beasts/characters/fern/face.webp) | ![青枝独立侧身拉弓](../../public/art/beauty-beasts/characters/fern/cg-spring-pose-study-v1.webp) | **单人游侠拉弓研究稿已入库**；藤弓上缘/箭尖接近边界，手指与身份未签署，尺寸不足 |
-| **月纱·誓约** | ![月纱 V3 胸像](../../public/art/yuesha-bust-v3.webp) | 新独立侧坐邀约研究稿**未生成**（原有 `cg-vow-candidate.webp` 不是本轮重制成果） | **待制作**：必须与月蚀同一脸，侧坐、誓约细剑与仪式礼服应不同于战斗月纱 |
+| **月纱·誓约** | ![月纱 V3 胸像](../../public/art/yuesha-bust-v3.webp) | ![月纱侧坐邀约独立研究](../../public/art/beauty-beasts/characters/yuesha/cg-vow-pose-study-v1.webp) | **G2-02 独立姿势研究稿完成**：侧坐、伸手邀请、誓约细剑、银白酒红仪式裙；两张月纱的面部身份与细剑边距尚待审核，非正式 CG |
 
 > GitHub 的上表显示实际入库图片。**不能根据图片旁边写了“完成”就认为人物身份通过**：目前所有已入库研究稿均为 1086×1448；正式 CG 原生尺寸门槛是 1536×2048，所有卡位 `status: portrait` 不变。
 
-## 已入库四张研究稿：不依靠发色的辨认点
+## 已入库五张研究稿：不依靠发色的辨认点
 
 | 对比轴 | 月纱月蚀 | 泉泡潮汐 | 炽角余烬 |
 | --- | --- | --- | --- |
@@ -46,7 +46,7 @@
 
 1. **泉泡身份修复**：必须严格用 `brook/face.webp` 的毛绒蓝色兽耳、浅银蓝发为参考，保留踏浪动态与三叉戟；重绘而不是给尖耳加 CSS。
 2. **青枝侧身射箭已完成 G2 研究稿**：金发绿瞳、花冠、护臂、游侠装和藤弓齐备；仍须重绘真正高像素版本并审查箭/弓边界、搭箭和腿部重心。
-3. **月纱誓约侧坐**：同 V3 银发赤瞳身份，低矮祭坛侧坐、邀请手势、细剑朝下轻触地面；银白酒红仪式裙，不同于月蚀战斗铠饰。
+3. **月纱誓约独立侧坐研究稿已完成**：同 V3 银发赤瞳身份，低矮祭坛侧坐、邀请手势、细剑朝下轻触地面；仍须验证两版同一张脸、原生分辨率与武器边距，不得当正式 CG。
 4. **炽角与月纱正式高清重制**：研究姿态对了也不等于正式原画，要保证原生像素、镰刃边距、人物身份和三视口审查全部通过。
 
 **发布规则**：可提交研究稿或 review 文档，但不得在缺少人审签署时更新 `cg-manifest.json` 的 `production`、占用正式资产路径或宣称收藏卡 CG 已完成。
