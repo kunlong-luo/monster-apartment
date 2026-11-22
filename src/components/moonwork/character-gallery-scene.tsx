@@ -14,7 +14,7 @@ import {RoomInvestigationJournal} from '@/components/game/room-investigation-jou
 import {RoomMemoryGallery} from '@/components/game/room-memory-gallery';
 import {WorkerPrivateRoom} from '@/components/game/worker-private-room';
 import {SummonCollectionArchive} from '@/components/summon/summon-collection-archive';
-import {HEROINE_FACE_ART,getCardFace,getCardPortraitFallback,getCardPortraitKind,getCollectibleCardArt} from '@/components/summon/heroine-portrait-assets';
+import {HEROINE_FACE_ART,getCardFace,getCardPortraitFallback,getCardPortraitKind,getCollectibleCardArt,getCardArtTier} from '@/components/summon/heroine-portrait-assets';
 import {useCharacterCollection} from '@/lib/game/character-collection-store';
 import {siteAssetUrl} from '@/lib/game/site-asset-url';
 import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
@@ -163,11 +163,13 @@ export function CharacterGalleryScene(){
             // The 512px square face images are honest portraits, never stretched into
             // a tall full-body painting. Only the reviewed preview/production art
             // receives the full-height composition.
-            const fullFigure=Boolean(getCollectibleCardArt(card.key));
+            const artTier=getCardArtTier(card.key);
+            const fullFigure=artTier!=='portrait';
             const CardSeal=CARD_SEAL[card.key];
             return <article key={card.key}
               className={'cg-card cg-card--'+CARD_CLASS[card.key]+(selectedKey===card.key?' cg-card--selected':'')}
               data-art-layout={fullFigure?'figure':'portrait'}
+              data-art-status={artTier}
               data-testid={card.character==='yuesha'?'gallery-card-'+card.key:'worker-card-'+card.character}
               data-owned={collected}>
               <button type="button" className="cg-card__select"

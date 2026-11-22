@@ -90,31 +90,28 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await expect.poll(()=>images.evaluateAll(nodes=>nodes.every(el=>
     (el as HTMLImageElement).complete&&(el as HTMLImageElement).naturalWidth>0
   )),{timeout:25000}).toBe(true);
-  // Existing portraits are square; never crop 512px art to impersonate a full-body CG.
-  const portraitCards=gallery.locator('.cg-card[data-art-layout="portrait"]');
-  await expect(portraitCards).toHaveCount(4);
-  await expect(gallery.locator('.cg-card[data-art-layout="figure"]')).toHaveCount(1);
-  // Reused identity art creates atmosphere; no screenshot raster or unrelated
-  // resident is allowed to replace the original face. Both layers must decode.
-  const ambient=portraitCards.locator('.cg-card__ambient-image');
-  await expect(ambient).toHaveCount(4);
-  await expect.poll(()=>ambient.evaluateAll(images=>images.every(img=>
-    (img as HTMLImageElement).complete&&(img as HTMLImageElement).naturalWidth>0
-  )),{timeout:25000}).toBe(true);
-  const portraitFrames=await portraitCards.locator('.cg-card__portrait-window').evaluateAll(nodes=>
-    nodes.map(el=>{
-      const img=el.querySelector('img')!;
-      const frame=el.getBoundingClientRect();
-      return {ratio:frame.width/frame.height,fit:getComputedStyle(img).objectFit};
+  // All FIVE current manifest slots point to distinct 3:4 research
+  // candidates, not four square portraits. None is approved production.
+  const candidates=gallery.locator('.cg-card[data-art-status="candidate"]');
+  await expect(candidates).toHaveCount(5);
+  await expect(gallery.locator('.cg-card[data-art-status="production"]')).toHaveCount(0);
+  await expect(gallery.locator('.cg-card[data-art-layout="figure"]')).toHaveCount(5);
+  await expect(candidates.locator('.cg-card__ambient-image')).toHaveCount(0);
+  const selectedCandidates=await candidates.locator('.cg-card__image').evaluateAll(images=>
+    images.map(el=>{
+      const img=el as HTMLImageElement;
+      return {width:img.naturalWidth,height:img.naturalHeight,src:img.currentSrc,
+        fit:getComputedStyle(img).objectFit,
+        kind:img.getAttribute('data-art-kind')};
     }));
-  for(const frame of portraitFrames){
-    expect(frame.ratio).toBeGreaterThan(.73);
-    expect(frame.ratio).toBeLessThan(.77);
-    expect(frame.fit).toBe('cover');
+  expect(selectedCandidates).toHaveLength(5);
+  for(const picture of selectedCandidates){
+    expect(picture.width).toBeGreaterThanOrEqual(960);
+    expect(picture.height).toBeGreaterThanOrEqual(1280);
+    expect(picture.src).toMatch(/cg-[a-z]+-candidate\\.webp(?:\\?|$)/);
+    expect(picture.fit).toBe('cover'); // slim card crop only
+    expect(picture.kind).toBe('candidate-figure'); // never production
   }
-  // Slim reference-style cards need a cover crop; the artwork viewer retains contain.
-  await expect(gallery.locator('.cg-card[data-art-layout="figure"] .cg-card__image'))
-    .toHaveCSS('object-fit','cover');
   await captureA05(page,'desktop-a05-reference-1672.png');
   await page.getByRole('button',{name:/选择青枝/}).click();
   await expect(page.locator('.cg-detail h2')).toContainText('青枝');
@@ -171,7 +168,8 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   await page.getByRole('button',{name:/查看月纱 · 神话/}).click();
   await expect(artwork.locator('.cg-art-view__stage')).toHaveAttribute('data-art-kind','figure');
   await page.getByRole('button',{name:'下一张人物画作'}).click();
-  await expect(artwork.locator('.cg-art-view__stage')).toHaveAttribute('data-art-kind','portrait');
+  await expect(artwork.locator('.cg-art-view__stage')).toHaveAttribute('data-art-status','candidate');
+  await expect(artwork.locator('.cg-art-view__stage')).toHaveAttribute('data-art-kind','figure');
   await expect(artwork.locator('.cg-art-view__heading h2')).toContainText('月下誓约');
   await page.getByRole('button',{name:'关闭面板'}).click();
   await expect(artwork).toHaveCount(0);
@@ -250,45 +248,50 @@ test('A05 mobile card strip remains operable without page overflow',async({page}
 });
 
 
-test('A05 portrait-only artwork stays within its source pixel budget at DPR2',async({page})=>{
+test('A05 preview candidates stay native-pixel-sharp at DPR2; none is mislabelled as approved CG',async({page})=>{
   test.setTimeout(90_000);
   await page.setViewportSize({width:1648,height:928});
   await page.goto('/characters/');
   await page.getByRole('button',{name:'欣赏立绘'}).click();
-
   const viewer=page.getByTestId('a05-art-viewer');
   await expect(viewer).toBeVisible();
-  // Select an ordinary 512x512 resident face, not the mythic CG candidate.
-  await viewer.locator('.cg-art-view__thumb').last().click();
-  await expect(viewer.locator('.cg-art-view__stage')).toHaveAttribute('data-art-kind','portrait');
-  const mat=viewer.locator('.cg-art-view__painting');
-  await expect(mat).toHaveAttribute('data-native-portrait','true');
-  await expect(viewer.locator('.cg-art-view__portrait-caption')).toBeVisible();
-  const image=viewer.locator('.cg-art-view__photo');
-  await expect.poll(()=>image.evaluate((el:HTMLImageElement)=>el.naturalWidth),
-    {timeout:15000}).toBeGreaterThan(0);
-  const evidence=await image.evaluate((el:HTMLImageElement)=>{
-    const frame=el.closest('.cg-art-view__painting')!;
-    const bounds=frame.getBoundingClientRect();
-    return {sourceWidth:el.naturalWidth,sourceHeight:el.naturalHeight,
-      renderWidth:bounds.width,renderHeight:bounds.height};
-  });
-  expect(evidence.sourceWidth).toBe(512);
-  expect(evidence.sourceHeight).toBe(512);
-  expect(evidence.renderWidth).toBeLessThanOrEqual(evidence.sourceWidth/2+1);
-  expect(evidence.renderHeight).toBeLessThanOrEqual(evidence.sourceHeight/2+1);
 
-  // A real figure painting is not forced into the 256px avatar frame.
-  await viewer.locator('.cg-art-view__thumb').first().click();
-  await expect(viewer.locator('.cg-art-view__stage')).toHaveAttribute('data-art-kind','figure');
-  await expect(viewer.locator('.cg-art-view__painting')).toHaveAttribute('data-native-portrait','false');
-  await expect(viewer.locator('.cg-art-view__portrait-caption')).toHaveCount(0);
-  const full=await viewer.locator('.cg-art-view__painting').boundingBox();
-  expect(full!.width).toBeGreaterThan(420);
+  for(const index of [0,2,4]){
+    await viewer.locator('.cg-art-view__thumb').nth(index).click();
+    await expect(viewer.locator('.cg-art-view__stage')).toHaveAttribute('data-art-status','candidate');
+    await expect(viewer.locator('.cg-art-view__stage')).toHaveAttribute('data-art-kind','figure');
+    await expect(viewer.getByTestId('a05-art-review-status')).toContainText('尚未通过');
+    const painting=viewer.locator('.cg-art-view__painting');
+    await expect(painting).toHaveAttribute('data-native-portrait','false');
+    await expect(viewer.locator('.cg-art-view__portrait-caption')).toHaveCount(0);
+    const photo=viewer.locator('.cg-art-view__photo');
+    await expect(photo).toHaveCSS('object-fit','contain');
+    await expect.poll(()=>viewer.getByTestId('a05-art-source-resolution').textContent(),
+      {timeout:15000}).toMatch(/原图 \\d+×\\d+/);
+    const actual=await photo.evaluate(el=>{
+      const img=el as HTMLImageElement;
+      const frame=img.closest('.cg-art-view__painting')!;
+      const rect=frame.getBoundingClientRect();
+      return {naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight,
+        pixelRatio:window.devicePixelRatio,width:rect.width,height:rect.height};
+    });
+    expect(actual.naturalWidth).toBeGreaterThanOrEqual(960);
+    expect(actual.naturalHeight).toBeGreaterThanOrEqual(1280);
+    const effectiveDpr=Math.max(2,actual.pixelRatio);
+    expect(actual.width).toBeLessThanOrEqual(actual.naturalWidth/effectiveDpr+3);
+    expect(actual.height).toBeLessThanOrEqual(actual.naturalHeight/effectiveDpr+3);
+  }
 
   await page.setViewportSize({width:390,height:844});
   await viewer.locator('.cg-art-view__thumb').last().click();
-  await expect(viewer.locator('.cg-art-view__painting')).toHaveAttribute('data-native-portrait','true');
+  const mobile=await viewer.locator('.cg-art-view__painting').boundingBox();
+  const img=viewer.locator('.cg-art-view__photo');
+  await expect.poll(()=>img.evaluate((el:HTMLImageElement)=>el.naturalWidth),
+    {timeout:15000}).toBeGreaterThanOrEqual(960);
+  const native=await img.evaluate((el:HTMLImageElement)=>
+    ({width:el.naturalWidth,height:el.naturalHeight,dpr:Math.max(2,devicePixelRatio)}));
+  expect(mobile!.width).toBeLessThanOrEqual(native.width/native.dpr+3);
+  expect(mobile!.height).toBeLessThanOrEqual(native.height/native.dpr+3);
   const mobileOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
   expect(mobileOverflow).toBeLessThanOrEqual(2);
 });

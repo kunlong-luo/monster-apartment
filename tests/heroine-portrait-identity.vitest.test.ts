@@ -2,7 +2,7 @@ import {describe,expect,it} from 'vitest';
 import {readFileSync,statSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {resolve} from 'node:path';
-import {HEROINE_FACE_ART,getCardFace,getApprovedCardCg,getCardPortraitFallback,getCardPortraitKind,getSelectedCardPreview,getCollectibleCardArt,CARD_PREVIEW_PATHS,YUESHA_ECLIPSE_PREVIEW_PATH} from '../src/components/summon/heroine-portrait-assets';
+import {HEROINE_FACE_ART,getCardFace,getApprovedCardCg,getCardPortraitFallback,getCardPortraitKind,getCardArtTier,artworkPixelBudget,getSelectedCardPreview,getCollectibleCardArt,CARD_PREVIEW_PATHS,YUESHA_ECLIPSE_PREVIEW_PATH} from '../src/components/summon/heroine-portrait-assets';
 import cgManifest from '../public/art/beauty-beasts/characters/cg-manifest.json';
 import {GACHA_CHARACTERS,GACHA_POOLS} from '../src/lib/summon/gacha-engine';
 
@@ -41,8 +41,11 @@ describe('character portrait visual identity',()=>{
       expect(getCardFace(id,'thumbnail')).not.toBe(url);
       expect(getCollectibleCardArt(id)).toBe(url);
       expect(getApprovedCardCg(id)).toBeNull();
+      expect(getCardArtTier(id)).toBe('candidate');
+      expect(getCardPortraitKind(id)).toBe('candidate-figure');
     }
     expect(getCollectibleCardArt('no-such-card')).toBeNull();
+    expect(getCardArtTier('no-such-card')).toBe('portrait');
   });
   it('keeps each themed pool avatar identical to its real resident identity',()=>{
     const expected={
@@ -58,14 +61,22 @@ describe('character portrait visual identity',()=>{
     }
     expect(GACHA_POOLS).toHaveLength(5);
   });
+  it('uses the real native-pixel budget at DPR2 or higher without making pixels',()=>{
+    expect(artworkPixelBudget(960,1280,1)).toEqual({width:480,height:640});
+    expect(artworkPixelBudget(960,1280,2)).toEqual({width:480,height:640});
+    expect(artworkPixelBudget(960,1280,3)).toEqual({width:320,height:426});
+    expect(artworkPixelBudget(512,512,2)).toEqual({width:256,height:256});
+    expect(artworkPixelBudget(0,-1,2)).toEqual({width:1,height:1});
+    expect(artworkPixelBudget(512,512,Number.NaN)).toEqual({width:256,height:256});
+  });
   it('keeps YueSha fallback identity stable without approving the preview as production',()=>{
     const mythic=getCardFace('yuesha-eclipse');
     const vow=getCardFace('yuesha-vow');
     expect(mythic).toBeTruthy();
     expect(vow).toBeTruthy();
     expect(mythic).not.toEqual(vow);
-    expect(getCardPortraitKind('yuesha-eclipse')).toBe('scene-portrait');
-    expect(getCardPortraitKind('yuesha-vow')).toBe('scene-portrait');
+    expect(getCardPortraitKind('yuesha-eclipse')).toBe('candidate-figure');
+    expect(getCardPortraitKind('yuesha-vow')).toBe('candidate-figure');
     expect(getCardPortraitFallback('yuesha-eclipse')).toEqual(HEROINE_FACE_ART.yuesha);
     expect(getCardPortraitFallback('yuesha-vow')).toEqual(HEROINE_FACE_ART.yuesha);
   });
@@ -75,7 +86,7 @@ describe('character portrait visual identity',()=>{
     expect(portraits.every(Boolean)).toBe(true);
     expect(new Set(portraits)).toHaveProperty('size',3);
     for(const id of ids){
-      expect(getCardPortraitKind(id)).toBe('face-crop');
+      expect(getCardPortraitKind(id)).toBe('candidate-figure');
       const resident=id.split('-')[0] as 'brook'|'fern'|'cinder';
       expect(getCardPortraitFallback(id)).toEqual(HEROINE_FACE_ART[resident]);
       // The published catalog must not point to the lobby heroine if the

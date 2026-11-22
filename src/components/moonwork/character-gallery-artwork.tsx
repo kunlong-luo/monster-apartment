@@ -2,10 +2,11 @@
 
 import {ChevronLeft,ChevronRight,Image as ImageIcon} from 'lucide-react';
 import {motion} from 'motion/react';
+import {useState} from 'react';
 import type {CSSProperties} from 'react';
 import {ReliableImage} from '@/components/game/reliable-image';
 import {
-  getCardFace,getCardPortraitFallback,getCollectibleCardArt,
+  getCardFace,getCardPortraitFallback,getCardArtTier,artworkPixelBudget,
 } from '@/components/summon/heroine-portrait-assets';
 import {CHARACTER_CARDS} from '@/core/character-collection';
 import type {CardKey} from '@/core/character-collection';
@@ -26,15 +27,26 @@ export function CharacterGalleryArtwork({
   const activeIndex=cards.findIndex(card=>card.key===selectedKey);
   const active=cards[activeIndex]??cards[0];
   const source=getCardFace(active.key,'feature');
-  const hasFigureArt=Boolean(getCollectibleCardArt(active.key));
-  // For unapproved/portrait-only artwork, prevent the gallery from stretching
-  // a 512px source across a 700px+ stage on DPR2 desktop monitors. Reserve
-  // full-bleed framing for an actual separately reviewed figure CG.
-  const rawPortrait=!hasFigureArt&&source&&typeof source!=='string'?source:null;
-  const portraitStyle:CSSProperties|undefined=rawPortrait?({
-    '--cg-portrait-width':Math.max(1,Math.min(Math.floor(rawPortrait.width/2),460))+'px',
-    '--cg-portrait-height':Math.max(1,Math.min(Math.floor(rawPortrait.height/2),460))+'px',
-  } as CSSProperties):undefined;
+  const artTier=getCardArtTier(active.key);
+  const hasFigureArt=artTier!=='portrait';
+  const [loaded,setLoaded]=useState<{
+    key:CardKey;width:number;height:number;dpr:number;
+  }|null>(null);
+  const sourcePixels=loaded?.key===active.key?loaded:null;
+  const staticPortrait=!hasFigureArt&&source&&typeof source!=='string'?source:null;
+  const budget=sourcePixels
+    ?artworkPixelBudget(sourcePixels.width,sourcePixels.height,sourcePixels.dpr)
+    :staticPortrait?artworkPixelBudget(staticPortrait.width,staticPortrait.height)
+    :null;
+  // 3:4 review previews are not promoted CG. Display all actual pixels at
+  // contain and cap BOTH axes to native resolution/DPR, even if Next falls
+  // back to the smaller identity portrait on an image load failure.
+  const paintingStyle={
+    '--cg-portrait-width':(budget?.width??256)+'px',
+    '--cg-portrait-height':(budget?.height??256)+'px',
+    '--cg-figure-width':(budget?.width??360)+'px',
+    '--cg-figure-height':(budget?.height??480)+'px',
+  } as CSSProperties;
   const owned=collectedKeys.includes(active.key);
   const change=(delta:number)=>{
     const next=(activeIndex+delta+cards.length)%cards.length;
@@ -48,9 +60,10 @@ export function CharacterGalleryArtwork({
       event.stopPropagation();
       change(event.key==='ArrowRight'?1:-1);
     }}>
-    <div className="cg-art-view__stage" data-art-kind={hasFigureArt?'figure':'portrait'}>
+    <div className="cg-art-view__stage" data-art-kind={hasFigureArt?'figure':'portrait'}
+      data-art-status={artTier}>
       <motion.div key={active.key} className="cg-art-view__painting"
-        style={portraitStyle}
+        style={paintingStyle}
         data-native-portrait={!hasFigureArt?'true':'false'}
         initial={reducedMotion?false:{opacity:0,scale:hasFigureArt?1.025:1}}
         animate={{opacity:1,scale:1}}
@@ -59,7 +72,14 @@ export function CharacterGalleryArtwork({
           fallbackSrc={getCardPortraitFallback(active.key)??undefined}
           alt={active.title+'人物画作'} fill unoptimized priority
           sizes="(max-width:800px) 92vw, 70vw"
-          className="cg-art-view__photo"/>}
+          className="cg-art-view__photo"
+          onLoad={event=>{
+            const img=event.currentTarget;
+            if(img.naturalWidth>0&&img.naturalHeight>0){
+              setLoaded({key:active.key,width:img.naturalWidth,height:img.naturalHeight,
+                dpr:typeof window==='undefined'?2:window.devicePixelRatio||2});
+            }
+          }}/>}
       </motion.div>
       {!hasFigureArt&&<span className="cg-art-view__portrait-caption" aria-hidden="true">
         肖像原稿 · 以原始像素鉴赏
@@ -71,9 +91,15 @@ export function CharacterGalleryArtwork({
         <small>MONSTER APARTMENT · A05</small>
         <h2>{active.title}</h2>
         <p>{hasFigureArt?'契约插画鉴赏':'角色肖像鉴赏'} · {owned?'已收录':'尚未收录'}</p>
-        <p className="cg-art-view__disclaimer">
-          {hasFigureArt?'展示当前契约候选画稿':'显示角色已登记肖像，不以头像冒充全身原画'}
+        <p className="cg-art-view__disclaimer" data-testid="a05-art-review-status">
+          {artTier==='production'?'正式审核通过的角色原画':
+            artTier==='candidate'?'独立角色候选画稿 · 尚未通过正式 CG 人工验收':
+            '已登记的角色肖像 · 不以头像冒充全身原画'}
         </p>
+        {sourcePixels&&<p className="cg-art-view__source-pixels"
+          data-testid="a05-art-source-resolution">
+          原图 {sourcePixels.width}×{sourcePixels.height} · 以原始像素预算显示
+        </p>}
       </div>
       <div className="cg-art-view__navigation">
         <button type="button" aria-label="上一张人物画作" onClick={()=>change(-1)}>

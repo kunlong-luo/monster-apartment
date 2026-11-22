@@ -21,7 +21,24 @@ export const CARD_FACE_ART={
   'fern-spring':fern,
   'brook-tide':brook,
 } as const;
-export type CardPortraitKind='scene-portrait'|'face-crop'|'full-body-cg';
+export type CardPortraitKind='scene-portrait'|'face-crop'|'candidate-figure'|'full-body-cg';
+export type CardArtTier='portrait'|'candidate'|'production';
+
+/** Production approval is independent from the presence of a staged figure.
+ * The figure can be displayed without being silently certified as full CG. */
+export function getCardArtTier(id:string):CardArtTier{
+  if(getApprovedCardCg(id))return 'production';
+  return getSelectedCardPreview(id)?'candidate':'portrait';
+}
+
+/** The canvas viewer must not magnify source pixels on Retina / high-DPI.
+ * Assume at least DPR2 in low-DPR CI, and respect genuinely higher displays. */
+export function artworkPixelBudget(width:number,height:number,devicePixelRatio:number=2):{width:number;height:number}{
+  const dpr=Number.isFinite(devicePixelRatio)?Math.max(2,devicePixelRatio):2;
+  const safe=(value:number)=>Number.isFinite(value)&&value>0
+    ?Math.max(1,Math.floor(value/dpr)):1;
+  return {width:safe(width),height:safe(height)};
+}
 
 /** One immutable asset slot for each contract; adding a new image must be
  * opt-in through the manifest AND match the correct resident folder.
@@ -81,6 +98,8 @@ export function getCardPortraitFallback(id:string){
   return null;
 }
 export function getCardPortraitKind(id:string):CardPortraitKind{
-  if(getApprovedCardCg(id))return 'full-body-cg';
+  const tier=getCardArtTier(id);
+  if(tier==='production')return 'full-body-cg';
+  if(tier==='candidate')return 'candidate-figure';
   return id==='yuesha-eclipse'||id==='yuesha-vow'?'scene-portrait':'face-crop';
 }
