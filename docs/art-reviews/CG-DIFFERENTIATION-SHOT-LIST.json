@@ -5,8 +5,8 @@
   "stage": "pose-studies-in-progress",
   "productionApproved": false,
   "expectedNativeCanvas": {
-    "width": 1536,
-    "height": 2048,
+    "width": 1086,
+    "height": 1448,
     "ratio": "3:4"
   },
   "cardCount": 5,
@@ -198,5 +198,12 @@
       "selected": false,
       "notes": "备选构图；首次高清制作尝试输出原生仅1086x1448，不能晋级；镰刃接近边缘且脸部骨相需与V3参考对照"
     }
-  }
+  },
+  "premiumTargetCanvas": {
+    "width": 1536,
+    "height": 2048,
+    "ratio": "3:4",
+    "optional": true
+  },
+  "resolutionPolicy": "Phase one permits native 1086x1448 for signed release review; 1536x2048 is optional premium refinement. Never misstate upscaled images as native, and never bypass identity/rights/visual review."
 }
