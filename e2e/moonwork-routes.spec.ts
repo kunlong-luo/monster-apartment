@@ -182,7 +182,8 @@ test('painted worker roster and scene art load as real gameplay destinations',as
   await expect(page.getByTestId('painted-worker-gallery')).toBeVisible({timeout:15_000});
   for(const id of ['brook','fern','cinder']){
     const card=page.getByTestId('worker-card-'+id);
-    await expect(card).toHaveAttribute('data-art-layout','portrait');
+    await expect(card).toHaveAttribute('data-art-layout','figure');
+    await expect(card).toHaveAttribute('data-art-status','candidate');
     await expect(card.locator('img.cg-card__image')).toBeVisible();
   }
   await navigateScene(page,'/orders/');

@@ -31,7 +31,8 @@ test('A05 character gallery displays five human contracts and opens the real sum
     const card=page.getByTestId('worker-card-'+id);
     await expect(card).toBeAttached();
     await expect(card).toHaveAttribute('data-owned','false');
-    await expect(card).toHaveAttribute('data-art-layout','portrait');
+    await expect(card).toHaveAttribute('data-art-layout','figure');
+    await expect(card).toHaveAttribute('data-art-status','candidate');
     await expect(card.locator('img.cg-card__image')).toBeVisible();
   }
   const columns=await gallery.evaluate(node=>getComputedStyle(node).gridTemplateColumns.split(' ').length);

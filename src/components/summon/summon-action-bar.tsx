@@ -8,7 +8,7 @@ const SummonActionBarInner=({disabled,pityCountdown,onHistory,onSingle,onTen}:{
   onHistory:()=>void;onSingle:()=>void;onTen:()=>void;
 })=>{
   return (
-          <div className="w-full max-w-2xl flex flex-col items-center gap-2 mb-2">
+          <div className="mx-auto mb-2 flex w-full max-w-2xl flex-col items-center gap-2">
             <div className="flex w-full items-center justify-center gap-2 sm:gap-4">
               {/* History Button */}
               <button

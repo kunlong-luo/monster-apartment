@@ -139,23 +139,28 @@ export function GothicSummonScreen() {
         {/* ----------------------------------------------------------- */}
         {/* CENTER STAGE: HEROINE, TITLE, QUOTE & SUMMON BUTTONS       */}
         {/* ----------------------------------------------------------- */}
-        <SummonHeroineSpotlight
-          featuredWorker={featuredWorker}
-          featuredBeastName={featuredBeast.name}
-          poolTitle={currentPool.bannerTitle}
-          poolSub={currentPool.bannerSub}
-          dateRange={currentPool.dateRange}
-          quoteIndex={0}
-          onQuoteClick={() => {}}
-          onQuoteChange={(quote) => setCurrentQuote(quote)}
-          saveStatus={saveStatus}
-          onShowDetails={() => setShowDetails(true)}
-          summonError={summonError}
-        />
-
-        <SummonActionBar disabled={saveStatus!=='ok'||ritualModal.open}
-          pityCountdown={state.pityCountdown} onHistory={()=>setShowHistory(true)}
-          onSingle={handleSingleSummon} onTen={handleTenSummon}/>
+        {/* The full-height character painting and the actual summon actions
+            are ONE middle column, not two independent flex siblings.
+            This restores the approved left / art / right 3-zone layout. */}
+        <div className="summon-cinematic-center-column relative z-10 flex min-h-0 min-w-0 flex-1 flex-col items-stretch">
+          <SummonHeroineSpotlight
+            featuredWorker={featuredWorker}
+            featuredBeastName={featuredBeast.name}
+            poolTitle={currentPool.bannerTitle}
+            poolSub={currentPool.bannerSub}
+            dateRange={currentPool.dateRange}
+            quoteIndex={0}
+            onQuoteClick={() => {}}
+            onQuoteChange={(quote) => setCurrentQuote(quote)}
+            saveStatus={saveStatus}
+            onShowDetails={() => setShowDetails(true)}
+            summonError={summonError}
+          />
+  
+          <SummonActionBar disabled={saveStatus!=='ok'||ritualModal.open}
+            pityCountdown={state.pityCountdown} onHistory={()=>setShowHistory(true)}
+            onSingle={handleSingleSummon} onTen={handleTenSummon}/>
+        </div>
 
         {/* ----------------------------------------------------------- */}
         {/* RIGHT COLUMN: SSR CARD SHOWCASE & PROBABILITIES             */}

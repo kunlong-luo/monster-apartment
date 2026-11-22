@@ -58,15 +58,16 @@ test('the image-guided full-screen summon is a real scene with one persisted pul
   await expect(pools.filter({hasText:'红月之邀'})).toHaveAttribute('aria-pressed','true');
   await expect(pools.filter({hasText:'神话 · 月蚀'})).toHaveAttribute('aria-pressed','false');
   await expect(page.getByRole('heading',{name:'红月 · 晚宴之邀'})).toBeVisible();
-  for(const [label,hero,tier,beast,rarity,rate] of [
-    ['赤焰工坊','cinder','3','赤焰熔炉铠兽','SR 精英','17.00%'],
-    ['荆棘回响','fern','2','荆棘花木奇美拉','R 稀有','31.00%'],
-    ['潮汐来信','brook','1','皎月霜狼','N 常规','46.00%'],
+  for(const [label,hero,beast,rarity,rate] of [
+    ['赤焰工坊','cinder','赤焰熔炉铠兽','SR 精英','17.00%'],
+    ['荆棘回响','fern','荆棘花木奇美拉','R 稀有','31.00%'],
+    ['潮汐来信','brook','皎月霜狼','N 常规','46.00%'],
   ] as const){
     await pools.filter({hasText:label}).click();
     const featured=page.getByTestId('summon-featured-portrait');
     await expect(featured).toHaveAttribute('data-featured-character',hero);
-    await expect(featured).toHaveAttribute('data-tier',tier);
+    // The featured figure has character identity; authoritative rarity and
+    // odds live on the actual GACHA_CHARACTERS showcase card below.
     await expect(page.getByTestId('summon-featured-card')).toHaveAttribute('data-card-character',hero);
     await expect(page.getByTestId('summon-featured-room-link')).toHaveAttribute('href',new RegExp('visit='+hero));
     await expect(page.getByTestId('summon-yuesha-trial')).toHaveCount(0);
@@ -200,6 +201,10 @@ test('desktop composition preserves the screenshot three-zone balance at 1648px'
       columns:getComputedStyle(document.querySelector('.summon-cinematic-sidebar')!).gridTemplateColumns
     };
   });
+  await expect(page.locator('.summon-cinematic-center-column'))
+    .toContainText('单次召唤');
+  await expect(page.locator('.summon-cinematic-center-column'))
+    .toContainText('十连召唤');
   expect(proportions.left/proportions.viewport).toBeGreaterThan(.16);
   expect(proportions.left/proportions.viewport).toBeLessThan(.21);
   expect(proportions.center/proportions.viewport).toBeGreaterThan(.39);
