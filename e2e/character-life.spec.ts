@@ -1,5 +1,6 @@
 import {test,expect} from '@playwright/test';
-import {assignWorker,newWorkshop} from '../v2/src/workshop-engine';
+import {assignWorker,moveMachine,placeMachine,runShift,newWorkshop} from '../v2/src/workshop-engine';
+import {decideWorker,inspectCharacterRoom,newCharacterLife,visitCharacter} from '../src/core/character-life';
 
 test('Moonsha private room preserves a meaningful first choice without changing apartment money',async({page})=>{
   await page.goto('/apartment/');
@@ -160,4 +161,43 @@ test('reduced-motion setting presents complete conversation immediately',async({
   await expect(page.getByTestId('room-theater-skip')).toHaveCount(0);
   await expect(page.getByTestId('room-theater-line')).toContainText('今晚');
   await page.getByTestId('room-theater-close').click();
+});
+
+test('real delivered order unlocks a persistent worker story in the private room without altering workshop resources',async({page})=>{
+  let world=moveMachine(newWorkshop(),7,6);
+  world=placeMachine(world,7,'kiln');
+  world=assignWorker(world,'brook',5);
+  world=assignWorker(world,'fern',6);
+  world=assignWorker(world,'cinder',7);
+  for(let i=0;i<12&&world.completed<1;i++)world=runShift(world);
+  expect(world.completed).toBe(1);
+
+  let lore=decideWorker(visitCharacter(newCharacterLife(),'brook'),'brook','practice');
+  lore=inspectCharacterRoom(lore,'brook','toolbox');
+  lore=inspectCharacterRoom(lore,'brook','gauge');
+  await page.addInitScript(({workshop,character})=>{
+    if(!localStorage.getItem('monster-apartment:workshop-v2-lab'))
+      localStorage.setItem('monster-apartment:workshop-v2-lab',workshop);
+    if(!localStorage.getItem('monster-apartment:character-life:v1'))
+      localStorage.setItem('monster-apartment:character-life:v1',character);
+  },{workshop:JSON.stringify(world),character:JSON.stringify(lore)});
+  await page.goto('/characters/');
+  await page.getByTestId('visit-worker-room-brook').click();
+  await expect(page.getByTestId('room-resident-away-brook')).toBeVisible();
+  await expect(page.getByTestId('worker-story-progress-brook')).toContainText('0 / 2');
+  await expect(page.getByTestId('worker-story-collect-brook')).toBeVisible();
+  await page.getByTestId('worker-story-collect-brook').click();
+  await expect(page.getByTestId('worker-story-progress-brook')).toContainText('1 / 2');
+  await expect(page.getByTestId('worker-story-memory-brook')).toContainText('夜铃后的回声');
+  const stored=await page.evaluate(()=>({
+    workshop:localStorage.getItem('monster-apartment:workshop-v2-lab'),
+    lore:JSON.parse(localStorage.getItem('monster-apartment:character-life:v1')||'{}'),
+  }));
+  expect(stored.workshop).toBe(JSON.stringify(world));
+  expect(stored.lore.workerChapters).toEqual({brook:1});
+  await page.reload();
+  await page.getByTestId('visit-worker-room-brook').click();
+  await expect(page.getByTestId('worker-story-progress-brook')).toContainText('1 / 2');
+  await expect(page.getByTestId('worker-story-memory-brook')).toBeVisible();
+  await expect(page.getByTestId('worker-story-collect-brook')).toHaveCount(0);
 });

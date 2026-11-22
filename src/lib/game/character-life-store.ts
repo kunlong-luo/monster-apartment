@@ -3,7 +3,7 @@ import {useSyncExternalStore} from 'react';
 import {decideWorker,decideYuesha,inspectCharacterRoom,newCharacterLife,recordWorkerStoryChapter,validCharacterLife,visitCharacter} from '../../core/character-life';
 import type {CharacterId,CharacterLifeState,RoomObjectId,WorkerCharacterId,WorkerChoice,YueshaChoice} from '../../core/character-life';
 import {characterLifeStorage} from './storage-service';
-import {SAVE_KEY,parseSavedWorld} from '@/lib/moonwork/world-store';
+import {SAVE_KEY,parseSavedWorld} from '../moonwork/world-store';
 export const CHARACTER_LIFE_KEY='monster-apartment:character-life:v1';
 export const CHARACTER_LIFE_EVENT='monster-apartment:character-life-change';
 const UNAVAILABLE='__character-life-unavailable__';
