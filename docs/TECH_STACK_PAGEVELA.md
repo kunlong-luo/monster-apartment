@@ -1,5 +1,8 @@
 # Monster Apartment — Next.js 技术栈
 
+> **历史技术迁移记录（V0.2）**：以下 Phaser/Zustand 的实现描述只代表当时方案，不能被当作 2026-11-22 现行架构。请先读 [当前架构](CURRENT_ARCHITECTURE.md)、[文档索引](README.md) 与根目录 [AGENTS.md](../AGENTS.md)。当前主要运行时使用 Next.js 16 + PixiJS 8；`package.json` 和 CI 为真实版本基线。
+
+
 基线日期：2026-10-21；迁移版本：V0.2.0；技术参照：Pagevela 的版本纪律 + Next.js 16 官方文档（App Router、`next/dynamic`、`serverExternalPackages`）。
 
 ## 1. 迁移结论

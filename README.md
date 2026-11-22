@@ -1,5 +1,7 @@
 # 怪物公寓 · Monster Apartment
 
+> **开发者 / 美术 / 未来会话请先读：[文档总入口](docs/README.md) → [快速迭代手册](docs/engineering/ITERATION-PLAYBOOK.md) → [当前缺口台账](docs/engineering/GAP-REGISTER-2026-11-22.md)。** 下文 R11.3、R12 的日期状态是历史阶段记录，不等于当前 `main` 的完整发布结论；现行事实须以当次源码、manifest、CI 和人工验收为准。
+
 **唯一正式版本**：Next.js 16 + React 19 + TypeScript + Tailwind CSS v4 + Motion + PixiJS 8。
 
 [打开游戏](https://kunlong-luo.github.io/monster-apartment/)

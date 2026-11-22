@@ -39,6 +39,13 @@
 ## V3.77 · 单一设计系统
 唯一 UI 色板由 `app/layout.tsx` 引入 `gothic-premium-tokens.css` 的 `:root`；`--moon-ui-*`、Tailwind `--color-gothic-*` 不允许另起颜色定义。通用导航、按钮、资源胶囊、弹窗、面板请复用 `gothic-hud.tsx` 和全站材质变量；各页面允许独立的绘景、角色和稀有度语义色。禁止 Sparkles/WandSparkles。每次提交跑 `pnpm check:design` 与质量检查，跨页面修改运行至少一个真实 PC 视觉浏览器检查。
 
+## 跨会话快速迭代统一入口（2026-11-22）
+
+- **先读 [文档索引](docs/README.md)**，按 [快速迭代执行手册](docs/engineering/ITERATION-PLAYBOOK.md) 做最小可见切片、风险分层检查、证据化交付。
+- 现行缺口与风险登记在 [2026-11-22 台账](docs/engineering/GAP-REGISTER-2026-11-22.md)；任何 `DONE` 都需用对应页面、源码/资源清单、CI SHA 与必要人审验证。
+- `docs/DEVELOPMENT_PLAN.md`、`docs/TECH_STACK_PAGEVELA.md`、旧 Phaser/Vite ADR 与早期 issue 条目均属于**历史资料**；遇到冲突以当前工程和最新 ADR 为准。
+- 用户偏好小步快速主线迭代；但对高风险改动和已启用的 GitHub 分支规则不得绕过。当前 `main` 保护未启用，见 Issue #9；不把直接提交当作保护机制的替代。
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know

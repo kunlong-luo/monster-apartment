@@ -1,5 +1,8 @@
 # 《怪物租客公寓》独立游戏开发计划书
 
+> **历史文档（V0.1，2026-10-20）**：此计划描述早期 Vite/Phaser、五天六房的实验，不是当前 R12 游戏的技术栈、UI 规格、发布时间表或测试结论。**现行入口：[docs/README.md](README.md)；执行标准：[快速迭代手册](engineering/ITERATION-PLAYBOOK.md)；实际架构：[CURRENT_ARCHITECTURE.md](CURRENT_ARCHITECTURE.md)。** 保留原文用于历史追溯。
+
+
 **项目代号：** MONAP　|　**当前版本：** V0.1.1　|　**计划日期：** 2026-10-20　|　**负责人：** 独立开发者　|　**方向：** Web 优先，PC 后续评估
 
 ## 1. 项目摘要 / 经营目标
