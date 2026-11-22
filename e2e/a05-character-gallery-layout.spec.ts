@@ -145,9 +145,10 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   const distinctIcons=await seals.locator('.cg-skill__icon > svg').evaluateAll(nodes=>
     nodes.map(el=>el.getAttribute('class')));
   expect(new Set(distinctIcons).size).toBe(4);
-  // The detail portrait is always the canonical resident face, not a crop of
-  // the selected card's optional full-scene preview.
-  await expect(page.locator('.cg-detail__hero-img')).toHaveAttribute('src',/face\.|face-/);
+  // The selected contract's unique 3:4 preview is the correct detail
+  // source. It must not be silently replaced by another resident's face.
+  await expect(page.locator('.cg-detail__hero-img'))
+    .toHaveAttribute('src',/cg-spring-candidate\.webp$/);
   await expect(page.getByTestId('cg-equipped-equipment')).toBeVisible();
   await expect(page.getByTestId('cg-equipped-jewelry')).toBeVisible();
   await page.getByRole('button',{name:'展开世界导航'}).click();

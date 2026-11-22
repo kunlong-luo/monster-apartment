@@ -6,7 +6,7 @@ import {useState} from 'react';
 import type {CSSProperties} from 'react';
 import {ReliableImage} from '@/components/game/reliable-image';
 import {
-  getCardFace,getCardPortraitFallback,getCardArtTier,artworkPixelBudget,
+  getCardFace,getCardPortraitFallback,getCardArtTier,getCollectibleCardArt,artworkPixelBudget,
 } from '@/components/summon/heroine-portrait-assets';
 import {CHARACTER_CARDS} from '@/core/character-collection';
 import type {CardKey} from '@/core/character-collection';
