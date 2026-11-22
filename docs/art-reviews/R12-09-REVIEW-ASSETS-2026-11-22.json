@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "title": "Monster Apartment R12 review artwork, 2026-11-22",
+  "kind": "unapproved-asset-staging",
+  "createdDate": "2026-11-22",
+  "repo": "kunlong-luo/monster-apartment",
+  "mainProductionManifestMustRemainUnchanged": true,
+  "sampledScreenshotsIncluded": false,
+  "entries": [
+    {
+      "taskId": "ART-S05-D",
+      "role": "scene-desktop",
+      "reviewId": "orders-desktop-v1",
+      "stage": "research-review",
+      "productionApproved": false,
+      "availableInGit": false,
+      "source": {
+        "path": "art-sources/review/2026-11-22/orders-desktop-v1.png",
+        "format": "PNG",
+        "width": 1672,
+        "height": 941,
+        "sha256": "e02d879247c8eb2de38ba2ae09fb8021454b9174891c74b48f7db1284fe152ac",
+        "bytes": 2547230
+      },
+      "candidate": {
+        "path": "public/art/world-scenes/review/2026-11-22/orders-desktop-v1.webp",
+        "format": "WebP",
+        "width": 1672,
+        "height": 941,
+        "sha256": "388da2122c8a41bd66e3250bd0a8d6f331a1f56937a288333e92d154a8d17b95",
+        "bytes": 382216
+      },
+      "gate": {
+        "minNativeWidth": 2560,
+        "minNativeHeight": 1440,
+        "nativeSizePass": false,
+        "humanVisualReview": false,
+        "rightsReviewed": false,
+        "browserDPRReview": false
+      },
+      "notes": "New 16:9 image, below original-pixel release gate. No browser review."
+    },
+    {
+      "taskId": "ART-S05-M",
+      "role": "scene-mobile",
+      "reviewId": "orders-mobile-v1",
+      "stage": "research-review",
+      "productionApproved": false,
+      "availableInGit": false,
+      "source": {
+        "path": "art-sources/review/2026-11-22/orders-mobile-v1.png",
+        "format": "PNG",
+        "width": 941,
+        "height": 1672,
+        "sha256": "4cec5d4c78f7eabb0ecabf17932c8316f0c7a0e4b7f185d29043a9326c10c0b1",
+        "bytes": 2840585
+      },
+      "candidate": {
+        "path": "public/art/world-scenes/review/2026-11-22/orders-mobile-v1.webp",
+        "format": "WebP",
+        "width": 941,
+        "height": 1672,
+        "sha256": "6a80446684a1710112f8998681920d2553ba00263a279fcc4b671e31b4360f1f",
+        "bytes": 463436
+      },
+      "gate": {
+        "minNativeWidth": 1080,
+        "minNativeHeight": 1920,
+        "nativeSizePass": false,
+        "humanVisualReview": false,
+        "rightsReviewed": false,
+        "browserDPRReview": false
+      },
+      "notes": "Separately generated portrait composition; do not count a cropped desktop image as native mobile."
+    },
+    {
+      "taskId": "ART-CG-fern-spring",
+      "role": "character-card-portrait",
+      "reviewId": "fern-spring-bow-v1",
+      "stage": "research-review",
+      "productionApproved": false,
+      "availableInGit": false,
+      "source": {
+        "path": "art-sources/review/2026-11-22/fern-spring-bow-v1.png",
+        "format": "PNG",
+        "width": 1086,
+        "height": 1448,
+        "sha256": "167235e2f2d65bf1778011830cebc834e10cffb8437cbd985ffdb1c1b53028fd",
+        "bytes": 2887711
+      },
+      "candidate": {
+        "path": "public/art/beauty-beasts/characters/fern/review/cg-spring-bow-v1.webp",
+        "format": "WebP",
+        "width": 1086,
+        "height": 1448,
+        "sha256": "6681c66a34b5ad21af59cbd6476fd99d28b7ea97d4534b77bbe063164e654fcb",
+        "bytes": 505954
+      },
+      "gate": {
+        "minNativeWidth": 1086,
+        "minNativeHeight": 1448,
+        "nativeSizePass": true,
+        "humanVisualReview": false,
+        "rightsReviewed": false,
+        "browserDPRReview": false
+      },
+      "notes": "Adult forest ranger holding drawn living-vine bow. Identity, anatomy, bow-tip safety, provenance and mobile crop await human review."
+    }
+  ]
+}
