@@ -8,9 +8,7 @@ on:
 
 permissions:
   contents: read
-  actions: read # deploy-pages reads the uploaded artifact through the Actions API
-  pages: write
-  id-token: write
+  actions: read
 
 concurrency:
   group: monster-apartment-pages
@@ -19,13 +17,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    # Deploy only when Quality has passed for a push to main; there is no
-    # manual bypass that could publish an unverified SHA.
+  build:
+    # Quality controls publication eligibility. Do not allow manual bypass or
+    # deploying an unverified PR ref.
     if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main' }}
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     env:
       NEXT_TELEMETRY_DISABLED: '1'
@@ -67,27 +62,43 @@ jobs:
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
-          name: github-pages-${{ github.run_attempt }}
+          name: github-pages-${{ github.run_id }}
           path: out
-      # Actions can finish uploading a Pages artifact before its list endpoint
-      # exposes that artifact to deploy-pages. Check visibility with the same
-      # workflow token before deployment, rather than racing eventual indexing.
-      - name: Wait for uploaded Pages artifact to appear in Actions API
+
+  deploy:
+    needs: build
+    if: ${{ needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # upload-pages-artifact and deploy-pages share ONE workflow run but
+      # different jobs. This gives the artifact service time to expose the
+      # uploaded artifact; the REST endpoint alone can be ahead of the
+      # internal artifact service used by actions/deploy-pages.
+      - name: Wait for Pages artifact before deployment
         env:
           GH_TOKEN: ${{ github.token }}
-          ARTIFACT_NAME: github-pages-${{ github.run_attempt }}
+          ARTIFACT_NAME: github-pages-${{ github.run_id }}
         run: |
           for attempt in $(seq 1 15); do
             if gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts?per_page=100" --jq '.artifacts[].name' 2>/dev/null | grep -Fxq "${ARTIFACT_NAME}"; then
-              echo "Pages artifact is indexed: ${ARTIFACT_NAME}"
+              echo "Pages artifact is visible: ${ARTIFACT_NAME}"
+              # The Pages internal artifacts API may lag even after REST does.
+              sleep 5
               exit 0
             fi
-            echo "Pages artifact not indexed yet (attempt ${attempt}/15); checking again."
+            echo "Pages artifact not indexed yet (attempt ${attempt}/15); retrying."
             sleep 5
           done
-          echo "::error::Uploaded Pages artifact ${ARTIFACT_NAME} never appeared in the Actions API."
+          echo "::error::Pages artifact ${ARTIFACT_NAME} not found; refusing unverified deployment."
           exit 1
       - id: deployment
         uses: actions/deploy-pages@v4
         with:
-          artifact_name: github-pages-${{ github.run_attempt }}
+          artifact_name: github-pages-${{ github.run_id }}
