@@ -13,7 +13,7 @@
     "test": "vitest run",
     "e2e": "playwright test",
     "check:stable-deps": "node scripts/check-stable-dependencies.mjs",
-    "check:design": "node scripts/check-game-design.mjs && node scripts/check-character-cg-differentiation.mjs && node scripts/audit-character-cg.mjs && node scripts/audit-r12-scene-art.mjs && node --test scripts/tests/r12-scene-art-admission.test.mjs && node --test scripts/tests/r12-source-pack-pixel.test.mjs",
+    "check:design": "node scripts/check-game-design.mjs && node scripts/check-character-cg-differentiation.mjs && node scripts/audit-character-cg.mjs && node scripts/audit-r12-scene-art.mjs && node --test scripts/tests/r12-scene-art-admission.test.mjs && node --test scripts/tests/r12-source-pack-pixel.test.mjs && node --test scripts/tests/native-cg-generation.test.mjs",
     "audit:room-art": "node scripts/audit-room-art.mjs",
     "art:review": "node scripts/prepare-room-background.mjs",
     "art:promote": "node scripts/promote-room-background.mjs",
@@ -23,7 +23,8 @@
     "art:cg:review": "node scripts/prepare-character-cg.mjs",
     "art:cg:promote": "node scripts/promote-character-cg.mjs",
     "art:r12:inspect": "node scripts/verify-r12-source-pack.mjs",
-    "audit:character-cg-brief": "node scripts/check-character-cg-differentiation.mjs"
+    "audit:character-cg-brief": "node scripts/check-character-cg-differentiation.mjs",
+    "art:cg:native": "node scripts/generate-native-character-cg.mjs"
   },
   "dependencies": {
     "motion": "14.6.0",
