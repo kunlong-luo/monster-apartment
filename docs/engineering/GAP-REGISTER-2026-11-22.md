@@ -97,3 +97,9 @@
 - 已将 R12.9 的 **三张原生 PNG、三张 WebP 及 JPG 联系表**实际创建为 Git 二进制 blob，并合并到 `main` 的 `art-sources/review/...`、`public/art/world-scenes/review/...`、`public/art/beauty-beasts/characters/fern/review/...` 和 `docs/art-reviews/...`。每个 Git blob SHA 与本地原始字节 SHA 核对相符；不再要求用户手动解压、复制、上传。
 - 已将 `availableInGit` 设为 **true**、`productionApproved` 仍为 **false**，并新增 Quality 门禁 `pnpm audit:r12-review-art`，检查真文件长度、SHA-256、像素及资源状态。R12.9 之前“只有聊天附件”陈述属于历史时点，已被本轮更正。
 - **不代表正式可用**：S05 PC 1672×941 与手机 941×1672 的原生尺寸不达标；青枝 1086×1448 尺寸通过但身份、武器受力、人审未完成。CG 正式晋级仍 0/5，S05 生产清单仍为 review，线上委托所场景并未替换。
+
+## 2026-11-22 R12.11 S06 晶核仓库独立候选入库
+
+- **ART-S06-D**：真正新绘的晶核仓库横版环境 PNG 1672×941、同尺寸 WebP 387164 bytes，已作为真实 Git 二进制分别写入 `art-sources/review/2026-11-22/warehouse-desktop-v1.png` 与 `public/art/world-scenes/review/2026-11-22/warehouse-desktop-v1.webp`；SHA-256、Git SHA 和准入状态详见 [R12.11](../art-reviews/R12-11-WAREHOUSE-DESKTOP-REVIEW-2026-11-22.md)。
+- 不同于 S05 契约大厅，此图具备大量晶核货架、起重轨道、装运台和蓝紫月光，供独立地点美术审稿；**不代表正式 2560×1440 场景已完成**。实际只生成合格的桌面方向图，S06 独立手机版仍为 TODO，不能把误生成的 UI/海报当场景。
+- 共享 `R12-09-REVIEW-ASSETS-2026-11-22.json` 新增 ART-S06-D 校验条目，`pnpm audit:r12-review-art` 将强制验证新的 PNG 和 WebP；所有 `productionApproved` 继续 false，正式运行时场景 manifest 无修改。

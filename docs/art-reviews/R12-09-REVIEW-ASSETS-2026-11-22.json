@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "title": "Monster Apartment R12 review artwork, 2026-11-22",
+  "title": "Monster Apartment R12 review artwork collection, 2026-11-22",
   "kind": "unapproved-asset-staging",
   "createdDate": "2026-11-22",
   "repo": "kunlong-luo/monster-apartment",
@@ -108,6 +108,40 @@
       },
       "notes": "Adult forest ranger holding drawn living-vine bow. Identity, anatomy, bow-tip safety, provenance and mobile crop await human review.",
       "gitBinaryStatus": "review-assets-committed-no-production-promotion"
+    },
+    {
+      "taskId": "ART-S06-D",
+      "role": "scene-desktop",
+      "reviewId": "warehouse-desktop-v1",
+      "stage": "research-review",
+      "productionApproved": false,
+      "availableInGit": true,
+      "gitBinaryStatus": "review-assets-committed-no-production-promotion",
+      "source": {
+        "path": "art-sources/review/2026-11-22/warehouse-desktop-v1.png",
+        "format": "PNG",
+        "width": 1672,
+        "height": 941,
+        "sha256": "6a2f5a55beedd77549b3d81963c642c00450014ef965571163cabb71413375a1",
+        "bytes": 2832702
+      },
+      "candidate": {
+        "path": "public/art/world-scenes/review/2026-11-22/warehouse-desktop-v1.webp",
+        "format": "WebP",
+        "width": 1672,
+        "height": 941,
+        "sha256": "23f4fb92db8d9fcd7294b356c526ab975d37f6878b773861ea574db107d5abf4",
+        "bytes": 387164
+      },
+      "gate": {
+        "minNativeWidth": 2560,
+        "minNativeHeight": 1440,
+        "nativeSizePass": false,
+        "humanVisualReview": false,
+        "rightsReviewed": false,
+        "browserDPRReview": false
+      },
+      "notes": "New distinct moonlit crystal warehouse, not contract hall and not mobile composition. Native 1672x941 research preview below production gate."
     }
   ],
   "binaryCommitEvidence": "Git SHA 1 verified for each original image and WebP; see R12.10 release note. Confirm Git tree paths of the resulting commit."
