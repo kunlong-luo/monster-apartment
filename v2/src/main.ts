@@ -1,5 +1,5 @@
 import { WORKERS, MACHINES, newWorkshop, validWorkshop, validIndex,
-  placeMachine, moveMachine, salvageMachine, machineSalvageRefund, assignWorker, autoAssignWorkers, runShift, acceptPatronCommission,
+  placeMachine, moveMachine, salvageMachine, machineSalvageRefund, assignWorker, autoAssignWorkers, prepareStarterLine, runShift, acceptPatronCommission,
   upgradeMachine, forecastPatronCommission, importPatronCore, PATRON_IMPORT_PRICE,
   PREMIUM_ORDER_PENALTY, STANDARD_ORDER_PENALTY } from './workshop-engine';
 import type { WorkshopState, WorkerId, Craft } from './workshop-engine';
@@ -209,6 +209,19 @@ function dispatch(action:WorkshopAction):void{
       acceptPatron();break;
     case 'import-patron-core':
       buyPatronCore();break;
+    case 'prepare-starter-line':{
+    // Evaluated against the latest locked snapshot, not the React view.
+    // Move/build/staffing are committed as ONE save (or none).
+    const next=prepareStarterLine(world);
+    if(next===world){
+      message='快捷布置仅适用于尚未改动的第 1 天初始工坊。现有布局与存档未被修改。';
+      effect='normal';render();break;
+    }
+    if(apply(next,'已连接水泵、温室、熔炉并派驻三位工匠。建造熔炉已扣除 60 星币；请自行开启自动生产。','good')){
+      clearChoice();selectedPlot=null;
+    }
+    render();break;
+    }
     case 'auto-assign':{
     const next=autoAssignWorkers(world);
     if(next===world){

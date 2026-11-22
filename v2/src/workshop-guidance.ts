@@ -104,5 +104,5 @@ export function workshopNextStep(s:WorkshopState):string {
   }
   if(s.warehouse.core>=s.order.cores)
     return '晶核已达标 · 点击「手动轮班」推进至第'+s.order.due+'日结算';
-  return '第5步 · 点击「手动轮班」积攒晶核完成订单';
+  return '第5步 · 开启自动生产持续制造晶核；或点击「手动轮班」推进委托日。自动履约需要单独开启';
 }

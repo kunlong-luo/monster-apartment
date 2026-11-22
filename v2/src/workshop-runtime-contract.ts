@@ -20,6 +20,7 @@ export type WorkshopSelectionListener=
 export type WorkshopAction=
   |{type:'choose-worker';worker:WorkerId}
   |{type:'auto-assign'}
+  |{type:'prepare-starter-line'}
   |{type:'choose-machine';machine:Craft}
   |{type:'select-plot';index:number}
   |{type:'toggle-move'}

@@ -59,6 +59,35 @@ export function salvageMachine(s:WorkshopState,index:number):WorkshopState {
   tiles[index]=null;
   return {...s,tiles,coins:s.coins+refund};
 }
+/** Quick-start only for the untouched, exact Day 1 starter board. We never
+ * move a player's custom equipment, consume stored materials or silently
+ * enable either automatic production or contract delivery. */
+export function canPrepareStarterLine(s:WorkshopState):boolean {
+  const untouched=(tile:Machine|null,craft:Craft)=>
+    tile?.craft===craft&&tile.worker===null&&tile.stored===0&&tile.level===undefined;
+  return s.version===2&&s.day===1&&s.coins===100&&s.completed===0&&
+    s.failed===0&&s.last===null&&s.patron===null&&!s.auto&&
+    s.warehouse.core===0&&s.market===undefined&&s.residentsHelped===undefined&&
+    s.order.due===5&&s.order.cores===2&&s.order.reward===70&&!s.order.premium&&
+    s.tiles.length===BOARD_SIZE&&s.tiles.every((tile,index)=>
+      index===5?untouched(tile,'well'):
+      index===7?untouched(tile,'garden'):tile===null);
+}
+
+/** One explicitly requested, atomic starting-layout transaction:
+ * move the existing garden 08→07, build one kiln at 08 for its REAL cost,
+ * then auto-assign three matching workers using existing domain rules.
+ * Does not begin a shift, start a timer, settle an order or change a save key.
+ */
+export function prepareStarterLine(s:WorkshopState):WorkshopState {
+  if(!canPrepareStarterLine(s)||s.coins<MACHINES.kiln.cost)return s;
+  const moved=moveMachine(s,7,6);
+  if(moved===s)return s;
+  const built=placeMachine(moved,7,'kiln');
+  if(built===moved)return s;
+  return autoAssignWorkers(built);
+}
+
 export function newWorkshop():WorkshopState {
   const tiles:(Machine|null)[]=Array.from({length:BOARD_SIZE},()=>null);
   tiles[5]={craft:'well',worker:null,stored:0};
