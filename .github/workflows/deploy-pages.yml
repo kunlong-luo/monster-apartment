@@ -69,6 +69,24 @@ jobs:
         with:
           name: github-pages-${{ github.run_attempt }}
           path: out
+      # Actions can finish uploading a Pages artifact before its list endpoint
+      # exposes that artifact to deploy-pages. Check visibility with the same
+      # workflow token before deployment, rather than racing eventual indexing.
+      - name: Wait for uploaded Pages artifact to appear in Actions API
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: github-pages-${{ github.run_attempt }}
+        run: |
+          for attempt in $(seq 1 15); do
+            if gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts?per_page=100" --jq '.artifacts[].name' 2>/dev/null | grep -Fxq "${ARTIFACT_NAME}"; then
+              echo "Pages artifact is indexed: ${ARTIFACT_NAME}"
+              exit 0
+            fi
+            echo "Pages artifact not indexed yet (attempt ${attempt}/15); checking again."
+            sleep 5
+          done
+          echo "::error::Uploaded Pages artifact ${ARTIFACT_NAME} never appeared in the Actions API."
+          exit 1
       - id: deployment
         uses: actions/deploy-pages@v4
         with:
