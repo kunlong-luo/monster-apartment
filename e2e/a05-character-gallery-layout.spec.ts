@@ -108,7 +108,7 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   for(const picture of selectedCandidates){
     expect(picture.width).toBeGreaterThanOrEqual(960);
     expect(picture.height).toBeGreaterThanOrEqual(1280);
-    expect(picture.src).toMatch(/cg-[a-z]+-candidate\\.webp(?:\\?|$)/);
+    expect(picture.src).toMatch(/cg-[a-z]+-candidate\.webp(?:\?|$)/);
     expect(picture.fit).toBe('cover'); // slim card crop only
     expect(picture.kind).toBe('candidate-figure'); // never production
   }
@@ -267,7 +267,7 @@ test('A05 preview candidates stay native-pixel-sharp at DPR2; none is mislabelle
     const photo=viewer.locator('.cg-art-view__photo');
     await expect(photo).toHaveCSS('object-fit','contain');
     await expect.poll(()=>viewer.getByTestId('a05-art-source-resolution').textContent(),
-      {timeout:15000}).toMatch(/原图 \\d+×\\d+/);
+      {timeout:15000}).toMatch(/原图 \d+×\d+/);
     const actual=await photo.evaluate(el=>{
       const img=el as HTMLImageElement;
       const frame=img.closest('.cg-art-view__painting')!;
