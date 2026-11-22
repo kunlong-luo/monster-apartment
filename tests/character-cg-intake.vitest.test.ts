@@ -2,7 +2,7 @@ import {describe,it,expect} from 'vitest';
 import {existsSync,readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {cardReviewHtml} from '../scripts/prepare-character-cg.mjs';
-import {CG_PATHS,CG_PREVIEW_PATHS,CG_IDENTITY_REFERENCE_PATHS,auditCharacterCg} from '../scripts/audit-character-cg.mjs';
+import {CG_PATHS,CG_PREVIEW_PATHS,CG_IDENTITY_REFERENCE_PATHS,CG_MIN_NATIVE_SIZE,inspectCharacterCg,assertCharacterCgReview,auditCharacterCg} from '../scripts/audit-character-cg.mjs';
 import {createHash} from 'node:crypto';
 import {webpDimensions} from '../scripts/prepare-room-background.mjs';
 
@@ -55,6 +55,14 @@ describe('A05 production CG intake and preview',()=>{
         }
       }
     }
+  });
+  it('accepts 1086×1448 genuine artwork for stage-one review, but rejects unsigned promotion',()=>{
+    expect(CG_MIN_NATIVE_SIZE).toEqual({width:1086,height:1448});
+    const art=readFileSync(resolve('public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp'));
+    const result=inspectCharacterCg(art);
+    expect(result.width).toBe(1086);
+    expect(result.height).toBe(1448);
+    expect(()=>assertCharacterCgReview({card:'yuesha-eclipse',review:{approved:false,humanVisualReview:false},bytes:art})).toThrow(/review approval/);
   });
   it('passes the canonical audit without promoting preview to production',()=>{
     expect(auditCharacterCg().production).toBe(0);
