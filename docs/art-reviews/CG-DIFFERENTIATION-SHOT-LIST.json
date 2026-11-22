@@ -183,5 +183,20 @@
       "status": "research-only",
       "notes": "单人侧坐月光祭坛、邀请手势、细剑与银白酒红仪式礼服；仍需与银发 V3 身份和镰刀月蚀版并排审查；原生低于正式门槛"
     }
+  },
+  "alternativePoseStudies": {
+    "yuesha-eclipse": {
+      "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v2.webp",
+      "revision": 2,
+      "supersedes": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v1.webp",
+      "width": 1086,
+      "height": 1448,
+      "bytes": 513912,
+      "sha256": "6f3f41109ccef8e3d1fcb1e96176ae241c27b609ab60fa47652fb34cd6cc0aa9",
+      "status": "research-only",
+      "approved": false,
+      "selected": false,
+      "notes": "备选构图；首次高清制作尝试输出原生仅1086x1448，不能晋级；镰刃接近边缘且脸部骨相需与V3参考对照"
+    }
   }
 }

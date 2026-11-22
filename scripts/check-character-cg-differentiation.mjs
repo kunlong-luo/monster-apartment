@@ -51,4 +51,29 @@ for(const [id,study] of Object.entries(brief.poseStudies??{})){
   if(manifest.cards[id].status!=='portrait')fail('research art must not bypass production review '+id);
 }
 
+// Alternate concepts are preserved for side-by-side artistic inspection, never selected
+// as the current research base, collectible preview or approved CG.
+for(const [id,study] of Object.entries(brief.alternativePoseStudies??{})){
+  if(!ids.includes(id))fail('unknown alternative pose card '+id);
+  const current=brief.poseStudies?.[id];
+  if(!current)fail('alternative has no active research baseline '+id);
+  const revision=study.revision;
+  if(!Number.isInteger(revision)||revision!==(current.revision??1)+1)
+    fail('alternative revision must follow active research '+id);
+  const [resident,cardSlug]=id.split('-');
+  const expected='public/art/beauty-beasts/characters/'+resident+'/cg-'+cardSlug+'-pose-study-v'+revision+'.webp';
+  if(study.path!==expected||study.supersedes!==current.path)
+    fail('alternative reference path or predecessor invalid '+id);
+  if(study.selected!==false||study.approved!==false||study.status!=='research-only')
+    fail('alternative must remain unselected and research-only '+id);
+  const bytes=readFileSync(resolve(root,study.path));
+  const dimension=webpDimensions(bytes);
+  if(dimension.width!==study.width||dimension.height!==study.height||bytes.length!==study.bytes)
+    fail('alternative size or dimensions changed '+id);
+  if(createHash('sha256').update(bytes).digest('hex')!==study.sha256)
+    fail('alternative checksum mismatch '+id);
+  if(manifest.cards[id].status!=='portrait')
+    fail('research alternative cannot approve production card '+id);
+}
+
 console.log('CG differentiation: 5 structural briefs and '+Object.keys(brief.poseStudies??{}).length+' checksum-locked research studies passed (NOT visual or commercial-use approval).');
