@@ -72,7 +72,7 @@ export function cardReviewHtml(card){
     '.identity p{max-width:62ch;margin:0}'+
     '.checks{max-width:850px;line-height:2;color:#bdad9d}'+
     '</style></head><body><h1>'+title+' · 独立 CG 审核候选（未批准）</h1>'+
-    '<p>须为原生至少 1536×2048、3:4、头发到鞋尖完整、无烘焙文字和 UI 的独立绘画。'+
+    '<p>第一阶段须为原生至少 1086×1448、3:4（1536×2048 是可选精修目标）、头发到鞋尖完整、无烘焙文字和 UI 的独立绘画。'+
     '本页仅用于构图和身份人工核对，不会自动批准版权、手脚与人物一致性。</p>'+
     '<div class="identity"><img src="./reference-face.webp" alt="仓库既有角色身份基准">'+
     '<p><strong>当前角色身份基准：'+CG_IDENTITY_REFERENCE_PATHS[card]+'</strong>：请核对脸型、眼型、发色、发际线与年龄感。'+
