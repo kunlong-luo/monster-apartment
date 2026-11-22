@@ -191,11 +191,11 @@ export function WorkshopStageContainer({
         {worldReady&&canPrepareStarterLine(world)&&
           <button type="button" data-testid="workshop-starter-line"
             title="只对未修改的初始工坊生效：连接设备、建造熔炉并派工；不会开启自动生产或自动履约"
-            aria-label="一键布置初始生产线，建造熔炉消耗 60 星币，不自动开启生产"
+            aria-label={"一键布置初始生产线，建造熔炉消耗 "+MACHINES.kiln.cost+" 星币，不自动开启生产"}
             onClick={()=>onAction({type:'prepare-starter-line'})}
             className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-md border border-gothic-brass/75 bg-gothic-wine px-2.5 py-1 text-[11px] font-semibold text-gothic-ivory hover:brightness-110 focus-visible:outline-2 focus-visible:outline-gothic-glow">
-            <span className="max-[600px]:hidden">一键布置首条产线 · ✦60</span>
-            <span className="min-[601px]:hidden">一键布置 · ✦60</span>
+            <span className="max-[600px]:hidden">一键布置首条产线 · ✦{MACHINES.kiln.cost}</span>
+            <span className="min-[601px]:hidden">一键布置 · ✦{MACHINES.kiln.cost}</span>
           </button>}
         {!showCinematic&&selectedActions}
       </div>

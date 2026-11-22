@@ -1,7 +1,7 @@
 import {describe,expect,it} from 'vitest';
 import {
   newWorkshop,canPrepareStarterLine,prepareStarterLine,moveMachine,
-  placeMachine,assignWorker,runShift,forecastNextShift,validWorkshop,
+  placeMachine,assignWorker,runShift,forecastNextShift,validWorkshop,MACHINES,
 } from '../v2/src/workshop-engine';
 import {startWorkshopAuto} from '../v2/src/workshop-auto-production';
 
@@ -13,7 +13,7 @@ describe('first order: safe, one-tap starter production line',()=>{
     const next=prepareStarterLine(original);
     expect(JSON.stringify(original)).toBe(raw);
     expect(next).not.toBe(original);
-    expect(next.coins).toBe(40); // one kiln, no convenience fee
+    expect(next.coins).toBe(100-MACHINES.kiln.cost); // one kiln, no convenience fee
     expect(next.tiles[5]).toMatchObject({craft:'well',worker:'brook',stored:0});
     expect(next.tiles[6]).toMatchObject({craft:'garden',worker:'fern',stored:0});
     expect(next.tiles[7]).toMatchObject({craft:'kiln',worker:'cinder',stored:0});
@@ -32,7 +32,7 @@ describe('first order: safe, one-tap starter production line',()=>{
     const completed=prepareStarterLine(newWorkshop());
     expect(canPrepareStarterLine(completed)).toBe(false);
     expect(prepareStarterLine(completed)).toBe(completed);
-    expect(completed.coins).toBe(40);
+    expect(completed.coins).toBe(100-MACHINES.kiln.cost);
   });
 
   it('refuses changed layouts, staffed equipment, low funds, progressed days and saved auto clocks',()=>{

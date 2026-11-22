@@ -217,7 +217,7 @@ function dispatch(action:WorkshopAction):void{
       message='快捷布置仅适用于尚未改动的第 1 天初始工坊。现有布局与存档未被修改。';
       effect='normal';render();break;
     }
-    if(apply(next,'已连接水泵、温室、熔炉并派驻三位工匠。建造熔炉已扣除 60 星币；请自行开启自动生产。','good')){
+    if(apply(next,'已连接水泵、温室、熔炉并派驻三位工匠。建造熔炉已扣除 ✦'+MACHINES.kiln.cost+'；请自行开启自动生产。','good')){
       clearChoice();selectedPlot=null;
     }
     render();break;
