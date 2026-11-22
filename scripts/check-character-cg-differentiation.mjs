@@ -23,7 +23,8 @@ if(faces.some(x=>!x||x.length<15)||new Set(faces).size!==3)fail('the three non-Y
 if(brief.cards['yuesha-eclipse'].identity!=='yuesha-v3'||
    brief.cards['yuesha-vow'].identity!=='yuesha-v3'||
    brief.cards['yuesha-eclipse'].face!==brief.cards['yuesha-vow'].face)fail('YueSha variants must preserve same face');
-if(brief.expectedNativeCanvas.width!==1536||brief.expectedNativeCanvas.height!==2048)fail('native canvas minimum was lowered');
+if(brief.expectedNativeCanvas.width!==1086||brief.expectedNativeCanvas.height!==1448)fail('phase-1 native minimum must be 1086x1448');
+if(brief.premiumTargetCanvas?.width!==1536||brief.premiumTargetCanvas?.height!==2048)fail('optional premium target must stay documented');
 for(const id of ids){const x=brief.cards[id];if(['pose','weapon','wardrobe'].some(k=>typeof x[k]!=='string'||x[k].length<10)||['scene','camera','motion'].some(k=>typeof x[k]!=='string'||x[k].length<6))fail(id+' incomplete shot brief');
  if(!Array.isArray(x.prohibited)||x.prohibited.length<3)fail(id+' must list three forbidden repetitions');}
 
