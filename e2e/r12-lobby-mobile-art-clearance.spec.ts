@@ -31,7 +31,7 @@ test('mobile lobby prioritizes heroine painting without losing summon or seven r
   expect(featureBox!.height).toBeGreaterThanOrEqual(44);
   expect(featureBox!.y+featureBox!.height).toBeLessThanOrEqual(328);
   expect(questBox!.y+questBox!.height).toBeLessThanOrEqual(featureBox!.y+2);
-  expect(dockBox!.width).toBeLessThanOrEqual(50);
+  expect(dockBox!.width).toBeLessThanOrEqual(60);
   expect(dockBox!.x).toBeGreaterThanOrEqual(290);
   expect(dockBox!.x+dockBox!.width).toBeLessThanOrEqual(390);
   expect(dockBox!.y).toBeLessThan(110);

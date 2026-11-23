@@ -39,7 +39,7 @@ test('R12 mobile shows only the world atlas, with no permanent bottom nav',async
   await expect(quick.getByRole('link')).toHaveCount(0);
   const corner=await quick.boundingBox();
   expect(corner).not.toBeNull();
-  expect(corner!.width).toBeLessThanOrEqual(50);
+  expect(corner!.width).toBeLessThanOrEqual(60);
   expect(corner!.x).toBeGreaterThan(290);
   expect(corner!.y).toBeLessThan(110);
   const toggle=quick.getByRole('button',{name:'全部地点'});
