@@ -148,16 +148,27 @@ test('actual PNG dimensions must come from the source file header',()=>{
   assert.throws(()=>pngNativeDimensions(fake),/original master is not a PNG/);
 });
 
-test('S02 has a different independently composed portrait source, not a screenshot crop',()=>{
+test('S02 has independently composed desktop/mobile review PNGs in Git, without production approval',()=>{
   const entry=manifest.scenes.apartment;
   assert.equal(entry.status,'review');
+  assert.equal(entry.review,null);
   assert.equal(entry.candidate.nativeWidth,1672);
   assert.equal(entry.candidate.nativeHeight,941);
   assert.equal(entry.mobileCandidate.nativeWidth,941);
   assert.equal(entry.mobileCandidate.nativeHeight,1672);
   assert.equal(entry.mobileCandidate.independentComposition,true);
   assert.notEqual(entry.mobileCandidate.sourceSHA256,entry.candidate.sourceSHA256);
-  assert.equal(entry.mobileCandidate.availableInRepo,false);
+  const sources=[
+    {meta:entry.candidate,path:'apartment-six-door-desktop-v1.png',width:1672,height:941},
+    {meta:entry.mobileCandidate,path:'apartment-six-door-mobile-v1.png',width:941,height:1672},
+  ];
+  for(const {meta,path,width,height} of sources){
+    assert.equal(meta.availableInRepo,true);
+    assert.equal(meta.humanVisualReview,false);
+    const bytes=readFileSync(resolve(import.meta.dirname,'../../art-sources/review/2026-11-23/'+path));
+    assert.equal(createHash('sha256').update(bytes).digest('hex'),meta.sourceSHA256);
+    assert.deepEqual(pngNativeDimensions(bytes),{width,height});
+  }
 });
 
 test('S02 portrait candidate cannot be approved by reusing the desktop SHA',()=>{
