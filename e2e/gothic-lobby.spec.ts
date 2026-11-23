@@ -77,7 +77,10 @@ test('lobby reflects a real shared workshop save without inventing currency',asy
   await page.getByRole('button',{name:'接受月纱的特别委托'}).click();
   await expect(page.getByRole('status')).toContainText('契约已经成立');
   await page.getByRole('button',{name:'关闭面板'}).click();
-  await page.getByRole('navigation',{name:'主要游戏功能'})
+  // R12.15 relocated all non-apartment destinations to the top-right atlas.
+  // Exercise the actual player flow, not a removed bottom-dock shortcut.
+  await page.getByTestId('lobby-world-toggle').click();
+  await page.getByTestId('lobby-world-menu')
     .getByRole('link',{name:'工坊'}).click();
   await expect(page).toHaveURL(/\/workshop\/?$/);
 });

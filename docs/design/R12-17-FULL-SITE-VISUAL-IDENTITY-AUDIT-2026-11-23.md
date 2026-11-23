@@ -44,3 +44,8 @@
 全站应统一夜色、酒红、黑金、黄铜材质、轻量 HUD、动效节奏、导航意义与「画面优先」的原则；**不要**把公寓、工坊、委托、仓库、街区统一成同一大厅背景、相同 CSS 换色。七条正式路由、卡池抽取、六房索引、存档、订单、库存和剧情不改。
 
 本次代码实改文件：`gothic-lobby.tsx` / `gothic-lobby.css`、`world-town.tsx`，两个 E2E `gothic-art-review.spec.ts` / `gothic-desktop-scenes.spec.ts`。**静态不同 Git SHA 并不能证明「不是同一张脸」**，最终身份审核必须有四人物同尺度对照与人工验收签名。CI、Desktop Visual、Gameplay Browser、Pages 按本轮 SHA 单独汇报，不把代码提交等于原画通过。
+
+
+### 2026-11-23 · 上一轮浏览器回归残留
+
+`3891ab8` 的 Full Gameplay Browser Review：**178 passed、3 skipped、1 failed**；失败在 `e2e/gothic-lobby.spec.ts` 「真实工坊存档同步」测试仍直接在旧底栏寻找「工坊」链接。它因 R12.15 底栏已移除而超时，不能解读为工坊真实经济失败；但**不能删掉**验证。已按玩家现行操作改成 **右上角世界地图 → 工坊**，继续检查真实工坊库存与页面导航。后续以新 SHA 的全量回归为准。
