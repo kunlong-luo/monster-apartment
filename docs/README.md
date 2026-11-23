@@ -12,7 +12,7 @@
 | 首页菜单：现行顶角方案 | [R12.15 顶角世界地图](design/R12-15-LOBBY-CORNER-WORLD-ATLAS-2026-11-23.md) | 取代底部 Dock，七个真实页面仍可达；视觉 QA 以最新 SHA 为准 |
 | 首页两幅海报 / 图鉴清晰度 | [R12.16 边栏精简与候选原画 DPR 保护](design/R12-16-LOBBY-RAIL-DENSITY-AND-CG-DPR-2026-11-23.md) | 保留故事入口；移除重复大肖像和切换动画放大模糊 |
 | 全站是否也要升级 / 首页同脸 | [R12.17 七页面美术与身份审计](design/R12-17-FULL-SITE-VISUAL-IDENTITY-AUDIT-2026-11-23.md) | 修复玩家头像和月光街错图；四居民面部差异化与跨场景高质量重制次序 |
-| 四人面部重制当前进度（R12.19） | [月纱单人研究与拒收记录](art-reviews/R12-19-YUESHA-G1-INDEPENDENT-PORTRAIT-2026-11-23.md) · [机器可读身份门禁](art-reviews/R12-19-G1-IDENTITY-STATUS.json) | 仅月纱新单人研究稿生成在会话 ZIP；尚未入 GitHub 二进制素材、未冻结新身份，四人 0/4，封面 0/2、正式 CG 0/5 |
+| 四人面部身份重制最新进度（R12.20） | [泉泡独立研究与四人审核板](art-reviews/R12-20-BROOK-G1-INDEPENDENT-PORTRAIT-2026-11-23.md) · [最新 G1 状态](art-reviews/R12-20-G1-IDENTITY-STATUS.json) | 月纱与泉泡各有独立原生 1086×1448 单人研究稿：**2/4**；青枝、炽角仍是旧拼版裁图；4 人身份审核 **0/4**、封面 **0/2**、正式 CG **0/5**；图片目前只在对话 ZIP 中，**并未上传仓库** |
 | 新角色、立绘、CG、换装、武器 | [角色 G0–G7 SOP](CHARACTER-CREATION-SOP.md) → [任务模板](templates/CHARACTER-DESIGN-BRIEF-TEMPLATE.md) | [逐卡镜头表](CHARACTER-CG-DIFFERENTIATION-V1.md)、[原生高清可选管线](CHARACTER-CG-NATIVE-PIPELINE.md) |
 | 全站美术要重做哪些 / 制作任务 | [R12.7 全站资源重制审计](art-reviews/R12-07-ASSET-REBUILD-AUDIT-2026-11-22.md) → [可执行 CSV 台账](art-reviews/R12-07-ASSET-REBUILD-BACKLOG.csv) | [像素取证](art-reviews/R12-01-REAL-BROWSER-PIXEL-EVIDENCE.md)、[五卡差异化](CHARACTER-CG-DIFFERENTIATION-V1.md) |
 | 首张 S05 独立绘景样板（候选） | [R12.8 S05 契约大厅审稿报告](art-reviews/R12-08-S05-CONTRACT-HALL-REVIEW-2026-11-22.md) | 1672×941 原生图已入 Git review；尚未通过生产尺寸/人审 |
