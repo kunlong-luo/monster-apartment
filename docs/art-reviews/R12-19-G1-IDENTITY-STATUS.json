@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-11-23",
+  "phase": "G1",
+  "productionApproved": false,
+  "canonicalPortraitsReplaced": false,
+  "artworkCommittedToRepository": false,
+  "previousResearch": "docs/art-reviews/R12-18-FACE-IDENTITY-G1-STUDY-2026-11-23.md",
+  "mainReview": "docs/art-reviews/R12-19-YUESHA-G1-INDEPENDENT-PORTRAIT-2026-11-23.md",
+  "delivery": "Separate downloadable ZIP in conversation; files NOT in GitHub",
+  "candidates": {
+    "yuesha": {
+      "name": "月纱",
+      "canonicalReferences": [
+        "public/art/yuesha-portrait-v3.webp",
+        "public/art/yuesha-bust-v3.webp"
+      ],
+      "research": "independent-single-portrait",
+      "independentSourceCreated": true,
+      "source": "art-sources/identity-r12-19/yuesha-face-identity-study-v2-original.png",
+      "sourceSha256": "42f1426f1477b9e78ad711d9b37074ec40088b2014d0f0f6dcf048d3a0c85bf2",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "webp": "art-sources/identity-r12-19/yuesha-face-identity-study-v2.webp",
+      "webpSha256": "928acb6b3e3d684d056572a13484abf7751a1d6e217e5fed4df7c10f20779931",
+      "inRepository": false,
+      "threeQuarterSourceCreated": false,
+      "canonicalIdentityContinuityApproved": false,
+      "humanApproved": false
+    },
+    "brook": {
+      "name": "泉泡",
+      "canonicalReferences": [
+        "public/art/beauty-beasts/characters/brook/face.webp"
+      ],
+      "research": "older-cropped-grid-study-only",
+      "independentSourceCreated": false,
+      "inRepository": false,
+      "humanApproved": false,
+      "needs": "independent front and 3/4 studio portraits; retain pale silver-blue hair and furry blue ears"
+    },
+    "fern": {
+      "name": "青枝",
+      "canonicalReferences": [
+        "public/art/beauty-beasts/characters/fern/face.webp"
+      ],
+      "research": "older-cropped-grid-study-only",
+      "independentSourceCreated": false,
+      "inRepository": false,
+      "humanApproved": false,
+      "needs": "independent front and 3/4 studio portraits; retain green eyes and distinct cheekbones"
+    },
+    "cinder": {
+      "name": "炽角",
+      "canonicalReferences": [
+        "public/art/beauty-beasts/characters/cinder/face.webp"
+      ],
+      "research": "older-cropped-grid-study-only",
+      "independentSourceCreated": false,
+      "inRepository": false,
+      "humanApproved": false,
+      "needs": "independent front and 3/4 studio portraits; metallic forged horn headpiece, not biological horns"
+    }
+  },
+  "cgCards": [
+    {
+      "id": "yuesha-eclipse",
+      "state": "portrait"
+    },
+    {
+      "id": "yuesha-vow",
+      "state": "portrait"
+    },
+    {
+      "id": "brook-tide",
+      "state": "portrait"
+    },
+    {
+      "id": "fern-spring",
+      "state": "portrait"
+    },
+    {
+      "id": "cinder-ember",
+      "state": "portrait"
+    }
+  ],
+  "releaseGates": {
+    "fourFaceBlindTest": false,
+    "canonicalIdentitySignatures": false,
+    "commercialRightsSignatures": false,
+    "coverDesktopProduction": false,
+    "coverMobileProduction": false,
+    "fullBodyCgProductionCount": 0,
+    "realBrowserViewportReview": false,
+    "updatedGameAssets": false
+  }
+}
