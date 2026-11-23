@@ -226,7 +226,6 @@
   }
   .gothic-lobby__reference-postcard-img--workshop{object-position:20% 80%}
   .gothic-lobby__reference-postcard-img--town{object-position:80% 35%}
-  .gothic-lobby__reference-postcard-img--gallery{object-position:75% 31%}
   .gothic-lobby__reference-postcard>span{
     position:relative;z-index:2;display:grid;gap:3px;
     text-shadow:0 2px 7px #000e;
@@ -243,6 +242,23 @@
     position:relative;z-index:2;flex:none;
     color:var(--craft-champagne);
   }
+  /* The third action is a real story recap, not a third full-size image card.
+   * Two illustrated location postcards now supply all the scene navigation.
+   * Reserve the freed vertical space for the actual environment painting. */
+  .gothic-lobby__reference-postcard--memories{
+    min-height:50px;
+    padding:8px 13px;
+    align-items:center;
+    background:linear-gradient(125deg,rgba(38,26,37,.89),rgba(20,14,24,.82));
+    border-color:rgba(166,141,112,.44);
+    box-shadow:inset 0 1px rgba(225,193,153,.1),0 5px 12px #08040c91;
+  }
+  .gothic-lobby__reference-postcard--memories::before{content:none}
+  .gothic-lobby__reference-postcard--memories strong{
+    font-size:15px;
+    letter-spacing:.035em;
+  }
+  .gothic-lobby__reference-postcard--memories small{font-size:10px}
   .gothic-lobby__reference-postcard:is(:hover,:focus-visible){
     border-color:var(--craft-champagne);transform:translateY(-1px);
   }

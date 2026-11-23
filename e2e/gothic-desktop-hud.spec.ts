@@ -48,7 +48,15 @@ test('PC HUD keeps a compact corner apartment shortcut plus seven-place atlas',a
   // Reference 01: people left, true summon banner right, illustrated destinations below.
   await expect(page.getByTestId('gothic-lobby-message-board')).toHaveCount(0);
   await expect(page.getByTestId('gothic-right-summon')).toHaveCount(0);
-  await expect(page.getByTestId('gothic-right-memories')).toBeVisible();
+  const memories=page.getByTestId('gothic-right-memories');
+  await expect(memories).toBeVisible();
+  const memoriesBounds=await memories.boundingBox();
+  expect(memoriesBounds).not.toBeNull();
+  expect(memoriesBounds!.height).toBeGreaterThanOrEqual(44);
+  expect(memoriesBounds!.height).toBeLessThanOrEqual(66);
+  // Only two painted location postcards remain; story recap uses an
+  // understated semantic button instead of duplicating Moonveil's bust.
+  await expect(right.locator('img')).toHaveCount(2);
   const inbox=page.getByRole('button',{name:'委托消息'});
   await expect(inbox).toBeVisible();
   await expect(inbox).toContainText('待交付');

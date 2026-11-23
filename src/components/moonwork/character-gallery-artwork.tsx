@@ -65,8 +65,11 @@ export function CharacterGalleryArtwork({
       <motion.div key={active.key} className="cg-art-view__painting"
         style={paintingStyle}
         data-native-portrait={!hasFigureArt?'true':'false'}
-        initial={reducedMotion?false:{opacity:0,scale:hasFigureArt?1.025:1}}
-        animate={{opacity:1,scale:1}}
+        // Never overscale a candidate painting even for a fraction of the
+        // enter transition: 1.025x exceeds the native DPR2 pixel budget.
+        // Opacity alone retains a quiet gallery transition without blur.
+        initial={reducedMotion?false:{opacity:0}}
+        animate={{opacity:1}}
         transition={{duration:reducedMotion?0:.25,ease:'easeOut'}}>
         {source&&<ReliableImage src={source}
           fallbackSrc={getCardPortraitFallback(active.key)??undefined}
