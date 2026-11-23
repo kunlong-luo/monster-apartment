@@ -103,3 +103,8 @@
 - **ART-S06-D**：真正新绘的晶核仓库横版环境 PNG 1672×941、同尺寸 WebP 387164 bytes，已作为真实 Git 二进制分别写入 `art-sources/review/2026-11-22/warehouse-desktop-v1.png` 与 `public/art/world-scenes/review/2026-11-22/warehouse-desktop-v1.webp`；SHA-256、Git SHA 和准入状态详见 [R12.11](../art-reviews/R12-11-WAREHOUSE-DESKTOP-REVIEW-2026-11-22.md)。
 - 不同于 S05 契约大厅，此图具备大量晶核货架、起重轨道、装运台和蓝紫月光，供独立地点美术审稿；**不代表正式 2560×1440 场景已完成**。实际只生成合格的桌面方向图，S06 独立手机版仍为 TODO，不能把误生成的 UI/海报当场景。
 - 共享 `R12-09-REVIEW-ASSETS-2026-11-22.json` 新增 ART-S06-D 校验条目，`pnpm audit:r12-review-art` 将强制验证新的 PNG 和 WebP；所有 `productionApproved` 继续 false，正式运行时场景 manifest 无修改。
+
+## 2026-11-23 S02 六门中庭桌面候选（review 入库）
+
+- `ART-S02-D` 本轮新绘一幅左右各 3 扇实体门的 S02 场景，原生 PNG **1672×941** 与同像素 WebP 已真实提交 `art-sources/review/2026-11-23/`、`public/art/world-scenes/review/2026-11-23/`；源图 SHA-256 `5dd2fa1a943064fc9b7996f3329068ba174582f12c746a878defa2b96f7acad5`，WebP `61aa2ad62dac99a8a2d976cb77361bcc1a41dc5e2dd855444f7fe84a46599f31`。纳入 `pnpm audit:r12-review-art` 实物门禁。详情：[R12.13](../art-reviews/R12-13-S02-SIX-DOOR-DESKTOP-REVIEW-2026-11-23.md)。
+- **未完成 / 严格禁止误报**：S02 PC 正式源像素至少 **3296×1856**，手机必须独立 1080×1920；这张仅 1672×941。原生手机仍待绘制；无具名人审、无 6 点 `roomHotspots`、无四视口/逐门点击证明，因此没有更新 `r12-scene-manifest.json` production、没有将旧大厅背景替换、没有更改六间房存档。

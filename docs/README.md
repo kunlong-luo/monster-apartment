@@ -14,6 +14,7 @@
 | 首张 S05 独立绘景样板（候选） | [R12.8 S05 契约大厅审稿报告](art-reviews/R12-08-S05-CONTRACT-HALL-REVIEW-2026-11-22.md) | 1672×941 原生图已入 Git review；尚未通过生产尺寸/人审 |
 | S05 双端 + 青枝拉弓（已入 Git 审稿目录） | [R12.9 美术资源与校验](art-reviews/R12-09-ART-PACK-2026-11-22.md) | 3 PNG + 3 WebP + [联系表](art-reviews/R12-09-ART-CONTACT-SHEET-REVIEW-ONLY.jpg) 均在 main；**不是 production** |
 | S06 晶核仓库 PC / 手机独立候选（已入 Git 待审） | [R12.11 桌面](art-reviews/R12-11-WAREHOUSE-DESKTOP-REVIEW-2026-11-22.md) · [R12.12 手机](art-reviews/R12-12-WAREHOUSE-MOBILE-REVIEW-2026-11-23.md) | 两组真实原始 PNG + WebP 在 main review 目录；双端原生尺寸仍未达标、不能正式替换 |
+| S02 六房门中庭（新版桌面候选已入 Git） | [R12.13 六门中庭审稿](art-reviews/R12-13-S02-SIX-DOOR-DESKTOP-REVIEW-2026-11-23.md) | 左右 3+3 扇，1672×941 PNG/WebP，非正式高清；手机原画与热点实机核对仍缺 |
 | 场景原画 / 私室 | [R12 原画入库规则](art-reviews/R12-02-SCENE-ART-INTAKE.md) | [房间视觉规则](v3/23-ROOM-ART-PIPELINE-AND-CINEMATIC-PERFORMANCE.md) |
 | 当前缺口、下一步 | [缺口与风险台账](engineering/GAP-REGISTER-2026-11-22.md)、[GitHub Issues](https://github.com/kunlong-luo/monster-apartment/issues)、[任务表](../management/TASKS.csv) | [R11.3 已核实历史基线](engineering/2026-11-12-r11-3-release-baseline.md) |
 | 技术及产品决策 | [ADR 决策表](DECISIONS.md) | [早期 V0.1 开发计划（历史）](DEVELOPMENT_PLAN.md) |

@@ -176,6 +176,40 @@
       },
       "notes": "New independent vertical 9:16 warehouse painting. Crystal stock, rail crane, moonlit window and transport cart; NOT a desktop crop. Native resolution is below production minimum; staged in Git for human review.",
       "gitBinaryStatus": "review-assets-committed-no-production-promotion"
+    },
+    {
+      "taskId": "ART-S02-D",
+      "role": "scene-desktop",
+      "reviewId": "apartment-six-door-desktop-v1",
+      "stage": "research-review",
+      "productionApproved": false,
+      "availableInGit": true,
+      "source": {
+        "path": "art-sources/review/2026-11-23/apartment-six-door-desktop-v1.png",
+        "format": "PNG",
+        "width": 1672,
+        "height": 941,
+        "sha256": "5dd2fa1a943064fc9b7996f3329068ba174582f12c746a878defa2b96f7acad5",
+        "bytes": 3071336
+      },
+      "candidate": {
+        "path": "public/art/world-scenes/review/2026-11-23/apartment-six-door-desktop-v1.webp",
+        "format": "WebP",
+        "width": 1672,
+        "height": 941,
+        "sha256": "61aa2ad62dac99a8a2d976cb77361bcc1a41dc5e2dd855444f7fe84a46599f31",
+        "bytes": 479930
+      },
+      "gate": {
+        "minNativeWidth": 3296,
+        "minNativeHeight": 1856,
+        "nativeSizePass": false,
+        "humanVisualReview": false,
+        "rightsReviewed": false,
+        "browserDPRReview": false
+      },
+      "notes": "Six visually separate left/right doors, 3 each (red, blue, green / amber, silver, violet), no baked room text. Desktop source 1672x941 is below S02 3296x1856 DPR2 gate. No verified clickable hotspots; mobile independently composed portrait remains missing.",
+      "gitBinaryStatus": "review-assets-committed-no-production-promotion"
     }
   ],
   "binaryCommitEvidence": "Git SHA 1 verified for each original image and WebP; see R12.10 release note. Confirm Git tree paths of the resulting commit."
