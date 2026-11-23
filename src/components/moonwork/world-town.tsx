@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import {ReliableImage} from '@/components/game/reliable-image';
 import {Anvil,ScrollText,Archive,Waves,Sprout,Gem} from 'lucide-react';
-import districtPainting from '../../../public/art/beauty-beasts/cover/world-cover.webp';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import townBackdrop from '../../../public/art/world-scenes/town-moonlit-gate.webp';
@@ -26,8 +25,10 @@ export function Town({s}:{s:WorkshopState}){
   return <>
     <div className="mw-town-focus">
     <section className="mw-town-scene" aria-label="月光街的炼金商区" data-testid="moonlit-town-scene">
-      <ReliableImage src={districtPainting} fallbackSrc={townBackdrop}
-        alt="月光街的契约人物与世界绘景"
+      {/* Promotional group portraits do not depict a street or its actual residents.
+          Keep existing location art explicitly transitional until S04 review. */}
+      <ReliableImage src={townBackdrop}
+        alt="月光街入口的哥特建筑与月夜街区"
         fill unoptimized loading="eager" sizes="(max-width: 760px) 100vw, 800px"
         className="mw-town-painting" data-testid="town-painting"/>
       <div className="mw-town-scrim" aria-hidden="true"/>
@@ -50,7 +51,7 @@ export function Town({s}:{s:WorkshopState}){
           <span><strong>物资仓库</strong><small>材料 · 采购</small></span>
         </Link>
       </nav>
-      <div className="mw-town-scene-credit">契约世界绘景 · 街区导览</div>
+      <div className="mw-town-scene-credit">月光街入口 · 过渡绘景</div>
     </section>
     <section className="mw-town-resident" data-testid="town-resident" aria-label="今日街头居民">
       <div className="mw-resident-character" aria-label="月纱为你带来街头居民消息">

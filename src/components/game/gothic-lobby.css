@@ -353,3 +353,19 @@
     .gothic-lobby__contract-faces,.gothic-lobby__summon-verse,
     .gothic-lobby__chapter-mark,.gothic-lobby__summon-illustration){display:none}
 }
+/* R12.17: account identity is a family seal, never the resident YueSha. */
+.gothic-lobby__player-seal{
+  position:relative;
+  background:radial-gradient(circle at 50% 34%,#674054,#382334 40%,#180e1a);
+  box-shadow:inset 0 1px #f4deb35e,0 0 0 3px #171015bb,0 2px 18px #0009;
+}
+.gothic-lobby__player-seal:before{
+  content:"";position:absolute;inset:5px;
+  border:1px solid #d4b1848c;border-radius:50%;
+  pointer-events:none;
+}
+.gothic-lobby__player-seal-rune{
+  position:relative;color:#f8d9a5;
+  font:500 clamp(18px,2vw,28px)/1 "Noto Serif SC",Georgia,serif;
+  text-shadow:0 1px 8px #dfac8250;
+}

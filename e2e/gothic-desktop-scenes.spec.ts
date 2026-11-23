@@ -49,8 +49,10 @@ test('PC apartment doors and town portals use structured icons without clipping'
   await expect(page.getByTestId('moonlit-town-scene')).toBeVisible();
   await expect(page.locator('.mw-town-portal svg')).toHaveCount(3);
   await expect(page.getByTestId('town-resident')).toBeVisible();
-  // Next.js production/dev asset URLs include a content hash before .webp.
-  await expect(page.getByTestId('town-painting')).toHaveAttribute('src',/world-cover\.[^/]+\.webp/);
+  // Town art is a real location, NOT an unrelated three-woman brand cover.
+  // Next.js static image URLs include a content hash before .webp.
+  await expect(page.getByTestId('town-painting')).toHaveAttribute('src',/town-moonlit-gate\.[^/]+\.webp/);
+  await expect(page.locator('.mw-town-scene-credit')).toContainText('过渡绘景');
   await expect(page.getByTestId('town-guide-painting')).toHaveAttribute('src',/yuesha-portrait-v3\.[^/]+\.webp/);
   await expect.poll(()=>page.locator('[data-testid="town-painting"],[data-testid="town-guide-painting"]')
     .evaluateAll(images=>images.length===2&&images.every(image=>

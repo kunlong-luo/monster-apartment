@@ -11,7 +11,11 @@ test('desktop and phone Gothic HUD scenes stay fully visible',async({page})=>{
   const hero=page.getByTestId('gothic-lobby-painting-image');
   await expect(hero).toHaveJSProperty('naturalWidth',1587);
   await expect(hero).toHaveJSProperty('naturalHeight',991);
-  await expect(page.locator('.gothic-lobby__avatar img')).toHaveJSProperty('naturalWidth',500);
+  // Player and heroine are not the same person: never show YueSha
+  // as the profile's avatar. Keep the avatar-sized account emblem usable.
+  await expect(page.getByTestId('lobby-player-seal')).toBeVisible();
+  await expect(page.getByTestId('lobby-player-seal')).toHaveText('夜');
+  await expect(page.locator('.gothic-lobby__avatar img')).toHaveCount(0);
   await expect(page.getByTestId('gothic-light-layer')).toBeAttached();
   await expect(page.getByTestId('gothic-scene-illumination')).toHaveAttribute('data-motion','still');
   await page.screenshot({path:'test-results/gothic-lobby-desktop.png',animations:'disabled'});
