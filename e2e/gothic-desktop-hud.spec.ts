@@ -1,23 +1,24 @@
 import {expect,test} from '@playwright/test';
 
-test('PC HUD keeps four cinematic quick destinations plus an accessible seven-place map',async({page})=>{
+test('PC HUD keeps a compact corner apartment shortcut plus seven-place atlas',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
   const dock=page.getByRole('navigation',{name:'主要游戏功能'});
-  await expect(dock.getByRole('link')).toHaveCount(4);
-  await expect(dock.locator('.gothic-dock__quick svg')).toHaveCount(4);
+  await expect(dock.getByRole('link')).toHaveCount(1);
+  await expect(dock.locator('.gothic-dock__quick svg')).toHaveCount(1);
   const box=await dock.boundingBox();
   expect(box).not.toBeNull();
-  expect(box!.width).toBeGreaterThan(600);
-  expect(box!.width).toBeLessThan(800);
-  expect(Math.abs(box!.x-(1440-box!.width)/2)).toBeLessThan(3);
-  // Global world chrome no longer overrides this dedicated reference dock.
-  const dockStyle=await dock.evaluate(element=>{
-    const style=getComputedStyle(element);
-    return {maxWidth:style.maxWidth,background:style.backgroundImage};
-  });
-  expect(dockStyle.maxWidth).toBe('none');
-  expect(dockStyle.background).toContain('linear-gradient');
+  expect(box!.width).toBeLessThan(250);
+  expect(box!.x).toBeGreaterThan(950);
+  expect(box!.y+box!.height).toBeLessThan(110);
+  const atlasButton=dock.getByRole('button',{name:'全部地点'});
+  await expect(atlasButton).toBeVisible();
+  const buttonStyle=await atlasButton.evaluate(element=>getComputedStyle(element).backgroundImage);
+  expect(buttonStyle).toContain('linear-gradient');
+  await atlasButton.click();
+  await expect(page.getByRole('navigation',{name:'全部地点导航'}).getByRole('link')).toHaveCount(7);
+  await page.keyboard.press('Escape');
+  await expect(atlasButton).toBeFocused();
   await expect(page.getByRole('button',{name:'切换动态特效'}).locator('svg')).toBeVisible();
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   const rail=page.locator('.gothic-lobby__mission-rail');
@@ -53,7 +54,7 @@ test('PC HUD keeps four cinematic quick destinations plus an accessible seven-pl
   await expect(inbox).toContainText('待交付');
   const mainCard=await page.getByTestId('gothic-main-quest').boundingBox();
   const summonCard=await page.getByTestId('gothic-eclipse-feature').boundingBox();
-  const dockBounds=await dock.boundingBox();
+  const atlasBounds=await dock.boundingBox();
   expect(mainCard).not.toBeNull();expect(summonCard).not.toBeNull();
   expect(mainCard!.x).toBeLessThan(1440*.2);
   expect(summonCard!.x).toBeGreaterThan(1440*.7);
@@ -64,9 +65,11 @@ test('PC HUD keeps four cinematic quick destinations plus an accessible seven-pl
   expect(people).not.toBeNull();expect(postcards).not.toBeNull();
   expect(people!.x+people!.width).toBeLessThan(1440*.25);
   expect(postcards!.x).toBeGreaterThan(1440*.7);
-  expect(people!.y+people!.height).toBeLessThan(dockBounds!.y-120);
+  expect(people!.y+people!.height).toBeLessThan(900-25);
+  expect(atlasBounds!.y+atlasBounds!.height).toBeLessThan(110);
   expect(postcards!.y).toBeGreaterThan(summonCard!.y+summonCard!.height);
-  expect(postcards!.y+postcards!.height).toBeLessThan(dockBounds!.y-45);
+  expect(postcards!.y+postcards!.height).toBeLessThan(900-25);
+  expect(atlasBounds!.x).toBeGreaterThan(950);
   // Keep the center unobstructed, and guard against the old wide HUD layout.
   const freeCenter=(people!.x+people!.width+postcards!.x)/2;
   expect(freeCenter).toBeGreaterThan(1440*.35);
@@ -95,7 +98,9 @@ test('PC HUD keeps four cinematic quick destinations plus an accessible seven-pl
   await page.screenshot({path:'test-results/desktop-lobby-v377.png',animations:'disabled'});
   // The canonical Characters destination intentionally opens the gallery.
   // A hash selects the summon stage without creating an eighth route.
-  await dock.getByRole('link',{name:/角色/}).click();
+  await atlasButton.click();
+  await page.getByRole('navigation',{name:'全部地点导航'})
+    .getByRole('link',{name:'角色图鉴'}).click();
   await expect(page.getByTestId('moonwork-world')).toBeVisible();
   await page.goto('/characters/#summon-screen');
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible({timeout:20000});
@@ -123,13 +128,15 @@ test('narrow 1100px desktop keeps heroine dialogue between resident and postcard
   await expect(roster).toBeVisible();
   await expect(postcards).toBeVisible();
   await expect(dialogue).toBeVisible();
-  const [people,features,talk,footer]=await Promise.all([
+  const [people,features,talk,atlas]=await Promise.all([
     roster.boundingBox(),postcards.boundingBox(),dialogue.boundingBox(),dock.boundingBox()
   ]);
-  expect(people&&features&&talk&&footer).toBeTruthy();
+  expect(people&&features&&talk&&atlas).toBeTruthy();
   expect(talk!.x).toBeGreaterThan(people!.x+people!.width);
   expect(talk!.x+talk!.width).toBeLessThanOrEqual(features!.x-8);
-  expect(features!.y+features!.height).toBeLessThan(footer!.y-8);
+  expect(features!.y+features!.height).toBeLessThan(720-12);
+  expect(atlas!.y+atlas!.height).toBeLessThan(110);
+  expect(atlas!.x).toBeGreaterThan(750);
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
   expect(overflow).toBeLessThanOrEqual(2);
   await page.screenshot({path:'test-results/desktop-lobby-1100x720.png',animations:'disabled'});
@@ -148,7 +155,7 @@ test('mobile lobby shows exactly two storyline entries with a working small inbo
   await page.getByRole('button',{name:'关闭面板'}).click();
   await expect(dialog).toHaveCount(0);
   const dock=page.getByRole('navigation',{name:'主要游戏功能'});
-  await expect(dock.getByRole('link')).toHaveCount(3);
+  await expect(dock.getByRole('link')).toHaveCount(0);
   await expect(dock.getByRole('button',{name:'全部地点'})).toBeVisible();
   const issues=await page.evaluate(()=>({
     x:document.documentElement.scrollWidth-window.innerWidth,
@@ -156,15 +163,19 @@ test('mobile lobby shows exactly two storyline entries with a working small inbo
   }));
   expect(issues.x).toBeLessThanOrEqual(2);expect(issues.y).toBeLessThanOrEqual(2);
   const rail=await page.locator('.gothic-lobby__mission-rail').boundingBox();
-  const footer=await dock.boundingBox();
-  expect(rail!.y+rail!.height).toBeLessThan(footer!.y);
+  const atlas=await dock.boundingBox();
+  expect(atlas).not.toBeNull();
+  expect(atlas!.width).toBeLessThanOrEqual(60);
+  expect(atlas!.y).toBeLessThan(110);
+  expect(rail!.y+rail!.height).toBeLessThan(844-25);
   await expect(page.getByTestId('gothic-design-roster')).toBeHidden();
   await expect(page.getByTestId('gothic-design-right')).toBeHidden();
   const actions=await page.locator('.gothic-lobby__character-actions').boundingBox();
   expect(actions).not.toBeNull();
   // Mobile heroine's face sits around the 30–52% band: keep action HUD below it.
   expect(actions!.y).toBeGreaterThan(844*.55);
-  expect(actions!.y+actions!.height).toBeLessThan(footer!.y-20);
+  expect(actions!.y+actions!.height).toBeLessThan(844-25);
+  expect(rail!.x+rail!.width).toBeLessThan(actions!.x-6);
   expect(actions!.width).toBeLessThan(85);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/mobile-lobby-v377.png',animations:'disabled'});
@@ -393,8 +404,10 @@ test('approved lobby layout retains the same image-first silhouette at 1648×928
   expect(rail!.x+rail!.width).toBeLessThan(1648*.23);
   expect(banner!.x).toBeGreaterThan(1648*.73);
   expect(right!.y).toBeGreaterThan(banner!.y+banner!.height);
-  expect(right!.y+right!.height).toBeLessThan(dock!.y-30);
-  expect(Math.abs(dock!.x-(1648-dock!.width)/2)).toBeLessThan(4);
+  expect(right!.y+right!.height).toBeLessThan(928-24);
+  expect(dock!.y+dock!.height).toBeLessThan(110);
+  expect(dock!.x).toBeGreaterThan(1200);
+  expect(dock!.width).toBeLessThan(250);
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/desktop-lobby-reference-1648.png',animations:'disabled'});
 });
