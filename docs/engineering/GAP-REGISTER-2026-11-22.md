@@ -126,3 +126,10 @@
 - 基线 `bf750bea` 的 **Desktop Visual Review 失败**，失败在 `e2e/a05-character-gallery-layout.spec.ts` 的真实像素防放大检查：候选图宽度约 552.11px，高于 DPR2 许可 546px（高约 6.11px）。问题来源是进入阶段 `scale:1.025`，不是原始 WebP 额外变小；本轮取消候选画进入动画的 transform scale，只保留 opacity。
 - 首页右侧重复展示第三张月纱肖像大牌：本轮保留工坊/街区独立风景海报、将剧情回顾改为紧凑文字按钮，**不修改**角色列表、剧情弹窗或现有路由。完整设计、源文件和验收门槛见 [R12.16](../design/R12-16-LOBBY-RAIL-DENSITY-AND-CG-DPR-2026-11-23.md)。
 - S02/S05/S06 的高清源图仍为 review，5 张角色正式 CG 的人工晋级仍未完成；**此轮没有新增生产原画**。Quality、Visual、Browser、Pages 的本轮最新结果需要按 SHA 实查，不把此前 Pages 成功等同于新改动验收通过。
+
+## 2026-11-23 · R12.17 全站视觉与「同脸」资产溯源
+
+- 直接检查了 `world-cover.webp` 三位群像、`lobby-hero-v3.webp` 月纱单人和四张实际居民身份头像。判断：「文件不同」不等于「脸骨不同」，现有头像在眼线、颌线、表情上过于统一；现有五张 CG 也不能因此认证 G1/G4 已过。跨人物身份规范和七页面重制顺序已写入 [R12.17](../design/R12-17-FULL-SITE-VISUAL-IDENTITY-AUDIT-2026-11-23.md)。
+- 两处真正的代码误用已修：① 首页玩家资料「夜色蔷薇」不再使用月纱脸，而用独立家纹，不改变按钮行为；② `/town/` 不再把三位同模版女性的 `world-cover.webp` 当成市集街景，切回现成 `town-moonlit-gate.webp` **过渡**建筑图。相应 Playwright 检查已同步。**没有创造已签审的真月光街，也没有新角色 CG 晋级**。
+- 品牌封面 PC/手机需要重新设计：四位可玩女主真正不同骨相、独立动作和服装，月纱两卡仍同人同脸；先 G1 人工面部板对照再各卡制作。S02/S05/S06 等 review 图正式状态不变，仍需原生尺寸与人审；本轮 Quality / Visual / Browser / Pages 应按最新 SHA 验收。
+
