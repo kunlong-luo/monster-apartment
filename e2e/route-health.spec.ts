@@ -67,7 +67,7 @@ test('seven production routes boot with interactive game surfaces',async({page})
   }
 });
 
-test('lobby owns compact routes and a seven-place map; others share one optional map',async({page})=>{
+test('lobby owns a top-corner world atlas; other six scenes share one optional map',async({page})=>{
   test.setTimeout(150_000);
   const pages=[
     {path:'/',test:'gothic-lobby'},
@@ -82,8 +82,19 @@ test('lobby owns compact routes and a seven-place map; others share one optional
     await page.goto(entry.path);
     await expect(page.getByTestId(entry.test)).toBeVisible({timeout:20000});
     if(entry.path==='/'){
-      await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link'))
-        .toHaveCount(4);
+      const atlas=page.getByRole('navigation',{name:'主要游戏功能'});
+      await expect(atlas.getByRole('link')).toHaveCount(1);
+      const bounds=await atlas.boundingBox();
+      expect(bounds).not.toBeNull();
+      expect(bounds!.y).toBeLessThan(110);
+      expect(bounds!.x).toBeGreaterThan(900);
+      await atlas.getByRole('button',{name:'全部地点'}).click();
+      const map=page.getByRole('navigation',{name:'全部地点导航'});
+      await expect(map.getByRole('link')).toHaveCount(7);
+      await expect(map.getByRole('link',{name:'大厅',exact:true}))
+        .toHaveAttribute('aria-current','page');
+      await page.keyboard.press('Escape');
+      await expect(map).toHaveCount(0);
       await expect(page.getByTestId('scene-navigation')).toHaveCount(0);
     }else{
       await expect(page.locator('.gothic-dock-bar')).toHaveCount(0);

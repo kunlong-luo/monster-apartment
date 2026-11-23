@@ -29,3 +29,8 @@
 已修改 `e2e/r12-lobby-navigation.spec.ts`、`e2e/r12-lobby-mobile-art-clearance.spec.ts`、`e2e/gothic-lobby.spec.ts`，并把顶角样式集中在 `gothic-lobby-navigation.css`。仍需核对 Quality / Desktop Visual Review / Gameplay Browser Review 同 SHA 结果，不可以只凭 CSS 编译说设计已完美。
 
 **后续**：确认这版实际截图，再决定是否进一步减少右侧第二、第三张海报或左侧重复任务卡。先不要同时重构经营逻辑和场景美术。
+
+### QA 追踪（R12.15 首次视觉运行）
+
+- 提交 `98eb18e` 的 Quality 已通过；首次 Desktop Visual Review 失败点为 `e2e/route-health.spec.ts` 仍要求底部导航四条常驻链接，实际新 UI 只有一条 PC 快捷链接。此项为**测试合同过时**，不能据此宣称视觉验收通过，也不能删除整项回归。
+- 本次改成检查**顶角真实位置 + 单公寓快捷入口 + 展开七项地图 + Escape + 其它六场景单一导航**。并清除参考布局文档中“七按钮底栏”的过时注释。以修复后的新提交的 Quality、Desktop Visual、Browser / Pages 结果重新判断。

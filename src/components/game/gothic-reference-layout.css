@@ -1,6 +1,6 @@
 /* V3.87 · Reference 01 desktop spatial system.
  * One layout source: left resident rail / free central character painting /
- * right illustrated feature + postcards / seven-item bottom dock.
+ * right illustrated feature + postcards / top-corner world atlas.
  * The mobile layout remains the previously playable compact mode. */
 .gothic-lobby__reference-roster,
 .gothic-lobby__reference-right,
@@ -276,8 +276,8 @@
   .gothic-lobby .gothic-lobby__character-actions{display:none}
   .gothic-lobby__character-hit{z-index:1}
 
-  /* Bottom dock: seven canonical destinations in one slim ornament. */
-                /* The reference image keeps both side panels above the navigation band. */
+  /* The base of the painting is intentionally free of persistent navigation.
+   * World travel now lives in the small top-right atlas. */
   .gothic-lobby .gothic-lobby__vignette{
     background:linear-gradient(180deg,#09070b70 0%,transparent 24%,transparent 70%,#09070cc9 100%),
       linear-gradient(90deg,#0a070d65,transparent 24%,transparent 71%,#0906107c);
