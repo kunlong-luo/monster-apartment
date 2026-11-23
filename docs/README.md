@@ -13,7 +13,7 @@
 | 全站美术要重做哪些 / 制作任务 | [R12.7 全站资源重制审计](art-reviews/R12-07-ASSET-REBUILD-AUDIT-2026-11-22.md) → [可执行 CSV 台账](art-reviews/R12-07-ASSET-REBUILD-BACKLOG.csv) | [像素取证](art-reviews/R12-01-REAL-BROWSER-PIXEL-EVIDENCE.md)、[五卡差异化](CHARACTER-CG-DIFFERENTIATION-V1.md) |
 | 首张 S05 独立绘景样板（候选） | [R12.8 S05 契约大厅审稿报告](art-reviews/R12-08-S05-CONTRACT-HALL-REVIEW-2026-11-22.md) | 1672×941 原生图已入 Git review；尚未通过生产尺寸/人审 |
 | S05 双端 + 青枝拉弓（已入 Git 审稿目录） | [R12.9 美术资源与校验](art-reviews/R12-09-ART-PACK-2026-11-22.md) | 3 PNG + 3 WebP + [联系表](art-reviews/R12-09-ART-CONTACT-SHEET-REVIEW-ONLY.jpg) 均在 main；**不是 production** |
-| S06 晶核仓库独立桌面绘景（已入 Git 待审） | [R12.11 仓库场景候选](art-reviews/R12-11-WAREHOUSE-DESKTOP-REVIEW-2026-11-22.md) | 原生 PNG + WebP 在 main 的 review 目录；生产尺寸不达标、手机独立图未交付 |
+| S06 晶核仓库 PC / 手机独立候选（已入 Git 待审） | [R12.11 桌面](art-reviews/R12-11-WAREHOUSE-DESKTOP-REVIEW-2026-11-22.md) · [R12.12 手机](art-reviews/R12-12-WAREHOUSE-MOBILE-REVIEW-2026-11-23.md) | 两组真实原始 PNG + WebP 在 main review 目录；双端原生尺寸仍未达标、不能正式替换 |
 | 场景原画 / 私室 | [R12 原画入库规则](art-reviews/R12-02-SCENE-ART-INTAKE.md) | [房间视觉规则](v3/23-ROOM-ART-PIPELINE-AND-CINEMATIC-PERFORMANCE.md) |
 | 当前缺口、下一步 | [缺口与风险台账](engineering/GAP-REGISTER-2026-11-22.md)、[GitHub Issues](https://github.com/kunlong-luo/monster-apartment/issues)、[任务表](../management/TASKS.csv) | [R11.3 已核实历史基线](engineering/2026-11-12-r11-3-release-baseline.md) |
 | 技术及产品决策 | [ADR 决策表](DECISIONS.md) | [早期 V0.1 开发计划（历史）](DEVELOPMENT_PLAN.md) |

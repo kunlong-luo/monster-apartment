@@ -142,6 +142,40 @@
         "browserDPRReview": false
       },
       "notes": "New distinct moonlit crystal warehouse, not contract hall and not mobile composition. Native 1672x941 research preview below production gate."
+    },
+    {
+      "taskId": "ART-S06-M",
+      "role": "scene-mobile",
+      "reviewId": "warehouse-mobile-v1",
+      "stage": "research-review",
+      "productionApproved": false,
+      "availableInGit": true,
+      "source": {
+        "path": "art-sources/review/2026-11-23/warehouse-mobile-v1.png",
+        "format": "PNG",
+        "width": 941,
+        "height": 1672,
+        "sha256": "2261ffccb6021b7065ddd95abb722ecd7fbd29b185ce3a3cda191f6aa39df6b9",
+        "bytes": 2889158
+      },
+      "candidate": {
+        "path": "public/art/world-scenes/review/2026-11-23/warehouse-mobile-v1.webp",
+        "format": "WebP",
+        "width": 941,
+        "height": 1672,
+        "sha256": "c9d00ff314c86aa6c600ae1c55f2c36c723a2b9c86286b71f44a349fd22f8e7c",
+        "bytes": 419522
+      },
+      "gate": {
+        "minNativeWidth": 1080,
+        "minNativeHeight": 1920,
+        "nativeSizePass": false,
+        "humanVisualReview": false,
+        "rightsReviewed": false,
+        "browserDPRReview": false
+      },
+      "notes": "New independent vertical 9:16 warehouse painting. Crystal stock, rail crane, moonlit window and transport cart; NOT a desktop crop. Native resolution is below production minimum; staged in Git for human review.",
+      "gitBinaryStatus": "review-assets-committed-no-production-promotion"
     }
   ],
   "binaryCommitEvidence": "Git SHA 1 verified for each original image and WebP; see R12.10 release note. Confirm Git tree paths of the resulting commit."
