@@ -108,3 +108,9 @@
 
 - `ART-S02-D` 本轮新绘一幅左右各 3 扇实体门的 S02 场景，原生 PNG **1672×941** 与同像素 WebP 已真实提交 `art-sources/review/2026-11-23/`、`public/art/world-scenes/review/2026-11-23/`；源图 SHA-256 `5dd2fa1a943064fc9b7996f3329068ba174582f12c746a878defa2b96f7acad5`，WebP `61aa2ad62dac99a8a2d976cb77361bcc1a41dc5e2dd855444f7fe84a46599f31`。纳入 `pnpm audit:r12-review-art` 实物门禁。详情：[R12.13](../art-reviews/R12-13-S02-SIX-DOOR-DESKTOP-REVIEW-2026-11-23.md)。
 - **未完成 / 严格禁止误报**：S02 PC 正式源像素至少 **3296×1856**，手机必须独立 1080×1920；这张仅 1672×941。原生手机仍待绘制；无具名人审、无 6 点 `roomHotspots`、无四视口/逐门点击证明，因此没有更新 `r12-scene-manifest.json` production、没有将旧大厅背景替换、没有更改六间房存档。
+
+## 2026-11-23 R12.14 S02 独立手机六门画稿
+
+- `ART-S02-M` 真实原生 PNG **941×1672** 与同尺寸 WebP 已在 Git review 入库，原始 SHA-256 为 `cffd902c4a4c60cabab52d593516459a5f7e54bb46b7657e84c5b8e1cea99a58`；与此前 S02 桌面 1672×941 独立，六门实体从左蔷薇／潮汐／青叶至右火焰／银月／紫晶。
+- 提交了**非生产门心坐标草案、390×844 和 390×550 的静态 cover 裁切预览、几何 CI 检查**：理论门心距边 ≥22px 且中心间隔 ≥44px。该证明不是游戏真实浏览器截图、未安装点击热点，不改变 `CozyState` 的房间归属或点击逻辑。
+- **仍未完成**：S02 桌面原生 3296×1856 与手机 1080×1920 质量门槛、具名美术/权利审核、PC/手机四视口交互回归和 production 晋级。完整文件哈希与待办在 [R12.14](../art-reviews/R12-14-S02-SIX-DOOR-MOBILE-REVIEW-2026-11-23.md)。

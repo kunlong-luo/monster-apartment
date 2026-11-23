@@ -210,6 +210,40 @@
       },
       "notes": "Six visually separate left/right doors, 3 each (red, blue, green / amber, silver, violet), no baked room text. Desktop source 1672x941 is below S02 3296x1856 DPR2 gate. No verified clickable hotspots; mobile independently composed portrait remains missing.",
       "gitBinaryStatus": "review-assets-committed-no-production-promotion"
+    },
+    {
+      "taskId": "ART-S02-M",
+      "role": "scene-mobile",
+      "reviewId": "apartment-six-door-mobile-v1",
+      "stage": "research-review",
+      "productionApproved": false,
+      "availableInGit": true,
+      "source": {
+        "path": "art-sources/review/2026-11-23/apartment-six-door-mobile-v1.png",
+        "format": "PNG",
+        "width": 941,
+        "height": 1672,
+        "sha256": "cffd902c4a4c60cabab52d593516459a5f7e54bb46b7657e84c5b8e1cea99a58",
+        "bytes": 2964735
+      },
+      "candidate": {
+        "path": "public/art/world-scenes/review/2026-11-23/apartment-six-door-mobile-v1.webp",
+        "format": "WebP",
+        "width": 941,
+        "height": 1672,
+        "sha256": "9aa1b606f36f657158c96bd8019927d8e9f4cbe6ea7263631e1fa895e779ebe6",
+        "bytes": 423086
+      },
+      "gate": {
+        "minNativeWidth": 1080,
+        "minNativeHeight": 1920,
+        "nativeSizePass": false,
+        "humanVisualReview": false,
+        "rightsReviewed": false,
+        "browserDPRReview": false
+      },
+      "notes": "Separate 941x1672 vertical six-door composition (left rose/water/leaf, right flame/moon/crystal). Static center-crop preview and estimated 6 hotspot centers are NOT real browser interaction tests. Source below native 1080x1920 gate.",
+      "gitBinaryStatus": "review-assets-committed-no-production-promotion"
     }
   ],
   "binaryCommitEvidence": "Git SHA 1 verified for each original image and WebP; see R12.10 release note. Confirm Git tree paths of the resulting commit."

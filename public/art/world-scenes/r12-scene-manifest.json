@@ -8,11 +8,11 @@
       "status": "review",
       "candidate": {
         "sourceType": "ai-generated",
-        "sourceReference": "R12 S02 apartment atrium generated 2026-11-14; source is contained in conversation review ZIP, not in repository",
-        "sourceSHA256": "ce7c4f924ca18c0480bd2064e5507912021e417397706b2cb2c8e8af58af90cf",
+        "sourceReference": "2026-11-23 research-only 6-door desktop PNG in art-sources/review/2026-11-23/apartment-six-door-desktop-v1.png, SHA verified in R12-13; not production.",
+        "sourceSHA256": "5dd2fa1a943064fc9b7996f3329068ba174582f12c746a878defa2b96f7acad5",
         "nativeWidth": 1672,
         "nativeHeight": 941,
-        "availableInRepo": false,
+        "availableInRepo": true,
         "humanVisualReview": false,
         "hasNativeMobileArt": false
       },
@@ -21,12 +21,12 @@
       "review": null,
       "mobileCandidate": {
         "sourceType": "ai-generated",
-        "sourceReference": "R12 S02 newly generated separate portrait apartment atrium composition on 2026-11-16, original in conversation R12 S02 dual-composition review ZIP, not checked into this repository",
-        "sourceSHA256": "ebba8a12cead870457a64ae211d1f5ebd529ee56e291f494ffdce369588f4dd0",
+        "sourceReference": "2026-11-23 separately composed six-door vertical PNG art-sources/review/2026-11-23/apartment-six-door-mobile-v1.png (R12-14); review only, not a desktop crop.",
+        "sourceSHA256": "cffd902c4a4c60cabab52d593516459a5f7e54bb46b7657e84c5b8e1cea99a58",
         "nativeWidth": 941,
         "nativeHeight": 1672,
         "independentComposition": true,
-        "availableInRepo": false,
+        "availableInRepo": true,
         "humanVisualReview": false
       }
     },

@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "taskId": "ART-S02-M",
+  "status": "research-hotspot-draft-only-not-wired",
+  "productionApproved": false,
+  "sourceWidth": 941,
+  "sourceHeight": 1672,
+  "doorCentersNormalized": [
+    {
+      "roomIndex": 0,
+      "door": "rose",
+      "side": "left",
+      "x": 0.195,
+      "y": 0.222
+    },
+    {
+      "roomIndex": 1,
+      "door": "water",
+      "side": "left",
+      "x": 0.188,
+      "y": 0.42
+    },
+    {
+      "roomIndex": 2,
+      "door": "leaf",
+      "side": "left",
+      "x": 0.183,
+      "y": 0.608
+    },
+    {
+      "roomIndex": 3,
+      "door": "flame",
+      "side": "right",
+      "x": 0.804,
+      "y": 0.222
+    },
+    {
+      "roomIndex": 4,
+      "door": "moon",
+      "side": "right",
+      "x": 0.811,
+      "y": 0.419
+    },
+    {
+      "roomIndex": 5,
+      "door": "crystal",
+      "side": "right",
+      "x": 0.812,
+      "y": 0.608
+    }
+  ],
+  "analysisMethod": "artist-estimated centers projected with CSS object-fit:cover center alignment; previews are Pillow crops, not browser tests",
+  "viewportChecks": [
+    {
+      "viewport": "390x844",
+      "projectedCenterPixels": [
+        {
+          "roomIndex": 0,
+          "x": 50.1,
+          "y": 187.4
+        },
+        {
+          "roomIndex": 1,
+          "x": 46.8,
+          "y": 354.5
+        },
+        {
+          "roomIndex": 2,
+          "x": 44.4,
+          "y": 513.2
+        },
+        {
+          "roomIndex": 3,
+          "x": 339.4,
+          "y": 187.4
+        },
+        {
+          "roomIndex": 4,
+          "x": 342.7,
+          "y": 353.6
+        },
+        {
+          "roomIndex": 5,
+          "x": 343.2,
+          "y": 513.2
+        }
+      ],
+      "minimumCenterEdgeDistancePx": 44.4,
+      "minimumInterDoorCenterDistancePx": 158.72,
+      "centerWithin22pxSafety": true,
+      "centersSeparated44px": true
+    },
+    {
+      "viewport": "390x550",
+      "projectedCenterPixels": [
+        {
+          "roomIndex": 0,
+          "x": 76,
+          "y": 82.4
+        },
+        {
+          "roomIndex": 1,
+          "x": 73.3,
+          "y": 219.6
+        },
+        {
+          "roomIndex": 2,
+          "x": 71.4,
+          "y": 349.8
+        },
+        {
+          "roomIndex": 3,
+          "x": 313.6,
+          "y": 82.4
+        },
+        {
+          "roomIndex": 4,
+          "x": 316.3,
+          "y": 218.9
+        },
+        {
+          "roomIndex": 5,
+          "x": 316.7,
+          "y": 349.8
+        }
+      ],
+      "minimumCenterEdgeDistancePx": 71.4,
+      "minimumInterDoorCenterDistancePx": 130.21,
+      "centerWithin22pxSafety": true,
+      "centersSeparated44px": true
+    }
+  ],
+  "runtimeHotspotsAdded": false,
+  "humanVisualReview": false,
+  "interactiveBrowserProof": false
+}
