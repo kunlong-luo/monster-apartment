@@ -8,13 +8,13 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await expect(page.getByTestId('game-release')).toContainText(GAME_UI_RELEASE);
   await expect(page.getByTestId('gothic-eclipse-feature')).toContainText('神话 · 月蚀');
-  await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link')).toHaveCount(4);
+  await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link')).toHaveCount(1);
   await expect(page.getByRole('navigation',{name:'快捷功能'})).toHaveCount(0);
   await expect(page.getByTestId('lobby-coins')).toHaveText('100');
-  // Lobby uses the compact HUD; ordinary destinations remain fully labeled.
+  // PC keeps one compact apartment shortcut and a full seven-place atlas.
   const dockLinks=page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link');
   const dockSize=await dockLinks.first().evaluate(el=>el.getBoundingClientRect().width);
-  expect(dockSize).toBeGreaterThan(70);
+  expect(dockSize).toBeGreaterThanOrEqual(44);
   expect(dockSize).toBeLessThan(280);
   await expect(page.getByTestId('gothic-eclipse-feature')).toBeVisible();
   await expect(page.getByTestId('gothic-eclipse-feature')).toHaveAttribute('data-first-contract','true');
@@ -141,7 +141,8 @@ test('returning from workshop retains the sharp full-resolution lobby painting',
   expect(original.width).toBeGreaterThan(0);
   expect(original.height).toBeGreaterThan(0);
   expect(original.src).toContain('lobby-hero');
-  await page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link',{name:'工坊'}).click();
+  await page.getByTestId('lobby-world-toggle').click();
+  await page.getByTestId('lobby-world-menu').getByRole('link',{name:'工坊'}).click();
   await expect(page).toHaveURL(/\/workshop\/?$/);
   await expect(page.getByTestId('v2-stage')).toBeVisible();
   // The workshop dock leads to world areas; browser Back also restores the
@@ -266,11 +267,12 @@ test('hidden tabs suspend candle animation and resume when visible again',async(
   await expect(lighting).toHaveAttribute('data-motion','ambient');
 });
 
-test('cinematic lobby maintains one usable dock and compact context panels on a phone',async({page})=>{
+test('cinematic lobby keeps one corner atlas and compact context panels on a phone',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto('/');
   const dock=page.getByRole('navigation',{name:'主要游戏功能'});
-  await expect(dock.getByRole('link')).toHaveCount(3);
+  await expect(dock.getByRole('link')).toHaveCount(0);
+  await expect(dock.getByRole('button',{name:'全部地点'})).toBeVisible();
   await expect(page.getByTestId('gothic-eclipse-feature')).toBeVisible();
   await expect(page.getByTestId('gothic-character-room')).toBeVisible();
   await expect(page.getByRole('button',{name:'委托消息'})).toHaveCount(1);
@@ -288,7 +290,7 @@ test('cinematic lobby maintains one usable dock and compact context panels on a 
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
 });
 
-test('original black-gold reference keeps left quests, central painting, right actions and one bottom dock',async({page})=>{
+test('cinematic reference keeps left quests, central painting, right actions and corner atlas',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
   const stage=page.locator('.gothic-lobby__painting');
@@ -300,14 +302,15 @@ test('original black-gold reference keeps left quests, central painting, right a
   await expect(actions).toBeVisible();
   const boxes=await Promise.all([stage,quests,actions,dock].map(element=>element.boundingBox()));
   if(boxes.some(box=>!box))throw new Error('Missing cinematic layout region');
-  const [painting,left,right,bottom]=boxes as NonNullable<typeof boxes[number]>[];
+  const [painting,left,right,atlas]=boxes as NonNullable<typeof boxes[number]>[];
   expect(painting.width).toBeGreaterThanOrEqual(1438);
   expect(painting.height).toBeGreaterThanOrEqual(898);
   expect(left.x+left.width).toBeLessThan(1440*.4);
   expect(right.x).toBeGreaterThan(1440*.75);
   expect(right.width).toBeLessThanOrEqual(1440*.27);
   expect(right.x).toBeGreaterThan(left.x+left.width+400);
-  expect(bottom.y+bottom.height).toBeLessThanOrEqual(900);
-  expect(bottom.y).toBeGreaterThan(900*.80);
-  await expect(dock.getByRole('link')).toHaveCount(4);
+  expect(atlas.x).toBeGreaterThanOrEqual(950);
+  expect(atlas.y+atlas.height).toBeLessThanOrEqual(110);
+  expect(atlas.width).toBeLessThanOrEqual(250);
+  await expect(dock.getByRole('link')).toHaveCount(1);
 });

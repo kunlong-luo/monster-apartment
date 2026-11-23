@@ -131,9 +131,9 @@ export function GothicResourcePill({
 }
 
 /**
- * R12: lobby alone owns this compact destination rail. Four quick routes are
- * visible on desktop (three on narrow phones); the canonical registry remains
- * available in its entirety through one keyboard-accessible world menu.
+ * R12.15: one top-right atlas, not a permanent footer.
+ * The desktop apartment shortcut complements existing scenic destination links;
+ * on phones only the map trigger stays visible. All seven routes remain in it.
  */
 export function GothicDock({
   items,label,className='',activeHref,testId
@@ -148,7 +148,7 @@ export function GothicDock({
   const [open,setOpen]=useState(false);
   const shellRef=useRef<HTMLDivElement>(null);
   const triggerRef=useRef<HTMLButtonElement>(null);
-  const quickRoutes=['/apartment/','/workshop/','/characters/','/town/'];
+  const quickRoutes=['/apartment/'];
   const quick=quickRoutes.map(href=>items.find(item=>item.href===href)).filter(
     (item):item is GothicDestination=>Boolean(item)
   );
@@ -175,10 +175,10 @@ export function GothicDock({
   return <div className="gothic-lobby__navigation" ref={shellRef} data-testid="lobby-navigation">
     <nav data-testid={testId??'lobby-primary-nav'} aria-label={label}
       className={'gothic-dock-bar gothic-dock--r12 '+className}>
-      {quick.map((item,index)=><Link key={item.href} href={item.href}
+      {quick.map(item=><Link key={item.href} href={item.href}
         data-destination={item.href} data-testid="lobby-quick-destination"
         aria-label={item.ariaLabel??item.label}
-        className={'gothic-dock__quick'+(index===3?' gothic-dock__quick--desktop':'')}
+        className="gothic-dock__quick"
         onClick={()=>setOpen(false)}>
         <span className="gothic-dock__quick-icon" aria-hidden="true">{getCanonicalDockIcon(item.href,item.icon)}</span>
         <span className="gothic-dock__quick-label">{item.label}</span>
@@ -188,7 +188,7 @@ export function GothicDock({
         aria-haspopup="true" aria-expanded={open} aria-controls="lobby-world-menu"
         onClick={()=>setOpen(v=>!v)}>
         <Map aria-hidden="true" size={20} strokeWidth={1.6}/>
-        <span>全部地点</span>
+        <span>世界地图</span>
         <ChevronUp aria-hidden="true" size={14} strokeWidth={1.6}
           className={open?'gothic-dock__more-arrow gothic-dock__more-arrow--open':'gothic-dock__more-arrow'}/>
       </button>

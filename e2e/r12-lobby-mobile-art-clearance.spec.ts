@@ -12,9 +12,8 @@ test('mobile lobby prioritizes heroine painting without losing summon or seven r
   await expect(mainQuest).toBeVisible();
   await expect(feature).toContainText('神话 · 月蚀');
   await expect(feature).toHaveAttribute('href',/characters/);
-  // On phones the fourth dock control is the seven-destination map toggle,
-  // not a fourth direct anchor. Assert the actual user journey.
-  await expect(dock.getByRole('link')).toHaveCount(3);
+  // Only the corner atlas remains; no 4-button overlay over the heroine.
+  await expect(dock.getByRole('link')).toHaveCount(0);
   const worldToggle=dock.getByRole('button',{name:'全部地点'});
   await expect(worldToggle).toBeVisible();
   await worldToggle.click();
@@ -32,10 +31,10 @@ test('mobile lobby prioritizes heroine painting without losing summon or seven r
   expect(featureBox!.height).toBeGreaterThanOrEqual(44);
   expect(featureBox!.y+featureBox!.height).toBeLessThanOrEqual(328);
   expect(questBox!.y+questBox!.height).toBeLessThanOrEqual(featureBox!.y+2);
-  expect(dockBox!.width).toBeLessThanOrEqual(359);
-  expect(dockBox!.x).toBeGreaterThanOrEqual(11);
-  expect(dockBox!.x+dockBox!.width).toBeLessThanOrEqual(379);
-  expect(dockBox!.y+dockBox!.height).toBeLessThanOrEqual(844.5);
+  expect(dockBox!.width).toBeLessThanOrEqual(50);
+  expect(dockBox!.x).toBeGreaterThanOrEqual(290);
+  expect(dockBox!.x+dockBox!.width).toBeLessThanOrEqual(390);
+  expect(dockBox!.y).toBeLessThan(110);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
 
   mkdirSync('visual-evidence/lobby',{recursive:true});
@@ -51,7 +50,8 @@ test('mobile lobby prioritizes heroine painting without losing summon or seven r
   const desktopFeature=await feature.boundingBox();
   const desktopDock=await dock.boundingBox();
   expect(desktopFeature!.height).toBeGreaterThanOrEqual(200);
-  expect(desktopDock!.width).toBeLessThanOrEqual(671);
-  expect(desktopDock!.width).toBeGreaterThanOrEqual(550);
+  expect(desktopDock!.width).toBeLessThanOrEqual(250);
+  expect(desktopDock!.x).toBeGreaterThanOrEqual(950);
+  expect(desktopDock!.y).toBeLessThan(105);
   await page.screenshot({path:'visual-evidence/lobby/desktop-art-clearance-1440.png',animations:'disabled',fullPage:false});
 });

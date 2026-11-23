@@ -127,6 +127,9 @@ export function GothicLobby(){
         </button>
         <GothicIconButton label="切换动态特效" data-tooltip="切换动态特效" pressed={reducedMotion}
           onClick={toggleMotion}><Orbit aria-hidden="true" size={17} strokeWidth={1.7}/></GothicIconButton>
+        {/* One top-right atlas replaces the full-width bottom dock. */}
+        <GothicDock items={WORLD_NAV.map(n=>({href:n.href,icon:n.glyph,label:n.label,ariaLabel:n.full,description:n.purpose}))}
+          label="主要游戏功能" activeHref="/" className="gothic-dock--r12"/>
       </div>
     </header>
 
@@ -173,9 +176,6 @@ export function GothicLobby(){
     <div className="gothic-lobby__character-caption pointer-events-none absolute z-[1] bottom-[clamp(106px,16vh,158px)] left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5 text-[#f6d9b8] [text-shadow:0_3px_12px_#000]" aria-hidden="true"><span className="text-[13px] tracking-[.23em]">月纱</span><small className="text-[10px] text-[#d0b298]">暗夜公寓的女主人</small></div>
 
 
-
-    <GothicDock items={WORLD_NAV.map(n=>({href:n.href,icon:n.glyph,label:n.label,ariaLabel:n.full,description:n.purpose}))}
-      label="主要游戏功能" activeHref="/" compact className="gothic-dock--r12"/>
 
     <AnimatePresence mode="wait">
     {panel&&<GothicModal key={panel} title={panel==='bond'?'与月纱交谈':panel==='profile'?'玩家资料':panel==='memories'?'剧情回顾':'委托消息'}

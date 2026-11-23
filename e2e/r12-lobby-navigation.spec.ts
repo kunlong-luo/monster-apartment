@@ -5,12 +5,15 @@ test('R12 lobby world menu exposes every canonical place and restores keyboard f
   await page.goto('/');
   const quick=page.getByRole('navigation',{name:'主要游戏功能'});
   const toggle=quick.getByRole('button',{name:'全部地点'});
-  await expect(quick.getByRole('link')).toHaveCount(4);
+  await expect(quick.getByRole('link')).toHaveCount(1);
   await expect(quick.getByRole('link',{name:'暗夜公寓'})).toBeVisible();
-  await expect(quick.getByRole('link',{name:'工坊'})).toBeVisible();
-  await expect(quick.getByRole('link',{name:'角色图鉴'})).toBeVisible();
-  await expect(quick.getByRole('link',{name:'月光街'})).toBeVisible();
   await expect(page.getByTestId('lobby-world-menu')).toHaveCount(0);
+  const corner=await quick.boundingBox();
+  expect(corner).not.toBeNull();
+  expect(corner!.x).toBeGreaterThan(900);
+  expect(corner!.y).toBeLessThan(100);
+  expect(corner!.y+corner!.height).toBeLessThan(105);
+  expect(corner!.width).toBeLessThan(250);
   await toggle.focus();
   await page.keyboard.press('Enter');
   await expect(toggle).toHaveAttribute('aria-expanded','true');
@@ -29,11 +32,16 @@ test('R12 lobby world menu exposes every canonical place and restores keyboard f
   await expect(page.getByTestId('moonwork-world')).toBeVisible();
 });
 
-test('R12 mobile displays only three quick routes, keeps the full map and never scrolls sideways',async({page})=>{
+test('R12 mobile shows only the world atlas, with no permanent bottom nav',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto('/');
   const quick=page.getByRole('navigation',{name:'主要游戏功能'});
-  await expect(quick.getByRole('link')).toHaveCount(3);
+  await expect(quick.getByRole('link')).toHaveCount(0);
+  const corner=await quick.boundingBox();
+  expect(corner).not.toBeNull();
+  expect(corner!.width).toBeLessThanOrEqual(50);
+  expect(corner!.x).toBeGreaterThan(290);
+  expect(corner!.y).toBeLessThan(110);
   const toggle=quick.getByRole('button',{name:'全部地点'});
   const hit=await toggle.boundingBox();
   expect(hit).not.toBeNull();
