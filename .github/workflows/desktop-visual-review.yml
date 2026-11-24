@@ -16,6 +16,7 @@ on:
       - 'src/components/game/gothic-lobby.css'
       - 'src/components/game/gothic-lobby-navigation.css'
       - 'e2e/r12-lobby-mobile-art-clearance.spec.ts'
+      - 'e2e/r12-web-lobby-dpr-budget.spec.ts'
       - 'src/components/game/gothic-reference-layout.css'
       - 'src/components/game/gothic-premium-tokens.css'
       - 'src/components/game/gothic-red-gold.css'
@@ -139,6 +140,8 @@ jobs:
         run: |
           mkdir -p visual-evidence/general
           find test-results -maxdepth 1 -type f \( -name 'desktop-*.png' -o -name 'mobile-lobby-*.png' \) -exec cp {} visual-evidence/general/ \; || true
+      - name: Measure current PC and mobile lobby source-pixel debt on real DPR2 Chromium
+        run: pnpm exec playwright test e2e/r12-web-lobby-dpr-budget.spec.ts --workers=1 --retries=0
       - name: Review A05 reference proportions, keyboard navigation and capture desktop/mobile screenshots
         run: pnpm exec playwright test e2e/a05-character-gallery-layout.spec.ts --workers=1 --retries=0
       - name: Run focused archive forge and room-navigation browser regression
