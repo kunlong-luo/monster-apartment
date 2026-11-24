@@ -226,7 +226,10 @@ test('all three worker rooms can review local background and reject nontranspare
   for(const id of ['brook','fern','cinder'] as const){
     await page.getByTestId('visit-worker-room-'+id).click();
     // Research mode is opt-in and must survive Next SPA room navigation.
-    await expect(page).toHaveURL(new RegExp('\\?visit='+id+'&roomArtReview=1
+    await expect.poll(()=>new URL(page.url()).searchParams.get('visit')).toBe(id);
+    await expect.poll(()=>new URL(page.url()).searchParams.get('roomArtReview')).toBe('1');
+    const room=page.getByTestId('worker-private-room-'+id);
+    const review=room.getByTestId('room-art-local-review');
     await expect(review).toHaveAttribute('data-review-room',id);
     const backdrop=room.getByTestId('room-scene-backdrop');
     await expect(backdrop).toHaveAttribute('data-local-preview','false');
