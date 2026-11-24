@@ -16,6 +16,7 @@ test('fresh visitor sees a full-screen welcome and enters the real saved lobby',
   }
   await page.screenshot({path:'test-results/welcome-desktop.png',animations:'disabled'});
   await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',1672);
+  await expect.poll(()=>page.getByTestId('welcome-cover-image').evaluate((img:HTMLImageElement)=>img.currentSrc)).toMatch(/world-cover\.[^/]+\.webp|world-cover\.webp/);
   await expect(page.getByTestId('gothic-welcome')).toHaveAttribute('data-cover-status','integrated-beauty-beasts-cover');
   await expect(page.getByTestId('gothic-lobby')).toHaveCount(0);
   // Full game stage is loaded only after entry; the cover remains usable.
@@ -52,6 +53,7 @@ test('phone welcome preserves touch target and does not scroll',async({page})=>{
   const source=page.locator('.gothic-welcome__painting source');
   await expect(source).toHaveAttribute('media','(max-width:700px)');
   await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',941);
+  await expect.poll(()=>page.getByTestId('welcome-cover-image').evaluate((img:HTMLImageElement)=>img.currentSrc)).toContain('world-cover-mobile');
   const measurement=await page.evaluate(()=>{
     const el=document.querySelector('[data-testid="welcome-enter"]')!;
     const box=el.getBoundingClientRect();

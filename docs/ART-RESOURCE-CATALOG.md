@@ -303,3 +303,7 @@
 ## R12.53 候选接入
 
 候选分支通过脚本生成 15 份 WebP，并保留原始 PNG；实际输出、源/输出 SHA-256、裁切、原生像素及旧 blob 见 public/art/r12-53-transition-manifest.json（转换完成后生成）。当前主线尚未启用。参见 [R12.53](art-reviews/R12-53-CHARACTER-AND-COVER-TRANSITION-2026-11-24.md)。
+
+## R12.54 实际输出回读
+
+R12.53 候选已真实生成 15 WebP（5,376,498 B），原图与输出的机器可读 [转换清单](../public/art/r12-53-transition-manifest.json) 已存在。原 33 源图完整保留，候选输出不等同正式 CG 或已上线。旧目录统计是 R12.52 清理快照；候选新增 2 个大厅 WebP 路径，其余为稳定槽位替换。见 [R12.54 验收记录](art-reviews/R12-54-TRANSITION-ASSET-VERIFICATION-2026-11-24.md)。
