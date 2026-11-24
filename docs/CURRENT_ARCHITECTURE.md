@@ -1,4 +1,4 @@
-# 当前架构（R12.67 核查）
+# 当前架构（R12.69 核查）
 
 以 V3.105.0 主线 `0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0` 为证据基线。下方历史实现记录不用于推断当前资产或数量。
 
@@ -12,7 +12,11 @@
 
 ## R12.68 · 组件引用关系
 
-当前已为 app/src、测试、脚本及 Pixi 代码建立只读 [组件引用审计](../scripts/audit-component-usage.mjs)，使用现有 TypeScript AST、tsconfig 路径解析与 CSS 导入关系。结果区分 app 可达、辅助可达、待审不可达；不据文件名删除。已确认共享 world-ui 仍静态导入 world-characters，现行角色路由独立使用 CharacterGalleryScene 与 GothicSummonScreen；召唤主屏仍使用 SummonHeroineSpotlight。CSS 选择器级覆盖与非字面量动态引用需后续独立审查。操作规范见[迭代手册](engineering/ITERATION-PLAYBOOK.md)。
+当前已为 app/src、测试、脚本及 Pixi 代码建立只读 [组件引用审计](../scripts/audit-component-usage.mjs)，使用现有 TypeScript AST、tsconfig 路径解析与 CSS 导入关系。结果区分 app 可达、辅助可达、待审不可达；不据文件名删除。R12.68 [实际 CI 日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45374117852/job/138375617179) 扫描 330 文件、11 app 根、94 模块：93 可达、1 不可达、0 辅助独占，未解析本地引用及未知动态导入均为 0。CSS 选择器级覆盖与非字面量动态引用需后续独立审查。操作规范见[迭代手册](engineering/ITERATION-PLAYBOOK.md)。
+
+## R12.69 · 删除旧召唤与重复图鉴
+
+删除 `src/components/game/character-summon-reveal.tsx`（唯一审计不可达，0 入边），保留 `SummonRitualModal` → `SummonResultStage` → `CharacterContractCard`；现有结果对话框和单抽/十连结算契约不变。`MoonworkWorld` 的正式调用者只传 town/orders/warehouse；`app/characters/page.tsx` 使用 `CharactersSceneRouter` → `CharacterGalleryScene` / `GothicSummonScreen`，原 `world-characters.tsx` 仅因旧分支静态导入而可达。本轮收窄 `WorldArea`，删除该分支、旧房间 URL 手工状态、旧图鉴组件，并从 `gothic-world.css` 删除 31 条仅匹配旧 `.mw.mw-gothic[data-area="characters"]` 根的规则；现行图鉴根为 `.cg-scene`。无范围限定的选择器、19 个 CSS 文件、现有页面样式及其他资源暂保留，等待独立覆盖审查。新 SHA 的 Quality 与浏览器尚未核验。
 
 ## 历史架构演进（原记录，仅供追溯）
 
