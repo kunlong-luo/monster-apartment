@@ -1,4 +1,4 @@
-import type {Craft,WorkerId} from '../../../v2/src/workshop-model';
+import type {Craft,WorkerId} from '../../../engine/src/workshop-model';
 
 type Level='1'|'2'|'3';
 export type ApprovedMachineUrls=Partial<Record<Craft,Partial<Record<Level,string>>>>;

@@ -130,7 +130,7 @@ components:
 
 V3.88 PC 截图表明 `/town/` 左侧曾使用 `lobby-hero-v2.webp`，`/workshop/` 的 Pixi WebGL 画布使用 `lobby-hero-v3.webp`，两个不同场所显示同一位大厅女主。V3.89 为两个正式路由加入**真实 1920×1080** 的独立世界绘景（`public/art/world-scenes/`）；许可声明、源图与输出 SHA-256 见 `source-manifest.json`，原 V3.87 大厅四区版式维持不变。
 
-- 工坊的 React 根背景及 Pixi WebGL 内层绘景同步采用 `workshop-gothic-hall.webp`（哥特室内厅堂）；真实设备的 Pixi 精灵、15 格地块、工匠、自动生产、委托交付均不改动。Pixi 通过 `v2/scripts/build.mjs` 将绘景复制到自己的 `dist/assets/`，优先加载，失败回退 V3/V2 背景及程序画面。
+- 工坊的 React 根背景及 Pixi WebGL 内层绘景同步采用 `workshop-gothic-hall.webp`（哥特室内厅堂）；真实设备的 Pixi 精灵、15 格地块、工匠、自动生产、委托交付均不改动。Pixi 通过 `engine/scripts/build.mjs` 将绘景复制到自己的 `dist/assets/`，优先加载，失败回退 V3/V2 背景及程序画面。
 - 月光街的全屏绘景使用 `town-moonlit-gate.webp`（点灯的夜间庄园入口）；右侧仍显示真实市集、今日居民和通往工坊/委托所/仓库的入口。玩家角色封面仍是世界剧情插画，不重复充当背景。
 - WineChan Gothic Manor 素材源站声称 public domain 并披露 AI-assisted，真实原图均为 1920×1080。本次图像**仅是独立过渡环境**，厅堂不包含锻造炉、庄园外景也不是完整的商业街地图；不能冒称正式锻造 CG 或街区可导航原画，不可替换已设审核门槛的住客房间图。
 - 在 1440×900 的浏览器验收中必须检查 Pixi `data-backdrop-source=world-hall-2k`、`data-runtime-ready=true`、场景图解码 1920px，以及真实交易与七项导航保持运行；移动端继续无重复导航。
@@ -154,7 +154,7 @@ V3.88 PC 截图表明 `/town/` 左侧曾使用 `lobby-hero-v2.webp`，`/workshop
 
 - 保留用户已批准的 **左四位住客肖像 / 中央月纱绘景互动 / 右月蚀与绘景海报** 的四区艺术版式；底部允许改成低高度的常用入口与「全部地点」折叠菜单，不再要求七个按钮始终平铺。七条正式路由必须全部可到达（同一个 `CANONICAL_GAME_NAV`），不得出现重复菜单或错误点击行为。
 - 首页 Dock 的真实组件在 `gothic-hud.tsx`；其 CSS 同时存在于 `gothic-lobby.css` 和 `gothic-reference-layout.css`。重构必须收口到单一样式责任区，**删除**多余高优先级覆盖，不能再只在 CSS 末尾加 `!important`。
-- 原画质量门槛与清单见 [R12 图片与场景审计](docs/art-reviews/R12-00-IMAGE-AND-SCENE-AUDIT.md)。`1587×991` 大厅图与 `v2/art/moon-workshop.avif` 的跨页重复要优先复核；对旧图实际糊点使用真实 decoded size / DPR / cover 裁切 / 加载回退和 PC/手机截图说明原因。1920×1080 的临时厅堂、庄园大门与四张 SVG 概念场景**不等于已批准的高清正式 CG**。
+- 原画质量门槛与清单见 [R12 图片与场景审计](docs/art-reviews/R12-00-IMAGE-AND-SCENE-AUDIT.md)。`1587×991` 大厅图与 `engine/art/moon-workshop.avif` 的跨页重复要优先复核；对旧图实际糊点使用真实 decoded size / DPR / cover 裁切 / 加载回退和 PC/手机截图说明原因。1920×1080 的临时厅堂、庄园大门与四张 SVG 概念场景**不等于已批准的高清正式 CG**。
 - 新世界 CG 必须有独立场景身份、真实场景元素、授权溯源、PC/手机独立构图与分层，先审稿后标记正式；不允许靠 CSS 换色、放大头像或任意柔焦蒙版冒充多张新图。
 - 布局验收至少覆盖 1440×900、1648×928、390×844、390×550；评估键盘、触控、减少动态效果、页面深链、真实存档和 GPU/Pixi 缩放。
 - 这是**新的后续设计决策草案**，不倒改 V3.87/V3.90 已发布历史事实；正式发布状态以单独 PR、真实 CI 与人工画面审查为准。

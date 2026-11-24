@@ -1,6 +1,6 @@
 # 《怪物公寓》文档总入口
 
-> R12.75：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
+> R12.76：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
 
 ## 现行规范（新开发从这里开始）
 
@@ -12,7 +12,7 @@
 | 研发流程与风险验收 | [ITERATION-PLAYBOOK.md](engineering/ITERATION-PLAYBOOK.md)、[依赖优先](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 美术目录、命名、实际资源 | [ART-RESOURCE-CATALOG.md](ART-RESOURCE-CATALOG.md)、[源图清单](../art-sources/source-catalog.json) |
 | 新人物、CG、武器、服装与身份 | [CHARACTER-CREATION-SOP.md](CHARACTER-CREATION-SOP.md)、[人物 brief](templates/CHARACTER-DESIGN-BRIEF-TEMPLATE.md)、[五卡差异化](CHARACTER-CG-DIFFERENTIATION-V1.md)、[原生高清管线](CHARACTER-CG-NATIVE-PIPELINE.md) |
-| 工坊设备美术 | [WORKSHOP-ASSET-SPEC.md](design/WORKSHOP-ASSET-SPEC.md)、[机器清单](../v2/art/asset-pack.v1.json) |
+| 工坊设备美术 | [WORKSHOP-ASSET-SPEC.md](design/WORKSHOP-ASSET-SPEC.md)、[机器清单](../engine/art/asset-pack.v1.json) |
 | 独立场景原画审核 | [R12 原画入库规则](art-reviews/R12-02-SCENE-ART-INTAKE.md)、[场景视觉验收](engineering/R12-41-INDEPENDENT-SCENE-VISUAL-REVIEW-2026-11-24.md) |
 | 当前缺口和任务 | [风险台账](engineering/GAP-REGISTER-2026-11-22.md)、[GitHub Issues](https://github.com/kunlong-luo/monster-apartment/issues) |
 | 真人首次试玩 | [观察协议](research/2026-11-13-r113-first-session-protocol.md) |
@@ -55,7 +55,7 @@
 
 ## R12.75 · 工坊文档归并
 
-原 `v2/docs/` 四份文件收敛为现行设备规格一份；旧路线/旧路由/旧人物规划使用固定 Git 快照，必要的设计与工程约束合并到现行 SOP、架构和风险台账。目录门禁禁止恢复 `v2/docs/`。新增 `pnpm audit:engine-paths` 扫描当前引擎目录之外的明确路径、npm --prefix、tsconfig 等引用，为后续单独的 engine 迁移准备清单；没有移动运行引擎或改动存档键。
+原 `v2/docs/` 四份文件收敛为现行设备规格一份；旧路线/旧路由/旧人物规划使用固定 Git 快照，必要的设计与工程约束合并到现行 SOP、架构和风险台账。目录门禁禁止恢复 `v2/` 与 `engine/docs/`。新增 `pnpm audit:engine-paths` 扫描当前引擎目录之外的明确路径、npm --prefix、tsconfig 等引用，为后续单独的 engine 迁移准备清单；该轮未移动运行引擎或改动存档键。
 
 ## 维护约定
 
@@ -64,3 +64,6 @@
 - 代码已提交、Quality 通过、浏览器通过、Pages 已部署是四个不同事实，分别记录 SHA。
 - 新素材按角色/用途稳定英文小写连字符目录，遵循角色 SOP；CG 原生最低 1086×1448 可进入人审，禁止插值冒充原生或同脸换色。
 - 保留七条正式路由、存档键、经济/概率、全屏绘景、小型角落 HUD；禁用 Sparkles/WandSparkles。
+
+
+R12.76：引擎迁至 `engine/`，旧根路径退役；历史报告保留当时路径，现行入口与构建命令以根 README 为准。候选提交需 Quality、相关浏览器与 Pages 分别核验。

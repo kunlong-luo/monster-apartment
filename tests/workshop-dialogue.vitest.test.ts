@@ -1,7 +1,7 @@
 import {describe,expect,it} from 'vitest';
 import {
   assignWorker,moveMachine,newWorkshop,placeMachine,runShift
-} from '../v2/src/workshop-engine';
+} from '../engine/src/workshop-engine';
 import {workshopDialogue} from '../src/lib/moonwork/workshop-dialogue';
 
 describe('Moonveil comments truthfully on the actual workshop',()=>{

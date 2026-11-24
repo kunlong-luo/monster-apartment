@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-import {assignWorker,moveMachine,placeMachine,runShift,newWorkshop} from '../v2/src/workshop-engine';
+import {assignWorker,moveMachine,placeMachine,runShift,newWorkshop} from '../engine/src/workshop-engine';
 import {decideWorker,inspectCharacterRoom,newCharacterLife,visitCharacter} from '../src/core/character-life';
 
 test('Moonsha private room preserves a meaningful first choice without changing apartment money',async({page})=>{

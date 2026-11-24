@@ -2,8 +2,8 @@
 import Link from 'next/link';
 import {WORLD_LINK_CLASS} from './world-primitives';
 import {R12SceneHeroPainting} from '@/components/game/r12-scene-painting';
-import {PATRON_IMPORT_PRICE} from '../../../v2/src/workshop-engine';
-import type {WorkshopState} from '../../../v2/src/workshop-engine';
+import {PATRON_IMPORT_PRICE} from '../../../engine/src/workshop-engine';
+import type {WorkshopState} from '../../../engine/src/workshop-engine';
 import {Panel,Action} from './world-primitives';
 
 /** Inventory rows are UI primitives, not hand-maintained CSS selectors. */

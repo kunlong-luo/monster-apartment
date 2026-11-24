@@ -1,6 +1,6 @@
 import {describe,it,expect} from 'vitest';
-import {newWorkshop,validWorkshop,BOARD_SIZE} from '../v2/src/workshop-engine';
-import {workshopBenchmarkFixture,WORKSHOP_BENCHMARK_PROFILES} from '../v2/src/workshop-benchmark-fixtures';
+import {newWorkshop,validWorkshop,BOARD_SIZE} from '../engine/src/workshop-engine';
+import {workshopBenchmarkFixture,WORKSHOP_BENCHMARK_PROFILES} from '../engine/src/workshop-benchmark-fixtures';
 
 describe('R09 repeatable workshop browser performance seeds',()=>{
   it('generates 0, 2, 15-machine V2 saves that pass real save validation',()=>{

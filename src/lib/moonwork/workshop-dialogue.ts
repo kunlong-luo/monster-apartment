@@ -1,5 +1,5 @@
-import {MACHINES,WORKERS,projectMachineProduction} from '../../../v2/src/workshop-engine';
-import type {WorkshopState} from '../../../v2/src/workshop-engine';
+import {MACHINES,WORKERS,projectMachineProduction} from '../../../engine/src/workshop-engine';
+import type {WorkshopState} from '../../../engine/src/workshop-engine';
 
 /** Month-end production reports and supply links are authored by the same
  * deterministic engine as the save. Moonveil's dialogue is a *read-only*

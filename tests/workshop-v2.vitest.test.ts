@@ -11,7 +11,7 @@ import {
   buyTownSupply,townMarketAvailable,TOWN_MARKET,
   deliverResidentRequest,residentForDay,residentRequestAvailable,
   residentRequestStock,TOWN_RESIDENTS,
-} from '../v2/src/workshop-engine';
+} from '../engine/src/workshop-engine';
 
 const connect=()=>{
   let state=newWorkshop();

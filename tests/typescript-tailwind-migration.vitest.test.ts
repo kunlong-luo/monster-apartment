@@ -18,7 +18,7 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     };
     expect(project.compilerOptions.strict).toBe(true);
     expect(project.compilerOptions.allowJs).toBe(false);
-    for(const dir of ['app','src','v2/src']){
+    for(const dir of ['app','src','engine/src']){
       const legacy=scripts(dir).filter(path=>['.js','.jsx','.mjs'].includes(extname(path)));
       expect(legacy,dir+' must contain only TS/TSX runtime code').toEqual([]);
     }
@@ -82,8 +82,8 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(world).toContain('lobby-hero-v3.webp');
     expect(workshop).not.toContain('url(../lobby-hero.webp)');
     expect(workshop).toContain('moonveilPortrait.src');
-    const stage=read('v2/src/workshop-lab-stage.ts');
-    const loader=read('v2/src/workshop-painted-art.ts');
+    const stage=read('engine/src/workshop-lab-stage.ts');
+    const loader=read('engine/src/workshop-painted-art.ts');
     expect(loader).toContain("loadPaintedTexture(assetBase,'yuesha-avatar-v3.webp')");
     expect(loader).toContain("new URL('./assets/'+filename,assetBase)");
     expect(loader).toContain("url.searchParams.set('retry',String(attempt))");
@@ -127,8 +127,8 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     for(const route of ['classic','legacy','survival']){
       expect(()=>read('app/'+route+'/page.tsx')).toThrow();
     }
-    for(const removed of ['src/styles/legacy-game.css','v2/index.html',
-      'v2/src/workshop.css','src/components/game/game-screen.tsx']){
+    for(const removed of ['src/styles/legacy-game.css','engine/index.html',
+      'engine/src/workshop.css','src/components/game/game-screen.tsx']){
       expect(()=>read(removed)).toThrow();
     }
     expect(read('src/components/moonwork/world-ui.tsx')).toContain("import './world.css'");
@@ -172,7 +172,7 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(overrides).not.toContain('.mw-link');
   });
   it('renders workshop controls only in React, without a parallel HTML toolbar',()=>{
-    const runtime=read('v2/src/main.ts');
+    const runtime=read('engine/src/main.ts');
     const client=read('src/components/moonwork/workshop-client.tsx');
     const controls=read('src/components/moonwork/workshop-controls.tsx');
     expect(runtime).not.toContain('innerHTML');
@@ -186,8 +186,8 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(controls).toContain('data-testid={\'v2-build-\' + id}');
   });
   it('routes every React factory control through an explicit typed command bridge',()=>{
-    const runtime=read('v2/src/main.ts');
-    const bridge=read('v2/src/workshop-runtime-contract.ts');
+    const runtime=read('engine/src/main.ts');
+    const bridge=read('engine/src/workshop-runtime-contract.ts');
     const client=read('src/components/moonwork/workshop-client.tsx');
     const controls=read('src/components/moonwork/workshop-controls.tsx');
     const stage=read('src/components/moonwork/workshop-stage-container.tsx');
@@ -210,9 +210,9 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(patron).toContain("onAction({type:'import-patron-core'})");
   });
   it('reuses Pixi ground tiles and pauses worker animation with game motion setting',()=>{
-    const scene=read('v2/src/workshop-lab-stage.ts');
-    const loader=read('v2/src/workshop-painted-art.ts');
-    const builder=read('v2/scripts/build.mjs');
+    const scene=read('engine/src/workshop-lab-stage.ts');
+    const loader=read('engine/src/workshop-painted-art.ts');
+    const builder=read('engine/scripts/build.mjs');
     expect(scene).toContain('const floorTiles:Sprite[]=[];');
     expect(scene).toContain("element.dataset.foundationTiles=String(floorTiles.length)");
     expect(scene).toContain('const tile=floorTiles[i];');
@@ -231,9 +231,9 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(builder).toContain("'../public/art/lobby-hero-v3.webp'");
   });
   it('communicates selected plots and tools with a typed runtime callback',()=>{
-    const runtime=read('v2/src/main.ts');
+    const runtime=read('engine/src/main.ts');
     const client=read('src/components/moonwork/workshop-client.tsx');
-    const bridge=read('v2/src/workshop-runtime-contract.ts');
+    const bridge=read('engine/src/workshop-runtime-contract.ts');
     expect(bridge).toContain('export type WorkshopSelectionSnapshot');
     expect(bridge).toContain('export type WorkshopSelectionListener');
     expect(runtime).toContain('onSelectionChange?.({');

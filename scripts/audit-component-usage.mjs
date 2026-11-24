@@ -51,7 +51,7 @@ export function auditComponentUsage(root) {
   const config=ts.readConfigFile(path.join(root,'tsconfig.json'),ts.sys.readFile);
   if(config.error) throw new Error(ts.flattenDiagnosticMessageText(config.error.messageText,'\n'));
   const options=ts.parseJsonConfigFileContent(config.config,ts.sys,root).options;
-  const names=['app','src','tests','e2e','scripts','v2/src','v2/scripts'];
+  const names=['app','src','tests','e2e','scripts','engine/src','engine/scripts'];
   const files=[...new Set(names.flatMap(name=>walk(path.join(root,name))))].sort();
   const toRel=file=>slash(path.relative(root,file));
   const indexed=new Set(files.map(file=>path.resolve(file)));
@@ -101,7 +101,7 @@ export function auditComponentUsage(root) {
   }
   // Conservative: all app modules are roots, including framework conventions and research.
   const appRoots=files.filter(file=>toRel(file).startsWith('app/'));
-  const auxiliaryRoots=files.filter(file=>/^(tests|e2e|scripts|v2)\//.test(toRel(file)));
+  const auxiliaryRoots=files.filter(file=>/^(tests|e2e|scripts|engine)\//.test(toRel(file)));
   const appReach=reachable(appRoots);
   const auxReach=reachable(auxiliaryRoots);
   const candidates=files.filter(file=>toRel(file).startsWith('src/components/')&&!file.endsWith('.d.ts'));

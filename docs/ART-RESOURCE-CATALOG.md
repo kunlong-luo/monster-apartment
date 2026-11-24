@@ -17,7 +17,7 @@
 | 正式私室 | [public/art/rooms/](../public/art/rooms/) | [rooms manifest](../public/art/rooms/manifest.json)，现有概念及未来背景/姿态槽 |
 | 世界地点 | [public/art/world-scenes/](../public/art/world-scenes/) | [R12 manifest](../public/art/world-scenes/r12-scene-manifest.json)，现行图和显式审稿资源 |
 | 地点海报 | [public/art/feature-postcards/](../public/art/feature-postcards/) | 小型入口图，不当全屏背景 |
-| Pixi 工坊 | [v2/art/](../v2/art/) | 运行中的设备和环境资源，不是废弃 V2 页面 |
+| Pixi 工坊 | [engine/art/](../engine/art/) | 运行中的设备和环境资源，R12.76 源目录改名，字节不变 |
 | 文档证据 | [docs/art-reviews/](art-reviews/) | 审核来源、权利、对照图及历史记录 |
 | 历史设计参考 | [public/assets/aistudio/](../public/assets/aistudio/) | 保留原件及引用；不新增临时重复媒体 |
 
@@ -243,21 +243,21 @@
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
-| `v2/art/garden-art-review.avif` | 4204 | `3462d8667303` |
-| `v2/art/kiln-art-review.avif` | 4402 | `9132761e794d` |
-| `v2/art/moon-workshop.avif` | 2995 | `9e79c2bbe640` |
-| `v2/art/moonstone-floor.avif` | 822 | `bcfe239de2b4` |
-| `v2/art/moonveil-portrait.avif` | 2938 | `2437231dfdb2` |
-| `v2/art/production/machines/garden/lv1.webp` | 36472 | `93e7f1524b65` |
-| `v2/art/production/machines/garden/lv2.webp` | 36586 | `3878ae053cd3` |
-| `v2/art/production/machines/garden/lv3.webp` | 31590 | `b0e49d26f2bb` |
-| `v2/art/production/machines/kiln/lv1.webp` | 29524 | `a2fa549ba4df` |
-| `v2/art/production/machines/kiln/lv2.webp` | 30950 | `2664ca2a0ac8` |
-| `v2/art/production/machines/kiln/lv3.webp` | 29240 | `6200ac9acd60` |
-| `v2/art/production/machines/well/lv1.webp` | 30520 | `5c705000500a` |
-| `v2/art/production/machines/well/lv2.webp` | 34550 | `51fcab87365a` |
-| `v2/art/production/machines/well/lv3.webp` | 33168 | `d64e7248dac2` |
-| `v2/art/well-art-review.avif` | 2817 | `b0159e630ab7` |
+| `engine/art/garden-art-review.avif` | 4204 | `3462d8667303` |
+| `engine/art/kiln-art-review.avif` | 4402 | `9132761e794d` |
+| `engine/art/moon-workshop.avif` | 2995 | `9e79c2bbe640` |
+| `engine/art/moonstone-floor.avif` | 822 | `bcfe239de2b4` |
+| `engine/art/moonveil-portrait.avif` | 2938 | `2437231dfdb2` |
+| `engine/art/production/machines/garden/lv1.webp` | 36472 | `93e7f1524b65` |
+| `engine/art/production/machines/garden/lv2.webp` | 36586 | `3878ae053cd3` |
+| `engine/art/production/machines/garden/lv3.webp` | 31590 | `b0e49d26f2bb` |
+| `engine/art/production/machines/kiln/lv1.webp` | 29524 | `a2fa549ba4df` |
+| `engine/art/production/machines/kiln/lv2.webp` | 30950 | `2664ca2a0ac8` |
+| `engine/art/production/machines/kiln/lv3.webp` | 29240 | `6200ac9acd60` |
+| `engine/art/production/machines/well/lv1.webp` | 30520 | `5c705000500a` |
+| `engine/art/production/machines/well/lv2.webp` | 34550 | `51fcab87365a` |
+| `engine/art/production/machines/well/lv3.webp` | 33168 | `d64e7248dac2` |
+| `engine/art/well-art-review.avif` | 2817 | `b0159e630ab7` |
 
 ### 文档审核证据（29）
 
@@ -379,3 +379,6 @@ V3.105.0 的 PC 新场景与四间观景已合并、Quality/Pages 通过；不�
 
 
 R12.75：设备制作与锚点规范统一见 [WORKSHOP-ASSET-SPEC.md](design/WORKSHOP-ASSET-SPEC.md)。此次只迁移文档，不移动 144 个媒体路径及任何原始 PNG，不修改设备和场景审批状态。
+
+
+R12.76：原 `v2/art/` 迁入 `engine/art/`，全部 16 个跟踪文件（含 manifest）路径变更但 Git blob 不变；目录表使用新路径。历史审批和源 PNG 不变。

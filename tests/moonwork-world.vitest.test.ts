@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {newWorkshop,moveMachine,placeMachine,assignWorker,runShift} from '../v2/src/workshop-engine';
+import {newWorkshop,moveMachine,placeMachine,assignWorker,runShift} from '../engine/src/workshop-engine';
 import {SAVE_KEY,parseSavedWorld,commitWorldAction} from '../src/lib/moonwork/world-store';
 const locks={
   request:async(_name:string,_options:unknown,callback:(lock:object)=>unknown)=>callback({})

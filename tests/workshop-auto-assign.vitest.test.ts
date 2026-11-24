@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {newWorkshop,autoAssignWorkers,assignWorker,placeMachine} from '../v2/src/workshop-engine';
+import {newWorkshop,autoAssignWorkers,assignWorker,placeMachine} from '../engine/src/workshop-engine';
 describe('one-tap matching workshop shifts',()=>{
   it('assigns only available skilled workers and preserves the original save',()=>{
     const initial=newWorkshop();

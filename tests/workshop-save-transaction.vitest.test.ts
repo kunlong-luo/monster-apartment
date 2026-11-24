@@ -1,8 +1,8 @@
 import {describe,expect,it} from 'vitest';
-import {newWorkshop,runShift} from '../v2/src/workshop-engine';
-import {startWorkshopAuto,simulateWorkshopAutoUntil} from '../v2/src/workshop-auto-production';
+import {newWorkshop,runShift} from '../engine/src/workshop-engine';
+import {startWorkshopAuto,simulateWorkshopAutoUntil} from '../engine/src/workshop-auto-production';
 import {WORKSHOP_SAVE_KEY,WORKSHOP_SAVE_LOCK,parseWorkshopSnapshot,transactWorkshopSave,
-  writeWorkshopSnapshot,withWorkshopSaveLock} from '../v2/src/workshop-save-transaction';
+  writeWorkshopSnapshot,withWorkshopSaveLock} from '../engine/src/workshop-save-transaction';
 import {reduceWorldAction} from '../src/lib/moonwork/world-store';
 
 function storage(initial:string|null=null){

@@ -1,9 +1,9 @@
 'use client';
 import {useEffect} from 'react';
 import {simulateWorkshopAutoUntil,startWorkshopAuto,pauseWorkshopAuto,
-  toggleWorkshopAutoDelivery} from '../../../v2/src/workshop-auto-production';
+  toggleWorkshopAutoDelivery} from '../../../engine/src/workshop-auto-production';
 import {CHANGE_EVENT} from './world-store';
-import {WORKSHOP_SAVE_LOCK,transactWorkshopSave} from '../../../v2/src/workshop-save-transaction';
+import {WORKSHOP_SAVE_LOCK,transactWorkshopSave} from '../../../engine/src/workshop-save-transaction';
 
 export const WORKSHOP_AUTO_LOCK=WORKSHOP_SAVE_LOCK;
 export type AutoToggleResult='enabled'|'paused'|'unavailable'|'missing'|'error';

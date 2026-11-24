@@ -4,7 +4,7 @@ import {installWorkshopWebGLProbe,WORKSHOP_WEBGL_RESOURCE_NAMES} from
   './helpers/workshop-webgl-probe';
 import type {WorkshopWebGLContextReport,WorkshopWebGLProbeReport} from
   './helpers/workshop-webgl-probe';
-import {workshopBenchmarkFixture} from '../v2/src/workshop-benchmark-fixtures';
+import {workshopBenchmarkFixture} from '../engine/src/workshop-benchmark-fixtures';
 import {navigateScene} from './helpers/scene-navigation';
 
 /** Comparative WebGL allocation API metrics; NOT GPU memory or elapsed GPU time.

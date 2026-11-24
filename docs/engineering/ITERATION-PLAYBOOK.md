@@ -17,12 +17,12 @@
 | 层 | 维护边界 |
 | --- | --- |
 | 路由 / HUD | `app/`、`src/components/game/`、`src/components/moonwork/`；统一七路由注册表和全站色板、材质，避免重复底栏 |
-| 经营规则 | `src/core/cozy-engine.ts`、`v2/src/workshop-engine.ts` 与其子模块；计算、交易、概率及存档用可测 TS 逻辑 |
+| 经营规则 | `src/core/cozy-engine.ts`、`engine/src/workshop-engine.ts` 与其子模块；计算、交易、概率及存档用可测 TS 逻辑 |
 | 场景 / 动效 | Motion 管 React 交互动效，PixiJS 8 管工坊 2D 场景；避免 DOM 与 Pixi 双重管理同一个交互控件 |
 | 数据 | 保留 `monster-apartment:cozy:v1` 与 `monster-apartment:workshop-v2-lab` 两个既有存档键；未设计并验证迁移前，不擅自统一账本或清档 |
 | 素材 | 只通过角色/场景审核流程晋级，记录原生像素、来源、许可、SHA-256、浏览器呈现；不以模糊滤镜、放大或背景换色顶替独立绘景 |
 
-**不得**为新功能重新加入旧版 Vite/Phaser 页、`/classic`、`/legacy` 或独立 `/workshop-lab`。`v2/` 当前仍包含必需的 Pixi sidecar 运行时，不能因为目录名就删掉。
+**不得**为新功能重新加入旧版 Vite/Phaser 页、`/classic`、`/legacy` 或独立 `/workshop-lab`。`engine/` 当前仍包含必需的 Pixi sidecar 运行时，不能因为目录名就删掉。
 
 ## 2. 快速与安全如何平衡
 
@@ -56,7 +56,7 @@
 
 - 用户偏好快速主线迭代：当前 `main` 未配置保护时，可针对**低风险的小规模改动**直接提交并看 Quality/Pages；并不表示把失败或未经审核的生产素材直接推入主线是安全做法。
 - 对存档、概率、全站导航、付费性质操作和里程碑，优先短命分支 + PR + 对应检查。待 [Issue #9](https://github.com/kunlong-luo/monster-apartment/issues/9) 的保护规则真正启用，**以 GitHub 实际规则为准**，不能为了省一步绕过它。
-- 依赖安装以 CI 的 `bun install --frozen-lockfile` 和 `bun.lock` 为可复现基线；`package.json` 当前声明 `pnpm@12.13.0` 用于脚本执行，Pixi `v2/` 使用自己的 npm 构建链。仓库出现多个 lockfile 时先核对用途，**不可盲删/盲重生成**。
+- 依赖安装以 CI 的 `bun install --frozen-lockfile` 和 `bun.lock` 为可复现基线；`package.json` 当前声明 `pnpm@12.13.0` 用于脚本执行，Pixi `engine/` 使用自己的 npm 构建链。仓库出现多个 lockfile 时先核对用途，**不可盲删/盲重生成**。
 - 先查看现有 Next/React/Tailwind/Motion/Pixi/Zustand/Dexie/Lucide 能否解决，再评估新库的维护、许可、安全、包体积、TypeScript 和 Pages basePath；新增依赖记入 ADR，固定可复现版本。
 - 不为单次重构写脆弱的源码字符串断言；测试真实的业务不变量和页面行为，不牺牲安全与存档恢复。
 

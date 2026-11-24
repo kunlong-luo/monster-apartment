@@ -2,8 +2,8 @@ import {describe,expect,it} from 'vitest';
 import {
   newWorkshop,canPrepareStarterLine,prepareStarterLine,moveMachine,
   placeMachine,assignWorker,runShift,forecastNextShift,validWorkshop,MACHINES,
-} from '../v2/src/workshop-engine';
-import {startWorkshopAuto} from '../v2/src/workshop-auto-production';
+} from '../engine/src/workshop-engine';
+import {startWorkshopAuto} from '../engine/src/workshop-auto-production';
 
 describe('first order: safe, one-tap starter production line',()=>{
   it('builds a working chain and staffs real workers with exactly one kiln charge',()=>{

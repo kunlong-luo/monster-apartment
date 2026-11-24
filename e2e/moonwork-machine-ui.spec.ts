@@ -1,4 +1,4 @@
-import {assignWorker,moveMachine,newWorkshop,placeMachine} from '../v2/src/workshop-engine';
+import {assignWorker,moveMachine,newWorkshop,placeMachine} from '../engine/src/workshop-engine';
 import {test,expect} from '@playwright/test';
 
 test('mobile workshop machine states follow real staffing and supply',async({page})=>{

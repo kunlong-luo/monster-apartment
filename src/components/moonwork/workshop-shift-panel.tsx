@@ -4,8 +4,8 @@ import {
   PREMIUM_ORDER_PENALTY,
   STANDARD_ORDER_PENALTY,
   forecastNextShift,
-} from '../../../v2/src/workshop-engine';
-import type {WorkshopState} from '../../../v2/src/workshop-engine';
+} from '../../../engine/src/workshop-engine';
+import type {WorkshopState} from '../../../engine/src/workshop-engine';
 
 export function getDiagnosisText(world: WorkshopState): string {
   const report = world.last;

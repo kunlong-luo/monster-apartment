@@ -6,11 +6,11 @@ import {ReliableImage} from '@/components/game/reliable-image';
 import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import {motion} from 'motion/react';
 import {ArrowUpRight,Grid3X3,MoveRight} from 'lucide-react';
-import {MACHINES,WORKERS,projectMachineProduction} from '../../../v2/src/workshop-engine';
+import {MACHINES,WORKERS,projectMachineProduction} from '../../../engine/src/workshop-engine';
 import {gothicMotionStorage} from '@/lib/game/storage-service';
-import {presentWorkshopStations} from '../../../v2/src/workshop-station-presenter';
-import type {Craft,DailyProduction,WorkshopState} from '../../../v2/src/workshop-engine';
-import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
+import {presentWorkshopStations} from '../../../engine/src/workshop-station-presenter';
+import type {Craft,DailyProduction,WorkshopState} from '../../../engine/src/workshop-engine';
+import type {WorkshopAction} from '../../../engine/src/workshop-runtime-contract';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 import {
   approvedMachineUrls,workerPaintingUrls,
@@ -18,9 +18,9 @@ import {
 } from '@/lib/moonwork/workshop-machine-art-index';
 import hall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
 import hallTransition from '../../../public/art/world-scenes/workshop/review/desktop-candidate-v1.webp';
-import wellLegacy from '../../../v2/art/well-art-review.avif';
-import gardenLegacy from '../../../v2/art/garden-art-review.avif';
-import kilnLegacy from '../../../v2/art/kiln-art-review.avif';
+import wellLegacy from '../../../engine/art/well-art-review.avif';
+import gardenLegacy from '../../../engine/art/garden-art-review.avif';
+import kilnLegacy from '../../../engine/art/kiln-art-review.avif';
 import brook from '../../../public/art/beauty-beasts/characters/brook/face.webp';
 import fern from '../../../public/art/beauty-beasts/characters/fern/face.webp';
 import cinder from '../../../public/art/beauty-beasts/characters/cinder/face.webp';

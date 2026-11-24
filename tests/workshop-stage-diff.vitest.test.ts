@@ -1,8 +1,8 @@
 import {describe,it,expect} from 'vitest';
-import {newWorkshop,runShift,assignWorker,moveMachine,placeMachine,upgradeMachine} from '../v2/src/workshop-engine';
-import {startWorkshopAuto,simulateWorkshopAutoUntil} from '../v2/src/workshop-auto-production';
-import {workshopMachineCaption,workshopStageStockPatch,workshopStagePlotPatch} from '../v2/src/workshop-stage-diff';
-import {buyTownSupply} from '../v2/src/workshop-town';
+import {newWorkshop,runShift,assignWorker,moveMachine,placeMachine,upgradeMachine} from '../engine/src/workshop-engine';
+import {startWorkshopAuto,simulateWorkshopAutoUntil} from '../engine/src/workshop-auto-production';
+import {workshopMachineCaption,workshopStageStockPatch,workshopStagePlotPatch} from '../engine/src/workshop-stage-diff';
+import {buyTownSupply} from '../engine/src/workshop-town';
 
 describe('R07 Pixi incremental scene projection',()=>{
   it('reuses machine sprites for stock-only auto cycles',()=>{

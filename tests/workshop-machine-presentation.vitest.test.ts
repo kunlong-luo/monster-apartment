@@ -1,6 +1,6 @@
 import {describe,expect,it} from 'vitest';
-import {assignWorker,moveMachine,newWorkshop,placeMachine} from '../v2/src/workshop-engine';
-import {machineEffectProfile,materialLight,machineActuatorPose,projectedSupplyTrails} from '../v2/src/workshop-machine-presentation';
+import {assignWorker,moveMachine,newWorkshop,placeMachine} from '../engine/src/workshop-engine';
+import {machineEffectProfile,materialLight,machineActuatorPose,projectedSupplyTrails} from '../engine/src/workshop-machine-presentation';
 
 describe('Pixi workshop presentation follows production, not visual guesses',()=>{
   it('uses distinctive intensity but never emits active particles for blocked or idle machines',()=>{

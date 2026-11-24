@@ -1,11 +1,11 @@
 'use client';
 
 import {create} from 'zustand';
-import {newWorkshop} from '../../../v2/src/workshop-engine';
-import type {WorkshopState} from '../../../v2/src/workshop-engine';
-import type {WorkshopSelectionSnapshot} from '../../../v2/src/workshop-runtime-contract';
+import {newWorkshop} from '../../../engine/src/workshop-engine';
+import type {WorkshopState} from '../../../engine/src/workshop-engine';
+import type {WorkshopSelectionSnapshot} from '../../../engine/src/workshop-runtime-contract';
 import {CHANGE_EVENT,SAVE_KEY,parseSavedWorld} from './world-store';
-import {withWorkshopSaveLock} from '../../../v2/src/workshop-save-transaction';
+import {withWorkshopSaveLock} from '../../../engine/src/workshop-save-transaction';
 import {mirrorWorkshopSave,readWorkshopBackup} from './world-database';
 
 export const EMPTY_SELECTION:WorkshopSelectionSnapshot={

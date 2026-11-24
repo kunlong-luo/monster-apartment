@@ -5,7 +5,7 @@ import Image from 'next/image';
 import {Eye,Pause,Play,X} from 'lucide-react';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 import {gothicMotionStorage} from '@/lib/game/storage-service';
-import type {Craft} from '../../../v2/src/workshop-engine';
+import type {Craft} from '../../../engine/src/workshop-engine';
 
 const CRAFTS:{id:Craft;name:string;material:string}[]=[
   {id:'well',name:'水汽泵',material:'黄铜 · 蓝色储液玻璃'},

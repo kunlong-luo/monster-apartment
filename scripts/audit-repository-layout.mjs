@@ -1,7 +1,7 @@
 import {execFileSync} from 'node:child_process';
 
-const allowedRoots=new Set(['.agents','.github','app','art-sources','docs','e2e','public','scripts','src','tests','v2','vendor']);
-const retired=/^(?:\.aistudio\/|artwork\/|management\/|docs\/prototypes\/|v2\/docs\/|metadata\.json$)/;
+const allowedRoots=new Set(['.agents','.github','app','art-sources','docs','e2e','public','scripts','src','tests','engine','vendor']);
+const retired=/^(?:\.aistudio\/|artwork\/|management\/|docs\/prototypes\/|v2\/|engine\/docs\/|metadata\.json$)/;
 const paths=execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
 const failures=[];
 const roots=new Set();

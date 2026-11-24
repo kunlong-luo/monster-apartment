@@ -1,11 +1,11 @@
-# 当前架构（R12.75 目录核查）
+# 当前架构（R12.76 目录核查）
 
 以 V3.105.0 主线 `0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0` 为证据基线。下方历史实现记录不用于推断当前资产或数量。
 
 - Next.js App Router + React + TypeScript strict + Tailwind CSS v4 + Motion；PixiJS 8 独立工坊运行时。根 `package.json` 声明 Zustand 与 Dexie；依赖声明不等同全站实际用法，未完成逐模块使用审计，不再断言不存在。
 - 七个游戏路由见[根 README](../README.md)；研究页独立。根布局挂载共享导航、过渡、错误边界、发布提示和工坊自动运行。现行大厅采用顶角地图而非旧底部 Dock，见[现行视觉合同](design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md)。
-- `src/core/cozy-engine.ts` 与 `v2/src/workshop-engine.ts` 是规则边界，两套存档键保持不变，未统一账本。
-- `v2/src/runtime.ts`、`v2/src/workshop-lab-stage.ts`、`v2/scripts/build.mjs` 与 `v2/art/` 是当前 Pixi sidecar，不得按名称清除。
+- `src/core/cozy-engine.ts` 与 `engine/src/workshop-engine.ts` 是规则边界，两套存档键保持不变，未统一账本。
+- `engine/src/runtime.ts`、`engine/src/workshop-lab-stage.ts`、`engine/scripts/build.mjs` 与 `engine/art/` 是当前 Pixi sidecar，不得按名称清除。
 - 当前 19 份 CSS（含 `app/globals.css`），全局视觉 token 为 `src/components/game/gothic-premium-tokens.css`。布局导入 tokens、globals、red-gold、desktop-ui；大厅导入 lobby、polish、reference-layout、lobby-navigation；共享导航和图鉴分别导入自己的样式，工人房间仍导入 polish。未证明全量 CSS 规则使用情况，不据数量删除。
 - 正式欢迎图/大厅 V4、四间房间观景、PC 工坊与街区新绘景的实际路径见[资源目录](ART-RESOURCE-CATALOG.md)。生产、过渡、审稿、回退分开。房间故事热点与观景层分离；Pixi 精密建造、手机与旧档保持。
 - 工程验证按 [迭代手册](engineering/ITERATION-PLAYBOOK.md)，以实际 CI SHA 与浏览器结果为准。
@@ -31,33 +31,33 @@
 ## 单一 UI 所有权与样式边界（2026-10）
 
 - React + TypeScript：控制按钮、工匠清单、设备目录、委托面板、仓库数据、资源 HUD。工坊按钮与列表收敛在 `src/components/moonwork/workshop-controls.tsx`。
-- PixiJS：独立打包的 2D 场景、机器绘景、角色动画、格子命中和视觉反馈。运行时 `v2/src/main.ts` 只负责挂载、派发指令、暂态选择及本地存档；不得用 `innerHTML` 或逐个更新 React 控件。
-- 正式工坊仅挂载在 Next 的 `/workshop/`；`v2/src/runtime.ts`、`v2/scripts/build.mjs` 是必需的 Pixi 资源入口及编译工具，不是旧 UI。
+- PixiJS：独立打包的 2D 场景、机器绘景、角色动画、格子命中和视觉反馈。运行时 `engine/src/main.ts` 只负责挂载、派发指令、暂态选择及本地存档；不得用 `innerHTML` 或逐个更新 React 控件。
+- 正式工坊仅挂载在 Next 的 `/workshop/`；`engine/src/runtime.ts`、`engine/scripts/build.mjs` 是必需的 Pixi 资源入口及编译工具，不是旧 UI。
 - CSS：共七份，`app/globals.css` 负责 Tailwind 主题；其他文件目前仍包含复杂哥特式绘景、响应式布局与特殊视觉效果。继续将普通控件样式迁移至 Tailwind，但不机械删除已在场景中使用的规则。
 - JavaScript：无 `.js`/`.jsx` 正式源文件。六个 `.mjs` 仅用于 lint/PostCSS、构建、资源审核与本地静态服务；这些属于现代 Node 工具链，不需要强制改成 TS。
-- 技术债：`src/core/cozy-engine.ts`、工坊规则模块及 `v2/src/workshop-lab-stage.ts` 仍需按职责逐步拆分。工坊 React 与 Pixi 暂态选中状态已采用显式 TypeScript 类型回调接口，不再通过 DOM dataset/custom events 反向读取状态；保留现有存档键及行为。
+- 技术债：`src/core/cozy-engine.ts`、工坊规则模块及 `engine/src/workshop-lab-stage.ts` 仍需按职责逐步拆分。工坊 React 与 Pixi 暂态选中状态已采用显式 TypeScript 类型回调接口，不再通过 DOM dataset/custom events 反向读取状态；保留现有存档键及行为。
 
 ## 工坊领域模块（第二轮拆分）
 
-- `v2/src/workshop-model.ts`：序列化数据类型、设备/工匠静态配置、经济常数与棋盘拓扑。
-- `v2/src/workshop-guidance.ts`：纯函数新手引导、下一步目标；不引用任何 UI。
-- `v2/src/workshop-town.ts`：街区交易、每日交易次数、居民委托与材料库存变化。
-- `v2/src/workshop-production.ts`：单日产出流水线、原料转移、订单和月纱的结算规则。
-- `v2/src/workshop-engine.ts`：设备升级与派工、委托选择、预测逻辑、存档校验；同时重导出原有公共接口，旧模块引用不需要修改。
+- `engine/src/workshop-model.ts`：序列化数据类型、设备/工匠静态配置、经济常数与棋盘拓扑。
+- `engine/src/workshop-guidance.ts`：纯函数新手引导、下一步目标；不引用任何 UI。
+- `engine/src/workshop-town.ts`：街区交易、每日交易次数、居民委托与材料库存变化。
+- `engine/src/workshop-production.ts`：单日产出流水线、原料转移、订单和月纱的结算规则。
+- `engine/src/workshop-engine.ts`：设备升级与派工、委托选择、预测逻辑、存档校验；同时重导出原有公共接口，旧模块引用不需要修改。
 
 以上模块不引用 React、DOM 或 PixiJS，且与原 V2 存档 JSON 结构兼容。新领域功能应优先进入职责明确的模块，不继续增加巨型单文件。
 
 ## Pixi 场景与 Tailwind 组件边界（第三轮）
 
-- `v2/src/workshop-painted-art.ts`：容错加载绘制 AVIF 贴图；失败时沿用现有 GPU 精灵的安全降级路径。
-- `v2/src/workshop-floating-feedback.ts`：临时数字贴图的数量上限、逐帧位移、透明度、生命周期；始终不截获地块点击。
-- `v2/src/workshop-shift-effects.ts`：依据已结算的真实班次结果生成产量、缺料、交付提示，不重复触发存档重载时的动画。
-- `v2/src/workshop-lab-stage.ts`：仍管理 Pixi 容器层级、场景交互、贴图合成与屏幕自适应；不再重复管理以上三个子模块。
+- `engine/src/workshop-painted-art.ts`：容错加载绘制 AVIF 贴图；失败时沿用现有 GPU 精灵的安全降级路径。
+- `engine/src/workshop-floating-feedback.ts`：临时数字贴图的数量上限、逐帧位移、透明度、生命周期；始终不截获地块点击。
+- `engine/src/workshop-shift-effects.ts`：依据已结算的真实班次结果生成产量、缺料、交付提示，不重复触发存档重载时的动画。
+- `engine/src/workshop-lab-stage.ts`：仍管理 Pixi 容器层级、场景交互、贴图合成与屏幕自适应；不再重复管理以上三个子模块。
 - 库存数字行、快捷链接布局以及行为结果提示改用 React 组件及 Tailwind v4 类；删除 `world.css` 中无引用的 `.mw-stock`、`.mw-message`、`.mw-context-links` 等历史选择器。复杂绘景 CSS 暂时保留。
 
 ## 运行时到 React 的类型化同步（第四轮）
 
-- `v2/src/workshop-runtime-contract.ts` 声明 `WorkshopSelectionSnapshot` 和 `WorkshopSelectionListener`，作为 React 与单独打包的 Pixi IIFE 的稳定类型契约。
+- `engine/src/workshop-runtime-contract.ts` 声明 `WorkshopSelectionSnapshot` 和 `WorkshopSelectionListener`，作为 React 与单独打包的 Pixi IIFE 的稳定类型契约。
 - `mountWorkshopGame(root, assetBase, onSelectionChange)` 在每次工坊暂态选择变更后调用监听器；React 直接接受对象并比较字段，取消监听器无需清除 DOM 自定义事件。
 - `#status`、`#summary` 为运行时保留的明确状态节点；`#stage` 的 `data-*` 属性仍用于场景诊断和 E2E，并不作为 React 业务状态来源。
 - `WorkshopAction` 联合类型与 `WorkshopRuntimeController.dispatch` 是 React 按钮到运行时的唯一指令通道。工坊按钮的 `onClick` 直接发命令，已经去除 root DOM 点击委托、CSS 选择器查找与 `data-worker/data-build` 输入解析。Pixi 地块仍使用自己的 pointertap，不改变生产或存档模型。
@@ -68,7 +68,7 @@
 
 ## 类型化工坊指令通道（第五轮）
 
-- `v2/src/workshop-runtime-contract.ts` 定义可穷尽的 `WorkshopAction`（选择工匠/设备、移动、升级、拆除、生产、重开、月纱接单与补货）及 `WorkshopRuntimeController`（`dispatch`、`destroy`）。
+- `engine/src/workshop-runtime-contract.ts` 定义可穷尽的 `WorkshopAction`（选择工匠/设备、移动、升级、拆除、生产、重开、月纱接单与补货）及 `WorkshopRuntimeController`（`dispatch`、`destroy`）。
 - React 通过 `gameController.current?.dispatch(action)` 调用运行时；由生命周期内的 controller 同时负责卸载销毁，不向 `window` 暴露全局游戏实例。
 - 控件的 DOM `id` 和 `data-testid` 保留以兼容样式与测试，但不再被逻辑事件委托读取。初始角色导览、Pixi 地块点击、订单自动结算、已有 V2 存档不变。
 
@@ -113,7 +113,7 @@
 - 窄屏（宽度 700px 及以下）使用约 25% 的图片水平焦点，让月纱在竖屏裁切下继续可见，普通大屏保持 full-cover。
 - 新图的 WebP 容器魔数、VP8 帧尺寸与合理大小由 Vitest 验证；Playwright 验证浏览器实际解码的像素分辨率与手机裁切位置。
 - `WorkshopClient` 继续使用独立 PixiJS 舞台和原存档，只把其 React UI 背景/委托肖像改成新图，并移除过渡状态导致的旧肖像闪现。
-- 旧 `v2/art` 极小 AVIF 仅留给 Pixi 内部待迁移贴图，不会从仓库强行删除造成运行时丢资源。
+- 旧 `engine/art` 极小 AVIF 仅留给 Pixi 内部待迁移贴图，不会从仓库强行删除造成运行时丢资源。
 
 ## PixiJS 工坊场景性能与绘景（第十轮）
 
@@ -131,9 +131,9 @@
 
 ## R12.74 · 目录所有权
 
-根目录白名单 12 个，详见根 README；不再保留 AI Studio 临时方案、重复历史任务表、无运行入口 TSX 原型、旧 Gemini 配置与单独的 artwork 元数据目录。旧归档索引进入 docs/art-reviews，历史证据在固定 Git SHA。`v2` 是实际运行时及构建链而非旧独立游戏；更名需要覆盖所有 import、CI、测试及相对资源路径，不能以目录清理代替迁移验收。
+根目录白名单 12 个，详见根 README；不再保留 AI Studio 临时方案、重复历史任务表、无运行入口 TSX 原型、旧 Gemini 配置与单独的 artwork 元数据目录。旧归档索引进入 docs/art-reviews，历史证据在固定 Git SHA。`engine` 是实际运行时及构建链；迁移保留原有相对目录、公开 URL 和存档键，候选须通过所有相关检查。
 
 
 ## R12.75 · 工坊文档与运行边界
 
-旧 V2 路由说明和独立实验路线已退役（[固定快照](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs)）。当前 Next 七路由、Pixi IIFE、React 挂载/销毁、静态资源同源、现有端口和双存档键依本架构、实际代码与工作流；不恢复独立 HTML。工坊资产制作统一至 [设备规格](design/WORKSHOP-ASSET-SPEC.md)。`pnpm audit:engine-paths` 为后续迁移提供逐文件引用报告；本轮引擎位置仍是 `v2/`，不声称完成重命名。
+旧 V2 路由说明和独立实验路线已退役（[固定快照](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs)）。当前 Next 七路由、Pixi IIFE、React 挂载/销毁、静态资源同源、现有端口和双存档键依本架构、实际代码与工作流；不恢复独立 HTML。工坊资产制作统一至 [设备规格](design/WORKSHOP-ASSET-SPEC.md)。`pnpm audit:engine-paths` 为后续迁移提供逐文件引用报告；R12.75 时位置仍为 `v2/`；R12.76 候选将完整目录迁到 `engine/`，旧路径仅属于历史。

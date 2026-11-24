@@ -1,6 +1,6 @@
-import {acceptPatronCommission,importPatronCore,acceptPremiumOrder,buyTownSupply,deliverResidentRequest} from '../../../v2/src/workshop-engine';
-import {WORKSHOP_SAVE_KEY,WORKSHOP_CHANGE_EVENT,parseWorkshopSnapshot,transactWorkshopSave} from '../../../v2/src/workshop-save-transaction';
-import type {WorkshopState} from '../../../v2/src/workshop-engine';
+import {acceptPatronCommission,importPatronCore,acceptPremiumOrder,buyTownSupply,deliverResidentRequest} from '../../../engine/src/workshop-engine';
+import {WORKSHOP_SAVE_KEY,WORKSHOP_CHANGE_EVENT,parseWorkshopSnapshot,transactWorkshopSave} from '../../../engine/src/workshop-save-transaction';
+import type {WorkshopState} from '../../../engine/src/workshop-engine';
 
 export const SAVE_KEY=WORKSHOP_SAVE_KEY;
 export const CHANGE_EVENT=WORKSHOP_CHANGE_EVENT;

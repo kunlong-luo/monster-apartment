@@ -1,6 +1,6 @@
 import {describe,it,expect} from 'vitest';
-import {newWorkshop,moveMachine,placeMachine,assignWorker,validWorkshop,runShift} from '../v2/src/workshop-engine';
-import {startWorkshopAuto,pauseWorkshopAuto,simulateWorkshopAutoUntil,MAX_AUTO_CATCHUP_MS,AUTO_STORAGE_CAPS} from '../v2/src/workshop-auto-production';
+import {newWorkshop,moveMachine,placeMachine,assignWorker,validWorkshop,runShift} from '../engine/src/workshop-engine';
+import {startWorkshopAuto,pauseWorkshopAuto,simulateWorkshopAutoUntil,MAX_AUTO_CATCHUP_MS,AUTO_STORAGE_CAPS} from '../engine/src/workshop-auto-production';
 const setup=()=>{
  let s=newWorkshop();
  s=moveMachine(s,7,6);
