@@ -15,6 +15,9 @@
     --reference-left:clamp(210px,16.7vw,248px);
     --reference-right:clamp(290px,23vw,348px);
     --reference-top:clamp(160px,18vh,186px);
+    --reference-event-top:clamp(124px,14.1vh,148px);
+    --reference-event-height:224px;
+    --reference-rail-gap:10px;
   }
   /* The original approved painting remains full screen and never receives a
      dark colour filter or fake body enlargement. */
@@ -81,7 +84,7 @@
     width:var(--reference-left);
     padding:10px 8px 9px;gap:3px;min-width:0;
     border:1px solid var(--craft-hairline);border-radius:8px;
-    background:linear-gradient(115deg,#1a111ce9,#130c17dc);
+    background:var(--craft-surface);
     box-shadow:var(--craft-shadow);
   }
   .gothic-lobby__reference-roster-title{
@@ -106,7 +109,7 @@
     letter-spacing:.06em;
   }
   .gothic-lobby__reference-resident small{
-    color:var(--craft-muted);font:10px var(--craft-font-ui);
+    color:var(--craft-muted);font:11px var(--craft-font-ui);
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
   .gothic-lobby__reference-resident svg{color:var(--craft-brass);flex:none}
@@ -134,7 +137,7 @@
   body .gothic-lobby .gothic-lobby__mission-card{
     border:1px solid var(--craft-hairline);
     border-radius:7px;
-    background:linear-gradient(110deg,#21151fea,#100c13f0);
+    background:var(--craft-surface);
     box-shadow:var(--craft-shadow);
   }
   body .gothic-lobby .gothic-lobby__mission-card--quest{
@@ -149,15 +152,15 @@
   }
   body .gothic-lobby .gothic-lobby__mission-card--eclipse{
     position:fixed;right:var(--reference-margin);
-    top:clamp(124px,14.1vh,148px);
+    top:var(--reference-event-top);
     left:auto;bottom:auto;
     width:var(--reference-right);
-    min-height:215px;max-height:240px;
-    gap:10px;padding:15px 16px;
+    height:var(--reference-event-height);min-height:0;max-height:none;
+    gap:7px;padding:14px 16px;
     z-index:6;isolation:isolate;
     justify-content:space-between;
     border-color:#bd8d78aa;
-    background:linear-gradient(110deg,#3a1625f7,#22101ae8);
+    background:linear-gradient(110deg,var(--craft-wine),var(--craft-panel));
     box-shadow:0 12px 30px #08040ca8,inset 0 1px #f1d5b02b;
   }
   .gothic-lobby__mission-card--eclipse .gothic-lobby__card-kicker{
@@ -166,13 +169,15 @@
   .gothic-lobby__chapter-mark{margin-left:auto}
   body .gothic-lobby .gothic-lobby__mission-card--eclipse strong{
     position:relative;z-index:2;
-    font-size:clamp(27px,2.75vw,42px);line-height:1.1;
+    font-size:clamp(27px,2.3vw,36px);line-height:1.15;
+    letter-spacing:.035em;
     color:var(--craft-ivory);
     text-shadow:0 3px 12px #000d;
   }
   .gothic-lobby__mission-card--eclipse .gothic-lobby__mission-detail{
     position:relative;z-index:2;max-width:65%;
-    font-size:10px;line-height:1.4;
+    font-size:11px;line-height:1.45;
+    color:var(--craft-ivory);
   }
   .gothic-lobby__summon-verse{
     display:block;position:relative;z-index:2;
@@ -201,7 +206,8 @@
   /* The approved reference uses painted destination banners, not icon tiles. */
   .gothic-lobby__reference-right{
     display:grid;position:absolute;z-index:4;gap:9px;
-    top:clamp(351px,40vh,382px);
+    /* One vertical rail contract: no independently positioned overlap. */
+    top:calc(var(--reference-event-top) + var(--reference-event-height) + var(--reference-rail-gap));
     right:var(--reference-margin);width:var(--reference-right);
   }
   .gothic-lobby__reference-postcard{
@@ -222,7 +228,7 @@
   }
   .gothic-lobby__reference-postcard-img{
     z-index:0;object-fit:cover;object-position:center 51%;
-    filter:brightness(1.12) saturate(1.04);
+    filter:none;
   }
   .gothic-lobby__reference-postcard-img--workshop{object-position:20% 80%}
   .gothic-lobby__reference-postcard-img--town{object-position:80% 35%}
@@ -305,9 +311,12 @@
   .gothic-lobby__reference-resident{min-height:51px}
   .gothic-lobby__reference-avatar{width:40px;height:40px}
   body .gothic-lobby .gothic-lobby__mission-rail{top:calc(var(--reference-top) + 275px)}
-  body .gothic-lobby .gothic-lobby__mission-card--eclipse{min-height:185px}
-  .gothic-lobby__reference-right{top:333px;gap:7px}
+  .gothic-lobby{--reference-event-height:196px;--reference-rail-gap:9px}
+  body .gothic-lobby .gothic-lobby__mission-card--eclipse{padding:12px 14px;gap:6px}
+  .gothic-lobby__summon-verse{display:none}
+  .gothic-lobby__reference-right{gap:7px}
   .gothic-lobby__reference-postcard{min-height:83px}
+  .gothic-lobby__reference-postcard--memories{min-height:50px}
 }
 @media(prefers-reduced-motion:reduce){
   .gothic-lobby__reference-resident,

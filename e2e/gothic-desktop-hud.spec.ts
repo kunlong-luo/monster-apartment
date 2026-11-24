@@ -492,3 +492,42 @@ test('desktop workshop prioritizes Pixi scene and expands console without restar
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/desktop-workshop-stage-priority-v390.png',animations:'disabled'});
 });
+
+test('R12.72 desktop lobby right rail shares a single event height and keeps all destinations clickable',async({page})=>{
+  await page.goto('/');
+  for(const [width,height] of [[1100,720],[1440,900],[1648,928]]){
+    await page.setViewportSize({width,height});
+    const event=page.getByTestId('gothic-eclipse-feature');
+    const rail=page.getByTestId('gothic-design-right');
+    const art=page.getByTestId('gothic-lobby-painting-image');
+    await expect.poll(()=>art.evaluate((img:HTMLImageElement)=>img.complete&&img.naturalWidth>0)).toBe(true);
+    await expect(event).toBeVisible();
+    await expect(rail).toBeVisible();
+    const [card,posters]=await Promise.all([event.boundingBox(),rail.boundingBox()]);
+    expect(card&&posters).toBeTruthy();
+    expect(posters!.y-card!.y-card!.height).toBeGreaterThanOrEqual(8);
+    expect(Math.abs(posters!.x-card!.x)).toBeLessThanOrEqual(1);
+    expect(Math.abs(posters!.width-card!.width)).toBeLessThanOrEqual(1);
+    expect(posters!.y+posters!.height).toBeLessThan(height-12);
+    for(const id of ['gothic-reference-workshop','gothic-reference-town','gothic-right-memories']){
+      const target=page.getByTestId(id);
+      await expect(target).toBeVisible();
+      await target.click({trial:true});
+    }
+    await expect(event).toHaveAttribute('href',/characters/);
+    await event.click({trial:true});
+    await page.screenshot({path:'test-results/r12-72-lobby-rail-'+width+'x'+height+'.png',animations:'disabled'});
+  }
+});
+
+test('R12.72 postcard failures retain the corresponding location art, not the lobby heroine',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.route('**/art/feature-postcards/*.webp*',route=>route.abort());
+  await page.goto('/');
+  for(const [id,source] of [['gothic-postcard-workshop-art','workshop-gothic-hall'],['gothic-postcard-town-art','town-moonlit-gate']]){
+    const image=page.getByTestId(id);
+    await expect(image).toHaveAttribute('data-image-load','fallback');
+    await expect.poll(()=>image.evaluate((img:HTMLImageElement)=>img.currentSrc)).toContain(source);
+    await expect.poll(()=>image.evaluate((img:HTMLImageElement)=>img.complete&&img.naturalWidth>0)).toBe(true);
+  }
+});
