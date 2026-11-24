@@ -46,3 +46,10 @@ R12.26 对应 UI 发布候选 **V3.92.0**，和 `public/release.json` 必须一�
 3. **美术门禁**：G1 四人独立研究稿仍在 ZIP（未正式上传 GitHub）、身份人审 0/4、正式双端封面 0/2、五张全身 CG 0/5；禁止拿研究脸提前覆盖玩家已认可的头像。资源真正提交审核后再接入 Web。
 
 **结论：** 本轮针对 PC Web 角色房间的可见性与深链行为做了真正代码修复，并增加回归；以最新 SHA 的 CI 与 Pages 输出决定「已上线」状态。
+
+## 6. 实际浏览器回归的首轮失败与修正（2026-11-24）
+
+- 第一轮针对性 Desktop Visual Review [#45306430867](https://github.com/kunlong-luo/monster-apartment/actions/runs/45306430867)：**3 项相关测试通过，新增的 1 项失败**，断言位于 `e2e/character-collection.spec.ts` 的「同页面切到青枝」步骤；其时地址栏已经变为 `?visit=fern`，但浏览器未显示 `worker-private-room-fern`。本轮没有掩盖这次失败，也没有删除断言。
+- 复核 Next.js 官方 `next/src/client/components/app-router.tsx` 和 [Next 导航说明](https://nextjs.org/docs/app/getting-started/linking-and-navigating)：**外部** `window.history.pushState(null, '', '?visit=fern')` 可通知 App Router 的 `useSearchParams`；但原测试传入 `window.history.state`，里面含 Next 专用 `__NA` 标记，框架会刻意跳过外部同步，从而出现「URL 变了，React 路由状态不变」的假模拟。玩家真实按钮已调用 `router.push`，并不会传这个专用内部对象。
+- 已修改测试为官方约定的 `pushState(null, '', '?visit=fern')`，并将原因写进测试注释。原有完整断言**全部保留**：仍需检验同路由 Brook→Fern、浏览器 Back、关闭房间及后续进入 Cinder。
+- **状态区分**：首轮 3/4 通过与 1 个测试调用方式错误已确认；修正后的 Desktop Visual Review 必须另取成功证据，不能把 TypeScript/Pages 已通过冒充该浏览器测试已通过。此次修正属于**测试接入正确性**，不改变 V3.92.0 的玩家功能或 CG 审核状态。
