@@ -428,3 +428,43 @@ test('S02 accepts six safely mapped room-entrance anchors only with full origina
   assert.deepEqual(validateSceneManifest(fixture.manifest,fixture.options),
     {promoted:1,pending:2});
 });
+
+test('S02 rejects diagonal overlap even when circular center distance exceeds 44px',()=>{
+  const fixture=signedS02SixRoomFixture();
+  fixture.review.roomHotspots=validSixRoomAnchors();
+  fixture.review.roomHotspotBrowserProof={desktop:true,mobile:true};
+  const first=fixture.review.roomHotspots.desktop[0];
+  const second=fixture.review.roomHotspots.desktop[1];
+  second.x=first.x+.02;second.y=first.y+.037;
+  const size={width:3296,height:1856},viewport={width:1440,height:900};
+  const p=sceneCoverAnchor(first,size,viewport),q=sceneCoverAnchor(second,size,viewport);
+  assert.ok(Math.hypot(p.x-q.x,p.y-q.y)>44);
+  assert.ok(Math.abs(p.x-q.x)<44&&Math.abs(p.y-q.y)<44);
+  assert.throws(()=>validateSceneManifest(fixture.manifest,fixture.options),
+    /S02 desktop room hotspots overlap/);
+});
+
+function changeFixtureDesktopOutput(fixture,width,height){
+  const path='public/art/world-scenes/r12/apartment-desktop.webp';
+  const output=testWebp(width,height);
+  const originalRead=fixture.options.read;
+  fixture.options.read=full=>full.endsWith(path)?output:originalRead(full);
+  fixture.review.output.desktop={width,height,bytes:output.length,
+    sha256:createHash('sha256').update(output).digest('hex')};
+  fixture.review.roomHotspots=validSixRoomAnchors();
+  fixture.review.roomHotspotBrowserProof={desktop:true,mobile:true};
+}
+
+test('S02 rejects a differently proportioned output even with correct SHA and adequate DPR',()=>{
+  const fixture=signedS02SixRoomFixture();
+  changeFixtureDesktopOutput(fixture,3296,1900);
+  assert.throws(()=>validateSceneManifest(fixture.manifest,fixture.options),
+    /output aspect ratio differs from original/);
+});
+
+test('S02 rejects enlarged output despite matching original proportions and valid SHA',()=>{
+  const fixture=signedS02SixRoomFixture();
+  changeFixtureDesktopOutput(fixture,6592,3712);
+  assert.throws(()=>validateSceneManifest(fixture.manifest,fixture.options),
+    /output is larger than native original/);
+});

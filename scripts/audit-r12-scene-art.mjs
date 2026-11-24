@@ -81,7 +81,11 @@ function assertApartmentRoomHotspots(review,entry){
           point.y>=22&&point.y<=viewport.height-22,
           'S02 room hotspot cropped outside safe '+kind+' viewport');
         for(let j=0;j<i;j++){
-          assert(Math.hypot(point.x-positions[j].x,point.y-positions[j].y)>=44,
+          // The runtime button occupies a square hit box, even if it is
+          // visually rounded. Diagonal centers can be >44px apart while
+          // their 44x44 pointer rectangles still intersect.
+          assert(Math.abs(point.x-positions[j].x)>=44||
+            Math.abs(point.y-positions[j].y)>=44,
             'S02 '+kind+' room hotspots overlap at viewport '+viewport.width+'x'+viewport.height);
         }
       }
@@ -217,6 +221,15 @@ export function validateSceneManifest(manifest,{read=readFileSync,exists=existsS
       assert(width>=minW&&height>=minH,
         'insufficient native source pixels '+path+': '+width+'x'+height);
       assertNoRetinaUpsample(width,height,field,path);
+      const original=field==='desktop'?entry.candidate:entry.mobileCandidate;
+      // Cover projection is measured on the original, so the output must
+      // preserve its full composition. Allow at most one output pixel of
+      // integer encoder rounding, never a changed crop or stretched canvas.
+      assert(Math.abs(width*original.nativeHeight-height*original.nativeWidth)<=
+        Math.max(original.nativeWidth,original.nativeHeight),
+        'output aspect ratio differs from original '+path);
+      assert(width<=original.nativeWidth&&height<=original.nativeHeight,
+        'output is larger than native original '+path);
       const pinned=review.output?.[field];
       assert(pinned?.sha256===checksum(bytes)&&
         pinned?.width===width&&pinned?.height===height&&pinned?.bytes===bytes.length,
