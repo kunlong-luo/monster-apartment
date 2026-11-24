@@ -4,7 +4,7 @@
 
 ## 0. 溯源与迁移边界
 
-历史 `docs/SPIRIT_COLLECTION_V050.md` 曾经设计 18 个灵核、五种品质、N45/R30/SR17/SSR7/UR1、10/50/100 阶梯保底、免费十连与重复碎片。然而**当前正式代码** `src/core/cozy-engine.ts` 以精简 `SpiritId` 模型和五个 `COZY_RESIDENTS` 可见定义运行为主；不能声称历史 18 人/保底系统仍在当前七页完整可用。V3.2 必须单独定义兼容映射和版本迁移，禁止恢复旧 UI 或清空公寓存档。
+历史 [SPIRIT_COLLECTION_V050.md](https://github.com/kunlong-luo/monster-apartment/blob/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac/docs/SPIRIT_COLLECTION_V050.md) 曾经设计 18 个灵核、五种品质、N45/R30/SR17/SSR7/UR1、10/50/100 阶梯保底、免费十连与重复碎片。然而**当前正式代码** `src/core/cozy-engine.ts` 以精简 `SpiritId` 模型和五个 `COZY_RESIDENTS` 可见定义运行为主；不能声称历史 18 人/保底系统仍在当前七页完整可用。V3.2 必须单独定义兼容映射和版本迁移，禁止恢复旧 UI 或清空公寓存档。
 
 **角色三种来源，不能混为一谈：**
 1. **固定剧情角色**：月纱、泉泡、青枝、炽角、阿洛、菲娅、伊索、诺因。通过主线/支线认识、合作；**不得在概率池内成为推进主线的唯一可得角色**。

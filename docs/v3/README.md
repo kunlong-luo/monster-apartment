@@ -73,7 +73,7 @@
 
 ## 与历史文档的关系
 
-`docs/PRODUCT_SPEC.md`、`docs/DEVELOPMENT_PLAN.md` 和 [旧工坊路线](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs/GAME-ROADMAP.md) 记录早期原型与 V2 决策，保留用于追溯；发生冲突时，**现行产品目标以 [PRODUCT.md](../../PRODUCT.md) 与 [文档总入口](../README.md) 为准，已部署事实以代码为准**。
+[PRODUCT_SPEC.md](https://github.com/kunlong-luo/monster-apartment/blob/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac/docs/PRODUCT_SPEC.md)、[DEVELOPMENT_PLAN.md](https://github.com/kunlong-luo/monster-apartment/blob/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac/docs/DEVELOPMENT_PLAN.md) 和 [旧工坊路线](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs/GAME-ROADMAP.md) 记录早期原型与 V2 决策，保留用于追溯；发生冲突时，**现行产品目标以 [PRODUCT.md](../../PRODUCT.md) 与 [文档总入口](../README.md) 为准，已部署事实以代码为准**。
 
 ## V3.1 新增的关键产品决定（2026-10-28）
 

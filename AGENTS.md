@@ -43,7 +43,7 @@
 
 - **先读 [文档索引](docs/README.md)**，按 [快速迭代执行手册](docs/engineering/ITERATION-PLAYBOOK.md) 做最小可见切片、风险分层检查、证据化交付。
 - 现行缺口与风险登记在 [2026-11-22 台账](docs/engineering/GAP-REGISTER-2026-11-22.md)；任何 `DONE` 都需用对应页面、源码/资源清单、CI SHA 与必要人审验证。
-- `docs/DEVELOPMENT_PLAN.md`、`docs/TECH_STACK_PAGEVELA.md`、旧 Phaser/Vite ADR 与早期 issue 条目均属于**历史资料**；遇到冲突以当前工程和最新 ADR 为准。
+- V0.x 原型计划、旧 Phaser/Vite 技术记录已退役至[固定 Git 历史](https://github.com/kunlong-luo/monster-apartment/tree/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac/docs)；以当前 PRODUCT、DESIGN、架构及最新 ADR 为准，不恢复旧原型路由或数值。
 - 用户偏好小步快速主线迭代；但对高风险改动和已启用的 GitHub 分支规则不得绕过。当前 `main` 保护未启用，见 Issue #9；不把直接提交当作保护机制的替代。
 
 ## 美术资源统一管理（R12.52）

@@ -10,7 +10,7 @@
 | VIS-01 | [Issue #24](https://github.com/kunlong-luo/monster-apartment/issues/24)：全屏图仍有模糊反馈；仅凭 WebP 扩展名/分辨率不能判定清晰度 | 四种视口记录图片真实解码、DPR、裁切、回退和前后截图；修掉可复现的 P0 模糊 | **R12.72 首批修正图鉴 DPR 变化；其他全屏图仍待实机复核** |
 | VIS-02 | [Issue #16](https://github.com/kunlong-luo/monster-apartment/issues/16)：独立场景与人物分层交付尚未有全量正式美术验收证据 | 优先补有独立设计的首页/公寓/委托/仓库场景；按 R12 审稿清单真实晋级而非复用背景换色 | **待美术交付/人审** |
 | ART-01 | `public/art/beauty-beasts/characters/cg-manifest.json` 五张卡截至本轮读取**均为 `portrait`**（月纱两卡、泉泡/青枝/炽角各一） | 每卡核对独立原生图、身份和武器人体、许可、三视口；有真实签署再晋级，不能更改卡池概率或玩家存档 | **0/5 正式 CG（按清单）** |
-| DOC-01 | `docs/DEVELOPMENT_PLAN.md`、`docs/TECH_STACK_PAGEVELA.md`、`docs/DECISIONS.md` 与 `management/ISSUES.md` 混有 Vite/Phaser/V0.1 记录 | 本轮标记历史版本，建立 [文档入口](../README.md)、现行 [工作手册](ITERATION-PLAYBOOK.md) 和 ADR 被替代关系；后续文档审核继续更新 | **R12.74 已退役历史 management 目录，固定 SHA 可追溯** |
+| DOC-01 | V0.x 旧规划与技术记录、ADR 混有 Vite/Phaser/V0.1 记录（见[固定快照](https://github.com/kunlong-luo/monster-apartment/tree/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac/docs)） | 本轮标记历史版本，建立 [文档入口](../README.md)、现行 [工作手册](ITERATION-PLAYBOOK.md) 和 ADR 被替代关系；后续文档审核继续更新 | **R12.74 已退役 management；R12.81 退役六份早期 Markdown，仍需整理剩余设计/资源文档** |
 
 ## P1：紧随其后
 
@@ -187,7 +187,10 @@ V3.107.0 Quality/Pages 成功，综合桌面 27 项相关测试通过、A05 动�
 
 ## R12.75 · 工坊目录收敛
 
-R12.74 Quality 已通过（45378259228）。`engine/docs/` 四份收为一份 [设备规格](../design/WORKSHOP-ASSET-SPEC.md)，旧资料使用固定 SHA。旧工坊 M3/M4/M5 尚有多路线/新配方、设备与仓储容量、剧情协作、音效及经济长期平衡等长期候选，未实施不得标 DONE；优先真实玩家验证、独立原画及现行经营循环。引擎更名独立进行，先读 `audit:engine-paths` 实际报告，再迁移所有引用并验证 Quality、构建与浏览器。DOC-01/ENG-02 仍有历史文档及资源命名待清理。
+R12.74 Quality 已通过（45378259228）。`v2/docs/` 四份收为一份 [设备规格](../design/WORKSHOP-ASSET-SPEC.md)，旧资料使用固定 SHA。旧工坊 M3/M4/M5 尚有多路线/新配方、设备与仓储容量、剧情协作、音效及经济长期平衡等长期候选，未实施不得标 DONE；优先真实玩家验证、独立原画及现行经营循环。引擎更名独立进行，先读 `audit:engine-paths` 实际报告，再迁移所有引用并验证 Quality、构建与浏览器。DOC-01/ENG-02 仍有历史文档及资源命名待清理。
 
 
 R12.76：R12.75 Quality 与 Pages 成功；路径报告 19 runtime、26 tests、12 tooling、38 docs、1 internal。候选完成引擎根路径替换与原字节迁移；待 PR Quality 和相关浏览器验证，不关闭存档或视觉风险。
+
+
+R12.81：#60 已合并、Quality/Pages/性能/WebGL 生命周期通过；#53/#54/#58 的新候选 Quality 均通过，浏览器仍待结果，不标记合并。原 V0.x 六份 Markdown 退役，商业验证原则保留：先免费真人试玩，按理解/核心乐趣/重玩反馈决定调整或停止，真实录屏后再评估发行，收入不作保证；旧守卫战保留为历史实验，重新立项需明确产品价值及存档兼容，不自动恢复旧代码。DOC-01 仍未整体关闭。
