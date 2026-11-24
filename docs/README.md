@@ -9,6 +9,7 @@
 | 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |
+| Web / PC 首页优先优化（R12.25） | [欢迎页按需加载与地图关闭交互](design/R12-25-WEB-FIRST-LOBBY-LOAD-AND-NAVIGATION-2026-11-24.md) | 已提交 Web 代码与定向浏览器测试；Next 静态构建、PC 视觉审核和 Pages 发布以同一 SHA 的 CI 结果为准；没有新头像/CG 晋级 |
 | 首页菜单：现行顶角方案 | [R12.15 顶角世界地图](design/R12-15-LOBBY-CORNER-WORLD-ATLAS-2026-11-23.md) | 取代底部 Dock，七个真实页面仍可达；视觉 QA 以最新 SHA 为准 |
 | 首页两幅海报 / 图鉴清晰度 | [R12.16 边栏精简与候选原画 DPR 保护](design/R12-16-LOBBY-RAIL-DENSITY-AND-CG-DPR-2026-11-23.md) | 保留故事入口；移除重复大肖像和切换动画放大模糊 |
 | 全站是否也要升级 / 首页同脸 | [R12.17 七页面美术与身份审计](design/R12-17-FULL-SITE-VISUAL-IDENTITY-AUDIT-2026-11-23.md) | 修复玩家头像和月光街错图；四居民面部差异化与跨场景高质量重制次序 |
