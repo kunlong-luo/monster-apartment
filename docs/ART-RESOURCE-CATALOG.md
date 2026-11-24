@@ -319,3 +319,7 @@ R12.55 Quality 320/320、桌面视觉与像素检查通过；完整玩法 186 �
 ## R12.60 玩家可见的房间观景资源
 
 V3.103.0 已成功部署（main 39138900，Pages 45367299176）；R12.57 八张真实房间图由原候选分支原 blob 迁入本候选，未重新编码。每个 `public/art/rooms/<id>/review/` 下 background-candidate.webp 与 standing-candidate.webp 仅在玩家观景或显式审稿使用；`r12-57-review-manifest.json` 是原始转换证据，生产房间 manifest 不变。现有概念剧情背景仍用于真实物件调查；正式 CG 0/5。见 [R12.60](design/R12-60-PLAYER-ROOM-SCENIC-MODE-2026-11-24.md)。
+
+## R12.62 房间发布回归
+
+PR #56 首轮构建因观景按钮字符串未闭合失败；已修复并保留全部验收，八图字节不变。详见 [R12.62](design/R12-62-ROOM-SCENIC-BUILD-FIX-2026-11-24.md)。
