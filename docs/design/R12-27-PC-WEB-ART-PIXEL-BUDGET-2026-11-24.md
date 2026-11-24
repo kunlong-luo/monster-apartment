@@ -50,3 +50,9 @@ effectiveSourceSampleRatio =
 - 关联 [Issue #24 图片模糊](https://github.com/kunlong-luo/monster-apartment/issues/24)、[Issue #16 独立场景](https://github.com/kunlong-luo/monster-apartment/issues/16)。二者的**美术生产问题不得因这轮实现层修复而关闭**。
 
 **交付边界：** 本轮修正真实 Web 视觉渲染和像素预算回归，但没有生成/上传更大的新原图。是否可见于线上，严格以最新 SHA 的 Pages 成功记录为准。
+
+## 五、首次 Desktop Visual Review 的旧断言与复验动作
+
+- [桌面视觉首轮 #45308414727](https://github.com/kunlong-luo/monster-apartment/actions/runs/45308414727) **失败**于 `e2e/a05-character-gallery-layout.spec.ts:59`。该用例原来强制 `mythicZoom > 1.9`，对应被本轮去除的旧 `scale(2.05)`，浏览器实际返回 `1`。本次日志中先前的其他四场景测试 **24/24 通过**；A05 其它三个测试 **3/3 通过**。这是**旧测试仍要求错误放大**，不是新版本必须重新放大图片的证据。
+- 已修订旧断言为 `computed transform: none`，继续保留人物艺术来源必须是 `cg-eclipse-candidate.webp`、`object-position:50% 0%`、详情横幅位置不溢出、五卡/原图尺寸及新增 DPR2 预算。**没有**降低新像素保护阈值；新增验证仍是 `effective ratio <=1.0`。
+- 修订提交 `7444601463bc803b275a101c0abc914bfe5a69a6`。必须用此后同一代码的 Desktop Visual Review 复验；此前 V3.93.0 的 Quality 和 Pages 通过是发布证据，**不等于首轮失败的视觉工作流已通过**。该状态应记录，不能在报告中删去首次失败史。
