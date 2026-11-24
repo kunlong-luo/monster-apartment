@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-10-30",
-  "statusNote": "P2 cover and first P3 distinct thumbnail crops integrated as real binary + code. Full individual character CG, facial consistency passes and four independent beast arts are still pending.",
+  "updated": "2026-11-24",
+  "statusNote": "R12.53–55 transition candidate: current six welcome/identity slots match source-bound WebP outputs. Historical 2026-10-30 records are preserved as snapshots, not claims about current bytes. No production full-body CG or human identity approval.",
   "availableReferenceOnly": [
     {
       "assetId": "concept-beauty-beasts-cover",
@@ -75,6 +75,92 @@
     "passingCIAndPages": true
   },
   "productionAssets": [
+    {
+      "assetId": "R12-53-cover-desktop",
+      "status": "transition-candidate",
+      "path": "public/art/beauty-beasts/cover/world-cover.webp",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 526046,
+      "sha256": "abe1c65b61b85b4fc5c855d40871aed897358cca70f08f22d5ee4a13fbbaa50b",
+      "alpha": false,
+      "usage": "GothicWelcome desktop cover",
+      "derivedFrom": "art-sources/covers/welcome-desktop.png",
+      "sourceSha256": "ae0b22c5c454897d8f0b831216a3d205d0cb820fd5a2cad2070d422a6ccf39c4",
+      "note": "Actual source-bound transition output; not human-approved production CG."
+    },
+    {
+      "assetId": "R12-53-cover-mobile",
+      "status": "transition-candidate",
+      "path": "public/art/beauty-beasts/cover/world-cover-mobile.webp",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 489132,
+      "sha256": "9a9c42e30ccdb52aae91422d0dbc7b2d9bcebe2a8e39c2935f36c68fb3aa888f",
+      "alpha": false,
+      "usage": "GothicWelcome mobile cover",
+      "derivedFrom": "art-sources/covers/welcome-mobile.png",
+      "sourceSha256": "78591af84370e957dd08c830bdbf25f5f05e30cf0dff39223fa37c5fef49fad2",
+      "note": "Actual source-bound transition output; not human-approved production CG."
+    },
+    {
+      "assetId": "R12-53-yuesha-thumbnail",
+      "status": "transition-candidate",
+      "path": "public/art/yuesha-avatar-v3.webp",
+      "width": 600,
+      "height": 600,
+      "sizeBytes": 70710,
+      "sha256": "f7e2c48e9910492bf88b4f93f47e5f4df392226a82ce868f50842d989b5f747d",
+      "alpha": false,
+      "usage": "Shared resident identity thumbnail",
+      "derivedFrom": "art-sources/characters/yuesha/identity/front.png",
+      "sourceSha256": "dd8a65f04f1a8804fc15a32e2c7d010591e184f612d2ed4b284e315cfda94bca",
+      "note": "Actual source-bound transition output; not human-approved production CG."
+    },
+    {
+      "assetId": "R12-53-brook-thumbnail",
+      "status": "transition-candidate",
+      "path": "public/art/beauty-beasts/characters/brook/face.webp",
+      "width": 600,
+      "height": 600,
+      "sizeBytes": 92138,
+      "sha256": "ef106e8e6dd239e44ab7ec4b93b62fa694a6a19ce7b056889f677564878b7926",
+      "alpha": false,
+      "usage": "Shared resident identity thumbnail",
+      "derivedFrom": "art-sources/characters/brook/identity/front.png",
+      "sourceSha256": "27fea74811adae6538671b39bb2da2e43cabddd0ebfdc8366e624e3ca57a9e92",
+      "note": "Actual source-bound transition output; not human-approved production CG."
+    },
+    {
+      "assetId": "R12-53-fern-thumbnail",
+      "status": "transition-candidate",
+      "path": "public/art/beauty-beasts/characters/fern/face.webp",
+      "width": 600,
+      "height": 600,
+      "sizeBytes": 75438,
+      "sha256": "5c0da9136d313c4d75250b0b27739597e4c95f6a2ede07eb857550a994bf9908",
+      "alpha": false,
+      "usage": "Shared resident identity thumbnail",
+      "derivedFrom": "art-sources/characters/fern/identity/front.png",
+      "sourceSha256": "17b3dc6b3e07ef0eee836517e3771a0be6f2860b6c7948c5639250158358cf44",
+      "note": "Actual source-bound transition output; not human-approved production CG."
+    },
+    {
+      "assetId": "R12-53-cinder-thumbnail",
+      "status": "transition-candidate",
+      "path": "public/art/beauty-beasts/characters/cinder/face.webp",
+      "width": 600,
+      "height": 600,
+      "sizeBytes": 83042,
+      "sha256": "b8a011bf40dd41272e5d769ef4831cbb44eb854d0cf4856e464a0683f24997c1",
+      "alpha": false,
+      "usage": "Shared resident identity thumbnail",
+      "derivedFrom": "art-sources/characters/cinder/identity/front.png",
+      "sourceSha256": "1be8e68d1ff1d531e59688be796db5a37f36625eaf7b6413833e7641a9de1a2e",
+      "note": "Actual source-bound transition output; not human-approved production CG."
+    }
+  ],
+  "historicalProductionAssets": [
     {
       "assetId": "P2-cover-desktop-v1",
       "status": "integrated",

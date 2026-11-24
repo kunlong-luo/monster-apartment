@@ -41,7 +41,9 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     const declaration=read('src/types/next-static-webp.d.ts');
     const polish=read('src/components/game/gothic-polish.css');
     expect(declaration).toContain("declare module '*.webp'");
-    expect(lobby).toContain("import lobbyHero from '../../../public/art/lobby-hero-v3.webp'");
+    expect(lobby).toContain("import lobbyHero from '../../../public/art/lobby-hero-v4.webp'");
+    expect(lobby).toContain("import lobbyHeroMobile from '../../../public/art/lobby-hero-v4-mobile.webp'");
+    expect(lobby).toContain('<picture className="gothic-lobby__painting">');
     expect(lobby).toContain('data-testid="gothic-lobby-painting-image"');
     expect(lobby).toContain('unoptimized');
     expect(lobby).not.toContain('./lobby-hero.webp'+")");
@@ -50,10 +52,13 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
   });
   it('ships real lossily-compressed WebP paintings at usable resolutions',()=>{
     const scenes=[
+      // V3 remains a live fallback for the apartment and Pixi. V4 is the independent lobby pair.
       {file:'public/art/lobby-hero-v3.webp',minWidth:1550,minHeight:980,minBytes:300000},
-      {file:'public/art/yuesha-portrait-v3.webp',minWidth:680,minHeight:800,minBytes:140000},
-      {file:'public/art/yuesha-bust-v3.webp',minWidth:900,minHeight:880,minBytes:200000},
-      {file:'public/art/yuesha-avatar-v3.webp',minWidth:490,minHeight:490,minBytes:70000},
+      {file:'public/art/lobby-hero-v4.webp',minWidth:1672,minHeight:941,minBytes:300000},
+      {file:'public/art/lobby-hero-v4-mobile.webp',minWidth:941,minHeight:1672,minBytes:300000},
+      {file:'public/art/yuesha-portrait-v3.webp',minWidth:1086,minHeight:1448,minBytes:140000},
+      {file:'public/art/yuesha-bust-v3.webp',minWidth:930,minHeight:910,minBytes:100000},
+      {file:'public/art/yuesha-avatar-v3.webp',minWidth:600,minHeight:600,minBytes:70000},
     ];
     for(const art of scenes){
       const data=readFileSync(join(root,art.file));

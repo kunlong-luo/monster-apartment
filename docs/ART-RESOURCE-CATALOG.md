@@ -307,3 +307,7 @@
 ## R12.54 实际输出回读
 
 R12.53 候选已真实生成 15 WebP（5,376,498 B），原图与输出的机器可读 [转换清单](../public/art/r12-53-transition-manifest.json) 已存在。原 33 源图完整保留，候选输出不等同正式 CG 或已上线。旧目录统计是 R12.52 清理快照；候选新增 2 个大厅 WebP 路径，其余为稳定槽位替换。见 [R12.54 验收记录](art-reviews/R12-54-TRANSITION-ASSET-VERIFICATION-2026-11-24.md)。
+
+## R12.55 现行引用与历史清单
+
+旧 [2026-10-30 资源清单](design/2026-10-30-beauty-beasts/asset-manifest.json) 的六个现行封面/头像槽与 R12.53 实际转换清单同步，旧六条记录保存在 historicalProductionAssets。月纱现用 yuesha-avatar-v3.webp（候选分支新内容），而不是退役 yuesha/face.webp。资源完整性与 V4 横竖图检查继续保留。见 [R12.55](art-reviews/R12-55-TRANSITION-MANIFEST-RECONCILIATION-2026-11-24.md)，尚未合并。
