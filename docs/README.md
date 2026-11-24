@@ -9,6 +9,7 @@
 | 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |
+| 六份场景研究图来源同步（R12.38） | [真实 Git blob 与研究清单一致性](art-reviews/R12-38-SCENE-RESEARCH-PROVENANCE-SYNC-2026-11-24.md) | S05/S06 四份旧候选元数据纠偏，六份研究源和 WebP 与已验证台账绑定；生产状态不变 |
 | 现行视觉合同与美术交付次序（R12.37） | [现行布局、旧决策纠偏与真实资产状态](design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md) | 文档治理：顶角地图、双地点海报；欢迎页群像与大厅单人背景独立任务；S02/G1/CG 生产未完成，V3.101.0 不变 |
 | Web / PC 六门遮挡与审稿水合（R12.36） | [真实浏览器失败复盘、命中层与 hydration 修复](design/R12-36-S02-POINTER-AND-REVIEW-HYDRATION-2026-11-24.md) | **V3.101.0**：R12.35 视觉检查 5 通过/1 失败，修复父容器拦截及直接网址 SSR 错误；新 SHA 待复验，正式原画未晋级 |
 | Web / PC 公寓六门交互研究（R12.35） | [真实研究图门位与房间抽屉、四视口回归](design/R12-35-S02-RESEARCH-DOOR-INTERACTION-2026-11-24.md) | **V3.100.0**：显式审稿增加六门点击验证，普通 HUD 与生产 manifest 不变；正式高清及人工验收待完成 |

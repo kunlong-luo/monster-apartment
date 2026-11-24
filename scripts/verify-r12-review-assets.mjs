@@ -50,6 +50,30 @@ for(const entry of data.entries){
   if(entry.productionApproved!==false||entry.availableInGit!==true)
     failures.push('Review binaries must be committed, but not production-approved: '+entry.taskId);
 }
+
+// Reconcile the public scene candidate metadata with the independently
+// checksum-verified R12-09 research ledger. A review pointer is not a
+// production source path or approval. Pending/production scenes keep their
+// own admission rules; a new review candidate must first enter the ledger.
+const sceneManifest=JSON.parse(readFileSync('public/art/world-scenes/r12-scene-manifest.json','utf8'));
+for(const [area,id] of [['apartment','S02'],['orders','S05'],['warehouse','S06']]){
+  const scene=sceneManifest.scenes[area];
+  if(scene.status!=='review')continue;
+  for(const [field,suffix] of [['candidate','D'],['mobileCandidate','M']]){
+    const taskId='ART-'+id+'-'+suffix;
+    const rows=data.entries.filter(entry=>entry.taskId===taskId);
+    const meta=scene[field];
+    const row=rows[0];
+    if(rows.length!==1||!meta||meta.researchAssetId!==taskId||
+      meta.researchSourcePath!==row.source.path||meta.sourceSHA256!==row.source.sha256||
+      meta.nativeWidth!==row.source.width||meta.nativeHeight!==row.source.height||
+      meta.researchPreviewPath!==row.candidate.path||meta.researchPreviewSHA256!==row.candidate.sha256||
+      meta.availableInRepo!==true||meta.humanVisualReview!==false||scene.review!==null){
+      failures.push('Scene review candidate/ledger mismatch: '+taskId);
+    }
+  }
+}
+
 if(failures.length){
   for(const failure of failures)console.error('ERROR',failure);
   process.exitCode=1;

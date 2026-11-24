@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "policy": "No review-only image can be used at runtime. The production paths must be separate native desktop and mobile WebP paintings, reviewed and checksum pinned.",
+  "policy": "Review-only images are excluded from normal player runtime; explicit opt-in layout research may show them. Production paths must be separate native desktop and mobile WebP paintings, reviewed and checksum pinned.",
   "scenes": {
     "apartment": {
       "id": "S02",
@@ -8,26 +8,34 @@
       "status": "review",
       "candidate": {
         "sourceType": "ai-generated",
-        "sourceReference": "2026-11-23 research-only 6-door desktop PNG in art-sources/review/2026-11-23/apartment-six-door-desktop-v1.png, SHA verified in R12-13; not production.",
+        "sourceReference": "art-sources/review/2026-11-23/apartment-six-door-desktop-v1.png — repository research-only original; see R12-09 review asset ledger, not production.",
         "sourceSHA256": "5dd2fa1a943064fc9b7996f3329068ba174582f12c746a878defa2b96f7acad5",
         "nativeWidth": 1672,
         "nativeHeight": 941,
         "availableInRepo": true,
         "humanVisualReview": false,
-        "hasNativeMobileArt": false
+        "hasNativeMobileArt": false,
+        "researchAssetId": "ART-S02-D",
+        "researchSourcePath": "art-sources/review/2026-11-23/apartment-six-door-desktop-v1.png",
+        "researchPreviewPath": "public/art/world-scenes/review/2026-11-23/apartment-six-door-desktop-v1.webp",
+        "researchPreviewSHA256": "61aa2ad62dac99a8a2d976cb77361bcc1a41dc5e2dd855444f7fe84a46599f31"
       },
       "desktop": "public/art/world-scenes/r12/apartment-desktop.webp",
       "mobile": "public/art/world-scenes/r12/apartment-mobile.webp",
       "review": null,
       "mobileCandidate": {
         "sourceType": "ai-generated",
-        "sourceReference": "2026-11-23 separately composed six-door vertical PNG art-sources/review/2026-11-23/apartment-six-door-mobile-v1.png (R12-14); review only, not a desktop crop.",
+        "sourceReference": "art-sources/review/2026-11-23/apartment-six-door-mobile-v1.png — repository research-only original; see R12-09 review asset ledger, not production.",
         "sourceSHA256": "cffd902c4a4c60cabab52d593516459a5f7e54bb46b7657e84c5b8e1cea99a58",
         "nativeWidth": 941,
         "nativeHeight": 1672,
         "independentComposition": true,
         "availableInRepo": true,
-        "humanVisualReview": false
+        "humanVisualReview": false,
+        "researchAssetId": "ART-S02-M",
+        "researchSourcePath": "art-sources/review/2026-11-23/apartment-six-door-mobile-v1.png",
+        "researchPreviewPath": "public/art/world-scenes/review/2026-11-23/apartment-six-door-mobile-v1.webp",
+        "researchPreviewSHA256": "9aa1b606f36f657158c96bd8019927d8e9f4cbe6ea7263631e1fa895e779ebe6"
       }
     },
     "orders": {
@@ -36,26 +44,34 @@
       "status": "review",
       "candidate": {
         "sourceType": "ai-generated",
-        "sourceReference": "R12 S05 contract hall generated 2026-11-14; source is contained in conversation review ZIP, not in repository",
-        "sourceSHA256": "ae97b5f40161a3b40bc6732a453c0b3af6bc379872a7ec13e0dac59557399530",
+        "sourceReference": "art-sources/review/2026-11-22/orders-desktop-v1.png — repository research-only original; see R12-09 review asset ledger, not production.",
+        "sourceSHA256": "e02d879247c8eb2de38ba2ae09fb8021454b9174891c74b48f7db1284fe152ac",
         "nativeWidth": 1672,
         "nativeHeight": 941,
-        "availableInRepo": false,
+        "availableInRepo": true,
         "humanVisualReview": false,
-        "hasNativeMobileArt": false
+        "hasNativeMobileArt": false,
+        "researchAssetId": "ART-S05-D",
+        "researchSourcePath": "art-sources/review/2026-11-22/orders-desktop-v1.png",
+        "researchPreviewPath": "public/art/world-scenes/review/2026-11-22/orders-desktop-v1.webp",
+        "researchPreviewSHA256": "388da2122c8a41bd66e3250bd0a8d6f331a1f56937a288333e92d154a8d17b95"
       },
       "desktop": "public/art/world-scenes/r12/orders-desktop.webp",
       "mobile": "public/art/world-scenes/r12/orders-mobile.webp",
       "review": null,
       "mobileCandidate": {
         "sourceType": "ai-generated",
-        "sourceReference": "R12 S05 independent portrait contract hall background generated 2026-11-16 with ChatGPT ImageGen; original PNG included in conversation review ZIP, not in repository",
-        "sourceSHA256": "96d5fffb7e571c0733a2a2de7702188b49290bc3c55d14360372530b580935f8",
+        "sourceReference": "art-sources/review/2026-11-22/orders-mobile-v1.png — repository research-only original; see R12-09 review asset ledger, not production.",
+        "sourceSHA256": "4cec5d4c78f7eabb0ecabf17932c8316f0c7a0e4b7f185d29043a9326c10c0b1",
         "nativeWidth": 941,
         "nativeHeight": 1672,
         "independentComposition": true,
-        "availableInRepo": false,
-        "humanVisualReview": false
+        "availableInRepo": true,
+        "humanVisualReview": false,
+        "researchAssetId": "ART-S05-M",
+        "researchSourcePath": "art-sources/review/2026-11-22/orders-mobile-v1.png",
+        "researchPreviewPath": "public/art/world-scenes/review/2026-11-22/orders-mobile-v1.webp",
+        "researchPreviewSHA256": "6a80446684a1710112f8998681920d2553ba00263a279fcc4b671e31b4360f1f"
       }
     },
     "warehouse": {
@@ -64,26 +80,34 @@
       "status": "review",
       "candidate": {
         "sourceType": "ai-generated",
-        "sourceReference": "R12 S06 dedicated magical warehouse 2026-11-14; original only in conversation S06 review ZIP, not the repository",
-        "sourceSHA256": "f84ac996a287cc35ecf4210210329fdc71c7ec6cb7c7247d42389aef3732b009",
+        "sourceReference": "art-sources/review/2026-11-22/warehouse-desktop-v1.png — repository research-only original; see R12-09 review asset ledger, not production.",
+        "sourceSHA256": "6a2f5a55beedd77549b3d81963c642c00450014ef965571163cabb71413375a1",
         "nativeWidth": 1672,
         "nativeHeight": 941,
-        "availableInRepo": false,
+        "availableInRepo": true,
         "humanVisualReview": false,
-        "hasNativeMobileArt": false
+        "hasNativeMobileArt": false,
+        "researchAssetId": "ART-S06-D",
+        "researchSourcePath": "art-sources/review/2026-11-22/warehouse-desktop-v1.png",
+        "researchPreviewPath": "public/art/world-scenes/review/2026-11-22/warehouse-desktop-v1.webp",
+        "researchPreviewSHA256": "23f4fb92db8d9fcd7294b356c526ab975d37f6878b773861ea574db107d5abf4"
       },
       "desktop": "public/art/world-scenes/r12/warehouse-desktop.webp",
       "mobile": "public/art/world-scenes/r12/warehouse-mobile.webp",
       "review": null,
       "mobileCandidate": {
         "sourceType": "ai-generated",
-        "sourceReference": "R12 S06 original separate portrait warehouse composition generated 2026-11-16; source PNG is in conversation review ZIP and is not committed to the repository",
-        "sourceSHA256": "882de33135914fdac8a5b9d1a280a7a603df472d698b00875393780e654a708b",
+        "sourceReference": "art-sources/review/2026-11-23/warehouse-mobile-v1.png — repository research-only original; see R12-09 review asset ledger, not production.",
+        "sourceSHA256": "2261ffccb6021b7065ddd95abb722ecd7fbd29b185ce3a3cda191f6aa39df6b9",
         "nativeWidth": 941,
         "nativeHeight": 1672,
         "independentComposition": true,
-        "availableInRepo": false,
-        "humanVisualReview": false
+        "availableInRepo": true,
+        "humanVisualReview": false,
+        "researchAssetId": "ART-S06-M",
+        "researchSourcePath": "art-sources/review/2026-11-23/warehouse-mobile-v1.png",
+        "researchPreviewPath": "public/art/world-scenes/review/2026-11-23/warehouse-mobile-v1.webp",
+        "researchPreviewSHA256": "c9d00ff314c86aa6c600ae1c55f2c36c723a2b9c86286b71f44a349fd22f8e7c"
       }
     }
   }
