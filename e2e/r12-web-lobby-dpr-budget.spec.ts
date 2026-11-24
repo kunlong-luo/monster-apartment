@@ -43,6 +43,10 @@ for(const profile of profiles){
       };
     });
     expect(measured.dpr).toBe(2);
+    expect(measured.natural).toEqual(profile.name.startsWith('mobile')
+      ?{width:941,height:1672}:{width:1672,height:941});
+    expect(measured.currentSrc).toContain(profile.name.startsWith('mobile')
+      ?'lobby-hero-v4-mobile':'lobby-hero-v4');
     expect(measured.fit).toBe('cover');
     expect(measured.filter).toBe('none');
     expect(measured.transform).toBe('none');

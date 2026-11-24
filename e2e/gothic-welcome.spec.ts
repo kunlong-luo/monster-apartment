@@ -15,7 +15,7 @@ test('fresh visitor sees a full-screen welcome and enters the real saved lobby',
       img.complete&&img.naturalWidth>0)).toBe(true);
   }
   await page.screenshot({path:'test-results/welcome-desktop.png',animations:'disabled'});
-  await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',1920);
+  await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',1672);
   await expect(page.getByTestId('gothic-welcome')).toHaveAttribute('data-cover-status','integrated-beauty-beasts-cover');
   await expect(page.getByTestId('gothic-lobby')).toHaveCount(0);
   // Full game stage is loaded only after entry; the cover remains usable.
@@ -43,7 +43,7 @@ test('phone welcome preserves touch target and does not scroll',async({page})=>{
   await expect(page.getByTestId('welcome-heroine-lineup')).toBeVisible();
   await expect(page.getByTestId('welcome-cover-image'))
     .toHaveJSProperty('loading','eager');
-  await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',900);
+  await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',941);
   for(const image of await page.getByTestId('welcome-heroine-lineup').locator('img').all()){
     await expect.poll(()=>image.evaluate((img:HTMLImageElement)=>
       img.complete&&img.naturalWidth>0)).toBe(true);
@@ -51,7 +51,7 @@ test('phone welcome preserves touch target and does not scroll',async({page})=>{
   await page.screenshot({path:'test-results/welcome-mobile.png',animations:'disabled'});
   const source=page.locator('.gothic-welcome__painting source');
   await expect(source).toHaveAttribute('media','(max-width:700px)');
-  await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',900);
+  await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',941);
   const measurement=await page.evaluate(()=>{
     const el=document.querySelector('[data-testid="welcome-enter"]')!;
     const box=el.getBoundingClientRect();

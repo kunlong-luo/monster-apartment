@@ -299,3 +299,7 @@
 4. 实际页面截图、Quality 和 Pages 按最终 SHA 回读。迁移原画不等于正式玩家已看到新图。
 
 今后新增素材先更新源图目录与机器清单；正式资源状态仍由相应生产 manifest 管理。所有清理保留替代关系和证据。
+
+## R12.53 候选接入
+
+候选分支通过脚本生成 15 份 WebP，并保留原始 PNG；实际输出、源/输出 SHA-256、裁切、原生像素及旧 blob 见 public/art/r12-53-transition-manifest.json（转换完成后生成）。当前主线尚未启用。参见 [R12.53](art-reviews/R12-53-CHARACTER-AND-COVER-TRANSITION-2026-11-24.md)。

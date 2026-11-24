@@ -35,3 +35,7 @@
 ## V3.89 · 世界地点 1920×1080 过渡绘景
 
 `world-scenes/workshop-gothic-hall.webp` 是哥特室内厅堂；`world-scenes/town-moonlit-gate.webp` 是夜间庄园入口，均来自已审计的 WineChan Gothic Manor 原始 ZIP，保持原尺寸且没有裁切放大。源图/输出 SHA、来源许可声明、使用范围见 `world-scenes/source-manifest.json`。工坊由 Pixi 侧车与 React 根容器共用同一场景背景，街区使用不同完整室外背景；不能用于四间私人房间的正式 CG，也未改变存档或概率。
+
+## R12.53 候选过渡美术
+
+新黑发月纱身份及四住客头像、双端欢迎/大厅与五张大卡候选将在独立分支生成，沿用现有稳定角色资产路径；新大厅另用 lobby-hero-v4 与 lobby-hero-v4-mobile，不覆盖仍被公寓引用的旧 V3 绘景。泉泡、炽角先用无文字静态透明立绘作候选卡，非正式独立 CG。旧版本描述为历史记录；最终启用以实际合并、浏览器和 Pages 为准。
