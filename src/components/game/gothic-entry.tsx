@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 // scene effects into the initial Web route before the player enters.
 const GothicLobby=dynamic(()=>import('./gothic-lobby').then(module=>module.GothicLobby),{
   ssr:false,
-  loading:()=> <main className="grid min-h-dvh place-items-center bg-[#120b19] px-5 text-center text-[#e8d4b2]"
+  loading:()=> <main className="grid min-h-dvh place-items-center bg-gothic-night px-5 text-center text-gothic-ivory"
     aria-label="正在进入怪物公寓" data-testid="lobby-loading">
     <div className="grid gap-3"><span aria-hidden="true" className="text-4xl">☾</span>
       <p className="text-sm tracking-[.17em]">正在开启公寓大门…</p></div>
