@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
+import {useRouter,useSearchParams} from 'next/navigation';
 import {Pause,Play,ScrollText,X} from 'lucide-react';
 import {AnimatePresence} from 'motion/react';
 import {useCallback,useEffect,useState,useSyncExternalStore} from 'react';
@@ -43,6 +44,18 @@ function readCozySave():CozyState{
   return saved;
 }
 export function GothicApartment(){
+  const router=useRouter();
+  const searchParams=useSearchParams();
+  // A private suite has one URL identity, shared with the other residents.
+  // Dialogue is local presentation state and may stay open when leaving.
+  const visitingYuesha=searchParams.get('visit')==='yuesha';
+  const withVisit=new URLSearchParams(searchParams.toString());
+  withVisit.set('visit','yuesha');
+  const roomHref='/apartment/?'+withVisit.toString();
+  const withoutVisit=new URLSearchParams(searchParams.toString());
+  withoutVisit.delete('visit');
+  const remaining=withoutVisit.toString();
+  const exitHref='/apartment/'+(remaining?'?'+remaining:'');
   const ready=useSyncExternalStore(subscribeClient,clientSnapshot,serverSnapshot);
   const [world,setWorld]=useState<CozyState>(readCozySave);
   // Retain the exact damaged snapshot seen by this tab. A recovery dialog
@@ -62,15 +75,10 @@ export function GothicApartment(){
   const [paused,setPaused]=useState(false);
   const {reduced:reducedMotion}=useGothicMotion();
   const [notices,setNotices]=useState(false);
-  const [witchOpen,setWitchOpen]=useState(false);
-  const [witchRoom,setWitchRoom]=useState(false);
+  const [talkOpen,setTalkOpen]=useState(false);
+  const witchRoom=visitingYuesha;
+  const witchOpen=talkOpen||visitingYuesha;
   const [feedback,setFeedback]=useState<{id:number;text:string}|null>(null);
-  useEffect(()=>{
-    // Character cards can open the same in-scene room without adding an eighth route.
-    if(new URLSearchParams(window.location.search).get('visit')!=='yuesha')return;
-    const frame=window.requestAnimationFrame(()=>{setWitchRoom(true);setWitchOpen(true);});
-    return ()=>window.cancelAnimationFrame(frame);
-  },[]);
   const syncSaved=useCallback(()=>{
     try{
       const raw=window.localStorage.getItem(KEY);
@@ -198,7 +206,7 @@ export function GothicApartment(){
     }else setSelected(value=>value===index?null:index);
   };
   return <main className={reducedMotion?'ga ga--still ga--red-gold':'ga ga--red-gold'} data-testid="gothic-apartment" aria-label="哥特公寓经营"
-    onKeyDown={event=>{if(event.key==='Escape'){setWitchOpen(false);setNotices(false);}}}>
+    onKeyDown={event=>{if(event.key==='Escape'){setTalkOpen(false);if(visitingYuesha)router.replace(exitHref);setNotices(false);}}}>
     <R12SceneBackdrop area="apartment" className="ga-backdrop" fallbackSrc={lobbyHero}/>
     <div className="ga-light" aria-hidden="true"/>
     <div className="ga-shade" aria-hidden="true"/>
@@ -225,7 +233,7 @@ export function GothicApartment(){
       </div>
     </header>
     <GothicRoomDoors world={world} selected={selected} onChoose={choose}/>
-    <button className="ga-witch" type="button" onClick={()=>{setSelected(null);setWitchRoom(false);setWitchOpen(true);}}
+    <button className="ga-witch" type="button" onClick={()=>{setSelected(null);setTalkOpen(true);}}
       aria-label="与女主人月纱交流" data-tooltip="月纱 · 女主人"/>
     <div className="ga-witch-title" aria-hidden="true">月纱 <small>暗夜公寓的女主人</small></div>
     <section className="ga-lower" aria-label="房间交互及经营动态">
@@ -242,9 +250,9 @@ export function GothicApartment(){
     </div>}
     <AnimatePresence mode="wait">
     {witchOpen&&<GothicModal key={"moonveil"} title="与月纱交谈" closeLabel="关闭月纱对话"
-      onClose={()=>{setWitchOpen(false);setWitchRoom(false);}} wide immersive={witchRoom}>
+      onClose={()=>{setTalkOpen(false);if(visitingYuesha)router.replace(exitHref);}} wide immersive={witchRoom}>
       {witchRoom?<div className="min-w-0 flex-1 space-y-3">
-        <button type="button" onClick={()=>setWitchRoom(false)}
+        <button type="button" onClick={()=>{setTalkOpen(true);router.replace(exitHref);}}
           className="min-h-9 rounded-full border border-gothic-brass/60 bg-gothic-panel/80 px-3 text-xs hover:border-gothic-glow">
           ← 返回月纱对话
         </button>
@@ -259,7 +267,7 @@ export function GothicApartment(){
         <h2 className="text-xl font-semibold leading-snug text-gothic-ivory sm:text-2xl">今夜的公寓，如何了？</h2>
         <p className="text-sm leading-7 text-gothic-muted">“已经住进 {goal.guests} 位邻居了。每扇门后都有属于自己的故事……要不要再去看看？”</p>
         <p className="text-xs leading-relaxed text-gothic-muted">幸福度 {goal.happiness} / 100 · 预计每日收入 +{cozyDailyIncome(world).total} ✦</p>
-        <button type="button" onClick={()=>setWitchRoom(true)} data-testid="visit-yuesha-room"
+        <button type="button" onClick={()=>router.push(roomHref)} data-testid="visit-yuesha-room"
           className="mt-2 inline-flex min-h-10 items-center rounded-lg border border-gothic-brass bg-gothic-wine/80 px-4 py-2 text-sm text-gothic-ivory hover:border-gothic-glow">拜访月纱会客室</button>
         <GothicPanelLink href="/orders/">查看月纱委托 ›</GothicPanelLink>
       </div></>}
