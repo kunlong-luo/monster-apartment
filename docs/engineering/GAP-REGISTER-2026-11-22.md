@@ -159,7 +159,7 @@ UI-01 规范差异已修正：DESIGN / PRODUCT / 历史参考说明不得再要�
 
 ## 2026-11-24 · 私室刷新回归（R12.40）
 
-R12.36 全量浏览器 186/1/3，唯一失败为旧月纱剧情测试在深链刷新恢复私室后点击背景。按现行 URL 合同调整真实操作顺序及持久化断言，见 [R12.40](../design/R12-40-YUESHA-RELOAD-LORE-REGRESSION-2026-11-24.md)。新回归待确认；R12.36 独立 Desktop Visual 最终 cancelled，VIS-01/VIS-02 不关闭。
+R12.36 全量浏览器 186/1/3，唯一失败为旧月纱剧情测试在深链刷新恢复私室后点击背景。按现行 URL 合同调整真实操作顺序及持久化断言，见 [R12.40](https://github.com/kunlong-luo/monster-apartment/blob/80eb69abb56c8a0a398e53ff27cdf513e76b695e/docs/design/R12-40-YUESHA-RELOAD-LORE-REGRESSION-2026-11-24.md)。新回归待确认；R12.36 独立 Desktop Visual 最终 cancelled，VIS-01/VIS-02 不关闭。
 
 ## 2026-11-24 · 场景视觉验收独立（R12.41）
 
@@ -197,3 +197,5 @@ R12.81：#60 已合并、Quality/Pages/性能/WebGL 生命周期通过；#53/#54
 
 
 R12.82：三功能独立 Quality、Desktop、Gameplay 全部成功，组合候选保留原运行/测试 blob 并合并最新文档；待组合 SHA 质量与浏览器验收，不关闭真人、正式 CG 或原画风险。#54/#58 外部 4K 原包获取失败另行追踪。
+
+R12.83–84：V3.109.0 主线 80eb69a 的 Quality、Desktop、Gameplay 与 Pages 全部成功；#54/#58 有效运行/测试 blob 已逐一核对一致并关闭重复 PR。原包下载失败与 VIS-01/VIS-02/ART-01/UX-01 不关闭；DOC-01 继续收敛，四份旧设计报告退役，保留独立原画/审批和回归历史。实际分支 refs 尚未删除。

@@ -6,11 +6,12 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 
 ## 当前可核实发布基线
 
-2026-11-24，V3.108.0 主线 [f3a3b70](https://github.com/kunlong-luo/monster-apartment/commit/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381664053)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381794477)、[工坊性能](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381664032)、[WebGL 生命周期](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381663944) 成功。#60 候选四项验收成功后已合并；主线独立桌面/玩法仍待核实。第三方 4K 原包获取独立失败，不代表审批通过。R12.81 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45383576938) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45383718973) 成功。R12.82 组合 V3.109.0 为三功能整合候选，尚未部署。
+2026-11-24，V3.109.0 正式主线 [80eb69a](https://github.com/kunlong-luo/monster-apartment/commit/80eb69abb56c8a0a398e53ff27cdf513e76b695e)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45392165404)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45392165400)、[Gameplay Browser Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45392165444)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45392330890) 全部成功。三功能由 [#53](https://github.com/kunlong-luo/monster-apartment/pull/53) 统一合并；#54/#58 的有效代码和测试原 blob 一致，重复 PR 已关闭。原包下载独立失败仍待处理，不代表正式美术审核。R12.84 仅整理文档，不改变 UI 版本。
 
 - V3.103.0 欢迎页、头像、卡面与大厅过渡图已接入；正式 CG 人工签审仍未完成。
 - V3.104.0 四位人物拥有独立背景/人物层的观景模式；原故事模式与真实热点保留。
 - V3.105.0 PC 工坊采用 V1 绘景、月光街采用 V2 绘景；手机、Pixi 建造和存档保持既有路径。过渡图可见不等于 production 原画晋级。
+- V3.109.0 仓库显示真实需求/采购反馈、公寓显式研究模式支持六门与 HUD 共存、工坊按真实产量显示三种工序动效；正常玩家场景、七路由、存档与审批不变。
 - 完整玩法、跨页统一账本、真实玩家验证、原生高清正式原画仍须分别验收。查看[当前治理与风险](docs/README.md)。
 
 ## 七个正式游戏场景

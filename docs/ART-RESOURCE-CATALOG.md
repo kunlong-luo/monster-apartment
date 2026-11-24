@@ -324,7 +324,7 @@ V3.103.0 已成功部署（main 39138900，Pages 45367299176）；R12.57 八张�
 
 ## R12.62 房间发布回归
 
-PR #56 首轮构建因观景按钮字符串未闭合失败；已修复并保留全部验收，八图字节不变。详见 [R12.62](design/R12-62-ROOM-SCENIC-BUILD-FIX-2026-11-24.md)。
+PR #56 首轮构建因观景按钮字符串未闭合失败；已修复并保留全部验收，八图字节不变。详见 [R12.62](https://github.com/kunlong-luo/monster-apartment/blob/80eb69abb56c8a0a398e53ff27cdf513e76b695e/docs/design/R12-62-ROOM-SCENIC-BUILD-FIX-2026-11-24.md)。
 
 ## R12.61 工坊和月光街候选
 

@@ -139,4 +139,4 @@
 旧 V2 路由说明和独立实验路线已退役（[固定快照](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs)）。当前 Next 七路由、Pixi IIFE、React 挂载/销毁、静态资源同源、现有端口和双存档键依本架构、实际代码与工作流；不恢复独立 HTML。工坊资产制作统一至 [设备规格](design/WORKSHOP-ASSET-SPEC.md)。`pnpm audit:engine-paths` 为后续迁移提供逐文件引用报告；R12.75 时位置仍为 `v2/`；R12.76 已通过四项候选检查并合并 f3a3b70，完整目录迁到 `engine/`，旧路径仅属于历史；主线 Quality、Pages、性能基准和 WebGL 生命周期已通过。
 
 
-R12.82 候选：仓库需求/采购预览复用 engine 的 importPatronCore 与 forecastPatronCommission；公寓 HUD 共存仅显式审稿临时状态；工坊 Motion 粒子只读工作状态和预测产量，均不另建存档、经济或运行引擎。
+V3.109.0 已发布（80eb69a）：仓库需求/采购预览复用 engine 的 importPatronCore 与 forecastPatronCommission；公寓 HUD 共存仅显式审稿临时状态；工坊 Motion 粒子只读工作状态和预测产量，均不另建存档、经济或运行引擎。

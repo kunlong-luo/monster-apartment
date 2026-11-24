@@ -1,6 +1,6 @@
 # R12.37 · 现行视觉合同与真实美术交付次序（2026-11-24）
 
-> 只读代码/清单审查与文档纠偏，基线 `9e4077cca445048a5d2d6f73c1e074e44fab85f4` / V3.101.0；不改游戏代码、不提高版本号、不提交新原画、不晋级素材。当前 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45322294968) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45322379536) 已成功，[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45322294938) 与 [Gameplay Browser Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45322294982) 核查时仍在执行。保持原有浏览器任务，不为文档调整重新触发视觉/玩法回归。
+> 以下初始记录为 R12.37 历史审计快照，后续变更见本文末尾及根 README；基线 `9e4077cca445048a5d2d6f73c1e074e44fab85f4` / V3.101.0；不改游戏代码、不提高版本号、不提交新原画、不晋级素材。当前 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45322294968) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45322379536) 已成功，[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45322294938) 与 [Gameplay Browser Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45322294982) 核查时仍在执行。保持原有浏览器任务，不为文档调整重新触发视觉/玩法回归。
 
 ## 当前代码优先于历史参考图
 
@@ -39,4 +39,7 @@ G1 入库阻塞仍然存在，不能用新建文本文件冒充美术交付。�
 上述四份 S05/S06 候选清单脱节已修复：见 [六份研究图来源同步](../art-reviews/R12-38-SCENE-RESEARCH-PROVENANCE-SYNC-2026-11-24.md)。现行候选哈希使用 11-22/23 真实研究台账，不改生产批准。
 
 
-R12.80（PR #54 候选）：公寓 S02 仍为显式研究图，增加仅在 1100×700 以上桌面视口选择的六门与真实 HUD 共存检查；原孤立六门检查保留，缩窄自动回到 isolated，保留真实房间抽屉、房间菜单、资源、日志和月纱对话。普通玩家不自动加载研究图，不修改存档或美术审批。1440×900 / 1648×928 双视口真实六门点击与 390×844 回退测试，待同 SHA 验收。旧实现参考 [#54](https://github.com/kunlong-luo/monster-apartment/pull/54)，不新增重复报告。
+R12.80（PR #54 候选）：公寓 S02 仍为显式研究图，增加仅在 1100×700 以上桌面视口选择的六门与真实 HUD 共存检查；原孤立六门检查保留，缩窄自动回到 isolated，保留真实房间抽屉、房间菜单、资源、日志和月纱对话。普通玩家不自动加载研究图，不修改存档或美术审批。1440×900 / 1648×928 双视口真实六门点击与 390×844 回退测试，组合及正式主线 80eb69a 已通过桌面与玩法验收并部署；仍不是生产原画审批。旧实现参考 [#54](https://github.com/kunlong-luo/monster-apartment/pull/54)，不新增重复报告。
+
+
+R12.84：普通移动公寓房间选择、首页人物留白与月纱私室恢复的现行交互规则归入 [DESIGN.md](../../DESIGN.md)。历史实施/构建修复报告在[固定设计快照](https://github.com/kunlong-luo/monster-apartment/tree/80eb69abb56c8a0a398e53ff27cdf513e76b695e/docs/design)；R12.37 初始资产数字不是最新清单，以现行 manifest、[资源总目录](../ART-RESOURCE-CATALOG.md) 和源图为准。

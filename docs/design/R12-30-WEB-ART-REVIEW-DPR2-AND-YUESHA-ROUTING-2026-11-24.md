@@ -65,4 +65,4 @@ R12.29 最新主分支 `56233a6adc9d5b8eecac8a683af9879500d83ebc`：
 
 ## R12.40 回归追踪
 
-旧全量剧情用例在私室 URL 刷新后仍试图点击背景女主人，违背本文已规定的直接恢复合同。见 [R12.40](R12-40-YUESHA-RELOAD-LORE-REGRESSION-2026-11-24.md)；保持产品深链，调整旧测试并验证实际离开及重新拜访，待新 SHA 的完整回归确认。
+旧全量剧情用例在私室 URL 刷新后仍试图点击背景女主人，违背本文已规定的直接恢复合同。见 [R12.40](https://github.com/kunlong-luo/monster-apartment/blob/80eb69abb56c8a0a398e53ff27cdf513e76b695e/docs/design/R12-40-YUESHA-RELOAD-LORE-REGRESSION-2026-11-24.md)；保持产品深链，调整旧测试并验证实际离开及重新拜访，待新 SHA 的完整回归确认。
