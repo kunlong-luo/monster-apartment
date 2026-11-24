@@ -61,7 +61,7 @@ npm --prefix engine run dev
 
 组件治理：`pnpm audit:components`（只读候选报告）、`pnpm test:component-audit`（审计逻辑测试）；CI 已接入，报告不是自动删除许可。R12.68 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45374117852) 通过，320/320 Vitest；R12.69 收敛旧召唤与重复图鉴，详见[当前架构](docs/CURRENT_ARCHITECTURE.md)。
 
-文档治理：`pnpm audit:doc-links` 已接入 Quality，R12.85 覆盖 16 份现行入口与核心规范（含 AGENTS、产品、设计、架构、风险和角色/工坊 SOP）；检查仓库相对路径，不替代外链、锚点及内容事实审查。
+文档治理：`pnpm audit:doc-links` 已接入 Quality，R12.86 自动检查全部 Git 跟踪 Markdown（基线 187 份），并要求 16 份核心入口始终存在。历史证据使用固定 Git SHA；检查仓库相对路径，不替代外链、锚点及内容事实审查。
 
 资源治理：`pnpm audit:media-duplicates` 核查 Git 跟踪媒体的实际字节，只有明确路径和 Git blob 的授权例外可重复；`pnpm test:media-duplicates` 验证新副本及变更例外被拒绝。
 

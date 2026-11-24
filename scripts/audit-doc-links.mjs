@@ -4,7 +4,7 @@ import path from 'node:path';
 
 const tracked=execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
 const entries=new Set(tracked);
-// Current normative documents and navigation entrypoints; historical reports are not gates.
+// Required normative entrypoints must remain tracked; all tracked Markdown is checked.
 const primary=[
   'README.md','docs/README.md','docs/ART-RESOURCE-CATALOG.md','public/art/README.md','docs/v3/README.md',
   'AGENTS.md','PRODUCT.md','DESIGN.md','docs/CURRENT_ARCHITECTURE.md','docs/DECISIONS.md',
@@ -15,7 +15,8 @@ const primary=[
 const exists=dest=>entries.has(dest)||tracked.some(p=>p.startsWith(dest+'/'));
 const failures=[];
 let checked=0;
-for(const file of primary){
+const documents=[...new Set([...primary,...tracked.filter(file=>/\.md$/i.test(file))])].sort();
+for(const file of documents){
   if(!entries.has(file)){failures.push('Missing entry: '+file);continue;}
   const source=readFileSync(file,'utf8');
   for(const match of source.matchAll(/\]\(([^)\s]+)\)/g)){
@@ -29,5 +30,5 @@ for(const file of primary){
     }catch{failures.push(file+': invalid link '+href);}
   }
 }
-console.log('Documentation entrypoints: '+primary.length+'; checked links: '+checked+'; violations: '+failures.length);
+console.log('Documentation files: '+documents.length+'; required entrypoints: '+primary.length+'; checked links: '+checked+'; violations: '+failures.length);
 if(failures.length){console.error(failures.join('\n'));process.exitCode=1;}
