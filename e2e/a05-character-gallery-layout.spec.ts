@@ -131,6 +131,9 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   const firstCard=gallery.locator('.cg-card__select').first();
   await firstCard.hover();
   await expect(gallery.locator('.cg-card__image').first()).toHaveCSS('transform','none');
+  console.info('[R12.27 art DPR2] mythic detail cover scale:',heroSampling.coverScale.toFixed(3),
+    'native:',heroSampling.width+'x'+heroSampling.height);
+  await page.mouse.move(0,0); // keep the reference screenshot unhovered
   await captureA05(page,'desktop-a05-reference-1672.png');
   await page.getByRole('button',{name:/选择青枝/}).click();
   await expect(page.locator('.cg-detail h2')).toContainText('青枝');
