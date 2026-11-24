@@ -356,3 +356,39 @@ test('S02 research door centers open the six real room drawers on four viewports
   await page.goto('/apartment/');
   await expect(page.getByTestId('r12-apartment-door-review')).toHaveCount(0);
 });
+
+test('R12.72-C orders and warehouse expose explicit scene preview without changing normal production art',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1440,height:900});
+  for(const [area,desktop,mobile] of [['orders','orders-desktop-v1.webp','orders-mobile-v1.webp'],['warehouse','warehouse-desktop-v1.webp','warehouse-mobile-v1.webp']]){
+    const requests:string[]=[];
+    const record=(request:{url:()=>string})=>{if(request.url().includes('/art/world-scenes/review/'))requests.push(request.url());};
+    page.on('request',record);
+    try{
+      await page.setViewportSize({width:1440,height:900});
+      await page.goto('/'+area+'/');
+      await expect(page.getByTestId('moonwork-background')).toHaveAttribute('data-r12-scene-art','legacy');
+      await expect(page.locator('[data-r12-hero-art="pending"]')).toBeVisible();
+      expect(requests).toHaveLength(0);
+      await page.getByTestId('world-scene-preview-link').click();
+      const reviewer=page.getByTestId('r12-local-art-review');
+      await expect(reviewer).toBeVisible();
+      expect(requests).toHaveLength(0);
+      await page.getByTestId('r12-preview-repository-scene').click();
+      const art=page.getByTestId('moonwork-background').locator('img[data-r12-art-image="local-review"]');
+      await expect.poll(()=>art.evaluate((img:HTMLImageElement)=>img.naturalWidth)).toBe(1672);
+      await expect(art).toHaveAttribute('src',new RegExp(desktop.replace('.','\\.')));
+      const reviewBox=await reviewer.boundingBox();
+      const hudBox=await page.locator('.mw-main').boundingBox();
+      expect(reviewBox!.x+reviewBox!.width).toBeLessThan(hudBox!.x);
+      await page.screenshot({path:'visual-evidence/scene-studies/'+area+'-pc-preview-entry.png',animations:'disabled'});
+      await page.setViewportSize({width:390,height:844});
+      await expect.poll(()=>art.evaluate((img:HTMLImageElement)=>img.naturalWidth)).toBe(941);
+      await expect(art).toHaveAttribute('src',new RegExp(mobile.replace('.','\\.')));
+      await page.getByTestId('r12-exit-scene-preview').click();
+      await expect(reviewer).toHaveCount(0);
+      await expect(page.getByTestId('moonwork-background')).toHaveAttribute('data-r12-scene-art','legacy');
+      await expect(page.locator('[data-r12-hero-art="pending"]')).toBeVisible();
+    }finally{page.off('request',record);}
+  }
+});

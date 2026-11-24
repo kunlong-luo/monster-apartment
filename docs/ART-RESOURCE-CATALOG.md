@@ -367,3 +367,8 @@ V3.105.0 的 PC 新场景与四间观景已合并、Quality/Pages 通过；不�
 ## R12.71 · 防止重复资源回流
 
 已查 [WineChan intake](art-reviews/sources/winechan-gothic-manor-full-pack/intake.json)，candidate-05.webp 对应 publisher ZIP 中 IMG_0268.png（1920×1080；humanReviewed=false；原图 SHA-256 33cb3f2658314e51f54de16b11bf74381ae522c39e8a8857d327117f26ac3d31）。保留文档证据和运行审稿的两条路径，不扩大许可或批准结论。新增 `pnpm audit:media-duplicates`：以 Git 跟踪媒体真实字节的 SHA-256 分组，唯一允许重复组必须匹配两个确切路径、155188 字节和 Git blob 3e384235b220f3e60502492cdd5fa850e6d43547；增加第三份或改动重复字节均阻断 Quality。当前仍为 144 媒体路径，不声称进一步删除。R12.71 [实际 Quality 日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45375389700/job/138380152391) 证实 144 个路径、唯一登记例外、0 组意外重复，测试通过。
+
+
+## R12.72-C · S05/S06 显式研究预览
+
+四份已登记独立 WebP 直接复用，PC 1672×941、手机 941×1672，完整路径见第 5 节及 R12-09 ledger。玩家从委托/仓库的场景预览入口进入现有研究模式，仍需显式选择仓库图，正常页面不请求研究图片。生产 manifest 0/3、原始 PNG/哈希与 144 媒体路径不变；不将未达原生门槛的研究图晋级。

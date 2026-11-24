@@ -2,6 +2,7 @@
 import './world.css';
 import '@/components/game/gothic-world.css';
 import {useEffect} from 'react';
+import Link from 'next/link';
 import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
 import {useWorkshopWorld} from './world-save-react';
 import {GothicResourcePill} from '@/components/game/gothic-hud';
@@ -43,7 +44,11 @@ export function MoonworkWorld({area}:{area:WorldArea}){
       <p className="mw-eyebrow font-serif text-[10px] tracking-[.14em] text-[#bc9e7e] uppercase "
         data-testid="game-location">大厅 / {title}</p>
       <h1 className="my-[3px] text-[clamp(23px,2.5vw,34px)] leading-[1.2] tracking-[.12em] text-[#ffdeb1] max-[700px]:text-[21px] ">{title}</h1>
-      <p data-testid="game-page-purpose" className="mb-4 text-xs leading-relaxed text-[#e4c9a8] ">{section.purpose}</p>
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <p data-testid="game-page-purpose" className="text-xs leading-relaxed text-gothic-muted">{section.purpose}</p>
+        {area!=='town'&&<Link href={'/'+area+'/?r12-art-review=1'} data-testid="world-scene-preview-link"
+          className="text-xs text-gothic-glow underline decoration-gothic-brass underline-offset-4">场景预览（研究稿）</Link>}
+      </div>
       {!s?<Panel title="尚无可用的 V2 工坊存档">
         <p>月光街还没有记录你的生产旅程。进入工坊，摆放设备、安排工匠并完成第一张委托；这些场景会自动呈现你的经营成果。</p>
         <WorkshopLink>进入工坊开始经营</WorkshopLink>

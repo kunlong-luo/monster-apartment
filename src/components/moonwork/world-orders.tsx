@@ -12,7 +12,7 @@ export function Orders({s}:{s:WorkshopState}){
   const choice=forecastOrderChoice(s);
   return <>
     <section className="mw-world-art-hero mw-order-hero" data-testid="painted-order-hero">
-      <R12SceneHeroPainting area="orders" alt="月夜工坊绘制场景"/>
+      <R12SceneHeroPainting area="orders" alt="月夜委托所环境绘景"/>
       <div className="mw-world-hero-copy">
         <span className="mw-eyebrow">MOONLIT COMMISSION GUILD</span>
         <h2>月夜委托所</h2>

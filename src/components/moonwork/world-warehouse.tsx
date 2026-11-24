@@ -1,18 +1,16 @@
 'use client';
 import Link from 'next/link';
 import {WORLD_LINK_CLASS} from './world-primitives';
-import Image from 'next/image';
 import {R12SceneHeroPainting} from '@/components/game/r12-scene-painting';
-import kilnPainted from '../../../v2/art/kiln-art-review.avif';
 import {PATRON_IMPORT_PRICE} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
 import {Panel,Action} from './world-primitives';
 
 /** Inventory rows are UI primitives, not hand-maintained CSS selectors. */
 function WarehouseStockLine({label,amount}:{label:string;amount:number}){
-  return <div className="flex items-center justify-between gap-3 border-b border-[#7186976a] py-4">
-    <span className="text-[15px] text-[#d6dbdc]">{label}</span>
-    <b className="font-[Georgia,serif] text-[32px] font-bold text-[#ffdb9e] tabular-nums">{amount}</b>
+  return <div className="flex items-center justify-between gap-3 border-b border-gothic-brass/30 py-4">
+    <span className="text-[15px] text-gothic-ivory">{label}</span>
+    <b className="font-[Georgia,serif] text-[32px] font-bold text-gothic-glow tabular-nums">{amount}</b>
   </div>;
 }
 
@@ -21,9 +19,7 @@ export function Warehouse({s}:{s:WorkshopState}){
   const p=s.patron;const canBuy=!!p&&['offered','active'].includes(p.status)&&s.day<=p.due&&s.coins>=PATRON_IMPORT_PRICE;
   return <>
     <section className="mw-world-art-hero mw-warehouse-hero" data-testid="painted-warehouse-hero">
-      <R12SceneHeroPainting area="warehouse" alt="月光工坊仓储背景绘景"/>
-      <Image src={kilnPainted} width={180} height={180} unoptimized
-        className="mw-warehouse-art" alt="月光晶核熔炉绘景"/>
+      <R12SceneHeroPainting area="warehouse" alt="魔法仓库环境绘景"/>
       <div className="mw-world-hero-copy">
         <span className="mw-eyebrow">SHARED MATERIALS · REAL ECONOMY</span>
         <h2>魔法仓库</h2>

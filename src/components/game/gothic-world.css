@@ -12,7 +12,21 @@ button):focus-visible{outline:2px solid #ffdda2;outline-offset:2px}.mw.mw-gothic
 .mw.mw-gothic .mw-resident-reputation{font-size:10px}.mw.mw-gothic .mw-market-header h2{margin:4px 0}.mw.mw-gothic .mw-market-offers{grid-template-columns:1fr;gap:7px}.mw.mw-gothic .mw-market-icon{flex-basis:30px;height:30px;font-size:20px}.mw.mw-gothic .mw-market-detail h3{font-size:15px}.mw.mw-gothic .mw-worker-grid{grid-template-columns:1fr;gap:9px}.mw.mw-gothic .mw-worker-card{min-width:0}.mw.mw-gothic .mw-world-art-hero,
 .mw.mw-gothic .mw-art-gallery-intro{min-height:175px;
   padding:16px!important;border-radius:10px}.mw.mw-gothic .mw-world-hero-copy h2,
-.mw.mw-gothic .mw-art-gallery-intro h2{font-size:22px}.mw.mw-gothic .mw-warehouse-art{display:none}.mw.mw-gothic .mw-world-hero-copy p{font-size:12px;line-height:1.5}.mw.mw-gothic .mw-witch-banner{padding:10px;gap:10px}.mw.mw-gothic .mw-witch-painting{width:85px;min-width:85px}.mw.mw-gothic .mw-witch-banner h2{font-size:18px}.mw.mw-gothic .mw-town-next{margin-bottom:18px}
+.mw.mw-gothic .mw-art-gallery-intro h2{font-size:22px}.mw.mw-gothic .mw-world-hero-copy p{font-size:12px;line-height:1.5}.mw.mw-gothic .mw-witch-banner{padding:10px;gap:10px}.mw.mw-gothic .mw-witch-painting{width:85px;min-width:85px}.mw.mw-gothic .mw-witch-banner h2{font-size:18px}.mw.mw-gothic .mw-town-next{margin-bottom:18px}
+
+/* R12.72-C: keep the operations panel concise; neutral placeholders are not
+   scene art. Only the explicit review or approved image can fill the banner. */
+.mw.mw-gothic :is(.mw-order-hero,.mw-warehouse-hero){
+  min-height:132px;align-items:flex-start;flex-direction:column;justify-content:center;
+  border:1px solid var(--craft-hairline);background:var(--craft-panel);
+  box-shadow:0 6px 18px #08040c66;
+}
+.mw.mw-gothic .mw-world-hero-copy h2{color:var(--craft-ivory);font-weight:500}
+.mw.mw-gothic .mw-world-hero-copy p{color:var(--craft-muted);line-height:1.65}
+.mw.mw-gothic .mw-world-hero-copy{min-width:0}
+.mw.mw-gothic .mw-order-hero .mw-world-hero-pending{background:linear-gradient(115deg,var(--craft-wine),var(--craft-panel))}
+.mw.mw-gothic .mw-warehouse-hero .mw-world-hero-pending{background:var(--craft-surface)}
+.mw.mw-gothic :is(.mw-order-hero,.mw-warehouse-hero):has([data-r12-hero-art="pending"])::after{content:none}
 
 /* Long Chinese CTA labels and icon captions must fit their own hit targets. */
 .mw.mw-gothic .mw-town-portal{min-width:0;overflow:hidden}

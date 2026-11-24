@@ -1,6 +1,7 @@
 'use client';
 
 import type {ImageProps} from 'next/image';
+import Link from 'next/link';
 import type {ReactNode} from 'react';
 import {useSearchParams} from 'next/navigation';
 import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
@@ -222,8 +223,12 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode,rend
           className="mt-1 min-h-11 rounded border border-gothic-brass px-3">返回 HUD 检查</button>
       </aside>:
       <aside data-testid="r12-local-art-review" aria-label="R12 本地环境画审核"
-        className="fixed bottom-20 right-4 z-[10000] max-h-[calc(100dvh-96px)] w-[min(330px,calc(100vw-32px))] overflow-y-auto rounded-xl border border-[#c8a578] bg-[#140e1af0] p-3 text-[#f4dfbf] shadow-2xl backdrop-blur-md">
-        <p className="text-xs font-semibold tracking-wider">R12 · {area} 本地场景审稿</p>
+        className={"fixed bottom-20 right-4 z-[10000] max-h-[calc(100dvh-96px)] w-[min(330px,calc(100vw-32px))] overflow-y-auto rounded-xl border border-[#c8a578] bg-[#140e1af0] p-3 text-[#f4dfbf] shadow-2xl backdrop-blur-md"+(area!=='apartment'?' min-[1100px]:left-4 min-[1100px]:right-auto':'')}>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs font-semibold tracking-wider">R12 · {area} 本地场景审稿</p>
+          {area!=='apartment'&&<Link href={'/'+area+'/'} data-testid="r12-exit-scene-preview"
+            className="text-xs underline underline-offset-4">退出预览</Link>}
+        </div>
         <p className="mt-1 text-xs text-[#d8bf9f]">只在当前浏览器显示。不会上传、保存或发布图片。</p>
         <button type="button" data-testid="r12-preview-repository-scene"
           onClick={previewRepositoryStudy}

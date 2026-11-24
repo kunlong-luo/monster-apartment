@@ -516,7 +516,7 @@ test('R12.72 desktop lobby right rail shares a single event height and keeps all
     }
     await expect(event).toHaveAttribute('href',/characters/);
     await event.click({trial:true});
-    await page.screenshot({path:'test-results/r12-72-lobby-rail-'+width+'x'+height+'.png',animations:'disabled'});
+    await page.screenshot({path:'test-results/desktop-r12-72-lobby-rail-'+width+'x'+height+'.png',animations:'disabled'});
   }
 });
 

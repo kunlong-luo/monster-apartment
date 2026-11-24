@@ -6,7 +6,7 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 
 ## 当前可核实发布基线
 
-2026-11-24，V3.106.0，代码 [1e098bf](https://github.com/kunlong-luo/monster-apartment/commit/1e098bf4b35675cc4e1686283b01b6fd12d40f0b)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45375744143) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45375905667) 成功。该 SHA [Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45375745508) 独立场景作业通过，综合桌面与完整玩法在核查时仍运行。V3.107.0 为新提交 UI 版本，待 Quality、浏览器与 Pages 分别验收。
+2026-11-24，V3.107.0，代码 [847efb3](https://github.com/kunlong-luo/monster-apartment/commit/847efb3921a6e45b0570f57dd8d606e688255d4c)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45376373247) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45376518702) 成功。[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45376372939) 独立场景作业及大厅相关 27 项通过，A05 DPR 动态回归失败（543×724 未更新为 362×482）。V3.108.0 修复该问题并改进委托/仓库显式预览，待同 SHA 验收。
 
 - V3.103.0 欢迎页、头像、卡面与大厅过渡图已接入；正式 CG 人工签审仍未完成。
 - V3.104.0 四位人物拥有独立背景/人物层的观景模式；原故事模式与真实热点保留。

@@ -17,10 +17,14 @@ function readDpr(){return window.devicePixelRatio||1;}
 function serverDpr(){return 2;}
 
 /** Re-arm the exact resolution query when browser zoom or display changes.
- * Resize is a second signal; no timers, polling or image re-download. */
+ * Resize and resolution events are the fast path. Chromium can change DPR
+ * without either event (including device emulation); a visible-view-only
+ * sampling fallback catches that case without re-downloading artwork. */
 function subscribeDpr(notify:()=>void){
   let query:MediaQueryList|undefined;
+  let previous=readDpr();
   const update=()=>{
+    previous=readDpr();
     query?.removeEventListener('change',update);
     query=window.matchMedia('(resolution: '+readDpr()+'dppx)');
     query.addEventListener('change',update);
@@ -28,7 +32,12 @@ function subscribeDpr(notify:()=>void){
   };
   update();
   window.addEventListener('resize',update);
+  const check=()=>{if(!document.hidden&&readDpr()!==previous)update();};
+  const timer=window.setInterval(check,250);
+  document.addEventListener('visibilitychange',check);
   return ()=>{
+    window.clearInterval(timer);
+    document.removeEventListener('visibilitychange',check);
     query?.removeEventListener('change',update);
     window.removeEventListener('resize',update);
   };
