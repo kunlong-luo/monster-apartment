@@ -9,6 +9,7 @@
 | 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |
+| 月纱私室刷新剧情回归（R12.40） | [真实失败复盘与深链恢复测试](design/R12-40-YUESHA-RELOAD-LORE-REGRESSION-2026-11-24.md) | 186 通过/1 失败/3 跳过；修正旧刷新操作顺序，保留剧情/星币/彩蛋断言；新回归待核验 |
 | 场景输出与热点几何一致性（R12.39） | [正式 WebP 比例、原生像素及六门方形命中检查](art-reviews/R12-39-SCENE-OUTPUT-AND-HOTSPOT-GEOMETRY-2026-11-24.md) | 生产准入脚本与三个定向回归；不晋级研究稿，不改变运行时 |
 | 六份场景研究图来源同步（R12.38） | [真实 Git blob 与研究清单一致性](art-reviews/R12-38-SCENE-RESEARCH-PROVENANCE-SYNC-2026-11-24.md) | S05/S06 四份旧候选元数据纠偏，六份研究源和 WebP 与已验证台账绑定；生产状态不变 |
 | 现行视觉合同与美术交付次序（R12.37） | [现行布局、旧决策纠偏与真实资产状态](design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md) | 文档治理：顶角地图、双地点海报；欢迎页群像与大厅单人背景独立任务；S02/G1/CG 生产未完成，V3.101.0 不变 |

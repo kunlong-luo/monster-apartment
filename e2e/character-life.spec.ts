@@ -49,12 +49,33 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   await expect(page.getByTestId('room-dialogue-theater')).toBeVisible();
   await page.getByTestId('room-theater-skip').click();
   await expect(page.getByTestId('room-theater-line')).toContainText('见证人');
+  // R12.30: the room URL is the source of truth. Refresh restores the
+  // private room directly; the conversation trigger behind it is blocked
+  // intentionally by the modal, not a usable next step.
+  await expect.poll(()=>new URL(page.url()).searchParams.get('visit')).toBe('yuesha');
+  const loreBeforeReload=await page.evaluate(()=>localStorage.getItem('monster-apartment:character-life:v1'));
+  expect(loreBeforeReload).not.toBeNull();
   await page.reload();
-  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
-  await page.getByTestId('visit-yuesha-room').click();
+  await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  await expect(chamber).toBeVisible();
+  await expect.poll(()=>new URL(page.url()).searchParams.get('visit')).toBe('yuesha');
   await expect(page.getByTestId('yuesha-dialogue')).toContainText('账本摊开');
   await expect(page.getByTestId('yuesha-choice-careful')).toHaveCount(0);
   await expect(page.getByTestId('yuesha-memory-progress')).toContainText('4 / 4');
+
+  // Actually leave the room before using the in-world conversation trigger.
+  // This exercises real modal dismissal, not force-clicking through it.
+  await chamber.getByRole('button',{name:'关闭月纱对话'}).click();
+  await expect(chamber).toHaveCount(0);
+  await expect.poll(()=>new URL(page.url()).searchParams.has('visit')).toBe(false);
+  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
+  await page.getByTestId('visit-yuesha-room').click();
+  await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  await expect(page.getByTestId('yuesha-dialogue')).toContainText('账本摊开');
+  await expect(page.getByTestId('yuesha-choice-careful')).toHaveCount(0);
+  await expect(page.getByTestId('yuesha-memory-progress')).toContainText('4 / 4');
+  // Check the saved decision/observations rather than byte equality: visits
+  // may legitimately update other lore metadata on entering the room.
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:character-life:v1')||'{}'));
   expect(saved.visited).toEqual(['yuesha']);
   expect(saved.decisions['yuesha-first-visit']).toBe('transparent');
