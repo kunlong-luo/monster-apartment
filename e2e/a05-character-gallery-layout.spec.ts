@@ -112,6 +112,25 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
     expect(picture.fit).toBe('cover'); // slim card crop only
     expect(picture.kind).toBe('candidate-figure'); // never production
   }
+
+  // R12.27: a cover crop already selects the face in the short hero header.
+  // The old 2.05x transform enlarged its raster again on Retina screens.
+  const mythicHero=gallery.locator('.cg-detail__hero--mythic .cg-detail__hero-img');
+  await expect(mythicHero).toHaveCSS('transform','none');
+  const heroSampling=await mythicHero.evaluate(node=>{
+    const img=node as HTMLImageElement;
+    const box=img.getBoundingClientRect();
+    const dpr=2; // deliberate PC Retina stress case, even on CI's DPR1
+    return {loaded:img.complete&&img.naturalWidth>0,
+      coverScale:dpr*Math.max(box.width/img.naturalWidth,box.height/img.naturalHeight),
+      width:img.naturalWidth,height:img.naturalHeight};
+  });
+  expect(heroSampling.loaded).toBe(true);
+  expect(heroSampling.coverScale).toBeLessThanOrEqual(1);
+  // Card emphasis stays on its frame/raise; hover never zooms the artwork.
+  const firstCard=gallery.locator('.cg-card__select').first();
+  await firstCard.hover();
+  await expect(gallery.locator('.cg-card__image').first()).toHaveCSS('transform','none');
   await captureA05(page,'desktop-a05-reference-1672.png');
   await page.getByRole('button',{name:/选择青枝/}).click();
   await expect(page.locator('.cg-detail h2')).toContainText('青枝');
