@@ -1,4 +1,5 @@
 import {expect,test} from '@playwright/test';
+import {mkdirSync} from 'node:fs';
 
 const sample=Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGMUicpjYGBgYmBgYGBgAAAKIADgurgZrAAAAABJRU5ErkJggg==',
@@ -121,7 +122,9 @@ test('R12 repository scene studies preview distinct PC/mobile images only on exp
     {area:'warehouse',route:'/warehouse/',backdrop:'.mw-gothic-scene',
       desktop:'warehouse-desktop-v1.webp',mobile:'warehouse-mobile-v1.webp'},
   ] as const;
+  mkdirSync('visual-evidence/scene-studies',{recursive:true});
   for(const entry of areas){
+    requests.length=0; // previous area intentionally fetched two research images
     await page.setViewportSize({width:1440,height:900});
     await page.goto(entry.route);
     await expect(page.getByTestId('r12-local-art-review')).toHaveCount(0);
@@ -147,6 +150,8 @@ test('R12 repository scene studies preview distinct PC/mobile images only on exp
       .toHaveAttribute('data-required-resolution','3840x2160');
     await expect(reviewer.getByTestId('r12-local-pixel-gate'))
       .toHaveAttribute('data-pixel-pass','false');
+    await page.screenshot({path:'visual-evidence/scene-studies/'+entry.area+'-pc-review.png',
+      animations:'disabled'});
 
     await page.setViewportSize({width:390,height:844});
     await expect.poll(()=>art.evaluate(el=>(el as HTMLImageElement).naturalWidth))
@@ -157,6 +162,8 @@ test('R12 repository scene studies preview distinct PC/mobile images only on exp
     await expect(reviewer.getByTestId('r12-local-pixel-gate'))
       .toHaveAttribute('data-pixel-pass','false');
     await expect(backdrop).toHaveAttribute('data-r12-scene-art','local-review');
+    await page.screenshot({path:'visual-evidence/scene-studies/'+entry.area+'-mobile-review.png',
+      animations:'disabled'});
     // Independent compositions are preview-only; refreshing never loads one.
     await page.reload();
     await expect(backdrop).toHaveAttribute('data-r12-scene-art','legacy');
