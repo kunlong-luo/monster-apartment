@@ -1,18 +1,16 @@
-# 最新架构
+# 当前架构（R12.67 核查）
 
-Next.js App Router + React + TypeScript + Tailwind CSS v4 + Motion + PixiJS 8。
+以 V3.105.0 主线 `0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0` 为证据基线。下方历史实现记录不用于推断当前资产或数量。
 
-只有七个场景：大厅、公寓、工坊、月光街、委托、角色、仓库。
+- Next.js App Router + React + TypeScript strict + Tailwind CSS v4 + Motion；PixiJS 8 独立工坊运行时。根 `package.json` 声明 Zustand 与 Dexie；依赖声明不等同全站实际用法，未完成逐模块使用审计，不再断言不存在。
+- 七个游戏路由见[根 README](../README.md)；研究页独立。根布局挂载共享导航、过渡、错误边界、发布提示和工坊自动运行。现行大厅采用顶角地图而非旧底部 Dock，见[现行视觉合同](design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md)。
+- `src/core/cozy-engine.ts` 与 `v2/src/workshop-engine.ts` 是规则边界，两套存档键保持不变，未统一账本。
+- `v2/src/runtime.ts`、`v2/src/workshop-lab-stage.ts`、`v2/scripts/build.mjs` 与 `v2/art/` 是当前 Pixi sidecar，不得按名称清除。
+- 当前 19 份 CSS（含 `app/globals.css`），全局视觉 token 为 `src/components/game/gothic-premium-tokens.css`。布局导入 tokens、globals、red-gold、desktop-ui；大厅导入 lobby、polish、reference-layout、lobby-navigation；共享导航和图鉴分别导入自己的样式，工人房间仍导入 polish。未证明全量 CSS 规则使用情况，不据数量删除。
+- 正式欢迎图/大厅 V4、四间房间观景、PC 工坊与街区新绘景的实际路径见[资源目录](ART-RESOURCE-CATALOG.md)。生产、过渡、审稿、回退分开。房间故事热点与观景层分离；Pixi 精密建造、手机与旧档保持。
+- 工程验证按 [迭代手册](engineering/ITERATION-PLAYBOOK.md)，以实际 CI SHA 与浏览器结果为准。
 
-`app/` 负责路由；`src/components/game/gothic-*.tsx` 和 `src/components/moonwork/` 是唯一 UI 实现；`src/core/cozy-engine.ts`、`v2/src/workshop-engine.ts` 是当前规则。
-
-PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`、`gothic-atmosphere.js`，连同美术贴图复制至 `out/workshop/assets/`。本地端口 3901 只服务这些资源。
-
-正式站没有 `/classic`、`/legacy`、`/survival` 或独立工坊实验室，也不再依赖 Phaser、Zustand 或旧 UI 组件库。
-
-存档键依旧为 `monster-apartment:cozy:v1` 与 `monster-apartment:workshop-v2-lab`。两条经营线目前独立。
-
-少量 `gothic-*.css` 和 `world.css` 仍提供当前场景的绘景层及特殊效果；UI 布局与业务组件优先写 Tailwind。
+## 历史架构演进（原记录，仅供追溯）
 
 ## 单一 UI 所有权与样式边界（2026-10）
 

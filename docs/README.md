@@ -1,90 +1,56 @@
-# 《怪物公寓》文档导航与维护约定
+# 《怪物公寓》文档总入口
 
-> 2026-11-22 起作为**找文档的统一入口**；不是又一份取代全部文档的长篇需求书。工程执行先读仓库根目录的 `AGENTS.md`，以实际代码、清单和 CI 结果核实实现状态。
+> R12.67：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
 
-## 读文档的最短路径
+## 现行规范（新开发从这里开始）
 
-| 要做的事 | 当前主依据 | 其他参考（不自动代表已上线） |
-| --- | --- | --- |
-| **美术资源总目录与统一命名（R12.52）** | [ART-RESOURCE-CATALOG.md](ART-RESOURCE-CATALOG.md) · [源图清单](../art-sources/source-catalog.json) | 33 张实际原画按角色/用途迁移，保留原始 Git blob，去除三份临时重复；生产状态不变 |
-| 新人物、欢迎封面与大厅过渡版（R12.53） | [首批接入与实际导出方案](art-reviews/R12-53-CHARACTER-AND-COVER-TRANSITION-2026-11-24.md) | 候选 V3.103.0；4 个头像、2 张月纱肖像、4 张双端背景、5 张大卡；无生产 CG 签署 |
-| R12.54 实际新美术输出与发布验收 | [真实转换回读、完整性回归](art-reviews/R12-54-TRANSITION-ASSET-VERIFICATION-2026-11-24.md) | 33 原图、15 WebP 已实际验证；候选待浏览器及发布验收 |
-| R12.55 过渡美术清单同步 | [真实 CI 失败与修复](art-reviews/R12-55-TRANSITION-MANIFEST-RECONCILIATION-2026-11-24.md) | 317 通过/3 失败；同步当前六槽和历史快照、V4 横竖与精确尺寸，等待新 SHA |
-| R12.58 大厅旧浏览器断言修复 | [全量回归与定向验收](art-reviews/R12-58-LOBBY-BROWSER-REGRESSION-2026-11-24.md) | 186 通过/1 失败/3 跳过；真实双端 V4 尺寸与 URL，保留 HUD 检查，待复验 |
-| R12.60 玩家房间观景模式 | [实际房间分层与故事隔离](design/R12-60-PLAYER-ROOM-SCENIC-MODE-2026-11-24.md) | V3.104.0 候选；八个真实 WebP，双端观景、排班与物件保持，待验收 |
-| R12.59 房间物件与构图核对 | [四间实际画面审查](art-reviews/R12-59-ROOM-PROP-AND-COMPOSITION-AUDIT-2026-11-24.md) | 独立浏览器验收通过，故事实物仍待补齐 |
-| R12.62 私室观景编译修复 | [首轮 CI 失败原因及修复](design/R12-62-ROOM-SCENIC-BUILD-FIX-2026-11-24.md) | 修复共享观景按钮字符串，保留测试，待新 SHA 验收 |
-| R12.61 工坊/月光街原画转换与架构核对 | [真实源图与接入边界](art-reviews/R12-61-WORKSHOP-TOWN-SOURCE-INTAKE-2026-11-24.md) | 四张横版转换目标；PC 三设备、Pixi 棋盘和街区链接分层；待实际转换及选择 |
-| R12.62 PC 工坊/月光街过渡绘景 | [真实四张 WebP 与双端使用边界](art-reviews/R12-62-WORLD-PC-TRANSITION-2026-11-24.md) | 4/4 实际转换，PC 工坊 V1、月光街 V2，保留真实设备/手机/存档；待浏览器 |
-| R12.64 房间发布与世界场景同步 | [合并与导航回归](engineering/R12-64-ROOM-RELEASE-WORLD-INTEGRATION-2026-11-24.md) | #56 已合并；#57 同步主线与双审计、修复实际导航断言，待部署/复验 |
-| 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
-| 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
-| PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |
-| 场景独立视觉验收（R12.41） | [六门及原画隔离独立作业、截图证据](engineering/R12-41-INDEPENDENT-SCENE-VISUAL-REVIEW-2026-11-24.md) | 并行独立 scene-art-review，保留全部测试；场景资源变化触发视觉检查，新结果待核验 |
-| 月纱私室刷新剧情回归（R12.40） | [真实失败复盘与深链恢复测试](design/R12-40-YUESHA-RELOAD-LORE-REGRESSION-2026-11-24.md) | 186 通过/1 失败/3 跳过；修正旧刷新操作顺序，保留剧情/星币/彩蛋断言；新回归待核验 |
-| 场景输出与热点几何一致性（R12.39） | [正式 WebP 比例、原生像素及六门方形命中检查](art-reviews/R12-39-SCENE-OUTPUT-AND-HOTSPOT-GEOMETRY-2026-11-24.md) | 生产准入脚本与三个定向回归；不晋级研究稿，不改变运行时 |
-| 六份场景研究图来源同步（R12.38） | [真实 Git blob 与研究清单一致性](art-reviews/R12-38-SCENE-RESEARCH-PROVENANCE-SYNC-2026-11-24.md) | S05/S06 四份旧候选元数据纠偏，六份研究源和 WebP 与已验证台账绑定；生产状态不变 |
-| 现行视觉合同与美术交付次序（R12.37） | [现行布局、旧决策纠偏与真实资产状态](design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md) | 文档治理：顶角地图、双地点海报；欢迎页群像与大厅单人背景独立任务；S02/G1/CG 生产未完成，V3.101.0 不变 |
-| Web / PC 六门遮挡与审稿水合（R12.36） | [真实浏览器失败复盘、命中层与 hydration 修复](design/R12-36-S02-POINTER-AND-REVIEW-HYDRATION-2026-11-24.md) | **V3.101.0**：R12.35 视觉检查 5 通过/1 失败，修复父容器拦截及直接网址 SSR 错误；新 SHA 待复验，正式原画未晋级 |
-| Web / PC 公寓六门交互研究（R12.35） | [真实研究图门位与房间抽屉、四视口回归](design/R12-35-S02-RESEARCH-DOOR-INTERACTION-2026-11-24.md) | **V3.100.0**：显式审稿增加六门点击验证，普通 HUD 与生产 manifest 不变；正式高清及人工验收待完成 |
-| Web / PC 本地原画解码生命周期（R12.34） | [异步解码取消、Blob URL 所有权和回归](design/R12-34-WEB-REVIEW-IMAGE-LIFECYCLE-2026-11-24.md) | **V3.99.0**：快速换图、恢复、退出审核时释放未完成及已接受的本地 URL；仅审稿工具修复，未新增或晋级高清原画；CI/Pages 按新 SHA 核验 |
-| Web / PC 场景研究审稿 URL 隔离（R12.33） | [Next SPA 退出审核立即撤下研究图、Back 不恢复旧预览、静态导出与浏览器回归](design/R12-33-WEB-REVIEW-QUERY-ISOLATION-2026-11-24.md) | **V3.98.0**：补上 `r12-art-review=1` 的 App Router 实时状态，离开审核参数立即恢复正式场景，禁止历史记录误显示未批准图片；保留六份研究素材仍为 review，原生高清 S01/S02/S05/S06 仍待生产 |
-| Web / PC 独立场景研究图实景审核（R12.32） | [S02/S05/S06 六张真实横/竖版 WebP 一键游戏预览、未批准水印与防误晋级回归](design/R12-32-IN-GAME-RESEARCH-SCENE-PREVIEW-2026-11-24.md) | **V3.97.0**：原仓库六张不同场景研究画可在显式 `r12-art-review=1` 中点击一键预览；保留原生尺寸红灯、PC/手机场景截图和“未批准”水印。**正常玩家不加载、没有正式晋级**；真实高清资源生产仍见 #16/#24 |
-| Web / PC 原生场景按设备单图加载（R12.31） | [4K PC/独立手机版 `<picture>` 响应式加载、SSR/浏览器验收与高清素材入库条件](design/R12-31-WEB-RESPONSIVE-SCENE-ASSET-LOADING-2026-11-24.md) | **V3.96.0**：正式场景由旧 PC+手机双 `<img>` 改为浏览器原生单 `<picture>`；错误重试/中性回退与生产审核门槛保留。**尚未替换高清原画**，三场景仍是 review；检查/上线以最终 SHA 的 CI 和 Pages 为准 |
-| Web / PC 高清美术审稿与月纱深链（R12.30） | [3840×2160 原生审稿门槛、私人房间 URL/Back 修复与美术入库边界](design/R12-30-WEB-ART-REVIEW-DPR2-AND-YUESHA-ROUTING-2026-11-24.md) | **V3.95.0**：PC 场景本地预览审核门槛改为 3840×2160；月纱私人房间跟随 `?visit=yuesha`，支持浏览器 Back 并保留显式审核参数；新增定向 E2E。原生高清绘景和正式 CG **尚未生成/晋级**，CI/Pages 以最新提交 SHA 为准 |
-| Web / PC 高清像素预算回归（R12.29） | [图鉴 DPR2 测试修复、大厅高密像素取证与原生高清重制规格](design/R12-29-WEB-DPR2-IMAGE-REGRESSION-AND-HERO-REBUILD-2026-11-24.md) | 图鉴右侧详情图定位已改正；新增 PC 1648×928 + 手机 390×844 的 DPR2 实测和截图门禁。**没有新高清原画上线**，大厅旧图约 2.08× PC 采样、独立公寓绘景仍缺；最新 Quality / 视觉 / Pages 依实际 SHA 状态判定 |
-| Web / PC 私人房间与审核深链收口（R12.28） | [研究模式参数保留、剧情刷新与全量浏览器失败复盘](design/R12-28-WEB-ROOM-REVIEW-DEEPLINK-AND-REGRESSION-2026-11-24.md) | **V3.94.0**：修复图鉴进入泉泡/青枝/炽角房间时丢失显式 `roomArtReview=1`、退出审核状态不保留的问题；修正剧情故事刷新后应直接恢复房间的旧测试。历史完整浏览器 176 通过/4 失败/3 跳过，最新 Quality、Web 验收和 Pages 以最终 SHA 回读为准；正式原画及 CG 未晋级 |
-| Web / PC 人物图鉴高清显示（R12.27） | [去除二次放大与 DPR2 像素预算回归](design/R12-27-PC-WEB-ART-PIXEL-BUDGET-2026-11-24.md) | **V3.93.0**：去除图鉴神话月纱 2.05× 缩放和人物卡悬停 1.02× 图片缩放，增加原生像素预算浏览器断言；未重绘新原画，首页背景和私人房间高清问题仍见 #24。代码提交、Quality、Desktop Visual Review、Pages 逐项分开验证 |
-| Web / PC 角色房间深链修复（R12.26） | [角色图鉴 SPA 访问、Back 与私人房间一致性](design/R12-26-WEB-CHARACTER-ROOM-DEEPLINKS-2026-11-24.md) | **V3.92.0** 代码已提交：有效 `visit` 参数直接决定显示的住客房间，进入/离开走 Next 路由；PC 定向浏览器回归已加入视觉工作流。最新提交的 Quality / Pages / 浏览器结果分别核实，不能以提交等同上线 |
-| Web / PC 首页优先优化（R12.25） | [欢迎页按需加载与地图关闭交互](design/R12-25-WEB-FIRST-LOBBY-LOAD-AND-NAVIGATION-2026-11-24.md) | 已提交 Web 代码与定向浏览器测试，发布标识更新为 **V3.91.0**；按最终 SHA 核对 Quality、PC 视觉审核与 Pages，未晋级任何新头像/CG |
-| 首页菜单：现行顶角方案 | [R12.15 顶角世界地图](design/R12-15-LOBBY-CORNER-WORLD-ATLAS-2026-11-23.md) | 取代底部 Dock，七个真实页面仍可达；视觉 QA 以最新 SHA 为准 |
-| 首页两幅海报 / 图鉴清晰度 | [R12.16 边栏精简与候选原画 DPR 保护](design/R12-16-LOBBY-RAIL-DENSITY-AND-CG-DPR-2026-11-23.md) | 保留故事入口；移除重复大肖像和切换动画放大模糊 |
-| 全站是否也要升级 / 首页同脸 | [R12.17 七页面美术与身份审计](design/R12-17-FULL-SITE-VISUAL-IDENTITY-AUDIT-2026-11-23.md) | 修复玩家头像和月光街错图；四居民面部差异化与跨场景高质量重制次序 |
-| 四位人物 G1 入库与质量门禁（R12.24） | [R12.24 入库技术验证与阻碍](art-reviews/R12-24-G1-SOURCE-INTAKE-REGRESSION-2026-11-24.md) · [最新状态 JSON](art-reviews/R12-24-G1-IDENTITY-STATUS.json) · [校验脚本](../scripts/verify-g1-face-sources.mjs) · [离线测试](../scripts/tests/g1-face-source-intake.test.mjs) | 四位独立研究原图已在 ZIP，实际素材 **10/10 本地哈希检查通过**，G1 入库回归 **9/9 本地通过**；**新 PNG/WebP 仍未上传 GitHub**，正式身份签署 **0/4**、封面 **0/2**、五张全身 CG **0/5** |
-| 新角色、立绘、CG、换装、武器 | [角色 G0–G7 SOP](CHARACTER-CREATION-SOP.md) → [任务模板](templates/CHARACTER-DESIGN-BRIEF-TEMPLATE.md) | [逐卡镜头表](CHARACTER-CG-DIFFERENTIATION-V1.md)、[原生高清可选管线](CHARACTER-CG-NATIVE-PIPELINE.md) |
-| 全站美术要重做哪些 / 制作任务 | [R12.7 全站资源重制审计](art-reviews/R12-07-ASSET-REBUILD-AUDIT-2026-11-22.md) → [可执行 CSV 台账](art-reviews/R12-07-ASSET-REBUILD-BACKLOG.csv) | [像素取证](art-reviews/R12-01-REAL-BROWSER-PIXEL-EVIDENCE.md)、[五卡差异化](CHARACTER-CG-DIFFERENTIATION-V1.md) |
-| 首张 S05 独立绘景样板（候选） | [R12.8 S05 契约大厅审稿报告](art-reviews/R12-08-S05-CONTRACT-HALL-REVIEW-2026-11-22.md) | 1672×941 原生图已入 Git review；尚未通过生产尺寸/人审 |
-| S05 双端 + 青枝拉弓（已入 Git 审稿目录） | [R12.9 美术资源与校验](art-reviews/R12-09-ART-PACK-2026-11-22.md) | 3 PNG + 3 WebP + [联系表](art-reviews/R12-09-ART-CONTACT-SHEET-REVIEW-ONLY.jpg) 均在 main；**不是 production** |
-| S06 晶核仓库 PC / 手机独立候选（已入 Git 待审） | [R12.11 桌面](art-reviews/R12-11-WAREHOUSE-DESKTOP-REVIEW-2026-11-22.md) · [R12.12 手机](art-reviews/R12-12-WAREHOUSE-MOBILE-REVIEW-2026-11-23.md) | 两组真实原始 PNG + WebP 在 main review 目录；双端原生尺寸仍未达标、不能正式替换 |
-| S02 六房门中庭（新版桌面候选已入 Git） | [R12.13 六门中庭审稿](art-reviews/R12-13-S02-SIX-DOOR-DESKTOP-REVIEW-2026-11-23.md) | 左右 3+3 扇，1672×941 PNG/WebP，非正式高清；手机原画与热点实机核对仍缺 |
-| S02 六门公寓双端原画（待审） | [R12.13 桌面审稿](art-reviews/R12-13-S02-SIX-DOOR-DESKTOP-REVIEW-2026-11-23.md) · [R12.14 手机审稿与门心草案](art-reviews/R12-14-S02-SIX-DOOR-MOBILE-REVIEW-2026-11-23.md) | 两张原生 PNG + WebP 已存 Git review；尺寸/人审/六门真实点击尚未达生产标准 |
-| 场景原画 / 私室 | [R12 原画入库规则](art-reviews/R12-02-SCENE-ART-INTAKE.md) | [房间视觉规则](v3/23-ROOM-ART-PIPELINE-AND-CINEMATIC-PERFORMANCE.md) |
-| 当前缺口、下一步 | [缺口与风险台账](engineering/GAP-REGISTER-2026-11-22.md)、[GitHub Issues](https://github.com/kunlong-luo/monster-apartment/issues)、[任务表](../management/TASKS.csv) | [R11.3 已核实历史基线](engineering/2026-11-12-r11-3-release-baseline.md) |
-| 技术及产品决策 | [ADR 决策表](DECISIONS.md) | [早期 V0.1 开发计划（历史）](DEVELOPMENT_PLAN.md) |
+| 任务 | 主入口 |
+| --- | --- |
+| 产品定位、核心循环 | [PRODUCT.md](../PRODUCT.md) |
+| UI 与视觉系统 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md)、[现行视觉合同 R12.37](design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md) |
+| 架构与工程边界 | [CURRENT_ARCHITECTURE.md](CURRENT_ARCHITECTURE.md)、[ADR](DECISIONS.md) |
+| 研发流程与风险验收 | [ITERATION-PLAYBOOK.md](engineering/ITERATION-PLAYBOOK.md)、[依赖优先](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
+| 美术目录、命名、实际资源 | [ART-RESOURCE-CATALOG.md](ART-RESOURCE-CATALOG.md)、[源图清单](../art-sources/source-catalog.json) |
+| 新人物、CG、武器、服装与身份 | [CHARACTER-CREATION-SOP.md](CHARACTER-CREATION-SOP.md)、[人物 brief](templates/CHARACTER-DESIGN-BRIEF-TEMPLATE.md)、[五卡差异化](CHARACTER-CG-DIFFERENTIATION-V1.md)、[原生高清管线](CHARACTER-CG-NATIVE-PIPELINE.md) |
+| 独立场景原画审核 | [R12 原画入库规则](art-reviews/R12-02-SCENE-ART-INTAKE.md)、[场景视觉验收](engineering/R12-41-INDEPENDENT-SCENE-VISUAL-REVIEW-2026-11-24.md) |
+| 当前缺口和任务 | [风险台账](engineering/GAP-REGISTER-2026-11-22.md)、[任务表](../management/TASKS.csv)、[GitHub Issues](https://github.com/kunlong-luo/monster-apartment/issues) |
+| 真人首次试玩 | [观察协议](research/2026-11-13-r113-first-session-protocol.md) |
 
-## 发生冲突时的判定顺序
+## 现行发布与美术边界
 
-1. **真实运行证据**：`main` 源码、`package.json`、`public` / `artwork` 的清单、`.github/workflows` 和对应 SHA 的结果；不要用历史「已完成」代替现状。
-2. **仓库强制约束**：`AGENTS.md`、`PRODUCT.md`、`DESIGN.md`、经记录的最新 ADR。
-3. **专业 SOP**：人物用 `CHARACTER-CREATION-SOP.md`；场景按 R12 入库；工程和发布按迭代手册。
-4. **版本提案 / 历史快照**：`docs/v3`、`docs/DEVELOPMENT_PLAN.md`、`docs/TECH_STACK_PAGEVELA.md`、`docs/engineering/20*.md` 等仅用于追溯，未被现行规范明确采纳的提议不能当作交付要求。
+版本与发布入口统一见[根 README](../README.md)，不在各报告反复复制当前状态。重要最近证据：[R12.54 转换回读](art-reviews/R12-54-TRANSITION-ASSET-VERIFICATION-2026-11-24.md)、[R12.60 房间观景](design/R12-60-PLAYER-ROOM-SCENIC-MODE-2026-11-24.md)、[R12.62 PC 世界场景](art-reviews/R12-62-WORLD-PC-TRANSITION-2026-11-24.md)、[R12.64 合并记录](engineering/R12-64-ROOM-RELEASE-WORLD-INTEGRATION-2026-11-24.md)。上述均为当时的快照，不因后来合并而修改原审稿结论。
 
-**特别注意**：当前开发采用 Next.js / React / Tailwind / Motion / PixiJS；旧 Vite、Phaser、五天试玩原型不是当前游戏的技术和体验目标。根目录保留旧资料用于追溯，不直接删除历史。
+## 历史资料与长期策划
 
-## 文档状态及用语（必须写清）
+| 目录/文档 | 职责 |
+| --- | --- |
+| [v3/](v3/README.md) | 长期 PRD、剧情、人物、经营及历史实施报告；不是上线功能清单 |
+| [design/](design/) | 设计原稿、R12 历史迭代与参考证据 |
+| [art-reviews/](art-reviews/) | 原画来源、授权、像素、审稿、候选和历史证据 |
+| [engineering/](engineering/) | 历史工程验收、事故复盘、长期迭代手册 |
+| [CHANGELOG.md](CHANGELOG.md) | 版本演进 |
+| [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md)、[TECH_STACK_PAGEVELA.md](TECH_STACK_PAGEVELA.md)、[PRODUCT_SPEC.md](PRODUCT_SPEC.md) | 早期规划；不得覆盖现行技术栈与玩法 |
+| [v2/docs/](../v2/docs/)、[prototypes/](prototypes/) | 历史原型和旧方案；非现行页面 |
+| [历史发布基线 R11.3](engineering/2026-11-12-r11-3-release-baseline.md) | 历史完整回归及当时治理状态，不替代新 SHA |
 
-- **提案 / TODO**：可讨论的设计，不代表已有源码或素材。
-- **研究稿 / research-only**：用于验证方向；不能作为生产 CG。
-- **候选 / review**：文件已准备，等待人工身份、画质、授权与跨端审核。
-- **已审 / approved**：有可追踪的审稿人、时间和证据；不自动等于游戏已使用。
-- **生产 / production**：正式清单已合法晋级且运行时确实引用。
-- **代码已提交**：只意味着仓库有提交；**Quality 通过**、**浏览器验收通过**、**Pages 已部署** 是不同事实。均需记录 SHA、链接或截图。
+## R12.67 治理核查与 85 分目标
 
-## 文档变更最小规范
+基线：2026-11-24，`0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0`，完整 Git 树未截断。766 个跟踪 blob、220 份 Markdown、146 个指定媒体路径、19 份 CSS。根 README 和当前架构曾引用过时版本/数量；本次收敛两级入口、更新实际资源目录，保留独立的证据文件。无需为每次文档索引更新另建一份阶段报告。
 
-- 每次功能/美术迭代只更新受影响的 **1 份主规范 + 相关 Issue/任务 + 必要 ADR / 变更日志**。禁止在 5 份文档复制同一段新规定。
-- 计划与实现冲突时：优先修复事实性文字和文档入口，再决定是否改代码。废止规则须注明“被何文件/ADR 取代”，不能静默抹掉历史。
-- 每条新任务要写：玩家可见目标、实际入口、涉及资源/模块、验收证据、不可破坏的存档/概率/布局约束、状态和下一步。
-- 文档审查以**链接存在、相对路径可访问、状态可核对、规格唯一、可执行验收**为完成定义；文档提交并不声称进行过实机视觉/人审。
-- 每轮结束用 [缺口台账](engineering/GAP-REGISTER-2026-11-22.md) 和 GitHub Issues 复查 P0/P1；更新事实，历史日记/审稿报告保持不可篡改。
+| 后续清理项 | 当前结论与验收条件 |
+| --- | --- |
+| 重复历史资料 | 不再在总入口复制每阶段候选状态；仅在确认无独有设计/证据/引用后删除文件，Git 历史可恢复 |
+| 重复媒体 | 3 组相同 blob；资源目录记录实际路径。两组分别承担 CG 与房间观景输出，另一组承担文档证据与运行审稿；先核对源图与动态加载、manifest、生成脚本及测试，再合并 |
+| 组件与 CSS | 19 份 CSS 不是 19 份废弃样式；先生成全量导入/路由/动态选择器关系，保留 Tailwind、全局样式、跨路由覆盖、媒体查询及 Pixi 类；真实双端截图后再删 |
+| 锁文件 | bun 是根 CI 安装依据；核对 pnpm 锁文件与外部开发链；v2 npm 锁独立 |
+| 发布、产品与美术 | 基线 Quality/Pages 已成功；新提交的 CI 及完整浏览器证据另验。真人试玩和生产 CG/原画不能由文档治理替代 |
 
-## 特别约束
+评分采用六维证据：工程架构 20、文档与资源 20、功能/存档 20、视觉体验 20、验证/发布 15、真实玩家反馈 5。未核验项不得按满分计；85/100 仅为目标，待全量引用核对、风险检查、发布与实机视觉证据后重新评分。
 
-- 当前正式世界只有 7 个场景路由；独立研究页不算第八个游戏场景。
-- 人物 CG **原生最低 1086×1448（3:4）可进入首期人审**；1536×2048 为可选精修。像素达标不等于身份、人体、武器、商用权审核通过。
-- 保持银发赤瞳月纱身份与既有角色的**骨相差异**；两张月纱卡必须是同一个人，但服装/动作/武器须明显不同。
-- 画面以全屏绘景和克制的边角 HUD 为主；不使用 Sparkles/WandSparkles 图标；新页面不得重复造导航或将 CSS 叠层当高清美术。
+## 维护约定
 
-## 当前候选发布证据（R12.44）
-
-[主线发布基线、PR #53 / #54 与 PC HUD 七项真实浏览器验收](engineering/R12-44-RELEASE-AND-PC-HUD-EVIDENCE-2026-11-24.md)。主线 R12.41 Quality / Desktop Visual / Pages 均成功；#54 场景专项 7/7，两个候选仍未合并。此处记录候选证据，不替代 PR 自身的功能文档。
+- 同一规则只维护一份主规范，索引链接不复制历史结论；过时规则注明替代者，保留审稿证据和 ADR。
+- `research-only`、`review`、`approved`、`production` 分开；正式清单晋级和运行时引用均需有证据。
+- 代码已提交、Quality 通过、浏览器通过、Pages 已部署是四个不同事实，分别记录 SHA。
+- 新素材按角色/用途稳定英文小写连字符目录，遵循角色 SOP；CG 原生最低 1086×1448 可进入人审，禁止插值冒充原生或同脸换色。
+- 保留七条正式路由、存档键、经济/概率、全屏绘景、小型角落 HUD；禁用 Sparkles/WandSparkles。

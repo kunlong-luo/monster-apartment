@@ -1,6 +1,6 @@
-# 怪物公寓 · 美术资源总目录（R12.52）
+# 怪物公寓 · 美术资源总目录（R12.67）
 
-> 本文件是资源菜单、命名规范及去重记录。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
+> 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
 ## 1. 目录菜单
 
@@ -125,11 +125,11 @@
 
 清理 9,161,328 B 的工作树副本；不代表 Git 历史或线上包同等缩小。另组重复：`docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-05.webp` / `public/art/room-review/yuesha-salon-candidate.webp`，待将审稿和文档引用统一后再判断去重。
 
-## 5. 全仓实际资源菜单
+## 5. 全仓实际资源菜单（R12.67）
 
-范围：Git 跟踪的 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不包含 JSON/Markdown；迁移前 135 个路径，迁移及清理后 132 个路径。Git blob SHA 是 Git 对象标识，不是原文件 SHA-256。每个路径均保留对应实际文件标识。
+统计基线 `0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0`，完整 Git tree，共 146 路径。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON 与 Markdown。Git blob SHA 不等于原文件 SHA-256；此表是实际资源索引，不自动授予生产状态。R12.52 的 132 路径统计属于历史。
 
-### 原画与研究（40）
+### 源图与研究（40）
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
@@ -174,41 +174,51 @@
 | `art-sources/scenes/workshop/desktop-candidate-v1.png` | 3131454 | `813a14b8972d` |
 | `art-sources/scenes/workshop/desktop-candidate-v2.png` | 3103549 | `454501ad0087` |
 
-### 游戏资源与审稿（44）
+### Web 静态资源（62）
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
 | `public/art/a05/foreground-ornaments.svg` | 2876 | `fbf4a3c67d88` |
 | `public/art/a05/moonlight-tracery.svg` | 4827 | `c5f2af6e18e6` |
 | `public/art/a05/rose-petal.svg` | 986 | `09f65722ff16` |
-| `public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp` | 523470 | `245df5fe01eb` |
+| `public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp` | 821724 | `f6b7d13dcdff` |
 | `public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v1.webp` | 514656 | `ae627af84c91` |
 | `public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v2.webp` | 563050 | `8a9f98b31eab` |
-| `public/art/beauty-beasts/characters/brook/face.webp` | 46964 | `5e94b8339c6f` |
-| `public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp` | 477194 | `b1cc0a136f1b` |
+| `public/art/beauty-beasts/characters/brook/face.webp` | 92138 | `7a6a0e8b1fb5` |
+| `public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp` | 593462 | `867fb42c5d26` |
 | `public/art/beauty-beasts/characters/cinder/cg-ember-pose-study-v1.webp` | 591622 | `b12408260d7d` |
-| `public/art/beauty-beasts/characters/cinder/face.webp` | 48306 | `6986cd67c705` |
-| `public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp` | 506680 | `ab5b20cd1b87` |
+| `public/art/beauty-beasts/characters/cinder/face.webp` | 83042 | `a36fe1b83f19` |
+| `public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp` | 601544 | `9235f2243085` |
 | `public/art/beauty-beasts/characters/fern/cg-spring-pose-study-v1.webp` | 581470 | `e18df48957c0` |
-| `public/art/beauty-beasts/characters/fern/face.webp` | 55254 | `571d3035c691` |
+| `public/art/beauty-beasts/characters/fern/face.webp` | 75438 | `ef097d0fc27a` |
 | `public/art/beauty-beasts/characters/fern/review/cg-spring-bow-v1.webp` | 505954 | `ace0a5dcb21d` |
-| `public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp` | 420468 | `89e29f811e6e` |
+| `public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp` | 418170 | `8350e7fd568c` |
 | `public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v1.webp` | 526334 | `ee4d7faa8f82` |
 | `public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v2.webp` | 513912 | `ca6fd2886d12` |
-| `public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp` | 400180 | `ac238c86c869` |
+| `public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp` | 494826 | `7e60bcd337ba` |
 | `public/art/beauty-beasts/characters/yuesha/cg-vow-pose-study-v1.webp` | 474174 | `22dd33b5b579` |
 | `public/art/beauty-beasts/characters/yuesha/face.webp` | 53084 | `c08bde74549d` |
-| `public/art/beauty-beasts/cover/world-cover-mobile.webp` | 116024 | `100733d7f1ca` |
-| `public/art/beauty-beasts/cover/world-cover.webp` | 203790 | `258b933459cc` |
+| `public/art/beauty-beasts/cover/world-cover-mobile.webp` | 489132 | `edb65eec7fe0` |
+| `public/art/beauty-beasts/cover/world-cover.webp` | 526046 | `17c30be4f413` |
 | `public/art/feature-postcards/gothic-workshop.webp` | 59254 | `34c4b7fdc29d` |
 | `public/art/feature-postcards/moonlit-street.webp` | 34350 | `e7b5404a42ca` |
 | `public/art/lobby-hero-v2.webp` | 209336 | `2541cfaeaf7b` |
 | `public/art/lobby-hero-v3.webp` | 435400 | `2b10407ea824` |
+| `public/art/lobby-hero-v4-mobile.webp` | 344590 | `72307e846c10` |
+| `public/art/lobby-hero-v4.webp` | 353842 | `555069296ce8` |
 | `public/art/room-review/yuesha-salon-candidate.webp` | 155188 | `3e384235b220` |
 | `public/art/rooms/brook/concept-scene.svg` | 9598 | `d2adfb278f67` |
+| `public/art/rooms/brook/review/background-candidate.webp` | 621298 | `53d8af7b95dd` |
+| `public/art/rooms/brook/review/standing-candidate.webp` | 821724 | `f6b7d13dcdff` |
 | `public/art/rooms/cinder/concept-scene.svg` | 12259 | `99fa591dd43a` |
+| `public/art/rooms/cinder/review/background-candidate.webp` | 571828 | `fc4ff05e5908` |
+| `public/art/rooms/cinder/review/standing-candidate.webp` | 593462 | `867fb42c5d26` |
 | `public/art/rooms/fern/concept-scene.svg` | 24221 | `5bb774279f3d` |
+| `public/art/rooms/fern/review/background-candidate.webp` | 648462 | `b2d8ade7f8bd` |
+| `public/art/rooms/fern/review/standing-candidate.webp` | 585116 | `287ae3c81b86` |
 | `public/art/rooms/yuesha/concept-scene.svg` | 21566 | `9b4729638861` |
+| `public/art/rooms/yuesha/review/background-candidate.webp` | 479202 | `589f25b5191b` |
+| `public/art/rooms/yuesha/review/standing-candidate.webp` | 664030 | `419852a5868b` |
 | `public/art/world-scenes/review/2026-11-22/orders-desktop-v1.webp` | 382216 | `61122e427bcd` |
 | `public/art/world-scenes/review/2026-11-22/orders-mobile-v1.webp` | 463436 | `d21372731b9a` |
 | `public/art/world-scenes/review/2026-11-22/warehouse-desktop-v1.webp` | 387164 | `2c823339e8b3` |
@@ -216,22 +226,22 @@
 | `public/art/world-scenes/review/2026-11-23/apartment-six-door-mobile-v1.webp` | 423086 | `931970f6dfb9` |
 | `public/art/world-scenes/review/2026-11-23/warehouse-mobile-v1.webp` | 419522 | `3e5173ddb694` |
 | `public/art/world-scenes/town-moonlit-gate.webp` | 120894 | `c422f2cdf82c` |
+| `public/art/world-scenes/town/review/desktop-candidate-v1.webp` | 629238 | `55daae532263` |
+| `public/art/world-scenes/town/review/desktop-candidate-v2.webp` | 636018 | `f6da756b2007` |
 | `public/art/world-scenes/workshop-gothic-hall.webp` | 180542 | `2e21a83315dd` |
-| `public/art/yuesha-avatar-v3.webp` | 87422 | `502406d355cc` |
+| `public/art/world-scenes/workshop/review/desktop-candidate-v1.webp` | 599408 | `50511005b937` |
+| `public/art/world-scenes/workshop/review/desktop-candidate-v2.webp` | 598416 | `5660e04024a0` |
+| `public/art/yuesha-avatar-v3.webp` | 70710 | `fa60ea5d52da` |
 | `public/art/yuesha-bust-v2.webp` | 116672 | `5070dd1dc4ac` |
-| `public/art/yuesha-bust-v3.webp` | 251540 | `c32b3b58080f` |
+| `public/art/yuesha-bust-v3.webp` | 151936 | `ba77c88612de` |
 | `public/art/yuesha-portrait-v2.webp` | 87672 | `d0e019d24e6a` |
-| `public/art/yuesha-portrait-v3.webp` | 178474 | `927a36e6011e` |
-
-### 历史设计参考（3）
-
-| 路径 | 字节 | Git blob SHA 前 12 位 |
-| --- | ---: | --- |
+| `public/art/yuesha-portrait-v3.webp` | 259898 | `3cfe23285826` |
 | `public/assets/aistudio/Gothic_Moonlit_Summoning_Screen_8181b3a5.png` | 2726560 | `3be0ecd75dd6` |
 | `public/assets/aistudio/image_26a43a92.png` | 3154947 | `6c8131dd6719` |
 | `public/assets/aistudio/image_6273408e.png` | 3279821 | `ea8234301ea3` |
+| `public/lobby-hero.webp` | 157466 | `a9210c774121` |
 
-### Pixi 工坊（15）
+### Pixi sidecar（15）
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
@@ -255,11 +265,11 @@
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
+| `docs/art-reviews/R12-09-ART-CONTACT-SHEET-REVIEW-ONLY.jpg` | 426045 | `da82adeccbac` |
+| `docs/art-reviews/R12-14-S02-mobile-crop-preview.jpg` | 192401 | `fd9cc617f548` |
 | `docs/art-reviews/pose-differentiation-2026-11-21.webp` | 428690 | `1598822d80ed` |
 | `docs/art-reviews/pose-differentiation-five-cards-2026-11-22.webp` | 487286 | `4a481fe4e35a` |
 | `docs/art-reviews/pose-differentiation-five-cards-brook-v2-2026-11-22.webp` | 432064 | `0939f6ddbec2` |
-| `docs/art-reviews/R12-09-ART-CONTACT-SHEET-REVIEW-ONLY.jpg` | 426045 | `da82adeccbac` |
-| `docs/art-reviews/R12-14-S02-mobile-crop-preview.jpg` | 192401 | `fd9cc617f548` |
 | `docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-01.webp` | 157098 | `89b11fd01b68` |
 | `docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-02.webp` | 109326 | `a6f124ce0022` |
 | `docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-03.webp` | 135414 | `e587690236ce` |
@@ -284,12 +294,6 @@
 | `docs/art-reviews/sources/winechan-vampire-living-room/publisher-preview-01.review.webp` | 52004 | `11ecd755ddd0` |
 | `docs/art-reviews/yuesha-eclipse-pose-v1-v2-qa-2026-11-22.webp` | 353470 | `1c9efc2783a8` |
 | `docs/design/2026-10-29-gothic-red-gold/layout-map.svg` | 4145 | `7d4a9dbecabe` |
-
-### 其他公开资源（1）
-
-| 路径 | 字节 | Git blob SHA 前 12 位 |
-| --- | ---: | --- |
-| `public/lobby-hero.webp` | 157466 | `a9210c774121` |
 
 ## 6. 正式替换顺序与验收
 
@@ -335,3 +339,16 @@ PR #56 首轮构建因观景按钮字符串未闭合失败；已修复并保留�
 ## R12.64 主线同步
 
 V3.104.0 私室观景 PR #56 已合并 main `d36b5aee`；同一候选 Quality、Desktop Visual Review、像素证据全部通过，完整玩法与新主线 Pages 尚待确认。世界场景 PR #57 基于此 main 整合，保持八个房间层与四张世界 WebP 原 blob 不变，两个完整性审计均保留。新候选 V3.105.0；不提前标为上线。见 [R12.64](engineering/R12-64-ROOM-RELEASE-WORLD-INTEGRATION-2026-11-24.md)。
+
+
+## R12.67 重复路径核查（不自动删除）
+
+V3.105.0 的 PC 新场景与四间观景已合并、Quality/Pages 通过；不改变原画生产批准状态。历史候选状态不覆盖当前版本。
+
+| 重复路径 A | 重复路径 B | 字节 | 当前处置 |
+| --- | --- | ---: | --- |
+| `docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-05.webp` | `public/art/room-review/yuesha-salon-candidate.webp` | 155188 | 来源证据/运行审稿，先核对授权与引用 |
+| `public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp` | `public/art/rooms/brook/review/standing-candidate.webp` | 821724 | 两份 manifest 独立角色槽，核对原图与转换，禁止直接删 |
+| `public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp` | `public/art/rooms/cinder/review/standing-candidate.webp` | 593462 | 同上 |
+
+重复路径潜在工作树空间 1,570,374 B；本轮未删除媒体。相同输出不证明原始来源、人物用途或授权一致。CG manifest 的 previewPath 和 R12.57 房间 manifest 的 output 分属独立审核契约；先检查实际原图及生成脚本、动态 URL、生产/回退、文档链接、测试再确定唯一引用。不可用简单文本搜索零命中判定无用。
