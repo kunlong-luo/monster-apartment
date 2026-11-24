@@ -1,5 +1,6 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
+import {useSearchParams} from 'next/navigation';
 import {useRoomStageSize} from './use-room-stage-size';
 import {RoomArtLocalPreviewPanel,useRoomArtLocalPreview} from './room-art-local-preview';
 import {yueshaAfterChoice} from '@/core/character-life';
@@ -12,6 +13,7 @@ import {RoomSceneBackdrop} from './room-scene-backdrop';
 import {RoomResidentSprite} from './room-resident-sprite';
 import {RoomSceneFocus} from './room-scene-focus';
 import {RoomScenicViewToggle} from './room-scenic-view-toggle';
+import {roomScenicArt} from '@/core/room-scenic-art';
 import {RoomArtAnchorEditor} from './room-art-anchor-editor';
 import {RoomArtPropPreview} from './room-art-prop-preview';
 import {RoomConversationTopics} from './room-conversation-topics';
@@ -22,10 +24,16 @@ import type {RoomPose} from '@/core/room-performance';
 import type {RoomConversationTopic} from '@/core/room-conversations';
 import {roomSceneReaction,yueshaRoomEasterEgg} from '@/core/room-scene-reactions';
 type Hotspot='seal'|'tea'|'ledger';
-export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:number}){
+type YueshaRoomProps={guests:number;happiness:number};
+export function YueshaPrivateRoom(props:YueshaRoomProps){
+  const reviewEnabled=useSearchParams().get('roomArtReview')==='1';
+  return <YueshaPrivateRoomView {...props} reviewEnabled={reviewEnabled}
+    key={reviewEnabled?'review':'player'}/>;
+}
+function YueshaPrivateRoomView({guests,happiness,reviewEnabled}:YueshaRoomProps&{reviewEnabled:boolean}){
   const stageRef=useRef<HTMLDivElement>(null);
   const stageSize=useRoomStageSize(stageRef);
-  const artReview=useRoomArtLocalPreview();
+  const artReview=useRoomArtLocalPreview(reviewEnabled);
   const [hotspot,setHotspot]=useState<Hotspot|null>(null);
   const [reaction,setReaction]=useState('');
   const [pose,setPose]=useState<RoomPose>('idle');
@@ -35,6 +43,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
   const [scenicMode,setScenicMode]=useState(false);
   const shownPose=artReview.enabled&&artReview.selectedPose?artReview.selectedPose:pose;
   const candidatePreview=Boolean(artReview.enabled&&artReview.backgroundUrl);
+  const playerScenic=scenicMode&&!artReview.enabled;
+  const scenicArt=playerScenic?roomScenicArt('yuesha'):null;
   const anchorEditing=candidatePreview&&artReview.anchorEditing;
   const {status,progress}=useCharacterLife();
   const choice=progress.decisions['yuesha-first-visit'];
@@ -68,14 +78,14 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     <div className="min-w-0 space-y-2">
     <div className={'relative h-[clamp(390px,68dvh,720px)] lg:aspect-video lg:h-auto overflow-hidden rounded-xl border border-gothic-brass/60 bg-gothic-night shadow-[0_16px_48px_#0009,inset_0_1px_#e9cfa523] '}
       data-testid="yuesha-room-stage" ref={stageRef}>
-      <RoomScenicViewToggle scenic={scenicMode} blocked={Boolean(theater)} onToggle={()=>setScenicMode(previous=>!previous)}/>
-      <RoomSceneBackdrop id="yuesha" scenic={scenicMode} previewUrl={artReview.backgroundUrl}
+      <RoomScenicViewToggle scenic={scenicMode} mobile={!artReview.enabled} blocked={Boolean(theater)} onToggle={()=>setScenicMode(previous=>!previous)}/>
+      <RoomSceneBackdrop id="yuesha" scenic={scenicMode} previewUrl={artReview.backgroundUrl} scenicUrl={scenicArt?.background}
         cinematicPose={theater?pose:null}/>
-      {!anchorEditing&&<RoomResidentSprite id="yuesha" name="月纱" reaction={scenicMode?"":reaction} pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)} previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>}
+      {!anchorEditing&&<RoomResidentSprite id="yuesha" name="月纱" reaction={scenicMode?"":reaction} pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)} scenicPoseUrl={scenicArt?.standing} previewPoseUrl={artReview.enabled?artReview.packagedStandingUrl??artReview.poseUrls[shownPose]??null:null}/>}
       {candidatePreview&&<RoomArtPropPreview stageSize={stageSize}
         anchors={artReview.anchorDraft} art={artReview.propArtwork}/>}
-      {!candidatePreview&&<RoomSceneFocus id="yuesha" scenic={scenicMode} item={hotspot} pose={pose} stageSize={stageSize}/>}
-      {!candidatePreview&&<RoomSceneHotspots scenic={scenicMode} characterName="月纱" roomId="yuesha" stageSize={stageSize}
+      {!candidatePreview&&!playerScenic&&<RoomSceneFocus id="yuesha" scenic={scenicMode} item={hotspot} pose={pose} stageSize={stageSize}/>}
+      {!candidatePreview&&!playerScenic&&<RoomSceneHotspots scenic={scenicMode} characterName="月纱" roomId="yuesha" stageSize={stageSize}
         items={[{id:'seal',label:'月纹蜡封'},{id:'tea',label:'香料茶杯'},{id:'ledger',label:'旧账簿'}]}
         selected={hotspot} observed={observed} onInspect={inspect}
         description={hotspot==='seal'?'蜡封上的月纹，与旧公寓钥匙的纹样有些相似。月纱没有立即回答你的疑问。':
@@ -86,7 +96,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       {theater&&<RoomDialogueTheater key={theater.id} name="月纱" title={theater.title}
         response={theater.response} basePose={roomTopicPose('yuesha',theater.id)}
         onBeatPose={setPose} onClose={()=>{setTheater(null);setPose('idle');}}/>}
-      <header className={"pointer-events-none absolute left-4 top-4 z-[5] max-w-[52%] text-shadow-md sm:left-6 sm:top-6"+(scenicMode?" lg:hidden":"")+(candidatePreview?" hidden":"")}>
+      <header className={"pointer-events-none absolute left-4 top-4 z-[5] max-w-[52%] text-shadow-md sm:left-6 sm:top-6"+(scenicMode?" lg:hidden":"")+(candidatePreview||playerScenic?" hidden":"")}>
         <span className="text-[9px] font-medium uppercase tracking-[.24em] text-[#e7c294]">PRIVATE SUITE / 月纱</span>
         <h3 className="mt-2 font-serif text-xl leading-tight tracking-[.04em] text-[#ffe7c5] sm:text-2xl">契约会客室</h3>
         <p className="mt-2 hidden text-xs leading-6 text-[#ead3bf] sm:block">月纹、旧契约和一杯香料茶</p>
@@ -95,7 +105,7 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
       <RoomArtLocalPreviewPanel id="yuesha" name="月纱" review={artReview}/>
 
     </div>
-    <div data-testid="room-story-rail" className={'min-w-0 space-y-4 rounded-xl border border-gothic-brass/40 bg-gothic-panel/90 p-3 lg:max-h-[min(68dvh,720px)] lg:overflow-y-auto lg:pr-3 [scrollbar-width:thin] '+(scenicMode?'lg:hidden':'')}>
+    <div data-testid="room-story-rail" className={'min-w-0 space-y-4 rounded-xl border border-gothic-brass/40 bg-gothic-panel/90 p-3 lg:max-h-[min(68dvh,720px)] lg:overflow-y-auto lg:pr-3 [scrollbar-width:thin] '+(playerScenic?'hidden':scenicMode?'lg:hidden':'')}>
     <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[#ad89644a] bg-[#211520b8] px-3 py-2 text-xs" data-testid="yuesha-living-state">
       <span>今夜心情：{happiness>=70?'安心':'牵挂邻居'}</span>
       <span>公寓现住 {guests} 位邻居</span>
@@ -146,8 +156,8 @@ export function YueshaPrivateRoom({guests,happiness}:{guests:number;happiness:nu
     </p>}
     </div>
     </div>
-    <YueshaMemoryShelf progress={progress} onRevisit={revisit}/>
-    <details data-testid="room-character-archive" className="group rounded-lg border border-[#ad885f50] bg-[#170e1ae6] px-3 py-2.5">
+    <div hidden={playerScenic}><YueshaMemoryShelf progress={progress} onRevisit={revisit}/></div>
+    <details hidden={playerScenic} data-testid="room-character-archive" className="group rounded-lg border border-[#ad885f50] bg-[#170e1ae6] px-3 py-2.5">
       <summary className="cursor-pointer select-none py-1 text-xs tracking-[.1em] text-[#e8c99e] focus-visible:outline-2 focus-visible:outline-[#e8c99e]">人物档案与能力 <span className="ml-2 text-[#a68b76] group-open:hidden">· 展开查看</span></summary>
       <div className="mt-3"><CharacterLifePortrait id="yuesha"/></div>
     </details>

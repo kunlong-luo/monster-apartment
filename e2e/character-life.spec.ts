@@ -145,6 +145,11 @@ test('assigned worker is not duplicated in their private room',async({page})=>{
   await expect(page.getByTestId('room-resident-away-brook')).toBeVisible();
   await expect(page.getByTestId('room-resident-present-brook')).toHaveCount(0);
   await expect(page.getByTestId('worker-room-choice-brook-care')).toHaveCount(0);
+  await page.getByTestId('room-scenic-toggle').click();
+  await expect(page.getByTestId('room-scene-backdrop')).toHaveAttribute('data-scenic-art','true');
+  await expect(page.getByTestId('room-resident-away-brook')).toBeVisible();
+  await expect(page.getByTestId('room-resident-present-brook')).toHaveCount(0);
+  await page.getByTestId('room-scenic-toggle').click();
   await page.getByRole('button',{name:'空掉的工具挂钩'}).click();
   await expect(page.getByTestId('scene-discovery')).toContainText('扳手');
 });

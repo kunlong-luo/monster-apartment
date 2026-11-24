@@ -309,13 +309,13 @@ test('private rooms allow full-width scenic inspection and return to saved story
   await expect(page.getByTestId('yuesha-dialogue')).toBeVisible();
 });
 
-test('mobile room keeps investigation without an unnecessary scenic-mode button',async({page})=>{
+test('mobile room retains investigation and offers the existing scenic-mode button',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto('/apartment/?visit=yuesha');
   const room=page.getByTestId('yuesha-private-room');
   await expect(room).toBeVisible({timeout:20000});
   await expect(room).toHaveAttribute('data-room-view','story');
-  await expect(page.getByTestId('room-scenic-toggle')).toBeHidden();
+  await expect(page.getByTestId('room-scenic-toggle')).toBeVisible();
   await expect(page.locator('[data-hotspot-layout="object-id"]')).toBeVisible();
   await expect(page.getByTestId('room-story-rail')).toBeVisible();
 });

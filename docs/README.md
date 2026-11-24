@@ -11,6 +11,9 @@
 | R12.54 实际新美术输出与发布验收 | [真实转换回读、完整性回归](art-reviews/R12-54-TRANSITION-ASSET-VERIFICATION-2026-11-24.md) | 33 原图、15 WebP 已实际验证；候选待浏览器及发布验收 |
 | R12.55 过渡美术清单同步 | [真实 CI 失败与修复](art-reviews/R12-55-TRANSITION-MANIFEST-RECONCILIATION-2026-11-24.md) | 317 通过/3 失败；同步当前六槽和历史快照、V4 横竖与精确尺寸，等待新 SHA |
 | R12.58 大厅旧浏览器断言修复 | [全量回归与定向验收](art-reviews/R12-58-LOBBY-BROWSER-REGRESSION-2026-11-24.md) | 186 通过/1 失败/3 跳过；真实双端 V4 尺寸与 URL，保留 HUD 检查，待复验 |
+| R12.60 玩家房间观景模式 | [实际房间分层与故事隔离](design/R12-60-PLAYER-ROOM-SCENIC-MODE-2026-11-24.md) | V3.104.0 候选；八个真实 WebP，双端观景、排班与物件保持，待验收 |
+| R12.59 房间物件与构图核对 | [四间实际画面审查](art-reviews/R12-59-ROOM-PROP-AND-COMPOSITION-AUDIT-2026-11-24.md) | 独立浏览器验收通过，故事实物仍待补齐 |
+| R12.62 私室观景编译修复 | [首轮 CI 失败原因及修复](design/R12-62-ROOM-SCENIC-BUILD-FIX-2026-11-24.md) | 修复共享观景按钮字符串，保留测试，待新 SHA 验收 |
 | 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |

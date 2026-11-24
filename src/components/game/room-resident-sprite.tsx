@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import {ReliableImage as Image} from './reliable-image';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import type {CharacterId,WorkerCharacterId} from '@/core/character-life';
@@ -11,8 +11,8 @@ import {ROOM_ART_MANIFEST,roomPublicAssetPath} from '@/core/room-art-manifest';
 
 /** The resident is independently animated; background pixels are never scaled.
  * A worker on shift is never duplicated in their private room. */
-export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle',previewBackground=false,previewPoseUrl=null}:{
-  id:CharacterId;name:string;working?:boolean;reaction?:string;pose?:RoomPose;previewBackground?:boolean;previewPoseUrl?:string|null;
+export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle',previewBackground=false,previewPoseUrl=null,scenicPoseUrl=null}:{
+  id:CharacterId;name:string;working?:boolean;reaction?:string;pose?:RoomPose;previewBackground?:boolean;previewPoseUrl?:string|null;scenicPoseUrl?:string|null;
 }){
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
@@ -30,7 +30,8 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
   const production=art.residentStatus==='production';
   // Four actual rendered poses already include body language and a measured
   // floor anchor. Do not additionally translate or rotate those painted feet.
-  const stableArtwork=production||reviewPerformer;
+  const stableArtwork=production||reviewPerformer||Boolean(scenicPoseUrl);
+  const artworkUrl=previewPoseUrl??scenicPoseUrl;
   const performerMotion=reduced||stableArtwork?{x:0,y:0,rotate:0}:
     pose==='idle'?{x:0,y:[0,-3,0,2,0],rotate:0}:
     pose==='attentive'?{x:-3,y:-3,rotate:-.5}:
@@ -42,7 +43,7 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
   return <div className="pointer-events-none absolute inset-0 z-[2]"
     data-testid="room-resident-layer" data-art-quality={art.residentStatus} data-pose={away?"away":pose}
     data-render-mode={away?'away':embedded?'embedded':'separate'}
-    data-review-performer={reviewPerformer?'true':'false'} data-local-pose-preview={Boolean(previewPoseUrl)}>
+    data-scenic-art={Boolean(scenicPoseUrl&&!away&&!reviewPerformer)} data-review-performer={reviewPerformer?'true':'false'} data-local-pose-preview={Boolean(previewPoseUrl)}>
     {away?<div data-testid={'room-resident-away-'+id}
       className="absolute right-[5%] bottom-[27%] w-[45%] max-w-56 rounded-lg border border-[#efd4aa66] bg-[#170e19e8] p-3 text-center shadow-[0_9px_25px_#000a]">
       <span aria-hidden="true" className="block text-2xl text-[#f5cc8a]">✉</span>
@@ -51,20 +52,21 @@ export function RoomResidentSprite({id,name,working=false,reaction='',pose='idle
     </div>:embedded?<span className="sr-only" data-testid={'room-resident-embedded-'+id}>
       {name}已绘制在概念背景中，暂不重复叠加不透明立绘
     </span>:<motion.div data-testid={'room-resident-present-'+id}
-      className={'absolute bottom-0 h-[94%] w-[49%] max-w-[410px] origin-bottom '+
-        ((art.backgroundStatus==='production'||previewBackground)?'left-[2%]':'right-[2%]')}
+      className={'absolute bottom-0 max-w-[410px] origin-bottom '+(scenicPoseUrl
+        ?'left-1/2 h-[90%] w-[85%] -translate-x-1/2 lg:h-[94%] lg:w-[49%]'
+        :'h-[94%] w-[49%] '+((art.backgroundStatus==='production'||previewBackground)?'left-[2%]':'right-[2%]'))}
       initial={false}
       animate={performerMotion}
       transition={reduced||stableArtwork?{duration:0}:pose==='idle'?{duration:7,ease:'easeInOut',repeat:Infinity}:{duration:.48,ease:'easeOut'}}>
-      {previewPoseUrl||production
+      {artworkUrl||production
         ?<AnimatePresence initial={false} mode="sync">
-          <motion.div key={previewPoseUrl??frame} data-testid="room-portrait-frame"
+          <motion.div key={artworkUrl??frame} data-testid="room-portrait-frame"
             className="pointer-events-none absolute inset-0"
             initial={reduced?false:{opacity:0}}
             animate={{opacity:1}} exit={{opacity:0}}
             transition={{duration:reduced?0:.24,ease:'easeOut'}}>
-            <Image src={previewPoseUrl??roomPublicAssetPath(frame)}
-              alt={previewPoseUrl?name+'的本地透明立绘候选，仅供审核，真实排班未改变':name+'在私人房间中'}
+            <Image src={artworkUrl??roomPublicAssetPath(frame)}
+              alt={previewPoseUrl?name+'的本地透明立绘候选，仅供审核，真实排班未改变':scenicPoseUrl?name+'的全身立绘':name+'在私人房间中'}
               fill unoptimized draggable={false} sizes="(max-width:640px) 49vw, 410px"
               className="object-contain object-bottom drop-shadow-[0_12px_22px_#000b]"/>
           </motion.div>
