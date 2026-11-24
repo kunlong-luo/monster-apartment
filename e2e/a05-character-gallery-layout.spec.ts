@@ -115,7 +115,9 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
 
   // R12.27: a cover crop already selects the face in the short hero header.
   // The old 2.05x transform enlarged its raster again on Retina screens.
-  const mythicHero=gallery.locator('.cg-detail__hero--mythic .cg-detail__hero-img');
+  // The detail hero is a SIBLING of the card gallery in .cg-layout.
+  // Scoping it under the gallery silently finds zero elements.
+  const mythicHero=page.locator('.cg-detail__hero--mythic .cg-detail__hero-img');
   await expect(mythicHero).toHaveCSS('transform','none');
   const heroSampling=await mythicHero.evaluate(node=>{
     const img=node as HTMLImageElement;
