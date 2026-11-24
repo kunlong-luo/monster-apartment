@@ -9,6 +9,7 @@
 | 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |
+| Web / PC 角色房间深链修复（R12.26） | [角色图鉴 SPA 访问、Back 与私人房间一致性](design/R12-26-WEB-CHARACTER-ROOM-DEEPLINKS-2026-11-24.md) | **V3.92.0** 代码已提交：有效 `visit` 参数直接决定显示的住客房间，进入/离开走 Next 路由；PC 定向浏览器回归已加入视觉工作流。最新提交的 Quality / Pages / 浏览器结果分别核实，不能以提交等同上线 |
 | Web / PC 首页优先优化（R12.25） | [欢迎页按需加载与地图关闭交互](design/R12-25-WEB-FIRST-LOBBY-LOAD-AND-NAVIGATION-2026-11-24.md) | 已提交 Web 代码与定向浏览器测试，发布标识更新为 **V3.91.0**；按最终 SHA 核对 Quality、PC 视觉审核与 Pages，未晋级任何新头像/CG |
 | 首页菜单：现行顶角方案 | [R12.15 顶角世界地图](design/R12-15-LOBBY-CORNER-WORLD-ATLAS-2026-11-23.md) | 取代底部 Dock，七个真实页面仍可达；视觉 QA 以最新 SHA 为准 |
 | 首页两幅海报 / 图鉴清晰度 | [R12.16 边栏精简与候选原画 DPR 保护](design/R12-16-LOBBY-RAIL-DENSITY-AND-CG-DPR-2026-11-23.md) | 保留故事入口；移除重复大肖像和切换动画放大模糊 |
