@@ -1,4 +1,4 @@
-# 《怪物公寓》V3.4 策划总入口
+# 长期产品与内容策划（历史 V3）
 
 > **文档状态：需求与剧情方案（Proposal），不是已上线功能。** 编写日期：2026-10-28。本文档体系是历史 V3 长期策划；已有代码与实际发布状态以主分支和 CI 为准。
 
@@ -34,6 +34,19 @@
 | [20-HOLISTIC-PERSON-SYSTEM.md](20-HOLISTIC-PERSON-SYSTEM.md) | **人物/玩法/工程** | **完整人物体系**：身份、20 能力、人格、情绪需求、关系、技能、人生经历与数据结构 |
 | [21-CHARACTER-LIVING-PROFILES.md](21-CHARACTER-LIVING-PROFILES.md) | **编剧/美术/玩法** | **八位核心 NPC 的完整人物生活档案**：性格、习惯、人生目标、情绪和可见关系发展 |
 
+## R12.77 · 历史实施报告退役
+
+2026-11-24：本目录从 88 份收敛为 72 份。本轮逐份审核 19 份旧报告，保留 3 份含具体原画坐标或姿态像素审核数据的记录；其余 16 份不再占据工作树。197 份其余跟踪 Markdown 已扫描，未发现这些文件名的直接引用。原始文件均可从[清理前固定 Git 快照](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3)恢复。以下仅总结仍应遵守的行为原则，不代表现行实现或新版本验收。
+
+| 归并类别 | 保留的设计原则 | 现行验证/权威入口 |
+|---|---|---|
+| 私室调查、画面聚焦、记忆、旧 HUD、姿态、对白演出（7 份） | 聚焦不虚化原画；裁切不可完整点击的物件通过真实备用入口；对话、线索、记忆由实际存档派生，锁定内容不泄露；仅人物层交叉淡变，支持减少动效；光效不改变热区。禁止假余额、假亲密度与重复人物图层 | [设计规范](../../DESIGN.md)、[架构](../CURRENT_ARCHITECTURE.md)、[房间场景规范](22-PRIVATE-ROOM-SCENE-LAYERS.md)、[资源目录](../ART-RESOURCE-CATALOG.md) |
+| 七页导航与重复入口（2 份） | 只维护一套全局导航；额外链接表达实际操作目的，明确可访问名称；不恢复旧七按钮底栏或另建路由 | [现行视觉合同](../design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md)、[架构](../CURRENT_ARCHITECTURE.md) |
+| 真实工坊派工和状态（2 份） | 派工深链接只选择合法人物，玩家确认设备；自动派工不覆盖手工排班、不扣资源、不制造产出；进度库存绑定真实存档 | [架构](../CURRENT_ARCHITECTURE.md)、[迭代手册](../engineering/ITERATION-PLAYBOOK.md) |
+| 图鉴、装备和召唤（5 份） | 抽卡演出表现真实结算；品阶/概率/保底以现行引擎为准，不以主题制造虚假 UP；装备徽章不冒充换装原画；图片按 Pages basePath 正确解析；减少重复按钮，保持移动端入口、焦点和可操作性 | [产品](../../PRODUCT.md)、[设计规范](../../DESIGN.md)、[角色制作 SOP](../CHARACTER-CREATION-SOP.md)、[资源目录](../ART-RESOURCE-CATALOG.md) |
+
+退役原件：[25-ROOM-V38-CINEMATIC-FOCUS](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/25-ROOM-V38-CINEMATIC-FOCUS.md) · [26-YUESHA-HUD-REAL-DATA-REVIEW](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/26-YUESHA-HUD-REAL-DATA-REVIEW.md) · [28-MOONSHA-MEMORY-SHELF-AND-PRODUCTION-ART](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/28-MOONSHA-MEMORY-SHELF-AND-PRODUCTION-ART.md) · [29-SEVEN-ROUTE-NAVIGATION-REGRESSION](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/29-SEVEN-ROUTE-NAVIGATION-REGRESSION.md) · [32-ROOM-OFFSCREEN-ACCESSIBILITY](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/32-ROOM-OFFSCREEN-ACCESSIBILITY.md) · [37-PORTRAIT-TRANSITION-QUALITY](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/37-PORTRAIT-TRANSITION-QUALITY.md) · [43-WORKSHOP-TRUTHFUL-STATE-AND-DEEP-LINKS](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/43-WORKSHOP-TRUTHFUL-STATE-AND-DEEP-LINKS.md) · [45-REMOVE-REDUNDANT-WORLD-FOOTERS](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/45-REMOVE-REDUNDANT-WORLD-FOOTERS.md) · [46-ONE-TAP-WORKSHOP-PRODUCTION](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/46-ONE-TAP-WORKSHOP-PRODUCTION.md) · [47-CHARACTER-COLLECTION-REAL-GAMEPLAY](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/47-CHARACTER-COLLECTION-REAL-GAMEPLAY.md) · [48-SUMMON-REVEAL-AND-EQUIPMENT-BADGES](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/48-SUMMON-REVEAL-AND-EQUIPMENT-BADGES.md) · [54-ROOM-CINEMATIC-LIGHT-AND-POSE](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/54-ROOM-CINEMATIC-LIGHT-AND-POSE.md) · [55-REFERENCE-ALIGNED-ROOM-UI](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/55-REFERENCE-ALIGNED-ROOM-UI.md) · [56-SUMMON-IMAGE-REFERENCE-PARITY](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/56-SUMMON-IMAGE-REFERENCE-PARITY.md) · [57-SUMMON-HUD-DETAIL-POLISH](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/57-SUMMON-HUD-DETAIL-POLISH.md) · [58-SUMMON-MOBILE-SCENE-RULES](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3/58-SUMMON-MOBILE-SCENE-RULES.md)。原报告中的布局比例、概率、库存数字与当时上线状态属于历史，不是新的现行需求。
+
 ## 当前版本与 V3 目标的边界
 
 **已存在（截至 R11.2）**：Next.js + React + TypeScript + Tailwind v4 + PixiJS、七个正式页面、15 格工坊、三类机器与三名工匠、V2 本地存档、旧手动 `runShift()`、R10.9/R10.10 显式开启的真实时间设备周期和 R11/R11.1/R11.2 **可选择的自动合同履约**。设备重排不能将独立合同截止日无限延后；旧存档保持 opt-out。**这些属于 V2 工坊有限范围实现，尚不是 V3 全站统一权威生产与 Dexie V3 数据迁移。** 以 [R11.3 台账](../engineering/2026-11-12-r11-3-release-baseline.md) 区分代码上线与里程碑验收。
@@ -56,7 +69,7 @@
 - 不操作一分钟，工坊、角色和世界分别会如何变化？
 - 如果删掉这个按钮/任务/动画，玩家会失去什么有价值的策略或情感体验？
 
-回答不了，就不要把功能加入正式需求。新需求在此目录更新后，再写代码和验收用例。
+回答不了，就不要把功能加入正式需求。新需求应更新现行 PRODUCT.md、文档总入口及风险台账，不再按版本号新增实施报告。
 
 ## 与历史文档的关系
 
