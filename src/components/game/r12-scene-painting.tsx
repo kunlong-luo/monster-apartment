@@ -53,28 +53,26 @@ function R12VerifiedBackdropImage({src,kind}:{src:string;kind:BackdropArtKind}){
 /** Opt-in, entirely local reviewer surface. User-selected images never leave
  * the browser, and never change the production manifest or stored game data.
  */
-export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
-  className:string;testId?:string;
-}){
+type BackdropProps=Props&{className:string;testId?:string};
+
+/** The URL owns review-mode lifetime. Remounting the local preview state on
+ * opt-in changes also releases any object URLs via existing cleanup effects.
+ * No effect-driven setState reset (which violates react-hooks lint rules).
+ */
+export function R12SceneBackdrop(props:BackdropProps){
+  const reviewMode=useSearchParams().get('r12-art-review')==='1';
+  return <R12SceneBackdropView {...props} reviewMode={reviewMode}
+    key={reviewMode?'research-opt-in':'player-view'}/>;
+}
+
+function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
+  BackdropProps&{reviewMode:boolean}){
   const sources=approvedR12Scene(area);
-  // The research opt-in is URL state, not a one-time window snapshot.
-  // App Router synchronizes useSearchParams with pushState, Back and Forward.
-  const searchParams=useSearchParams();
-  const reviewMode=searchParams.get('r12-art-review')==='1';
   const mobileViewport=useSyncExternalStore(
     subscribeMobileViewport,readMobileViewport,serverMobileSnapshot);
   const [desktopPreview,setDesktopPreview]=useState<LocalPreview|null>(null);
   const [mobilePreview,setMobilePreview]=useState<LocalPreview|null>(null);
   const [message,setMessage]=useState('');
-  // In addition to removing the preview immediately during render, dispose
-  // of old research choices on opt-out so browser Forward cannot resurrect
-  // the previously displayed asset without another explicit review click.
-  useEffect(()=>{
-    if(reviewMode)return;
-    setDesktopPreview(null);
-    setMobilePreview(null);
-    setMessage('');
-  },[reviewMode]);
   // Both source object URLs remain alive while switching viewport, then are
   // individually released on replacement, clear and route unmount.
   useEffect(()=>()=>{
