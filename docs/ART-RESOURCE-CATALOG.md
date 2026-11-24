@@ -311,3 +311,7 @@ R12.53 候选已真实生成 15 WebP（5,376,498 B），原图与输出的机器
 ## R12.55 现行引用与历史清单
 
 旧 [2026-10-30 资源清单](design/2026-10-30-beauty-beasts/asset-manifest.json) 的六个现行封面/头像槽与 R12.53 实际转换清单同步，旧六条记录保存在 historicalProductionAssets。月纱现用 yuesha-avatar-v3.webp（候选分支新内容），而不是退役 yuesha/face.webp。资源完整性与 V4 横竖图检查继续保留。见 [R12.55](art-reviews/R12-55-TRANSITION-MANIFEST-RECONCILIATION-2026-11-24.md)，尚未合并。
+
+## R12.58 发布回归
+
+R12.55 Quality 320/320、桌面视觉与像素检查通过；完整玩法 186 通过/1 失败/3 跳过。旧大厅断言与 V4 实际原画不匹配，已同步精确尺寸、实际 URL 和手机居中构图，并前移至视觉作业，详见 [R12.58](art-reviews/R12-58-LOBBY-BROWSER-REGRESSION-2026-11-24.md)。未改变实际游戏图像与生产批准状态。

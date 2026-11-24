@@ -10,6 +10,7 @@ on:
       - 'src/components/game/gothic-entry.tsx'
       - 'src/components/game/gothic-welcome.tsx'
       - 'e2e/gothic-welcome.spec.ts'
+      - 'e2e/gothic-art-review.spec.ts'
       - 'e2e/r12-lobby-navigation.spec.ts'
       - 'src/components/game/r12-scene-painting.tsx'
       - 'src/components/game/r12-apartment-door-review.tsx'
@@ -132,6 +133,13 @@ jobs:
         run: |
           mkdir -p visual-evidence/welcome
           find test-results -maxdepth 1 -type f -name 'welcome-*.png' -exec cp {} visual-evidence/welcome/ \; || true
+      - name: Verify exact current lobby artwork and desktop/mobile HUD
+        run: pnpm exec playwright test e2e/gothic-art-review.spec.ts --grep "desktop and phone Gothic HUD scenes" --workers=1 --retries=0
+      - name: Preserve actual lobby and apartment screenshots
+        if: always()
+        run: |
+          mkdir -p visual-evidence/gothic-art
+          find test-results -maxdepth 1 -type f -name 'gothic-*.png' -exec cp {} visual-evidence/gothic-art/ \\; || true
       - name: Check compact apartment mobile HUD stays fully visible
         run: pnpm exec playwright test e2e/r12-apartment-mobile-hud.spec.ts --workers=1 --retries=0
       - name: Verify PC YueSha room deep link, Back and retained art-review mode
