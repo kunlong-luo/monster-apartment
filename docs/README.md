@@ -12,7 +12,7 @@
 | 首页菜单：现行顶角方案 | [R12.15 顶角世界地图](design/R12-15-LOBBY-CORNER-WORLD-ATLAS-2026-11-23.md) | 取代底部 Dock，七个真实页面仍可达；视觉 QA 以最新 SHA 为准 |
 | 首页两幅海报 / 图鉴清晰度 | [R12.16 边栏精简与候选原画 DPR 保护](design/R12-16-LOBBY-RAIL-DENSITY-AND-CG-DPR-2026-11-23.md) | 保留故事入口；移除重复大肖像和切换动画放大模糊 |
 | 全站是否也要升级 / 首页同脸 | [R12.17 七页面美术与身份审计](design/R12-17-FULL-SITE-VISUAL-IDENTITY-AUDIT-2026-11-23.md) | 修复玩家头像和月光街错图；四居民面部差异化与跨场景高质量重制次序 |
-| 四人面部 G1 研究稿真实入库状态（R12.23） | [R12.23 研究包校验与入库阻碍](art-reviews/R12-23-G1-ART-INTAKE-BLOCKER-2026-11-24.md) · [机读状态](art-reviews/R12-23-G1-IDENTITY-STATUS.json) · [校验脚本](../scripts/verify-g1-face-sources.mjs) | **4/4** 独立单人研究稿、10/10 个研究包图像本地校验通过，**但 PNG/WebP 尚未提交 GitHub**；G1 人审 **0/4**，标准正侧审核未完成，双端封面 **0/2**、正式五卡 CG **0/5** |
+| 四位人物 G1 入库与质量门禁（R12.24） | [R12.24 入库技术验证与阻碍](art-reviews/R12-24-G1-SOURCE-INTAKE-REGRESSION-2026-11-24.md) · [最新状态 JSON](art-reviews/R12-24-G1-IDENTITY-STATUS.json) · [校验脚本](../scripts/verify-g1-face-sources.mjs) · [离线测试](../scripts/tests/g1-face-source-intake.test.mjs) | 四位独立研究原图已在 ZIP，实际素材 **10/10 本地哈希检查通过**，G1 入库回归 **9/9 本地通过**；**新 PNG/WebP 仍未上传 GitHub**，正式身份签署 **0/4**、封面 **0/2**、五张全身 CG **0/5** |
 | 新角色、立绘、CG、换装、武器 | [角色 G0–G7 SOP](CHARACTER-CREATION-SOP.md) → [任务模板](templates/CHARACTER-DESIGN-BRIEF-TEMPLATE.md) | [逐卡镜头表](CHARACTER-CG-DIFFERENTIATION-V1.md)、[原生高清可选管线](CHARACTER-CG-NATIVE-PIPELINE.md) |
 | 全站美术要重做哪些 / 制作任务 | [R12.7 全站资源重制审计](art-reviews/R12-07-ASSET-REBUILD-AUDIT-2026-11-22.md) → [可执行 CSV 台账](art-reviews/R12-07-ASSET-REBUILD-BACKLOG.csv) | [像素取证](art-reviews/R12-01-REAL-BROWSER-PIXEL-EVIDENCE.md)、[五卡差异化](CHARACTER-CG-DIFFERENTIATION-V1.md) |
 | 首张 S05 独立绘景样板（候选） | [R12.8 S05 契约大厅审稿报告](art-reviews/R12-08-S05-CONTRACT-HALL-REVIEW-2026-11-22.md) | 1672×941 原生图已入 Git review；尚未通过生产尺寸/人审 |
