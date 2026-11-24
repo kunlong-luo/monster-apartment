@@ -20,7 +20,11 @@ test('R12 local art reviewer previews file bytes without publishing or persistin
   });
   await expect(backdrop).toHaveAttribute('data-r12-scene-art','local-review');
   await expect(reviewer).toContainText('2×2');
-  await expect(reviewer).toContainText('仅供构图预览');
+  await expect(reviewer.getByTestId('r12-local-pixel-gate'))
+    .toHaveAttribute('data-required-resolution','3840x2160');
+  await expect(reviewer.getByTestId('r12-local-pixel-gate'))
+    .toHaveAttribute('data-pixel-pass','false');
+  await expect(reviewer).toContainText('禁止插值放大晋级');
   // Local review now exercises the same decoded image/retry path as approved
   // production art rather than a different CSS background-image code path.
   const backdropArt=backdrop.locator('img[data-r12-art-image="local-review"]');
@@ -39,6 +43,10 @@ test('R12 local art reviewer previews file bytes without publishing or persistin
   await page.getByTestId('r12-local-art-file-mobile').setInputFiles({
     name:'portrait-review.png',mimeType:'image/png',buffer:sample,
   });
+  await expect(reviewer.getByTestId('r12-local-pixel-gate'))
+    .toHaveAttribute('data-required-resolution','1080x1920');
+  await expect(reviewer.getByTestId('r12-local-pixel-gate'))
+    .toHaveAttribute('data-pixel-pass','false');
   await expect(reviewer.getByTestId('r12-local-mobile-meta')).toContainText('portrait-review.png');
   await expect(reviewer.getByTestId('r12-local-active')).toContainText('手机独立原图');
   await expect.poll(()=>backdropArt.getAttribute('src')).not.toBe(pcUrl);
