@@ -164,6 +164,37 @@ test('an acquired heroine can be visited directly from the real collection, then
   await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
 });
 
+test('PC Web room deep links stay in sync across in-app route changes and browser Back',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/characters/');
+  await expect(page.getByTestId('painted-worker-gallery')).toBeVisible();
+
+  // A gallery quick action now uses a canonical, shareable URL.
+  await page.getByTestId('visit-worker-room-brook').click();
+  await expect(page).toHaveURL(/\/characters\/?\?visit=brook$/);
+  await expect(page.getByTestId('worker-private-room-brook')).toBeVisible();
+
+  // A same-page client-side URL transition must not leave Brook's modal
+  // in front of Fern's room. Next intercepts the History API and updates
+  // the useSearchParams-based character scene router.
+  await page.evaluate(()=>window.history.pushState(window.history.state,'','?visit=fern'));
+  await expect(page).toHaveURL(/\/characters\/?\?visit=fern$/);
+  await expect(page.getByTestId('worker-private-room-fern')).toBeVisible();
+  await expect(page.getByTestId('worker-private-room-brook')).toHaveCount(0);
+
+  await page.goBack();
+  await expect(page.getByTestId('worker-private-room-brook')).toBeVisible();
+  await expect(page.getByTestId('worker-private-room-fern')).toHaveCount(0);
+
+  await page.getByRole('button',{name:'离开泉泡的房间'}).click();
+  await expect(page).toHaveURL(/\/characters\/?$/);
+  await expect(page.getByTestId('worker-private-room-brook')).toHaveCount(0);
+  await page.getByTestId('visit-worker-room-cinder').click();
+  await expect(page.getByTestId('worker-private-room-cinder')).toBeVisible();
+  await expect(page).toHaveURL(/\/characters\/?\?visit=cinder$/);
+});
+
 test('corrupt collections remain untouched and cannot award cards',async({page})=>{
   await page.goto('/characters/#summon-screen');
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
