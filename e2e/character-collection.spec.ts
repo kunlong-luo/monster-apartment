@@ -175,10 +175,11 @@ test('PC Web room deep links stay in sync across in-app route changes and browse
   await expect(page).toHaveURL(/\/characters\/?\?visit=brook$/);
   await expect(page.getByTestId('worker-private-room-brook')).toBeVisible();
 
-  // A same-page client-side URL transition must not leave Brook's modal
-  // in front of Fern's room. Next intercepts the History API and updates
-  // the useSearchParams-based character scene router.
-  await page.evaluate(()=>window.history.pushState(window.history.state,'','?visit=fern'));
+  // Use the documented *external* History API form (null state).
+  // Reusing window.history.state copies Next's private __NA marker and
+  // intentionally bypasses its useSearchParams synchronization.
+  // A same-page query change must replace Brook's modal with Fern's room.
+  await page.evaluate(()=>window.history.pushState(null,'','?visit=fern'));
   await expect(page).toHaveURL(/\/characters\/?\?visit=fern$/);
   await expect(page.getByTestId('worker-private-room-fern')).toBeVisible();
   await expect(page.getByTestId('worker-private-room-brook')).toHaveCount(0);
