@@ -1,0 +1,337 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad",
+  "policy": "Source candidates only. All renamed files preserve their original Git blob. This catalog does not approve or change production art. Status review/rework is not a human signoff.",
+  "assets": [
+    {
+      "id": "characters.brook.cg.tide",
+      "category": "cg",
+      "path": "art-sources/characters/brook/cg/tide.png",
+      "originalPath": "art-sources/cg-r12-46/brook/cg-tide.png",
+      "gitBlobSha": "aede1a30063d163c6aa4d833a2b2adf021002df9",
+      "bytes": 3081979,
+      "status": "rework",
+      "notes": "生成图有烘焙英文标题/标志，先修正再作正式 CG。"
+    },
+    {
+      "id": "characters.brook.identity.front",
+      "category": "identity",
+      "path": "art-sources/characters/brook/identity/front.png",
+      "originalPath": "art-sources/identity-r12-45/brook.png",
+      "gitBlobSha": "0768b615cdde61a03756e84743e0e92cdcf973a0",
+      "bytes": 2604397,
+      "status": "review",
+      "notes": "正面身份候选，核对脸型及同人一致性。"
+    },
+    {
+      "id": "characters.brook.identity.three-quarter-candidate",
+      "category": "identity-angle",
+      "path": "art-sources/characters/brook/identity/three-quarter-candidate.png",
+      "originalPath": "art-sources/identity-r12-50/brook-34.png",
+      "gitBlobSha": "ebede98fb2ce3985d76312c717ef6ed449331b5f",
+      "bytes": 2497845,
+      "status": "rework",
+      "notes": "此前生成稿兽耳变鱼鳍，不作正式身份。"
+    },
+    {
+      "id": "characters.brook.sprites.standing",
+      "category": "sprite",
+      "path": "art-sources/characters/brook/sprites/standing.png",
+      "originalPath": "art-sources/sprites-r12-48/brook.png",
+      "gitBlobSha": "79f9147cd5f1b86e78da8a53fbb7b4e7e1a449ca",
+      "bytes": 2734487,
+      "status": "review",
+      "notes": "需读取实际 alpha、边缘、头脚、落地点；静态立绘，不代表骨骼动画。"
+    },
+    {
+      "id": "characters.cinder.cg.ember",
+      "category": "cg",
+      "path": "art-sources/characters/cinder/cg/ember.png",
+      "originalPath": "art-sources/cg-r12-46/cinder/cg-ember.png",
+      "gitBlobSha": "0fdca72efc025529c9f712dde4e48442818857ec",
+      "bytes": 2927246,
+      "status": "rework",
+      "notes": "生成图有烘焙英文标题/标志，先修正再作正式 CG。"
+    },
+    {
+      "id": "characters.cinder.identity.front",
+      "category": "identity",
+      "path": "art-sources/characters/cinder/identity/front.png",
+      "originalPath": "art-sources/identity-r12-45/cinder.png",
+      "gitBlobSha": "30f289982eea9d99e92fc6bccf9b3a371a6c174c",
+      "bytes": 2514530,
+      "status": "review",
+      "notes": "正面身份候选，核对脸型及同人一致性。"
+    },
+    {
+      "id": "characters.cinder.identity.three-quarter-candidate",
+      "category": "identity-angle",
+      "path": "art-sources/characters/cinder/identity/three-quarter-candidate.png",
+      "originalPath": "art-sources/identity-r12-50/cinder-34.png",
+      "gitBlobSha": "f71ae79833a8569b196a488422bd188bb331c9cc",
+      "bytes": 2731098,
+      "status": "review",
+      "notes": "核对铸角、脸型及新增纹样。"
+    },
+    {
+      "id": "characters.cinder.sprites.standing",
+      "category": "sprite",
+      "path": "art-sources/characters/cinder/sprites/standing.png",
+      "originalPath": "art-sources/sprites-r12-48/cinder.png",
+      "gitBlobSha": "92c444aceefc15954c35e90dcf3d1a2ec13681f6",
+      "bytes": 2515747,
+      "status": "review",
+      "notes": "需读取实际 alpha、边缘、头脚、落地点；静态立绘，不代表骨骼动画。"
+    },
+    {
+      "id": "characters.fern.cg.spring",
+      "category": "cg",
+      "path": "art-sources/characters/fern/cg/spring.png",
+      "originalPath": "art-sources/cg-r12-46/fern/cg-spring.png",
+      "gitBlobSha": "a22fe13fc608440860e12ddb3cee1cd154288429",
+      "bytes": 3439227,
+      "status": "review",
+      "notes": "核对完整人物、武器、同人身份与像素。"
+    },
+    {
+      "id": "characters.fern.identity.front",
+      "category": "identity",
+      "path": "art-sources/characters/fern/identity/front.png",
+      "originalPath": "art-sources/identity-r12-45/fern.png",
+      "gitBlobSha": "7a11d2138f407c00508faff1d536b4106dbf848a",
+      "bytes": 2571925,
+      "status": "review",
+      "notes": "正面身份候选，核对脸型及同人一致性。"
+    },
+    {
+      "id": "characters.fern.identity.three-quarter-candidate",
+      "category": "identity-angle",
+      "path": "art-sources/characters/fern/identity/three-quarter-candidate.png",
+      "originalPath": "art-sources/identity-r12-50/fern-34.png",
+      "gitBlobSha": "899188f5fd8283b34df81254dff54e0db77977ed",
+      "bytes": 2735582,
+      "status": "review",
+      "notes": "核对颊纹及脸部身份。"
+    },
+    {
+      "id": "characters.fern.sprites.standing",
+      "category": "sprite",
+      "path": "art-sources/characters/fern/sprites/standing.png",
+      "originalPath": "art-sources/sprites-r12-48/fern.png",
+      "gitBlobSha": "6c426fee975d2ab7798077ba6406683e55dc0882",
+      "bytes": 2273378,
+      "status": "review",
+      "notes": "需读取实际 alpha、边缘、头脚、落地点；静态立绘，不代表骨骼动画。"
+    },
+    {
+      "id": "characters.yuesha.cg.eclipse",
+      "category": "cg",
+      "path": "art-sources/characters/yuesha/cg/eclipse.png",
+      "originalPath": "art-sources/cg-r12-46/yuesha/cg-eclipse.png",
+      "gitBlobSha": "da3a5abbe41d7b1bb1b9ad7e342f9534a5dc6174",
+      "bytes": 2819782,
+      "status": "review",
+      "notes": "核对完整人物、武器、同人身份与像素。"
+    },
+    {
+      "id": "characters.yuesha.cg.vow",
+      "category": "cg",
+      "path": "art-sources/characters/yuesha/cg/vow.png",
+      "originalPath": "art-sources/cg-r12-46/yuesha/cg-vow.png",
+      "gitBlobSha": "bea2589a775891ec8fd898b1b9844971ddaee010",
+      "bytes": 3060944,
+      "status": "review",
+      "notes": "核对完整人物、武器、同人身份与像素。"
+    },
+    {
+      "id": "characters.yuesha.identity.front",
+      "category": "identity",
+      "path": "art-sources/characters/yuesha/identity/front.png",
+      "originalPath": "art-sources/identity-r12-45/yuesha.png",
+      "gitBlobSha": "164d04d757d23c6d06c476179a0ed76a3b4c8a6b",
+      "bytes": 2380118,
+      "status": "review",
+      "notes": "黑发新身份与现行银发正式身份不同，需统一批准后跨页面替换。"
+    },
+    {
+      "id": "characters.yuesha.identity.three-quarter-candidate",
+      "category": "identity-angle",
+      "path": "art-sources/characters/yuesha/identity/three-quarter-candidate.png",
+      "originalPath": "art-sources/identity-r12-50/yuesha-34.png",
+      "gitBlobSha": "71aff0e7a22339c1dc2bd1e6c53605f2b68332cf",
+      "bytes": 2797254,
+      "status": "rework",
+      "notes": "此前生成稿银发与新增双角偏离黑发基准，不作正式身份。"
+    },
+    {
+      "id": "characters.yuesha.sprites.standing",
+      "category": "sprite",
+      "path": "art-sources/characters/yuesha/sprites/standing.png",
+      "originalPath": "art-sources/sprites-r12-48/yuesha.png",
+      "gitBlobSha": "7ba8a5e6733f569dfad57d7fb28d3b09e29ccf6c",
+      "bytes": 2778407,
+      "status": "review",
+      "notes": "需读取实际 alpha、边缘、头脚、落地点；静态立绘，不代表骨骼动画。"
+    },
+    {
+      "id": "covers.welcome-desktop",
+      "category": "cover",
+      "path": "art-sources/covers/welcome-desktop.png",
+      "originalPath": "art-sources/cover-r12-47/welcome-desktop.png",
+      "gitBlobSha": "25805603c0f75dc09a970d724bfe00c58b7a695d",
+      "bytes": 3148637,
+      "status": "review",
+      "notes": "群像欢迎页，与大厅分开；验证原生像素与裁切。"
+    },
+    {
+      "id": "covers.welcome-mobile",
+      "category": "cover",
+      "path": "art-sources/covers/welcome-mobile.png",
+      "originalPath": "art-sources/cover-r12-47/welcome-mobile.png",
+      "gitBlobSha": "a83934afbb7b4e57a82a5aedf85c7199544ab93e",
+      "bytes": 2956299,
+      "status": "review",
+      "notes": "群像欢迎页，与大厅分开；验证原生像素与裁切。"
+    },
+    {
+      "id": "rooms.brook.background",
+      "category": "room",
+      "path": "art-sources/rooms/brook/background.png",
+      "originalPath": "art-sources/rooms-r12-49/brook.png",
+      "gitBlobSha": "94e8550029b4b3a775ea27dbfa5cd44e12842c68",
+      "bytes": 3353183,
+      "status": "review",
+      "notes": "独立房间候选，需确认内容及实际热点位置。"
+    },
+    {
+      "id": "rooms.cinder.background",
+      "category": "room",
+      "path": "art-sources/rooms/cinder/background.png",
+      "originalPath": "art-sources/rooms-r12-49/cinder.png",
+      "gitBlobSha": "6e0766044bfd0941b6147c8adfb20b6abd69f3b7",
+      "bytes": 3115964,
+      "status": "review",
+      "notes": "独立房间候选，需确认内容及实际热点位置。"
+    },
+    {
+      "id": "rooms.fern.background",
+      "category": "room",
+      "path": "art-sources/rooms/fern/background.png",
+      "originalPath": "art-sources/rooms-r12-49/fern.png",
+      "gitBlobSha": "949343304a944b05aa712efb29ed39282226508b",
+      "bytes": 3443214,
+      "status": "review",
+      "notes": "独立房间候选，需确认内容及实际热点位置。"
+    },
+    {
+      "id": "rooms.fern.bedroom-candidate",
+      "category": "room-extra",
+      "path": "art-sources/rooms/fern/bedroom-candidate.png",
+      "originalPath": "art-sources/rooms-r12-49/fern-v2.png",
+      "gitBlobSha": "2bcb5bfc8aebaa4809af9cce8d17f8ae01dc73bc",
+      "bytes": 3313487,
+      "status": "review",
+      "notes": "额外卧室候选，依据前序图片内容与上传名称归类，需回读目视确认。"
+    },
+    {
+      "id": "rooms.yuesha.background",
+      "category": "room",
+      "path": "art-sources/rooms/yuesha/background.png",
+      "originalPath": "art-sources/rooms-r12-49/yuesha.png",
+      "gitBlobSha": "f4ce903860092f8b460116b87d3f0abbf01802b9",
+      "bytes": 2920537,
+      "status": "review",
+      "notes": "独立房间候选，需确认内容及实际热点位置。"
+    },
+    {
+      "id": "rooms.yuesha.bedroom-candidate",
+      "category": "room-extra",
+      "path": "art-sources/rooms/yuesha/bedroom-candidate.png",
+      "originalPath": "art-sources/rooms-r12-49/Gothic Moonlit Luxury Chamber.png",
+      "gitBlobSha": "3f7b37412d61706a296d51e3795cafc7afb55b76",
+      "bytes": 2806135,
+      "status": "review",
+      "notes": "额外卧室候选，依据前序图片内容与上传名称归类，不覆盖会客室，需回读目视确认。"
+    },
+    {
+      "id": "scenes.apartment.desktop-candidate",
+      "category": "scene",
+      "path": "art-sources/scenes/apartment/desktop-candidate.png",
+      "originalPath": "art-sources/scenes-r12-51/hall-desktop.png",
+      "gitBlobSha": "6e9d6dc207b68d920e9f3a2cce964adf85bbfa91",
+      "bytes": 2969990,
+      "status": "rework",
+      "notes": "生成图未呈现六个可独立定位实体门，不替代已通过交互的 S02 研究图。"
+    },
+    {
+      "id": "scenes.apartment.mobile-candidate",
+      "category": "scene",
+      "path": "art-sources/scenes/apartment/mobile-candidate.png",
+      "originalPath": "art-sources/scenes-r12-51/hall-mobile.png",
+      "gitBlobSha": "b80b4fea7546e10911eeb8ff10ed50bee0b16629",
+      "bytes": 3008274,
+      "status": "rework",
+      "notes": "生成图未呈现六个可独立定位实体门，不替代已通过交互的 S02 研究图。"
+    },
+    {
+      "id": "scenes.lobby.desktop",
+      "category": "lobby",
+      "path": "art-sources/scenes/lobby/desktop.png",
+      "originalPath": "art-sources/cover-r12-47/lobby-desktop.png",
+      "gitBlobSha": "6a5303795e9709dbc85489861c9bc73a96395c32",
+      "bytes": 2588990,
+      "status": "review",
+      "notes": "月纱单人大厅，与欢迎群像分开；验证真实 HUD 避让。"
+    },
+    {
+      "id": "scenes.lobby.mobile",
+      "category": "lobby",
+      "path": "art-sources/scenes/lobby/mobile.png",
+      "originalPath": "art-sources/cover-r12-47/lobby-mobile.png",
+      "gitBlobSha": "16cfdfe2735f51c6dd9297a64907f00d7b1fc4ea",
+      "bytes": 2501685,
+      "status": "review",
+      "notes": "月纱单人大厅，与欢迎群像分开；验证真实 HUD 避让。"
+    },
+    {
+      "id": "scenes.town.desktop-candidate-v1",
+      "category": "scene",
+      "path": "art-sources/scenes/town/desktop-candidate-v1.png",
+      "originalPath": "art-sources/scenes-r12-51/street-desktop.png",
+      "gitBlobSha": "404ea9b9f32db3e3303eb5c1cc05fb43a0cddeea",
+      "bytes": 3265423,
+      "status": "review",
+      "notes": "两份独立横版候选，择优后归档另一份；不是手机独立绘景。"
+    },
+    {
+      "id": "scenes.town.desktop-candidate-v2",
+      "category": "scene",
+      "path": "art-sources/scenes/town/desktop-candidate-v2.png",
+      "originalPath": "art-sources/scenes-r12-51/street-desktop-v2.png",
+      "gitBlobSha": "93a5acd7b7eea5990450197b65a096ab81096eb6",
+      "bytes": 3248661,
+      "status": "review",
+      "notes": "两份独立横版候选，择优后归档另一份；不是手机独立绘景。"
+    },
+    {
+      "id": "scenes.workshop.desktop-candidate-v1",
+      "category": "scene",
+      "path": "art-sources/scenes/workshop/desktop-candidate-v1.png",
+      "originalPath": "art-sources/scenes-r12-51/workshop-desktop.png",
+      "gitBlobSha": "813a14b8972d95f8def62369bbcfa3ea7f8027fa",
+      "bytes": 3131454,
+      "status": "review",
+      "notes": "两份独立横版候选，择优后归档另一份；不是手机独立绘景。"
+    },
+    {
+      "id": "scenes.workshop.desktop-candidate-v2",
+      "category": "scene",
+      "path": "art-sources/scenes/workshop/desktop-candidate-v2.png",
+      "originalPath": "art-sources/scenes-r12-51/workshop-desktop-v2.png",
+      "gitBlobSha": "454501ad0087a8ff3725faea2759fa625bbebab8",
+      "bytes": 3103549,
+      "status": "review",
+      "notes": "两份独立横版候选，择优后归档另一份；不是手机独立绘景。"
+    }
+  ]
+}

@@ -46,6 +46,11 @@
 - `docs/DEVELOPMENT_PLAN.md`、`docs/TECH_STACK_PAGEVELA.md`、旧 Phaser/Vite ADR 与早期 issue 条目均属于**历史资料**；遇到冲突以当前工程和最新 ADR 为准。
 - 用户偏好小步快速主线迭代；但对高风险改动和已启用的 GitHub 分支规则不得绕过。当前 `main` 保护未启用，见 Issue #9；不把直接提交当作保护机制的替代。
 
+## 美术资源统一管理（R12.52）
+
+- 新增、迁移、删除原画前先读 [美术资源总目录](docs/ART-RESOURCE-CATALOG.md) 与 [源图清单](art-sources/source-catalog.json)。角色/用途稳定目录，英文小写连字符；不要重新建立批次号目录。保留原始 PNG、来源与哈希；候选不等于 production。
+- 删除或改名正式、审稿及 Pixi 资源前，核对实际代码、动态路径、CSS、manifest、测试与文档链接，保留必要回退；重复临时媒体不入 Git。先修改引用再删除旧路径，不能绕过人审与原生像素门槛。
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know

@@ -6,6 +6,7 @@
 
 | 要做的事 | 当前主依据 | 其他参考（不自动代表已上线） |
 | --- | --- | --- |
+| **美术资源总目录与统一命名（R12.52）** | [ART-RESOURCE-CATALOG.md](ART-RESOURCE-CATALOG.md) · [源图清单](../art-sources/source-catalog.json) | 33 张实际原画按角色/用途迁移，保留原始 Git blob，去除三份临时重复；生产状态不变 |
 | 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |
