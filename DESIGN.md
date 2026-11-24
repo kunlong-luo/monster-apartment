@@ -192,3 +192,11 @@ V3.88 PC 截图表明 `/town/` 左侧曾使用 `lobby-hero-v2.webp`，`/workshop
 - 手机大厅以 44px 触控世界地图与紧凑的真实契约入口保护脸部，不再采用旧四按钮浮岛或底栏。PC 保留左四住客、中央人物、右栏与顶角地图。用实际页面截图验收人物遮挡、点击、无横向溢出；旧 Dock 尺寸断言退役。
 - 月纱私室 `?visit=yuesha` 刷新直接恢复私室，剧情与记忆持久化；须先关闭私室再点击背景人物，不允许通过 force 点击绕开模态。
 - 退役的四份历史实现报告原件见[固定设计快照](https://github.com/kunlong-luo/monster-apartment/tree/80eb69abb56c8a0a398e53ff27cdf513e76b695e/docs/design)；构建失败日志与源码、测试、原画审核均不删除。
+
+## R12.87 · 研究审稿状态与图片生命周期（现行交互约束）
+
+- `r12-art-review=1` 是公开研究工具开关，不是鉴权。普通玩家不加载未批准研究图；显式进入工具后仍须主动选择图片。退出审稿、同页导航与浏览器前进/后退须同步画面和 URL，清除旧背景、水印和 Hero；重新进入从空预览开始。
+- PC 与手机的本地图片分别管理待解码与已接受状态；新选择取消同端旧请求，晚到解码不得覆盖当前选择，失败保留旧图。切换仓库研究图、恢复场景、退出或卸载时释放两端本地对象 URL；固定仓库 URL 不作 revoke。保持生产 manifest、玩家存档及正式路由不变。
+- 验收包括普通玩家无研究资源请求、主动预览、同页退出及 Back 不恢复旧图、快速换图/失败/清理，以及直接带查询参数访问。沿用现有场景审稿 spec，不为通过截图放宽审核门槛。
+
+历史实现、首轮 lint 失败、修正与当时验收证据：[R12.33 原报告](https://github.com/kunlong-luo/monster-apartment/blob/b9e00acf9b343fe4ab5cc1c423b9b8325afb57d2/docs/design/R12-33-WEB-REVIEW-QUERY-ISOLATION-2026-11-24.md) · [R12.34 原报告](https://github.com/kunlong-luo/monster-apartment/blob/b9e00acf9b343fe4ab5cc1c423b9b8325afb57d2/docs/design/R12-34-WEB-REVIEW-IMAGE-LIFECYCLE-2026-11-24.md)。现行工程实现以源码与同 SHA 检查为准。

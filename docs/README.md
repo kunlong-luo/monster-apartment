@@ -1,6 +1,6 @@
 # 《怪物公寓》文档总入口
 
-> R12.86：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
+> R12.87：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
 
 ## 现行规范（新开发从这里开始）
 
@@ -87,3 +87,9 @@ R12.82：三个既有功能 PR 的 Quality、桌面及完整玩法均通过；�
 ## R12.86 · 全仓 Markdown 链接门禁
 
 基线 `58e52a0` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45398980151) 已成功。完整 Git 树分批只读扫描全部 187 份跟踪 Markdown：工程 20 份/46 条、设计 28 份/46 条、美术审稿 46 份/94 条、V3 72 份/207 条、其余 21 份/173 条；共 566 条匹配现行检查规则的仓库相对链接，未发现缺失目标。`audit:doc-links` 自动发现全部跟踪 Markdown，同时保留 16 份必需入口缺失检查；不新增依赖、文档或目录。历史证据仍保留，路径有效不代表内容现行；本轮没有删除文档或改动运行代码、美术、存档、版本。外链、锚点、引用式链接、动态路径、内容时效和独立证据价值仍须分别核查；本轮 Quality 以新 SHA 为准。下一步按内容逐项归并重复设计/工程报告，不按文件日期自动删除。
+
+## R12.87 · 审稿工具历史报告退役
+
+R12.86 主线 `b9e00ac` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45400453801) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45400627025) 均成功。R12.33/R12.34 两份历史实施报告已逐份阅读，现行 URL 隔离、PC/手机异步解码与对象 URL 生命周期规则归入 [DESIGN.md](../DESIGN.md)，工程与回归约束归入 [迭代手册](engineering/ITERATION-PLAYBOOK.md)。原件及独立失败/验收证据以固定 SHA 保留：[R12.33 原报告](https://github.com/kunlong-luo/monster-apartment/blob/b9e00acf9b343fe4ab5cc1c423b9b8325afb57d2/docs/design/R12-33-WEB-REVIEW-QUERY-ISOLATION-2026-11-24.md) · [R12.34 原报告](https://github.com/kunlong-luo/monster-apartment/blob/b9e00acf9b343fe4ab5cc1c423b9b8325afb57d2/docs/design/R12-34-WEB-REVIEW-IMAGE-LIFECYCLE-2026-11-24.md)。
+
+完整 Git 树中的 187 份 Markdown 均逐份扫描两个明确文件名，仅发现两份退役报告之间的一条引用；另外核查 19 个相关工作流、审稿测试和审计脚本，无明确文件名引用。现行场景组件、三条页面包装及回归 spec 已回读，未改动其实现。未穷尽所有非 Markdown 动态引用。两份文件从主线移除，全仓 Markdown 187 → 185、设计 Markdown 28 → 26；没有新增目录、文档、依赖或媒体，生产审批、七路由、存档和 V3.109.0 均不变。新 SHA 的 Quality/Pages 须独立核验。下一步审查旧脚本与工作流的真实调用、产物及保留理由。

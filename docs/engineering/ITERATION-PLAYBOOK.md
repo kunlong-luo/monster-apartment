@@ -98,3 +98,5 @@ R12.75：所有规范归 `docs/`，工坊设备规格为 `docs/design/WORKSHOP-A
 R12.78：文档归并后执行 `pnpm audit:doc-links`，检查根 README、文档总入口、资源目录、运行资源说明、长期策划入口的仓库内相对链接。Git 历史引用使用固定 SHA HTTPS URL，不将历史文档作为现行规范。该检查继承 PR #59 的有效链接门禁思路，不引入重复全量资源库存 JSON 或新的 archive 目录。分支整合须区分 squash 已合并、独有变更、被后续实现替代和待验收；禁止将旧分支整树覆盖 main。
 
 R12.85–86：文档链接门禁由 5 份索引扩至 16 份必需入口，再扩至全部 Git 跟踪 Markdown（自动发现，去重）；新主规范如属必需入口，同步更新 `scripts/audit-doc-links.mjs` 的必需清单。仅核查匹配到的仓库相对链接目标，不检查外链、锚点、引用式 Markdown 或内容准确性。历史报告中的旧路径应按当时事实使用固定 SHA，不为了通过检查恢复废弃目录。删除文档前独立核查其内容、证据和实际引用；链接通过不是删除许可。
+
+R12.87：场景审稿由 Next `useSearchParams` 驱动，保留静态导出所需 Suspense 和 portal hydration 边界；退出用挂载生命周期重置，不在 Effect 内同步级联 setState。PC/手机分别管理 pending/active 本地对象 URL；先取消旧 probe 回调与所有权再释放，解码失败保留旧图，固定仓库 URL 不 revoke。相关 `e2e/r12-local-scene-preview.spec.ts` 覆盖同页 History/Back、延迟解码、退出与对象 URL 释放，修改这些路径须定向回归。历史报告退役不等于删除测试或放宽现行规则；交互合同见 [DESIGN.md](../../DESIGN.md)。
