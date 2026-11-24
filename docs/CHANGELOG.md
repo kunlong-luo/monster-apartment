@@ -343,3 +343,11 @@
 - `docs/v3/` 88 → 72，退役 16 份重复旧实施说明；19 份逐份审核，保留有独立原画锚点/像素比对资料的 3 份。其余 197 份 Markdown 未发现被退役文件名直接引用。
 - 四类仍有效的约束归入现有长期策划入口，原件留在[固定 Git 快照](https://github.com/kunlong-luo/monster-apartment/tree/8c9685c370ff062738280097b56f2d1e48c30819/docs/v3)。21 份长期产品/剧情/人物策划原样保留；原画、审批、资源、代码、存档及游戏发布版本不变。
 - R12.76 PR #60 Quality、Art Pixel Evidence 已成功，浏览器仍在运行；本轮独立文档提交不修改其分支。
+
+
+## R12.78 · 分支差异核对与文档链接门禁（2026-11-24）
+
+- 基线 fbb612c：R12.77 Quality [45380166971](https://github.com/kunlong-luo/monster-apartment/actions/runs/45380166971) 与 Pages [45380371552](https://github.com/kunlong-luo/monster-apartment/actions/runs/45380371552) 成功。
+- 核对 11 条分支。#55/#56/#57 已 squash 合入，后续修订和 CG 去重优先于旧分支；r12-57-room-art-review 的八层资源由 #56 带入，旧专项工作流已由现行检查替代。#51 关闭，当前存档告警/客户端 ErrorBoundary 已有后续实现。#53（晶核需求）、#54（公寓六门 HUD 共存）、#58（工序动效）仍有独有实现，保留候选，须以最新主线移植/验收，不盲合旧树。#60 Quality、Art Pixel Evidence 和独立场景 job 已通过；综合桌面/全量玩法仍运行，未合并。
+- #59 的重复目录治理已被 R12.74–77 取代；有价值的主入口链接门禁提取为独立 `audit:doc-links`，不恢复 archive/、不重复维护库存 JSON。五个主入口与 Git 树对照无断链，新增 CI 待本 SHA 核验。
+- 已合并分支可删除，但分支删除必须由支持 Git refs 删除的客户端执行并读回；本轮不把 PR 关闭误记为分支删除。

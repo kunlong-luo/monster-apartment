@@ -93,3 +93,6 @@ Desktop Visual Review 的 `scene-art-review` 与综合 `desktop-review` 并行�
 
 
 R12.75：所有规范归 `docs/`，工坊设备规格为 `docs/design/WORKSHOP-ASSET-SPEC.md`。迁移引擎目录前运行 `pnpm audit:engine-paths`；报告按源码/配置/工作流/测试和文档区分明确引用，只用于评审，不自动改名。保持 npm 独立锁、GitHub Pages 发布 URL、存档键、原图字节及 manifest 状态。
+
+
+R12.78：文档归并后执行 `pnpm audit:doc-links`，检查根 README、文档总入口、资源目录、运行资源说明、长期策划入口的仓库内相对链接。Git 历史引用使用固定 SHA HTTPS URL，不将历史文档作为现行规范。该检查继承 PR #59 的有效链接门禁思路，不引入重复全量资源库存 JSON 或新的 archive 目录。分支整合须区分 squash 已合并、独有变更、被后续实现替代和待验收；禁止将旧分支整树覆盖 main。
