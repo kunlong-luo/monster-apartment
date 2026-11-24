@@ -35,6 +35,9 @@ on:
       - 'src/components/game/gothic-hud.tsx'
       - 'src/components/game/gothic-room-doors.tsx'
       - 'src/components/game/gothic-apartment.tsx'
+      - 'app/apartment/page.tsx'
+      - 'e2e/gothic-apartment.spec.ts'
+      - 'e2e/r12-local-scene-preview.spec.ts'
       - 'e2e/r12-apartment-mobile-hud.spec.ts'
       - 'src/components/game/room-art-*.tsx'
       - 'src/components/game/*-private-room.tsx'
@@ -127,6 +130,8 @@ jobs:
         run: pnpm exec playwright test e2e/r12-local-scene-preview.spec.ts --workers=1 --retries=0
       - name: Check compact apartment mobile HUD stays fully visible
         run: pnpm exec playwright test e2e/r12-apartment-mobile-hud.spec.ts --workers=1 --retries=0
+      - name: Verify PC YueSha room deep link, Back and retained art-review mode
+        run: pnpm exec playwright test e2e/gothic-apartment.spec.ts --grep "PC Web YueSha room deep links" --workers=1 --retries=0
       - name: Verify mobile room chooser shows painting without losing real room actions
         run: pnpm exec playwright test e2e/r12-mobile-room-chooser.spec.ts --workers=1 --retries=0
       - name: Keep lobby character art visible above mobile summon and floating dock
