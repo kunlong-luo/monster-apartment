@@ -1,6 +1,6 @@
 # 《怪物公寓》V3.4 策划总入口
 
-> **文档状态：需求与剧情方案（Proposal），不是已上线功能。** 编写日期：2026-10-28。本文档体系是后续开发的唯一 V3 产品基线；已有代码与实际发布状态以主分支和 CI 为准。
+> **文档状态：需求与剧情方案（Proposal），不是已上线功能。** 编写日期：2026-10-28。本文档体系是历史 V3 长期策划；已有代码与实际发布状态以主分支和 CI 为准。
 
 ## 一句话定位
 
@@ -60,7 +60,7 @@
 
 ## 与历史文档的关系
 
-`docs/PRODUCT_SPEC.md`、`docs/DEVELOPMENT_PLAN.md` 和 `v2/docs/GAME-ROADMAP.md` 记录早期原型与 V2 决策，保留用于追溯；发生冲突时，**新的 V3 产品目标以本目录为准，已部署事实以代码为准**。
+`docs/PRODUCT_SPEC.md`、`docs/DEVELOPMENT_PLAN.md` 和 [旧工坊路线](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs/GAME-ROADMAP.md) 记录早期原型与 V2 决策，保留用于追溯；发生冲突时，**现行产品目标以 [PRODUCT.md](../../PRODUCT.md) 与 [文档总入口](../README.md) 为准，已部署事实以代码为准**。
 
 ## V3.1 新增的关键产品决定（2026-10-28）
 

@@ -376,3 +376,6 @@ V3.105.0 的 PC 新场景与四间观景已合并、Quality/Pages 通过；不�
 ## R12.74 · 历史索引归并
 
 根 artwork 只有 2026-10-29 外部原画归档的 JSON 索引及说明，未包含原图。本轮将 JSON 原字节迁入 [legacy-2026-10-29-catalog.json](art-reviews/legacy-2026-10-29-catalog.json)，其中 `artwork/` 路径为历史归档内部路径，不是本仓库实际运行路径。旧说明见 [固定历史快照](https://github.com/kunlong-luo/monster-apartment/tree/782fc74fd6e597048a293cbf9777593447c76bb3/artwork)。实际源图仍由 art-sources/source-catalog.json 管理，运行 WebP 仍由 public 及对应 manifest 管理；144 个媒体路径不变。
+
+
+R12.75：设备制作与锚点规范统一见 [WORKSHOP-ASSET-SPEC.md](design/WORKSHOP-ASSET-SPEC.md)。此次只迁移文档，不移动 144 个媒体路径及任何原始 PNG，不修改设备和场景审批状态。

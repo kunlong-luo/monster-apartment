@@ -90,3 +90,6 @@ Desktop Visual Review 的 `scene-art-review` 与综合 `desktop-review` 并行�
 ## R12.74 · 目录入口约束
 
 每批结束执行 `pnpm audit:repository-layout`。根目录按职责白名单管理，禁止退役工具目录、旧管理表、旧原型以及 Gemini metadata 回流。源码引用仍依赖编译、组件审计及真实构建验证；目录门禁不自动删除文件。历史任务与问题以固定 SHA 回看，现行仅维护风险台账和 Issues。原画许可/审批证据不得按过期日期随意删除。
+
+
+R12.75：所有规范归 `docs/`，工坊设备规格为 `docs/design/WORKSHOP-ASSET-SPEC.md`。迁移引擎目录前运行 `pnpm audit:engine-paths`；报告按源码/配置/工作流/测试和文档区分明确引用，只用于评审，不自动改名。保持 npm 独立锁、GitHub Pages 发布 URL、存档键、原图字节及 manifest 状态。

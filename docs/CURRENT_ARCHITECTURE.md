@@ -1,4 +1,4 @@
-# 当前架构（R12.74 目录核查）
+# 当前架构（R12.75 目录核查）
 
 以 V3.105.0 主线 `0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0` 为证据基线。下方历史实现记录不用于推断当前资产或数量。
 
@@ -132,3 +132,8 @@
 ## R12.74 · 目录所有权
 
 根目录白名单 12 个，详见根 README；不再保留 AI Studio 临时方案、重复历史任务表、无运行入口 TSX 原型、旧 Gemini 配置与单独的 artwork 元数据目录。旧归档索引进入 docs/art-reviews，历史证据在固定 Git SHA。`v2` 是实际运行时及构建链而非旧独立游戏；更名需要覆盖所有 import、CI、测试及相对资源路径，不能以目录清理代替迁移验收。
+
+
+## R12.75 · 工坊文档与运行边界
+
+旧 V2 路由说明和独立实验路线已退役（[固定快照](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs)）。当前 Next 七路由、Pixi IIFE、React 挂载/销毁、静态资源同源、现有端口和双存档键依本架构、实际代码与工作流；不恢复独立 HTML。工坊资产制作统一至 [设备规格](design/WORKSHOP-ASSET-SPEC.md)。`pnpm audit:engine-paths` 为后续迁移提供逐文件引用报告；本轮引擎位置仍是 `v2/`，不声称完成重命名。

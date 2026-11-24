@@ -64,3 +64,6 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## 目录约束（R12.74）
 根目录职责见 README，新增一级目录必须先明确唯一责任并同步更新 `scripts/audit-repository-layout.mjs`、README 和设计/工程文档；禁止恢复 `.aistudio/`、`management/`、`artwork/`、`docs/prototypes/` 及旧平台 metadata.json。活跃任务仅 GitHub Issues + 当前风险台账，历史版本使用固定 Git SHA 追溯，不再另存重复计划或未运行原型。`v2/` 当前仍是工坊运行时，目录更名属于单独的跨构建迁移，不得直接删除。
+
+
+R12.75：工坊设备美术规范统一至 `docs/design/WORKSHOP-ASSET-SPEC.md`；禁止在 `v2/docs/` 新建文档。引擎目录更名之前先执行 `pnpm audit:engine-paths`，逐项检查非字面路径、脚本工作目录、导出产物及部署；保存键和浏览器公开 URL 不随源码目录更名。
