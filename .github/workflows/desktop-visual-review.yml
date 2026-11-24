@@ -142,7 +142,7 @@ jobs:
       - name: Review A05 reference proportions, keyboard navigation and capture desktop/mobile screenshots
         run: pnpm exec playwright test e2e/a05-character-gallery-layout.spec.ts --workers=1 --retries=0
       - name: Run focused archive forge and room-navigation browser regression
-        run: pnpm exec playwright test e2e/character-collection.spec.ts --grep "canonical summon archive|an acquired heroine|collected YueSha opens" --workers=1 --retries=0
+        run: pnpm exec playwright test e2e/character-collection.spec.ts --grep "canonical summon archive|an acquired heroine|collected YueSha opens|PC Web room deep links" --workers=1 --retries=0
       - name: Verify workshop canvas clearance from compact world map on PC and mobile
         run: pnpm exec playwright test e2e/workshop-dock-clearance.spec.ts --workers=1 --retries=0
       - name: Check realtime workshop starts, produces and pauses in browser
