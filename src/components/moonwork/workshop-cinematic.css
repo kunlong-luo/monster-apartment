@@ -547,3 +547,23 @@
 .gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__environment{
   position:absolute;inset:0;z-index:-2;pointer-events:none;
 }
+
+/* R12.63: bounded process cues, not simulated material settlement or fake atlases.
+ * All cues are clipped to the machine artwork area and never accept input. */
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__process{
+  position:absolute;inset:12% 20% 16%;z-index:1;overflow:hidden;pointer-events:none;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__process-particle{
+  position:absolute;display:block;left:var(--particle-x);top:var(--particle-y);
+  width:6px;height:6px;box-shadow:0 0 8px var(--station-glow);
+  background:var(--station-glow);
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__process[data-process="well"] .workshop-cinematic__process-particle{
+  width:4px;height:12px;border-radius:60%;background:#d4f5ff;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__process[data-process="garden"] .workshop-cinematic__process-particle{
+  width:8px;height:4px;border-radius:80% 0 80% 0;background:#d5efd0;
+}
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__process[data-process="kiln"] .workshop-cinematic__process-particle{
+  width:4px;height:4px;border-radius:1px;background:#ffe2a2;
+}

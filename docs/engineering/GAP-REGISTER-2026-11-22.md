@@ -191,3 +191,6 @@ R12.74 Quality 已通过（45378259228）。`engine/docs/` 四份收为一份 [�
 
 
 R12.76：R12.75 Quality 与 Pages 成功；路径报告 19 runtime、26 tests、12 tooling、38 docs、1 internal。候选完成引擎根路径替换与原字节迁移；待 PR Quality 和相关浏览器验证，不关闭存档或视觉风险。
+
+
+R12.80（PR #58 候选）：PC 工坊生产演出复用 Motion，在真实 station working 且本班预计产量大于零时显示水泵水汽、温室孢子、熔炉火星三种差异化提示；每工段最多 3 粒、全场最多 9 粒。不拦截输入，不引入定时器、额外结算、随机收益或新贴图。暂停/减少动效沿用既有 scene motion 状态，静态提示仍可读。保留 engine 新路径、现有场景与原存档；旧世界绘景改动不重复合入。补真实工作/停工/减少动效浏览器断言，待同 SHA 验收。原始方案见 [#58](https://github.com/kunlong-luo/monster-apartment/pull/58)，不新增重复报告。
