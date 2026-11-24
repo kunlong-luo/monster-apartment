@@ -34,6 +34,7 @@ jobs:
       - run: pnpm check:stable-deps
       - run: pnpm check:design
       - run: pnpm audit:room-art
+      - run: node scripts/audit-r12-61-world-scene-review.mjs
       - run: pnpm audit:r12-review-art
       - run: pnpm typecheck
       - run: pnpm lint

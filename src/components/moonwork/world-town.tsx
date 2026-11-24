@@ -1,16 +1,19 @@
 'use client';
 import Link from 'next/link';
-import {ReliableImage} from '@/components/game/reliable-image';
+import {useState} from 'react';
+import {ReliableImage,retryAssetUrl} from '@/components/game/reliable-image';
 import {Anvil,ScrollText,Archive,Waves,Sprout,Gem} from 'lucide-react';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import townBackdrop from '../../../public/art/world-scenes/town-moonlit-gate.webp';
+import townTransition from '../../../public/art/world-scenes/town/review/desktop-candidate-v2.webp';
 import {workshopRank,TOWN_MARKET,townMarketAvailable,TOWN_RESIDENTS,residentForDay,residentRequestStock,residentRequestAvailable} from '../../../v2/src/workshop-engine';
 import type {WorkshopState} from '../../../v2/src/workshop-engine';
 import {Action} from './world-primitives';
 
 export function Town({s}:{s:WorkshopState}){
   const rank=workshopRank(s.completed);
+  const [paintingFailures,setPaintingFailures]=useState(0);
   const offers=[
     {kind:'water' as const,action:'marketWater' as const,Icon:Waves,place:'泉眼补给站'},
     {kind:'fiber' as const,action:'marketFiber' as const,Icon:Sprout,place:'孢子植物摊'},
@@ -27,10 +30,14 @@ export function Town({s}:{s:WorkshopState}){
     <section className="mw-town-scene" aria-label="月光街的炼金商区" data-testid="moonlit-town-scene">
       {/* Promotional group portraits do not depict a street or its actual residents.
           Keep existing location art explicitly transitional until S04 review. */}
-      <ReliableImage src={townBackdrop}
-        alt="月光街入口的哥特建筑与月夜街区"
-        fill unoptimized loading="eager" sizes="(max-width: 760px) 100vw, 800px"
-        className="mw-town-painting" data-testid="town-painting"/>
+      <picture>
+        {paintingFailures<2&&<source media="(min-width:1100px)" srcSet={paintingFailures===0?townTransition.src:retryAssetUrl(townTransition.src,1)}/>}
+        <ReliableImage src={townBackdrop}
+          alt="月光街入口的哥特建筑与月夜街区"
+          fill unoptimized loading="eager" sizes="(max-width: 760px) 100vw, 800px"
+          onError={()=>setPaintingFailures(n=>Math.min(2,n+1))}
+          className="mw-town-painting" data-testid="town-painting"/>
+      </picture>
       <div className="mw-town-scrim" aria-hidden="true"/>
       <div className="mw-town-banner">
         <p className="mw-eyebrow">MOONLIT DISTRICT · AFTER DARK</p>

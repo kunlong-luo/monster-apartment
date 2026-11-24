@@ -51,7 +51,10 @@ test('PC apartment doors and town portals use structured icons without clipping'
   await expect(page.getByTestId('town-resident')).toBeVisible();
   // Town art is a real location, NOT an unrelated three-woman brand cover.
   // Next.js static image URLs include a content hash before .webp.
-  await expect(page.getByTestId('town-painting')).toHaveAttribute('src',/town-moonlit-gate\.[^/]+\.webp/);
+  const townPainting=page.getByTestId('town-painting');
+  await expect.poll(()=>townPainting.evaluate((img:HTMLImageElement)=>img.currentSrc)).toContain('desktop-candidate-v2');
+  await expect(townPainting).toHaveJSProperty('naturalWidth',1671);
+  await expect(townPainting).toHaveJSProperty('naturalHeight',941);
   await expect(page.locator('.mw-town-scene-credit')).toContainText('过渡绘景');
   await expect(page.getByTestId('town-guide-painting')).toHaveAttribute('src',/yuesha-portrait-v3\.[^/]+\.webp/);
   await expect.poll(()=>page.locator('[data-testid="town-painting"],[data-testid="town-guide-painting"]')
@@ -86,4 +89,17 @@ test('four PC private suites render independent portrait layers without changing
   await expect(page.getByTestId('room-resident-present-yuesha').locator('img')).toBeVisible();
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/desktop-room-yuesha-v369.png',animations:'disabled'});
+});
+
+test('mobile town keeps the existing artwork and all real destination links',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/town/');
+  const painting=page.getByTestId('town-painting');
+  await expect.poll(()=>painting.evaluate((img:HTMLImageElement)=>img.currentSrc)).toContain('town-moonlit-gate');
+  await expect.poll(()=>painting.evaluate((img:HTMLImageElement)=>img.naturalWidth)).toBeGreaterThan(0);
+  for(const [label,path] of [['晶核工坊','/workshop/'],['月夜委托所','/orders/'],['物资仓库','/warehouse/']]){
+    const link=page.getByRole('navigation',{name:'月光街建筑入口'}).getByRole('link',{name:label,exact:true});
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute('href',new RegExp(path+'$'));
+  }
 });

@@ -319,3 +319,7 @@ R12.55 Quality 320/320、桌面视觉与像素检查通过；完整玩法 186 �
 ## R12.61 工坊和月光街候选
 
 4 张已入库横版原图按原生尺寸转换至 `public/art/world-scenes/{workshop,town}/review/`；机器证据由实际转换生成。没有独立手机稿，生产场景不变。详见 [R12.61](art-reviews/R12-61-WORKSHOP-TOWN-SOURCE-INTAKE-2026-11-24.md)。
+
+## R12.62 工坊与街区实际输出
+
+[转换作业](https://github.com/kunlong-luo/monster-apartment/actions/runs/45368254427) 已成功，四张 WebP 已在 5588ee89 实际入库（2,463,080 B）。PC 全景选工坊 V1，PC 月光街选 V2，直接复用 review 文件，不制造第二份重复 WebP。原机器、Pixi 精密建造和手机旧画仍保留。见 [R12.62](art-reviews/R12-62-WORLD-PC-TRANSITION-2026-11-24.md)。候选未合并，正式场景 manifest 不变。

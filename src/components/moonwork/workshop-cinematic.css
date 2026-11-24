@@ -542,3 +542,8 @@
     opacity:.55;cursor:not-allowed;
   }
 }
+
+/* R12.62: a separate noninteractive landscape behind the true stations. */
+.gothic-workshop-shell #root.lab.gothic-workshop .workshop-cinematic__environment{
+  position:absolute;inset:0;z-index:-2;pointer-events:none;
+}

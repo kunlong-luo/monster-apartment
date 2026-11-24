@@ -25,6 +25,11 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
       // Desktop-first real cinematic scene, backed by the actual plot state.
       await expect(stageComposition).toHaveAttribute('data-view','cinematic');
       await expect(page.getByTestId('workshop-cinematic-scene')).toBeVisible();
+      const painting=page.getByTestId('workshop-cinematic-painting');
+      await expect.poll(()=>painting.evaluate((img:HTMLImageElement)=>img.currentSrc)).toContain('desktop-candidate-v1');
+      await expect(painting).toHaveJSProperty('naturalWidth',1672);
+      await expect(painting).toHaveJSProperty('naturalHeight',941);
+      await expect(painting).toHaveAttribute('data-image-load','original');
       await expect(page.getByTestId('workshop-cinematic-machine-well'))
         .toHaveAttribute('data-plot','5');
       await page.getByTestId('workshop-cinematic-machine-well').click();
@@ -33,6 +38,7 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
         .toHaveAttribute('aria-pressed','true');
     }else{
       await expect(stageComposition).toHaveAttribute('data-view','grid');
+      await expect(page.getByTestId('workshop-cinematic-painting')).toHaveCount(0);
       await expect(page.getByTestId('workshop-view-cinematic')).toBeHidden();
     }
     const shift=page.getByTestId('v2-shift');
