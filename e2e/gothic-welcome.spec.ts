@@ -18,11 +18,15 @@ test('fresh visitor sees a full-screen welcome and enters the real saved lobby',
   await expect(page.getByTestId('welcome-cover-image')).toHaveJSProperty('naturalWidth',1920);
   await expect(page.getByTestId('gothic-welcome')).toHaveAttribute('data-cover-status','integrated-beauty-beasts-cover');
   await expect(page.getByTestId('gothic-lobby')).toHaveCount(0);
+  // Full game stage is loaded only after entry; the cover remains usable.
+  await expect(page.getByTestId('lobby-loading')).toHaveCount(0);
   const start=page.getByTestId('welcome-enter');
   await expect(start).toHaveText(/开始游戏/);
   await start.focus();
   await page.keyboard.press('Enter');
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
+  await expect(page.getByTestId('lobby-loading')).toHaveCount(0);
+  await expect(page.getByTestId('gothic-welcome')).toHaveCount(0);
   expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:welcome-entered:v1'))).toBe('1');
   await page.reload();
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
