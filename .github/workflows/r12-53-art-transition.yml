@@ -1,0 +1,50 @@
+name: R12.53 Art Transition Preparation
+on:
+  push:
+    branches: [r12-53-art-transition]
+    paths:
+      - '.github/workflows/r12-53-art-transition.yml'
+      - 'scripts/build-r12-53-transition-art.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: r12-53-art-transition
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.ref == 'refs/heads/r12-53-art-transition'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==12.3.0
+      - name: Decode all 33 originals and generate 15 actual WebP outputs
+        run: python scripts/build-r12-53-transition-art.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - run: node scripts/audit-character-cg.mjs
+      - name: Upload generated images and exact source/output evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: r12-53-transition-outputs
+          path: |
+            public/art/r12-53-transition-manifest.json
+            public/art/lobby-hero-v4*.webp
+            public/art/yuesha-*-v3.webp
+            public/art/beauty-beasts/cover/*.webp
+            public/art/beauty-beasts/characters/*/face.webp
+            public/art/beauty-beasts/characters/*/cg-*-candidate.webp
+            public/art/beauty-beasts/characters/cg-manifest.json
+      - name: Commit output binaries to candidate branch only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/art/
+          git diff --cached --quiet && exit 0
+          git commit -m "assets(web): encode verified R12.53 transition art"
+          git push origin HEAD:refs/heads/r12-53-art-transition

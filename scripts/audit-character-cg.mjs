@@ -21,9 +21,9 @@ export const CG_PREVIEW_PATHS={
   'fern-spring':'fern/cg-spring-candidate.webp',
   'cinder-ember':'cinder/cg-ember-candidate.webp',
 };
-/** Only current canonical resident identities may be used for CG approval.
- * YueSha's old yuesha/face.webp is a retired black-haired concept and must
- * NEVER be passed to an artist as the current silver-haired YueSha. */
+/** The stable current portrait slots hold the selected resident identity.
+ * R12.53 proposes new black-haired YueSha artwork in the same slots;
+ * the unrelated retired yuesha/face.webp remains excluded from approval. */
 export const CG_IDENTITY_REFERENCE_PATHS={
   'yuesha-eclipse':'public/art/yuesha-portrait-v3.webp',
   'yuesha-vow':'public/art/yuesha-bust-v3.webp',

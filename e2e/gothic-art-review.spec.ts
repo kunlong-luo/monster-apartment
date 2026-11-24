@@ -9,8 +9,11 @@ test('desktop and phone Gothic HUD scenes stay fully visible',async({page})=>{
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await expect(page.getByTestId('gothic-lobby-painting-image')).toBeVisible();
   const hero=page.getByTestId('gothic-lobby-painting-image');
-  await expect(hero).toHaveJSProperty('naturalWidth',1587);
-  await expect(hero).toHaveJSProperty('naturalHeight',991);
+  await expect(hero).toHaveJSProperty('naturalWidth',1672);
+  await expect(hero).toHaveJSProperty('naturalHeight',941);
+  await expect.poll(()=>hero.evaluate((img:HTMLImageElement)=>img.currentSrc))
+    .toMatch(/lobby-hero-v4\.[^/]+\.webp|lobby-hero-v4\.webp/);
+  await expect(hero).toHaveAttribute('data-image-load','original');
   // Player and heroine are not the same person: never show YueSha
   // as the profile's avatar. Keep the avatar-sized account emblem usable.
   await expect(page.getByTestId('lobby-player-seal')).toBeVisible();
@@ -27,7 +30,11 @@ test('desktop and phone Gothic HUD scenes stay fully visible',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto('/');
   await expect(page.getByRole('navigation',{name:'主要游戏功能'})).toBeVisible();
-  await expect(page.getByTestId('gothic-lobby-painting-image')).toHaveCSS('object-position','25% 50%');
+  await expect(hero).toHaveJSProperty('naturalWidth',941);
+  await expect(hero).toHaveJSProperty('naturalHeight',1672);
+  await expect.poll(()=>hero.evaluate((img:HTMLImageElement)=>img.currentSrc)).toContain('lobby-hero-v4-mobile');
+  await expect(hero).toHaveAttribute('data-image-load','original');
+  await expect(hero).toHaveCSS('object-position','50% 50%');
   await page.screenshot({path:'test-results/gothic-lobby-mobile.png',animations:'disabled'});
   await page.goto('/apartment/');
   // R12.2 leaves the six-room list closed to reveal the heroine by default.

@@ -25,7 +25,7 @@ describe('A05 production CG intake and preview',()=>{
       expect(html).toContain(reference);
     }
   });
-  it('pins silver-haired YueSha to her current V3 painting, never retired black-haired face',()=>{
+  it('pins YueSha to the current canonical portrait slots, never retired concept face',()=>{
     expect(CG_IDENTITY_REFERENCE_PATHS['yuesha-eclipse']).toBe('public/art/yuesha-portrait-v3.webp');
     expect(CG_IDENTITY_REFERENCE_PATHS['yuesha-vow']).toBe('public/art/yuesha-bust-v3.webp');
     for(const [id,reference] of Object.entries(CG_IDENTITY_REFERENCE_PATHS)){

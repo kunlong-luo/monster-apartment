@@ -2,14 +2,15 @@
 
 import Link from 'next/link';
 import {BookOpen,DoorOpen,Mail,MoonStar,Orbit} from 'lucide-react';
-import {ReliableImage as Image} from '@/components/game/reliable-image';
+import {ReliableImage as Image,retryAssetUrl} from '@/components/game/reliable-image';
 import {AnimatePresence} from 'motion/react';
 import {useMemo,useState} from 'react';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
 import moonveilAvatar from '../../../public/art/yuesha-avatar-v3.webp';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
-import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
-import lobbyHeroBackup from '../../../public/art/lobby-hero-v2.webp';
+import lobbyHero from '../../../public/art/lobby-hero-v4.webp';
+import lobbyHeroMobile from '../../../public/art/lobby-hero-v4-mobile.webp';
+import lobbyHeroBackup from '../../../public/art/beauty-beasts/cover/world-cover.webp';
 import {newWorkshop} from '../../../v2/src/workshop-engine';
 import {CHANGE_EVENT,commitWorldAction} from '@/lib/moonwork/world-store';
 import {GothicAtmosphere} from './gothic-atmosphere';
@@ -38,6 +39,7 @@ export function GothicLobby(){
   const orderProgress=Math.round(Math.min(100,Math.max(0,orderStock/orderTarget*100)));
   const orderReady=orderStock>=orderTarget;
   const [panel,setPanel]=useState<Panel>(null);
+  const [paintingFailures,setPaintingFailures]=useState(0);
   const {state:gacha}=useGacha();
   const {collection,status:collectionStatus}=useCharacterCollection();
   const ownedContractCount=new Set(collection.draws).size;
@@ -85,12 +87,17 @@ export function GothicLobby(){
     onKeyDown={event=>{if(event.key==='Escape')close();}}>
     <div className="gothic-lobby__stage" aria-hidden="true">
       <div className="gothic-lobby__fallback"/>
-      <div className="gothic-lobby__painting">
-        <Image src={lobbyHero} fallbackSrc={lobbyHeroBackup} fill sizes="100vw" priority unoptimized
+      <link rel="preload" as="image" href={lobbyHeroMobile.src} media="(max-width:700px)"/>
+      <link rel="preload" as="image" href={lobbyHero.src} media="(min-width:701px)"/>
+      <picture className="gothic-lobby__painting">
+        <source media="(max-width:700px)" srcSet={paintingFailures===0?lobbyHeroMobile.src:
+          paintingFailures===1?retryAssetUrl(lobbyHeroMobile.src,1):undefined}/>
+        <Image src={lobbyHero} fallbackSrc={lobbyHeroBackup} fill sizes="100vw" loading="eager" fetchPriority="high" unoptimized
           alt="" draggable={false} aria-hidden="true"
+          onError={()=>setPaintingFailures(n=>Math.min(2,n+1))}
           data-testid="gothic-lobby-painting-image"
           className="select-none object-cover object-center"/>
-      </div>
+      </picture>
       <div className="gothic-lobby__light" aria-hidden="true" data-testid="gothic-light-layer"/>
       <div className="gothic-lobby__vignette"/>
       <div className="gothic-lobby__embers"/>

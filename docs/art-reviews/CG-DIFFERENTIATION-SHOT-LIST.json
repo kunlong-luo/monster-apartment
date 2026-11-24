@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "title": "怪物公寓角色 CG 差异化制作镜头表",
   "created": "2026-11-21",
-  "stage": "pose-studies-in-progress",
+  "stage": "r12-53-transition-proposal",
   "productionApproved": false,
   "expectedNativeCanvas": {
     "width": 1086,
@@ -15,8 +15,8 @@
     "yuesha-eclipse": {
       "id": "yuesha-eclipse",
       "name": "月纱·月蚀",
-      "identity": "yuesha-v3",
-      "face": "心形脸、银白长发、赤瞳、细长上挑凤眼；与月纱另一卡面同一骨相、眼距、鼻唇和成熟感",
+      "identity": "yuesha-r12-45",
+      "face": "黑紫长发、红瞳、冷峻眉眼、红蔷薇与金月饰；两卡同一人物的新过渡身份，待人审",
       "poseId": "forward-scythe-rule",
       "pose": "前脚落在台阶边缘，重心朝前，躯干三分之二侧转，左手前伸操纵血月、右手提起巨型长镰形成高对角线",
       "silhouetteId": "tall-diagonal-crescent",
@@ -36,20 +36,20 @@
     "yuesha-vow": {
       "id": "yuesha-vow",
       "name": "月纱·誓约",
-      "identity": "yuesha-v3",
-      "face": "心形脸、银白长发、赤瞳、细长上挑凤眼；与月纱另一卡面同一骨相、眼距、鼻唇和成熟感",
+      "identity": "yuesha-r12-45",
+      "face": "黑紫长发、红瞳、冷峻眉眼、红蔷薇与金月饰；两卡同一人物的新过渡身份，待人审",
       "poseId": "seated-offer-vow",
       "pose": "侧坐在低矮祭坛边缘，膝盖朝左、上身朝镜头转回，左手掌心向上邀请缔约，右手让誓约细剑剑尖朝下轻触地面",
       "silhouetteId": "soft-seated-veil-curve",
-      "weaponId": "vow-rapier",
-      "weapon": "纤细誓约剑与悬浮圣印，手腕必须有承重/连接关系",
+      "weaponId": "vow-grimoire",
+      "weapon": "悬浮契约魔典与月相法阵，手部施法动作清楚",
       "wardrobeId": "ceremonial-soft-veil",
       "wardrobe": "酒红银白色仪式礼服：细致刺绣、轻纱长袖、短拖尾、蔷薇胸针；无硬甲、分叉战裙或月蚀战斗披风",
       "motion": "纱袖柔缓垂落，手指与悬浮圣印形成柔和闭环",
       "scene": "月光誓约礼堂/银色烛台与拱窗",
       "camera": "与坐姿齐平的 3/4 机位",
       "prohibited": [
-        "换成另一张脸或换成黑发",
+        "换成另一张脸或银发旧身份",
         "举镰刀战斗",
         "复制月蚀的高机位站立姿势"
       ]
@@ -76,7 +76,7 @@
       ],
       "identityAnchors": {
         "canonicalPortrait": "public/art/beauty-beasts/characters/brook/face.webp",
-        "hair": "偏银白的浅蓝发，柔和蓝色发尾/挑染；不可漂移为纯高饱和蓝发",
+        "hair": "水蓝长发、蓝色毛绒兽耳；不得换鱼鳍或精灵耳",
         "ears": "蓝色毛绒兽耳，禁止用尖长精灵耳代替",
         "face": "圆润鹅蛋脸，偏柔和下垂眼；不可套用月纱细长上挑凤眼"
       }
@@ -85,7 +85,7 @@
       "id": "fern-spring",
       "name": "青枝·春芽",
       "identity": "fern",
-      "face": "长椭圆脸、平直清秀眉、自然杏眼、略宽下颌角，绿瞳、花叶冠与浅金发保持辨识度",
+      "face": "橄榄绿长发、绿瞳、长尖精灵耳与面颊叶纹，冷静纤长眉眼",
       "poseId": "forest-archer-draw",
       "pose": "侧身弓步站在苔石上，前腿屈膝稳住重心，双手真实搭箭拉满藤弓，视线沿箭尖而非看镜头",
       "silhouetteId": "triangular-drawn-bow",
@@ -108,10 +108,10 @@
       "identity": "cinder",
       "face": "宽颧骨和鲜明下颌转折、略厚眉、尖锐猫眼、成熟挑衅的嘴角，保留红发与独特魔角",
       "poseId": "wide-stance-chain-sweep",
-      "pose": "双脚大幅分立并弯膝，身体明显前倾，右臂甩出火焰锁链镰，左手回收链尾以控制弧线",
+      "pose": "宽站姿肩扛熔岩重锤，强韧肩背与支撑重心",
       "silhouetteId": "angular-lunge-chain-arc",
-      "weaponId": "forged-chain-sickle",
-      "weapon": "熔火锁链镰，链节有重量方向和正确握法，镰刃绕出完整外弧",
+      "weaponId": "forge-warhammer",
+      "weapon": "熔岩重锤与火焰锻炉，握持重心清楚",
       "wardrobeId": "asymmetric-forge-armor",
       "wardrobe": "炭黑赤铜非对称锻炉战甲、单侧金属肩甲、厚实护腰、分节护腿与战靴；衣片短而结构硬朗，与四张裙装区分",
       "motion": "铁链由远向近形成速度线，红发逆风扬起，火花和碎炭从脚边炸开",
@@ -124,9 +124,9 @@
       ],
       "identityAnchors": {
         "canonicalPortrait": "public/art/beauty-beasts/characters/cinder/face.webp",
-        "hair": "玫瑰粉红—深红渐层长发，保留侧刘海与头顶卷曲方向",
+        "hair": "赤红长发、黑曜石熔岩双角",
         "horns": "黑曜石与深红渐层的两只弯曲魔角，禁止换成普通金属发冠",
-        "face": "保持原头像可辨识的粉赤瞳与眉眼弧线，避免一味追求成熟脸而换脸"
+        "face": "琥珀色眉眼，成熟有力的下颌与颧骨；不套用其他角色脸型"
       }
     }
   },
@@ -205,5 +205,6 @@
     "ratio": "3:4",
     "optional": true
   },
-  "resolutionPolicy": "Phase one permits native 1086x1448 for signed release review; 1536x2048 is optional premium refinement. Never misstate upscaled images as native, and never bypass identity/rights/visual review."
+  "resolutionPolicy": "Phase one permits native 1086x1448 for signed release review; 1536x2048 is optional premium refinement. Never misstate upscaled images as native, and never bypass identity/rights/visual review.",
+  "transitionNote": "新过渡身份、魔典及重锤方向只对应新批候选；历史 poseStudies 仍为旧研究，均未批准。"
 }
