@@ -70,7 +70,7 @@ export function GothicWelcome({onEnter}:{onEnter:()=>void}){
         data-testid="welcome-enter" className="gothic-welcome__enter">
         <span aria-hidden="true">✦</span>{returning?'继续游戏':'开始游戏'}<span aria-hidden="true">✦</span>
       </button>
-      <span className="gothic-welcome__hint">进入大厅后点击左侧「契约召唤」即可体验角色卡池 · 自动保存至此浏览器</span>
+      <span className="gothic-welcome__hint">进入大厅后选择「神话 · 月蚀」契约活动，即可招募人物 · 进度自动保存至此浏览器</span>
     </section>
     <div className="gothic-welcome__edition" aria-hidden="true">
       <span data-testid="game-release">MOONLIT DISTRICT · {GAME_UI_RELEASE}</span><small>{GAME_UI_CHAPTER}</small>

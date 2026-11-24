@@ -321,3 +321,32 @@ test('A05 preview candidates stay native-pixel-sharp at DPR2; none is mislabelle
   const mobileOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
   expect(mobileOverflow).toBeLessThanOrEqual(2);
 });
+
+test('R12.72 open artwork recalculates the native pixel budget when display DPR changes',async({page})=>{
+  await page.setViewportSize({width:1648,height:928});
+  await page.goto('/characters/');
+  await page.getByRole('button',{name:'欣赏立绘'}).click();
+  const viewer=page.getByTestId('a05-art-viewer');
+  const photo=viewer.locator('.cg-art-view__photo');
+  const painting=viewer.locator('.cg-art-view__painting');
+  await expect(viewer.getByTestId('a05-art-source-resolution')).toBeVisible();
+  await expect.poll(()=>photo.evaluate((img:HTMLImageElement)=>img.naturalWidth)).toBeGreaterThanOrEqual(960);
+  const original=await photo.evaluate((img:HTMLImageElement)=>({src:img.currentSrc,width:img.naturalWidth,height:img.naturalHeight}));
+  const budget=()=>painting.evaluate(el=>({
+    width:parseFloat(el.style.getPropertyValue('--cg-figure-width')),
+    height:parseFloat(el.style.getPropertyValue('--cg-figure-height'))
+  }));
+  const session=await page.context().newCDPSession(page);
+  try{
+    for(const deviceScaleFactor of [3,2]){
+      await session.send('Emulation.setDeviceMetricsOverride',{width:1648,height:928,deviceScaleFactor,mobile:false});
+      await expect.poll(()=>page.evaluate(()=>window.devicePixelRatio)).toBe(deviceScaleFactor);
+      await expect.poll(budget).toEqual({width:Math.floor(original.width/deviceScaleFactor),height:Math.floor(original.height/deviceScaleFactor)});
+      await expect.poll(()=>photo.evaluate((img:HTMLImageElement)=>img.currentSrc)).toBe(original.src);
+      await expect(viewer.locator('.cg-art-view__stage')).toHaveAttribute('data-art-status','candidate');
+    }
+  }finally{
+    await session.send('Emulation.clearDeviceMetricsOverride');
+    await session.detach();
+  }
+});

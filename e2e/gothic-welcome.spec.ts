@@ -10,6 +10,7 @@ test('fresh visitor sees a full-screen welcome and enters the real saved lobby',
   await expect(page.getByTestId('gothic-welcome')).toBeVisible();
   await expect(page.getByTestId('game-release')).toContainText(GAME_UI_RELEASE);
   await expect(page.getByTestId('welcome-heroine-lineup').locator('img')).toHaveCount(4);
+  await expect(page.locator('.gothic-welcome__hint')).toContainText('神话 · 月蚀');
   for(const image of await page.getByTestId('welcome-heroine-lineup').locator('img').all()){
     await expect.poll(()=>image.evaluate((img:HTMLImageElement)=>
       img.complete&&img.naturalWidth>0)).toBe(true);
@@ -32,6 +33,7 @@ test('fresh visitor sees a full-screen welcome and enters the real saved lobby',
   await page.reload();
   await expect(page.getByTestId('gothic-lobby')).toBeVisible();
   await expect(page.getByTestId('gothic-welcome')).toHaveCount(0);
+  await expect(page.getByTestId('gothic-eclipse-feature')).toContainText('神话 · 月蚀');
   await page.getByTestId('gothic-eclipse-feature').click();
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
 });

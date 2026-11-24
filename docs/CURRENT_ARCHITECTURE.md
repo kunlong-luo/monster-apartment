@@ -1,4 +1,4 @@
-# 当前架构（R12.71 核查）
+# 当前架构（R12.72 核查）
 
 以 V3.105.0 主线 `0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0` 为证据基线。下方历史实现记录不用于推断当前资产或数量。
 
@@ -20,7 +20,11 @@
 
 ## R12.71 · 字节与引用门禁
 
-基线 [R12.70 checks](https://github.com/kunlong-luo/monster-apartment/actions/runs/45375073618/job/138379023352)：328 文件、92 组件及样式、91 app 可达、1 不可达（character-adornment）、0 未解析/未知动态引用。由于 R12.69 遗漏了 readFileSync 直接读取路径，增强引用审计：字面源码路径另列引用与不存在路径，报告不改变 app 可达性；刻意不存在的旧文件断言也可能出现，人工核对后再删除。character-adornment 暂不删除。另增 [媒体字节去重门禁](../scripts/audit-media-duplicates.mjs)，禁止未登记的完全重复跟踪素材，保留唯一现有审稿证据例外。依赖锁职责以根 README 为准。
+基线 [R12.70 checks](https://github.com/kunlong-luo/monster-apartment/actions/runs/45375073618/job/138379023352)：328 文件、92 组件及样式、91 app 可达、1 不可达（character-adornment）、0 未解析/未知动态引用。由于 R12.69 遗漏了 readFileSync 直接读取路径，增强引用审计：字面源码路径另列引用与不存在路径，报告不改变 app 可达性；刻意不存在的旧文件断言也可能出现，人工核对后再删除。R12.71 [实际审计日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45375389700/job/138380152391) 确认 character-adornment 无导入/字面路径引用，R12.72 删除；现行图鉴的装备栏和锻造不变。另增 [媒体字节去重门禁](../scripts/audit-media-duplicates.mjs)，禁止未登记的完全重复跟踪素材，保留唯一现有审稿证据例外。依赖锁职责以根 README 为准。
+
+## R12.72 · 图鉴原生像素预算
+
+`CharacterGalleryArtwork` 将已解码的 naturalWidth/naturalHeight 与实时 DPR 分开存储，通过 useSyncExternalStore 订阅 resize 与 resolution media query；DPR 改变后重绑监听并更新 contain 画框，不重新下载图片，卸载清理监听。预算仍至少按 DPR2，保持原始分辨率上限。Chromium 回归覆盖同一张已加载画作在 DPR3/2 变化时的 CSS 预算和 URL；新增测试待 CI。
 
 ## 历史架构演进（原记录，仅供追溯）
 

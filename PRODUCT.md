@@ -34,7 +34,7 @@ web
 ## Evidence on Hand
 - `public/art/beauty-beasts/characters/*/face.webp`、`public/art/yuesha-portrait-v3.webp`：已存在的独立人物肖像。
 - `public/art/rooms/*/concept-scene.svg` 为概念背景，四套正式高清无人物房间 CG 尚未全部入库。
-- `src/components/summon/`：V3.72 的电影式抽卡、十连与收藏卡组件；已有五张独立竖幅候选可供部分大卡展示，但生产 manifest 五卡均为 `portrait`，0/5 正式全身 CG。
+- `src/components/summon/`：V3.72 的电影式抽卡、十连与收藏卡组件；已有五张竖幅候选可供大卡展示，其中泉泡与炽角复用各自房间站姿，不是独立 CG，但生产 manifest 五卡均为 `portrait`，0/5 正式全身 CG。
 - 真正的视觉质量要通过 `Desktop Visual Review` 的 Playwright 截图判断，编译成功不足以代表美术验收。
 
 ## Product Principles
@@ -51,7 +51,7 @@ web
 
 ## R12.53 候选视觉合同
 
-R12.52 已实际入库 33 份新原图。R12.53 提出黑发赤瞳、红蔷薇与金月饰的新月纱过渡身份，另三人使用同批身份与卡面；欢迎群像与大厅 PC/mobile 独立绘画。过渡版尚待分支转换、浏览器验证及用户视觉确认，不将旧银发历史资料误当作新批原图，也不作 production CG 人审签署。私室、公寓旧背景另行迁移。
+R12.52 已实际入库 33 份新原图。R12.53 提出黑发赤瞳、红蔷薇与金月饰的新月纱过渡身份，另三人使用同批身份与卡面；欢迎群像与大厅 PC/mobile 独立绘画。过渡版已于 V3.103.0 接入，仍待用户视觉确认，不将旧银发历史资料误当作新批原图，也不作 production CG 人审签署。私室、公寓旧背景另行迁移。
 
 ## R12.60 玩家房间观景
 

@@ -2,7 +2,7 @@
 
 import {ChevronLeft,ChevronRight,Image as ImageIcon} from 'lucide-react';
 import {motion} from 'motion/react';
-import {useState} from 'react';
+import {useState,useSyncExternalStore} from 'react';
 import type {CSSProperties} from 'react';
 import {ReliableImage} from '@/components/game/reliable-image';
 import {
@@ -12,6 +12,27 @@ import {CHARACTER_CARDS} from '@/core/character-collection';
 import type {CardKey} from '@/core/character-collection';
 
 type GalleryCard=(typeof CHARACTER_CARDS)[number];
+
+function readDpr(){return window.devicePixelRatio||1;}
+function serverDpr(){return 2;}
+
+/** Re-arm the exact resolution query when browser zoom or display changes.
+ * Resize is a second signal; no timers, polling or image re-download. */
+function subscribeDpr(notify:()=>void){
+  let query:MediaQueryList|undefined;
+  const update=()=>{
+    query?.removeEventListener('change',update);
+    query=window.matchMedia('(resolution: '+readDpr()+'dppx)');
+    query.addEventListener('change',update);
+    notify();
+  };
+  update();
+  window.addEventListener('resize',update);
+  return ()=>{
+    query?.removeEventListener('change',update);
+    window.removeEventListener('resize',update);
+  };
+}
 
 /** Artwork-only viewer. Every painting comes from the audited character
  * registry; no statistics, buttons or labels are baked into the artwork. */
@@ -30,13 +51,14 @@ export function CharacterGalleryArtwork({
   const artTier=getCardArtTier(active.key);
   const hasFigureArt=artTier!=='portrait';
   const [loaded,setLoaded]=useState<{
-    key:CardKey;width:number;height:number;dpr:number;
+    key:CardKey;width:number;height:number;
   }|null>(null);
+  const dpr=useSyncExternalStore(subscribeDpr,readDpr,serverDpr);
   const sourcePixels=loaded?.key===active.key?loaded:null;
   const staticPortrait=!hasFigureArt&&source&&typeof source!=='string'?source:null;
   const budget=sourcePixels
-    ?artworkPixelBudget(sourcePixels.width,sourcePixels.height,sourcePixels.dpr)
-    :staticPortrait?artworkPixelBudget(staticPortrait.width,staticPortrait.height)
+    ?artworkPixelBudget(sourcePixels.width,sourcePixels.height,dpr)
+    :staticPortrait?artworkPixelBudget(staticPortrait.width,staticPortrait.height,dpr)
     :null;
   // 3:4 review previews are not promoted CG. Display all actual pixels at
   // contain and cap BOTH axes to native resolution/DPR, even if Next falls
@@ -79,8 +101,7 @@ export function CharacterGalleryArtwork({
           onLoad={event=>{
             const img=event.currentTarget;
             if(img.naturalWidth>0&&img.naturalHeight>0){
-              setLoaded({key:active.key,width:img.naturalWidth,height:img.naturalHeight,
-                dpr:typeof window==='undefined'?2:window.devicePixelRatio||2});
+              setLoaded({key:active.key,width:img.naturalWidth,height:img.naturalHeight});
             }
           }}/>}
       </motion.div>
