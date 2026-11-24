@@ -1,0 +1,723 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad",
+  "pillow": "12.3.0",
+  "status": "transition-candidate-not-production-cg",
+  "humanVisualReview": false,
+  "outputs": [
+    {
+      "source": "art-sources/characters/yuesha/identity/front.png",
+      "sourceSha256": "dd8a65f04f1a8804fc15a32e2c7d010591e184f612d2ed4b284e315cfda94bca",
+      "sourceGitBlobSha": "164d04d757d23c6d06c476179a0ed76a3b4c8a6b",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "crop": [
+        250,
+        0,
+        850,
+        600
+      ],
+      "output": "public/art/yuesha-avatar-v3.webp",
+      "size": [
+        600,
+        600
+      ],
+      "outputSha256": "f7e2c48e9910492bf88b4f93f47e5f4df392226a82ce868f50842d989b5f747d",
+      "bytes": 70710,
+      "alpha": false,
+      "kind": "identity-avatar",
+      "priorGitBlobSha": "502406d355cc32ac87e331b23e92704eecd3b9b8"
+    },
+    {
+      "source": "art-sources/characters/brook/identity/front.png",
+      "sourceSha256": "27fea74811adae6538671b39bb2da2e43cabddd0ebfdc8366e624e3ca57a9e92",
+      "sourceGitBlobSha": "0768b615cdde61a03756e84743e0e92cdcf973a0",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "crop": [
+        300,
+        0,
+        900,
+        600
+      ],
+      "output": "public/art/beauty-beasts/characters/brook/face.webp",
+      "size": [
+        600,
+        600
+      ],
+      "outputSha256": "ef106e8e6dd239e44ab7ec4b93b62fa694a6a19ce7b056889f677564878b7926",
+      "bytes": 92138,
+      "alpha": false,
+      "kind": "identity-avatar",
+      "priorGitBlobSha": "5e94b8339c6f349cbde3901ccb81554cab0fea4c"
+    },
+    {
+      "source": "art-sources/characters/fern/identity/front.png",
+      "sourceSha256": "17b3dc6b3e07ef0eee836517e3771a0be6f2860b6c7948c5639250158358cf44",
+      "sourceGitBlobSha": "7a11d2138f407c00508faff1d536b4106dbf848a",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "crop": [
+        315,
+        0,
+        915,
+        600
+      ],
+      "output": "public/art/beauty-beasts/characters/fern/face.webp",
+      "size": [
+        600,
+        600
+      ],
+      "outputSha256": "5c0da9136d313c4d75250b0b27739597e4c95f6a2ede07eb857550a994bf9908",
+      "bytes": 75438,
+      "alpha": false,
+      "kind": "identity-avatar",
+      "priorGitBlobSha": "571d3035c6919ca8d04816e8a725e37fa707f0e9"
+    },
+    {
+      "source": "art-sources/characters/cinder/identity/front.png",
+      "sourceSha256": "1be8e68d1ff1d531e59688be796db5a37f36625eaf7b6413833e7641a9de1a2e",
+      "sourceGitBlobSha": "30f289982eea9d99e92fc6bccf9b3a371a6c174c",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "crop": [
+        220,
+        0,
+        820,
+        600
+      ],
+      "output": "public/art/beauty-beasts/characters/cinder/face.webp",
+      "size": [
+        600,
+        600
+      ],
+      "outputSha256": "b8a011bf40dd41272e5d769ef4831cbb44eb854d0cf4856e464a0683f24997c1",
+      "bytes": 83042,
+      "alpha": false,
+      "kind": "identity-avatar",
+      "priorGitBlobSha": "6986cd67c705b6bcb52584eb875ab197133b3250"
+    },
+    {
+      "source": "art-sources/characters/yuesha/identity/front.png",
+      "sourceSha256": "dd8a65f04f1a8804fc15a32e2c7d010591e184f612d2ed4b284e315cfda94bca",
+      "sourceGitBlobSha": "164d04d757d23c6d06c476179a0ed76a3b4c8a6b",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "crop": null,
+      "output": "public/art/yuesha-portrait-v3.webp",
+      "size": [
+        1086,
+        1448
+      ],
+      "outputSha256": "8542fe9ebf6d53dbbf28a67f0179ba6523bf3e3a87217fe777f612150c860695",
+      "bytes": 259898,
+      "alpha": false,
+      "kind": "identity-portrait",
+      "priorGitBlobSha": "927a36e6011e779f549647ff990b20f0918bf7ef"
+    },
+    {
+      "source": "art-sources/characters/yuesha/identity/front.png",
+      "sourceSha256": "dd8a65f04f1a8804fc15a32e2c7d010591e184f612d2ed4b284e315cfda94bca",
+      "sourceGitBlobSha": "164d04d757d23c6d06c476179a0ed76a3b4c8a6b",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "crop": [
+        78,
+        0,
+        1008,
+        910
+      ],
+      "output": "public/art/yuesha-bust-v3.webp",
+      "size": [
+        930,
+        910
+      ],
+      "outputSha256": "27fa6113d950df4c52c49207b94701d1c468a63112709f10c54d2b7417be638b",
+      "bytes": 151936,
+      "alpha": false,
+      "kind": "identity-bust",
+      "priorGitBlobSha": "c32b3b58080f82e07ec8cac7093e49658f7c3708"
+    },
+    {
+      "source": "art-sources/covers/welcome-desktop.png",
+      "sourceSha256": "ae0b22c5c454897d8f0b831216a3d205d0cb820fd5a2cad2070d422a6ccf39c4",
+      "sourceGitBlobSha": "25805603c0f75dc09a970d724bfe00c58b7a695d",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "crop": null,
+      "output": "public/art/beauty-beasts/cover/world-cover.webp",
+      "size": [
+        1672,
+        941
+      ],
+      "outputSha256": "abe1c65b61b85b4fc5c855d40871aed897358cca70f08f22d5ee4a13fbbaa50b",
+      "bytes": 526046,
+      "alpha": false,
+      "kind": "welcome",
+      "priorGitBlobSha": "258b933459cc8017d4f009a664ccd9c14f7522e4"
+    },
+    {
+      "source": "art-sources/scenes/lobby/desktop.png",
+      "sourceSha256": "747004ffdfe410e3986366122acb54d3de5b3ace0cd72ef2767c1d3cfdcde562",
+      "sourceGitBlobSha": "6a5303795e9709dbc85489861c9bc73a96395c32",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "crop": null,
+      "output": "public/art/lobby-hero-v4.webp",
+      "size": [
+        1672,
+        941
+      ],
+      "outputSha256": "fa3549bc9f5956d787bec682b9b8c46080ea00b4e99ebbc93a357eee0cf90a7c",
+      "bytes": 353842,
+      "alpha": false,
+      "kind": "lobby",
+      "priorGitBlobSha": null
+    },
+    {
+      "source": "art-sources/covers/welcome-mobile.png",
+      "sourceSha256": "78591af84370e957dd08c830bdbf25f5f05e30cf0dff39223fa37c5fef49fad2",
+      "sourceGitBlobSha": "a83934afbb7b4e57a82a5aedf85c7199544ab93e",
+      "sourceSize": [
+        941,
+        1672
+      ],
+      "crop": null,
+      "output": "public/art/beauty-beasts/cover/world-cover-mobile.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "outputSha256": "9a9c42e30ccdb52aae91422d0dbc7b2d9bcebe2a8e39c2935f36c68fb3aa888f",
+      "bytes": 489132,
+      "alpha": false,
+      "kind": "welcome",
+      "priorGitBlobSha": "100733d7f1ca11a79b3e689219d7f4dbe7b851e0"
+    },
+    {
+      "source": "art-sources/scenes/lobby/mobile.png",
+      "sourceSha256": "4f2a59a6e80dfdaec26607260c83632b0c54b5ca3306a0edf37d2dd7f4c8cccb",
+      "sourceGitBlobSha": "16cfdfe2735f51c6dd9297a64907f00d7b1fc4ea",
+      "sourceSize": [
+        941,
+        1672
+      ],
+      "crop": null,
+      "output": "public/art/lobby-hero-v4-mobile.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "outputSha256": "6da485e42db2828b2d5801999903992d3187e32eeffed7f59f5e6f712d216ad1",
+      "bytes": 344590,
+      "alpha": false,
+      "kind": "lobby",
+      "priorGitBlobSha": null
+    },
+    {
+      "source": "art-sources/characters/yuesha/cg/eclipse.png",
+      "sourceSha256": "6d1b2b19f21ff846fe6270b7f28146628f16e48e7be78cc253c1158a69cc2ddd",
+      "sourceGitBlobSha": "da3a5abbe41d7b1bb1b9ad7e342f9534a5dc6174",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "crop": null,
+      "output": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp",
+      "size": [
+        1086,
+        1448
+      ],
+      "outputSha256": "a0373a2c8f39d20d0ebccb5caf25d85e2241658207b98d3f14d861d0e9533c86",
+      "bytes": 418170,
+      "alpha": false,
+      "kind": "illustrated-cg-candidate",
+      "priorGitBlobSha": "89e29f811e6eb41874c4c8f2419ebd2a1e797362"
+    },
+    {
+      "source": "art-sources/characters/yuesha/cg/vow.png",
+      "sourceSha256": "a7419918c91acacd5ab1500bf4513ee6d0f81be36c84c68c54574d08cc370f0f",
+      "sourceGitBlobSha": "bea2589a775891ec8fd898b1b9844971ddaee010",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "crop": null,
+      "output": "public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp",
+      "size": [
+        1086,
+        1448
+      ],
+      "outputSha256": "9590d80f332c7211e5d42c6e791a0c89caff0bd0be5286f502e7e5b16e6b0212",
+      "bytes": 494826,
+      "alpha": false,
+      "kind": "illustrated-cg-candidate",
+      "priorGitBlobSha": "ac238c86c869dae5f7b340dc93c47003ad3c352d"
+    },
+    {
+      "source": "art-sources/characters/brook/sprites/standing.png",
+      "sourceSha256": "72d72af5a7aa0209a1c30e7dffd86302053d1b644f75f5f0c4ad841a4de63434",
+      "sourceGitBlobSha": "79f9147cd5f1b86e78da8a53fbb7b4e7e1a449ca",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "crop": null,
+      "output": "public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp",
+      "size": [
+        1086,
+        1448
+      ],
+      "outputSha256": "b2da93867d25eb8efdde530f27a368f47e5ae357d65b32c6a03e846c026c2bc8",
+      "bytes": 821724,
+      "alpha": true,
+      "kind": "sprite-transition-card",
+      "priorGitBlobSha": "245df5fe01eb35c38ced95915b28af893055fc10"
+    },
+    {
+      "source": "art-sources/characters/fern/cg/spring.png",
+      "sourceSha256": "7cd94916ad3a28eb77f1c40d43d4056f8ee06b287b67e6b0c7bed1e199b840e2",
+      "sourceGitBlobSha": "a22fe13fc608440860e12ddb3cee1cd154288429",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "crop": null,
+      "output": "public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp",
+      "size": [
+        1086,
+        1448
+      ],
+      "outputSha256": "9d5cdf45290e5705944b906d28bc46149718d8790ed544ee72c3196c3aa3d0ee",
+      "bytes": 601544,
+      "alpha": false,
+      "kind": "illustrated-cg-candidate",
+      "priorGitBlobSha": "ab5b20cd1b878dcfddcccde0b5790cdfa1f8183e"
+    },
+    {
+      "source": "art-sources/characters/cinder/sprites/standing.png",
+      "sourceSha256": "a37b1bd4c82e4c71621af3e5174ee894bbd36e1b768652db7481169e8544c1b7",
+      "sourceGitBlobSha": "92c444aceefc15954c35e90dcf3d1a2ec13681f6",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "crop": null,
+      "output": "public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp",
+      "size": [
+        1086,
+        1448
+      ],
+      "outputSha256": "c4b015647ffcf3f919b8d180c394245ff7c5ac5d21a0a37b9e4ef81603f679b9",
+      "bytes": 593462,
+      "alpha": true,
+      "kind": "sprite-transition-card",
+      "priorGitBlobSha": "b1cc0a136f1b1199bde1e1a9e7b43ae7ff824807"
+    }
+  ],
+  "sourceInventory": [
+    {
+      "path": "art-sources/characters/brook/cg/tide.png",
+      "sourceSha256": "ce125463cd5dcb0fbfb56577a4b388cbc747e6ed99a873b2c998e86b15822774",
+      "gitBlobSha": "aede1a30063d163c6aa4d833a2b2adf021002df9",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "status": "rework"
+    },
+    {
+      "path": "art-sources/characters/brook/identity/front.png",
+      "sourceSha256": "27fea74811adae6538671b39bb2da2e43cabddd0ebfdc8366e624e3ca57a9e92",
+      "gitBlobSha": "0768b615cdde61a03756e84743e0e92cdcf973a0",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/characters/brook/identity/three-quarter-candidate.png",
+      "sourceSha256": "8678996589d8dd85ec2a762b8fb2bd59223e7af7b6d31ab7e8cf77c41526e0f3",
+      "gitBlobSha": "ebede98fb2ce3985d76312c717ef6ed449331b5f",
+      "size": [
+        1199,
+        1312
+      ],
+      "mode": "RGB",
+      "status": "rework"
+    },
+    {
+      "path": "art-sources/characters/brook/sprites/standing.png",
+      "sourceSha256": "72d72af5a7aa0209a1c30e7dffd86302053d1b644f75f5f0c4ad841a4de63434",
+      "gitBlobSha": "79f9147cd5f1b86e78da8a53fbb7b4e7e1a449ca",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGBA",
+      "status": "review",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "transparentPixels": 315992,
+      "opaquePixels": 21
+    },
+    {
+      "path": "art-sources/characters/cinder/cg/ember.png",
+      "sourceSha256": "5b9403a422bf53722ded7bf5ad22b52e56c7c187436296ee595bece160814606",
+      "gitBlobSha": "0fdca72efc025529c9f712dde4e48442818857ec",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "status": "rework"
+    },
+    {
+      "path": "art-sources/characters/cinder/identity/front.png",
+      "sourceSha256": "1be8e68d1ff1d531e59688be796db5a37f36625eaf7b6413833e7641a9de1a2e",
+      "gitBlobSha": "30f289982eea9d99e92fc6bccf9b3a371a6c174c",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/characters/cinder/identity/three-quarter-candidate.png",
+      "sourceSha256": "67d6dc328d81b73cb3b76fcb810bd5572e8986edd3e6920d3558b6c0529ce5a0",
+      "gitBlobSha": "f71ae79833a8569b196a488422bd188bb331c9cc",
+      "size": [
+        1199,
+        1312
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/characters/cinder/sprites/standing.png",
+      "sourceSha256": "a37b1bd4c82e4c71621af3e5174ee894bbd36e1b768652db7481169e8544c1b7",
+      "gitBlobSha": "92c444aceefc15954c35e90dcf3d1a2ec13681f6",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGBA",
+      "status": "review",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "transparentPixels": 541067,
+      "opaquePixels": 847
+    },
+    {
+      "path": "art-sources/characters/fern/cg/spring.png",
+      "sourceSha256": "7cd94916ad3a28eb77f1c40d43d4056f8ee06b287b67e6b0c7bed1e199b840e2",
+      "gitBlobSha": "a22fe13fc608440860e12ddb3cee1cd154288429",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/characters/fern/identity/front.png",
+      "sourceSha256": "17b3dc6b3e07ef0eee836517e3771a0be6f2860b6c7948c5639250158358cf44",
+      "gitBlobSha": "7a11d2138f407c00508faff1d536b4106dbf848a",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/characters/fern/identity/three-quarter-candidate.png",
+      "sourceSha256": "4ef65ceea6e2b884a2eb512d98322fc4503ee91c0efefaf03921cc25898fdae9",
+      "gitBlobSha": "899188f5fd8283b34df81254dff54e0db77977ed",
+      "size": [
+        1218,
+        1292
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/characters/fern/sprites/standing.png",
+      "sourceSha256": "b84d9b6a91039ca4bc452ddc5b69d2ebe3913477682c9adf4c9454624ce327bc",
+      "gitBlobSha": "6c426fee975d2ab7798077ba6406683e55dc0882",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGBA",
+      "status": "review",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "transparentPixels": 718879,
+      "opaquePixels": 158
+    },
+    {
+      "path": "art-sources/characters/yuesha/cg/eclipse.png",
+      "sourceSha256": "6d1b2b19f21ff846fe6270b7f28146628f16e48e7be78cc253c1158a69cc2ddd",
+      "gitBlobSha": "da3a5abbe41d7b1bb1b9ad7e342f9534a5dc6174",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/characters/yuesha/cg/vow.png",
+      "sourceSha256": "a7419918c91acacd5ab1500bf4513ee6d0f81be36c84c68c54574d08cc370f0f",
+      "gitBlobSha": "bea2589a775891ec8fd898b1b9844971ddaee010",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/characters/yuesha/identity/front.png",
+      "sourceSha256": "dd8a65f04f1a8804fc15a32e2c7d010591e184f612d2ed4b284e315cfda94bca",
+      "gitBlobSha": "164d04d757d23c6d06c476179a0ed76a3b4c8a6b",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/characters/yuesha/identity/three-quarter-candidate.png",
+      "sourceSha256": "4644b36e8d235161e8489d435adf0b3abe001ce08a495876d32cfb95f4f296ba",
+      "gitBlobSha": "71aff0e7a22339c1dc2bd1e6c53605f2b68332cf",
+      "size": [
+        1199,
+        1312
+      ],
+      "mode": "RGB",
+      "status": "rework"
+    },
+    {
+      "path": "art-sources/characters/yuesha/sprites/standing.png",
+      "sourceSha256": "49fe92c167c8121ef260db365dc3ec743bb02ec7531a311b49099b64133f3bfc",
+      "gitBlobSha": "7ba8a5e6733f569dfad57d7fb28d3b09e29ccf6c",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGBA",
+      "status": "review",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "transparentPixels": 423216,
+      "opaquePixels": 525
+    },
+    {
+      "path": "art-sources/covers/welcome-desktop.png",
+      "sourceSha256": "ae0b22c5c454897d8f0b831216a3d205d0cb820fd5a2cad2070d422a6ccf39c4",
+      "gitBlobSha": "25805603c0f75dc09a970d724bfe00c58b7a695d",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/covers/welcome-mobile.png",
+      "sourceSha256": "78591af84370e957dd08c830bdbf25f5f05e30cf0dff39223fa37c5fef49fad2",
+      "gitBlobSha": "a83934afbb7b4e57a82a5aedf85c7199544ab93e",
+      "size": [
+        941,
+        1672
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/rooms/brook/background.png",
+      "sourceSha256": "9ef0471e82061fb1d73a93879fec15c3d5b073503fec9cd0b90639e3c01d661d",
+      "gitBlobSha": "94e8550029b4b3a775ea27dbfa5cd44e12842c68",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/rooms/cinder/background.png",
+      "sourceSha256": "7ba8ef05f75c641ca370196a151f94b48cd2c3cff97e5c0cb80f733028f080ea",
+      "gitBlobSha": "6e0766044bfd0941b6147c8adfb20b6abd69f3b7",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/rooms/fern/background.png",
+      "sourceSha256": "2f8826c1ae051a1b9f6e092e5e86a1a34e6977a025e10c84c2dde5e8bb073d00",
+      "gitBlobSha": "949343304a944b05aa712efb29ed39282226508b",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/rooms/fern/bedroom-candidate.png",
+      "sourceSha256": "0a5c10c4e0482e73f82fda49581cca6a8d606e3008aca02c925e7b91fde0613b",
+      "gitBlobSha": "2bcb5bfc8aebaa4809af9cce8d17f8ae01dc73bc",
+      "size": [
+        1670,
+        941
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/rooms/yuesha/background.png",
+      "sourceSha256": "836ae3095ee66a2f378725f686c9a7938f40044414da32517c25ee0f050fa37d",
+      "gitBlobSha": "f4ce903860092f8b460116b87d3f0abbf01802b9",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/rooms/yuesha/bedroom-candidate.png",
+      "sourceSha256": "44061ca5cf09a330eb932e69093e8d53dbfa2ddf5cff965a270273154e3d6b8f",
+      "gitBlobSha": "3f7b37412d61706a296d51e3795cafc7afb55b76",
+      "size": [
+        1671,
+        941
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/scenes/apartment/desktop-candidate.png",
+      "sourceSha256": "2d5ec7cb60d78ab41674c07cd002b69700587c00cc0e406a8bcf0c87067bd4d1",
+      "gitBlobSha": "6e9d6dc207b68d920e9f3a2cce964adf85bbfa91",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "status": "rework"
+    },
+    {
+      "path": "art-sources/scenes/apartment/mobile-candidate.png",
+      "sourceSha256": "3ad23eef9f49f7f3b8b4f35ae567c6a1861cc6a8026f88c4e96cea9a781bb1fd",
+      "gitBlobSha": "b80b4fea7546e10911eeb8ff10ed50bee0b16629",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGB",
+      "status": "rework"
+    },
+    {
+      "path": "art-sources/scenes/lobby/desktop.png",
+      "sourceSha256": "747004ffdfe410e3986366122acb54d3de5b3ace0cd72ef2767c1d3cfdcde562",
+      "gitBlobSha": "6a5303795e9709dbc85489861c9bc73a96395c32",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/scenes/lobby/mobile.png",
+      "sourceSha256": "4f2a59a6e80dfdaec26607260c83632b0c54b5ca3306a0edf37d2dd7f4c8cccb",
+      "gitBlobSha": "16cfdfe2735f51c6dd9297a64907f00d7b1fc4ea",
+      "size": [
+        941,
+        1672
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/scenes/town/desktop-candidate-v1.png",
+      "sourceSha256": "61894fe6b21c44a9621bc839c5ca764a88e63467887c83629af905e8a774ad63",
+      "gitBlobSha": "404ea9b9f32db3e3303eb5c1cc05fb43a0cddeea",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/scenes/town/desktop-candidate-v2.png",
+      "sourceSha256": "139cd9b20cb8d464a605bdcbbe9cdc9cd15489439035a7b57fd04b6d9d4d4b08",
+      "gitBlobSha": "93a5acd7b7eea5990450197b65a096ab81096eb6",
+      "size": [
+        1671,
+        941
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/scenes/workshop/desktop-candidate-v1.png",
+      "sourceSha256": "09357498ad9218720f41ad984e259fabce42f638ca2de7feef166007968272f5",
+      "gitBlobSha": "813a14b8972d95f8def62369bbcfa3ea7f8027fa",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "status": "review"
+    },
+    {
+      "path": "art-sources/scenes/workshop/desktop-candidate-v2.png",
+      "sourceSha256": "dcaf5f597eaa60255de9d74bba79708eba88884b8909c222ed0763f94ae385bc",
+      "gitBlobSha": "454501ad0087a8ff3725faea2759fa625bbebab8",
+      "size": [
+        1670,
+        941
+      ],
+      "mode": "RGB",
+      "status": "review"
+    }
+  ]
+}
