@@ -1,6 +1,7 @@
 'use client';
 
 import type {ImageProps} from 'next/image';
+import {useSearchParams} from 'next/navigation';
 import {useEffect,useState,useSyncExternalStore} from 'react';
 import {createPortal} from 'react-dom';
 import {ReliableImage} from './reliable-image';
@@ -21,9 +22,7 @@ function fallbackUrl(src:ImageProps['src']):string{
  * painting is present. Failed approved originals reveal a neutral backdrop.
  */
 type LocalPreview={url:string;name:string;width:number;height:number;origin?:'repo'};
-const noSubscription=()=>()=>{};
-const readReviewQuery=()=>new URLSearchParams(window.location.search).get('r12-art-review')==='1';
-const serverReviewQuery=()=>false;
+const serverMobileSnapshot=()=>false;
 const subscribeMobileViewport=(update:()=>void)=>{
   const query=window.matchMedia('(max-width:700px)');
   query.addEventListener('change',update);
@@ -58,12 +57,24 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
   className:string;testId?:string;
 }){
   const sources=approvedR12Scene(area);
-  const reviewMode=useSyncExternalStore(noSubscription,readReviewQuery,serverReviewQuery);
+  // The research opt-in is URL state, not a one-time window snapshot.
+  // App Router synchronizes useSearchParams with pushState, Back and Forward.
+  const searchParams=useSearchParams();
+  const reviewMode=searchParams.get('r12-art-review')==='1';
   const mobileViewport=useSyncExternalStore(
-    subscribeMobileViewport,readMobileViewport,serverReviewQuery);
+    subscribeMobileViewport,readMobileViewport,serverMobileSnapshot);
   const [desktopPreview,setDesktopPreview]=useState<LocalPreview|null>(null);
   const [mobilePreview,setMobilePreview]=useState<LocalPreview|null>(null);
   const [message,setMessage]=useState('');
+  // In addition to removing the preview immediately during render, dispose
+  // of old research choices on opt-out so browser Forward cannot resurrect
+  // the previously displayed asset without another explicit review click.
+  useEffect(()=>{
+    if(reviewMode)return;
+    setDesktopPreview(null);
+    setMobilePreview(null);
+    setMessage('');
+  },[reviewMode]);
   // Both source object URLs remain alive while switching viewport, then are
   // individually released on replacement, clear and route unmount.
   useEffect(()=>()=>{
@@ -74,8 +85,8 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
   },[mobilePreview]);
   // If no independent portrait has been chosen, the desktop source can still
   // be cropped for layout preview — explicitly flagged as NOT mobile approval.
-  const preview=mobileViewport?(mobilePreview??desktopPreview):desktopPreview;
-  const portraitMissing=mobileViewport&&!!desktopPreview&&!mobilePreview;
+  const preview=reviewMode?(mobileViewport?(mobilePreview??desktopPreview):desktopPreview):null;
+  const portraitMissing=reviewMode&&mobileViewport&&!!desktopPreview&&!mobilePreview;
   // The matching S05/S06 banner must preview the same original image rather
   // than continuing to show the unrelated 360px workshop placeholder.
   useEffect(()=>{
