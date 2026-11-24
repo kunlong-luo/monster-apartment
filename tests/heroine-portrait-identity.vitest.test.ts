@@ -35,7 +35,7 @@ describe('character portrait visual identity',()=>{
       expect(preview.length).toBeLessThanOrEqual(12*1024*1024);
       expect(createHash('sha256').update(preview).digest('hex')).toBe(entry.previewSha256);
       const url=getSelectedCardPreview(id);
-      expect(url).toContain('/art/beauty-beasts/characters/');
+      expect(url).toContain('/art/');
       expect(url).toContain(expectedPath.slice('public/'.length));
       expect(getCardFace(id,'feature')).toBe(url);
       expect(getCardFace(id,'thumbnail')).not.toBe(url);

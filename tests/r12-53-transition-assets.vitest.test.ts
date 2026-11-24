@@ -1,10 +1,11 @@
 import {describe,expect,it} from 'vitest';
-import {readFileSync} from 'node:fs';
+import {existsSync,readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {webpDimensions} from '../scripts/prepare-room-background.mjs';
 import manifest from '../public/art/r12-53-transition-manifest.json';
 import catalog from '../art-sources/source-catalog.json';
 import cg from '../public/art/beauty-beasts/characters/cg-manifest.json';
+import roomReview from '../public/art/rooms/r12-57-review-manifest.json';
 
 const sha256=(data:Buffer)=>createHash('sha256').update(data).digest('hex');
 const blobSha=(data:Buffer)=>createHash('sha1').update('blob '+data.length+'\0').update(data).digest('hex');
@@ -35,6 +36,23 @@ describe('R12.53 source-bound transition artwork',()=>{
       expect(sha256(bytes)).toBe(row.sourceSha256);
       expect(bytes.subarray(0,8).toString('hex')).toBe('89504e470d0a1a0a');
       expect([bytes.readUInt32BE(16),bytes.readUInt32BE(20)]).toEqual(row.size);
+    }
+  });
+  it('shares exactly the source-bound standing transitions with the same resident room without duplicate files',()=>{
+    for(const [id,variant] of [['brook','tide'],['cinder','ember']] as const){
+      const card=cg.cards[id+'-'+variant as keyof typeof cg.cards];
+      const row=manifest.outputs.find(e=>e.output===card.previewPath)!;
+      const room=roomReview.outputs.find(e=>e.resident===id&&e.kind==='standing')!;
+      expect(card.previewPath).toBe('public/art/rooms/'+id+'/review/standing-candidate.webp');
+      expect(row.output).toBe(room.output);
+      expect(row.source).toBe(room.source);
+      expect(row.sourceSha256).toBe(room.sourceSha256);
+      expect(row.sourceGitBlobSha).toBe(room.sourceGitBlobSha);
+      expect(row.outputSha256).toBe(room.outputSha256);
+      expect(row.bytes).toBe(room.bytes);
+      expect(row.alpha).toBe(true);
+      expect(card.status).toBe('portrait');
+      expect(existsSync(c+id+'/cg-'+variant+'-candidate.webp')).toBe(false);
     }
   });
   it('checks all fifteen actual WebPs, independent screens, native geometry and exact source mapping',()=>{

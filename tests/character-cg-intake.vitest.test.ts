@@ -45,8 +45,7 @@ describe('A05 production CG intake and preview',()=>{
       if(data.status==='portrait'){
         expect(existsSync(resolve(data.path))).toBe(false);
         if(data.previewPath){
-          expect(data.previewPath).toBe('public/art/beauty-beasts/characters/'+
-            CG_PREVIEW_PATHS[id as keyof typeof CG_PREVIEW_PATHS]);
+          expect(data.previewPath).toBe(CG_PREVIEW_PATHS[id as keyof typeof CG_PREVIEW_PATHS]);
           const buffer=readFileSync(resolve(data.previewPath));
           const dimensions=webpDimensions(buffer);
           expect(dimensions.width).toBeGreaterThanOrEqual(960);

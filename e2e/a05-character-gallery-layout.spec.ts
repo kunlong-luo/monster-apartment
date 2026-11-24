@@ -105,10 +105,11 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
         kind:img.getAttribute('data-art-kind')};
     }));
   expect(selectedCandidates).toHaveLength(5);
+  expect(new Set(selectedCandidates.map(picture=>new URL(picture.src).pathname)).size).toBe(5);
   for(const picture of selectedCandidates){
     expect(picture.width).toBeGreaterThanOrEqual(960);
     expect(picture.height).toBeGreaterThanOrEqual(1280);
-    expect(picture.src).toMatch(/cg-[a-z]+-candidate\.webp(?:\?|$)/);
+    expect(picture.src).toMatch(/(?:\/art\/beauty-beasts\/characters\/(?:yuesha\/cg-(?:eclipse|vow)|fern\/cg-spring)-candidate\.webp|\/art\/rooms\/(?:brook|cinder)\/review\/standing-candidate\.webp)(?:\?|$)/);
     expect(picture.fit).toBe('cover'); // slim card crop only
     expect(picture.kind).toBe('candidate-figure'); // never production
   }

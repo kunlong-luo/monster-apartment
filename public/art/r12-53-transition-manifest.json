@@ -279,7 +279,7 @@
         1448
       ],
       "crop": null,
-      "output": "public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp",
+      "output": "public/art/rooms/brook/review/standing-candidate.webp",
       "size": [
         1086,
         1448
@@ -288,7 +288,8 @@
       "bytes": 821724,
       "alpha": true,
       "kind": "sprite-transition-card",
-      "priorGitBlobSha": "245df5fe01eb35c38ced95915b28af893055fc10"
+      "priorGitBlobSha": "245df5fe01eb35c38ced95915b28af893055fc10",
+      "legacyOutput": "public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp"
     },
     {
       "source": "art-sources/characters/fern/cg/spring.png",
@@ -319,7 +320,7 @@
         1448
       ],
       "crop": null,
-      "output": "public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp",
+      "output": "public/art/rooms/cinder/review/standing-candidate.webp",
       "size": [
         1086,
         1448
@@ -328,7 +329,8 @@
       "bytes": 593462,
       "alpha": true,
       "kind": "sprite-transition-card",
-      "priorGitBlobSha": "b1cc0a136f1b1199bde1e1a9e7b43ae7ff824807"
+      "priorGitBlobSha": "b1cc0a136f1b1199bde1e1a9e7b43ae7ff824807",
+      "legacyOutput": "public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp"
     }
   ],
   "sourceInventory": [

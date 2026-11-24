@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.67）
+# 怪物公寓 · 美术资源总目录（R12.70）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -125,9 +125,9 @@
 
 清理 9,161,328 B 的工作树副本；不代表 Git 历史或线上包同等缩小。另组重复：`docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-05.webp` / `public/art/room-review/yuesha-salon-candidate.webp`，待将审稿和文档引用统一后再判断去重。
 
-## 5. 全仓实际资源菜单（R12.67）
+## 5. 全仓实际资源菜单（R12.70）
 
-统计基线 `0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0`，完整 Git tree，共 146 路径。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON 与 Markdown。Git blob SHA 不等于原文件 SHA-256；此表是实际资源索引，不自动授予生产状态。R12.52 的 132 路径统计属于历史。
+统计基线 `0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0`，完整 Git tree，共 146 路径；R12.70 删除两个相同输出后现为 144 路径。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON 与 Markdown。Git blob SHA 不等于原文件 SHA-256；此表是实际资源索引，不自动授予生产状态。R12.52 的 132 路径统计属于历史。
 
 ### 源图与研究（40）
 
@@ -174,18 +174,16 @@
 | `art-sources/scenes/workshop/desktop-candidate-v1.png` | 3131454 | `813a14b8972d` |
 | `art-sources/scenes/workshop/desktop-candidate-v2.png` | 3103549 | `454501ad0087` |
 
-### Web 静态资源（62）
+### Web 静态资源（60）
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
 | `public/art/a05/foreground-ornaments.svg` | 2876 | `fbf4a3c67d88` |
 | `public/art/a05/moonlight-tracery.svg` | 4827 | `c5f2af6e18e6` |
 | `public/art/a05/rose-petal.svg` | 986 | `09f65722ff16` |
-| `public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp` | 821724 | `f6b7d13dcdff` |
 | `public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v1.webp` | 514656 | `ae627af84c91` |
 | `public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v2.webp` | 563050 | `8a9f98b31eab` |
 | `public/art/beauty-beasts/characters/brook/face.webp` | 92138 | `7a6a0e8b1fb5` |
-| `public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp` | 593462 | `867fb42c5d26` |
 | `public/art/beauty-beasts/characters/cinder/cg-ember-pose-study-v1.webp` | 591622 | `b12408260d7d` |
 | `public/art/beauty-beasts/characters/cinder/face.webp` | 83042 | `a36fe1b83f19` |
 | `public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp` | 601544 | `9235f2243085` |
@@ -352,3 +350,15 @@ V3.105.0 的 PC 新场景与四间观景已合并、Quality/Pages 通过；不�
 | `public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp` | `public/art/rooms/cinder/review/standing-candidate.webp` | 593462 | 同上 |
 
 重复路径潜在工作树空间 1,570,374 B；本轮未删除媒体。相同输出不证明原始来源、人物用途或授权一致。CG manifest 的 previewPath 和 R12.57 房间 manifest 的 output 分属独立审核契约；先检查实际原图及生成脚本、动态 URL、生产/回退、文档链接、测试再确定唯一引用。不可用简单文本搜索零命中判定无用。
+
+
+## R12.70 · 同源站姿输出统一
+
+泉泡、炽角的 R12.53 CG 过渡候选与 R12.57 站姿原图、source SHA-256、源 Git blob、输出 SHA-256、字节数均相同。现行 CG manifest/运行注册/转换清单/准入检查统一指向房间 review 下的 standing-candidate.webp；R12.53 生成脚本本身按 manifest.previewPath 输出，上传清单补齐共享路径。删除两个旧 CG 候选副本，保留原始 PNG、原候选旧路径/旧 blob 记录、其他五卡验证和独立 production CG 槽。实际工作树减少 1,415,186 B，不宣称 Git 历史同等缩小。历史报告中的原路径属于当时快照，可按 8f85a130 回读。
+
+| 退役路径 | 唯一运行时路径 | 保留 Git blob |
+| --- | --- | --- |
+| `public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp` | `public/art/rooms/brook/review/standing-candidate.webp` | `f6b7d13dcdffc8607b1f9e8ac6fd38518de46e97` |
+| `public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp` | `public/art/rooms/cinder/review/standing-candidate.webp` | `867fb42c5d268eaa0f00001dcaec858b32ecb019` |
+
+月纱会客室的来源证据与运行时审稿副本仍保留（155,188 B）；不能在未核对证据清单和授权链前删除。原图和批准状态均不改变，正式 CG 0/5。新 SHA Quality/浏览器待核验。

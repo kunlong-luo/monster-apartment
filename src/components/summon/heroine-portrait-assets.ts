@@ -40,15 +40,15 @@ export function artworkPixelBudget(width:number,height:number,devicePixelRatio:n
   return {width:safe(width),height:safe(height)};
 }
 
-/** One immutable asset slot for each contract; adding a new image must be
+/** One explicit preview slot for each contract; standing transitions may share a resident room asset. Adding a new image must be
  * opt-in through the manifest AND match the correct resident folder.
  * Unapproved candidates can never bypass the production provenance gate. */
 export const CARD_PREVIEW_PATHS={
   'yuesha-eclipse':'public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp',
   'yuesha-vow':'public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp',
-  'brook-tide':'public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp',
+  'brook-tide':'public/art/rooms/brook/review/standing-candidate.webp',
   'fern-spring':'public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp',
-  'cinder-ember':'public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp',
+  'cinder-ember':'public/art/rooms/cinder/review/standing-candidate.webp',
 } as const;
 export type ContractCardId=keyof typeof CARD_PREVIEW_PATHS;
 export const YUESHA_ECLIPSE_PREVIEW_PATH=CARD_PREVIEW_PATHS['yuesha-eclipse'];

@@ -39,6 +39,8 @@ jobs:
             public/art/beauty-beasts/cover/*.webp
             public/art/beauty-beasts/characters/*/face.webp
             public/art/beauty-beasts/characters/*/cg-*-candidate.webp
+            public/art/rooms/brook/review/standing-candidate.webp
+            public/art/rooms/cinder/review/standing-candidate.webp
             public/art/beauty-beasts/characters/cg-manifest.json
       - name: Commit output binaries to candidate branch only
         run: |

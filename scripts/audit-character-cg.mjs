@@ -15,11 +15,11 @@ export const CG_PATHS={
 };
 /** Keep the runtime art-slot allowlist and the Node intake check aligned. */
 export const CG_PREVIEW_PATHS={
-  'yuesha-eclipse':'yuesha/cg-eclipse-candidate.webp',
-  'yuesha-vow':'yuesha/cg-vow-candidate.webp',
-  'brook-tide':'brook/cg-tide-candidate.webp',
-  'fern-spring':'fern/cg-spring-candidate.webp',
-  'cinder-ember':'cinder/cg-ember-candidate.webp',
+  'yuesha-eclipse':'public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp',
+  'yuesha-vow':'public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp',
+  'brook-tide':'public/art/rooms/brook/review/standing-candidate.webp',
+  'fern-spring':'public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp',
+  'cinder-ember':'public/art/rooms/cinder/review/standing-candidate.webp',
 };
 /** The stable current portrait slots hold the selected resident identity.
  * R12.53 proposes new black-haired YueSha artwork in the same slots;
@@ -104,7 +104,7 @@ export function auditCharacterCg(){
       check(!existsSync(assetPath)&&!existsSync(proofPath),
         'unreviewed art exists outside production manifest '+card);
       if(entry.previewPath!==undefined){
-        const preview='public/art/beauty-beasts/characters/'+CG_PREVIEW_PATHS[card];
+        const preview=CG_PREVIEW_PATHS[card];
         check(entry.previewPath===preview,'preview path is not the approved card slot '+card);
         const candidatePath=join(root,preview);
         check(existsSync(candidatePath),'manifest preview is missing '+card);
