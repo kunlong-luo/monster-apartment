@@ -170,3 +170,36 @@ test('R12 repository scene studies preview distinct PC/mobile images only on exp
     await expect(backdrop.getByTestId('r12-repository-study-watermark')).toHaveCount(0);
   }
 });
+
+
+test('R12 scene review opt-out follows URL history without leaking research artwork',async({page})=>{
+  test.setTimeout(60_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/orders/?r12-art-review=1');
+  const reviewer=page.getByTestId('r12-local-art-review');
+  const backdrop=page.getByTestId('moonwork-background');
+  await expect(reviewer).toBeVisible();
+  await page.getByTestId('r12-preview-repository-scene').click();
+  await expect(backdrop).toHaveAttribute('data-r12-review-origin','repo');
+  await expect(backdrop.locator('img[data-r12-art-image="local-review"]')).toBeVisible();
+  await expect(page.locator('[data-r12-hero-art="local-review"]')).toBeVisible();
+
+  // Same-page Next App Router history changes must immediately revoke opt-in.
+  // A hard reload would not catch the old one-time query snapshot bug.
+  await page.evaluate(()=>window.history.pushState(null,'','/orders/'));
+  await expect(page).toHaveURL(/\/orders\/?$/);
+  await expect(reviewer).toHaveCount(0);
+  await expect(backdrop).toHaveAttribute('data-r12-scene-art','legacy');
+  await expect(backdrop).toHaveAttribute('data-r12-review-origin','none');
+  await expect(backdrop.locator('img[data-r12-art-image="local-review"]')).toHaveCount(0);
+  await expect(backdrop.getByTestId('r12-repository-study-watermark')).toHaveCount(0);
+  await expect(page.locator('[data-r12-hero-art="local-review"]')).toHaveCount(0);
+
+  // Re-entering opt-in by Back restores the controls, NOT the previewed art.
+  await page.goBack();
+  await expect(page).toHaveURL(/\/orders\/?\?r12-art-review=1$/);
+  await expect(reviewer).toBeVisible();
+  await expect(backdrop).toHaveAttribute('data-r12-scene-art','legacy');
+  await expect(backdrop.locator('img[data-r12-art-image="local-review"]')).toHaveCount(0);
+  await expect(page.locator('[data-r12-hero-art="local-review"]')).toHaveCount(0);
+});
