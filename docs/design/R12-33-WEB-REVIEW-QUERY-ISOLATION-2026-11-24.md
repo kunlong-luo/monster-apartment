@@ -27,7 +27,7 @@
 
 | 文件 | 实际修改 | 验收准则 |
 | --- | --- | --- |
-| `src/components/game/r12-scene-painting.tsx` | 从 Next `useSearchParams` 派生当前 `reviewMode`，去掉不订阅变更的原生 URL snapshot；当审核关闭时 **在渲染阶段使 `preview=null`**，不再输出研究图与“未批准”水印；`useEffect` 清除 PC/手机研究预览与消息。 | 同路由取消审核参数之后立即恢复正常画面；再通过 Back 加回参数也不会擅自恢复旧图片。已创建的 `blob:` URL 仍仅在本地文件被替换/删除/卸载时 revoke，研究 WebP 固定站内 URL 不执行 revoke。 |
+| `src/components/game/r12-scene-painting.tsx` | 从 Next `useSearchParams` 派生当前 `reviewMode`，去掉不订阅变更的原生 URL snapshot；当审核关闭时 **在渲染阶段使 `preview=null`**，不再输出研究图与“未批准”水印；通过 `key={reviewMode?'research-opt-in':'player-view'}` 切换内层状态组件，退出审稿直接卸载旧预览并通过原有 Effect cleanup 释放本地 `blob:` URL；再次打开审核模式从空预览开始。 | 同路由取消审核参数之后立即恢复正常画面；再通过 Back 加回参数也不会擅自恢复旧图片。已创建的 `blob:` URL 仍仅在本地文件被替换/删除/卸载时 revoke，研究 WebP 固定站内 URL 不执行 revoke。 |
 | `app/orders/page.tsx`、`app/warehouse/page.tsx` | 增加 `Suspense` 包裹客户端 `MoonworkWorld`，提供短暂的深色画面占位以支持 `useSearchParams` 下 Next.js static export。 | 仍是原有 7 条真实路由，没有新增页面；不会增加底部导航或旧 Web dashboard。 |
 | `e2e/r12-local-scene-preview.spec.ts` | 新增 **不刷新页面**的完整场景：在 `/orders/?r12-art-review=1` 一键预览，直接 History API `pushState(null,'','/orders/')`，检查研究面板消失、背景恢复 `legacy`、图片和 Hero 消失、水印消失；再 Back 返回审核 URL 时只恢复工具、不恢复研究图。 | 特别使用 `pushState(null,...)`，避免直接沿用 Next 私有 history state 导致 useSearchParams 未同步。保留已有三场景 PC 1440×900、移动 390×844 研究图 6 截图/尺寸与无存档验证。 |
 | `src/core/game-release.ts`、`public/release.json` | 两处版本标识同步更新为 **V3.98.0**。 | 只代表 Web 交互/审核隔离升级，不代表新高清场景晋级。 |
@@ -53,3 +53,9 @@
 下一步 PC Web 重点回到美术实体：以 S02 六门场景真实页面截图为依据，逐一审查门面、可点击区域、左侧 HUD/移动折叠菜单是否遮挡，并进入**原创原生 4K 与独立手机竖版原画的真实生成、来源/版权记录、二进制上传、测试与审核**，而不是继续用 CSS 缩放研究图。完成前 #16/#24 保持开放。
 
 **结论：** 本轮解决审核 UI 和站内网址一致性，是未来正式原画审查流程的可靠性修复；不会宣称原生高清原画已经交付。
+
+### 首次 R12.33 Quality 检查与代码调整记录
+
+[R12.33 首轮 Quality #45320238368](https://github.com/kunlong-luo/monster-apartment/actions/runs/45320238368) 的 **静态导出 / TypeScript / Pixi 构建已通过**，但 ESLint `react-hooks/set-state-in-effect` 报错：最初为了取消审核时清空本地预览，曾在 `useEffect` 内同步调用三个 `setState`。这会形成 React 级联重渲染，不符合项目既有最新规范。
+
+已在提交 `00c49821a877fccc799f99d9c2abd4fd493e08c8` 中改为**由 live URL 状态控制内层预览组件 `key` 的挂载生命周期**，从根本上消除同步 Effect `setState`：退出研究模式卸载旧组件，已有 cleanup 撤销本地 `blob:` URL；返回研究模式新组件从空预览开始。原生 URL 同步及所有浏览器断言保持不变，没有删除 ESLint 规则或放宽测试。修订后的 Quality、Desktop Visual Review、Pages 仍须按最新最终 SHA 核实；**不能把首轮失败改写成通过**。
