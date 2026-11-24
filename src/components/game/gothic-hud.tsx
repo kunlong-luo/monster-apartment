@@ -23,6 +23,7 @@ import {
   Heart,
   UsersRound,
   ChevronUp,
+  X,
 } from 'lucide-react';
 
 export type GothicDestination={
@@ -196,7 +197,15 @@ export function GothicDock({
     {open&&<nav id="lobby-world-menu" aria-label="全部地点导航"
       data-testid="lobby-world-menu" className="gothic-dock__map">
       <div className="gothic-dock__map-header">
-        <strong>月蚀领地</strong><span>选择要前往的地点</span>
+        <div className="gothic-dock__map-heading">
+          <strong>月蚀领地</strong>
+          <span>当前位置 · 大厅　|　选择要前往的地点</span>
+        </div>
+        <button type="button" className="gothic-dock__map-close"
+          data-testid="lobby-world-close" aria-label="关闭世界地图"
+          onClick={()=>{setOpen(false);triggerRef.current?.focus();}}>
+          <X size={18} strokeWidth={1.6} aria-hidden="true"/>
+        </button>
       </div>
       <div className="gothic-dock__map-grid">
         {items.map(item=><Link key={item.href} href={item.href}
