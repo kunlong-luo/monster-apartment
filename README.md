@@ -26,25 +26,25 @@
 | [.github/](.github/) | Quality、浏览器、Pages 等工作流 |
 | [vendor/](vendor/) / [.agents/](.agents/) | 固定 Impeccable 子模块及技能入口，保留 |
 
-`artwork/`、`management/` 和 `.aistudio/` 是本轮清理对象；最终移除与保留的精确路径见 [治理报告](docs/engineering/R12-66-REPOSITORY-GOVERNANCE-2026-11-24.md) 与机器检查。原始素材、许可、存档兼容、真实运行依赖不得因目录名称误删。
+`artwork/`、`management/` 和 `.aistudio/` 已从候选目录树移除；精确删除与迁移路径见 [治理报告](docs/engineering/R12-66-REPOSITORY-GOVERNANCE-2026-11-24.md) 与[实际清理清单](docs/engineering/r12-66-cleanup-report.json)。原始素材、许可、存档兼容、真实运行依赖不得因目录名称误删。
 
 ## 正式游戏路线
 
 | 路径 | 功能 |
 | --- | --- |
-| [大厅](/monster-apartment/) | 月纱、召唤入口、世界地图 |
-| [公寓](/monster-apartment/apartment/) | 六房经营、入住与月纱私室 |
-| [工坊](/monster-apartment/workshop/) | 15 格建设、派工、自动生产 |
-| [月光街](/monster-apartment/town/) | 采购与居民交易 |
-| [委托](/monster-apartment/orders/) | 订单与自动履约 |
-| [人物](/monster-apartment/characters/) | 收藏、档案与私室 |
-| [仓库](/monster-apartment/warehouse/) | 库存及装备相关操作 |
+| [大厅](https://kunlong-luo.github.io/monster-apartment/) | 月纱、召唤入口、世界地图 |
+| [公寓](https://kunlong-luo.github.io/monster-apartment/apartment/) | 六房经营、入住与月纱私室 |
+| [工坊](https://kunlong-luo.github.io/monster-apartment/workshop/) | 15 格建设、派工、自动生产 |
+| [月光街](https://kunlong-luo.github.io/monster-apartment/town/) | 采购与居民交易 |
+| [委托](https://kunlong-luo.github.io/monster-apartment/orders/) | 订单与自动履约 |
+| [人物](https://kunlong-luo.github.io/monster-apartment/characters/) | 收藏、档案与私室 |
+| [仓库](https://kunlong-luo.github.io/monster-apartment/warehouse/) | 库存及装备相关操作 |
 
 上表为站点子路径；[正式站](https://kunlong-luo.github.io/monster-apartment/) 可由地图进入。不存在 classic/legacy/survival/workshop-lab 独立游戏。
 
 ## 发布与质量
 
-版本真值：[public/release.json](public/release.json)、[运行时版号](src/core/game-release.ts)；部署真值是对应 SHA 的 Quality 与 Pages，而不是文档里的旧日期。核实基线：V3.104.0 房间观景已部署（[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45370337560)，[完整回归 191 通过/3 跳过](https://github.com/kunlong-luo/monster-apartment/actions/runs/45368652700)）；V3.105.0 场景已合并 `0f9188a2` 且 [主线 Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45371899930) 通过，Pages 以实际结果为准。正式 CG 0/5，正式机器原画 0/9；过渡展示不等于人审批准。
+版本真值：[public/release.json](public/release.json)、[运行时版号](src/core/game-release.ts)；部署真值是对应 SHA 的 Quality 与 Pages，而不是文档里的旧日期。核实基线：V3.104.0 房间观景已部署（[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45370337560)，[完整回归 191 通过/3 跳过](https://github.com/kunlong-luo/monster-apartment/actions/runs/45368652700)）；V3.105.0 场景已合并 `0f9188a2` 且 [主线 Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45371899930) 通过，[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45372059731) 同一 SHA 部署成功。正式 CG 0/5，正式机器原画 0/9；过渡展示不等于人审批准。
 
 ## 本地开发
 
@@ -66,6 +66,7 @@ pnpm lint
 pnpm test
 pnpm audit:room-art
 pnpm audit:r12-review-art
+node scripts/audit-repository-inventory.mjs
 node scripts/audit-r12-57-room-review.mjs
 node scripts/audit-r12-61-world-scene-review.mjs
 npm --prefix v2 run build

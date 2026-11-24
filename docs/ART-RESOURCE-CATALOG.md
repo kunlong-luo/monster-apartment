@@ -1,6 +1,6 @@
 # 怪物公寓 · 美术资源统一目录
 
-> 唯一资源导航。旧 R12.52 文件级统计及历史记录见 [固定历史快照](https://github.com/kunlong-luo/monster-apartment/blob/0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0/docs/ART-RESOURCE-CATALOG.md)，不再把旧大小当现行文件信息。实际 Git 文件清单由治理脚本生成于 `docs/resource-inventory.json`；资源状态以各领域 manifest 为准。
+> 唯一资源导航。旧 R12.52 文件级统计及历史记录见 [固定历史快照](https://github.com/kunlong-luo/monster-apartment/blob/0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0/docs/ART-RESOURCE-CATALOG.md)，不再把旧大小当现行文件信息。实际 Git 文件清单由治理脚本生成于 [resource-inventory.json](resource-inventory.json)；资源状态以各领域 manifest 为准。
 
 | 目录 | 内容 / 用途 | 事实来源 |
 | --- | --- | --- |
@@ -24,8 +24,10 @@
 
 ## 当前可见边界
 
-V3.103.0 人物与双端欢迎/大厅、V3.104.0 四房间观景已上线。V3.105.0 PC 工坊 V1 与街区 V2 已合并，Pages 待核验。共 27 个实际 WebP 转换输出（15+8+4）；原始 33 张 PNG 不改。两个透明站姿与两张临时收藏卡共享相同内容，但拥有既定不同槽路径与各自机器证据，不能仅因 SHA 一样直接删除；第三组为授权审稿证据及实际审稿图，同样保留，后续引用统一需专项验证。正式 CG 0/5、机器 0/9、工作人物 0/3、真实机械图集 0/3，原画人工签审不变。
+V3.103.0 人物与双端欢迎/大厅、V3.104.0 四房间观景已上线。V3.105.0 PC 工坊 V1 与街区 V2 已合并并通过 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45372059731) 正式部署。共 27 个实际 WebP 转换输出（15+8+4）；原始 33 张 PNG 不改。两个透明站姿与两张临时收藏卡共享相同内容，但拥有既定不同槽路径与各自机器证据，不能仅因 SHA 一样直接删除；第三组为授权审稿证据及实际审稿图，同样保留，后续引用统一需专项验证。正式 CG 0/5、机器 0/9、工作人物 0/3、真实机械图集 0/3，原画人工签审不变。
 
 ## 清理
 
 删除无用旧方案与临时文件，不删除独立原画/权利证据。先扫描静态 import、CSS、动态 URL、manifest、测试、CI、文档和外部引用，再做迁移。每批实际清理保留可追溯的旧 Git SHA、原因与机器报告。见 [R12.66](engineering/R12-66-REPOSITORY-GOVERNANCE-2026-11-24.md)。
+
+本轮实际盘点 146 个媒体文件（158,112,131 B），三组相同 SHA。每次新增/迁移/删除媒体文件，先暂存路径，再执行 `node scripts/audit-repository-inventory.mjs --write` 并提交清单；CI 复算全部字节与 SHA-256，不允许手工编造记录。原图与其派生图的身份/准入仍由各领域 manifest 管理。

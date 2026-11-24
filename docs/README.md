@@ -8,7 +8,7 @@
 | 当前产品及视觉 | [PRODUCT](../PRODUCT.md)、[DESIGN](../DESIGN.md)、[Impeccable](IMPECCABLE.md) |
 | 代码分层/存档 | [现行架构](CURRENT_ARCHITECTURE.md)、[本地存档架构](LOCAL_FIRST_ARCHITECTURE.md) |
 | 开发优先级与未完成 | [缺口台账](engineering/GAP-REGISTER-2026-11-22.md)、[GitHub Issues](https://github.com/kunlong-luo/monster-apartment/issues) |
-| 原画与资源路径 | [美术总目录](ART-RESOURCE-CATALOG.md)、[源图清单](../art-sources/source-catalog.json)、[原画制作 SOP](CHARACTER-CREATION-SOP.md) |
+| 原画与资源路径 | [美术总目录](ART-RESOURCE-CATALOG.md)、[源图清单](../art-sources/source-catalog.json)、[实际文件清单](resource-inventory.json)、[原画制作 SOP](CHARACTER-CREATION-SOP.md) |
 | 角色 CG | [艺术方向](CHARACTER-CG-ART-DIRECTION.md)、[原生生产管线](CHARACTER-CG-NATIVE-PIPELINE.md)、[当前五卡镜头表](art-reviews/CG-DIFFERENTIATION-SHOT-LIST.json) |
 | 产品长期策划 | [V3 策划索引](v3/README.md)（PRD，不等于已实现） |
 | 发布、架构决策 | [CHANGELOG](CHANGELOG.md)、[ADR](DECISIONS.md)、[工作流](https://github.com/kunlong-luo/monster-apartment/actions) |
@@ -22,7 +22,7 @@
 - `engineering/`：工程手册、风险、阶段修复及 CI 证据；缺口台账是唯一活跃状态表。
 - `v3/`：剧情、经营、收藏、装备等长期 PRD 及历史技术交付；旧实现描述仅代表当时。
 - `templates/`：角色设计任务模板；`research/`：真实玩家研究。
-- `archive/`：必要保留的历史外部资源索引，不是现行原画路径。过期无价值重复方案直接删除，原件可由 Git 历史追溯。
+- [archive/](archive/README.md)：必要保留的历史外部资源索引，不是现行原画路径。过期无价值重复方案直接删除，原件可由 Git 历史追溯。
 
 ## 维护准则
 
