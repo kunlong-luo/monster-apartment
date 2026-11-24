@@ -20,3 +20,7 @@
 查看 Actions → Desktop Visual Review → scene-art-review，先读六项实际通过/失败情况，再检查四视口六门截图、普通玩家不加载研究图、直接 URL hydration、异步图片切换及恢复。失败按实际日志定位，不必等其它页面截图任务结束才能判断该切片。完整玩法与综合视觉仍独立记录，不以专项成功替代全量验收。
 
 本轮未重绘或替换任何图片，生产 S02/S05/S06 0/3、G1 0/4、CG 0/5。下一轮取得该独立作业的结果后，处理实际门位/HUD 缺陷；正式高清美术仍需真实原图入库和人审。
+
+## R12.44 实际验收回读
+
+R12.41 同 SHA `05e8fa1baef6cefcd943956a67447cbe87fff22b` 的 Quality、完整 Desktop Visual Review 与 Pages 均已成功。R12.43 候选 #54 新增的 PC HUD 共存测试也已在独立场景作业中随原六项通过，共 7 passed (1.1m)，截图 artifact 已上传；完整玩法和综合桌面尚待结束。见 [R12.44 证据记录](R12-44-RELEASE-AND-PC-HUD-EVIDENCE-2026-11-24.md)。尚未合并或正式原画晋级。
