@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 6,
+  "updatedAt": "2026-11-24",
+  "phase": "G1",
+  "productionApproved": false,
+  "canonicalPortraitsReplaced": false,
+  "artworkCommittedToRepository": false,
+  "previousResearch": "docs/art-reviews/R12-18-FACE-IDENTITY-G1-STUDY-2026-11-23.md",
+  "mainReview": "docs/art-reviews/R12-24-G1-SOURCE-INTAKE-REGRESSION-2026-11-24.md",
+  "delivery": "R12.22 images remain in conversation ZIP; scripts, regression tests and docs are in main.",
+  "candidates": {
+    "yuesha": {
+      "name": "月纱",
+      "canonicalReferences": [
+        "public/art/yuesha-portrait-v3.webp",
+        "public/art/yuesha-bust-v3.webp"
+      ],
+      "research": "independent-single-portrait",
+      "independentSourceCreated": true,
+      "source": "art-sources/identity-r12-19/yuesha-face-identity-study-v2-original.png",
+      "sourceSha256": "42f1426f1477b9e78ad711d9b37074ec40088b2014d0f0f6dcf048d3a0c85bf2",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "webp": "art-sources/identity-r12-19/yuesha-face-identity-study-v2.webp",
+      "webpSha256": "928acb6b3e3d684d056572a13484abf7751a1d6e217e5fed4df7c10f20779931",
+      "inRepository": false,
+      "threeQuarterSourceCreated": false,
+      "canonicalIdentityContinuityApproved": false,
+      "humanApproved": false
+    },
+    "brook": {
+      "name": "泉泡",
+      "canonicalReferences": [
+        "public/art/beauty-beasts/characters/brook/face.webp"
+      ],
+      "research": "independent-single-portrait",
+      "independentSourceCreated": true,
+      "source": "art-sources/identity-r12-20/brook-face-identity-study-v2-original.png",
+      "sourceSha256": "f5f4aa7b5b74876c3111a14f1337cfe118903628e4d95c07a8c495973f438bcc",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "webp": "art-sources/identity-r12-20/brook-face-identity-study-v2.webp",
+      "webpSha256": "af4e5a1d1daa975a8188e0d177a1c49d4cafe1077902548daaa1c267fadc2949",
+      "inRepository": false,
+      "threeQuarterSourceCreated": false,
+      "canonicalIdentityContinuityApproved": false,
+      "humanApproved": false,
+      "needs": "Compare with Brook's old face.webp and generate independent 3/4 portrait, grayscale blind review and human rights/identity signing."
+    },
+    "fern": {
+      "name": "青枝",
+      "canonicalReferences": [
+        "public/art/beauty-beasts/characters/fern/face.webp"
+      ],
+      "research": "independent-single-portrait",
+      "independentSourceCreated": true,
+      "source": "art-sources/identity-r12-21/fern-face-identity-study-v2-original.png",
+      "sourceSha256": "59a7898ee2f68bd3a73d4612f647838bea19fe35ff2c6da3fd52a9fc2f16d99b",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "webp": "art-sources/identity-r12-21/fern-face-identity-study-v2.webp",
+      "webpSha256": "0a5a53d4f59e1648a50d910ae9ff6004fb713ea4cb824d3f20dc40548370f861",
+      "inRepository": false,
+      "threeQuarterSourceCreated": false,
+      "canonicalIdentityContinuityApproved": false,
+      "humanApproved": false,
+      "needs": "Compare new pointed ears and faint cheek scar with existing canonical reference; produce independent matched-angle 3/4, reviewer signature and verified rights."
+    },
+    "cinder": {
+      "name": "炽角",
+      "canonicalReferences": [
+        "public/art/beauty-beasts/characters/cinder/face.webp"
+      ],
+      "research": "independent-single-portrait",
+      "independentSourceCreated": true,
+      "source": "art-sources/identity-r12-22/cinder-face-identity-study-v2-original.png",
+      "sourceSha256": "371f407c4c158ce7d74f3ac3bc605855394806cef99329f74ebf9f821674bfa6",
+      "sourceWidth": 1086,
+      "sourceHeight": 1448,
+      "sourceBytes": 2651286,
+      "webp": "art-sources/identity-r12-22/cinder-face-identity-study-v2.webp",
+      "webpSha256": "5e63272989a3d283853a97deb8a38cc1390d5601b367383c2207d16d5fd633a9",
+      "webpBytes": 286370,
+      "inRepository": false,
+      "threeQuarterSourceCreated": false,
+      "canonicalIdentityContinuityApproved": false,
+      "humanApproved": false,
+      "needs": "Review adult/mature face-shape drift vs previous cartoon-styled pink-haired canonical portrait, metal forged twin horns vs biological interpretation, new cheek scar, consistent face across 3/4 views and usage rights"
+    }
+  },
+  "cgCards": [
+    {
+      "id": "yuesha-eclipse",
+      "state": "portrait"
+    },
+    {
+      "id": "yuesha-vow",
+      "state": "portrait"
+    },
+    {
+      "id": "brook-tide",
+      "state": "portrait"
+    },
+    {
+      "id": "fern-spring",
+      "state": "portrait"
+    },
+    {
+      "id": "cinder-ember",
+      "state": "portrait"
+    }
+  ],
+  "releaseGates": {
+    "fourFaceBlindTest": false,
+    "canonicalIdentitySignatures": false,
+    "commercialRightsSignatures": false,
+    "coverDesktopProduction": false,
+    "coverMobileProduction": false,
+    "fullBodyCgProductionCount": 0,
+    "realBrowserViewportReview": false,
+    "updatedGameAssets": false
+  },
+  "round": "R12.24",
+  "independentFullResolutionFaceStudies": 4,
+  "independentThreeQuarterFaceStudies": 0,
+  "humanApprovedIdentityCount": 0,
+  "humanApprovedCoverCount": 0,
+  "humanApprovedCgCount": 0,
+  "artworkOrigin": "R12.19 Yuesha; R12.20 Brook; R12.21 Fern; R12.22 Cinder. All independent source PNG and same-pixel WebP present only in downloadable conversation ZIP.",
+  "rejectedWrongOutputCountThisRound": 0,
+  "reviewContactSheet": "art-sources/identity-r12-22/g1-four-independent-research-contact.webp",
+  "reviewContactSheetMixedProvenance": "All four source portraits independently generated; contact sheet is only an assembled QA view.",
+  "grayscaleBlindReviewSheet": "art-sources/identity-r12-22/g1-grayscale-face-review-not-blindtest.webp",
+  "fernOldNewReview": "art-sources/identity-r12-21/fern-v1-crop-v2-independent-contact.webp",
+  "bundle": "monster-apartment-r12-22-g1-four-faces.zip",
+  "bundleValidation": "10/10 image files verified in isolated local extraction; GitHub image synchronization blocked by network/DNS; never marks identity approval",
+  "grayscaleStatus": "NOT A BLIND TEST: poses, angles and expressions are not standardized",
+  "styleContinuityConcern": "Old in-game identity anchors look illustration/anime, new face studies photorealistic CGI. Approval required before use.",
+  "intake": {
+    "archive": "monster-apartment-r12-22-g1-four-faces.zip",
+    "repoVerificationScript": "scripts/verify-g1-face-sources.mjs",
+    "imageFilesVerifiedLocally": 10,
+    "originalPortraits": 4,
+    "webpExports": 4,
+    "reviewContacts": 2,
+    "imageBinaryInGithub": false,
+    "gitNetworkAttempt": "github.com DNS resolution failed",
+    "requiresNext": "Unpack research-only art-sources into repository and reverify SHA-256; do not promote or replace canonical images",
+    "archiveBytes": 12761078,
+    "sourceIntakeTest": "scripts/tests/g1-face-source-intake.test.mjs",
+    "verifiedLocalImageCount": 10,
+    "syntheticRegressionTestsPassedLocally": 9,
+    "upstreamCiVerified": false,
+    "githubBinaryImageCount": 0,
+    "assetRepositoryShaReadbackConfirmed": false,
+    "readOnlyResearchGate": true,
+    "nextAction": "Import research PNG/WebP from ZIP to art-sources only, rerun SHA verification, Git commit and read back; do not promote or change live face assets."
+  }
+}
