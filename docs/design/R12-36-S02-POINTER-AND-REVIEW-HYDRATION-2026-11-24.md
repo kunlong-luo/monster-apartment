@@ -22,3 +22,7 @@
 ## 后续唯一优先项
 
 先验证六门真实点击回归通过，再推进 S02 正式 HUD 避让及原生 PC 3840×2160、独立手机 1080×1920 新原画。研究图仍为 1672×941 / 941×1672，不能晋级。四位角色身份和五张 CG 的正式审批状态、存档、七路由、经营规则均不变。#16/#24 保持开放。
+
+## 后续回读（R12.37）
+
+`9e4077cca445048a5d2d6f73c1e074e44fab85f4` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45322294968) 和 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45322379536) 均成功，V3.101.0 已部署。Desktop Visual Review 与 Gameplay 核查时仍在执行，不能提前签署六门交互。见 [现行设计合同](R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md)。

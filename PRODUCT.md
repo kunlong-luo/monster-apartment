@@ -28,13 +28,13 @@ web
 ## Brand Commitments
 - 用户已确认黑紫、酒红、暗金、哥特月蚀风格与此前认可的截图布局是不可随意替换的视觉基线。
 - 人物以具有彼此不同的脸型、服饰和性格的成年美女为主体，野兽为有独立身份的契约伙伴；不得换回宠物式丑怪物。
-- 大厅以全屏绘景与中央人物为主，七项目的地导航仅在大厅常驻；其他场景以统一左下角「大厅 / 地点」入口按需展开地图，保留直接跨页面跳转但不重复显示全宽底栏。
+- 大厅以全屏绘景与中央月纱为主，PC 右上角仅常驻「公寓」与世界地图，手机右上仅地图；七地点按需展开，禁止恢复底部七按钮栏。其他六场景以统一左下角「大厅 / 地点」入口按需展开地图。
 - **不使用 Lucide Sparkles（闪光星）图标**；使用 Diamond、Crown、MoonStar、Gem 等有明确含义的图标。
 
 ## Evidence on Hand
 - `public/art/beauty-beasts/characters/*/face.webp`、`public/art/yuesha-portrait-v3.webp`：已存在的独立人物肖像。
 - `public/art/rooms/*/concept-scene.svg` 为概念背景，四套正式高清无人物房间 CG 尚未全部入库。
-- `src/components/summon/`：V3.72 的电影式抽卡、十连与收藏卡组件；现有图像仍是肖像而非正式透明全身 CG。
+- `src/components/summon/`：V3.72 的电影式抽卡、十连与收藏卡组件；已有五张独立竖幅候选可供部分大卡展示，但生产 manifest 五卡均为 `portrait`，0/5 正式全身 CG。
 - 真正的视觉质量要通过 `Desktop Visual Review` 的 Playwright 截图判断，编译成功不足以代表美术验收。
 
 ## Product Principles
@@ -43,3 +43,8 @@ web
 3. 场景美术、人物立绘、热区交互与 HUD 清楚分层。
 4. 设计精简、动画有节奏、导航一致；不为了华丽增加屏幕噪音。
 5. 资源缺失或概念图未通过验收时，明确区分“肖像过渡版”和“正式高清原画”。
+
+## Current visual delivery boundaries（R12.37）
+- 欢迎页使用已有横/竖群像封面，大厅使用单人月纱主景。两者是不同画作、不同重制任务；群像新封面须先冻结四位身份基准，月纱两张卡必须同人。
+- S02/S05/S06 共六张独立横/竖研究绘景可显式游戏审稿，但正式场景 manifest 仍全为 review；不能视为已发布高清正式场景。四位 G1 新身份研究包尚未入 Git，不能说已替换头像。
+- 详见 [现行视觉合同](docs/design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md)。
