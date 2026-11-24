@@ -1,0 +1,41 @@
+{
+  "baseline": "0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0",
+  "deleted": [
+    "metadata.json",
+    ".aistudio/artifacts/brain/4a79cd63-2b40-45d8-a7f0-401c555007ec/implementation_plan.md",
+    ".aistudio/artifacts/brain/4a79cd63-2b40-45d8-a7f0-401c555007ec/implementation_plan.md.metadata.json",
+    "docs/PRODUCT_SPEC.md",
+    "docs/UI_DIRECTION.md",
+    "docs/DEVELOPMENT_PLAN.md",
+    "docs/TECH_STACK_PAGEVELA.md",
+    "docs/SPIRIT_COLLECTION_V050.md",
+    "docs/V060_TACTICAL_DEFENSE.md",
+    "management/ISSUES.md",
+    "management/SPRINT_01.md",
+    "management/TASKS.csv"
+  ],
+  "moved": {
+    "artwork/catalog.json": "docs/archive/external-artwork-catalog-2026-10-29.json",
+    "artwork/README.md": "docs/archive/external-artwork-readme-2026-10-29.md"
+  },
+  "repairedMarkdown": [
+    "docs/archive/external-artwork-readme-2026-10-29.md"
+  ],
+  "removedBytes": 52922,
+  "mediaCount": 146,
+  "mediaBytes": 158112131,
+  "duplicateGroups": [
+    [
+      "docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-05.webp",
+      "public/art/room-review/yuesha-salon-candidate.webp"
+    ],
+    [
+      "public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp",
+      "public/art/rooms/brook/review/standing-candidate.webp"
+    ],
+    [
+      "public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp",
+      "public/art/rooms/cinder/review/standing-candidate.webp"
+    ]
+  ]
+}

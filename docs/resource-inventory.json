@@ -1,0 +1,751 @@
+{
+  "schemaVersion": 1,
+  "baseline": "0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0",
+  "purpose": "physical inventory only; domain manifests govern admission",
+  "media": [
+    {
+      "path": "art-sources/characters/brook/cg/tide.png",
+      "bytes": 3081979,
+      "sha256": "ce125463cd5dcb0fbfb56577a4b388cbc747e6ed99a873b2c998e86b15822774"
+    },
+    {
+      "path": "art-sources/characters/brook/identity/front.png",
+      "bytes": 2604397,
+      "sha256": "27fea74811adae6538671b39bb2da2e43cabddd0ebfdc8366e624e3ca57a9e92"
+    },
+    {
+      "path": "art-sources/characters/brook/identity/three-quarter-candidate.png",
+      "bytes": 2497845,
+      "sha256": "8678996589d8dd85ec2a762b8fb2bd59223e7af7b6d31ab7e8cf77c41526e0f3"
+    },
+    {
+      "path": "art-sources/characters/brook/sprites/standing.png",
+      "bytes": 2734487,
+      "sha256": "72d72af5a7aa0209a1c30e7dffd86302053d1b644f75f5f0c4ad841a4de63434"
+    },
+    {
+      "path": "art-sources/characters/cinder/cg/ember.png",
+      "bytes": 2927246,
+      "sha256": "5b9403a422bf53722ded7bf5ad22b52e56c7c187436296ee595bece160814606"
+    },
+    {
+      "path": "art-sources/characters/cinder/identity/front.png",
+      "bytes": 2514530,
+      "sha256": "1be8e68d1ff1d531e59688be796db5a37f36625eaf7b6413833e7641a9de1a2e"
+    },
+    {
+      "path": "art-sources/characters/cinder/identity/three-quarter-candidate.png",
+      "bytes": 2731098,
+      "sha256": "67d6dc328d81b73cb3b76fcb810bd5572e8986edd3e6920d3558b6c0529ce5a0"
+    },
+    {
+      "path": "art-sources/characters/cinder/sprites/standing.png",
+      "bytes": 2515747,
+      "sha256": "a37b1bd4c82e4c71621af3e5174ee894bbd36e1b768652db7481169e8544c1b7"
+    },
+    {
+      "path": "art-sources/characters/fern/cg/spring.png",
+      "bytes": 3439227,
+      "sha256": "7cd94916ad3a28eb77f1c40d43d4056f8ee06b287b67e6b0c7bed1e199b840e2"
+    },
+    {
+      "path": "art-sources/characters/fern/identity/front.png",
+      "bytes": 2571925,
+      "sha256": "17b3dc6b3e07ef0eee836517e3771a0be6f2860b6c7948c5639250158358cf44"
+    },
+    {
+      "path": "art-sources/characters/fern/identity/three-quarter-candidate.png",
+      "bytes": 2735582,
+      "sha256": "4ef65ceea6e2b884a2eb512d98322fc4503ee91c0efefaf03921cc25898fdae9"
+    },
+    {
+      "path": "art-sources/characters/fern/sprites/standing.png",
+      "bytes": 2273378,
+      "sha256": "b84d9b6a91039ca4bc452ddc5b69d2ebe3913477682c9adf4c9454624ce327bc"
+    },
+    {
+      "path": "art-sources/characters/yuesha/cg/eclipse.png",
+      "bytes": 2819782,
+      "sha256": "6d1b2b19f21ff846fe6270b7f28146628f16e48e7be78cc253c1158a69cc2ddd"
+    },
+    {
+      "path": "art-sources/characters/yuesha/cg/vow.png",
+      "bytes": 3060944,
+      "sha256": "a7419918c91acacd5ab1500bf4513ee6d0f81be36c84c68c54574d08cc370f0f"
+    },
+    {
+      "path": "art-sources/characters/yuesha/identity/front.png",
+      "bytes": 2380118,
+      "sha256": "dd8a65f04f1a8804fc15a32e2c7d010591e184f612d2ed4b284e315cfda94bca"
+    },
+    {
+      "path": "art-sources/characters/yuesha/identity/three-quarter-candidate.png",
+      "bytes": 2797254,
+      "sha256": "4644b36e8d235161e8489d435adf0b3abe001ce08a495876d32cfb95f4f296ba"
+    },
+    {
+      "path": "art-sources/characters/yuesha/sprites/standing.png",
+      "bytes": 2778407,
+      "sha256": "49fe92c167c8121ef260db365dc3ec743bb02ec7531a311b49099b64133f3bfc"
+    },
+    {
+      "path": "art-sources/covers/welcome-desktop.png",
+      "bytes": 3148637,
+      "sha256": "ae0b22c5c454897d8f0b831216a3d205d0cb820fd5a2cad2070d422a6ccf39c4"
+    },
+    {
+      "path": "art-sources/covers/welcome-mobile.png",
+      "bytes": 2956299,
+      "sha256": "78591af84370e957dd08c830bdbf25f5f05e30cf0dff39223fa37c5fef49fad2"
+    },
+    {
+      "path": "art-sources/review/2026-11-22/fern-spring-bow-v1.png",
+      "bytes": 2887711,
+      "sha256": "167235e2f2d65bf1778011830cebc834e10cffb8437cbd985ffdb1c1b53028fd"
+    },
+    {
+      "path": "art-sources/review/2026-11-22/orders-desktop-v1.png",
+      "bytes": 2547230,
+      "sha256": "e02d879247c8eb2de38ba2ae09fb8021454b9174891c74b48f7db1284fe152ac"
+    },
+    {
+      "path": "art-sources/review/2026-11-22/orders-mobile-v1.png",
+      "bytes": 2840585,
+      "sha256": "4cec5d4c78f7eabb0ecabf17932c8316f0c7a0e4b7f185d29043a9326c10c0b1"
+    },
+    {
+      "path": "art-sources/review/2026-11-22/warehouse-desktop-v1.png",
+      "bytes": 2832702,
+      "sha256": "6a2f5a55beedd77549b3d81963c642c00450014ef965571163cabb71413375a1"
+    },
+    {
+      "path": "art-sources/review/2026-11-23/apartment-six-door-desktop-v1.png",
+      "bytes": 3071336,
+      "sha256": "5dd2fa1a943064fc9b7996f3329068ba174582f12c746a878defa2b96f7acad5"
+    },
+    {
+      "path": "art-sources/review/2026-11-23/apartment-six-door-mobile-v1.png",
+      "bytes": 2964735,
+      "sha256": "cffd902c4a4c60cabab52d593516459a5f7e54bb46b7657e84c5b8e1cea99a58"
+    },
+    {
+      "path": "art-sources/review/2026-11-23/warehouse-mobile-v1.png",
+      "bytes": 2889158,
+      "sha256": "2261ffccb6021b7065ddd95abb722ecd7fbd29b185ce3a3cda191f6aa39df6b9"
+    },
+    {
+      "path": "art-sources/rooms/brook/background.png",
+      "bytes": 3353183,
+      "sha256": "9ef0471e82061fb1d73a93879fec15c3d5b073503fec9cd0b90639e3c01d661d"
+    },
+    {
+      "path": "art-sources/rooms/cinder/background.png",
+      "bytes": 3115964,
+      "sha256": "7ba8ef05f75c641ca370196a151f94b48cd2c3cff97e5c0cb80f733028f080ea"
+    },
+    {
+      "path": "art-sources/rooms/fern/background.png",
+      "bytes": 3443214,
+      "sha256": "2f8826c1ae051a1b9f6e092e5e86a1a34e6977a025e10c84c2dde5e8bb073d00"
+    },
+    {
+      "path": "art-sources/rooms/fern/bedroom-candidate.png",
+      "bytes": 3313487,
+      "sha256": "0a5c10c4e0482e73f82fda49581cca6a8d606e3008aca02c925e7b91fde0613b"
+    },
+    {
+      "path": "art-sources/rooms/yuesha/background.png",
+      "bytes": 2920537,
+      "sha256": "836ae3095ee66a2f378725f686c9a7938f40044414da32517c25ee0f050fa37d"
+    },
+    {
+      "path": "art-sources/rooms/yuesha/bedroom-candidate.png",
+      "bytes": 2806135,
+      "sha256": "44061ca5cf09a330eb932e69093e8d53dbfa2ddf5cff965a270273154e3d6b8f"
+    },
+    {
+      "path": "art-sources/scenes/apartment/desktop-candidate.png",
+      "bytes": 2969990,
+      "sha256": "2d5ec7cb60d78ab41674c07cd002b69700587c00cc0e406a8bcf0c87067bd4d1"
+    },
+    {
+      "path": "art-sources/scenes/apartment/mobile-candidate.png",
+      "bytes": 3008274,
+      "sha256": "3ad23eef9f49f7f3b8b4f35ae567c6a1861cc6a8026f88c4e96cea9a781bb1fd"
+    },
+    {
+      "path": "art-sources/scenes/lobby/desktop.png",
+      "bytes": 2588990,
+      "sha256": "747004ffdfe410e3986366122acb54d3de5b3ace0cd72ef2767c1d3cfdcde562"
+    },
+    {
+      "path": "art-sources/scenes/lobby/mobile.png",
+      "bytes": 2501685,
+      "sha256": "4f2a59a6e80dfdaec26607260c83632b0c54b5ca3306a0edf37d2dd7f4c8cccb"
+    },
+    {
+      "path": "art-sources/scenes/town/desktop-candidate-v1.png",
+      "bytes": 3265423,
+      "sha256": "61894fe6b21c44a9621bc839c5ca764a88e63467887c83629af905e8a774ad63"
+    },
+    {
+      "path": "art-sources/scenes/town/desktop-candidate-v2.png",
+      "bytes": 3248661,
+      "sha256": "139cd9b20cb8d464a605bdcbbe9cdc9cd15489439035a7b57fd04b6d9d4d4b08"
+    },
+    {
+      "path": "art-sources/scenes/workshop/desktop-candidate-v1.png",
+      "bytes": 3131454,
+      "sha256": "09357498ad9218720f41ad984e259fabce42f638ca2de7feef166007968272f5"
+    },
+    {
+      "path": "art-sources/scenes/workshop/desktop-candidate-v2.png",
+      "bytes": 3103549,
+      "sha256": "dcaf5f597eaa60255de9d74bba79708eba88884b8909c222ed0763f94ae385bc"
+    },
+    {
+      "path": "docs/art-reviews/R12-09-ART-CONTACT-SHEET-REVIEW-ONLY.jpg",
+      "bytes": 426045,
+      "sha256": "de30e0186fe459fe23a320c98052678c8a6af2a5218712d623116174284e27ad"
+    },
+    {
+      "path": "docs/art-reviews/R12-14-S02-mobile-crop-preview.jpg",
+      "bytes": 192401,
+      "sha256": "66342e6cbc3dd1e9e39c599dec4bf0bfb339424631ac1b869b80dfda9f28742e"
+    },
+    {
+      "path": "docs/art-reviews/pose-differentiation-2026-11-21.webp",
+      "bytes": 428690,
+      "sha256": "34f37143622a3a96d3f26aff88a45d2f9b4d2952eb1fe23325754d5385a59c7b"
+    },
+    {
+      "path": "docs/art-reviews/pose-differentiation-five-cards-2026-11-22.webp",
+      "bytes": 487286,
+      "sha256": "be38542b1d05dae97cefedf50682a5653972457041265d74d58c1dc25b0e01af"
+    },
+    {
+      "path": "docs/art-reviews/pose-differentiation-five-cards-brook-v2-2026-11-22.webp",
+      "bytes": 432064,
+      "sha256": "64c3469e8ace7b450b3066e30cffaa49ab96c6f1a9f98cca6f8d5e26cbd1ce00"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-01.webp",
+      "bytes": 157098,
+      "sha256": "bb8c007957aac1bf315fb8cb04c8d3df09a643b3168b01f4edf05e58a05b8fcd"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-02.webp",
+      "bytes": 109326,
+      "sha256": "94ded9b10fa85e6e129e3942c994ca07ca9943fbf57817affb395025070bbb91"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-03.webp",
+      "bytes": 135414,
+      "sha256": "4362cff8782d85d4eea8e8291065e9d2f5cb0bd24c8030ddcc9fefc06221e949"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-04.webp",
+      "bytes": 107348,
+      "sha256": "9b55ab31975e0af2c28c02400f1b97cbb9ea05b1e2137d1556c6835ea067623f"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-05.webp",
+      "bytes": 155188,
+      "sha256": "555d079e3844588e09cb3f80265cfc4d1037bc788ea88d227bf19670e585ec89"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-06.webp",
+      "bytes": 115722,
+      "sha256": "658341292080b718c66544317b2ac4325e41316af237eebc617ef3f33645cf37"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-07.webp",
+      "bytes": 149518,
+      "sha256": "3aca38dc331e51ca7f0f1a4f3940aa8091148d744793db395e8e6a583d99f5d7"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-08.webp",
+      "bytes": 180452,
+      "sha256": "cc5ff75a9e2a8a55666f4d6471a1027f6718a896ffa957ee4881bbe9c8f99234"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/full-index-01.webp",
+      "bytes": 108752,
+      "sha256": "26590530a667d0493f2dd5688edcdcad0dc50c590b9dfadb3b40438cbcbbaa7a"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/full-index-02.webp",
+      "bytes": 109058,
+      "sha256": "b3b5fdca1bcc54d6b521a0024bfe77ec0c7d9d13b69d4a38d1dc8a2801f399ee"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/full-index-03.webp",
+      "bytes": 117502,
+      "sha256": "252075a17e86105fd677bfa41c0b4a0ea2f33900d53496a885ad275acf0dc6db"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/full-index-04.webp",
+      "bytes": 107732,
+      "sha256": "fa498b4d526bbdc57fd682f9a8ac1f9aaf27cc79a79147b933bd60475e6e5f6e"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/full-index-05.webp",
+      "bytes": 52246,
+      "sha256": "74e191fbaeef5267d955099a09200e8dd1cd7b8f11faf83effbc506400e6f8a8"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor-full-pack/review-contact-sheet.webp",
+      "bytes": 83548,
+      "sha256": "b5e8d31aa8461cb5dfef84ce416f2fe05560756454f8429de703b13fbb7d5de9"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor/publisher-preview-01.png",
+      "bytes": 2714329,
+      "sha256": "1d864b6fd5203dc823f69dfc1a417af91cc9f4bd8ad42d5b01721679af2b8f49"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor/publisher-preview-01.review.webp",
+      "bytes": 78126,
+      "sha256": "9779870955ff235865e6b3e2c83da11f4b54ab5320cc06cbaaa06d52162a44ef"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor/publisher-preview-02.png",
+      "bytes": 2384795,
+      "sha256": "d0517c4fa0c4326d926b00969e05836582f0e372fa7c7a7ca2af9871fa985061"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor/publisher-preview-02.review.webp",
+      "bytes": 63028,
+      "sha256": "b90fe9f1f4b217d53c8e2038b1ca313d5424cb63a71387a2bc67314a3cf582ce"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor/publisher-preview-03.png",
+      "bytes": 1905558,
+      "sha256": "85e5a2fcec447bcb2503ce2d75b59603ad0de6eec66b0ac9f54494057dbf95d5"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-gothic-manor/publisher-preview-03.review.webp",
+      "bytes": 46562,
+      "sha256": "3464326f7842b1f4b29d5ce8c17055e245d4fb6ed20b73d77543236e9fd5ede4"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-vampire-living-room/publisher-preview-01.jpg",
+      "bytes": 672316,
+      "sha256": "864974bc3c3c54a731fbd0317d35ce65a289072ce7a9407289573c10d54fb423"
+    },
+    {
+      "path": "docs/art-reviews/sources/winechan-vampire-living-room/publisher-preview-01.review.webp",
+      "bytes": 52004,
+      "sha256": "fe67ade1411a5bf9266d2c3b2f5d9eee3f8acf5e1320e9608082ee75ffc0f31e"
+    },
+    {
+      "path": "docs/art-reviews/yuesha-eclipse-pose-v1-v2-qa-2026-11-22.webp",
+      "bytes": 353470,
+      "sha256": "5cb51a355a63a3471b7cea53142db006453b03d7229fb14020e574d059d9f2be"
+    },
+    {
+      "path": "docs/design/2026-10-29-gothic-red-gold/layout-map.svg",
+      "bytes": 4145,
+      "sha256": "37176f552dc3f2c84a652ce89f2af905d22e261885fa8e7f99a60fdda227fef8"
+    },
+    {
+      "path": "public/art/a05/foreground-ornaments.svg",
+      "bytes": 2876,
+      "sha256": "fdf3592154b016bc01438517b65e0a25846bff5ae1d3c963cf119bfb59e7297f"
+    },
+    {
+      "path": "public/art/a05/moonlight-tracery.svg",
+      "bytes": 4827,
+      "sha256": "a9c0a4e9ec7c95e8974bf02bad2dfbd2a13b86528a4cb3f2e51339291aabfeb6"
+    },
+    {
+      "path": "public/art/a05/rose-petal.svg",
+      "bytes": 986,
+      "sha256": "8539cd1ddcd7bf0b73c21c37fd1e31f7bc1a2ec11e4aef116780c6542071947f"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp",
+      "bytes": 821724,
+      "sha256": "b2da93867d25eb8efdde530f27a368f47e5ae357d65b32c6a03e846c026c2bc8"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v1.webp",
+      "bytes": 514656,
+      "sha256": "5a182181b0a562ec9be81546bbb227ded7ec7480d0f6ed2c247cd312e3dd54fa"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v2.webp",
+      "bytes": 563050,
+      "sha256": "dbb1e0d09c09bb948ea0bedbf474dfeda25ffdb13060a42db063c6b55279dacb"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/brook/face.webp",
+      "bytes": 92138,
+      "sha256": "ef106e8e6dd239e44ab7ec4b93b62fa694a6a19ce7b056889f677564878b7926"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp",
+      "bytes": 593462,
+      "sha256": "c4b015647ffcf3f919b8d180c394245ff7c5ac5d21a0a37b9e4ef81603f679b9"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/cinder/cg-ember-pose-study-v1.webp",
+      "bytes": 591622,
+      "sha256": "37b1865233799c582aea5917655bc27b9f2deaa928b633becceeeb41814fb808"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/cinder/face.webp",
+      "bytes": 83042,
+      "sha256": "b8a011bf40dd41272e5d769ef4831cbb44eb854d0cf4856e464a0683f24997c1"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp",
+      "bytes": 601544,
+      "sha256": "9d5cdf45290e5705944b906d28bc46149718d8790ed544ee72c3196c3aa3d0ee"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/fern/cg-spring-pose-study-v1.webp",
+      "bytes": 581470,
+      "sha256": "d67bdc55becc0cee88407e16743479343dc7bdcf9f91049720cded420acaa1cc"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/fern/face.webp",
+      "bytes": 75438,
+      "sha256": "5c0da9136d313c4d75250b0b27739597e4c95f6a2ede07eb857550a994bf9908"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/fern/review/cg-spring-bow-v1.webp",
+      "bytes": 505954,
+      "sha256": "6681c66a34b5ad21af59cbd6476fd99d28b7ea97d4534b77bbe063164e654fcb"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp",
+      "bytes": 418170,
+      "sha256": "a0373a2c8f39d20d0ebccb5caf25d85e2241658207b98d3f14d861d0e9533c86"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v1.webp",
+      "bytes": 526334,
+      "sha256": "1a94aa3b7f4a89abd3347b2fdd28e9509de4a11ef7f9c255f751d633ff9f36e0"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v2.webp",
+      "bytes": 513912,
+      "sha256": "6f3f41109ccef8e3d1fcb1e96176ae241c27b609ab60fa47652fb34cd6cc0aa9"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp",
+      "bytes": 494826,
+      "sha256": "9590d80f332c7211e5d42c6e791a0c89caff0bd0be5286f502e7e5b16e6b0212"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/yuesha/cg-vow-pose-study-v1.webp",
+      "bytes": 474174,
+      "sha256": "876ff5783fe7ffe940dc65f79f05b729c110a850f8495234da8fbe94f35b9dc9"
+    },
+    {
+      "path": "public/art/beauty-beasts/characters/yuesha/face.webp",
+      "bytes": 53084,
+      "sha256": "7507d539b84357cf5994e6f6e88f1aeed17374203730d755ea293511c0a5a55a"
+    },
+    {
+      "path": "public/art/beauty-beasts/cover/world-cover-mobile.webp",
+      "bytes": 489132,
+      "sha256": "9a9c42e30ccdb52aae91422d0dbc7b2d9bcebe2a8e39c2935f36c68fb3aa888f"
+    },
+    {
+      "path": "public/art/beauty-beasts/cover/world-cover.webp",
+      "bytes": 526046,
+      "sha256": "abe1c65b61b85b4fc5c855d40871aed897358cca70f08f22d5ee4a13fbbaa50b"
+    },
+    {
+      "path": "public/art/feature-postcards/gothic-workshop.webp",
+      "bytes": 59254,
+      "sha256": "dcf2d3cb2da4e5bd025c28e8ee2dbb2fbc6222fffb907b15855cec6aec054428"
+    },
+    {
+      "path": "public/art/feature-postcards/moonlit-street.webp",
+      "bytes": 34350,
+      "sha256": "720fe30a6155dce7f58e92aac57254e1d70aa56f30d6202887fa30e35bff4c4e"
+    },
+    {
+      "path": "public/art/lobby-hero-v2.webp",
+      "bytes": 209336,
+      "sha256": "6438258c08a20caf85bc51956fafcdbe0b48a8e7171d425dd43b5009a99cc9db"
+    },
+    {
+      "path": "public/art/lobby-hero-v3.webp",
+      "bytes": 435400,
+      "sha256": "3a7a3e6fe72b37da246c2f13f5012592455be26ed64be092c51a917ae75c2b79"
+    },
+    {
+      "path": "public/art/lobby-hero-v4-mobile.webp",
+      "bytes": 344590,
+      "sha256": "6da485e42db2828b2d5801999903992d3187e32eeffed7f59f5e6f712d216ad1"
+    },
+    {
+      "path": "public/art/lobby-hero-v4.webp",
+      "bytes": 353842,
+      "sha256": "fa3549bc9f5956d787bec682b9b8c46080ea00b4e99ebbc93a357eee0cf90a7c"
+    },
+    {
+      "path": "public/art/room-review/yuesha-salon-candidate.webp",
+      "bytes": 155188,
+      "sha256": "555d079e3844588e09cb3f80265cfc4d1037bc788ea88d227bf19670e585ec89"
+    },
+    {
+      "path": "public/art/rooms/brook/concept-scene.svg",
+      "bytes": 9598,
+      "sha256": "813386f2c43b01008ebe90818dbfc58289de0ed5c5c5a11b9f88124a2e4dfd4d"
+    },
+    {
+      "path": "public/art/rooms/brook/review/background-candidate.webp",
+      "bytes": 621298,
+      "sha256": "ed5318967d30c656dd27cda785fcad47ac34decd62ebcbbf1618068f00f04750"
+    },
+    {
+      "path": "public/art/rooms/brook/review/standing-candidate.webp",
+      "bytes": 821724,
+      "sha256": "b2da93867d25eb8efdde530f27a368f47e5ae357d65b32c6a03e846c026c2bc8"
+    },
+    {
+      "path": "public/art/rooms/cinder/concept-scene.svg",
+      "bytes": 12259,
+      "sha256": "4482c76f88c42c88780a2c55df6c74c8a9c84dee739e774d3b693429eca17601"
+    },
+    {
+      "path": "public/art/rooms/cinder/review/background-candidate.webp",
+      "bytes": 571828,
+      "sha256": "274aa03f9ba8558b8f3d0cde651b9e17ac5671d33e2f4e2a952cd2793c41e756"
+    },
+    {
+      "path": "public/art/rooms/cinder/review/standing-candidate.webp",
+      "bytes": 593462,
+      "sha256": "c4b015647ffcf3f919b8d180c394245ff7c5ac5d21a0a37b9e4ef81603f679b9"
+    },
+    {
+      "path": "public/art/rooms/fern/concept-scene.svg",
+      "bytes": 24221,
+      "sha256": "e40fec4510aeb681a854da5d65c5bd0eb7b03c635e526c82223d0c7373376692"
+    },
+    {
+      "path": "public/art/rooms/fern/review/background-candidate.webp",
+      "bytes": 648462,
+      "sha256": "2d4f90d154dc188e93199ddad550a5270d4b812dce6f4e5ff0c00306eeb4ca96"
+    },
+    {
+      "path": "public/art/rooms/fern/review/standing-candidate.webp",
+      "bytes": 585116,
+      "sha256": "272a4f861a49382a2c8a8c29fa1b64c782742a8e87ee39d99376fc13b9a4c6df"
+    },
+    {
+      "path": "public/art/rooms/yuesha/concept-scene.svg",
+      "bytes": 21566,
+      "sha256": "06cee380a1354cd24f097dc7de2165d8e17ee16937e2fe4a65ef686d815d1f9a"
+    },
+    {
+      "path": "public/art/rooms/yuesha/review/background-candidate.webp",
+      "bytes": 479202,
+      "sha256": "5c1ccbacef5680cd08be6d67435a45695d2fc98ee64a172874ca975ea0980a83"
+    },
+    {
+      "path": "public/art/rooms/yuesha/review/standing-candidate.webp",
+      "bytes": 664030,
+      "sha256": "d6c204aad016661636f5c6f778175a1bb4dc083b1d1c77a9bba4a897fbfbe2b7"
+    },
+    {
+      "path": "public/art/world-scenes/review/2026-11-22/orders-desktop-v1.webp",
+      "bytes": 382216,
+      "sha256": "388da2122c8a41bd66e3250bd0a8d6f331a1f56937a288333e92d154a8d17b95"
+    },
+    {
+      "path": "public/art/world-scenes/review/2026-11-22/orders-mobile-v1.webp",
+      "bytes": 463436,
+      "sha256": "6a80446684a1710112f8998681920d2553ba00263a279fcc4b671e31b4360f1f"
+    },
+    {
+      "path": "public/art/world-scenes/review/2026-11-22/warehouse-desktop-v1.webp",
+      "bytes": 387164,
+      "sha256": "23f4fb92db8d9fcd7294b356c526ab975d37f6878b773861ea574db107d5abf4"
+    },
+    {
+      "path": "public/art/world-scenes/review/2026-11-23/apartment-six-door-desktop-v1.webp",
+      "bytes": 479930,
+      "sha256": "61aa2ad62dac99a8a2d976cb77361bcc1a41dc5e2dd855444f7fe84a46599f31"
+    },
+    {
+      "path": "public/art/world-scenes/review/2026-11-23/apartment-six-door-mobile-v1.webp",
+      "bytes": 423086,
+      "sha256": "9aa1b606f36f657158c96bd8019927d8e9f4cbe6ea7263631e1fa895e779ebe6"
+    },
+    {
+      "path": "public/art/world-scenes/review/2026-11-23/warehouse-mobile-v1.webp",
+      "bytes": 419522,
+      "sha256": "c9d00ff314c86aa6c600ae1c55f2c36c723a2b9c86286b71f44a349fd22f8e7c"
+    },
+    {
+      "path": "public/art/world-scenes/town-moonlit-gate.webp",
+      "bytes": 120894,
+      "sha256": "9df664f524ae8222e5bb6ceec956f4ce6044824e855254ed3de31913cb21558c"
+    },
+    {
+      "path": "public/art/world-scenes/town/review/desktop-candidate-v1.webp",
+      "bytes": 629238,
+      "sha256": "d99c98f5bf9d49d671bf64239758924d4c37530a4902fb41622ba901d338e816"
+    },
+    {
+      "path": "public/art/world-scenes/town/review/desktop-candidate-v2.webp",
+      "bytes": 636018,
+      "sha256": "e7b679ee38cdf9db68318e2b69e53464f00c9495c8ad449133f56e6e37bfdbd4"
+    },
+    {
+      "path": "public/art/world-scenes/workshop-gothic-hall.webp",
+      "bytes": 180542,
+      "sha256": "b7bab545f44e1be6e2a53c9b201c632075d20e6a145f88299fb4123aa221412f"
+    },
+    {
+      "path": "public/art/world-scenes/workshop/review/desktop-candidate-v1.webp",
+      "bytes": 599408,
+      "sha256": "066ccc61b44efc0caf194575cc1ce44cf01ff8d3d68bc71022ae388f4452029e"
+    },
+    {
+      "path": "public/art/world-scenes/workshop/review/desktop-candidate-v2.webp",
+      "bytes": 598416,
+      "sha256": "ecc6cfc106409cfa3da40932dbbffc2b27ab9685ef39c5878716582205be0383"
+    },
+    {
+      "path": "public/art/yuesha-avatar-v3.webp",
+      "bytes": 70710,
+      "sha256": "f7e2c48e9910492bf88b4f93f47e5f4df392226a82ce868f50842d989b5f747d"
+    },
+    {
+      "path": "public/art/yuesha-bust-v2.webp",
+      "bytes": 116672,
+      "sha256": "e60dbca135f17d5ad8ca7ec0649a67d1231608fb0d400cb3a122e95ebf520f3d"
+    },
+    {
+      "path": "public/art/yuesha-bust-v3.webp",
+      "bytes": 151936,
+      "sha256": "27fa6113d950df4c52c49207b94701d1c468a63112709f10c54d2b7417be638b"
+    },
+    {
+      "path": "public/art/yuesha-portrait-v2.webp",
+      "bytes": 87672,
+      "sha256": "c63ea05b05fd8ef6907d25cb64e05e818b4b42991f5ad3f14ad8910d5d2d7ccf"
+    },
+    {
+      "path": "public/art/yuesha-portrait-v3.webp",
+      "bytes": 259898,
+      "sha256": "8542fe9ebf6d53dbbf28a67f0179ba6523bf3e3a87217fe777f612150c860695"
+    },
+    {
+      "path": "public/assets/aistudio/Gothic_Moonlit_Summoning_Screen_8181b3a5.png",
+      "bytes": 2726560,
+      "sha256": "8181b3a5ee911f3b1ebc9724411c5220935aa4f850086d0e44334c82dbad46d2"
+    },
+    {
+      "path": "public/assets/aistudio/image_26a43a92.png",
+      "bytes": 3154947,
+      "sha256": "26a43a923d7ecf83b503e1f2a034f1669f8702cf09e3c53b5ffd532d3ff4a865"
+    },
+    {
+      "path": "public/assets/aistudio/image_6273408e.png",
+      "bytes": 3279821,
+      "sha256": "6273408ef4982e85eb74b30d6475a0a3dd9c8487cb45cc4f0b05b1add4ab6bf3"
+    },
+    {
+      "path": "public/lobby-hero.webp",
+      "bytes": 157466,
+      "sha256": "90f537d37e01bf53bb58a1b6d4ce84f040cdf86cc21a71ae2b618a9553eeb0cc"
+    },
+    {
+      "path": "v2/art/garden-art-review.avif",
+      "bytes": 4204,
+      "sha256": "db7d646654a016e8788c104eea1b3514aa6defe5c6924c74a4de47ed0dca196f"
+    },
+    {
+      "path": "v2/art/kiln-art-review.avif",
+      "bytes": 4402,
+      "sha256": "ddd0a7e1fdec2bb23d0b0b182887cb92a3e5a3106730ea0efe6963dcc403d1e0"
+    },
+    {
+      "path": "v2/art/moon-workshop.avif",
+      "bytes": 2995,
+      "sha256": "668a94a68cfcd1ed14d2369b6a5632436f5b810a5c9dbeb57f6471627382508c"
+    },
+    {
+      "path": "v2/art/moonstone-floor.avif",
+      "bytes": 822,
+      "sha256": "de65f6532241fabb7a43f6d2583045c941f3c25a93b050122b1afdf2b71e0e10"
+    },
+    {
+      "path": "v2/art/moonveil-portrait.avif",
+      "bytes": 2938,
+      "sha256": "b7197a6bdf897065455bf74675aafb9cc08a37742ed89ee143f820b06fc9a224"
+    },
+    {
+      "path": "v2/art/production/machines/garden/lv1.webp",
+      "bytes": 36472,
+      "sha256": "0e02ff929b46d9ddb5ea9a4ca0ac54f3f4c688489a60e1f3153e7630d6bce933"
+    },
+    {
+      "path": "v2/art/production/machines/garden/lv2.webp",
+      "bytes": 36586,
+      "sha256": "37141d17a90ddc5a66c6208722a80a1bad4fd29917989fd289f527a798690d14"
+    },
+    {
+      "path": "v2/art/production/machines/garden/lv3.webp",
+      "bytes": 31590,
+      "sha256": "80f67a9a88248f9723c3e4dc5ebe5a682b006b2cc65e7af468941a9e341767f1"
+    },
+    {
+      "path": "v2/art/production/machines/kiln/lv1.webp",
+      "bytes": 29524,
+      "sha256": "88a4c4538dd5682e35ec2e34318c68e0930d4533e4cbc61fa34690870ffacd2e"
+    },
+    {
+      "path": "v2/art/production/machines/kiln/lv2.webp",
+      "bytes": 30950,
+      "sha256": "38eaad7451b8b6d5f539b6e5adf3f422eef9c49491e597e517ef5f032a6faf0e"
+    },
+    {
+      "path": "v2/art/production/machines/kiln/lv3.webp",
+      "bytes": 29240,
+      "sha256": "203e0704c2617ac64c98c74a9014a18d2fa650e78b528cc48f7fc87493c287a1"
+    },
+    {
+      "path": "v2/art/production/machines/well/lv1.webp",
+      "bytes": 30520,
+      "sha256": "54a7a0995306d896392091f5cdf6b696138b0e2cec90dd141814e12674c12f7d"
+    },
+    {
+      "path": "v2/art/production/machines/well/lv2.webp",
+      "bytes": 34550,
+      "sha256": "8f04d6fe2a9e0ba9f334f71a18a01440313224b9396d86cf043c9ba94d270a1c"
+    },
+    {
+      "path": "v2/art/production/machines/well/lv3.webp",
+      "bytes": 33168,
+      "sha256": "5c7f8893d907a1df82785fb189102996bc6baa307ead63892c3f21b227d6ad2d"
+    },
+    {
+      "path": "v2/art/well-art-review.avif",
+      "bytes": 2817,
+      "sha256": "34abf06e09b6a04195677ac76cb9ac76b1650cfaaefb6b71c36e28ab6ec01f3f"
+    }
+  ],
+  "duplicateGroups": [
+    [
+      "docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-05.webp",
+      "public/art/room-review/yuesha-salon-candidate.webp"
+    ],
+    [
+      "public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp",
+      "public/art/rooms/brook/review/standing-candidate.webp"
+    ],
+    [
+      "public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp",
+      "public/art/rooms/cinder/review/standing-candidate.webp"
+    ]
+  ]
+}
