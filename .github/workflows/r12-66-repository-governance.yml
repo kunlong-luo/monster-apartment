@@ -1,0 +1,35 @@
+name: R12.66 Repository Governance
+on:
+  push:
+    branches: [r12-66-repository-governance]
+    paths:
+      - 'scripts/cleanup-r12-66-repository.py'
+      - '.github/workflows/r12-66-repository-governance.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    if: github.ref == 'refs/heads/r12-66-repository-governance'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan tracked references, prune obsolete documents, build real asset index
+        run: python3 scripts/cleanup-r12-66-repository.py
+      - name: Record exact changes
+        run: |
+          git add -A
+          git diff --cached --stat
+          git diff --cached --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(repo): remove obsolete parallel directories and inventory real art"
+          git push origin HEAD:refs/heads/r12-66-repository-governance
+      - uses: actions/upload-artifact@v4
+        with:
+          name: r12-66-cleanup-evidence
+          path: |
+            docs/engineering/r12-66-cleanup-report.json
+            docs/resource-inventory.json

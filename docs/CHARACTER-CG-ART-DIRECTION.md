@@ -1,3 +1,5 @@
+> **现行身份修正（R12.66）**：本文早期银发身份、旧候选与历史产出描述仅代表当时。当前 V3.103.0 已部署的新身份及新卡候选以 [角色 SOP](CHARACTER-CREATION-SOP.md)、[实际转换清单](../public/art/r12-53-transition-manifest.json)、[五卡镜头表](art-reviews/CG-DIFFERENTIATION-SHOT-LIST.json) 为准；月纱为黑紫发赤瞳。正式 CG 仍 0/5，勿将以下旧银发要求当作现行规范。
+
 # 《怪物公寓》角色 CG 制作与验收 · V3.79
 
 > 当前状态：月纱跨页面身份已统一，但五张正式全身 3:4 CG 尚未完成。此文是执行规格，不是通过人工美术审核的证书。

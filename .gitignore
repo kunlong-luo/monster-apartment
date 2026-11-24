@@ -28,3 +28,6 @@ next-env.d.ts
 
 # AI Studio transient duplicate media; keep explicit reference originals
 .aistudio/**/.tempmediaStorage/
+
+# AI Studio generated local workspace (reference originals live in public/assets/aistudio)
+.aistudio/

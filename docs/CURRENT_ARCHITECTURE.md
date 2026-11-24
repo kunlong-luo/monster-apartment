@@ -8,7 +8,7 @@ Next.js App Router + React + TypeScript + Tailwind CSS v4 + Motion + PixiJS 8。
 
 PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`、`gothic-atmosphere.js`，连同美术贴图复制至 `out/workshop/assets/`。本地端口 3901 只服务这些资源。
 
-正式站没有 `/classic`、`/legacy`、`/survival` 或独立工坊实验室，也不再依赖 Phaser、Zustand 或旧 UI 组件库。
+正式站没有 `/classic`、`/legacy`、`/survival` 或独立工坊实验室，不再依赖 Phaser 或旧 UI 组件库。根依赖包含 Zustand 与 Dexie；不得将状态库误列为已删除。
 
 存档键依旧为 `monster-apartment:cozy:v1` 与 `monster-apartment:workshop-v2-lab`。两条经营线目前独立。
 
@@ -17,10 +17,10 @@ PixiJS 运行时代码由 `v2/scripts/build.mjs` 打包为 `workshop-runtime.js`
 ## 单一 UI 所有权与样式边界（2026-10）
 
 - React + TypeScript：控制按钮、工匠清单、设备目录、委托面板、仓库数据、资源 HUD。工坊按钮与列表收敛在 `src/components/moonwork/workshop-controls.tsx`。
-- PixiJS：独立打包的 2D 场景、机器绘景、角色动画、格子命中和视觉反馈。运行时 `v2/src/main.ts` 只负责挂载、派发指令、暂态选择及本地存档；不得用 `innerHTML` 或逐个更新 React 控件。
+- PixiJS：独立打包的 2D 场景、机器绘景、角色动画、格子命中和视觉反馈。运行时 `v2/src/runtime.ts` 只负责挂载、派发指令、暂态选择及本地存档；不得用 `innerHTML` 或逐个更新 React 控件。
 - 正式工坊仅挂载在 Next 的 `/workshop/`；`v2/src/runtime.ts`、`v2/scripts/build.mjs` 是必需的 Pixi 资源入口及编译工具，不是旧 UI。
-- CSS：共七份，`app/globals.css` 负责 Tailwind 主题；其他文件目前仍包含复杂哥特式绘景、响应式布局与特殊视觉效果。继续将普通控件样式迁移至 Tailwind，但不机械删除已在场景中使用的规则。
-- JavaScript：无 `.js`/`.jsx` 正式源文件。六个 `.mjs` 仅用于 lint/PostCSS、构建、资源审核与本地静态服务；这些属于现代 Node 工具链，不需要强制改成 TS。
+- CSS：`app/globals.css` 负责 Tailwind 主题；其他文件目前仍包含复杂哥特式绘景、响应式布局与特殊视觉效果。继续将普通控件样式迁移至 Tailwind，但不机械删除已在场景中使用的规则。
+- JavaScript：无 `.js`/`.jsx` 正式源文件。维护性 `.mjs` 用于 lint/PostCSS、构建、资源审核与本地静态服务；这些属于现代 Node 工具链，不需要强制改成 TS。
 - 技术债：`src/core/cozy-engine.ts`、工坊规则模块及 `v2/src/workshop-lab-stage.ts` 仍需按职责逐步拆分。工坊 React 与 Pixi 暂态选中状态已采用显式 TypeScript 类型回调接口，不再通过 DOM dataset/custom events 反向读取状态；保留现有存档键及行为。
 
 ## 工坊领域模块（第二轮拆分）

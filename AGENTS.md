@@ -43,7 +43,7 @@
 
 - **先读 [文档索引](docs/README.md)**，按 [快速迭代执行手册](docs/engineering/ITERATION-PLAYBOOK.md) 做最小可见切片、风险分层检查、证据化交付。
 - 现行缺口与风险登记在 [2026-11-22 台账](docs/engineering/GAP-REGISTER-2026-11-22.md)；任何 `DONE` 都需用对应页面、源码/资源清单、CI SHA 与必要人审验证。
-- `docs/DEVELOPMENT_PLAN.md`、`docs/TECH_STACK_PAGEVELA.md`、旧 Phaser/Vite ADR 与早期 issue 条目均属于**历史资料**；遇到冲突以当前工程和最新 ADR 为准。
+- 早期 Phaser/Vite 方案和旧 issue 条目均属于**历史资料**；遇到冲突以当前工程和最新 ADR 为准。
 - 用户偏好小步快速主线迭代；但对高风险改动和已启用的 GitHub 分支规则不得绕过。当前 `main` 保护未启用，见 Issue #9；不把直接提交当作保护机制的替代。
 
 ## 美术资源统一管理（R12.52）
@@ -60,3 +60,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## R12.66 仓库治理
+
+- 根 README 解释全部保留的顶层目录；docs/README.md 为唯一文档入口，活跃任务以 GitHub Issues 与缺口台账为准。禁止重建 management/、artwork/ 或 .aistudio/ 作为并行事实来源。
+- 源图、运行图、审稿证据分层；统一资源索引由真实 Git 文件生成，运行与准入状态仍由领域 manifest 管理。删除/去重前先审全树引用；有独立职责的相同字节槽不得无证据删除。保留 Git 历史，不恢复废弃方案。
