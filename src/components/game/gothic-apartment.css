@@ -54,13 +54,45 @@
 
 /* Only explicit research-door inspection hides the normal HUD. This is a
    geometry/interaction check, not proof of production HUD clearance. */
-.ga:has([data-testid="r12-apartment-door-review"]) :is(.ga-red-gold-header,.ga-room-list,.ga-witch,.ga-witch-title,.ga-story){
+.ga:has([data-testid="r12-apartment-door-review"][data-review-mode="isolated"]) :is(.ga-red-gold-header,.ga-room-list,.ga-witch,.ga-witch-title,.ga-story){
   visibility:hidden;
 }
 
 /* Hiding the story child alone leaves its positioned parent above the six
    doors (the R12.35 real-browser failure). Remove that empty hit plane,
    but keep the real drawer and its controls fully interactive when selected. */
-.ga:has([data-testid="r12-apartment-door-review"]) .ga-lower:has(.ga-story){
+.ga:has([data-testid="r12-apartment-door-review"][data-review-mode="isolated"]) .ga-lower:has(.ga-story){
   display:none;
 }
+
+/* PC HUD coexistence is a separate, explicitly selected research mode.
+   The original isolated inspection and all ordinary player layouts remain
+   untouched. Keep the real header, room chooser, dialogue and drawer. */
+.ga-witch-hud-label{display:none}
+.ga:has([data-review-mode="hud"]) .ga-room-list{
+  top:12%;width:max-content;max-height:80%;z-index:4;
+}
+.ga:has([data-review-mode="hud"]) [data-testid="ga-room-menu-toggle"]{
+  display:flex;min-height:44px;
+}
+.ga:has([data-review-mode="hud"]) [data-testid="ga-room-menu-panel"]{
+  display:none;
+}
+.ga:has([data-review-mode="hud"]) [data-testid="ga-room-menu-toggle"][aria-expanded="true"]+[data-testid="ga-room-menu-panel"]{
+  display:block;width:260px;padding:8px;border-radius:8px;
+  border:1px solid var(--craft-hairline);background:var(--craft-panel);
+}
+.ga:has([data-review-mode="hud"]) .ga-lower:has(.ga-story){
+  top:12%;max-height:23%;bottom:auto;
+}
+.ga:has([data-review-mode="hud"]) .ga-witch{
+  left:50%;top:auto;bottom:8%;width:auto;height:44px;
+  transform:translateX(-50%);z-index:3;
+  padding:0 16px;border:1px solid var(--craft-hairline);border-radius:8px;
+}
+.ga:has([data-review-mode="hud"]) .ga-witch-hud-label{
+  display:flex;align-items:center;height:100%;
+  background:var(--craft-panel);border-radius:5px;padding:0 12px;
+  font-size:13px;color:var(--craft-ivory);
+}
+.ga:has([data-review-mode="hud"]) .ga-witch-title{display:none}

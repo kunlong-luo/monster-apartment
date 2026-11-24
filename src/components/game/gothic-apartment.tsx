@@ -209,7 +209,7 @@ export function GothicApartment(){
   return <main className={reducedMotion?'ga ga--still ga--red-gold':'ga ga--red-gold'} data-testid="gothic-apartment" aria-label="哥特公寓经营"
     onKeyDown={event=>{if(event.key==='Escape'){setTalkOpen(false);if(visitingYuesha)router.replace(exitHref);setNotices(false);}}}>
     <R12SceneBackdrop area="apartment" className="ga-backdrop" fallbackSrc={lobbyHero}
-      renderDoorReview={kind=><R12ApartmentDoorReview kind={kind} world={world} selected={selected} onChoose={choose}/>}/>
+      renderDoorReview={(kind,mode)=><R12ApartmentDoorReview kind={kind} mode={mode} world={world} selected={selected} onChoose={choose}/>}/>
     <div className="ga-light" aria-hidden="true"/>
     <div className="ga-shade" aria-hidden="true"/>
     <div className="ga-dust" aria-hidden="true"/>
@@ -236,7 +236,9 @@ export function GothicApartment(){
     </header>
     <GothicRoomDoors world={world} selected={selected} onChoose={choose}/>
     <button className="ga-witch" type="button" onClick={()=>{setSelected(null);setTalkOpen(true);}}
-      aria-label="与女主人月纱交流" data-tooltip="月纱 · 女主人"/>
+      aria-label="与女主人月纱交流" data-tooltip="月纱 · 女主人">
+      <span className="ga-witch-hud-label" aria-hidden="true">与月纱交谈</span>
+    </button>
     <div className="ga-witch-title" aria-hidden="true">月纱 <small>暗夜公寓的女主人</small></div>
     <section className="ga-lower" aria-label="房间交互及经营动态">
       {selected===null?<div className="ga-story">
