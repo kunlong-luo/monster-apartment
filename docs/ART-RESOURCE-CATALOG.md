@@ -17,7 +17,7 @@
 | 正式私室 | [public/art/rooms/](../public/art/rooms/) | [rooms manifest](../public/art/rooms/manifest.json)，现有概念及未来背景/姿态槽 |
 | 世界地点 | [public/art/world-scenes/](../public/art/world-scenes/) | [R12 manifest](../public/art/world-scenes/r12-scene-manifest.json)，现行图和显式审稿资源 |
 | 地点海报 | [public/art/feature-postcards/](../public/art/feature-postcards/) | 小型入口图，不当全屏背景 |
-| Pixi 工坊 | [engine/art/](../v2/art/) | 运行中的设备和环境资源，R12.76 源目录改名，字节不变 |
+| Pixi 工坊 | [engine/art/](../engine/art/) | 运行中的设备和环境资源，R12.76 源目录改名，字节不变 |
 | 文档证据 | [docs/art-reviews/](art-reviews/) | 审核来源、权利、对照图及历史记录 |
 | 历史设计参考 | [public/assets/aistudio/](../public/assets/aistudio/) | 保留原件及引用；不新增临时重复媒体 |
 

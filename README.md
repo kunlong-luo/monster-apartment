@@ -33,7 +33,7 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 | --- | --- |
 | [app/](app/) | Next App Router、页面、根布局与全局样式 |
 | [src/](src/) | React UI、核心规则、资产注册、客户端状态与工具 |
-| [engine/src/](v2/src/)、[engine/scripts/](v2/scripts/)、[engine/art/](v2/art/) | 正在使用的 Pixi sidecar、经营引擎与贴图，不是废弃游戏 |
+| [engine/src/](engine/src/)、[engine/scripts/](engine/scripts/)、[engine/art/](engine/art/) | 正在使用的 Pixi sidecar、经营引擎与贴图，不是废弃游戏 |
 | [public/](public/) | Web 运行时资源、回退、审稿资源与版本标识 |
 | [art-sources/](art-sources/) | 源 PNG 与来源/哈希清单，不直接作为页面素材 |
 | [scripts/](scripts/) | 原画转换、资源审核、依赖与设计检查 |
