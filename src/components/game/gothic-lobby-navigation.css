@@ -83,14 +83,31 @@ body .gothic-lobby .gothic-lobby__topbar:has(.gothic-dock__map){z-index:25}
   overscroll-behavior:contain;
   scrollbar-width:thin;
 }
+/* Web-first atlas: retain a visible close control on PC and touch,
+ * and keep the heading available when seven destinations need scrolling. */
 .gothic-lobby .gothic-dock__map-header{
-  display:flex;align-items:baseline;justify-content:space-between;
+  position:sticky;top:-12px;z-index:1;
+  display:flex;align-items:center;justify-content:space-between;
   gap:8px;padding:1px 4px 11px;
   color:var(--craft-champagne);
   font-family:var(--craft-font-display,Georgia,serif);
+  background:linear-gradient(150deg,rgba(32,21,30,.99),rgba(20,13,23,.99));
 }
-.gothic-lobby .gothic-dock__map-header strong{font-size:16px;font-weight:500;letter-spacing:.05em}
-.gothic-lobby .gothic-dock__map-header span{font-size:11px;color:var(--craft-muted)}
+.gothic-lobby .gothic-dock__map-heading{display:grid;min-width:0;gap:2px}
+.gothic-lobby .gothic-dock__map-heading strong{font-size:16px;font-weight:500;letter-spacing:.05em}
+.gothic-lobby .gothic-dock__map-heading span{
+  color:var(--craft-muted);font-size:10px;line-height:1.45;overflow-wrap:anywhere;
+}
+.gothic-lobby .gothic-dock__map-close{
+  display:grid;place-items:center;flex:none;
+  width:40px;height:40px;border-radius:8px;
+  color:var(--craft-ivory);border:1px solid rgba(183,156,117,.35);
+  background:rgba(43,28,38,.82);
+}
+.gothic-lobby .gothic-dock__map-close:is(:hover,:focus-visible){
+  border-color:var(--craft-champagne);background:rgba(83,48,58,.95);
+  outline-offset:2px;
+}
 .gothic-lobby .gothic-dock__map-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
 .gothic-lobby .gothic-dock__map-link{
   display:flex;align-items:center;gap:8px;
