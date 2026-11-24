@@ -18,7 +18,8 @@ describe('R12.32 opt-in Web scene review catalog',()=>{
         expect(item.path).toMatch(/^\/art\/world-scenes\/review\/2026-11-2[23]\/[-a-z0-9]+\.webp$/);
         const bytes=readFileSync('public'+item.path);
         expect(bytes.byteLength).toBeGreaterThan(100000);
-        expect(webpDimensions(bytes)).toEqual(expected);
+        const {width,height}=webpDimensions(bytes);
+        expect({width,height}).toEqual(expected);
         expect({width:item.width,height:item.height}).toEqual(expected);
         fingerprints.add(item.path);
       }
