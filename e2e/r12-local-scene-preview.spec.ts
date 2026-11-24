@@ -105,3 +105,61 @@ test('R12 opt-in reviewer is also available for apartment and warehouse',async({
     await expect(page.locator(id)).toHaveAttribute('data-r12-scene-art','legacy');
   }
 });
+
+
+test('R12 repository scene studies preview distinct PC/mobile images only on explicit request',async({page})=>{
+  test.setTimeout(120_000);
+  const requests:string[]=[];
+  page.on('request',request=>{
+    if(request.url().includes('/art/world-scenes/review/'))requests.push(request.url());
+  });
+  const areas=[
+    {area:'apartment',route:'/apartment/',backdrop:'.ga-backdrop',
+      desktop:'apartment-six-door-desktop-v1.webp',mobile:'apartment-six-door-mobile-v1.webp'},
+    {area:'orders',route:'/orders/',backdrop:'.mw-gothic-scene',
+      desktop:'orders-desktop-v1.webp',mobile:'orders-mobile-v1.webp'},
+    {area:'warehouse',route:'/warehouse/',backdrop:'.mw-gothic-scene',
+      desktop:'warehouse-desktop-v1.webp',mobile:'warehouse-mobile-v1.webp'},
+  ] as const;
+  for(const entry of areas){
+    await page.setViewportSize({width:1440,height:900});
+    await page.goto(entry.route);
+    await expect(page.getByTestId('r12-local-art-review')).toHaveCount(0);
+    await expect(page.locator(entry.backdrop))
+      .toHaveAttribute('data-r12-scene-art','legacy');
+    expect(requests).toHaveLength(0); // Never request review art for normal players.
+
+    await page.goto(entry.route+'?r12-art-review=1');
+    const reviewer=page.getByTestId('r12-local-art-review');
+    const backdrop=page.locator(entry.backdrop);
+    await expect(reviewer).toBeVisible();
+    await expect(backdrop).toHaveAttribute('data-r12-scene-art','legacy');
+    expect(requests).toHaveLength(0); // Opt-in flag alone still does not load it.
+    await page.getByTestId('r12-preview-repository-scene').click();
+    await expect(backdrop).toHaveAttribute('data-r12-scene-art','local-review');
+    await expect(backdrop).toHaveAttribute('data-r12-review-origin','repo');
+    await expect(backdrop.getByTestId('r12-repository-study-watermark')).toBeVisible();
+    const art=backdrop.locator('img[data-r12-art-image="local-review"]');
+    await expect.poll(()=>art.evaluate(el=>(el as HTMLImageElement).naturalWidth))
+      .toBe(1672);
+    await expect(art).toHaveAttribute('src',new RegExp(entry.desktop.replace('.','\\.')));
+    await expect(reviewer.getByTestId('r12-local-pixel-gate'))
+      .toHaveAttribute('data-required-resolution','3840x2160');
+    await expect(reviewer.getByTestId('r12-local-pixel-gate'))
+      .toHaveAttribute('data-pixel-pass','false');
+
+    await page.setViewportSize({width:390,height:844});
+    await expect.poll(()=>art.evaluate(el=>(el as HTMLImageElement).naturalWidth))
+      .toBe(941);
+    await expect(art).toHaveAttribute('src',new RegExp(entry.mobile.replace('.','\\.')));
+    await expect(reviewer.getByTestId('r12-local-pixel-gate'))
+      .toHaveAttribute('data-required-resolution','1080x1920');
+    await expect(reviewer.getByTestId('r12-local-pixel-gate'))
+      .toHaveAttribute('data-pixel-pass','false');
+    await expect(backdrop).toHaveAttribute('data-r12-scene-art','local-review');
+    // Independent compositions are preview-only; refreshing never loads one.
+    await page.reload();
+    await expect(backdrop).toHaveAttribute('data-r12-scene-art','legacy');
+    await expect(backdrop.getByTestId('r12-repository-study-watermark')).toHaveCount(0);
+  }
+});
