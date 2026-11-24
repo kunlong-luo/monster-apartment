@@ -2,7 +2,7 @@
 
 import './character-gallery-scene.css';
 import Link from 'next/link';
-import {useRouter} from 'next/navigation';
+import {useRouter,useSearchParams} from 'next/navigation';
 import {useEffect,useState} from 'react';
 import type {CSSProperties} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
@@ -70,6 +70,11 @@ const STRENGTH_ICON:Partial<Record<AbilityKey,LucideIcon>>={
 
 export function CharacterGalleryScene({routeVisitor}:{routeVisitor?:WorkerCharacterId}){
   const router=useRouter();
+  const searchParams=useSearchParams();
+  // Opt-in review tooling is only available when the URL explicitly asks for
+  // it. Carry this flag through in-gallery SPA links, never enable by default.
+  const reviewMode=searchParams.get('roomArtReview')==='1';
+  const reviewSuffix=reviewMode?'&roomArtReview=1':'';
   const world=useWorkshopWorld();
   const {collection,status}=useCharacterCollection();
   const [selectedKey,setSelectedKey]=useState<CardKey>('yuesha-eclipse');
@@ -83,7 +88,7 @@ export function CharacterGalleryScene({routeVisitor}:{routeVisitor?:WorkerCharac
   // local modal state. Deriving it from the live router query prevents the
   // wrong resident remaining open after SPA navigation or browser history.
   const visiting=routeVisitor??null;
-  const closeVisit=()=>router.replace('/characters/');
+  const closeVisit=()=>router.replace('/characters/'+(reviewMode?'?roomArtReview=1':''));
   const selected=cards.find(card=>card.key===selectedKey)!;
   const person=CHARACTER_PROFILES[selected.character];
   const abilities=status==='ok'?characterAbilities(selected.character,collection):person.abilities;
@@ -98,9 +103,9 @@ export function CharacterGalleryScene({routeVisitor}:{routeVisitor?:WorkerCharac
     .filter(Boolean);
   const workshopSlot=world&&selected.character!=='yuesha'
     ?world.tiles.findIndex(tile=>tile?.worker===selected.character):-1;
-  const enterRoom=(id:WorkerCharacterId)=>router.push('/characters/?visit='+id);
-  const roomUrl=selected.character==='yuesha'?'/apartment/?visit=yuesha':
-    '/characters/?visit='+selected.character;
+  const enterRoom=(id:WorkerCharacterId)=>router.push('/characters/?visit='+id+reviewSuffix);
+  const roomUrl=selected.character==='yuesha'?'/apartment/?visit=yuesha'+reviewSuffix:
+    '/characters/?visit='+selected.character+reviewSuffix;
 
   return <main className="cg-scene" data-testid="moonwork-world" data-area="characters">
     <div className="cg-scene__background" aria-hidden="true"
