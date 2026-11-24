@@ -9,6 +9,7 @@
 | 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |
+| Web / PC 场景研究审稿 URL 隔离（R12.33） | [Next SPA 退出审核立即撤下研究图、Back 不恢复旧预览、静态导出与浏览器回归](design/R12-33-WEB-REVIEW-QUERY-ISOLATION-2026-11-24.md) | **V3.98.0**：补上 `r12-art-review=1` 的 App Router 实时状态，离开审核参数立即恢复正式场景，禁止历史记录误显示未批准图片；保留六份研究素材仍为 review，原生高清 S01/S02/S05/S06 仍待生产 |
 | Web / PC 独立场景研究图实景审核（R12.32） | [S02/S05/S06 六张真实横/竖版 WebP 一键游戏预览、未批准水印与防误晋级回归](design/R12-32-IN-GAME-RESEARCH-SCENE-PREVIEW-2026-11-24.md) | **V3.97.0**：原仓库六张不同场景研究画可在显式 `r12-art-review=1` 中点击一键预览；保留原生尺寸红灯、PC/手机场景截图和“未批准”水印。**正常玩家不加载、没有正式晋级**；真实高清资源生产仍见 #16/#24 |
 | Web / PC 原生场景按设备单图加载（R12.31） | [4K PC/独立手机版 `<picture>` 响应式加载、SSR/浏览器验收与高清素材入库条件](design/R12-31-WEB-RESPONSIVE-SCENE-ASSET-LOADING-2026-11-24.md) | **V3.96.0**：正式场景由旧 PC+手机双 `<img>` 改为浏览器原生单 `<picture>`；错误重试/中性回退与生产审核门槛保留。**尚未替换高清原画**，三场景仍是 review；检查/上线以最终 SHA 的 CI 和 Pages 为准 |
 | Web / PC 高清美术审稿与月纱深链（R12.30） | [3840×2160 原生审稿门槛、私人房间 URL/Back 修复与美术入库边界](design/R12-30-WEB-ART-REVIEW-DPR2-AND-YUESHA-ROUTING-2026-11-24.md) | **V3.95.0**：PC 场景本地预览审核门槛改为 3840×2160；月纱私人房间跟随 `?visit=yuesha`，支持浏览器 Back 并保留显式审核参数；新增定向 E2E。原生高清绘景和正式 CG **尚未生成/晋级**，CI/Pages 以最新提交 SHA 为准 |
