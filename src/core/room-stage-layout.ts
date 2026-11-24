@@ -36,10 +36,11 @@ export function roomHotspotPosition(roomId:string,itemId:string,index=0):SceneSp
 }
 /** Maps normalized artwork coordinates through object-fit:cover and
  * object-position:center. Lighting and touch targets use identical math. */
-export function projectCoverAnchor(anchor:ArtworkAnchor,size:RoomStageSize):SceneSpot{
+export function projectCoverAnchor(anchor:ArtworkAnchor,size:RoomStageSize,source:RoomStageSize={width:16,height:9}):SceneSpot{
   if(!(size.width>0&&size.height>0))throw new Error('Invalid room stage size');
-  const scale=Math.max(size.width/16,size.height/9);
-  const drawnWidth=16*scale,drawnHeight=9*scale;
+  if(!(source.width>0&&source.height>0))throw new Error('Invalid artwork size');
+  const scale=Math.max(size.width/source.width,size.height/source.height);
+  const drawnWidth=source.width*scale,drawnHeight=source.height*scale;
   const screenX=(size.width-drawnWidth)/2+anchor[0]*drawnWidth;
   const screenY=(size.height-drawnHeight)/2+anchor[1]*drawnHeight;
   const percent=(screen:number,length:number):`${number}%`=>

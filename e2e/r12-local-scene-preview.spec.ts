@@ -293,3 +293,52 @@ test('R12 pending local image probes cannot override later review choices or sur
   await expect(backdrop).toHaveAttribute('data-r12-scene-art','legacy');
   await expect(reviewer.getByTestId('r12-local-desktop-meta')).toHaveCount(0);
 });
+
+test('S02 research door centers open the six real room drawers on four viewports',async({page,browser})=>{
+  test.setTimeout(120_000);
+  await page.goto('/apartment/?r12-art-review=1');
+  const reviewUrl=page.url();
+  mkdirSync('visual-evidence/scene-studies',{recursive:true});
+  for(const profile of [
+    {width:1440,height:900,dpr:1},{width:1648,height:928,dpr:2},
+    {width:390,height:844,dpr:2},{width:390,height:550,dpr:2},
+  ]){
+    // Use the real resolved fixture URL, including any deployment base path.
+    const context=await browser.newContext({
+      viewport:{width:profile.width,height:profile.height},deviceScaleFactor:profile.dpr,
+    });
+    const screen=await context.newPage();
+    try{
+      await screen.goto(reviewUrl);
+      await expect(screen.getByTestId('gothic-apartment')).toBeVisible();
+      await screen.getByRole('button',{name:'暂停公寓时间'}).click();
+      await screen.getByTestId('r12-preview-repository-scene').click();
+      const start=screen.getByTestId('r12-start-door-review');
+      await expect(start).toBeVisible();
+      await start.click();
+      const overlay=screen.getByTestId('r12-apartment-door-review');
+      await expect(overlay).toHaveAttribute('data-review-device',profile.width<=700?'mobile':'desktop');
+      await expect(overlay.getByRole('button')).toHaveCount(6);
+      await screen.screenshot({path:'visual-evidence/scene-studies/s02-doors-'+profile.width+'x'+profile.height+'.png',animations:'disabled'});
+      const before=await screen.evaluate(()=>localStorage.getItem('monster-apartment:cozy:v1'));
+      for(let index=0;index<6;index++){
+        const door=screen.getByTestId('r12-review-door-'+index);
+        const box=await door.boundingBox();
+        expect(box).not.toBeNull();
+        expect(box!.width).toBeGreaterThanOrEqual(44);
+        expect(box!.height).toBeGreaterThanOrEqual(44);
+        await door.click();
+        await expect(screen.getByTestId('ga-room-drawer')).toContainText('ROOM '+String(index+1).padStart(2,'0'));
+        await screen.getByRole('button',{name:'关闭房间操作'}).click();
+      }
+      expect(await screen.evaluate(()=>localStorage.getItem('monster-apartment:cozy:v1'))).toBe(before);
+      await screen.getByTestId('r12-exit-door-review').click();
+      await expect(overlay).toHaveCount(0);
+      await expect(screen.getByTestId('r12-local-art-review')).toBeVisible();
+      await screen.getByRole('button',{name:'恢复原场景'}).click();
+      await expect(screen.locator('.ga-backdrop')).toHaveAttribute('data-r12-scene-art','legacy');
+    }finally{await context.close();}
+  }
+  await page.goto('/apartment/');
+  await expect(page.getByTestId('r12-apartment-door-review')).toHaveCount(0);
+});

@@ -19,6 +19,7 @@ import {GothicSceneIllumination} from './gothic-scene-illumination';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 import {GothicIconButton,GothicResourcePill,GothicModal,GothicPanelLink} from './gothic-hud';
 import {GothicRoomDoors} from './gothic-room-doors';
+import {R12ApartmentDoorReview} from './r12-apartment-door-review';
 import {GothicRoomDrawer} from './gothic-room-drawer';
 import {YueshaPrivateRoom} from './yuesha-private-room';
 import './gothic-apartment.css';
@@ -207,7 +208,8 @@ export function GothicApartment(){
   };
   return <main className={reducedMotion?'ga ga--still ga--red-gold':'ga ga--red-gold'} data-testid="gothic-apartment" aria-label="哥特公寓经营"
     onKeyDown={event=>{if(event.key==='Escape'){setTalkOpen(false);if(visitingYuesha)router.replace(exitHref);setNotices(false);}}}>
-    <R12SceneBackdrop area="apartment" className="ga-backdrop" fallbackSrc={lobbyHero}/>
+    <R12SceneBackdrop area="apartment" className="ga-backdrop" fallbackSrc={lobbyHero}
+      renderDoorReview={kind=><R12ApartmentDoorReview kind={kind} world={world} selected={selected} onChoose={choose}/>}/>
     <div className="ga-light" aria-hidden="true"/>
     <div className="ga-shade" aria-hidden="true"/>
     <div className="ga-dust" aria-hidden="true"/>

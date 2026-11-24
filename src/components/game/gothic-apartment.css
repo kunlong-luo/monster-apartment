@@ -51,3 +51,9 @@
 @media(max-width:700px){
   .ga-backdrop{background-position:25% center}
 }
+
+/* Only explicit research-door inspection hides the normal HUD. This is a
+   geometry/interaction check, not proof of production HUD clearance. */
+.ga:has([data-testid="r12-apartment-door-review"]) :is(.ga-red-gold-header,.ga-room-list,.ga-witch,.ga-witch-title,.ga-story){
+  visibility:hidden;
+}

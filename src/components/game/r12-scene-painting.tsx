@@ -1,6 +1,7 @@
 'use client';
 
 import type {ImageProps} from 'next/image';
+import type {ReactNode} from 'react';
 import {useSearchParams} from 'next/navigation';
 import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import {createPortal} from 'react-dom';
@@ -62,7 +63,7 @@ const readMobileViewport=()=>window.matchMedia('(max-width:700px)').matches;
  * On two errors, reveal a clear native fallback plane behind the real HUD.
  */
 type BackdropArtKind='desktop'|'mobile'|'local-review';
-function R12VerifiedBackdropImage({src,kind}:{src:string;kind:BackdropArtKind}){
+function R12VerifiedBackdropImage({src,kind,onDecoded,onFailed}:{src:string;kind:BackdropArtKind;onDecoded?:()=>void;onFailed?:()=>void}){
   const [failures,setFailures]=useState(0);
   const responsiveClass=kind==='desktop'?' max-[700px]:hidden':
     kind==='mobile'?' hidden max-[700px]:block':'';
@@ -73,13 +74,13 @@ function R12VerifiedBackdropImage({src,kind}:{src:string;kind:BackdropArtKind}){
   return <ReliableImage src={src} fill unoptimized sizes="100vw" alt=""
     data-r12-art-image={kind}
     className={'pointer-events-none absolute inset-0 h-full w-full object-cover'+responsiveClass}
-    onError={()=>setFailures(count=>Math.min(2,count+1))}/>;
+    onLoad={onDecoded} onError={()=>{onFailed?.();setFailures(count=>Math.min(2,count+1));}}/>;
 }
 
 /** Opt-in, entirely local reviewer surface. User-selected images never leave
  * the browser, and never change the production manifest or stored game data.
  */
-type BackdropProps=Props&{className:string;testId?:string};
+type BackdropProps=Props&{className:string;testId?:string;renderDoorReview?:(kind:PreviewKind)=>ReactNode};
 
 /** The URL owns review-mode lifetime. Remounting the local preview state on
  * opt-in changes also releases any object URLs via existing cleanup effects.
@@ -91,7 +92,7 @@ export function R12SceneBackdrop(props:BackdropProps){
     key={reviewMode?'research-opt-in':'player-view'}/>;
 }
 
-function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
+function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode,renderDoorReview}:
   BackdropProps&{reviewMode:boolean}){
   const sources=approvedR12Scene(area);
   const mobileViewport=useSyncExternalStore(
@@ -99,6 +100,8 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
   const [desktopPreview,setDesktopPreview]=useState<LocalPreview|null>(null);
   const [mobilePreview,setMobilePreview]=useState<LocalPreview|null>(null);
   const [message,setMessage]=useState('');
+  const [decodedUrl,setDecodedUrl]=useState<string|null>(null);
+  const [doorReview,setDoorReview]=useState(false);
   // Own pending AND accepted blob URLs independently of React render timing.
   // Viewport switches keep both accepted images alive; reset/repo/unmount
   // invalidate pending probes before they can publish stale state.
@@ -125,6 +128,7 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
   },[area,preview,reviewMode]);
   const chooseFile=(file:File|undefined,kind:PreviewKind)=>{
     if(!file)return;
+    setDoorReview(false);
     const resources=resourcesRef.current;
     cancelPendingProbe(resources,kind);
     if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>20*1024*1024){
@@ -164,6 +168,7 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
   // Only an explicit click in opt-in review mode loads these existing
   // Git-reviewed candidates; never treat a research WebP as production.
   const previewRepositoryStudy=()=>{
+    setDoorReview(false);
     releasePreviewResources(resourcesRef.current);
     const pair=R12_REPOSITORY_REVIEW_ART[area];
     setDesktopPreview({url:siteAssetUrl(pair.desktop.path),
@@ -179,6 +184,8 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
   // R12.30: 1648x928 at DPR2 needs native 3296x1856 before cover crop.
   // Use a 3840x2160 desktop review floor with composition headroom;
   // phones must use separately composed 1080x1920 originals.
+  const canReviewDoors=area==='apartment'&&!!renderDoorReview&&preview?.origin==='repo'&&preview.url===decodedUrl;
+  const inspectDoors=canReviewDoors&&doorReview;
   const targetWidth=previewKind==='mobile'?1080:3840;
   const targetHeight=previewKind==='mobile'?1920:2160;
   const hasPixels=!!preview&&preview.width>=targetWidth&&preview.height>=targetHeight;
@@ -190,7 +197,8 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
       style={sources||preview?undefined:
         {backgroundImage:'url('+JSON.stringify(fallbackUrl(fallbackSrc))+')'}}>
       {preview&&<R12VerifiedBackdropImage key={preview.url}
-        src={preview.url} kind="local-review"/>}
+        src={preview.url} kind="local-review" onDecoded={()=>setDecodedUrl(preview.url)}
+        onFailed={()=>setDecodedUrl(null)}/>}
       {preview?.origin==='repo'&&<span data-testid="r12-repository-study-watermark"
         className="pointer-events-none absolute left-3 top-3 z-[3] rounded border border-amber-300/70 bg-[#210c18e6] px-3 py-1 text-xs font-semibold tracking-wide text-amber-100">
         仓库研究图 · 未批准 · 不作正式原画
@@ -200,7 +208,14 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
         desktop={sources.desktop} mobile={sources.mobile}/>}
 
     </div>
-    {reviewMode&&createPortal(
+    {inspectDoors&&renderDoorReview?.(previewKind)}
+    {reviewMode&&createPortal(inspectDoors?
+      <aside data-testid="r12-local-art-review" aria-label="六门研究图交互检查"
+        className="fixed bottom-3 right-4 z-[10000] rounded-lg border border-gothic-brass bg-gothic-panel/95 p-2 text-xs text-gothic-ivory shadow-lg">
+        <p>未批准 · 六门门位检查</p>
+        <button type="button" data-testid="r12-exit-door-review" onClick={()=>setDoorReview(false)}
+          className="mt-1 min-h-11 rounded border border-gothic-brass px-3">返回 HUD 检查</button>
+      </aside>:
       <aside data-testid="r12-local-art-review" aria-label="R12 本地环境画审核"
         className="fixed bottom-20 right-4 z-[10000] w-[min(330px,calc(100vw-32px))] rounded-xl border border-[#c8a578] bg-[#140e1af0] p-3 text-[#f4dfbf] shadow-2xl backdrop-blur-md">
         <p className="text-xs font-semibold tracking-wider">R12 · {area} 本地场景审稿</p>
@@ -213,6 +228,8 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
         <p className="mt-1 text-xs text-[#ffd29b]">
           仅用于审查构图与 HUD，非 4K 原画；不晋级、不保存、普通玩家不可见。
         </p>
+        {canReviewDoors&&<button type="button" data-testid="r12-start-door-review" onClick={()=>setDoorReview(true)}
+          className="mt-2 min-h-11 w-full rounded-md border border-gothic-brass px-3 text-sm">检查六扇实体门</button>}
         <label className="mt-3 block cursor-pointer rounded-md border border-[#b99c7d] px-3 py-2 text-center text-sm hover:bg-[#61402a]/40">
           选择 PC 横版原图
           <input data-testid="r12-local-art-file" type="file" accept="image/png,image/jpeg,image/webp"
@@ -250,6 +267,8 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
               '未达到 '+targetWidth+'×'+targetHeight+' 原生像素门槛，仅供构图预览；禁止插值放大晋级'}
           </p>}
           <button type="button" onClick={()=>{
+            setDoorReview(false);
+            setDecodedUrl(null);
             releasePreviewResources(resourcesRef.current);
             setDesktopPreview(null);setMobilePreview(null);setMessage('');
           }} className="mt-2 rounded border border-[#b99c7d] px-3 py-1">
