@@ -2,6 +2,7 @@
 
 import './character-gallery-scene.css';
 import Link from 'next/link';
+import {useRouter} from 'next/navigation';
 import {useEffect,useState} from 'react';
 import type {CSSProperties} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
@@ -67,32 +68,22 @@ const STRENGTH_ICON:Partial<Record<AbilityKey,LucideIcon>>={
 };
 
 
-export function CharacterGalleryScene(){
+export function CharacterGalleryScene({routeVisitor}:{routeVisitor?:WorkerCharacterId}){
+  const router=useRouter();
   const world=useWorkshopWorld();
   const {collection,status}=useCharacterCollection();
   const [selectedKey,setSelectedKey]=useState<CardKey>('yuesha-eclipse');
   const [detailTab,setDetailTab]=useState<'attributes'|'story'|'training'>('attributes');
   const [overlay,setOverlay]=useState<'memories'|'art'|null>(null);
   const [archiveOpen,setArchiveOpen]=useState(false);
-  const [visiting,setVisiting]=useState<WorkerCharacterId|null>(null);
   const prefersReducedMotion=useReducedMotion();
 
   useEffect(()=>{void ensureWorkshopWorld();},[]);
-  useEffect(()=>{
-    const target=new URLSearchParams(window.location.search).get('visit');
-    if(target==='brook'||target==='fern'||target==='cinder'){
-      const id=window.requestAnimationFrame(()=>setVisiting(target));
-      return ()=>window.cancelAnimationFrame(id);
-    }
-  },[]);
-  const closeVisit=()=>{
-    setVisiting(null);
-    const url=new URL(window.location.href);
-    if(url.searchParams.has('visit')){
-      url.searchParams.delete('visit');
-      window.history.replaceState(window.history.state,'',url.pathname+url.search+url.hash);
-    }
-  };
+  // A room is a deep-linkable subscene of /characters/, not a separate
+  // local modal state. Deriving it from the live router query prevents the
+  // wrong resident remaining open after SPA navigation or browser history.
+  const visiting=routeVisitor??null;
+  const closeVisit=()=>router.replace('/characters/');
   const selected=cards.find(card=>card.key===selectedKey)!;
   const person=CHARACTER_PROFILES[selected.character];
   const abilities=status==='ok'?characterAbilities(selected.character,collection):person.abilities;
@@ -107,7 +98,7 @@ export function CharacterGalleryScene(){
     .filter(Boolean);
   const workshopSlot=world&&selected.character!=='yuesha'
     ?world.tiles.findIndex(tile=>tile?.worker===selected.character):-1;
-  const enterRoom=(id:WorkerCharacterId)=>setVisiting(id);
+  const enterRoom=(id:WorkerCharacterId)=>router.push('/characters/?visit='+id);
   const roomUrl=selected.character==='yuesha'?'/apartment/?visit=yuesha':
     '/characters/?visit='+selected.character;
 
@@ -365,7 +356,7 @@ export function CharacterGalleryScene(){
     </GothicModal>}
     <SummonCollectionArchive open={archiveOpen} collection={collection}
       collectionStatus={status} onClose={()=>setArchiveOpen(false)}/>
-    {world&&visiting&&<WorkerPrivateRoom id={visiting} completedOrders={world.completed}
+    {world&&visiting&&<WorkerPrivateRoom key={visiting} id={visiting} completedOrders={world.completed}
       working={world.tiles.some(tile=>tile?.worker===visiting)} onClose={closeVisit}/>}
   </main>;
 }
