@@ -1,4 +1,4 @@
-# 当前架构（R12.69 核查）
+# 当前架构（R12.71 核查）
 
 以 V3.105.0 主线 `0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0` 为证据基线。下方历史实现记录不用于推断当前资产或数量。
 
@@ -16,7 +16,11 @@
 
 ## R12.69 · 删除旧召唤与重复图鉴
 
-删除 `src/components/game/character-summon-reveal.tsx`（唯一审计不可达，0 入边），保留 `SummonRitualModal` → `SummonResultStage` → `CharacterContractCard`；现有结果对话框和单抽/十连结算契约不变。`MoonworkWorld` 的正式调用者只传 town/orders/warehouse；`app/characters/page.tsx` 使用 `CharactersSceneRouter` → `CharacterGalleryScene` / `GothicSummonScreen`，原 `world-characters.tsx` 仅因旧分支静态导入而可达。本轮收窄 `WorldArea`，删除该分支、旧房间 URL 手工状态、旧图鉴组件，并从 `gothic-world.css` 删除 31 条仅匹配旧 `.mw.mw-gothic[data-area="characters"]` 根的规则；现行图鉴根为 `.cg-scene`。无范围限定的选择器、19 个 CSS 文件、现有页面样式及其他资源暂保留，等待独立覆盖审查。首轮 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45374555765) 的静态导出/Pixi/类型/Lint通过，Vitest 319/320；旧迁移测试通过 readFileSync 直接读取已删图鉴（未被 import 图覆盖），Pages 跳过。R12.70 前置修复将断言迁往现行图鉴真实派工链接，保留订单/仓库/旧选择器检查，明确禁止恢复旧文件；新 SHA 待复验。
+删除 `src/components/game/character-summon-reveal.tsx`（唯一审计不可达，0 入边），保留 `SummonRitualModal` → `SummonResultStage` → `CharacterContractCard`；现有结果对话框和单抽/十连结算契约不变。`MoonworkWorld` 的正式调用者只传 town/orders/warehouse；`app/characters/page.tsx` 使用 `CharactersSceneRouter` → `CharacterGalleryScene` / `GothicSummonScreen`，原 `world-characters.tsx` 仅因旧分支静态导入而可达。本轮收窄 `WorldArea`，删除该分支、旧房间 URL 手工状态、旧图鉴组件，并从 `gothic-world.css` 删除 31 条仅匹配旧 `.mw.mw-gothic[data-area="characters"]` 根的规则；现行图鉴根为 `.cg-scene`。无范围限定的选择器、19 个 CSS 文件、现有页面样式及其他资源暂保留，等待独立覆盖审查。首轮 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45374555765) 的静态导出/Pixi/类型/Lint通过，Vitest 319/320；旧迁移测试通过 readFileSync 直接读取已删图鉴（未被 import 图覆盖），Pages 跳过。R12.70 前置修复将断言迁往现行图鉴真实派工链接，保留订单/仓库/旧选择器检查，明确禁止恢复旧文件；后续 R12.70 Quality 三项作业均成功，Vitest 321/321，修复已验证；浏览器和 Pages 独立核对。
+
+## R12.71 · 字节与引用门禁
+
+基线 [R12.70 checks](https://github.com/kunlong-luo/monster-apartment/actions/runs/45375073618/job/138379023352)：328 文件、92 组件及样式、91 app 可达、1 不可达（character-adornment）、0 未解析/未知动态引用。由于 R12.69 遗漏了 readFileSync 直接读取路径，增强引用审计：字面源码路径另列引用与不存在路径，报告不改变 app 可达性；刻意不存在的旧文件断言也可能出现，人工核对后再删除。character-adornment 暂不删除。另增 [媒体字节去重门禁](../scripts/audit-media-duplicates.mjs)，禁止未登记的完全重复跟踪素材，保留唯一现有审稿证据例外。依赖锁职责以根 README 为准。
 
 ## 历史架构演进（原记录，仅供追溯）
 

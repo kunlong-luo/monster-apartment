@@ -25,6 +25,7 @@ test('distinguishes app, auxiliary and unreachable modules without deleting file
   write('tests/example.test.ts',"import '../src/components/test-only';");
   write('src/components/orphan.tsx',"import './orphan-child';");
   write('src/components/orphan-child.tsx','export const child = 1;');
+  write('tests/file-reader.test.ts',"const name='src/components/orphan.tsx'; const missing='src/components/retired.tsx';");
   write('app/layout.tsx',"import '@/components/missing';");
   const result=auditComponentUsage(root);
   const status=Object.fromEntries(result.components.map(row=>[path.basename(row.path),row.status]));
@@ -32,6 +33,8 @@ test('distinguishes app, auxiliary and unreachable modules without deleting file
   assert.equal(status['test-only.tsx'],'auxiliary-only');
   assert.equal(status['orphan.tsx'],'review-unreachable');
   assert.equal(status['orphan-child.tsx'],'review-unreachable');
+  assert.deepEqual(result.components.find(row=>row.path==='src/components/orphan.tsx').literalReferences,['tests/file-reader.test.ts']);
+  assert.deepEqual(result.missingLiteralPaths,[{path:'src/components/retired.tsx',references:['tests/file-reader.test.ts']}]);
   assert.ok(result.unknown.some(row=>row.kind==='dynamic'));
   assert.ok(result.unresolved.some(row=>row.specifier==='@/components/missing'));
   assert.ok(fs.existsSync(path.join(root,'src/components/orphan.tsx')));

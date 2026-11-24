@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.70）
+# 怪物公寓 · 美术资源总目录（R12.71）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -361,4 +361,9 @@ V3.105.0 的 PC 新场景与四间观景已合并、Quality/Pages 通过；不�
 | `public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp` | `public/art/rooms/brook/review/standing-candidate.webp` | `f6b7d13dcdffc8607b1f9e8ac6fd38518de46e97` |
 | `public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp` | `public/art/rooms/cinder/review/standing-candidate.webp` | `867fb42c5d268eaa0f00001dcaec858b32ecb019` |
 
-月纱会客室的来源证据与运行时审稿副本仍保留（155,188 B）；不能在未核对证据清单和授权链前删除。原图和批准状态均不改变，正式 CG 0/5。新 SHA Quality/浏览器待核验。
+月纱会客室的来源证据与运行时审稿副本仍保留（155,188 B）；不能在未核对证据清单和授权链前删除。原图和批准状态均不改变，正式 CG 0/5。R12.70 Quality 三作业成功、321/321；浏览器与 Pages 另验。
+
+
+## R12.71 · 防止重复资源回流
+
+已查 [WineChan intake](art-reviews/sources/winechan-gothic-manor-full-pack/intake.json)，candidate-05.webp 对应 publisher ZIP 中 IMG_0268.png（1920×1080；humanReviewed=false；原图 SHA-256 33cb3f2658314e51f54de16b11bf74381ae522c39e8a8857d327117f26ac3d31）。保留文档证据和运行审稿的两条路径，不扩大许可或批准结论。新增 `pnpm audit:media-duplicates`：以 Git 跟踪媒体真实字节的 SHA-256 分组，唯一允许重复组必须匹配两个确切路径、155188 字节和 Git blob 3e384235b220f3e60502492cdd5fa850e6d43547；增加第三份或改动重复字节均阻断 Quality。当前仍为 144 媒体路径，不声称进一步删除。新门禁待 CI 验证。

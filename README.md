@@ -45,7 +45,7 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 | [.github/](.github/) | Quality、视觉、玩法及 Pages 工作流 |
 | [.aistudio/](.aistudio/)、[v2/docs/](v2/docs/) | 历史设计与旧方案；非运行时，不作为新开发规范 |
 
-根 `bun.lock` 是当前 CI 安装依据；根 `pnpm-lock.yaml` 实际存在，兼容用途尚待确认，不能称不存在或擅删。Pixi 的 `v2/package-lock.json` 单独维护。资源路径与哈希以[资源总目录](docs/ART-RESOURCE-CATALOG.md)为索引，生产状态以相应 manifest 为准。
+根 `bun.lock` 是当前 CI 安装依据；根 `pnpm-lock.yaml` 的 importer 仅锁定 packageManagerDependencies.pnpm 12.13.0，不是根应用依赖锁；保留工具链锁。Pixi 的 `v2/package-lock.json` 单独维护。资源路径与哈希以[资源总目录](docs/ART-RESOURCE-CATALOG.md)为索引，生产状态以相应 manifest 为准。
 
 ## 开发与验证
 
@@ -60,6 +60,8 @@ npm --prefix v2 run dev
 ```
 
 组件治理：`pnpm audit:components`（只读候选报告）、`pnpm test:component-audit`（审计逻辑测试）；CI 已接入，报告不是自动删除许可。R12.68 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45374117852) 通过，320/320 Vitest；R12.69 收敛旧召唤与重复图鉴，详见[当前架构](docs/CURRENT_ARCHITECTURE.md)。
+
+资源治理：`pnpm audit:media-duplicates` 核查 Git 跟踪媒体的实际字节，只有明确路径和 Git blob 的授权例外可重复；`pnpm test:media-duplicates` 验证新副本及变更例外被拒绝。
 
 日常：`pnpm check:design`、`pnpm typecheck`、`pnpm lint`、`pnpm test`、`NEXT_STATIC_EXPORT=1 pnpm build`。完整质量门禁见 [Quality 工作流](.github/workflows/quality.yml)，浏览器按风险分层运行。主分支保护、真实试玩仍由 [#9](https://github.com/kunlong-luo/monster-apartment/issues/9)、[#10](https://github.com/kunlong-luo/monster-apartment/issues/10) 跟踪。
 

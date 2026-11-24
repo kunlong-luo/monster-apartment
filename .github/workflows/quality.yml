@@ -32,6 +32,8 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: pnpm test:component-audit
       - run: pnpm audit:components
+      - run: pnpm test:media-duplicates
+      - run: pnpm audit:media-duplicates
       - run: pnpm check:stable-deps
       - run: pnpm check:design
       - run: pnpm audit:room-art

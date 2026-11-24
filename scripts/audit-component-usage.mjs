@@ -58,6 +58,7 @@ export function auditComponentUsage(root) {
   const edges=new Map(files.map(file=>[file,new Set()]));
   const unresolved=[];
   const unknown=[];
+  const literalRefs=new Map();
   const incoming=new Map(files.map(file=>[file,new Set()]));
   function resolve(specifier,from){
     if(specifier.endsWith('.css')){
@@ -69,6 +70,14 @@ export function auditComponentUsage(root) {
   }
   for(const file of files){
     const content=fs.readFileSync(file,'utf8');
+    // Separate literal file-path dependencies (e.g. readFileSync in tests)
+    // from module imports. These are review evidence, not app reachability.
+    for(const match of content.matchAll(/src\/components\/[\w./-]+\.(?:tsx?|css)\b/g)){
+      const target=path.resolve(root,match[0]);
+      if(target===file)continue;
+      if(!literalRefs.has(target))literalRefs.set(target,new Set());
+      literalRefs.get(target).add(toRel(file));
+    }
     const parsed=source.test(file)?moduleReferences(file,content):{
       imports:[...content.matchAll(/@import\s+(?:url\(\s*)?["']([^"']+)["']/g)].map(m=>({specifier:m[1],kind:'css'})),
       unknown:[]
@@ -99,9 +108,11 @@ export function auditComponentUsage(root) {
   const components=candidates.map(file=>({
     path:toRel(file),
     status:appReach.has(file)?'app-reachable':auxReach.has(file)?'auxiliary-only':'review-unreachable',
-    incoming:[...incoming.get(file)].map(toRel).sort()
+    incoming:[...incoming.get(file)].map(toRel).sort(),
+    literalReferences:[...(literalRefs.get(file)??[])].sort()
   }));
-  return {scannedFiles:files.length,appRoots:appRoots.map(toRel),components,unresolved,unknown};
+  const missingLiteralPaths=[...literalRefs].filter(([file])=>!indexed.has(file)).map(([file,refs])=>({path:toRel(file),references:[...refs].sort()}));
+  return {scannedFiles:files.length,appRoots:appRoots.map(toRel),components,unresolved,unknown,missingLiteralPaths};
 }
 
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
@@ -114,9 +125,10 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
     for(const status of ['app-reachable','auxiliary-only','review-unreachable']){
       const rows=result.components.filter(row=>row.status===status);
       console.log(status+': '+rows.length);
-      if(status!=='app-reachable')for(const row of rows)console.log('  '+row.path+' <- '+(row.incoming.join(', ')||'(no indexed incoming edge)'));
+      if(status!=='app-reachable')for(const row of rows)console.log('  '+row.path+' <- '+(row.incoming.join(', ')||'(no indexed incoming edge)')+'; literal file references: '+(row.literalReferences.join(', ')||'none'));
     }
     console.log('Unresolved local references:',result.unresolved.length,'nonliteral imports / possible globs:',result.unknown.length);
+    for(const item of result.missingLiteralPaths)console.log('  missing literal path (review, including deliberate absence tests)',item.path,item.references.join(', '));
     for(const item of result.unresolved)console.log('  unresolved',item.file,item.specifier);
     for(const item of result.unknown)console.log('  dynamic',item.file+':'+item.line,item.kind);
   }

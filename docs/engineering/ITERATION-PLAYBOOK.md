@@ -80,3 +80,8 @@ Desktop Visual Review 的 `scene-art-review` 与综合 `desktop-review` 并行�
 ## R12.68 · 组件与样式引用治理
 
 运行 `pnpm audit:components`，机器报告用 `pnpm audit:components --json`；`pnpm test:component-audit` 验证别名、重导出、动态字面量、类型、CSS 导入和辅助代码隔离。复用已安装 TypeScript 的 AST 和解析器，不增加依赖。Quality 执行测试及只读报告。报告以 app 全部模块为保守根，单独计算 tests/e2e/scripts/v2 引用；`review-unreachable` 是待审候选，不是删除授权。非字面量动态导入、未解析本地路径、Next 特殊入口、CSS 选择器、动态 class、资源清单、独立部署和外部调用仍须人工核对；不可据搜索零命中自动删除。删除前按风险验证真实路由与 PC/手机画面。无需为每轮审计增加一份重复报告。
+
+
+## R12.71 · 防止清理回归
+
+删除组件前除了 import 可达图，还核查 `audit:components` 的 literalReferences、missingLiteralPaths 与实际测试；文件读取、断言、动态路径不是静态 import。缺失路径报告为人工审查项，刻意检查退役文件不存在的测试不得当成运行错误。`pnpm audit:media-duplicates` 检查跟踪素材实际字节，任何新增重复路径都必须复用原件或经过明确路径/哈希例外审查；对应 `pnpm test:media-duplicates` 已接入 Quality。根 pnpm-lock.yaml 仅锁工具 pnpm 12.13.0，根应用依赖由 bun.lock 冻结，Pixi npm 锁独立。三者均保留。
