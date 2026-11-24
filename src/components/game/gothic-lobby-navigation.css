@@ -100,7 +100,7 @@ body .gothic-lobby .gothic-lobby__topbar:has(.gothic-dock__map){z-index:25}
 }
 .gothic-lobby .gothic-dock__map-close{
   display:grid;place-items:center;flex:none;
-  width:40px;height:40px;border-radius:8px;
+  width:44px;height:44px;min-width:44px;border-radius:8px;
   color:var(--craft-ivory);border:1px solid rgba(183,156,117,.35);
   background:rgba(43,28,38,.82);
 }
