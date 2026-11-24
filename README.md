@@ -6,7 +6,7 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 
 ## 当前可核实发布基线
 
-2026-11-24，V3.108.0 主线 [f3a3b70](https://github.com/kunlong-luo/monster-apartment/commit/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381664053)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381794477)、[工坊性能](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381664032)、[WebGL 生命周期](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381663944) 成功。#60 候选四项验收成功后已合并；主线独立桌面/玩法仍待核实。第三方 4K 原包获取独立失败，不代表审批通过。R12.81 仅历史文档退役，不变更 UI 版本。
+2026-11-24，V3.108.0 主线 [f3a3b70](https://github.com/kunlong-luo/monster-apartment/commit/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381664053)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381794477)、[工坊性能](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381664032)、[WebGL 生命周期](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381663944) 成功。#60 候选四项验收成功后已合并；主线独立桌面/玩法仍待核实。第三方 4K 原包获取独立失败，不代表审批通过。R12.81 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45383576938) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45383718973) 成功。R12.82 组合 V3.109.0 为三功能整合候选，尚未部署。
 
 - V3.103.0 欢迎页、头像、卡面与大厅过渡图已接入；正式 CG 人工签审仍未完成。
 - V3.104.0 四位人物拥有独立背景/人物层的观景模式；原故事模式与真实热点保留。

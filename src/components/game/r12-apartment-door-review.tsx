@@ -15,8 +15,8 @@ const centers={
   mobile:[[.195,.222],[.188,.42],[.183,.608],[.804,.222],[.811,.419],[.812,.608]],
 } as const;
 
-export function R12ApartmentDoorReview({kind,world,selected,onChoose}:{
-  kind:'desktop'|'mobile';world:CozyState;selected:number|null;onChoose:(index:number)=>void;
+export function R12ApartmentDoorReview({kind,mode,world,selected,onChoose}:{
+  kind:'desktop'|'mobile';mode:'isolated'|'hud';world:CozyState;selected:number|null;onChoose:(index:number)=>void;
 }){
   const stage=useRef<HTMLDivElement>(null);
   const [size,setSize]=useState<RoomStageSize|null>(null);
@@ -39,7 +39,7 @@ export function R12ApartmentDoorReview({kind,world,selected,onChoose}:{
   })),size):[];
   const hidden=placements.filter(point=>point.visibility!=='visible');
   return <div ref={stage} data-testid="r12-apartment-door-review"
-    data-review-device={kind} role="group" aria-label="六门研究图交互检查"
+    data-review-device={kind} data-review-mode={mode} role="group" aria-label="六门研究图交互检查"
     className="pointer-events-none absolute inset-0 z-[2]">
     {placements.map((point,index)=>{
       if(point.visibility!=='visible')return null;

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import {ReliableImage} from '@/components/game/reliable-image';
 import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import {motion} from 'motion/react';
+import {WorkshopProcessEffect} from './workshop-process-effect';
 import {ArrowUpRight,Grid3X3,MoveRight} from 'lucide-react';
 import {MACHINES,WORKERS,projectMachineProduction} from '../../../engine/src/workshop-engine';
 import {gothicMotionStorage} from '@/lib/game/storage-service';
@@ -238,6 +239,8 @@ export function WorkshopCinematicStage({
               className={isReview?'object-contain drop-shadow-[0_12px_14px_rgba(0,0,0,.8)]':
                 'object-contain opacity-90 drop-shadow-[0_12px_15px_rgba(0,0,0,.85)]'}
             />
+            <WorkshopProcessEffect craft={craft} active={status==='working'&&(cycle?.amount??0)>0}
+              motionEnabled={motionEnabled}/>
             {shiftedOutput>0&&<motion.span
               key={settledShift!.day+'-'+craft}
               data-testid={'workshop-shift-output-'+craft}

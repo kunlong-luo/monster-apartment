@@ -726,6 +726,9 @@ test('cinematic feedback features actual working equipment before idle high-leve
   await expect(well).toHaveAttribute('data-state','working');
   await expect(well).toHaveAttribute('data-level','1');
   await expect(page.getByTestId('workshop-cinematic-stock-well')).toContainText('设备暂存 4');
+  await expect(page.getByTestId('workshop-process-well')).toHaveCount(1);
+  await expect(page.getByTestId('workshop-process-garden')).toHaveCount(0);
+  await expect(page.getByTestId('workshop-process-kiln')).toHaveCount(0);
   const halo=well.locator('.workshop-cinematic__station-halo');
   await expect.poll(()=>halo.evaluate(el=>getComputedStyle(el).animationName))
     .toBe('workshop-operating-floor');
@@ -762,6 +765,11 @@ test('R10.2 shows real linked production and recognizable worker portraits',asyn
   await expect(page.getByTestId('workshop-route-water')).toHaveAttribute('data-active','true');
   await expect(page.getByTestId('workshop-route-fiber')).toHaveAttribute('data-active','true');
   for(const craft of ['well','garden','kiln']){
+    const cue=page.getByTestId('workshop-process-'+craft);
+    await expect(cue).toHaveAttribute('data-process',craft);
+    await expect(cue).toHaveAttribute('data-motion','running');
+    await expect(cue.locator('i')).toHaveCount(3);
+    await expect(cue).toHaveCSS('pointer-events','none');
     const worker=page.getByTestId('workshop-cinematic-worker-'+craft);
     await expect(worker).toBeVisible();
     const image=worker.locator('img');
@@ -778,6 +786,9 @@ test('R10.2 shows real linked production and recognizable worker portraits',asyn
     window.dispatchEvent(new Event('monster-apartment:motion-changed'));
   });
   await expect(scene).toHaveAttribute('data-motion','paused');
+  for(const craft of ['well','garden','kiln']){
+    await expect(page.getByTestId('workshop-process-'+craft)).toHaveAttribute('data-motion','paused');
+  }
   await expect.poll(()=>page.getByTestId('workshop-cinematic-worker-well')
     .evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
   await mkdir('visual-evidence/workshop',{recursive:true});

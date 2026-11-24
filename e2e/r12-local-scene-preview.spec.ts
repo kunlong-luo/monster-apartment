@@ -392,3 +392,61 @@ test('R12.72-C orders and warehouse expose explicit scene preview without changi
     }finally{page.off('request',record);}
   }
 });
+
+test('S02 PC research doors coexist with real HUD, room chooser and YueSha dialogue',async({page,browser})=>{
+  test.setTimeout(120_000);
+  await page.goto('/apartment/?r12-art-review=1');
+  const url=page.url();
+  mkdirSync('visual-evidence/scene-studies',{recursive:true});
+  for(const profile of [{width:1440,height:900,dpr:1},{width:1648,height:928,dpr:2}]){
+    const context=await browser.newContext({viewport:{width:profile.width,height:profile.height},deviceScaleFactor:profile.dpr});
+    const screen=await context.newPage();
+    try{
+      await screen.goto(url);
+      await screen.getByRole('button',{name:'暂停公寓时间'}).click();
+      await screen.getByTestId('r12-preview-repository-scene').click();
+      await screen.getByTestId('r12-start-hud-review').click();
+      const overlay=screen.getByTestId('r12-apartment-door-review');
+      await expect(overlay).toHaveAttribute('data-review-mode','hud');
+      await expect(overlay.getByRole('button')).toHaveCount(6);
+      await expect(screen.getByTestId('ga-coins')).toBeVisible();
+      await expect(screen.locator('.ga-story')).toBeVisible();
+      const chooser=screen.getByTestId('ga-room-menu-toggle');
+      await expect(chooser).toBeVisible();
+      await expect(chooser).toHaveAttribute('aria-expanded','false');
+      await expect.poll(()=>screen.evaluate(()=>localStorage.getItem('monster-apartment:cozy:v1'))).not.toBeNull();
+      const before=await screen.evaluate(()=>localStorage.getItem('monster-apartment:cozy:v1'));
+      await screen.screenshot({path:'visual-evidence/scene-studies/s02-hud-'+profile.width+'x'+profile.height+'.png',animations:'disabled'});
+      for(let i=0;i<6;i++){
+        const door=screen.getByTestId('r12-review-door-'+i);
+        await door.click({trial:true,timeout:5000});
+        await door.click({timeout:5000});
+        await expect(screen.getByTestId('ga-room-drawer')).toContainText('ROOM '+String(i+1).padStart(2,'0'));
+        await screen.getByRole('button',{name:'关闭房间操作'}).click({timeout:5000});
+        await expect(screen.locator('.ga-story')).toBeVisible();
+      }
+      await chooser.click();
+      await expect(screen.getByTestId('ga-room-0')).toBeVisible();
+      await screen.getByTestId('ga-room-0').click();
+      await expect(screen.getByTestId('ga-room-drawer')).toContainText('ROOM 01');
+      await screen.getByRole('button',{name:'关闭房间操作'}).click();
+      await expect(chooser).toHaveAttribute('aria-expanded','false');
+      await screen.getByRole('button',{name:'公寓日志'}).click();
+      await expect(screen.getByRole('dialog',{name:'公寓日志'})).toBeVisible();
+      await screen.getByRole('button',{name:'关闭公寓日志'}).click();
+      await screen.getByRole('button',{name:'与女主人月纱交流'}).click();
+      await expect(screen.getByRole('dialog',{name:'与月纱交谈'})).toBeVisible();
+      await screen.getByRole('button',{name:'关闭月纱对话'}).click();
+      await expect(screen.getByRole('dialog',{name:'与月纱交谈'})).toHaveCount(0);
+      expect(await screen.evaluate(()=>localStorage.getItem('monster-apartment:cozy:v1'))).toBe(before);
+      await screen.setViewportSize({width:390,height:844});
+      await expect(overlay).toHaveAttribute('data-review-mode','isolated');
+      await expect(screen.getByTestId('ga-coins')).toBeHidden();
+      await screen.getByTestId('r12-exit-door-review').click();
+      await expect(overlay).toHaveCount(0);
+      await expect(screen.getByTestId('ga-coins')).toBeVisible();
+      await screen.getByRole('button',{name:'恢复原场景'}).click();
+      await expect(screen.locator('.ga-backdrop')).toHaveAttribute('data-r12-scene-art','legacy');
+    }finally{await context.close();}
+  }
+});
