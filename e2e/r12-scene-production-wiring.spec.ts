@@ -29,24 +29,37 @@ test('R12 scene review candidates cannot leak into game; approved art uses respo
         const image=await background.evaluate(element=>getComputedStyle(element).backgroundImage);
         expect(image).toContain('lobby-hero');
       }else{
-        await expect(artImages).toHaveCount(2);
+        // An approved 4K/portrait pair must NOT render two <img>s and hide
+        // the unused one with CSS: the browser would download both sources.
+        await expect(artImages).toHaveCount(1);
+        const picture=background.locator('picture[data-r12-responsive-art="backdrop"]');
+        await expect(picture).toHaveCount(1);
+        await expect(picture.locator('source[media="(max-width:700px)"]')).toHaveCount(1);
         const variant=viewport.width<=700?'mobile':'desktop';
-        const target=background.locator('img[data-r12-art-image="'+variant+'"]');
+        const target=artImages.first();
         await expect(target).toBeVisible();
         await expect(target).toHaveAttribute('data-image-load','original',{timeout:20_000});
         await expect.poll(()=>target.evaluate((element)=>(element as HTMLImageElement).naturalWidth),
           {timeout:20000,message:entry.area+' needs decoded original '+variant+' art'}).toBeGreaterThan(0);
+        await expect.poll(()=>target.evaluate((element)=>(element as HTMLImageElement).currentSrc),
+          {timeout:20000}).toContain(entry.area+'-'+variant+'.webp');
       }
       if(entry.hero){
         const hero=page.getByTestId(entry.hero);
         await expect(hero).toBeVisible({timeout:20000});
-        await expect(hero.locator('img[data-r12-hero-art]')).toHaveCount(approved?2:0);
+        await expect(hero.locator('img[data-r12-hero-art]')).toHaveCount(approved?1:0);
         await expect(hero.locator('[data-r12-hero-art="pending"]')).toHaveCount(approved?0:1);
         if(approved){
-          const target=hero.locator('img[data-r12-hero-art="'+(viewport.width<=700?'mobile':'desktop')+'"]');
+          const picture=hero.locator('picture[data-r12-responsive-art="hero"]');
+          await expect(picture).toHaveCount(1);
+          await expect(picture.locator('source[media="(max-width:700px)"]')).toHaveCount(1);
+          const target=hero.locator('img[data-r12-hero-art="production"]');
           await expect(target).toBeVisible();
           await expect.poll(()=>target.evaluate((element)=>(element as HTMLImageElement).naturalWidth),
             {timeout:20000}).toBeGreaterThan(0);
+          const variant=viewport.width<=700?'mobile':'desktop';
+          await expect.poll(()=>target.evaluate((element)=>(element as HTMLImageElement).currentSrc),
+            {timeout:20000}).toContain(entry.area+'-'+variant+'.webp');
           await expect(target).toHaveAttribute('data-image-load','original');
         }else{
           await expect(hero.locator('[data-r12-hero-art="pending"]')).toBeVisible();
