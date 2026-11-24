@@ -199,7 +199,7 @@ export function GothicDock({
       <div className="gothic-dock__map-header">
         <div className="gothic-dock__map-heading">
           <strong>月蚀领地</strong>
-          <span>当前位置 · 大厅　|　选择要前往的地点</span>
+          <span>当前位置 · 大厅 · 选择要前往的地点</span>
         </div>
         <button type="button" className="gothic-dock__map-close"
           data-testid="lobby-world-close" aria-label="关闭世界地图"
