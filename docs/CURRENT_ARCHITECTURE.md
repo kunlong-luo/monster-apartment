@@ -16,7 +16,7 @@
 
 ## R12.69 · 删除旧召唤与重复图鉴
 
-删除 `src/components/game/character-summon-reveal.tsx`（唯一审计不可达，0 入边），保留 `SummonRitualModal` → `SummonResultStage` → `CharacterContractCard`；现有结果对话框和单抽/十连结算契约不变。`MoonworkWorld` 的正式调用者只传 town/orders/warehouse；`app/characters/page.tsx` 使用 `CharactersSceneRouter` → `CharacterGalleryScene` / `GothicSummonScreen`，原 `world-characters.tsx` 仅因旧分支静态导入而可达。本轮收窄 `WorldArea`，删除该分支、旧房间 URL 手工状态、旧图鉴组件，并从 `gothic-world.css` 删除 31 条仅匹配旧 `.mw.mw-gothic[data-area="characters"]` 根的规则；现行图鉴根为 `.cg-scene`。无范围限定的选择器、19 个 CSS 文件、现有页面样式及其他资源暂保留，等待独立覆盖审查。新 SHA 的 Quality 与浏览器尚未核验。
+删除 `src/components/game/character-summon-reveal.tsx`（唯一审计不可达，0 入边），保留 `SummonRitualModal` → `SummonResultStage` → `CharacterContractCard`；现有结果对话框和单抽/十连结算契约不变。`MoonworkWorld` 的正式调用者只传 town/orders/warehouse；`app/characters/page.tsx` 使用 `CharactersSceneRouter` → `CharacterGalleryScene` / `GothicSummonScreen`，原 `world-characters.tsx` 仅因旧分支静态导入而可达。本轮收窄 `WorldArea`，删除该分支、旧房间 URL 手工状态、旧图鉴组件，并从 `gothic-world.css` 删除 31 条仅匹配旧 `.mw.mw-gothic[data-area="characters"]` 根的规则；现行图鉴根为 `.cg-scene`。无范围限定的选择器、19 个 CSS 文件、现有页面样式及其他资源暂保留，等待独立覆盖审查。首轮 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45374555765) 的静态导出/Pixi/类型/Lint通过，Vitest 319/320；旧迁移测试通过 readFileSync 直接读取已删图鉴（未被 import 图覆盖），Pages 跳过。R12.70 前置修复将断言迁往现行图鉴真实派工链接，保留订单/仓库/旧选择器检查，明确禁止恢复旧文件；新 SHA 待复验。
 
 ## 历史架构演进（原记录，仅供追溯）
 
