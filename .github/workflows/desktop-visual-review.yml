@@ -12,6 +12,12 @@ on:
       - 'e2e/gothic-welcome.spec.ts'
       - 'e2e/r12-lobby-navigation.spec.ts'
       - 'src/components/game/r12-scene-painting.tsx'
+      - 'src/components/game/r12-apartment-door-review.tsx'
+      - 'src/components/game/gothic-apartment.css'
+      - 'src/core/room-stage-layout.ts'
+      - 'src/lib/game/r12-scene-assets.ts'
+      - 'src/lib/game/r12-scene-review-art.ts'
+      - 'public/art/world-scenes/**'
       - 'e2e/r12-local-scene-preview.spec.ts'
       - 'src/components/game/gothic-lobby.css'
       - 'src/components/game/gothic-lobby-navigation.css'
@@ -126,8 +132,6 @@ jobs:
         run: |
           mkdir -p visual-evidence/welcome
           find test-results -maxdepth 1 -type f -name 'welcome-*.png' -exec cp {} visual-evidence/welcome/ \; || true
-      - name: Check opt-in local scene art review never publishes drafts
-        run: pnpm exec playwright test e2e/r12-local-scene-preview.spec.ts --workers=1 --retries=0
       - name: Check compact apartment mobile HUD stays fully visible
         run: pnpm exec playwright test e2e/r12-apartment-mobile-hud.spec.ts --workers=1 --retries=0
       - name: Verify PC YueSha room deep link, Back and retained art-review mode
@@ -169,6 +173,43 @@ jobs:
             visual-evidence/**/*.png
             test-results/desktop-*.png
             test-results/**/test-failed-*.png
+            test-results/**/error-context.md
+          if-no-files-found: warn
+          retention-days: 14
+
+  # Independent evidence and timeout: the scene-art suite must not wait behind
+  # the lobby/gallery/workshop screenshot sequence or lose its own captures.
+  scene-art-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.13.0
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: npm --prefix v2 install --no-audit --no-fund
+      - name: Install real CJK rendering fonts for scene screenshots
+        run: |
+          sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 update -qq
+          sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 install -y fonts-noto-cjk
+          fc-match 'Noto Serif SC'
+          fc-match ':lang=zh-cn'
+      - name: Verify six real doors, image lifecycle and opt-in isolation
+        run: pnpm exec playwright test e2e/r12-local-scene-preview.spec.ts --workers=1 --retries=0
+      - name: Upload scene-specific screenshots and failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r12-scene-art-review
+          path: |
+            visual-evidence/scene-studies/**/*.png
+            visual-evidence/**/*.png
+            test-results/**/*.png
             test-results/**/error-context.md
           if-no-files-found: warn
           retention-days: 14
