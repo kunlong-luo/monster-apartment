@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import {forecastPatronCommission, PATRON_IMPORT_PRICE} from '../../../v2/src/workshop-engine';
-import type {WorkshopState} from '../../../v2/src/workshop-engine';
-import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
+import {forecastPatronCommission, PATRON_IMPORT_PRICE} from '../../../engine/src/workshop-engine';
+import type {WorkshopState} from '../../../engine/src/workshop-engine';
+import type {WorkshopAction} from '../../../engine/src/workshop-runtime-contract';
 
 const PATRON_LINES: Record<string, string> = {
   offered: '「你的工坊真有本事。月光落下之前，能为我准备这些晶核吗？」',

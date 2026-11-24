@@ -2,15 +2,15 @@ import {describe,expect,it} from 'vitest';
 import {
   newWorkshop,moveMachine,placeMachine,assignWorker,runShift,
   validWorkshop,advanceSafeAutoContractDay
-} from '../v2/src/workshop-engine';
+} from '../engine/src/workshop-engine';
 import {
   AUTO_CONTRACT_DAY_MS,MAX_AUTO_CATCHUP_DAYS,MAX_AUTO_CATCHUP_MS,
   startWorkshopAuto,toggleWorkshopAutoDelivery,pauseWorkshopAuto,
   simulateWorkshopAutoUntil
-} from '../v2/src/workshop-auto-production';
+} from '../engine/src/workshop-auto-production';
 import {
   WORKSHOP_SAVE_KEY,parseWorkshopSnapshot,transactWorkshopSave
-} from '../v2/src/workshop-save-transaction';
+} from '../engine/src/workshop-save-transaction';
 
 function line(){
   let s=newWorkshop();

@@ -1,7 +1,7 @@
 /** Opt-in, human-triggered import of THREE original 512x768 transparent
  * full-body worker paintings. Never changes the approved/default game art.
  *
- * Usage: node v2/scripts/import-painted-workers.mjs /path/to/art-folder
+ * Usage: node engine/scripts/import-painted-workers.mjs /path/to/art-folder
  * Required filenames: brook.webp, fern.webp, cinder.webp.
  * A visual review and approval evidence are STILL required before \`ready\`.
  */

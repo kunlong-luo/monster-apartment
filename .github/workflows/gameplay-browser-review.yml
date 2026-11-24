@@ -17,15 +17,15 @@ on:
       - 'src/lib/game/**'
       - 'src/lib/summon/**'
       - 'src/core/**'
-      - 'v2/src/**'
-      - 'v2/scripts/**'
+      - 'engine/src/**'
+      - 'engine/scripts/**'
       - 'e2e/**'
       - 'playwright.config.ts'
       - 'next.config.ts'
       - 'package.json'
       - 'bun.lock'
-      - 'v2/package.json'
-      - 'v2/package-lock.json'
+      - 'engine/package.json'
+      - 'engine/package-lock.json'
       - '.github/workflows/gameplay-browser-review.yml'
   push:
     branches: [main]
@@ -39,15 +39,15 @@ on:
       - 'src/lib/game/**'
       - 'src/lib/summon/**'
       - 'src/core/**'
-      - 'v2/src/**'
-      - 'v2/scripts/**'
+      - 'engine/src/**'
+      - 'engine/scripts/**'
       - 'e2e/**'
       - 'playwright.config.ts'
       - 'next.config.ts'
       - 'package.json'
       - 'bun.lock'
-      - 'v2/package.json'
-      - 'v2/package-lock.json'
+      - 'engine/package.json'
+      - 'engine/package-lock.json'
       - '.github/workflows/gameplay-browser-review.yml'
   workflow_dispatch:
     inputs:
@@ -85,7 +85,7 @@ jobs:
       # Root app dependencies are locked by bun.lock; pnpm-lock.yaml pins the script runner.
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
-      - run: npm --prefix v2 install --no-audit --no-fund
+      - run: npm --prefix engine install --no-audit --no-fund
       - run: google-chrome --version
       - name: Check system font fallback
         run: fc-match "sans-serif"

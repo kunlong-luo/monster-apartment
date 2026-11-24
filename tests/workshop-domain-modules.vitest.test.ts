@@ -1,11 +1,11 @@
 import {describe,it,expect} from 'vitest';
 import {newWorkshop,runShift,placeMachine,moveMachine,assignWorker,validWorkshop,
   linked,workshopHint,workshopNextStep,buyTownSupply,residentForDay,
-  TOWN_MARKET,WORKERS,MACHINES,projectMachineProduction} from '../v2/src/workshop-engine';
-import * as model from '../v2/src/workshop-model';
-import * as guide from '../v2/src/workshop-guidance';
-import * as town from '../v2/src/workshop-town';
-import * as production from '../v2/src/workshop-production';
+  TOWN_MARKET,WORKERS,MACHINES,projectMachineProduction} from '../engine/src/workshop-engine';
+import * as model from '../engine/src/workshop-model';
+import * as guide from '../engine/src/workshop-guidance';
+import * as town from '../engine/src/workshop-town';
+import * as production from '../engine/src/workshop-production';
 
 describe('workshop domain module compatibility',()=>{
   it('preserves the public facade and source-of-truth configuration',()=>{

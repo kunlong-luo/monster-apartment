@@ -1,10 +1,10 @@
 import {expect,test} from '@playwright/test';
 import {mkdir} from 'node:fs/promises';
-import {assignWorker,moveMachine,newWorkshop,placeMachine,runShift} from '../v2/src/workshop-engine';
+import {assignWorker,moveMachine,newWorkshop,placeMachine,runShift} from '../engine/src/workshop-engine';
 import {
   startWorkshopAuto,simulateWorkshopAutoUntil,pauseWorkshopAuto,
   toggleWorkshopAutoDelivery,workshopAutoLayout
-} from '../v2/src/workshop-auto-production';
+} from '../engine/src/workshop-auto-production';
 
 // The smaller persistent scene launcher must not steal the real factory shift
 // button hit target at either PC or mobile widths.

@@ -2,7 +2,7 @@
 import {PanelBottomOpen,PanelBottomClose,Clapperboard,Grid3X3} from 'lucide-react';
 import {useEffect,useSyncExternalStore} from 'react';
 import {WorkshopCinematicStage} from './workshop-cinematic-stage';
-import {presentWorkshopStations} from '../../../v2/src/workshop-station-presenter';
+import {presentWorkshopStations} from '../../../engine/src/workshop-station-presenter';
 
 import {
   workshopRank,
@@ -14,9 +14,9 @@ import {
   canPrepareStarterLine,
   WORKERS,
   MACHINES,
-} from '../../../v2/src/workshop-engine';
-import type {Craft, WorkerId, WorkshopState} from '../../../v2/src/workshop-engine';
-import type {WorkshopAction,WorkshopPresentationMode} from '../../../v2/src/workshop-runtime-contract';
+} from '../../../engine/src/workshop-engine';
+import type {Craft, WorkerId, WorkshopState} from '../../../engine/src/workshop-engine';
+import type {WorkshopAction,WorkshopPresentationMode} from '../../../engine/src/workshop-runtime-contract';
 
 function subscribeWideStage(callback:()=>void){
   const query=window.matchMedia('(min-width:1100px) and (min-height:730px)');

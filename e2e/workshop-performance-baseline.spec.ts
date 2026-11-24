@@ -4,8 +4,8 @@ import {gzipSync} from 'node:zlib';
 import {summarizeWorkshopHeap,workshopHeapGrowth,workshopHeapClassIds,
   traceWorkshopHeapRetainers,WORKSHOP_RETAINER_CLASSES} from './helpers/workshop-heap-census';
 import type {WorkshopHeapCensus} from './helpers/workshop-heap-census';
-import {workshopBenchmarkFixture,WORKSHOP_BENCHMARK_PROFILES} from '../v2/src/workshop-benchmark-fixtures';
-import type {WorkshopBenchmarkProfile} from '../v2/src/workshop-benchmark-fixtures';
+import {workshopBenchmarkFixture,WORKSHOP_BENCHMARK_PROFILES} from '../engine/src/workshop-benchmark-fixtures';
+import type {WorkshopBenchmarkProfile} from '../engine/src/workshop-benchmark-fixtures';
 
 type PerfRecord={
   profile:WorkshopBenchmarkProfile;

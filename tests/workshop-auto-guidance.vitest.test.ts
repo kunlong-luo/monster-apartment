@@ -2,11 +2,11 @@ import {describe,expect,it} from 'vitest';
 import {
   newWorkshop,moveMachine,placeMachine,assignWorker,
   workshopHint,workshopNextStep,projectMachineProduction
-} from '../v2/src/workshop-engine';
+} from '../engine/src/workshop-engine';
 import {
   startWorkshopAuto,pauseWorkshopAuto,simulateWorkshopAutoUntil,
   AUTO_STORAGE_CAPS
-} from '../v2/src/workshop-auto-production';
+} from '../engine/src/workshop-auto-production';
 import {workshopDialogue} from '../src/lib/moonwork/workshop-dialogue';
 
 const connected=()=>{

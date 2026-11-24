@@ -5,7 +5,7 @@ import {
   validCharacterLife,visitCharacter,workerStoryProgress,workerStoryChapterText,
 } from '../src/core/character-life';
 import {decodeCharacterLife} from '../src/lib/game/character-life-store';
-import {newWorkshop} from '../v2/src/workshop-engine';
+import {newWorkshop} from '../engine/src/workshop-engine';
 
 function readyForFirst(){
   let life=visitCharacter(newCharacterLife(),'brook');

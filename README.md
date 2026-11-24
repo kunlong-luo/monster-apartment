@@ -6,7 +6,7 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 
 ## 当前可核实发布基线
 
-2026-11-24，V3.108.0，代码 [782fc74](https://github.com/kunlong-luo/monster-apartment/commit/782fc74fd6e597048a293cbf9777593447c76bb3)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45377400648) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45377549822) 成功；[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45377400618) 与玩法浏览器尚在运行。R12.74 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45378259228) 成功，Pages 核查时仍运行；R12.75 为文档归并，不提高 UI 版本。
+2026-11-24，V3.108.0，代码 [782fc74](https://github.com/kunlong-luo/monster-apartment/commit/782fc74fd6e597048a293cbf9777593447c76bb3)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45377400648) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45377549822) 成功；[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45377400618) 与玩法浏览器尚在运行。R12.75 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45378726330) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45378859455) 均成功。R12.76 为引擎目录迁移，候选 SHA 待独立验收，不提高 UI 版本。
 
 - V3.103.0 欢迎页、头像、卡面与大厅过渡图已接入；正式 CG 人工签审仍未完成。
 - V3.104.0 四位人物拥有独立背景/人物层的观景模式；原故事模式与真实热点保留。
@@ -33,7 +33,7 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 | --- | --- |
 | [app/](app/) | Next App Router、页面、根布局与全局样式 |
 | [src/](src/) | React UI、核心规则、资产注册、客户端状态与工具 |
-| [v2/src/](v2/src/)、[v2/scripts/](v2/scripts/)、[v2/art/](v2/art/) | 正在使用的 Pixi sidecar、经营引擎与贴图，不是废弃游戏 |
+| [engine/src/](v2/src/)、[engine/scripts/](v2/scripts/)、[engine/art/](v2/art/) | 正在使用的 Pixi sidecar、经营引擎与贴图，不是废弃游戏 |
 | [public/](public/) | Web 运行时资源、回退、审稿资源与版本标识 |
 | [art-sources/](art-sources/) | 源 PNG 与来源/哈希清单，不直接作为页面素材 |
 | [scripts/](scripts/) | 原画转换、资源审核、依赖与设计检查 |
@@ -42,9 +42,9 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 | [vendor/](vendor/)、[.agents/](.agents/) | Impeccable 子模块及设计技能链接 |
 | [.github/](.github/) | Quality、视觉、玩法及 Pages 工作流 |
 
-**根目录只允许上表对应的 12 个职责目录**：`app`、`src`、`v2`、`public`、`art-sources`、`scripts`、`tests`、`e2e`、`docs`、`.github`、`.agents`、`vendor`。不再保留 `.aistudio`、`artwork`、`management`、`docs/prototypes` 或旧 Gemini `metadata.json`。当前任务统一进入 Issues 和风险台账，历史记录通过 [清理前快照](https://github.com/kunlong-luo/monster-apartment/tree/782fc74fd6e597048a293cbf9777593447c76bb3) 追溯。`pnpm audit:repository-layout` 在 Quality 阻止未登记根目录和退役路径回流。工坊文档统一进入 [设备美术规格](docs/design/WORKSHOP-ASSET-SPEC.md)，旧 `v2/docs/` 已退役。`pnpm audit:engine-paths` 输出跨源码、构建、测试及文档的目录迁移清单（只读，非已迁移声明）。
+**根目录只允许上表对应的 12 个职责目录**：`app`、`src`、`engine`、`public`、`art-sources`、`scripts`、`tests`、`e2e`、`docs`、`.github`、`.agents`、`vendor`。不再保留 `.aistudio`、`artwork`、`management`、`docs/prototypes` 或旧 Gemini `metadata.json`。当前任务统一进入 Issues 和风险台账，历史记录通过 [清理前快照](https://github.com/kunlong-luo/monster-apartment/tree/782fc74fd6e597048a293cbf9777593447c76bb3) 追溯。`pnpm audit:repository-layout` 在 Quality 阻止未登记根目录和退役路径回流。工坊文档统一进入 [设备美术规格](docs/design/WORKSHOP-ASSET-SPEC.md)，旧 `v2/docs/` 已退役。`pnpm audit:engine-paths` 输出跨源码、构建、测试及文档的旧引擎路径检查（非文档旧路径失败）。
 
-根 `bun.lock` 是当前 CI 安装依据；根 `pnpm-lock.yaml` 的 importer 仅锁定 packageManagerDependencies.pnpm 12.13.0，不是根应用依赖锁；保留工具链锁。Pixi 的 `v2/package-lock.json` 单独维护。资源路径与哈希以[资源总目录](docs/ART-RESOURCE-CATALOG.md)为索引，生产状态以相应 manifest 为准。
+根 `bun.lock` 是当前 CI 安装依据；根 `pnpm-lock.yaml` 的 importer 仅锁定 packageManagerDependencies.pnpm 12.13.0，不是根应用依赖锁；保留工具链锁。Pixi 的 `engine/package-lock.json` 单独维护。资源路径与哈希以[资源总目录](docs/ART-RESOURCE-CATALOG.md)为索引，生产状态以相应 manifest 为准。
 
 ## 开发与验证
 
@@ -52,10 +52,10 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 
 ```sh
 bun install --frozen-lockfile
-npm --prefix v2 ci
+npm --prefix engine ci
 pnpm dev
 # 另一个终端：Pixi 静态服务
-npm --prefix v2 run dev
+npm --prefix engine run dev
 ```
 
 组件治理：`pnpm audit:components`（只读候选报告）、`pnpm test:component-audit`（审计逻辑测试）；CI 已接入，报告不是自动删除许可。R12.68 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45374117852) 通过，320/320 Vitest；R12.69 收敛旧召唤与重复图鉴，详见[当前架构](docs/CURRENT_ARCHITECTURE.md)。

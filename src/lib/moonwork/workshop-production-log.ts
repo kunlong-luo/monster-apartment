@@ -1,4 +1,4 @@
-import type {WorkshopState} from '../../../v2/src/workshop-engine';
+import type {WorkshopState} from '../../../engine/src/workshop-engine';
 
 /** Read-only view of ACTUAL settlements from two independent engines:
  * 1. auto.produced is cumulative real-time output, not current inventory;

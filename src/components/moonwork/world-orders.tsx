@@ -2,8 +2,8 @@
 import Link from 'next/link';
 import {WORLD_LINK_CLASS} from './world-primitives';
 import {R12SceneHeroPainting} from '@/components/game/r12-scene-painting';
-import {forecastPatronCommission,forecastOrderChoice,PREMIUM_EXTRA_CORES,PREMIUM_EXTRA_REWARD,PREMIUM_ORDER_PENALTY,STANDARD_ORDER_PENALTY} from '../../../v2/src/workshop-engine';
-import type {WorkshopState} from '../../../v2/src/workshop-engine';
+import {forecastPatronCommission,forecastOrderChoice,PREMIUM_EXTRA_CORES,PREMIUM_EXTRA_REWARD,PREMIUM_ORDER_PENALTY,STANDARD_ORDER_PENALTY} from '../../../engine/src/workshop-engine';
+import type {WorkshopState} from '../../../engine/src/workshop-engine';
 import {Panel,Action,WorkshopLink} from './world-primitives';
 
 export function Orders({s}:{s:WorkshopState}){

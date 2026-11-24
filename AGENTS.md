@@ -8,8 +8,8 @@
 ## 技术分工
 - Next.js 16、React 19、TypeScript（strict）及 Tailwind CSS v4 负责 UI。
 - Motion for React 管临时交互动效；PixiJS 8 管 2D 场景和环境粒子。
-- `src/core/cozy-engine.ts` 管公寓；`v2/src/workshop-engine.ts` 管工坊/市集/委托。
-- `v2/src/runtime.ts`、`v2/src/workshop-lab-stage.ts` 是当前工坊 Pixi 资源，不是旧页面。
+- `src/core/cozy-engine.ts` 管公寓；`engine/src/workshop-engine.ts` 管工坊/市集/委托。
+- `engine/src/runtime.ts`、`engine/src/workshop-lab-stage.ts` 是当前工坊 Pixi 资源，不是旧页面。
 - 公寓存档键及工坊存档键不得擅自清除或更换。
 - 保持满屏绘景与小型 HUD；不增加重复菜单、无意义按钮或整页长滚动后台。
 - 只为七个当前路由维护 Vitest 与 Playwright 测试。
@@ -63,7 +63,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 
 ## 目录约束（R12.74）
-根目录职责见 README，新增一级目录必须先明确唯一责任并同步更新 `scripts/audit-repository-layout.mjs`、README 和设计/工程文档；禁止恢复 `.aistudio/`、`management/`、`artwork/`、`docs/prototypes/` 及旧平台 metadata.json。活跃任务仅 GitHub Issues + 当前风险台账，历史版本使用固定 Git SHA 追溯，不再另存重复计划或未运行原型。`v2/` 当前仍是工坊运行时，目录更名属于单独的跨构建迁移，不得直接删除。
+根目录职责见 README，新增一级目录必须先明确唯一责任并同步更新 `scripts/audit-repository-layout.mjs`、README 和设计/工程文档；禁止恢复 `.aistudio/`、`management/`、`artwork/`、`docs/prototypes/` 及旧平台 metadata.json。活跃任务仅 GitHub Issues + 当前风险台账，历史版本使用固定 Git SHA 追溯，不再另存重复计划或未运行原型。`engine/` 是工坊运行时；旧 `v2/` 根目录退役，禁止恢复。
 
 
-R12.75：工坊设备美术规范统一至 `docs/design/WORKSHOP-ASSET-SPEC.md`；禁止在 `v2/docs/` 新建文档。引擎目录更名之前先执行 `pnpm audit:engine-paths`，逐项检查非字面路径、脚本工作目录、导出产物及部署；保存键和浏览器公开 URL 不随源码目录更名。
+R12.75：工坊设备美术规范统一至 `docs/design/WORKSHOP-ASSET-SPEC.md`；禁止在 `engine/docs/` 新建文档。目录治理执行 `pnpm audit:engine-paths`，逐项检查非字面路径、脚本工作目录、导出产物及部署；保存键和浏览器公开 URL 不随源码目录更名。

@@ -8,16 +8,16 @@ import type {LucideIcon} from 'lucide-react';
 import brookFace from '../../../public/art/beauty-beasts/characters/brook/face.webp';
 import fernFace from '../../../public/art/beauty-beasts/characters/fern/face.webp';
 import cinderFace from '../../../public/art/beauty-beasts/characters/cinder/face.webp';
-import {WORKERS, MACHINES, autoAssignWorkers, machineLevel} from '../../../v2/src/workshop-engine';
+import {WORKERS, MACHINES, autoAssignWorkers, machineLevel} from '../../../engine/src/workshop-engine';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 import {
   workshopProductionLog,type WorkshopLogKind
 } from '@/lib/moonwork/workshop-production-log';
-import type {WorkshopState, Machine, Craft, WorkerId} from '../../../v2/src/workshop-engine';
-import type {WorkshopAction} from '../../../v2/src/workshop-runtime-contract';
-import wellArt from '../../../v2/art/well-art-review.avif';
-import gardenArt from '../../../v2/art/garden-art-review.avif';
-import kilnArt from '../../../v2/art/kiln-art-review.avif';
+import type {WorkshopState, Machine, Craft, WorkerId} from '../../../engine/src/workshop-engine';
+import type {WorkshopAction} from '../../../engine/src/workshop-runtime-contract';
+import wellArt from '../../../engine/art/well-art-review.avif';
+import gardenArt from '../../../engine/art/garden-art-review.avif';
+import kilnArt from '../../../engine/art/kiln-art-review.avif';
 
 const workers = ['brook', 'fern', 'cinder'] as const;
 const machines = ['well', 'garden', 'kiln'] as const;

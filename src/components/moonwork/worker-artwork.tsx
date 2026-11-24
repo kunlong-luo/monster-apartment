@@ -1,7 +1,7 @@
 'use client';
 import {useEffect,useRef} from 'react';
-import {drawHumanoid,WORKER_FACE_MORPHOLOGY} from '../../../v2/src/worker-canvas';
-import type {WorkerId} from '../../../v2/src/workshop-model';
+import {drawHumanoid,WORKER_FACE_MORPHOLOGY} from '../../../engine/src/worker-canvas';
+import type {WorkerId} from '../../../engine/src/workshop-model';
 
 /** Both the gallery and the shift controls render the same identity and
  * the same transparent 498px Canvas frame as the Pixi stage. The old, tiny

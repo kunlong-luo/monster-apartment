@@ -6,11 +6,11 @@ on:
     paths:
       - 'e2e/workshop-performance-baseline.spec.ts'
       - 'e2e/helpers/workshop-heap-census.ts'
-      - 'v2/src/workshop-benchmark-fixtures.ts'
-      - 'v2/src/workshop-frame-metrics.ts'
-      - 'v2/src/workshop-lab-stage.ts'
-      - 'v2/src/workshop-plot-lifecycle.ts'
-      - 'v2/src/workshop-display-disposal.ts'
+      - 'engine/src/workshop-benchmark-fixtures.ts'
+      - 'engine/src/workshop-frame-metrics.ts'
+      - 'engine/src/workshop-lab-stage.ts'
+      - 'engine/src/workshop-plot-lifecycle.ts'
+      - 'engine/src/workshop-display-disposal.ts'
       - '.github/workflows/workshop-performance-baseline.yml'
   workflow_dispatch:
 permissions:
@@ -37,7 +37,7 @@ jobs:
           version: 12.13.0
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
-      - run: npm --prefix v2 install --no-audit --no-fund
+      - run: npm --prefix engine install --no-audit --no-fund
       - name: Install Chinese scene fonts
         run: |
           sudo apt-get update -qq

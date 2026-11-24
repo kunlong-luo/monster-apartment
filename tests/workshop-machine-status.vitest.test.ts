@@ -1,6 +1,6 @@
 import {describe,it,expect} from 'vitest';
-import {assignWorker,moveMachine,newWorkshop,placeMachine,runShift} from '../v2/src/workshop-engine';
-import {inspectMachineSignals} from '../v2/src/workshop-machine-status';
+import {assignWorker,moveMachine,newWorkshop,placeMachine,runShift} from '../engine/src/workshop-engine';
+import {inspectMachineSignals} from '../engine/src/workshop-machine-status';
 import {parseSavedWorld,reduceWorldAction} from '../src/lib/moonwork/world-store';
 
 describe('machine signals are real production signals',()=>{

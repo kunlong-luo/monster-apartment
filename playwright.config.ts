@@ -35,7 +35,7 @@ export default defineConfig({
       env: { NEXT_TELEMETRY_DISABLED: '1' },
     },
     {
-      command: 'npm --prefix v2 run dev',
+      command: 'npm --prefix engine run dev',
       url: 'http://127.0.0.1:3901/',
       cwd: import.meta.dirname,
       reuseExistingServer: !process.env.CI,

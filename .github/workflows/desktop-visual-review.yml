@@ -62,26 +62,26 @@ on:
       - 'src/components/moonwork/workshop-stage-container.tsx'
       - 'src/components/moonwork/workshop-cinematic-stage.tsx'
       - 'src/components/moonwork/workshop-cinematic.css'
-      - 'v2/src/main.ts'
-      - 'v2/src/workshop-runtime-contract.ts'
+      - 'engine/src/main.ts'
+      - 'engine/src/workshop-runtime-contract.ts'
       - 'src/components/moonwork/workshop-machine-art-review.tsx'
-      - 'v2/src/workshop-lab-stage.ts'
-      - 'v2/src/workshop-machine-effects.ts'
-      - 'v2/src/workshop-machine-materials.ts'
-      - 'v2/src/workshop-machine-actuators.ts'
-      - 'v2/src/workshop-machine-phases.ts'
-      - 'v2/src/workshop-machine-presentation.ts'
-      - 'v2/src/workshop-machine-status.ts'
-      - 'v2/src/workshop-painted-art.ts'
-      - 'v2/scripts/build.mjs'
-      - 'v2/scripts/prepare-machine-art.mjs'
-      - 'v2/scripts/prepare-machine-working-art.mjs'
-      - 'v2/scripts/prepare-machine-review-sprite.mjs'
-      - 'v2/scripts/import-painted-machine-art.mjs'
-      - 'v2/scripts/audit-art.mjs'
-      - 'v2/art/asset-pack.v1.json'
+      - 'engine/src/workshop-lab-stage.ts'
+      - 'engine/src/workshop-machine-effects.ts'
+      - 'engine/src/workshop-machine-materials.ts'
+      - 'engine/src/workshop-machine-actuators.ts'
+      - 'engine/src/workshop-machine-phases.ts'
+      - 'engine/src/workshop-machine-presentation.ts'
+      - 'engine/src/workshop-machine-status.ts'
+      - 'engine/src/workshop-painted-art.ts'
+      - 'engine/scripts/build.mjs'
+      - 'engine/scripts/prepare-machine-art.mjs'
+      - 'engine/scripts/prepare-machine-working-art.mjs'
+      - 'engine/scripts/prepare-machine-review-sprite.mjs'
+      - 'engine/scripts/import-painted-machine-art.mjs'
+      - 'engine/scripts/audit-art.mjs'
+      - 'engine/art/asset-pack.v1.json'
       - 'src/lib/moonwork/workshop-auto-runtime.tsx'
-      - 'v2/src/workshop-auto-production.ts'
+      - 'engine/src/workshop-auto-production.ts'
       - 'e2e/moonwork-next-workshop.spec.ts'
       - 'e2e/workshop-dock-clearance.spec.ts'
       - 'src/components/moonwork/character-gallery-scene.tsx'
@@ -117,7 +117,7 @@ jobs:
           version: 12.13.0
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
-      - run: npm --prefix v2 install --no-audit --no-fund
+      - run: npm --prefix engine install --no-audit --no-fund
       - name: Install real CJK rendering fonts for screenshots
         run: |
           sudo apt-get update -qq
@@ -202,7 +202,7 @@ jobs:
           version: 12.13.0
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
-      - run: npm --prefix v2 install --no-audit --no-fund
+      - run: npm --prefix engine install --no-audit --no-fund
       - name: Install real CJK rendering fonts for scene screenshots
         run: |
           sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 update -qq

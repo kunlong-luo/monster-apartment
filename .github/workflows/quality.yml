@@ -54,20 +54,20 @@ jobs:
         with:
           node-version-file: .node-version
       # V2 is separately installed, typechecked and bundled with PixiJS.
-      - run: npm --prefix v2 install --no-audit --no-fund
-      - run: npm --prefix v2 run audit:art
-      - run: npm --prefix v2 run typecheck
-      - run: npm --prefix v2 run build
-      - run: test -s v2/dist/assets/workshop-runtime.js
-      - run: test -s v2/dist/assets/machine-art-index.json
-      - run: test -s v2/dist/assets/gothic-atmosphere.js
-      - run: test -s v2/dist/assets/noto-sans-sc.woff2
-      - run: test -s v2/dist/assets/moon-workshop.avif
-      - run: test -s v2/dist/assets/moonveil-portrait.avif
-      - run: test -s v2/dist/assets/moonstone-floor.avif
-      - run: test -s v2/dist/assets/kiln-art-review.avif
-      - run: test -s v2/dist/assets/well-art-review.avif
-      - run: test -s v2/dist/assets/garden-art-review.avif
+      - run: npm --prefix engine install --no-audit --no-fund
+      - run: npm --prefix engine run audit:art
+      - run: npm --prefix engine run typecheck
+      - run: npm --prefix engine run build
+      - run: test -s engine/dist/assets/workshop-runtime.js
+      - run: test -s engine/dist/assets/machine-art-index.json
+      - run: test -s engine/dist/assets/gothic-atmosphere.js
+      - run: test -s engine/dist/assets/noto-sans-sc.woff2
+      - run: test -s engine/dist/assets/moon-workshop.avif
+      - run: test -s engine/dist/assets/moonveil-portrait.avif
+      - run: test -s engine/dist/assets/moonstone-floor.avif
+      - run: test -s engine/dist/assets/kiln-art-review.avif
+      - run: test -s engine/dist/assets/well-art-review.avif
+      - run: test -s engine/dist/assets/garden-art-review.avif
 
   static-export:
     runs-on: ubuntu-latest

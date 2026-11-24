@@ -9,7 +9,7 @@ import {GothicResourcePill} from '@/components/game/gothic-hud';
 import {useWorkshopWorld} from './world-save-react';
 import {SAVE_KEY, CHANGE_EVENT, parseSavedWorld} from '@/lib/moonwork/world-store';
 import {readWorkshopBackup} from '@/lib/moonwork/world-database';
-import {withWorkshopSaveLock} from '../../../v2/src/workshop-save-transaction';
+import {withWorkshopSaveLock} from '../../../engine/src/workshop-save-transaction';
 import {toggleWorkshopAuto,toggleWorkshopAutoContract} from '@/lib/moonwork/workshop-auto-runtime';
 import {WorkshopContractPanel} from './workshop-contract-panel';
 import {WorkshopShiftPanel} from './workshop-shift-panel';
@@ -17,7 +17,7 @@ import {WorkshopStageContainer} from './workshop-stage-container';
 import {WorkshopMachineArtReview} from './workshop-machine-art-review';
 import {WorkshopControls} from './workshop-controls';
 import {workshopDialogue} from '@/lib/moonwork/workshop-dialogue';
-import {newWorkshop,workshopRank,type WorkshopState} from '../../../v2/src/workshop-engine';
+import {newWorkshop,workshopRank,type WorkshopState} from '../../../engine/src/workshop-engine';
 import workshopHall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import yueshaBust from '../../../public/art/yuesha-bust-v3.webp';
@@ -26,7 +26,7 @@ import Image from 'next/image';
 import {RotateCcw} from 'lucide-react';
 import type {
   WorkshopAction,WorkshopRuntimeController,WorkshopSelectionListener,WorkshopPresentationMode
-} from '../../../v2/src/workshop-runtime-contract';
+} from '../../../engine/src/workshop-runtime-contract';
 
 declare global {
   interface Window {

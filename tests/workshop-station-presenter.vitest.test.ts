@@ -1,6 +1,6 @@
 import {describe,expect,it} from 'vitest';
-import {newWorkshop} from '../v2/src/workshop-engine';
-import {presentWorkshopStations} from '../v2/src/workshop-station-presenter';
+import {newWorkshop} from '../engine/src/workshop-engine';
+import {presentWorkshopStations} from '../engine/src/workshop-station-presenter';
 describe('shared workshop station presenter',()=>{
   it('finds every machine with its plot identity and does not mutate saves',()=>{
     const world=newWorkshop();

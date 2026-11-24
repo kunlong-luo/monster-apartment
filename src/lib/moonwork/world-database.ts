@@ -1,6 +1,6 @@
 import Dexie from 'dexie';
-import {validWorkshop} from '../../../v2/src/workshop-engine';
-import type {WorkshopState} from '../../../v2/src/workshop-engine';
+import {validWorkshop} from '../../../engine/src/workshop-engine';
+import type {WorkshopState} from '../../../engine/src/workshop-engine';
 import {SAVE_KEY} from './world-store';
 
 /** Local-first backup. The existing synchronous V2 save remains the runtime

@@ -19,7 +19,7 @@
 | UX-01 | [Issue #10](https://github.com/kunlong-luo/monster-apartment/issues/10)：尚无经验证的 10 名独立首次玩家记录 | 按 [首次玩家协议](../research/2026-11-13-r113-first-session-protocol.md) 观察真实 15–20 分钟流程，定量记录 3 个主要卡点；不可用 E2E 替代 | 待真实玩家 |
 | UI-01 | [R12 导航](../design/R12-01-LOBBY-NAVIGATION-REDESIGN.md) 中一些“待实施”措辞与 [R12 总计划](../design/R12-00-VISUAL-REBUILD-PLAN.md) 的“已合并部分代码”可能不同步 | 以现行路由与截图复核：七路由两步可达、PC 中央人物不被遮挡、手机不重复导航；只更新已证实的状态 | 待复核 |
 | ENG-01 | `bun.lock` 和 `pnpm-lock.yaml` 均在 Git Tree；CI 文案声称未跟踪 pnpm lock，可能已有时效差异 | 核对哪些文件被实际安装器读取、是否误导；不经复现不要删除 lockfile 或更换构建工具 | R12.71 已核对三份锁的独立职责，保留 |
-| ENG-02 | `docs/CURRENT_ARCHITECTURE.md` 仍有按轮次叠加的长期说明，难以一眼判断“当前/曾经” | 后续把运行时架构简图与历史升级日志分开；不得因为拆文档误删 `v2` Pixi sidecar | 待整理 |
+| ENG-02 | `docs/CURRENT_ARCHITECTURE.md` 仍有按轮次叠加的长期说明，难以一眼判断“当前/曾经” | 后续把运行时架构简图与历史升级日志分开；不得因为拆文档误删 `engine` Pixi sidecar | 待整理 |
 | QA-01 | 已有 Quality、Desktop Visual、Gameplay Browser 与 Pages，但文档/审核容易把单一绿灯写成全量验收 | 每轮按 [分层门禁](ITERATION-PLAYBOOK.md) 记录同 SHA 和必要截图/人审；阶段发布才执行 `full` | 常驻检查 |
 
 ## 固定执行顺序与停机条件
@@ -187,4 +187,7 @@ V3.107.0 Quality/Pages 成功，综合桌面 27 项相关测试通过、A05 动�
 
 ## R12.75 · 工坊目录收敛
 
-R12.74 Quality 已通过（45378259228）。`v2/docs/` 四份收为一份 [设备规格](../design/WORKSHOP-ASSET-SPEC.md)，旧资料使用固定 SHA。旧工坊 M3/M4/M5 尚有多路线/新配方、设备与仓储容量、剧情协作、音效及经济长期平衡等长期候选，未实施不得标 DONE；优先真实玩家验证、独立原画及现行经营循环。引擎更名独立进行，先读 `audit:engine-paths` 实际报告，再迁移所有引用并验证 Quality、构建与浏览器。DOC-01/ENG-02 仍有历史文档及资源命名待清理。
+R12.74 Quality 已通过（45378259228）。`engine/docs/` 四份收为一份 [设备规格](../design/WORKSHOP-ASSET-SPEC.md)，旧资料使用固定 SHA。旧工坊 M3/M4/M5 尚有多路线/新配方、设备与仓储容量、剧情协作、音效及经济长期平衡等长期候选，未实施不得标 DONE；优先真实玩家验证、独立原画及现行经营循环。引擎更名独立进行，先读 `audit:engine-paths` 实际报告，再迁移所有引用并验证 Quality、构建与浏览器。DOC-01/ENG-02 仍有历史文档及资源命名待清理。
+
+
+R12.76：R12.75 Quality 与 Pages 成功；路径报告 19 runtime、26 tests、12 tooling、38 docs、1 internal。候选完成引擎根路径替换与原字节迁移；待 PR Quality 和相关浏览器验证，不关闭存档或视觉风险。

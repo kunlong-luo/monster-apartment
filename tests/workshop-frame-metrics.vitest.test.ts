@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {createWorkshopFrameMeter} from '../v2/src/workshop-frame-metrics';
+import {createWorkshopFrameMeter} from '../engine/src/workshop-frame-metrics';
 
 describe('R09 bounded Pixi ticker diagnostics',()=>{
   it('publishes only after enough accepted samples and rounds percentiles',()=>{

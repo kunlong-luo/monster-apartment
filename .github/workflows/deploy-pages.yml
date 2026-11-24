@@ -44,10 +44,10 @@ jobs:
       - run: test -f out/index.html
       - run: test -s out/research/first-session/index.html
       - run: test -s out/apartment/index.html && test -s out/town/index.html && test -s out/orders/index.html && test -s out/characters/index.html && test -s out/warehouse/index.html && test -s out/workshop/index.html
-      - run: npm --prefix v2 install --no-audit --no-fund
-      - run: npm --prefix v2 run build
+      - run: npm --prefix engine install --no-audit --no-fund
+      - run: npm --prefix engine run build
       # Preserve Next's page HTML; only copy Pixi assets into its route.
-      - run: mkdir -p out/workshop/assets && cp -a v2/dist/assets/. out/workshop/assets/
+      - run: mkdir -p out/workshop/assets && cp -a engine/dist/assets/. out/workshop/assets/
       - run: test -s out/workshop/assets/workshop-runtime.js
       - run: test -s out/workshop/assets/machine-art-index.json
       - run: test -s out/workshop/assets/gothic-atmosphere.js

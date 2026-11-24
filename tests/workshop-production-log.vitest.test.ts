@@ -1,11 +1,11 @@
 import {describe,expect,it} from 'vitest';
 import {
   assignWorker,moveMachine,newWorkshop,placeMachine,runShift
-} from '../v2/src/workshop-engine';
+} from '../engine/src/workshop-engine';
 import {workshopProductionLog} from '../src/lib/moonwork/workshop-production-log';
 import {
   startWorkshopAuto,simulateWorkshopAutoUntil,pauseWorkshopAuto
-} from '../v2/src/workshop-auto-production';
+} from '../engine/src/workshop-auto-production';
 
 describe('settled workshop production ledger',()=>{
   it('never invents gains, activity or healthy machinery in a fresh save',()=>{

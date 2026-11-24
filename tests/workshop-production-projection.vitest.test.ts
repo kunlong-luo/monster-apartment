@@ -1,9 +1,9 @@
 import {describe,it,expect} from 'vitest';
 import {assignWorker,moveMachine,newWorkshop,placeMachine,runShift}
-  from '../v2/src/workshop-engine';
-import {projectMachineProduction} from '../v2/src/workshop-production';
-import {inspectMachineSignals} from '../v2/src/workshop-machine-status';
-import {devicePhase} from '../v2/src/workshop-machine-phases';
+  from '../engine/src/workshop-engine';
+import {projectMachineProduction} from '../engine/src/workshop-production';
+import {inspectMachineSignals} from '../engine/src/workshop-machine-status';
+import {devicePhase} from '../engine/src/workshop-machine-phases';
 
 describe('physical production and stateful visual semantics',()=>{
   it('projects each staffed station exactly once, including physical input routes',()=>{
