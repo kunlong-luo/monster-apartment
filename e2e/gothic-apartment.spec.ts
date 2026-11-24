@@ -255,7 +255,7 @@ test('PC Web YueSha room deep links stay in sync with browser history and art-re
   await expect(page).toHaveURL(/\/apartment\/?$/);
   await expect(page.getByTestId('yuesha-private-room')).toHaveCount(0);
   await expect(dialogue).toBeVisible(); // conversation the player opened stays open
-  await dialogue.getByRole('button',{name:'关闭月纱对话'}).click();
+  await page.getByRole('button',{name:'关闭月纱对话'}).click();
   await expect(dialogue).toHaveCount(0);
 
   await page.goto('/apartment/?roomArtReview=1');
@@ -264,7 +264,7 @@ test('PC Web YueSha room deep links stay in sync with browser history and art-re
   await expect.poll(()=>new URL(page.url()).searchParams.get('visit')).toBe('yuesha');
   await expect.poll(()=>new URL(page.url()).searchParams.get('roomArtReview')).toBe('1');
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
-  await dialogue.getByRole('button',{name:'关闭月纱对话'}).click();
+  await page.getByRole('button',{name:'关闭月纱对话'}).click();
   await expect(page).toHaveURL(/\/apartment\/?\?roomArtReview=1$/);
   await expect(dialogue).toHaveCount(0);
 });
