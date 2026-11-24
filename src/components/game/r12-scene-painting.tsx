@@ -2,7 +2,7 @@
 
 import type {ImageProps} from 'next/image';
 import {useSearchParams} from 'next/navigation';
-import {useEffect,useState,useSyncExternalStore} from 'react';
+import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import {createPortal} from 'react-dom';
 import {ReliableImage} from './reliable-image';
 import {R12ApprovedScenePicture} from './r12-approved-scene-picture';
@@ -22,6 +22,32 @@ function fallbackUrl(src:ImageProps['src']):string{
  * painting is present. Failed approved originals reveal a neutral backdrop.
  */
 type LocalPreview={url:string;name:string;width:number;height:number;origin?:'repo'};
+type PreviewKind='desktop'|'mobile';
+type PendingProbe={url:string;image:HTMLImageElement};
+type PreviewResources={
+  pending:Record<PreviewKind,PendingProbe|null>;
+  active:Record<PreviewKind,string|null>;
+};
+const previewKinds=['desktop','mobile'] as const;
+function cancelPendingProbe(resources:PreviewResources,kind:PreviewKind){
+  const pending=resources.pending[kind];
+  if(!pending)return;
+  resources.pending[kind]=null;
+  pending.image.onload=null;
+  pending.image.onerror=null;
+  URL.revokeObjectURL(pending.url);
+}
+function releaseActivePreview(resources:PreviewResources,kind:PreviewKind){
+  const url=resources.active[kind];
+  resources.active[kind]=null;
+  if(url)URL.revokeObjectURL(url);
+}
+function releasePreviewResources(resources:PreviewResources){
+  for(const kind of previewKinds){
+    cancelPendingProbe(resources,kind);
+    releaseActivePreview(resources,kind);
+  }
+}
 const serverMobileSnapshot=()=>false;
 const subscribeMobileViewport=(update:()=>void)=>{
   const query=window.matchMedia('(max-width:700px)');
@@ -73,14 +99,16 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
   const [desktopPreview,setDesktopPreview]=useState<LocalPreview|null>(null);
   const [mobilePreview,setMobilePreview]=useState<LocalPreview|null>(null);
   const [message,setMessage]=useState('');
-  // Both source object URLs remain alive while switching viewport, then are
-  // individually released on replacement, clear and route unmount.
-  useEffect(()=>()=>{
-    if(desktopPreview?.url.startsWith('blob:'))URL.revokeObjectURL(desktopPreview.url);
-  },[desktopPreview]);
-  useEffect(()=>()=>{
-    if(mobilePreview?.url.startsWith('blob:'))URL.revokeObjectURL(mobilePreview.url);
-  },[mobilePreview]);
+  // Own pending AND accepted blob URLs independently of React render timing.
+  // Viewport switches keep both accepted images alive; reset/repo/unmount
+  // invalidate pending probes before they can publish stale state.
+  const resourcesRef=useRef<PreviewResources>({
+    pending:{desktop:null,mobile:null},active:{desktop:null,mobile:null},
+  });
+  useEffect(()=>{
+    const resources=resourcesRef.current;
+    return ()=>releasePreviewResources(resources);
+  },[]);
   // If no independent portrait has been chosen, the desktop source can still
   // be cropped for layout preview — explicitly flagged as NOT mobile approval.
   const preview=reviewMode?(mobileViewport?(mobilePreview??desktopPreview):desktopPreview):null;
@@ -95,27 +123,40 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
     notify(preview?.url??null);
     return ()=>notify(null);
   },[area,preview,reviewMode]);
-  const chooseFile=(file:File|undefined,kind:'desktop'|'mobile')=>{
+  const chooseFile=(file:File|undefined,kind:PreviewKind)=>{
     if(!file)return;
+    const resources=resourcesRef.current;
+    cancelPendingProbe(resources,kind);
     if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>20*1024*1024){
       setMessage('仅支持 20 MB 内的 PNG、JPEG 或 WebP 环境原图。');
       return;
     }
     const url=URL.createObjectURL(file);
     const probe=new window.Image();
+    const pending={url,image:probe};
+    resources.pending[kind]=pending;
     probe.onload=()=>{
+      if(resources.pending[kind]!==pending)return;
       if(!probe.naturalWidth||!probe.naturalHeight){
-        URL.revokeObjectURL(url);
+        cancelPendingProbe(resources,kind);
         setMessage('图片无法读取，请更换有效的原始图片。');
         return;
       }
+      // Transfer ownership from pending probe to accepted preview. Its URL
+      // remains available until a successful replacement, reset or unmount.
+      resources.pending[kind]=null;
+      probe.onload=null;
+      probe.onerror=null;
+      releaseActivePreview(resources,kind);
+      resources.active[kind]=url;
       const next={url,name:file.name,width:probe.naturalWidth,height:probe.naturalHeight};
       if(kind==='desktop')setDesktopPreview(next);
       else setMobilePreview(next);
       setMessage('');
     };
     probe.onerror=()=>{
-      URL.revokeObjectURL(url);
+      if(resources.pending[kind]!==pending)return;
+      cancelPendingProbe(resources,kind);
       setMessage('图片解码失败；原画没有被替换。');
     };
     probe.src=url;
@@ -123,6 +164,7 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
   // Only an explicit click in opt-in review mode loads these existing
   // Git-reviewed candidates; never treat a research WebP as production.
   const previewRepositoryStudy=()=>{
+    releasePreviewResources(resourcesRef.current);
     const pair=R12_REPOSITORY_REVIEW_ART[area];
     setDesktopPreview({url:siteAssetUrl(pair.desktop.path),
       name:'仓库研究稿 · PC',width:pair.desktop.width,
@@ -208,6 +250,7 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode}:
               '未达到 '+targetWidth+'×'+targetHeight+' 原生像素门槛，仅供构图预览；禁止插值放大晋级'}
           </p>}
           <button type="button" onClick={()=>{
+            releasePreviewResources(resourcesRef.current);
             setDesktopPreview(null);setMobilePreview(null);setMessage('');
           }} className="mt-2 rounded border border-[#b99c7d] px-3 py-1">
             恢复原场景

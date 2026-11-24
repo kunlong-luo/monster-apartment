@@ -203,3 +203,93 @@ test('R12 scene review opt-out follows URL history without leaking research artw
   await expect(backdrop.locator('img[data-r12-art-image="local-review"]')).toHaveCount(0);
   await expect(page.locator('[data-r12-hero-art="local-review"]')).toHaveCount(0);
 });
+
+test('R12 pending local image probes cannot override later review choices or survive opt-out',async({page})=>{
+  test.setTimeout(60_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/orders/?r12-art-review=1');
+  const reviewer=page.getByTestId('r12-local-art-review');
+  const backdrop=page.getByTestId('moonwork-background');
+  await expect(reviewer).toBeVisible();
+  // Defer only Image-constructor blob probes, not actual rendered <img>
+  // elements. This reproduces out-of-order completion without sleeps.
+  await page.evaluate(()=>{
+    const create=URL.createObjectURL.bind(URL);
+    const revoke=URL.revokeObjectURL.bind(URL);
+    const created:string[]=[];
+    const revoked:string[]=[];
+    const deferred:Array<()=>void>=[];
+    const root=document.documentElement;
+    root.dataset.r12ProbeCreated='0';
+    root.dataset.r12ProbeRevoked='0';
+    URL.createObjectURL=(object)=>{
+      const url=create(object);
+      created.push(url);
+      root.dataset.r12ProbeCreated=String(created.length);
+      return url;
+    };
+    URL.revokeObjectURL=(url)=>{
+      revoke(url);
+      if(created.includes(url)&&!revoked.includes(url)){
+        revoked.push(url);
+        root.dataset.r12ProbeRevoked=String(revoked.length);
+      }
+    };
+    const descriptor=Object.getOwnPropertyDescriptor(HTMLImageElement.prototype,'src')!;
+    window.Image=new Proxy(window.Image,{
+      construct(target,args){
+        const img=Reflect.construct(target,args) as HTMLImageElement;
+        Object.defineProperty(img,'src',{
+          get:()=>descriptor.get!.call(img),
+          set:(value:string)=>{
+            if(value.startsWith('blob:'))deferred.push(()=>descriptor.set!.call(img,value));
+            else descriptor.set!.call(img,value);
+          },
+        });
+        return img;
+      },
+    });
+    document.addEventListener('r12-test-release-probe',()=>deferred.pop()?.());
+  });
+  const root=page.locator('html');
+  const desktop=page.getByTestId('r12-local-art-file');
+  const mobile=page.getByTestId('r12-local-art-file-mobile');
+  const file=(name:string)=>({name,mimeType:'image/png',buffer:sample});
+  const release=()=>page.evaluate(()=>document.dispatchEvent(new Event('r12-test-release-probe')));
+
+  await desktop.setInputFiles(file('old.png'));
+  await expect(root).toHaveAttribute('data-r12-probe-created','1');
+  await desktop.setInputFiles(file('new.png'));
+  await expect(root).toHaveAttribute('data-r12-probe-created','2');
+  await expect(root).toHaveAttribute('data-r12-probe-revoked','1');
+  await release(); // newest finishes first
+  await expect(reviewer.getByTestId('r12-local-desktop-meta')).toContainText('new.png');
+  await release(); // canceled old probe cannot publish
+  await expect(reviewer.getByTestId('r12-local-desktop-meta')).toContainText('new.png');
+
+  await mobile.setInputFiles(file('pending-mobile.png'));
+  await expect(root).toHaveAttribute('data-r12-probe-created','3');
+  await page.getByTestId('r12-preview-repository-scene').click();
+  await expect(backdrop).toHaveAttribute('data-r12-review-origin','repo');
+  await expect(root).toHaveAttribute('data-r12-probe-revoked','3');
+  await release();
+  await expect(reviewer.getByTestId('r12-local-mobile-meta')).toContainText('仓库研究稿');
+
+  await desktop.setInputFiles(file('pending-reset.png'));
+  await expect(root).toHaveAttribute('data-r12-probe-created','4');
+  await reviewer.getByRole('button',{name:'恢复原场景'}).click();
+  await expect(root).toHaveAttribute('data-r12-probe-revoked','4');
+  await release();
+  await expect(backdrop).toHaveAttribute('data-r12-scene-art','legacy');
+
+  await desktop.setInputFiles(file('pending-exit.png'));
+  await expect(root).toHaveAttribute('data-r12-probe-created','5');
+  await page.evaluate(()=>window.history.pushState(null,'','/orders/'));
+  await expect(reviewer).toHaveCount(0);
+  await expect(root).toHaveAttribute('data-r12-probe-revoked','5');
+  await release();
+  await page.goBack();
+  await expect(reviewer).toBeVisible();
+  await expect(backdrop).toHaveAttribute('data-r12-scene-art','legacy');
+  await expect(reviewer.getByTestId('r12-local-desktop-meta')).toHaveCount(0);
+});
