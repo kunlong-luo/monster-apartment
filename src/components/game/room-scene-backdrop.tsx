@@ -35,17 +35,17 @@ const ROOM_AMBIENCE={
   },
 } as const;
 
-export function RoomSceneBackdrop({id,previewUrl=null,cinematicPose=null,scenic=false}:{
-  id:CharacterId;previewUrl?:string|null;cinematicPose?:RoomPose|null;scenic?:boolean;
+export function RoomSceneBackdrop({id,previewUrl=null,scenicUrl=null,cinematicPose=null,scenic=false}:{
+  id:CharacterId;previewUrl?:string|null;scenicUrl?:string|null;cinematicPose?:RoomPose|null;scenic?:boolean;
 }){
   const ambience=ROOM_AMBIENCE[id];
   const art=ROOM_ART_MANIFEST[id];
   // All four concept scenes have independent, environment-only vector art.
   // They are NOT the unreviewed future WebP production backgrounds.
-  const fallbackCrop=art.composition==='architecture-crop'&&!previewUrl;
+  const fallbackCrop=art.composition==='architecture-crop'&&!previewUrl&&!scenicUrl;
   const backgroundProduction=art.backgroundStatus==='production';
-  const showHD=backgroundProduction||Boolean(previewUrl);
-  const source=previewUrl??roomPublicAssetPath(backgroundProduction
+  const showHD=backgroundProduction||Boolean(previewUrl||scenicUrl);
+  const source=previewUrl??scenicUrl??roomPublicAssetPath(backgroundProduction
     ?art.productionAssets.background:art.conceptPreview);
   const systemReduced=useReducedMotion();
   const {reduced:gameReduced}=useGothicMotion();
@@ -53,13 +53,13 @@ export function RoomSceneBackdrop({id,previewUrl=null,cinematicPose=null,scenic=
   const still=Boolean(systemReduced||gameReduced||!pageVisible);
   const storyLight=roomStoryLightTone(cinematicPose);
   return <div data-testid="room-scene-backdrop" data-scene-id={id} data-art-quality={art.backgroundStatus} data-composition={art.composition}
-    data-local-preview={previewUrl?'true':'false'}
+    data-local-preview={previewUrl?'true':'false'} data-scenic-art={Boolean(scenicUrl&&!previewUrl)}
     className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
     <div data-testid="room-background-frame"
       className={fallbackCrop?'absolute inset-y-0 -left-[112%] w-[215%]':'absolute inset-0'}>
-      <Image src={source} alt="" fill unoptimized priority={id==='yuesha'}
+      <Image src={source} fallbackSrc={scenicUrl?roomPublicAssetPath(art.conceptPreview):undefined} alt="" fill unoptimized priority={id==='yuesha'}
         sizes={fallbackCrop?'(max-width:1024px) 180vw, 1750px':'(max-width:1024px) 94vw, 850px'}
-        className={fallbackCrop?'object-cover object-right':(backgroundProduction||previewUrl)?'object-cover object-center':'object-cover object-[18%_43%]'} />
+        className={fallbackCrop?'object-cover object-right':(backgroundProduction||previewUrl||scenicUrl)?'object-cover object-center':'object-cover object-[18%_43%]'} />
     </div>
     <div className={'absolute inset-0 '+(showHD
       ?'bg-[linear-gradient(90deg,#130b1a4a_0%,transparent_55%,#130b1a56_100%)]'

@@ -13,7 +13,7 @@
 | 原有审稿原画 | [art-sources/review/](../art-sources/review/) | 已绑定 R12 哈希和审核证据，保留路径 |
 | 正式角色与卡面 | [public/art/beauty-beasts/characters/](../public/art/beauty-beasts/characters/) | 由 [CG manifest](../public/art/beauty-beasts/characters/cg-manifest.json) 及 [角色注册](../src/components/summon/heroine-portrait-assets.ts) 管理 |
 | 正式欢迎页 | [public/art/beauty-beasts/cover/](../public/art/beauty-beasts/cover/) | 当前 PC/mobile 群像 |
-| 正式大厅 | [public/art/](../public/art/) | lobby-hero-v3.webp、正式头像及回退 |
+| 正式大厅 | [public/art/](../public/art/) | lobby-hero-v4.webp / lobby-hero-v4-mobile.webp；V3 为旧公寓及回退 |
 | 正式私室 | [public/art/rooms/](../public/art/rooms/) | [rooms manifest](../public/art/rooms/manifest.json)，现有概念及未来背景/姿态槽 |
 | 世界地点 | [public/art/world-scenes/](../public/art/world-scenes/) | [R12 manifest](../public/art/world-scenes/r12-scene-manifest.json)，现行图和显式审稿资源 |
 | 地点海报 | [public/art/feature-postcards/](../public/art/feature-postcards/) | 小型入口图，不当全屏背景 |
@@ -315,3 +315,7 @@ R12.53 候选已真实生成 15 WebP（5,376,498 B），原图与输出的机器
 ## R12.58 发布回归
 
 R12.55 Quality 320/320、桌面视觉与像素检查通过；完整玩法 186 通过/1 失败/3 跳过。旧大厅断言与 V4 实际原画不匹配，已同步精确尺寸、实际 URL 和手机居中构图，并前移至视觉作业，详见 [R12.58](art-reviews/R12-58-LOBBY-BROWSER-REGRESSION-2026-11-24.md)。未改变实际游戏图像与生产批准状态。
+
+## R12.60 玩家可见的房间观景资源
+
+V3.103.0 已成功部署（main 39138900，Pages 45367299176）；R12.57 八张真实房间图由原候选分支原 blob 迁入本候选，未重新编码。每个 `public/art/rooms/<id>/review/` 下 background-candidate.webp 与 standing-candidate.webp 仅在玩家观景或显式审稿使用；`r12-57-review-manifest.json` 是原始转换证据，生产房间 manifest 不变。现有概念剧情背景仍用于真实物件调查；正式 CG 0/5。见 [R12.60](design/R12-60-PLAYER-ROOM-SCENIC-MODE-2026-11-24.md)。

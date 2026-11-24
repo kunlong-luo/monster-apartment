@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import type {ChangeEvent} from 'react';
 import type {CharacterId} from '@/core/character-life';
 import type {RoomPose} from '@/core/room-performance';
@@ -13,17 +13,10 @@ import {roomCompositionReadiness} from '@/core/room-art-prop-composition';
 import type {PropArtworkDraft} from '@/core/room-art-prop-composition';
 import {createUnapprovedRoomComposite} from '@/lib/game/room-art-composite-export';
 
-/** The review query flag is strictly presentation-only and never part of a save. */
-function subscribeReviewMode(){return ()=>{};}
-function reviewClientSnapshot(){
-  return typeof window!=='undefined'&&
-    new URLSearchParams(window.location.search).get('roomArtReview')==='1';
-}
-function reviewServerSnapshot(){return false;}
-
-/** Object URLs belong to the mounted room, never IndexedDB, localStorage or Zustand. */
-export function useRoomArtLocalPreview(){
-  const enabled=useSyncExternalStore(subscribeReviewMode,reviewClientSnapshot,reviewServerSnapshot);
+/** Object URLs belong to the mounted room, never IndexedDB, localStorage or Zustand.
+ * Parent room keys the review session to the real App Router query. */
+export function useRoomArtLocalPreview(enabled:boolean){
+  const [packagedStandingUrl,setPackagedStandingUrl]=useState<string|null>(null);
   const backgroundRef=useRef<string|null>(null);
   const [backgroundUrl,setBackgroundUrl]=useState<string|null>(null);
   const [poseUrls,setPoseUrls]=useState<Partial<Record<RoomPose,string>>>({});
@@ -126,6 +119,7 @@ export function useRoomArtLocalPreview(){
       const next=URL.createObjectURL(file);
       if(backgroundRef.current)URL.revokeObjectURL(backgroundRef.current);
       backgroundRef.current=next;
+      setPackagedStandingUrl(null);
       setBackgroundUrl(next);
       resetAnchors();resetPropArtwork();
       setError('');
@@ -139,11 +133,12 @@ export function useRoomArtLocalPreview(){
     if(backgroundRef.current)URL.revokeObjectURL(backgroundRef.current);
     backgroundRef.current=null;
     setBackgroundUrl(null);
+    setPackagedStandingUrl(null);
     resetAnchors();resetPropArtwork();
     setError('');
   };
   return {
-    enabled,backgroundUrl,poseUrls,selectedPose,error,
+    enabled,backgroundUrl,packagedStandingUrl,poseUrls,selectedPose,error,
     propArtwork,propError,compositeStatus,exportBusy,exportUrl,uploadProp,exportCandidate,
     anchorEditing,selectedAnchor,anchorDraft,setAnchorEditing,setSelectedAnchor,
     setAnchorDraft,resetAnchors,
@@ -154,10 +149,21 @@ export function useRoomArtLocalPreview(){
       if(next)setSelectedAnchor(next.id);
     },
     uploadBackground,resetBackground,
+    usePackagedRoomReview:(id:CharacterId)=>{
+      if(!enabled)return;
+      if(backgroundRef.current)URL.revokeObjectURL(backgroundRef.current);
+      backgroundRef.current=null;
+      const root='/art/rooms/'+id+'/review/';
+      setBackgroundUrl(siteAssetUrl(root+'background-candidate.webp'));
+      setPackagedStandingUrl(siteAssetUrl(root+'standing-candidate.webp'));
+      setSelectedPose(null);
+      resetAnchors();resetPropArtwork();setError('');
+    },
     usePackagedYueshaReview:()=>{
       // Officially unreviewed, opt-in QA ONLY: no save and no production manifest.
       if(backgroundRef.current)URL.revokeObjectURL(backgroundRef.current);
       backgroundRef.current=null;
+      setPackagedStandingUrl(null);
       setBackgroundUrl(siteAssetUrl('/art/room-review/yuesha-salon-candidate.webp'));
       resetAnchors();resetPropArtwork();
       setError('');
@@ -202,6 +208,14 @@ export function RoomArtLocalPreviewPanel({id,name,review,warning}:{id:CharacterI
       className={open?'mt-2 max-h-[min(42vh,270px)] space-y-1 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin]':'hidden'}>
       <span className="block text-[#ffd298]">{name} · 仅本机预览，不会发布或保存</span>
       {warning&&<p role="note" className="text-[10px] leading-4 text-[#e7b68b]">{warning}</p>}
+      <button type="button" data-testid="room-art-r12-57-pair"
+        onClick={()=>review.usePackagedRoomReview(id)}
+        className="min-h-11 w-full rounded border border-gothic-brass/70 bg-gothic-panel px-2 py-2 text-left text-gothic-glow hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow">
+        预览新房间与独立人物（待审核）
+      </button>
+      {review.packagedStandingUrl&&<p role="status" data-testid="room-art-r12-57-status" className="text-[10px] leading-4 text-gothic-champagne">
+        原生 1672×941 房间 + 1086×1448 透明站姿；仅构图对照，非四姿态或正式高清，物件热点待校准。
+      </p>}
       {id==='yuesha'&&<button type="button" data-testid="room-art-staged-candidate"
         onClick={review.usePackagedYueshaReview}
         className="min-h-11 w-full rounded border border-gothic-brass/70 bg-gothic-panel px-2 py-2 text-left text-gothic-glow hover:border-gothic-glow focus-visible:outline-2 focus-visible:outline-gothic-glow">
@@ -211,7 +225,7 @@ export function RoomArtLocalPreviewPanel({id,name,review,warning}:{id:CharacterI
       <input id={fileId} data-testid="room-art-local-file" type="file" accept="image/webp"
         onChange={review.uploadBackground}
         className="block w-full min-w-0 text-[10px] file:mr-1 file:rounded file:border-0 file:bg-[#5c3949] file:px-2 file:py-1 file:text-[#ffead5]"/>
-      {id==='yuesha'&&review.backgroundUrl&&<>
+      {id==='yuesha'&&review.backgroundUrl&&!review.packagedStandingUrl&&<>
         <div className="mt-2 space-y-2 rounded-md border border-gothic-brass/45 bg-gothic-night/80 p-2"
           data-testid="room-art-anchor-controls">
           <p className="text-[11px] leading-5 text-gothic-champagne">
@@ -304,8 +318,10 @@ export function RoomArtLocalPreviewPanel({id,name,review,warning}:{id:CharacterI
         恢复原概念背景
       </button>}
       {review.error&&<span role="alert" className="text-[#ffb3b9]">{review.error}</span>}
-      <RoomPosePreviewControls onChange={review.setPoseUrl}
-        onSelect={review.selectPose} onReset={review.resetPose}/>
+      <div hidden={Boolean(review.packagedStandingUrl)}>
+        <RoomPosePreviewControls onChange={review.setPoseUrl}
+          onSelect={review.selectPose} onReset={review.resetPose}/>
+      </div>
     </div>
   </section>;
 }

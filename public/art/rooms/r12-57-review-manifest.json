@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad",
+  "humanVisualReview": false,
+  "productionApproved": false,
+  "pillow": "12.3.0",
+  "outputs": [
+    {
+      "resident": "yuesha",
+      "kind": "background",
+      "source": "art-sources/rooms/yuesha/background.png",
+      "sourceSha256": "836ae3095ee66a2f378725f686c9a7938f40044414da32517c25ee0f050fa37d",
+      "sourceGitBlobSha": "f4ce903860092f8b460116b87d3f0abbf01802b9",
+      "output": "public/art/rooms/yuesha/review/background-candidate.webp",
+      "outputSha256": "5c1ccbacef5680cd08be6d67435a45695d2fc98ee64a172874ca975ea0980a83",
+      "bytes": 479202,
+      "size": [
+        1672,
+        941
+      ],
+      "alphaReport": null,
+      "status": "review-only"
+    },
+    {
+      "resident": "yuesha",
+      "kind": "standing",
+      "source": "art-sources/characters/yuesha/sprites/standing.png",
+      "sourceSha256": "49fe92c167c8121ef260db365dc3ec743bb02ec7531a311b49099b64133f3bfc",
+      "sourceGitBlobSha": "7ba8a5e6733f569dfad57d7fb28d3b09e29ccf6c",
+      "output": "public/art/rooms/yuesha/review/standing-candidate.webp",
+      "outputSha256": "d6c204aad016661636f5c6f778175a1bb4dc083b1d1c77a9bba4a897fbfbe2b7",
+      "bytes": 664030,
+      "size": [
+        1086,
+        1448
+      ],
+      "alphaReport": {
+        "transparentFraction": 0.26913097890784776,
+        "nearOpaqueFraction": 0.6055332560056165,
+        "fullyOpaqueFraction": 0.00033385733036232106,
+        "cornerAlpha": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "alphaBounds": [
+          0,
+          0,
+          1086,
+          1448
+        ],
+        "requiresAlphaRework": false
+      },
+      "status": "review-only"
+    },
+    {
+      "resident": "brook",
+      "kind": "background",
+      "source": "art-sources/rooms/brook/background.png",
+      "sourceSha256": "9ef0471e82061fb1d73a93879fec15c3d5b073503fec9cd0b90639e3c01d661d",
+      "sourceGitBlobSha": "94e8550029b4b3a775ea27dbfa5cd44e12842c68",
+      "output": "public/art/rooms/brook/review/background-candidate.webp",
+      "outputSha256": "ed5318967d30c656dd27cda785fcad47ac34decd62ebcbbf1618068f00f04750",
+      "bytes": 621298,
+      "size": [
+        1672,
+        941
+      ],
+      "alphaReport": null,
+      "status": "review-only"
+    },
+    {
+      "resident": "brook",
+      "kind": "standing",
+      "source": "art-sources/characters/brook/sprites/standing.png",
+      "sourceSha256": "72d72af5a7aa0209a1c30e7dffd86302053d1b644f75f5f0c4ad841a4de63434",
+      "sourceGitBlobSha": "79f9147cd5f1b86e78da8a53fbb7b4e7e1a449ca",
+      "output": "public/art/rooms/brook/review/standing-candidate.webp",
+      "outputSha256": "b2da93867d25eb8efdde530f27a368f47e5ae357d65b32c6a03e846c026c2bc8",
+      "bytes": 821724,
+      "size": [
+        1086,
+        1448
+      ],
+      "alphaReport": {
+        "transparentFraction": 0.2009452295920963,
+        "nearOpaqueFraction": 0.4286836228035367,
+        "fullyOpaqueFraction": 1.3354293214492841e-05,
+        "cornerAlpha": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "alphaBounds": [
+          0,
+          0,
+          1086,
+          1448
+        ],
+        "requiresAlphaRework": false
+      },
+      "status": "review-only"
+    },
+    {
+      "resident": "fern",
+      "kind": "background",
+      "source": "art-sources/rooms/fern/background.png",
+      "sourceSha256": "2f8826c1ae051a1b9f6e092e5e86a1a34e6977a025e10c84c2dde5e8bb073d00",
+      "sourceGitBlobSha": "949343304a944b05aa712efb29ed39282226508b",
+      "output": "public/art/rooms/fern/review/background-candidate.webp",
+      "outputSha256": "2d4f90d154dc188e93199ddad550a5270d4b812dce6f4e5ff0c00306eeb4ca96",
+      "bytes": 648462,
+      "size": [
+        1672,
+        941
+      ],
+      "alphaReport": null,
+      "status": "review-only"
+    },
+    {
+      "resident": "fern",
+      "kind": "standing",
+      "source": "art-sources/characters/fern/sprites/standing.png",
+      "sourceSha256": "b84d9b6a91039ca4bc452ddc5b69d2ebe3913477682c9adf4c9454624ce327bc",
+      "sourceGitBlobSha": "6c426fee975d2ab7798077ba6406683e55dc0882",
+      "output": "public/art/rooms/fern/review/standing-candidate.webp",
+      "outputSha256": "272a4f861a49382a2c8a8c29fa1b64c782742a8e87ee39d99376fc13b9a4c6df",
+      "bytes": 585116,
+      "size": [
+        1086,
+        1448
+      ],
+      "alphaReport": {
+        "transparentFraction": 0.45714861674959045,
+        "nearOpaqueFraction": 0.43286733209202,
+        "fullyOpaqueFraction": 0.00010047515847094614,
+        "cornerAlpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alphaBounds": [
+          0,
+          0,
+          1080,
+          1448
+        ],
+        "requiresAlphaRework": false
+      },
+      "status": "review-only"
+    },
+    {
+      "resident": "cinder",
+      "kind": "background",
+      "source": "art-sources/rooms/cinder/background.png",
+      "sourceSha256": "7ba8ef05f75c641ca370196a151f94b48cd2c3cff97e5c0cb80f733028f080ea",
+      "sourceGitBlobSha": "6e0766044bfd0941b6147c8adfb20b6abd69f3b7",
+      "output": "public/art/rooms/cinder/review/background-candidate.webp",
+      "outputSha256": "274aa03f9ba8558b8f3d0cde651b9e17ac5671d33e2f4e2a952cd2793c41e756",
+      "bytes": 571828,
+      "size": [
+        1672,
+        941
+      ],
+      "alphaReport": null,
+      "status": "review-only"
+    },
+    {
+      "resident": "cinder",
+      "kind": "standing",
+      "source": "art-sources/characters/cinder/sprites/standing.png",
+      "sourceSha256": "a37b1bd4c82e4c71621af3e5174ee894bbd36e1b768652db7481169e8544c1b7",
+      "sourceGitBlobSha": "92c444aceefc15954c35e90dcf3d1a2ec13681f6",
+      "output": "public/art/rooms/cinder/review/standing-candidate.webp",
+      "outputSha256": "c4b015647ffcf3f919b8d180c394245ff7c5ac5d21a0a37b9e4ef81603f679b9",
+      "bytes": 593462,
+      "size": [
+        1086,
+        1448
+      ],
+      "alphaReport": {
+        "transparentFraction": 0.34407463650885706,
+        "nearOpaqueFraction": 0.5847291749336101,
+        "fullyOpaqueFraction": 0.0005386231596512113,
+        "cornerAlpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alphaBounds": [
+          0,
+          0,
+          1076,
+          1448
+        ],
+        "requiresAlphaRework": false
+      },
+      "status": "review-only"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import {useSearchParams} from 'next/navigation';
 import {useEffect,useRef,useState} from 'react';
 import {useRoomStageSize} from './use-room-stage-size';
 import {RoomArtLocalPreviewPanel,useRoomArtLocalPreview} from './room-art-local-preview';
@@ -13,6 +14,7 @@ import {RoomSceneBackdrop} from './room-scene-backdrop';
 import {RoomResidentSprite} from './room-resident-sprite';
 import {RoomSceneFocus} from './room-scene-focus';
 import {RoomScenicViewToggle} from './room-scenic-view-toggle';
+import {roomScenicArt} from '@/core/room-scenic-art';
 import {RoomConversationTopics} from './room-conversation-topics';
 import {RoomDialogueTheater} from './room-dialogue-theater';
 import {dialogueBeats,roomDialogueBeatPose,roomObjectPose,roomTopicPose} from '@/core/room-performance';
@@ -27,12 +29,16 @@ const SCENE_PALETTES={
   cinder:{ribbon:'border-amber-200/50 text-amber-100',roomDetail:'炉火台 · 黄铜修理间'},
 } as const;
 
-export function WorkerPrivateRoom({id,onClose,working,completedOrders}:{
-  id:WorkerCharacterId;onClose:()=>void;working:boolean;completedOrders:number;
-}){
+type WorkerRoomProps={id:WorkerCharacterId;onClose:()=>void;working:boolean;completedOrders:number};
+export function WorkerPrivateRoom(props:WorkerRoomProps){
+  const reviewEnabled=useSearchParams().get('roomArtReview')==='1';
+  return <WorkerPrivateRoomView {...props} reviewEnabled={reviewEnabled}
+    key={props.id+':'+(reviewEnabled?'review':'player')}/>;
+}
+function WorkerPrivateRoomView({id,onClose,working,completedOrders,reviewEnabled}:WorkerRoomProps&{reviewEnabled:boolean}){
   const stageRef=useRef<HTMLDivElement>(null);
   const stageSize=useRoomStageSize(stageRef);
-  const artReview=useRoomArtLocalPreview();
+  const artReview=useRoomArtLocalPreview(reviewEnabled);
   const profile=CHARACTER_PROFILES[id];
   const scene=WORKER_DIALOGUES[id];
   const palette=SCENE_PALETTES[id];
@@ -75,6 +81,8 @@ export function WorkerPrivateRoom({id,onClose,working,completedOrders}:{
   // Review candidates have no authenticated object locations. No false
   // hotspots and no game-state inspection while a new background is staged.
   const candidatePreview=Boolean(artReview.enabled&&artReview.backgroundUrl);
+  const playerScenic=scenicMode&&!artReview.enabled;
+  const scenicArt=playerScenic?roomScenicArt(id):null;
 
   return <GothicModal title={'拜访'+profile.name+'的房间'} closeLabel={'离开'+profile.name+'的房间'} onClose={onClose} wide immersive>
     <div data-testid={'worker-private-room-'+id} data-room-layout="scenic-left-rail-right"
@@ -85,33 +93,33 @@ export function WorkerPrivateRoom({id,onClose,working,completedOrders}:{
       <div data-testid="worker-room-stage"
         className={'relative h-[clamp(390px,68dvh,720px)] lg:aspect-video lg:h-auto overflow-hidden rounded-xl border border-gothic-brass/60 bg-gothic-night shadow-[0_16px_48px_#0009,inset_0_1px_#e9cfa523] '}
         aria-label={profile.name+'的房间概念场景'} ref={stageRef}>
-        <RoomScenicViewToggle scenic={scenicMode} blocked={Boolean(theater)} onToggle={()=>setScenicMode(previous=>!previous)}/>
-        <RoomSceneBackdrop id={id} scenic={scenicMode} previewUrl={artReview.backgroundUrl}
+        <RoomScenicViewToggle scenic={scenicMode} mobile={!artReview.enabled} blocked={Boolean(theater)} onToggle={()=>setScenicMode(previous=>!previous)}/>
+        <RoomSceneBackdrop id={id} scenic={scenicMode} previewUrl={artReview.backgroundUrl} scenicUrl={scenicArt?.background}
           cinematicPose={theater&&!working?pose:null}/>
         <RoomResidentSprite id={id} name={profile.name} working={working} reaction={scenicMode?'':reaction}
           pose={shownPose} previewBackground={Boolean(artReview.backgroundUrl)}
-          previewPoseUrl={artReview.enabled?artReview.poseUrls[shownPose]??null:null}/>
-        {!candidatePreview&&<RoomSceneFocus id={id} scenic={scenicMode} item={selectedItem} pose={pose} stageSize={stageSize}/>}
-        {!candidatePreview&&<RoomSceneHotspots scenic={scenicMode} characterName={profile.name} roomId={id} items={scene.objects} stageSize={stageSize}
+          scenicPoseUrl={scenicArt?.standing} previewPoseUrl={artReview.enabled?artReview.packagedStandingUrl??artReview.poseUrls[shownPose]??null:null}/>
+        {!candidatePreview&&!playerScenic&&<RoomSceneFocus id={id} scenic={scenicMode} item={selectedItem} pose={pose} stageSize={stageSize}/>}
+        {!candidatePreview&&!playerScenic&&<RoomSceneHotspots scenic={scenicMode} characterName={profile.name} roomId={id} items={scene.objects} stageSize={stageSize}
           observed={observed} selected={selectedItem} onInspect={inspect}
           description={scene.objects.find(item=>item.id===selectedItem)?.text}/>}
         {theater&&!working&&<RoomDialogueTheater key={theater.id} name={profile.name}
           title={theater.title} response={theater.response}
           basePose={roomTopicPose(id,theater.id)} onBeatPose={setPose}
           onClose={()=>{setTheater(null);setPose('idle');}}/>}
-        <header className={"pointer-events-none absolute left-4 top-4 z-[5] max-w-[min(54%,340px)] text-shadow-md sm:left-6 sm:top-6"+(scenicMode?" lg:hidden":"")+(candidatePreview?" hidden":"")}>
+        <header className={"pointer-events-none absolute left-4 top-4 z-[5] max-w-[min(54%,340px)] text-shadow-md sm:left-6 sm:top-6"+(scenicMode?" lg:hidden":"")+(candidatePreview||playerScenic?" hidden":"")}>
           <span className="text-[9px] font-medium uppercase tracking-[.24em] text-[#e7c294]">PRIVATE SUITE / {profile.name}</span>
           <h2 className="mt-2 font-serif text-xl leading-tight tracking-[.04em] text-[#ffe7c5] sm:text-2xl">{scene.roomName}</h2>
           <p className="mt-2 hidden max-w-[29ch] text-xs leading-6 text-[#ead3bf] sm:block">{scene.roomSummary}</p>
         </header>
-        <div className={"pointer-events-none absolute bottom-3 left-3 z-[1] max-w-[48%] sm:bottom-5 sm:left-5"+(candidatePreview?" hidden":"")}>
+        <div className={"pointer-events-none absolute bottom-3 left-3 z-[1] max-w-[48%] sm:bottom-5 sm:left-5"+(candidatePreview||playerScenic?" hidden":"")}>
           <p className={'inline-block rounded border border-[#cba77b77] bg-[#180e1cc9] px-2.5 py-1.5 text-[10px] leading-4 '+palette.ribbon}>{working?'工坊值守 · 留言中':palette.roomDetail}</p>
         </div>
       </div>
       <RoomArtLocalPreviewPanel id={id} name={profile.name} review={artReview}
         warning="预览中的背景尚未审核，原有调查热点已停用，退出预览后会自动恢复；不会更改探索记录。"/>
       </div>
-      <div data-testid="room-story-rail" className={'min-w-0 space-y-4 rounded-xl border border-gothic-brass/40 bg-gothic-panel/90 p-3 lg:max-h-[min(68dvh,720px)] lg:overflow-y-auto lg:pr-3 [scrollbar-width:thin] '+(scenicMode?'lg:hidden':'')}>
+      <div data-testid="room-story-rail" className={'min-w-0 space-y-4 rounded-xl border border-gothic-brass/40 bg-gothic-panel/90 p-3 lg:max-h-[min(68dvh,720px)] lg:overflow-y-auto lg:pr-3 [scrollbar-width:thin] '+(playerScenic?'hidden':scenicMode?'lg:hidden':'')}>
       {status!=='ok'&&<p role="alert" className="rounded-lg border border-rose-300/50 p-3 text-xs text-rose-200">
         {status==='corrupt'?'人物存档无法读取；已保留原记录，不会覆盖。':'浏览器暂时无法保存人物拜访记录。'}</p>}
       <section className="space-y-2" aria-label={profile.name+'的交谈'}>
@@ -182,7 +190,7 @@ export function WorkerPrivateRoom({id,onClose,working,completedOrders}:{
       </section>
       </div>
       </div>
-      <details data-testid="room-character-archive" className="group rounded-lg border border-[#ad885f50] bg-[#170e1ae6] px-3 py-2.5">
+      <details hidden={playerScenic} data-testid="room-character-archive" className="group rounded-lg border border-[#ad885f50] bg-[#170e1ae6] px-3 py-2.5">
         <summary className="cursor-pointer select-none py-1 text-xs tracking-[.1em] text-[#e8c99e] focus-visible:outline-2 focus-visible:outline-[#e8c99e]">人物档案与能力 <span className="ml-2 text-[#a68b76] group-open:hidden">· 展开查看</span></summary>
         <div className="mt-3"><CharacterLifePortrait id={id} activity={working?'在工坊工作':'目前休息中'}/></div>
       </details>

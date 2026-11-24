@@ -315,7 +315,7 @@ test('mobile room keeps investigation without an unnecessary scenic-mode button'
   const room=page.getByTestId('yuesha-private-room');
   await expect(room).toBeVisible({timeout:20000});
   await expect(room).toHaveAttribute('data-room-view','story');
-  await expect(page.getByTestId('room-scenic-toggle')).toBeHidden();
+  await expect(page.getByTestId('room-scenic-toggle')).toBeVisible();
   await expect(page.locator('[data-hotspot-layout="object-id"]')).toBeVisible();
   await expect(page.getByTestId('room-story-rail')).toBeVisible();
 });
