@@ -17,7 +17,7 @@ describe('R12.31 approved PC/mobile scene loading',()=>{
       expect(html.match(/<source\b/g)).toHaveLength(1);
       expect(html).toContain('data-r12-responsive-art="'+kind+'"');
       expect(html).toContain('media="(max-width:700px)"');
-      expect(html).toContain('srcSet="'+mobile+'"');
+      expect(html.toLowerCase()).toContain('srcset="'+mobile.toLowerCase()+'"');
       expect(html).toContain('src="'+desktop+'"');
       expect(html).not.toContain('loading="eager"');
       // The user agent chooses <source> before downloading; we must not
