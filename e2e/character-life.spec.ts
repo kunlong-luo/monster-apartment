@@ -196,7 +196,11 @@ test('real delivered order unlocks a persistent worker story in the private room
   expect(stored.workshop).toBe(JSON.stringify(world));
   expect(stored.lore.workerChapters).toEqual({brook:1});
   await page.reload();
-  await page.getByTestId('visit-worker-room-brook').click();
+  // Since R12.26 the private suite is a canonical deep link. Reloading
+  // /characters/?visit=brook restores Brook's room automatically; a second
+  // click would target the obscured gallery behind the already-open modal.
+  await expect(page).toHaveURL(/\/characters\/?\?visit=brook$/);
+  await expect(page.getByTestId('worker-private-room-brook')).toBeVisible();
   await expect(page.getByTestId('worker-story-progress-brook')).toContainText('1 / 2');
   await expect(page.getByTestId('worker-story-memory-brook')).toBeVisible();
   await expect(page.getByTestId('worker-story-collect-brook')).toHaveCount(0);
