@@ -1,6 +1,6 @@
 # 《怪物公寓》文档总入口
 
-> R12.84：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
+> R12.85：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
 
 ## 现行规范（新开发从这里开始）
 
@@ -79,3 +79,7 @@ R12.82：三个既有功能 PR 的 Quality、桌面及完整玩法均通过；�
 ## R12.84 · 设计规范归并
 
 `docs/design/` 35 → 31 个跟踪文件，Markdown 32 → 28（其余 SVG/JSON 保留）；全仓 Markdown 191 → 187。退役四份旧实施报告：[R12-02-MOBILE-ROOM-CHOOSER.md](https://github.com/kunlong-luo/monster-apartment/blob/80eb69abb56c8a0a398e53ff27cdf513e76b695e/docs/design/R12-02-MOBILE-ROOM-CHOOSER.md) · [R12-03-LOBBY-ART-CLEARANCE.md](https://github.com/kunlong-luo/monster-apartment/blob/80eb69abb56c8a0a398e53ff27cdf513e76b695e/docs/design/R12-03-LOBBY-ART-CLEARANCE.md) · [R12-40-YUESHA-RELOAD-LORE-REGRESSION-2026-11-24.md](https://github.com/kunlong-luo/monster-apartment/blob/80eb69abb56c8a0a398e53ff27cdf513e76b695e/docs/design/R12-40-YUESHA-RELOAD-LORE-REGRESSION-2026-11-24.md) · [R12-62-ROOM-SCENIC-BUILD-FIX-2026-11-24.md](https://github.com/kunlong-luo/monster-apartment/blob/80eb69abb56c8a0a398e53ff27cdf513e76b695e/docs/design/R12-62-ROOM-SCENIC-BUILD-FIX-2026-11-24.md)。现行交互规则归入 [DESIGN.md](../DESIGN.md)，构建/回归证据在固定 Git 历史，保留原画、独立像素/审批记录和现行视觉合同。其余 187 份 Markdown 与 118 个 scripts/.github/tests 指定文件进行明确文件名引用扫描，三份历史引用改为固定链接；未声称覆盖所有动态/源码引用。六条非 main 分支已分类退役，实际 refs 删除仍待支持客户端操作，不将 PR 关闭误报为分支删除。
+
+## R12.85 · 现行文档链接门禁扩容
+
+`pnpm audit:doc-links` 从 5 份索引扩至 16 份现行文档；新增 AGENTS、产品、设计、当前架构、ADR、迭代手册、风险台账、人物 SOP、CG 原生管线、Impeccable、工坊设备规范。基线 `480128e` 完整 Git 树 732 个 blob、187 份 Markdown；按现有链接匹配规则只读核查 16 份文件共 257 条仓库相对链接，0 个缺失目标。Quality 已有调用，沿用原检查；本轮 CI 结果以实际提交为准。外链、锚点、引用式 Markdown、动态路径和内容准确性不属于该检查；不自动删除历史报告。仅改治理脚本和现行文档，不改变版本、资源、路由、存档或审批。下一步优先分层检查历史文档中的失效相对链接，区分可修复路径与应固定到 Git 历史的证据。

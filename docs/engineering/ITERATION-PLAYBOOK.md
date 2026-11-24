@@ -79,7 +79,7 @@ Desktop Visual Review 的 `scene-art-review` 与综合 `desktop-review` 并行�
 
 ## R12.68 · 组件与样式引用治理
 
-运行 `pnpm audit:components`，机器报告用 `pnpm audit:components --json`；`pnpm test:component-audit` 验证别名、重导出、动态字面量、类型、CSS 导入和辅助代码隔离。复用已安装 TypeScript 的 AST 和解析器，不增加依赖。Quality 执行测试及只读报告。报告以 app 全部模块为保守根，单独计算 tests/e2e/scripts/v2 引用；`review-unreachable` 是待审候选，不是删除授权。非字面量动态导入、未解析本地路径、Next 特殊入口、CSS 选择器、动态 class、资源清单、独立部署和外部调用仍须人工核对；不可据搜索零命中自动删除。删除前按风险验证真实路由与 PC/手机画面。无需为每轮审计增加一份重复报告。
+运行 `pnpm audit:components`，机器报告用 `pnpm audit:components --json`；`pnpm test:component-audit` 验证别名、重导出、动态字面量、类型、CSS 导入和辅助代码隔离。复用已安装 TypeScript 的 AST 和解析器，不增加依赖。Quality 执行测试及只读报告。报告以 app 全部模块为保守根，单独计算 tests/e2e/scripts/engine 引用；`review-unreachable` 是待审候选，不是删除授权。非字面量动态导入、未解析本地路径、Next 特殊入口、CSS 选择器、动态 class、资源清单、独立部署和外部调用仍须人工核对；不可据搜索零命中自动删除。删除前按风险验证真实路由与 PC/手机画面。无需为每轮审计增加一份重复报告。
 
 
 ## R12.71 · 防止清理回归
@@ -96,3 +96,5 @@ R12.75：所有规范归 `docs/`，工坊设备规格为 `docs/design/WORKSHOP-A
 
 
 R12.78：文档归并后执行 `pnpm audit:doc-links`，检查根 README、文档总入口、资源目录、运行资源说明、长期策划入口的仓库内相对链接。Git 历史引用使用固定 SHA HTTPS URL，不将历史文档作为现行规范。该检查继承 PR #59 的有效链接门禁思路，不引入重复全量资源库存 JSON 或新的 archive 目录。分支整合须区分 squash 已合并、独有变更、被后续实现替代和待验收；禁止将旧分支整树覆盖 main。
+
+R12.85：现行文档链接门禁由 5 份索引扩至 16 份（含 AGENTS、产品、设计、架构、ADR、风险与角色/工坊 SOP）。新增主规范时同步评估纳入 `scripts/audit-doc-links.mjs`；它只核查匹配到的仓库相对链接目标，不检查外链、锚点、引用式 Markdown 或内容准确性。历史报告中的旧路径应按当时事实使用固定 SHA，不为了通过检查恢复废弃目录。
