@@ -1,6 +1,6 @@
 # 《怪物公寓》文档总入口
 
-> R12.81：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
+> R12.82：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
 
 ## 现行规范（新开发从这里开始）
 
@@ -72,3 +72,6 @@ R12.76：引擎迁至 `engine/`，旧根路径退役；历史报告保留当时�
 ## R12.81 · V0.x 历史规范退役
 
 六份文件原件：[DEVELOPMENT_PLAN.md](https://github.com/kunlong-luo/monster-apartment/blob/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac/docs/DEVELOPMENT_PLAN.md) · [PRODUCT_SPEC.md](https://github.com/kunlong-luo/monster-apartment/blob/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac/docs/PRODUCT_SPEC.md) · [SPIRIT_COLLECTION_V050.md](https://github.com/kunlong-luo/monster-apartment/blob/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac/docs/SPIRIT_COLLECTION_V050.md) · [TECH_STACK_PAGEVELA.md](https://github.com/kunlong-luo/monster-apartment/blob/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac/docs/TECH_STACK_PAGEVELA.md) · [UI_DIRECTION.md](https://github.com/kunlong-luo/monster-apartment/blob/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac/docs/UI_DIRECTION.md) · [V060_TACTICAL_DEFENSE.md](https://github.com/kunlong-luo/monster-apartment/blob/f3a3b708f4ae8cda2ef1d4ee9088c71c9eef36ac/docs/V060_TACTICAL_DEFENSE.md)。其余 191 份跟踪 Markdown 和 118 个 scripts/.github/tests 中指定脚本、配置、测试文件已扫描明确文件名引用；五份文档引用修正。独立二进制 `Development_Plan.docx` 暂留，尚未核查内容，不假定等同 Markdown。旧规则与技术以固定快照追溯；保留真人免费试玩、核心乐趣验证优先、避免未验证商业投入、独立 IP、可解释失败及实际状态驱动表现的原则；历史守卫战不属于正式七路由，不能视为现行功能或自动恢复。现行执行以 PRODUCT、DESIGN、架构、风险台账为准。
+
+
+R12.82：三个既有功能 PR 的 Quality、桌面及完整玩法均通过；为保留最新清理成果统一组合候选，具体验收记录见 [CHANGELOG](CHANGELOG.md)。旧分支历史保留，组合 SHA 尚待验收。
