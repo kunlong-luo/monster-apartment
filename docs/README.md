@@ -17,6 +17,7 @@
 | R12.61 工坊/月光街原画转换与架构核对 | [真实源图与接入边界](art-reviews/R12-61-WORKSHOP-TOWN-SOURCE-INTAKE-2026-11-24.md) | 四张横版转换目标；PC 三设备、Pixi 棋盘和街区链接分层；待实际转换及选择 |
 | R12.62 PC 工坊/月光街过渡绘景 | [真实四张 WebP 与双端使用边界](art-reviews/R12-62-WORLD-PC-TRANSITION-2026-11-24.md) | 4/4 实际转换，PC 工坊 V1、月光街 V2，保留真实设备/手机/存档；待浏览器 |
 | R12.64 房间发布与世界场景同步 | [合并与导航回归](engineering/R12-64-ROOM-RELEASE-WORLD-INTEGRATION-2026-11-24.md) | #56 已合并；#57 同步主线与双审计、修复实际导航断言，待部署/复验 |
+| R12.63 工坊工序动效精修 | [真实生产预测驱动的独立反馈](design/R12-63-WORKSHOP-PROCESS-MOTION-2026-11-24.md) | 依赖 R12.62 PC 绘景，Motion 三种工序、减少动效、保存不变；待验收 |
 | 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |

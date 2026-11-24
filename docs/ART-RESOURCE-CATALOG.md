@@ -335,3 +335,9 @@ PR #56 首轮构建因观景按钮字符串未闭合失败；已修复并保留�
 ## R12.64 主线同步
 
 V3.104.0 私室观景 PR #56 已合并 main `d36b5aee`；同一候选 Quality、Desktop Visual Review、像素证据全部通过，完整玩法与新主线 Pages 尚待确认。世界场景 PR #57 基于此 main 整合，保持八个房间层与四张世界 WebP 原 blob 不变，两个完整性审计均保留。新候选 V3.105.0；不提前标为上线。见 [R12.64](engineering/R12-64-ROOM-RELEASE-WORLD-INTEGRATION-2026-11-24.md)。
+
+## R12.63 工坊视觉反馈
+
+新增工坊 PC Motion 工序组件，不生成或复制新的 WebP、图集、人物动作。已有武器收藏站姿不用于工作动作。详见 [R12.63](design/R12-63-WORKSHOP-PROCESS-MOTION-2026-11-24.md)。
+
+R12.64：动效分支已同步 V3.105.0 场景候选 `bd27eade`，仍为独立后续改动，不影响 #57 当前验收。待场景发布后重新核对版本与 PR 基线。
