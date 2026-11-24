@@ -18,7 +18,9 @@ export function CharactersSceneRouter(){
   // dispatch hashchange. The search-param hook observes that navigation,
   // allowing a featured card to open its existing private suite reliably.
   const target=params.get('visit');
-  const visitingWorker=target==='brook'||target==='fern'||target==='cinder';
-  const view=visitingWorker?'gallery':hashView;
-  return view==='summon'?<GothicSummonScreen/>:<CharacterGalleryScene/>;
+  const routeVisitor=target==='brook'||target==='fern'||target==='cinder'?target:undefined;
+  const view=routeVisitor?'gallery':hashView;
+  // The gallery reads its route visitor directly from the URL; otherwise a
+  // cached scene can keep showing the previous resident after in-app routing.
+  return view==='summon'?<GothicSummonScreen/>:<CharacterGalleryScene routeVisitor={routeVisitor}/>;
 }
