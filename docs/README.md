@@ -9,6 +9,7 @@
 | 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |
+| Web / PC 独立场景研究图实景审核（R12.32） | [S02/S05/S06 六张真实横/竖版 WebP 一键游戏预览、未批准水印与防误晋级回归](design/R12-32-IN-GAME-RESEARCH-SCENE-PREVIEW-2026-11-24.md) | **V3.97.0**：原仓库六张不同场景研究画可在显式 `r12-art-review=1` 中点击一键预览；保留原生尺寸红灯、PC/手机场景截图和“未批准”水印。**正常玩家不加载、没有正式晋级**；真实高清资源生产仍见 #16/#24 |
 | Web / PC 原生场景按设备单图加载（R12.31） | [4K PC/独立手机版 `<picture>` 响应式加载、SSR/浏览器验收与高清素材入库条件](design/R12-31-WEB-RESPONSIVE-SCENE-ASSET-LOADING-2026-11-24.md) | **V3.96.0**：正式场景由旧 PC+手机双 `<img>` 改为浏览器原生单 `<picture>`；错误重试/中性回退与生产审核门槛保留。**尚未替换高清原画**，三场景仍是 review；检查/上线以最终 SHA 的 CI 和 Pages 为准 |
 | Web / PC 高清美术审稿与月纱深链（R12.30） | [3840×2160 原生审稿门槛、私人房间 URL/Back 修复与美术入库边界](design/R12-30-WEB-ART-REVIEW-DPR2-AND-YUESHA-ROUTING-2026-11-24.md) | **V3.95.0**：PC 场景本地预览审核门槛改为 3840×2160；月纱私人房间跟随 `?visit=yuesha`，支持浏览器 Back 并保留显式审核参数；新增定向 E2E。原生高清绘景和正式 CG **尚未生成/晋级**，CI/Pages 以最新提交 SHA 为准 |
 | Web / PC 高清像素预算回归（R12.29） | [图鉴 DPR2 测试修复、大厅高密像素取证与原生高清重制规格](design/R12-29-WEB-DPR2-IMAGE-REGRESSION-AND-HERO-REBUILD-2026-11-24.md) | 图鉴右侧详情图定位已改正；新增 PC 1648×928 + 手机 390×844 的 DPR2 实测和截图门禁。**没有新高清原画上线**，大厅旧图约 2.08× PC 采样、独立公寓绘景仍缺；最新 Quality / 视觉 / Pages 依实际 SHA 状态判定 |
