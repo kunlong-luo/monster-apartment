@@ -85,3 +85,8 @@ Desktop Visual Review 的 `scene-art-review` 与综合 `desktop-review` 并行�
 ## R12.71 · 防止清理回归
 
 删除组件前除了 import 可达图，还核查 `audit:components` 的 literalReferences、missingLiteralPaths 与实际测试；文件读取、断言、动态路径不是静态 import。缺失路径报告为人工审查项，刻意检查退役文件不存在的测试不得当成运行错误。`pnpm audit:media-duplicates` 检查跟踪素材实际字节，任何新增重复路径都必须复用原件或经过明确路径/哈希例外审查；对应 `pnpm test:media-duplicates` 已接入 Quality。根 pnpm-lock.yaml 仅锁工具 pnpm 12.13.0，根应用依赖由 bun.lock 冻结，Pixi npm 锁独立。三者均保留。
+
+
+## R12.74 · 目录入口约束
+
+每批结束执行 `pnpm audit:repository-layout`。根目录按职责白名单管理，禁止退役工具目录、旧管理表、旧原型以及 Gemini metadata 回流。源码引用仍依赖编译、组件审计及真实构建验证；目录门禁不自动删除文件。历史任务与问题以固定 SHA 回看，现行仅维护风险台账和 Issues。原画许可/审批证据不得按过期日期随意删除。

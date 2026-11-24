@@ -10,7 +10,7 @@
 | VIS-01 | [Issue #24](https://github.com/kunlong-luo/monster-apartment/issues/24)：全屏图仍有模糊反馈；仅凭 WebP 扩展名/分辨率不能判定清晰度 | 四种视口记录图片真实解码、DPR、裁切、回退和前后截图；修掉可复现的 P0 模糊 | **R12.72 首批修正图鉴 DPR 变化；其他全屏图仍待实机复核** |
 | VIS-02 | [Issue #16](https://github.com/kunlong-luo/monster-apartment/issues/16)：独立场景与人物分层交付尚未有全量正式美术验收证据 | 优先补有独立设计的首页/公寓/委托/仓库场景；按 R12 审稿清单真实晋级而非复用背景换色 | **待美术交付/人审** |
 | ART-01 | `public/art/beauty-beasts/characters/cg-manifest.json` 五张卡截至本轮读取**均为 `portrait`**（月纱两卡、泉泡/青枝/炽角各一） | 每卡核对独立原生图、身份和武器人体、许可、三视口；有真实签署再晋级，不能更改卡池概率或玩家存档 | **0/5 正式 CG（按清单）** |
-| DOC-01 | `docs/DEVELOPMENT_PLAN.md`、`docs/TECH_STACK_PAGEVELA.md`、`docs/DECISIONS.md` 与 `management/ISSUES.md` 混有 Vite/Phaser/V0.1 记录 | 本轮标记历史版本，建立 [文档入口](../README.md)、现行 [工作手册](ITERATION-PLAYBOOK.md) 和 ADR 被替代关系；后续文档审核继续更新 | **文档入口已建立；历史资料不删除** |
+| DOC-01 | `docs/DEVELOPMENT_PLAN.md`、`docs/TECH_STACK_PAGEVELA.md`、`docs/DECISIONS.md` 与 `management/ISSUES.md` 混有 Vite/Phaser/V0.1 记录 | 本轮标记历史版本，建立 [文档入口](../README.md)、现行 [工作手册](ITERATION-PLAYBOOK.md) 和 ADR 被替代关系；后续文档审核继续更新 | **R12.74 已退役历史 management 目录，固定 SHA 可追溯** |
 
 ## P1：紧随其后
 
@@ -179,3 +179,7 @@ V3.106.0 Quality/Pages 成功；独立场景视觉作业成功，综合视觉和
 ## R12.72-C
 
 V3.107.0 Quality/Pages 成功，综合桌面 27 项相关测试通过、A05 动态 DPR 一项失败（实际 543×724 未按 DPR3 更新）；新候选保留原断言并补充可见期间采样。S05/S06 现有独立图仅显式预览，普通业务横幅精简，研究面板不挡 PC 业务栏。正式独立原画和完整人工视觉验收仍未完成，VIS-01/VIS-02 不关闭。
+
+## R12.74 · 统一任务入口（替代旧 CSV）
+
+旧 [TASKS.csv](https://github.com/kunlong-luo/monster-apartment/tree/782fc74fd6e597048a293cbf9777593447c76bb3/management/TASKS.csv) 保留在 Git 历史，不再作为当前状态。其未完成事项迁移原则：P016/P017/P021/R113-05 → UX-01 真人首次体验；P020/V040-06/R113-06/R120-03/04/05 → VIS-01/VIS-02/ART-01；R113-04 → GOV-01；R120-01/02/06、P035/P040/P041 与旧 V040/UI-08 验收 → QA-01/UI-01，按现行七路由重新核验，旧底栏和 Vite/Phaser 验收标准退役。仍未启动的商业/发行事项不冒充完成：P022 真实玩法短视频、P023 网页游戏平台发行规则、P024 产品继续/调整/停止复盘、P025 Electron 调研（待真人验证后考虑）均作为后置候选；核心体验优先。当前任务只维护本台账与 GitHub Issues。

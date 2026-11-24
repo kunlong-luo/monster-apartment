@@ -6,7 +6,7 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 
 ## 当前可核实发布基线
 
-2026-11-24，V3.107.0，代码 [847efb3](https://github.com/kunlong-luo/monster-apartment/commit/847efb3921a6e45b0570f57dd8d606e688255d4c)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45376373247) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45376518702) 成功。[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45376372939) 独立场景作业及大厅相关 27 项通过，A05 DPR 动态回归失败（543×724 未更新为 362×482）。V3.108.0 修复该问题并改进委托/仓库显式预览，待同 SHA 验收。
+2026-11-24，V3.108.0，代码 [782fc74](https://github.com/kunlong-luo/monster-apartment/commit/782fc74fd6e597048a293cbf9777593447c76bb3)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45377400648) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45377549822) 成功；[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45377400618) 与玩法浏览器尚在运行。R12.74 为目录整理，不提高 UI 版本。
 
 - V3.103.0 欢迎页、头像、卡面与大厅过渡图已接入；正式 CG 人工签审仍未完成。
 - V3.104.0 四位人物拥有独立背景/人物层的观景模式；原故事模式与真实热点保留。
@@ -36,14 +36,14 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 | [v2/src/](v2/src/)、[v2/scripts/](v2/scripts/)、[v2/art/](v2/art/) | 正在使用的 Pixi sidecar、经营引擎与贴图，不是废弃游戏 |
 | [public/](public/) | Web 运行时资源、回退、审稿资源与版本标识 |
 | [art-sources/](art-sources/) | 源 PNG 与来源/哈希清单，不直接作为页面素材 |
-| [artwork/](artwork/) | 美术元数据与审核清单 |
 | [scripts/](scripts/) | 原画转换、资源审核、依赖与设计检查 |
 | [tests/](tests/)、[e2e/](e2e/) | 单元/集成及浏览器验证 |
 | [docs/](docs/) | 现行规范、产品策划、历史审稿与证据；从索引进入 |
-| [management/](management/) | 任务表与历史管理记录；当前问题以 Issues 核实 |
 | [vendor/](vendor/)、[.agents/](.agents/) | Impeccable 子模块及设计技能链接 |
 | [.github/](.github/) | Quality、视觉、玩法及 Pages 工作流 |
-| [.aistudio/](.aistudio/)、[v2/docs/](v2/docs/) | 历史设计与旧方案；非运行时，不作为新开发规范 |
+| [v2/docs/](v2/docs/) | 工坊旧规范及设备美术合同（待迁入 docs） |
+
+**根目录只允许上表对应的 12 个职责目录**：`app`、`src`、`v2`、`public`、`art-sources`、`scripts`、`tests`、`e2e`、`docs`、`.github`、`.agents`、`vendor`。不再保留 `.aistudio`、`artwork`、`management`、`docs/prototypes` 或旧 Gemini `metadata.json`。当前任务统一进入 Issues 和风险台账，历史记录通过 [清理前快照](https://github.com/kunlong-luo/monster-apartment/tree/782fc74fd6e597048a293cbf9777593447c76bb3) 追溯。`pnpm audit:repository-layout` 在 Quality 阻止未登记根目录和退役路径回流。
 
 根 `bun.lock` 是当前 CI 安装依据；根 `pnpm-lock.yaml` 的 importer 仅锁定 packageManagerDependencies.pnpm 12.13.0，不是根应用依赖锁；保留工具链锁。Pixi 的 `v2/package-lock.json` 单独维护。资源路径与哈希以[资源总目录](docs/ART-RESOURCE-CATALOG.md)为索引，生产状态以相应 manifest 为准。
 

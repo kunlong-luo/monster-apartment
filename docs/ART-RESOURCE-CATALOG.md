@@ -372,3 +372,7 @@ V3.105.0 的 PC 新场景与四间观景已合并、Quality/Pages 通过；不�
 ## R12.72-C · S05/S06 显式研究预览
 
 四份已登记独立 WebP 直接复用，PC 1672×941、手机 941×1672，完整路径见第 5 节及 R12-09 ledger。玩家从委托/仓库的场景预览入口进入现有研究模式，仍需显式选择仓库图，正常页面不请求研究图片。生产 manifest 0/3、原始 PNG/哈希与 144 媒体路径不变；不将未达原生门槛的研究图晋级。
+
+## R12.74 · 历史索引归并
+
+根 artwork 只有 2026-10-29 外部原画归档的 JSON 索引及说明，未包含原图。本轮将 JSON 原字节迁入 [legacy-2026-10-29-catalog.json](art-reviews/legacy-2026-10-29-catalog.json)，其中 `artwork/` 路径为历史归档内部路径，不是本仓库实际运行路径。旧说明见 [固定历史快照](https://github.com/kunlong-luo/monster-apartment/tree/782fc74fd6e597048a293cbf9777593447c76bb3/artwork)。实际源图仍由 art-sources/source-catalog.json 管理，运行 WebP 仍由 public 及对应 manifest 管理；144 个媒体路径不变。

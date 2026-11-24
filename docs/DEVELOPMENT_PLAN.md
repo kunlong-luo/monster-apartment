@@ -81,7 +81,7 @@
 - `src/components/GameBoard.tsx`：React 与 Phaser 的事件桥接。
 - `preview/`：无 npm 依赖的离线部署预览界面；项目根目录 `playable.html` 是可以直接双击运行的单文件构建，由 `scripts/build_standalone.py` 自动从共享规则源码生成。两者都不等同于最终 Phaser 运行时。
 - `tests/`：无依赖的 Node 单元测试，新增 Vitest 测试；`e2e/`：Playwright 冒烟测试。
-- `docs/CHANGELOG.md`：版本记录；`management/TASKS.csv`：任务管理表。
+- `docs/CHANGELOG.md`：版本记录；[历史任务表](https://github.com/kunlong-luo/monster-apartment/tree/782fc74fd6e597048a293cbf9777593447c76bb3/management/TASKS.csv)：已退役；现行使用 [风险台账](engineering/GAP-REGISTER-2026-11-22.md)。
 
 **版本命名：** `V主版本.功能版本.补丁版本`。新增机制升次版本（0.2）；纯修复升补丁版本（0.1.1）；保留明确的发布说明。
 
@@ -140,7 +140,7 @@
 
 ## 11. 复盘与任务管理
 
-每周一次：更新 `management/TASKS.csv`；标记 `TODO / DOING / BLOCKED / DONE`；把问题写入 `management/ISSUES.md`；每次发布写 `docs/CHANGELOG.md`。下周任务控制在 3–5 个，不同时开发多款未验证游戏。
+每周一次：更新现行风险台账和 GitHub Issues；标记 `TODO / DOING / BLOCKED / DONE`；每次发布写 `docs/CHANGELOG.md`。下周任务控制在 3–5 个，不同时开发多款未验证游戏。
 
 **每周回顾问题：** 这周新增了什么可玩的内容？核心玩法更有趣了吗？遇到的最大阻碍是什么？有没有实际玩家反馈？是否需要停止一项工作？
 

@@ -30,6 +30,7 @@ jobs:
       # Root CI installs from bun.lock; pnpm is used to invoke scripts.
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
+      - run: pnpm audit:repository-layout
       - run: pnpm test:component-audit
       - run: pnpm audit:components
       - run: pnpm test:media-duplicates

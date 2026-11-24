@@ -26,5 +26,5 @@ next-env.d.ts
 # Local unreviewed native CG sources; never commit automatically
 .art-staging/
 
-# AI Studio transient duplicate media; keep explicit reference originals
-.aistudio/**/.tempmediaStorage/
+# Retired AI Studio local tooling; never track again
+.aistudio/

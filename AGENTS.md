@@ -60,3 +60,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+
+## 目录约束（R12.74）
+根目录职责见 README，新增一级目录必须先明确唯一责任并同步更新 `scripts/audit-repository-layout.mjs`、README 和设计/工程文档；禁止恢复 `.aistudio/`、`management/`、`artwork/`、`docs/prototypes/` 及旧平台 metadata.json。活跃任务仅 GitHub Issues + 当前风险台账，历史版本使用固定 Git SHA 追溯，不再另存重复计划或未运行原型。`v2/` 当前仍是工坊运行时，目录更名属于单独的跨构建迁移，不得直接删除。
