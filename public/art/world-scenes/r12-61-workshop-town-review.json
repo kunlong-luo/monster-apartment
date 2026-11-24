@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad",
+  "pillow": "12.3.0",
+  "productionApproved": false,
+  "humanVisualReview": false,
+  "mobileSourceAvailable": false,
+  "outputs": [
+    {
+      "scene": "workshop",
+      "variant": 1,
+      "source": "art-sources/scenes/workshop/desktop-candidate-v1.png",
+      "sourceGitBlobSha": "813a14b8972d95f8def62369bbcfa3ea7f8027fa",
+      "sourceSha256": "09357498ad9218720f41ad984e259fabce42f638ca2de7feef166007968272f5",
+      "output": "public/art/world-scenes/workshop/review/desktop-candidate-v1.webp",
+      "outputSha256": "066ccc61b44efc0caf194575cc1ce44cf01ff8d3d68bc71022ae388f4452029e",
+      "bytes": 599408,
+      "nativeSize": [
+        1672,
+        941
+      ],
+      "outputSize": [
+        1672,
+        941
+      ],
+      "status": "review-only",
+      "device": "desktop"
+    },
+    {
+      "scene": "workshop",
+      "variant": 2,
+      "source": "art-sources/scenes/workshop/desktop-candidate-v2.png",
+      "sourceGitBlobSha": "454501ad0087a8ff3725faea2759fa625bbebab8",
+      "sourceSha256": "dcaf5f597eaa60255de9d74bba79708eba88884b8909c222ed0763f94ae385bc",
+      "output": "public/art/world-scenes/workshop/review/desktop-candidate-v2.webp",
+      "outputSha256": "ecc6cfc106409cfa3da40932dbbffc2b27ab9685ef39c5878716582205be0383",
+      "bytes": 598416,
+      "nativeSize": [
+        1670,
+        941
+      ],
+      "outputSize": [
+        1670,
+        941
+      ],
+      "status": "review-only",
+      "device": "desktop"
+    },
+    {
+      "scene": "town",
+      "variant": 1,
+      "source": "art-sources/scenes/town/desktop-candidate-v1.png",
+      "sourceGitBlobSha": "404ea9b9f32db3e3303eb5c1cc05fb43a0cddeea",
+      "sourceSha256": "61894fe6b21c44a9621bc839c5ca764a88e63467887c83629af905e8a774ad63",
+      "output": "public/art/world-scenes/town/review/desktop-candidate-v1.webp",
+      "outputSha256": "d99c98f5bf9d49d671bf64239758924d4c37530a4902fb41622ba901d338e816",
+      "bytes": 629238,
+      "nativeSize": [
+        1672,
+        941
+      ],
+      "outputSize": [
+        1672,
+        941
+      ],
+      "status": "review-only",
+      "device": "desktop"
+    },
+    {
+      "scene": "town",
+      "variant": 2,
+      "source": "art-sources/scenes/town/desktop-candidate-v2.png",
+      "sourceGitBlobSha": "93a5acd7b7eea5990450197b65a096ab81096eb6",
+      "sourceSha256": "139cd9b20cb8d464a605bdcbbe9cdc9cd15489439035a7b57fd04b6d9d4d4b08",
+      "output": "public/art/world-scenes/town/review/desktop-candidate-v2.webp",
+      "outputSha256": "e7b679ee38cdf9db68318e2b69e53464f00c9495c8ad449133f56e6e37bfdbd4",
+      "bytes": 636018,
+      "nativeSize": [
+        1671,
+        941
+      ],
+      "outputSize": [
+        1671,
+        941
+      ],
+      "status": "review-only",
+      "device": "desktop"
+    }
+  ]
+}
