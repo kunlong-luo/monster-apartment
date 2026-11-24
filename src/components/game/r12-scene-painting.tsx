@@ -3,7 +3,7 @@
 import type {ImageProps} from 'next/image';
 import {useEffect,useState,useSyncExternalStore} from 'react';
 import {createPortal} from 'react-dom';
-import {ReliableImage} from './reliable-image';
+import {ReliableImage,retryAssetUrl} from './reliable-image';
 import {approvedR12Scene} from '@/lib/game/r12-scene-assets';
 import type {R12SceneArea} from '@/lib/game/r12-scene-assets';
 
@@ -46,6 +46,41 @@ function R12VerifiedBackdropImage({src,kind}:{src:string;kind:BackdropArtKind}){
     data-r12-art-image={kind}
     className={'pointer-events-none absolute inset-0 h-full w-full object-cover'+responsiveClass}
     onError={()=>setFailures(count=>Math.min(2,count+1))}/>;
+}
+
+/** Approved native originals use exactly ONE browser-selected raster.
+ * Rendering two fill <img> elements and hiding one with CSS still risks
+ * downloading and decoding both 4K and portrait sources. The native <picture>
+ * source is chosen before hydration; source retry is bound to the same art
+ * identity and an exhausted image returns a neutral surface, never lobby art.
+ * This is production-only: review ZIP images cannot enter here via manifest.
+ */
+export function R12ApprovedScenePicture({desktop,mobile,kind,alt=''}:{
+  desktop:string;mobile:string;kind:'backdrop'|'hero';alt?:string;
+}){
+  const [failures,setFailures]=useState(0);
+  if(failures>=2){
+    return kind==='backdrop'
+      ?<div aria-hidden="true" data-r12-art-failed="production"
+        className="pointer-events-none absolute inset-0"
+        style={{background:'linear-gradient(125deg,#21182a,#100e1a 65%,#2b1930)'}}/>
+      :<div aria-hidden="true" data-r12-hero-art="production-failed"
+        className="mw-world-hero-pending"/>;
+  }
+  return <picture data-r12-responsive-art={kind}
+    className="pointer-events-none absolute inset-0 block">
+    <source media="(max-width:700px)"
+      srcSet={failures===0?mobile:retryAssetUrl(mobile,1)}/>
+    <ReliableImage src={desktop} fill unoptimized
+      sizes={kind==='hero'?'(max-width:760px) 100vw, 1200px':'100vw'}
+      alt={alt}
+      data-r12-art-image={kind==='backdrop'?'production':undefined}
+      data-r12-hero-art={kind==='hero'?'production':undefined}
+      className={kind==='backdrop'
+        ?'pointer-events-none absolute inset-0 h-full w-full object-cover'
+        :'mw-world-hero-painting'}
+      onError={()=>setFailures(n=>Math.min(2,n+1))}/>
+  </picture>;
 }
 
 /** Opt-in, entirely local reviewer surface. User-selected images never leave
@@ -120,12 +155,10 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
         {backgroundImage:'url('+JSON.stringify(fallbackUrl(fallbackSrc))+')'}}>
       {preview&&<R12VerifiedBackdropImage key={preview.url}
         src={preview.url} kind="local-review"/>}
-      {showProduction&&<>
-        <R12VerifiedBackdropImage key={sources.desktop}
-          src={sources.desktop} kind="desktop"/>
-        <R12VerifiedBackdropImage key={sources.mobile}
-          src={sources.mobile} kind="mobile"/>
-      </>}
+      {showProduction&&<R12ApprovedScenePicture
+        key={sources.desktop+'|'+sources.mobile} kind="backdrop"
+        desktop={sources.desktop} mobile={sources.mobile}/>}
+
     </div>
     {reviewMode&&createPortal(
       <aside data-testid="r12-local-art-review" aria-label="R12 本地环境画审核"
@@ -221,10 +254,6 @@ export function R12SceneHeroPainting({area,alt}:{
   if(!sources)return <div aria-hidden="true"
     data-r12-hero-art="pending" className="mw-world-hero-pending"/>;
 
-  return <>
-    <R12VerifiedHeroImage key={sources.desktop}
-      src={sources.desktop} alt={alt} kind="desktop"/>
-    <R12VerifiedHeroImage key={sources.mobile}
-      src={sources.mobile} alt={alt} kind="mobile"/>
-  </>;
+  return <R12ApprovedScenePicture key={sources.desktop+'|'+sources.mobile}
+    kind="hero" desktop={sources.desktop} mobile={sources.mobile} alt={alt}/>;
 }
