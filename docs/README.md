@@ -11,6 +11,7 @@
 | R12.54 实际新美术输出与发布验收 | [真实转换回读、完整性回归](art-reviews/R12-54-TRANSITION-ASSET-VERIFICATION-2026-11-24.md) | 33 原图、15 WebP 已实际验证；候选待浏览器及发布验收 |
 | R12.55 过渡美术清单同步 | [真实 CI 失败与修复](art-reviews/R12-55-TRANSITION-MANIFEST-RECONCILIATION-2026-11-24.md) | 317 通过/3 失败；同步当前六槽和历史快照、V4 横竖与精确尺寸，等待新 SHA |
 | R12.58 大厅旧浏览器断言修复 | [全量回归与定向验收](art-reviews/R12-58-LOBBY-BROWSER-REGRESSION-2026-11-24.md) | 186 通过/1 失败/3 跳过；真实双端 V4 尺寸与 URL，保留 HUD 检查，待复验 |
+| R12.61 工坊/月光街原画转换与架构核对 | [真实源图与接入边界](art-reviews/R12-61-WORKSHOP-TOWN-SOURCE-INTAKE-2026-11-24.md) | 四张横版转换目标；PC 三设备、Pixi 棋盘和街区链接分层；待实际转换及选择 |
 | 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |
