@@ -26,6 +26,19 @@ test('R12 lobby world menu exposes every canonical place and restores keyboard f
   await expect(world).toHaveCount(0);
   await expect(toggle).toBeFocused();
   await expect(toggle).toHaveAttribute('aria-expanded','false');
+  // The corner atlas offers an explicit close button on Web/touch,
+  // not only an invisible outside-click or keyboard Escape gesture.
+  await toggle.click();
+  const close=page.getByTestId('lobby-world-close');
+  await expect(close).toBeVisible();
+  const closeHit=await close.boundingBox();
+  expect(closeHit).not.toBeNull();
+  expect(closeHit!.width).toBeGreaterThanOrEqual(44);
+  expect(closeHit!.height).toBeGreaterThanOrEqual(44);
+  await close.click();
+  await expect(world).toHaveCount(0);
+  await expect(toggle).toHaveAttribute('aria-expanded','false');
+  await expect(toggle).toBeFocused();
   await toggle.click();
   await world.getByRole('link',{name:'委托大厅'}).click();
   await expect(page).toHaveURL(/\/orders\/?$/);
