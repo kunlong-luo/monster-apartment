@@ -7,6 +7,8 @@ import {ReliableImage} from './reliable-image';
 import {R12ApprovedScenePicture} from './r12-approved-scene-picture';
 import {approvedR12Scene} from '@/lib/game/r12-scene-assets';
 import type {R12SceneArea} from '@/lib/game/r12-scene-assets';
+import {R12_REPOSITORY_REVIEW_ART} from '@/lib/game/r12-scene-review-art';
+import {siteAssetUrl} from '@/lib/game/site-asset-url';
 
 type Props={area:R12SceneArea;fallbackSrc:ImageProps['src']};
 
@@ -18,7 +20,7 @@ function fallbackUrl(src:ImageProps['src']):string{
  * The existing backdrop is preserved until an approved desktop AND mobile
  * painting is present. Failed approved originals reveal a neutral backdrop.
  */
-type LocalPreview={url:string;name:string;width:number;height:number};
+type LocalPreview={url:string;name:string;width:number;height:number;origin?:'repo'};
 const noSubscription=()=>()=>{};
 const readReviewQuery=()=>new URLSearchParams(window.location.search).get('r12-art-review')==='1';
 const serverReviewQuery=()=>false;
@@ -64,8 +66,12 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
   const [message,setMessage]=useState('');
   // Both source object URLs remain alive while switching viewport, then are
   // individually released on replacement, clear and route unmount.
-  useEffect(()=>()=>{if(desktopPreview)URL.revokeObjectURL(desktopPreview.url);},[desktopPreview]);
-  useEffect(()=>()=>{if(mobilePreview)URL.revokeObjectURL(mobilePreview.url);},[mobilePreview]);
+  useEffect(()=>()=>{
+    if(desktopPreview?.url.startsWith('blob:'))URL.revokeObjectURL(desktopPreview.url);
+  },[desktopPreview]);
+  useEffect(()=>()=>{
+    if(mobilePreview?.url.startsWith('blob:'))URL.revokeObjectURL(mobilePreview.url);
+  },[mobilePreview]);
   // If no independent portrait has been chosen, the desktop source can still
   // be cropped for layout preview — explicitly flagged as NOT mobile approval.
   const preview=mobileViewport?(mobilePreview??desktopPreview):desktopPreview;
@@ -105,6 +111,18 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
     };
     probe.src=url;
   };
+  // Only an explicit click in opt-in review mode loads these existing
+  // Git-reviewed candidates; never treat a research WebP as production.
+  const previewRepositoryStudy=()=>{
+    const pair=R12_REPOSITORY_REVIEW_ART[area];
+    setDesktopPreview({url:siteAssetUrl(pair.desktop.path),
+      name:'仓库研究稿 · PC',width:pair.desktop.width,
+      height:pair.desktop.height,origin:'repo'});
+    setMobilePreview({url:siteAssetUrl(pair.mobile.path),
+      name:'仓库研究稿 · 手机',width:pair.mobile.width,
+      height:pair.mobile.height,origin:'repo'});
+    setMessage('');
+  };
   const showProduction=!!sources&&!preview;
   const previewKind=mobileViewport&&!!mobilePreview?'mobile':'desktop';
   // R12.30: 1648x928 at DPR2 needs native 3296x1856 before cover crop.
@@ -117,10 +135,15 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
     <div className={className} aria-hidden="true"
       data-testid={testId}
       data-r12-scene-art={preview?'local-review':sources?'production':'legacy'}
+      data-r12-review-origin={preview?.origin??'none'}
       style={sources||preview?undefined:
         {backgroundImage:'url('+JSON.stringify(fallbackUrl(fallbackSrc))+')'}}>
       {preview&&<R12VerifiedBackdropImage key={preview.url}
         src={preview.url} kind="local-review"/>}
+      {preview?.origin==='repo'&&<span data-testid="r12-repository-study-watermark"
+        className="pointer-events-none absolute left-3 top-3 z-[3] rounded border border-amber-300/70 bg-[#210c18e6] px-3 py-1 text-xs font-semibold tracking-wide text-amber-100">
+        仓库研究图 · 未批准 · 不作正式原画
+      </span>}
       {showProduction&&<R12ApprovedScenePicture
         key={sources.desktop+'|'+sources.mobile} kind="backdrop"
         desktop={sources.desktop} mobile={sources.mobile}/>}
@@ -131,6 +154,14 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
         className="fixed bottom-20 right-4 z-[10000] w-[min(330px,calc(100vw-32px))] rounded-xl border border-[#c8a578] bg-[#140e1af0] p-3 text-[#f4dfbf] shadow-2xl backdrop-blur-md">
         <p className="text-xs font-semibold tracking-wider">R12 · {area} 本地场景审稿</p>
         <p className="mt-1 text-xs text-[#d8bf9f]">只在当前浏览器显示。不会上传、保存或发布图片。</p>
+        <button type="button" data-testid="r12-preview-repository-scene"
+          onClick={previewRepositoryStudy}
+          className="mt-3 w-full rounded-md border border-[#d1ad75] bg-[#4c2c33]/65 px-3 py-2 text-sm font-semibold hover:bg-[#6b3b46]/80">
+          预览仓库已有 PC／手机独立场景研究图
+        </button>
+        <p className="mt-1 text-xs text-[#ffd29b]">
+          仅用于审查构图与 HUD，非 4K 原画；不晋级、不保存、普通玩家不可见。
+        </p>
         <label className="mt-3 block cursor-pointer rounded-md border border-[#b99c7d] px-3 py-2 text-center text-sm hover:bg-[#61402a]/40">
           选择 PC 横版原图
           <input data-testid="r12-local-art-file" type="file" accept="image/png,image/jpeg,image/webp"
