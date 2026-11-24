@@ -231,3 +231,40 @@ test('external corrupted apartment saves are not silently repaired by another ta
       .toBe('{invalid-cross-tab');
   }finally{await second.close();}
 });
+
+test('PC Web YueSha room deep links stay in sync with browser history and art-review query',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/apartment/?visit=yuesha');
+  await expect(page.getByTestId('gothic-apartment')).toBeVisible();
+  await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  const dialogue=page.getByRole('dialog',{name:'与月纱交谈'});
+  await expect(dialogue).toBeVisible();
+
+  // App Router observes externally created same-route History API entries.
+  await page.evaluate(()=>window.history.pushState(null,'','/apartment/'));
+  await expect(page.getByTestId('yuesha-private-room')).toHaveCount(0);
+  await expect(dialogue).toHaveCount(0);
+
+  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
+  await expect(dialogue).toBeVisible();
+  await page.getByTestId('visit-yuesha-room').click();
+  await expect(page).toHaveURL(/\/apartment\/?\?visit=yuesha$/);
+  await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  await page.goBack();
+  await expect(page).toHaveURL(/\/apartment\/?$/);
+  await expect(page.getByTestId('yuesha-private-room')).toHaveCount(0);
+  await expect(dialogue).toBeVisible(); // conversation the player opened stays open
+  await dialogue.getByRole('button',{name:'关闭月纱对话'}).click();
+  await expect(dialogue).toHaveCount(0);
+
+  await page.goto('/apartment/?roomArtReview=1');
+  await page.getByRole('button',{name:'与女主人月纱交流'}).click();
+  await page.getByTestId('visit-yuesha-room').click();
+  await expect.poll(()=>new URL(page.url()).searchParams.get('visit')).toBe('yuesha');
+  await expect.poll(()=>new URL(page.url()).searchParams.get('roomArtReview')).toBe('1');
+  await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  await dialogue.getByRole('button',{name:'关闭月纱对话'}).click();
+  await expect(page).toHaveURL(/\/apartment\/?\?roomArtReview=1$/);
+  await expect(dialogue).toHaveCount(0);
+});
