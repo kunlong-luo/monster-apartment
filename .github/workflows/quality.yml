@@ -27,10 +27,11 @@ jobs:
         with:
           path: .next/cache
           key: nextjs-${{ runner.os }}-${{ hashFiles('bun.lock') }}
-      # The repository tracks bun.lock, not pnpm-lock.yaml. Install the
-      # exact locked dependencies rather than running pnpm against a missing lock.
+      # Root CI installs from bun.lock; pnpm is used to invoke scripts.
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
+      - run: pnpm test:component-audit
+      - run: pnpm audit:components
       - run: pnpm check:stable-deps
       - run: pnpm check:design
       - run: pnpm audit:room-art
@@ -76,8 +77,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 12.13.0
-      # The repository tracks bun.lock, not pnpm-lock.yaml. Install the
-      # exact locked dependencies rather than running pnpm against a missing lock.
+      # Root CI installs from bun.lock; pnpm is used to invoke scripts.
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
       - run: pnpm build

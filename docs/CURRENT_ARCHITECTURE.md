@@ -10,6 +10,10 @@
 - 正式欢迎图/大厅 V4、四间房间观景、PC 工坊与街区新绘景的实际路径见[资源目录](ART-RESOURCE-CATALOG.md)。生产、过渡、审稿、回退分开。房间故事热点与观景层分离；Pixi 精密建造、手机与旧档保持。
 - 工程验证按 [迭代手册](engineering/ITERATION-PLAYBOOK.md)，以实际 CI SHA 与浏览器结果为准。
 
+## R12.68 · 组件引用关系
+
+当前已为 app/src、测试、脚本及 Pixi 代码建立只读 [组件引用审计](../scripts/audit-component-usage.mjs)，使用现有 TypeScript AST、tsconfig 路径解析与 CSS 导入关系。结果区分 app 可达、辅助可达、待审不可达；不据文件名删除。已确认共享 world-ui 仍静态导入 world-characters，现行角色路由独立使用 CharacterGalleryScene 与 GothicSummonScreen；召唤主屏仍使用 SummonHeroineSpotlight。CSS 选择器级覆盖与非字面量动态引用需后续独立审查。操作规范见[迭代手册](engineering/ITERATION-PLAYBOOK.md)。
+
 ## 历史架构演进（原记录，仅供追溯）
 
 ## 单一 UI 所有权与样式边界（2026-10）
