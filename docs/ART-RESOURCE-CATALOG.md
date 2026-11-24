@@ -323,3 +323,15 @@ V3.103.0 已成功部署（main 39138900，Pages 45367299176）；R12.57 八张�
 ## R12.62 房间发布回归
 
 PR #56 首轮构建因观景按钮字符串未闭合失败；已修复并保留全部验收，八图字节不变。详见 [R12.62](design/R12-62-ROOM-SCENIC-BUILD-FIX-2026-11-24.md)。
+
+## R12.61 工坊和月光街候选
+
+4 张已入库横版原图按原生尺寸转换至 `public/art/world-scenes/{workshop,town}/review/`；机器证据由实际转换生成。没有独立手机稿，生产场景不变。详见 [R12.61](art-reviews/R12-61-WORKSHOP-TOWN-SOURCE-INTAKE-2026-11-24.md)。
+
+## R12.62 工坊与街区实际输出
+
+[转换作业](https://github.com/kunlong-luo/monster-apartment/actions/runs/45368254427) 已成功，四张 WebP 已在 5588ee89 实际入库（2,463,080 B）。PC 全景选工坊 V1，PC 月光街选 V2，直接复用 review 文件，不制造第二份重复 WebP。原机器、Pixi 精密建造和手机旧画仍保留。见 [R12.62](art-reviews/R12-62-WORLD-PC-TRANSITION-2026-11-24.md)。候选未合并，正式场景 manifest 不变。
+
+## R12.64 主线同步
+
+V3.104.0 私室观景 PR #56 已合并 main `d36b5aee`；同一候选 Quality、Desktop Visual Review、像素证据全部通过，完整玩法与新主线 Pages 尚待确认。世界场景 PR #57 基于此 main 整合，保持八个房间层与四张世界 WebP 原 blob 不变，两个完整性审计均保留。新候选 V3.105.0；不提前标为上线。见 [R12.64](engineering/R12-64-ROOM-RELEASE-WORLD-INTEGRATION-2026-11-24.md)。

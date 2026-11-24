@@ -2,6 +2,7 @@
 
 import './workshop-cinematic.css';
 import Image from 'next/image';
+import {ReliableImage} from '@/components/game/reliable-image';
 import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import {motion} from 'motion/react';
 import {ArrowUpRight,Grid3X3,MoveRight} from 'lucide-react';
@@ -16,6 +17,7 @@ import {
   type ApprovedMachineUrls,type WorkerPaintingUrls
 } from '@/lib/moonwork/workshop-machine-art-index';
 import hall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
+import hallTransition from '../../../public/art/world-scenes/workshop/review/desktop-candidate-v1.webp';
 import wellLegacy from '../../../v2/art/well-art-review.avif';
 import gardenLegacy from '../../../v2/art/garden-art-review.avif';
 import kilnLegacy from '../../../v2/art/kiln-art-review.avif';
@@ -140,6 +142,11 @@ export function WorkshopCinematicStage({
     data-motion={motionEnabled?'running':'paused'}
     aria-label="月光工坊，三台主设备与真实生产工位"
     style={{backgroundImage:'linear-gradient(90deg,#0c0816b0,#14091660 48%,#0b0716b2),url('+JSON.stringify(hall.src)+')'}}>
+    <div className="workshop-cinematic__environment" aria-hidden="true">
+      <ReliableImage src={hallTransition} fallbackSrc={hall} alt="" fill unoptimized
+        sizes="100vw" loading="eager" data-testid="workshop-cinematic-painting"
+        className="object-cover object-center"/>
+    </div>
     <div className="workshop-cinematic__topline">
       <span className="workshop-cinematic__eyebrow">MOONWORK · THE GRAND ATELIER</span>
       {base&&<div className="workshop-cinematic__art-compare"
