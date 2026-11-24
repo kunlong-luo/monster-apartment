@@ -9,6 +9,7 @@
 | 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |
+| 仓库晶核需求与采购反馈（R12.42） | [真实订单需求、采购后余额与精确失败说明](design/R12-42-WAREHOUSE-CORE-DEMAND-2026-11-24.md) | V3.102.0 候选；不改经济规则；真实跨路由回归与发布待核验 |
 | 场景独立视觉验收（R12.41） | [六门及原画隔离独立作业、截图证据](engineering/R12-41-INDEPENDENT-SCENE-VISUAL-REVIEW-2026-11-24.md) | 并行独立 scene-art-review，保留全部测试；场景资源变化触发视觉检查，新结果待核验 |
 | 月纱私室刷新剧情回归（R12.40） | [真实失败复盘与深链恢复测试](design/R12-40-YUESHA-RELOAD-LORE-REGRESSION-2026-11-24.md) | 186 通过/1 失败/3 跳过；修正旧刷新操作顺序，保留剧情/星币/彩蛋断言；新回归待核验 |
 | 场景输出与热点几何一致性（R12.39） | [正式 WebP 比例、原生像素及六门方形命中检查](art-reviews/R12-39-SCENE-OUTPUT-AND-HOTSPOT-GEOMETRY-2026-11-24.md) | 生产准入脚本与三个定向回归；不晋级研究稿，不改变运行时 |
