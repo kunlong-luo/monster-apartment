@@ -96,14 +96,22 @@ test('R12 local art reviewer previews file bytes without publishing or persistin
   await expect(page.getByTestId('r12-local-art-review')).toHaveCount(0);
 });
 
-test('R12 opt-in reviewer is also available for apartment and warehouse',async({page})=>{
+test('R12 direct opt-in reviewer hydrates without server document errors on all three scenes',async({page})=>{
+  const errors:string[]=[];
+  const record=(message:string)=>{
+    if(/document is not defined|server rendering errored|hydration failed/i.test(message))errors.push(message);
+  };
+  page.on('pageerror',error=>record(error.message));
+  page.on('console',message=>{if(message.type()==='error')record(message.text());});
   for(const [route,id] of [
     ['/apartment/','.ga-backdrop'],
+    ['/orders/','.mw-gothic-scene'],
     ['/warehouse/','.mw-gothic-scene'],
   ] as const){
     await page.goto(route+'?r12-art-review=1');
     await expect(page.getByTestId('r12-local-art-review')).toBeVisible();
     await expect(page.locator(id)).toHaveAttribute('data-r12-scene-art','legacy');
+    expect(errors,route+' direct review hydration').toEqual([]);
   }
 });
 
@@ -319,6 +327,8 @@ test('S02 research door centers open the six real room drawers on four viewports
       const overlay=screen.getByTestId('r12-apartment-door-review');
       await expect(overlay).toHaveAttribute('data-review-device',profile.width<=700?'mobile':'desktop');
       await expect(overlay.getByRole('button')).toHaveCount(6);
+      await expect(screen.locator('.ga-lower')).toBeHidden();
+      await expect.poll(()=>screen.evaluate(()=>localStorage.getItem('monster-apartment:cozy:v1'))).not.toBeNull();
       await screen.screenshot({path:'visual-evidence/scene-studies/s02-doors-'+profile.width+'x'+profile.height+'.png',animations:'disabled'});
       const before=await screen.evaluate(()=>localStorage.getItem('monster-apartment:cozy:v1'));
       for(let index=0;index<6;index++){
@@ -327,13 +337,17 @@ test('S02 research door centers open the six real room drawers on four viewports
         expect(box).not.toBeNull();
         expect(box!.width).toBeGreaterThanOrEqual(44);
         expect(box!.height).toBeGreaterThanOrEqual(44);
-        await door.click();
+        await door.click({trial:true,timeout:5000}); // prove the actual pointer target is unobstructed
+        await door.click({timeout:5000});
+        await expect(screen.locator('.ga-lower')).toBeVisible();
         await expect(screen.getByTestId('ga-room-drawer')).toContainText('ROOM '+String(index+1).padStart(2,'0'));
-        await screen.getByRole('button',{name:'关闭房间操作'}).click();
+        await screen.getByRole('button',{name:'关闭房间操作'}).click({timeout:5000});
+        await expect(screen.locator('.ga-lower')).toBeHidden();
       }
       expect(await screen.evaluate(()=>localStorage.getItem('monster-apartment:cozy:v1'))).toBe(before);
       await screen.getByTestId('r12-exit-door-review').click();
       await expect(overlay).toHaveCount(0);
+      await expect(screen.locator('.ga-lower')).toBeVisible();
       await expect(screen.getByTestId('r12-local-art-review')).toBeVisible();
       await screen.getByRole('button',{name:'恢复原场景'}).click();
       await expect(screen.locator('.ga-backdrop')).toHaveAttribute('data-r12-scene-art','legacy');

@@ -9,6 +9,7 @@
 | 每次开始工作 | [AGENTS.md](../AGENTS.md) → [快速迭代操作手册](engineering/ITERATION-PLAYBOOK.md) | [依赖优先原则](engineering/DEPENDENCY-FIRST-FAST-ITERATION.md) |
 | 产品范围、角色与经营循环 | [PRODUCT.md](../PRODUCT.md)、[正式架构](CURRENT_ARCHITECTURE.md) | [V3 策划索引](v3/README.md) |
 | PC/移动端 UI 与交互 | [DESIGN.md](../DESIGN.md)、[Impeccable](IMPECCABLE.md) | [大厅参考布局](DESKTOP-REFERENCE-LAYOUT.md)、[R12 视觉改造](design/R12-00-VISUAL-REBUILD-PLAN.md) |
+| Web / PC 六门遮挡与审稿水合（R12.36） | [真实浏览器失败复盘、命中层与 hydration 修复](design/R12-36-S02-POINTER-AND-REVIEW-HYDRATION-2026-11-24.md) | **V3.101.0**：R12.35 视觉检查 5 通过/1 失败，修复父容器拦截及直接网址 SSR 错误；新 SHA 待复验，正式原画未晋级 |
 | Web / PC 公寓六门交互研究（R12.35） | [真实研究图门位与房间抽屉、四视口回归](design/R12-35-S02-RESEARCH-DOOR-INTERACTION-2026-11-24.md) | **V3.100.0**：显式审稿增加六门点击验证，普通 HUD 与生产 manifest 不变；正式高清及人工验收待完成 |
 | Web / PC 本地原画解码生命周期（R12.34） | [异步解码取消、Blob URL 所有权和回归](design/R12-34-WEB-REVIEW-IMAGE-LIFECYCLE-2026-11-24.md) | **V3.99.0**：快速换图、恢复、退出审核时释放未完成及已接受的本地 URL；仅审稿工具修复，未新增或晋级高清原画；CI/Pages 按新 SHA 核验 |
 | Web / PC 场景研究审稿 URL 隔离（R12.33） | [Next SPA 退出审核立即撤下研究图、Back 不恢复旧预览、静态导出与浏览器回归](design/R12-33-WEB-REVIEW-QUERY-ISOLATION-2026-11-24.md) | **V3.98.0**：补上 `r12-art-review=1` 的 App Router 实时状态，离开审核参数立即恢复正式场景，禁止历史记录误显示未批准图片；保留六份研究素材仍为 review，原生高清 S01/S02/S05/S06 仍待生产 |

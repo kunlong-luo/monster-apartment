@@ -57,3 +57,10 @@
 .ga:has([data-testid="r12-apartment-door-review"]) :is(.ga-red-gold-header,.ga-room-list,.ga-witch,.ga-witch-title,.ga-story){
   visibility:hidden;
 }
+
+/* Hiding the story child alone leaves its positioned parent above the six
+   doors (the R12.35 real-browser failure). Remove that empty hit plane,
+   but keep the real drawer and its controls fully interactive when selected. */
+.ga:has([data-testid="r12-apartment-door-review"]) .ga-lower:has(.ga-story){
+  display:none;
+}

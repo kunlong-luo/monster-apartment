@@ -27,3 +27,7 @@
 ## 剩余项
 
 真实玩家的六门场景仍未发布。需要独立原生 PC 3840×2160 和手机 1080×1920、新图重新测绘、真实 HUD 避让与人工签署、同 SHA 检查后才能生产晋级。保留 #16/#24 和四位身份 0/4、正式 CG 0/5 缺口，不修改美术审批布尔值、存档键、七条路由、抽卡与经营规则。
+
+## 后续实机回读（R12.36）
+
+R12.35 Quality 与 Pages 成功，但 [桌面视觉](https://github.com/kunlong-luo/monster-apartment/actions/runs/45321472511) 的场景审稿 spec **5 passed / 1 failed**；父层 ga-lower 阻挡六门点击，另有直接审稿 URL 的 SSR document 错误。故本阶段不能标记四视口点击已通过。修复方案及新验收见 [R12.36](R12-36-S02-POINTER-AND-REVIEW-HYDRATION-2026-11-24.md)。

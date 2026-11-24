@@ -49,6 +49,10 @@ function releasePreviewResources(resources:PreviewResources){
     releaseActivePreview(resources,kind);
   }
 }
+// A portal target exists only after hydration, even on direct opt-in SSR URLs.
+const subscribeHydration=()=>()=>{};
+const clientHydrated=()=>true;
+const serverHydrated=()=>false;
 const serverMobileSnapshot=()=>false;
 const subscribeMobileViewport=(update:()=>void)=>{
   const query=window.matchMedia('(max-width:700px)');
@@ -95,6 +99,7 @@ export function R12SceneBackdrop(props:BackdropProps){
 function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode,renderDoorReview}:
   BackdropProps&{reviewMode:boolean}){
   const sources=approvedR12Scene(area);
+  const hydrated=useSyncExternalStore(subscribeHydration,clientHydrated,serverHydrated);
   const mobileViewport=useSyncExternalStore(
     subscribeMobileViewport,readMobileViewport,serverMobileSnapshot);
   const [desktopPreview,setDesktopPreview]=useState<LocalPreview|null>(null);
@@ -209,7 +214,7 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode,rend
 
     </div>
     {inspectDoors&&renderDoorReview?.(previewKind)}
-    {reviewMode&&createPortal(inspectDoors?
+    {reviewMode&&hydrated&&createPortal(inspectDoors?
       <aside data-testid="r12-local-art-review" aria-label="六门研究图交互检查"
         className="fixed bottom-3 right-4 z-[10000] rounded-lg border border-gothic-brass bg-gothic-panel/95 p-2 text-xs text-gothic-ivory shadow-lg">
         <p>未批准 · 六门门位检查</p>
@@ -217,7 +222,7 @@ function R12SceneBackdropView({area,fallbackSrc,className,testId,reviewMode,rend
           className="mt-1 min-h-11 rounded border border-gothic-brass px-3">返回 HUD 检查</button>
       </aside>:
       <aside data-testid="r12-local-art-review" aria-label="R12 本地环境画审核"
-        className="fixed bottom-20 right-4 z-[10000] w-[min(330px,calc(100vw-32px))] rounded-xl border border-[#c8a578] bg-[#140e1af0] p-3 text-[#f4dfbf] shadow-2xl backdrop-blur-md">
+        className="fixed bottom-20 right-4 z-[10000] max-h-[calc(100dvh-96px)] w-[min(330px,calc(100vw-32px))] overflow-y-auto rounded-xl border border-[#c8a578] bg-[#140e1af0] p-3 text-[#f4dfbf] shadow-2xl backdrop-blur-md">
         <p className="text-xs font-semibold tracking-wider">R12 · {area} 本地场景审稿</p>
         <p className="mt-1 text-xs text-[#d8bf9f]">只在当前浏览器显示。不会上传、保存或发布图片。</p>
         <button type="button" data-testid="r12-preview-repository-scene"
