@@ -7,6 +7,10 @@ on:
     paths:
       - 'src/components/game/gothic-desktop-ui.css'
       - 'src/components/game/gothic-lobby.tsx'
+      - 'src/components/game/gothic-entry.tsx'
+      - 'src/components/game/gothic-welcome.tsx'
+      - 'e2e/gothic-welcome.spec.ts'
+      - 'e2e/r12-lobby-navigation.spec.ts'
       - 'src/components/game/r12-scene-painting.tsx'
       - 'e2e/r12-local-scene-preview.spec.ts'
       - 'src/components/game/gothic-lobby.css'
@@ -111,6 +115,13 @@ jobs:
           fc-match ':lang=zh-cn'
       - name: Verify PC and mobile scene navigation, direct travel and overlays
         run: pnpm exec playwright test e2e/route-health.spec.ts e2e/scene-navigation.spec.ts --grep "lobby owns compact routes|compact scene navigation|gallery art viewer hides" --workers=1 --retries=0
+      - name: Verify welcome on-demand lobby and desktop/mobile world atlas
+        run: pnpm exec playwright test e2e/gothic-welcome.spec.ts e2e/r12-lobby-navigation.spec.ts --workers=1 --retries=0
+      - name: Keep actual welcome screenshots before later suites reset test-results
+        if: always()
+        run: |
+          mkdir -p visual-evidence/welcome
+          find test-results -maxdepth 1 -type f -name 'welcome-*.png' -exec cp {} visual-evidence/welcome/ \; || true
       - name: Check opt-in local scene art review never publishes drafts
         run: pnpm exec playwright test e2e/r12-local-scene-preview.spec.ts --workers=1 --retries=0
       - name: Check compact apartment mobile HUD stays fully visible
