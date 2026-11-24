@@ -106,8 +106,11 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
   };
   const showProduction=!!sources&&!preview;
   const previewKind=mobileViewport&&!!mobilePreview?'mobile':'desktop';
-  const targetWidth=previewKind==='mobile'?1080:2560;
-  const targetHeight=previewKind==='mobile'?1920:1440;
+  // R12.30: 1648x928 at DPR2 needs native 3296x1856 before cover crop.
+  // Use a 3840x2160 desktop review floor with composition headroom;
+  // phones must use separately composed 1080x1920 originals.
+  const targetWidth=previewKind==='mobile'?1080:3840;
+  const targetHeight=previewKind==='mobile'?1920:2160;
   const hasPixels=!!preview&&preview.width>=targetWidth&&preview.height>=targetHeight;
   return <>
     <div className={className} aria-hidden="true"
@@ -158,9 +161,12 @@ export function R12SceneBackdrop({area,fallbackSrc,className,testId}:Props&{
           {portraitMissing&&<p className="text-[#ffd29b]">
             手机暂无独立竖图，正在查看 PC 原图裁切；不得作为手机美术验收。
           </p>}
-          {preview&&<p className={hasPixels?'text-[#c4e3b2]':'text-[#ffd29b]'}>
-            {hasPixels?'尺寸达到当前画幅最低像素要求；仍需人工审核':
-              '低于当前画幅的原生最低尺寸，仅供构图预览'}
+          {preview&&<p data-testid="r12-local-pixel-gate"
+            data-required-resolution={targetWidth+'x'+targetHeight}
+            data-pixel-pass={hasPixels?'true':'false'}
+            className={hasPixels?'text-[#c4e3b2]':'text-[#ffd29b]'}>
+            {hasPixels?'达到原生 '+targetWidth+'×'+targetHeight+' 尺寸门槛；仍需人工审核与 DPI/裁切检查':
+              '未达到 '+targetWidth+'×'+targetHeight+' 原生像素门槛，仅供构图预览；禁止插值放大晋级'}
           </p>}
           <button type="button" onClick={()=>{
             setDesktopPreview(null);setMobilePreview(null);setMessage('');
