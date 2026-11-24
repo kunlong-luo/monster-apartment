@@ -6,7 +6,7 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 
 ## 当前可核实发布基线
 
-2026-11-24，V3.108.0，代码 [782fc74](https://github.com/kunlong-luo/monster-apartment/commit/782fc74fd6e597048a293cbf9777593447c76bb3)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45377400648) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45377549822) 成功；[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45377400618) 与玩法浏览器尚在运行。R12.75 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45378726330) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45378859455) 均成功。R12.76 为引擎目录迁移，候选 SHA 待独立验收，不提高 UI 版本。
+2026-11-24，已核实 V3.108.0 主线 [32c9b14](https://github.com/kunlong-luo/monster-apartment/commit/32c9b144469f5066d747bb013fb78effcf178da3) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45380852570) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45381001310) 成功。引擎迁移 [#60](https://github.com/kunlong-luo/monster-apartment/pull/60) 四项候选检查全绿，已合并 f3a3b70；合并后主线验收另计。本 PR 为 V3.109.0 仓库需求与采购反馈候选，未发布。
 
 - V3.103.0 欢迎页、头像、卡面与大厅过渡图已接入；正式 CG 人工签审仍未完成。
 - V3.104.0 四位人物拥有独立背景/人物层的观景模式；原故事模式与真实热点保留。

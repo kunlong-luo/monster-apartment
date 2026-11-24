@@ -17,6 +17,8 @@ test('a new player entering via town gets one real initialized save across all s
   await expect(page.getByTestId('moonwork-world')).toHaveAttribute('data-area','characters');
   await navigateScene(page,'/warehouse/');
   await expect(page.getByTestId('moonwork-world')).toHaveAttribute('data-area','warehouse');
+  await expect(page.getByTestId('warehouse-purchase-blocked')).toContainText('首次完成普通订单');
+  await expect(page.getByRole('button',{name:'付费采购 +1 晶核'})).toHaveCount(0);
 });
 test('orders and warehouse transact the same real localStorage save',async({page})=>{
   const sample={
@@ -39,11 +41,25 @@ test('orders and warehouse transact the same real localStorage save',async({page
   await expect(page.getByText('当前状态：进行中')).toBeVisible();
   await navigateScene(page,'/warehouse/');
   await expect(page.getByTestId('world-cores')).toHaveText('8');
+  await expect(page.getByTestId('warehouse-core-demand')).toContainText('普通订单需求：3 枚');
+  await expect(page.getByTestId('warehouse-core-demand')).toContainText('已接受的月纱委托需求：15 枚');
+  await expect(page.getByTestId('warehouse-core-shortfall')).toHaveText('即时合计缺口：10 枚');
+  await expect(page.getByTestId('warehouse-purchase-preview')).toContainText('剩余 90 星币');
   await page.getByRole('button',{name:'付费采购 +1 晶核'}).click();
   await expect(page.getByTestId('world-cores')).toHaveText('9');
   await expect(page.getByTestId('world-coins')).toHaveText('90');
+  await expect(page.getByTestId('warehouse-core-shortfall')).toHaveText('即时合计缺口：9 枚');
   await page.reload();
   await expect(page.getByTestId('world-cores')).toHaveText('9');
+  await expect(page.getByTestId('warehouse-core-shortfall')).toHaveText('即时合计缺口：9 枚');
+  await page.getByRole('button',{name:'付费采购 +1 晶核'}).click();
+  await expect(page.getByTestId('world-coins')).toHaveText('48');
+  await page.getByRole('button',{name:'付费采购 +1 晶核'}).click();
+  await expect(page.getByTestId('world-coins')).toHaveText('6');
+  await expect(page.getByTestId('world-cores')).toHaveText('11');
+  await expect(page.getByTestId('warehouse-core-shortfall')).toHaveText('即时合计缺口：7 枚');
+  await expect(page.getByTestId('warehouse-purchase-blocked')).toHaveText('星币不足，还差 36 ✦。');
+  await expect(page.getByRole('button',{name:'付费采购 +1 晶核'})).toHaveCount(0);
   await navigateScene(page,'/characters/');
   await page.getByRole('button',{name:/选择泉泡/}).click();
   await page.getByRole('tab',{name:'养成'}).click();

@@ -136,4 +136,7 @@
 
 ## R12.75 · 工坊文档与运行边界
 
-旧 V2 路由说明和独立实验路线已退役（[固定快照](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs)）。当前 Next 七路由、Pixi IIFE、React 挂载/销毁、静态资源同源、现有端口和双存档键依本架构、实际代码与工作流；不恢复独立 HTML。工坊资产制作统一至 [设备规格](design/WORKSHOP-ASSET-SPEC.md)。`pnpm audit:engine-paths` 为后续迁移提供逐文件引用报告；R12.75 时位置仍为 `v2/`；R12.76 候选将完整目录迁到 `engine/`，旧路径仅属于历史。
+旧 V2 路由说明和独立实验路线已退役（[固定快照](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs)）。当前 Next 七路由、Pixi IIFE、React 挂载/销毁、静态资源同源、现有端口和双存档键依本架构、实际代码与工作流；不恢复独立 HTML。工坊资产制作统一至 [设备规格](design/WORKSHOP-ASSET-SPEC.md)。`pnpm audit:engine-paths` 为后续迁移提供逐文件引用报告；R12.75 时位置仍为 `v2/`；R12.76 已通过四项候选检查并合并 f3a3b70，完整目录迁到 `engine/`，旧路径仅属于历史。
+
+
+仓库需求展示（#53 R12.79 候选）：普通订单与已接受未到期月纱委托合计减现有晶核库存；未接受委托单列。`importPatronCore` 纯规则判断采购资格和预览，`forecastPatronCommission` 固定排班的生产日推演；实际交易继续由原锁定存档事务执行。
