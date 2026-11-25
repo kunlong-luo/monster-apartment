@@ -1,4 +1,4 @@
-# Web 美术资源入口（R12.101 大厅归类）
+# Web 美术资源入口（R12.101 月纱归类候选）
 
 唯一完整资产清单、用途分类、清理条件及命名规则见 [美术资源总目录](../../docs/ART-RESOURCE-CATALOG.md)，尤其第 4.1 节和第 5 节。本页只说明目录职责，不维护第二份库存。当前游戏 V3.109.0；“运行中”不代表 production 人审通过。
 
@@ -38,3 +38,13 @@ R12.101 第一批：四张大厅 WebP（V2、V3、V4 桌面与 V4 手机）原 G
 R12.101 第二批前置发布修复：ffe0698 的 Quality（45572993876）目录审计及静态导出失败，Pages（45573188961）跳过。实际 CI 日志定位 world-ui.tsx 的 V3 背景和 gothic-summon-screen.tsx 的 V3/V2 背景，共三处旧 public/art/lobby-hero-v*.webp 静态导入。修复为 world-scenes/lobby/ 同一原图路径；保留所有回退及 Pixi dist/assets 公开文件名，不修改图片、玩法、存档或审核状态。原图 43 公开、141 全仓媒体不变。月纱三张根目录肖像暂不迁移，须先确认本修复 Quality/Pages，并完成全仓引用预检（包括静态导入、CSS、动态路径、机器清单、构建复制和测试）。目录门禁在本次故障中正确报告三处遗留路径，不能以树/哈希一致代替编译。当前远端逐文件读取无法证明穷尽扫描，后续路径迁移应先在同一候选 SHA 完成 audit:repository-layout、pnpm build、Pixi build 和定向测试，再作为发布候选；若无法本地执行，先使用临时验证分支的 CI，成功后快进 main，避免再次直接引入构建失败。
 
 R12.101 发布收口：bfff544 的 Desktop Visual Review 45573444869、Gameplay Browser Review 45573444886、Quality 中 static-export 与 pixi-v2-scaffold 已通过；checks 的 pnpm test 有 318 通过/3 失败（64 个测试文件）。三个失败均源于 tests/typescript-tailwind-migration.vitest.test.ts 的旧大厅路径（静态导入、WebP 文件读取、引擎复制源）。仅更新至 public/art/world-scenes/lobby/，保留所有原有格式、尺寸、字节门槛及运行/回退断言；同时新增已保留 V2 文件存在与引擎输出名检查。新 SHA 须独立通过 Quality/Pages，不以此前浏览器成功代替。月纱迁移将在独立候选 PR 验证，不直接将未经构建的迁移提交 main。
+
+R12.101 第二批候选：月纱头像、半身像、肖像三张原 Git blob 迁入 public/art/characters/yuesha/（原文件名不变），同步跨页面静态导入、人物注册、抽卡公开 URL、CG 身份参考、R12.53 转换器及 manifest、设计清单、资源测试与目录门禁。Pixi 构建仅改变源路径，dist/assets/yuesha-avatar-v3.webp 及引擎加载链不变。公开 art 根目录只允许 README.md 和 r12-53-transition-manifest.json；43 公开、141 全仓媒体、原始像素、身份、卡面审批、存档、概率与回退保持不变。此迁移在独立 PR 进行候选 CI，未通过前不得称已合并或上线。
+
+R12.101 第二批 PR #61 验收修复：主线 c6c0624 的 Quality 45577636793 与 Pages 45577758778 均成功；候选 2e39b0f 的目录审计与静态构建因六处旧月纱路径失败（45577859432），桌面及像素检查由相同缺图故障阻塞。补齐 room-memory-gallery、room-resident-sprite、yuesha-memory-shelf、SummonHeroineSpotlight、summon-dialogs、summon-showcase 的原图静态导入；不改渲染行为、原始图片、概率、存档及准入。继续在同一 PR 验证，未通过不合并。
+
+R12.102 迁移前实盘：public/assets/aistudio/ 仅三张 PNG，合计 9,161,328 B；按 Git tree 精确列在第 5 节（当前仍保留）。docs/ 内媒体 39 项、17,428,549 B：art-reviews 38 项（含 WineChan 来源/审稿及人物姿态证据），design 仅 layout-map.svg 1 项（现有设计说明直接引用）。下一批优先把三张公开历史设计参考原字节移出部署目录，目标 docs/design/2026-10-29-gothic-red-gold/references/；先逐个验证实际引用、原图 SHA-256 与映射，不按文件名猜测归属或授权。WineChan candidate-05.webp 与运行审稿图为已登记的 155188 B 唯一重复组，保留两条路径和 intake 审核链，待明确引用与许可后再处理；不删除证据。旧日期的文档仅在无独有规范、验收、授权或入站链接时退役至固定 Git SHA。此次仅完成分类与计划，不声称已迁移/删除历史文件或降低线上包大小。
+
+R12.102 第一批候选（PR #61）：fcfecf4 的静态导出、Pixi 构建与目录审计通过，Quality 因 CG-IDENTITY-POSE-COMPARISON 两处旧月纱 Markdown 图片链接失败（45586490095），现已修正。三张原 public/assets/aistudio PNG 原 Git blob 迁入 docs/design/2026-10-29-gothic-red-gold/references/，合计 9,161,328 B；退役公开目录并新增运行引用门禁，更新设计说明、路线图、执行清单及 reference manifest 的实际仓库副本记录。旧外部原始设计清单不改写、未核实 SHA-256 一一对应，不将匿名图片猜测为指定原图；保留旧文件名便于追溯。全仓 141 媒体、156439517 B 不变，public/art 43 项不变，整个 public 媒体 47→44 项，docs 媒体 39→42 项、26589877 B。候选 CI 需独立验证静态导出、运行与文档引用；未完成全仓动态路径穷尽审查，未合并/部署前不宣称线上包缩减。未删除设计证据或改变玩法、存档、审批。
+
+R12.103 候选全量审计（31cdcb3 / Quality 45586963823，checks job 139110904572）：完整 Git tree 724 个 blob、185 Markdown（docs 内 179）、19 CSS；目录 12 根/0 违规，621 条文档链接/0 违规，旧引擎可执行路径 0 违规。组件审计 333 文件、11 app roots、92 组件/样式全部 app-reachable，0 auxiliary-only、0 review-unreachable、0 unresolved local references、0 nonliteral imports；不能据此证明每条 CSS 选择器或动态资源路径有效，暂不删除组件/CSS。媒体真实字节 SHA-256 审计 141 路径、156439517 B、1 组已登记 WineChan 155188 B 重复、0 意外重复，库存匹配；历史三图隔离已在候选完成。Next 静态导出和 Pixi 三方检查通过，类型与 lint 通过。Vitest 62/64 文件通过，318/319 已执行测试通过，room-art-promotion 套件收集失败，room-art-review-pipeline 一项失败，皆为旧月纱胸像路径；本次只改两个 fixture 路径，保留真实 WebP 与审批门槛测试，需新 SHA 重跑。PR #61 尚未合并。

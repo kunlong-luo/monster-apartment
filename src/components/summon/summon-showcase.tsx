@@ -4,7 +4,7 @@ import {ChevronRight,Ticket} from 'lucide-react';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {HEROINE_FACE_ART,getCardFace} from './heroine-portrait-assets';
 import {siteAssetUrl} from '@/lib/game/site-asset-url';
-import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
+import moonveilPortrait from '../../../public/art/characters/yuesha/yuesha-portrait-v3.webp';
 import {GACHA_CHARACTERS,type SummonableCharacter} from '@/lib/summon/gacha-engine';
 import type {FeaturedWorker} from './summon-pool-rail';
 

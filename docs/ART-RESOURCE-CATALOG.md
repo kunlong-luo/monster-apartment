@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.101）
+# 怪物公寓 · 美术资源总目录（R12.103）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -20,7 +20,7 @@
 | 地点海报 | [public/art/postcards/](../public/art/postcards/) | 小型入口图，不当全屏背景 |
 | Pixi 工坊 | [engine/art/](../engine/art/) | 运行中的设备和环境资源，R12.76 源目录改名，字节不变 |
 | 文档证据 | [docs/art-reviews/](art-reviews/) | 审核来源、权利、对照图及历史记录 |
-| 历史设计参考 | [public/assets/aistudio/](../public/assets/aistudio/) | 保留原件及引用；不新增临时重复媒体 |
+| 历史设计参考 | [docs/design/2026-10-29-gothic-red-gold/references/](design/2026-10-29-gothic-red-gold/references/) | 候选隔离至文档目录；原 Git blob 不变，不作为运行图 |
 
 ## 2. 统一命名规范
 
@@ -139,7 +139,7 @@
 | `postcards/{gothic-workshop,moonlit-street}.webp` | 2 | 保留 | 大厅地点入口 |
 | `world-scenes/lobby/lobby-hero-v4.webp`、`world-scenes/lobby/lobby-hero-v4-mobile.webp` | 2 | 保留 | 正常大厅双端、欢迎页回退 |
 | `world-scenes/lobby/lobby-hero-v3.webp` | 1 | 保留 | 公寓/世界背景与 Pixi 回退 |
-| `yuesha-{avatar,bust,portrait}-v3.webp` | 3 | 保留 | 当前角色注册与对话/剧情 |
+| `characters/yuesha/yuesha-{avatar,bust,portrait}-v3.webp` | 3 | 保留 | 当前角色注册与对话/剧情 |
 | `rooms/{yuesha,brook,fern,cinder}/concept-scene.svg` | 4 | 保留 | 正常故事概念背景与观景故障回退 |
 | `rooms/{yuesha,brook,fern,cinder}/scenic/{background,standing}.webp` | 8 | 保留 | 四房正常观景；泉泡、炽角站姿也为候选卡；R12.100 已迁至稳定观景路径，不是 production |
 | `world-scenes/{town-moonlit-gate,workshop-gothic-hall}.webp` | 2 | 保留 | 月光街手机/回退、Pixi 与图鉴背景 |
@@ -165,9 +165,9 @@
 
 S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/scenes/apartment/) 仅含 `desktop-candidate.png` 与 `mobile-candidate.png`；新 `desktop-candidate-v2.png` 仍未入库。下一批单独核验正常运行的 review 路径、根目录旧版本名、交互研究重复图和三张 public/assets 历史参考；不将本轮写成已完成全部路径重构。
 
-## 5. 全仓实际资源菜单（R12.101）
+## 5. 全仓实际资源菜单（R12.103）
 
-R12.101 第一批路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
+R12.103 候选完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
 
 ### 源图与研究（40）
 
@@ -214,7 +214,7 @@ R12.101 第一批路径迁移后完整 Git tree：141 路径、156439517 B。R12
 | `art-sources/scenes/workshop/desktop-candidate-v1.png` | 3131454 | `813a14b8972d` |
 | `art-sources/scenes/workshop/desktop-candidate-v2.png` | 3103549 | `454501ad0087` |
 
-### Web 静态资源（47）
+### Web 静态资源（44）
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
@@ -258,12 +258,9 @@ R12.101 第一批路径迁移后完整 Git tree：141 路径、156439517 B。R12
 | `public/art/world-scenes/town/town-desktop-transition.webp` | 636018 | `f6da756b2007` |
 | `public/art/world-scenes/workshop-gothic-hall.webp` | 180542 | `2e21a83315dd` |
 | `public/art/world-scenes/workshop/workshop-desktop-transition.webp` | 599408 | `50511005b937` |
-| `public/art/yuesha-avatar-v3.webp` | 70710 | `fa60ea5d52da` |
-| `public/art/yuesha-bust-v3.webp` | 151936 | `ba77c88612de` |
-| `public/art/yuesha-portrait-v3.webp` | 259898 | `3cfe23285826` |
-| `public/assets/aistudio/Gothic_Moonlit_Summoning_Screen_8181b3a5.png` | 2726560 | `3be0ecd75dd6` |
-| `public/assets/aistudio/image_26a43a92.png` | 3154947 | `6c8131dd6719` |
-| `public/assets/aistudio/image_6273408e.png` | 3279821 | `ea8234301ea3` |
+| `public/art/characters/yuesha/yuesha-avatar-v3.webp` | 70710 | `fa60ea5d52da` |
+| `public/art/characters/yuesha/yuesha-bust-v3.webp` | 151936 | `ba77c88612de` |
+| `public/art/characters/yuesha/yuesha-portrait-v3.webp` | 259898 | `3cfe23285826` |
 | `public/lobby-hero.webp` | 157466 | `a9210c774121` |
 
 ### Pixi sidecar（15）
@@ -286,7 +283,7 @@ R12.101 第一批路径迁移后完整 Git tree：141 路径、156439517 B。R12
 | `engine/art/production/machines/well/lv3.webp` | 33168 | `d64e7248dac2` |
 | `engine/art/well-art-review.avif` | 2817 | `b0159e630ab7` |
 
-### 文档审核证据（39）
+### 文档审核证据（42）
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
@@ -329,6 +326,20 @@ R12.101 第一批路径迁移后完整 Git tree：141 路径、156439517 B。R12
 | `docs/art-reviews/sources/yuesha-cg-vow-pose-study-v1.webp` | 474174 | `22dd33b5b579` |
 | `docs/art-reviews/yuesha-eclipse-pose-v1-v2-qa-2026-11-22.webp` | 353470 | `1c9efc2783a8` |
 | `docs/design/2026-10-29-gothic-red-gold/layout-map.svg` | 4145 | `7d4a9dbecabe` |
+| `docs/design/2026-10-29-gothic-red-gold/references/Gothic_Moonlit_Summoning_Screen_8181b3a5.png` | 2726560 | `3be0ecd75dd6` |
+| `docs/design/2026-10-29-gothic-red-gold/references/image_26a43a92.png` | 3154947 | `6c8131dd6719` |
+| `docs/design/2026-10-29-gothic-red-gold/references/image_6273408e.png` | 3279821 | `ea8234301ea3` |
+
+### 当前分区汇总（非历史快照）
+
+| 分类 | 路径数 | 字节 |
+| --- | ---: | ---: |
+| art-sources | 40 | 115372885 |
+| docs | 42 | 26589877 |
+| engine/art | 15 | 310778 |
+| public/art | 43 | 14008511 |
+| public（其余） | 1 | 157466 |
+| **合计** | **141** | **156439517** |
 
 ## 6. 正式替换顺序与验收
 
@@ -475,3 +486,15 @@ R12.101 第一批：四张大厅 WebP（V2、V3、V4 桌面与 V4 手机）原 G
 R12.101 第二批前置发布修复：ffe0698 的 Quality（45572993876）目录审计及静态导出失败，Pages（45573188961）跳过。实际 CI 日志定位 world-ui.tsx 的 V3 背景和 gothic-summon-screen.tsx 的 V3/V2 背景，共三处旧 public/art/lobby-hero-v*.webp 静态导入。修复为 world-scenes/lobby/ 同一原图路径；保留所有回退及 Pixi dist/assets 公开文件名，不修改图片、玩法、存档或审核状态。原图 43 公开、141 全仓媒体不变。月纱三张根目录肖像暂不迁移，须先确认本修复 Quality/Pages，并完成全仓引用预检（包括静态导入、CSS、动态路径、机器清单、构建复制和测试）。目录门禁在本次故障中正确报告三处遗留路径，不能以树/哈希一致代替编译。当前远端逐文件读取无法证明穷尽扫描，后续路径迁移应先在同一候选 SHA 完成 audit:repository-layout、pnpm build、Pixi build 和定向测试，再作为发布候选；若无法本地执行，先使用临时验证分支的 CI，成功后快进 main，避免再次直接引入构建失败。
 
 R12.101 发布收口：bfff544 的 Desktop Visual Review 45573444869、Gameplay Browser Review 45573444886、Quality 中 static-export 与 pixi-v2-scaffold 已通过；checks 的 pnpm test 有 318 通过/3 失败（64 个测试文件）。三个失败均源于 tests/typescript-tailwind-migration.vitest.test.ts 的旧大厅路径（静态导入、WebP 文件读取、引擎复制源）。仅更新至 public/art/world-scenes/lobby/，保留所有原有格式、尺寸、字节门槛及运行/回退断言；同时新增已保留 V2 文件存在与引擎输出名检查。新 SHA 须独立通过 Quality/Pages，不以此前浏览器成功代替。月纱迁移将在独立候选 PR 验证，不直接将未经构建的迁移提交 main。
+
+R12.101 第二批候选：月纱头像、半身像、肖像三张原 Git blob 迁入 public/art/characters/yuesha/（原文件名不变），同步跨页面静态导入、人物注册、抽卡公开 URL、CG 身份参考、R12.53 转换器及 manifest、设计清单、资源测试与目录门禁。Pixi 构建仅改变源路径，dist/assets/yuesha-avatar-v3.webp 及引擎加载链不变。公开 art 根目录只允许 README.md 和 r12-53-transition-manifest.json；43 公开、141 全仓媒体、原始像素、身份、卡面审批、存档、概率与回退保持不变。此迁移在独立 PR 进行候选 CI，未通过前不得称已合并或上线。
+
+R12.101 第二批 PR #61 验收修复：主线 c6c0624 的 Quality 45577636793 与 Pages 45577758778 均成功；候选 2e39b0f 的目录审计与静态构建因六处旧月纱路径失败（45577859432），桌面及像素检查由相同缺图故障阻塞。补齐 room-memory-gallery、room-resident-sprite、yuesha-memory-shelf、SummonHeroineSpotlight、summon-dialogs、summon-showcase 的原图静态导入；不改渲染行为、原始图片、概率、存档及准入。继续在同一 PR 验证，未通过不合并。
+
+R12.102 迁移前实盘：public/assets/aistudio/ 仅三张 PNG，合计 9,161,328 B；按 Git tree 精确列在第 5 节（当前仍保留）。docs/ 内媒体 39 项、17,428,549 B：art-reviews 38 项（含 WineChan 来源/审稿及人物姿态证据），design 仅 layout-map.svg 1 项（现有设计说明直接引用）。下一批优先把三张公开历史设计参考原字节移出部署目录，目标 docs/design/2026-10-29-gothic-red-gold/references/；先逐个验证实际引用、原图 SHA-256 与映射，不按文件名猜测归属或授权。WineChan candidate-05.webp 与运行审稿图为已登记的 155188 B 唯一重复组，保留两条路径和 intake 审核链，待明确引用与许可后再处理；不删除证据。旧日期的文档仅在无独有规范、验收、授权或入站链接时退役至固定 Git SHA。此次仅完成分类与计划，不声称已迁移/删除历史文件或降低线上包大小。
+
+R12.102 第一批候选（PR #61）：fcfecf4 的静态导出、Pixi 构建与目录审计通过，Quality 因 CG-IDENTITY-POSE-COMPARISON 两处旧月纱 Markdown 图片链接失败（45586490095），现已修正。三张原 public/assets/aistudio PNG 原 Git blob 迁入 docs/design/2026-10-29-gothic-red-gold/references/，合计 9,161,328 B；退役公开目录并新增运行引用门禁，更新设计说明、路线图、执行清单及 reference manifest 的实际仓库副本记录。旧外部原始设计清单不改写、未核实 SHA-256 一一对应，不将匿名图片猜测为指定原图；保留旧文件名便于追溯。全仓 141 媒体、156439517 B 不变，public/art 43 项不变，整个 public 媒体 47→44 项，docs 媒体 39→42 项、26589877 B。候选 CI 需独立验证静态导出、运行与文档引用；未完成全仓动态路径穷尽审查，未合并/部署前不宣称线上包缩减。未删除设计证据或改变玩法、存档、审批。
+
+R12.103 候选全量审计（31cdcb3 / Quality 45586963823，checks job 139110904572）：完整 Git tree 724 个 blob、185 Markdown（docs 内 179）、19 CSS；目录 12 根/0 违规，621 条文档链接/0 违规，旧引擎可执行路径 0 违规。组件审计 333 文件、11 app roots、92 组件/样式全部 app-reachable，0 auxiliary-only、0 review-unreachable、0 unresolved local references、0 nonliteral imports；不能据此证明每条 CSS 选择器或动态资源路径有效，暂不删除组件/CSS。媒体真实字节 SHA-256 审计 141 路径、156439517 B、1 组已登记 WineChan 155188 B 重复、0 意外重复，库存匹配；历史三图隔离已在候选完成。Next 静态导出和 Pixi 三方检查通过，类型与 lint 通过。Vitest 62/64 文件通过，318/319 已执行测试通过，room-art-promotion 套件收集失败，room-art-review-pipeline 一项失败，皆为旧月纱胸像路径；本次只改两个 fixture 路径，保留真实 WebP 与审批门槛测试，需新 SHA 重跑。PR #61 尚未合并。
+
+R12.106 发布验收补记：372f26f 的 Quality 45587291301、像素证据 45587291545、Desktop Visual Review 45587291242 全部成功。完整 Gameplay Browser Review 45587291325：196 passed / 3 skipped / 3 failed，三个失败均为 e2e/character-room-mobile.spec.ts 的 setInputFiles 读取已迁移月纱胸像旧路径（ENOENT）。更新三处为 public/art/characters/yuesha/yuesha-bust-v3.webp；保留原 WebP 字节、非透明素材拒绝、显式本地审稿与不写入存档的断言。未变更运行代码、媒体或审批。新候选 SHA 仍须独立验收，PR #61 不提前合并。

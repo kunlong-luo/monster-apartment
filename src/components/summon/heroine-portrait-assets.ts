@@ -4,9 +4,9 @@
  * All current assets are reviewed PORTRAITS (environment-backed crops),
  * not full-body CG or transparent animated sprites. Never silently promote
  * a generated concept or a different face into the production registry. */
-import yueshaAvatar from '../../../public/art/yuesha-avatar-v3.webp';
-import yueshaPortrait from '../../../public/art/yuesha-portrait-v3.webp';
-import yueshaBust from '../../../public/art/yuesha-bust-v3.webp';
+import yueshaAvatar from '../../../public/art/characters/yuesha/yuesha-avatar-v3.webp';
+import yueshaPortrait from '../../../public/art/characters/yuesha/yuesha-portrait-v3.webp';
+import yueshaBust from '../../../public/art/characters/yuesha/yuesha-bust-v3.webp';
 import brook from '../../../public/art/characters/brook/face.webp';
 import fern from '../../../public/art/characters/fern/face.webp';
 import cinder from '../../../public/art/characters/cinder/face.webp';

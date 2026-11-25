@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import {useState} from 'react';
-import memoryPortrait from '../../../public/art/yuesha-portrait-v3.webp';
+import memoryPortrait from '../../../public/art/characters/yuesha/yuesha-portrait-v3.webp';
 import {ROOM_INVESTIGATIONS} from '@/core/room-investigation';
 import {yueshaMemoryCards} from '@/core/yuesha-memory-shelf';
 import type {CharacterLifeState,RoomObjectId} from '@/core/character-life';

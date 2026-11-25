@@ -86,7 +86,7 @@ P0/P2/P5/P8 属于**产品与工程优先**；P1/P3/P4/P6 是**美术生产与�
 
 ## 7. 立即可执行：角色 CG 候选图生成清单（供 AI 图像生成工具使用）
 
-> **视觉参考**：`public/assets/aistudio/Gothic_Moonlit_Summoning_Screen_8181b3a5.png`  
+> **视觉参考**：`docs/design/2026-10-29-gothic-red-gold/references/Gothic_Moonlit_Summoning_Screen_8181b3a5.png`  
 > 风格核心：红黑金哥特月蚀美学、深酒红背景、金色镀金边框、烛光氛围、成熟女性主角、哥特建筑/红玫瑰/王冠元素、无 UI 文字、无按钮、无水印、透明或纯色背景便于抠图。
 
 ### 7.1 缺失资源清单（P0-P3 阶段）

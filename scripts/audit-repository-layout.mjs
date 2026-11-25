@@ -6,7 +6,7 @@ const retired=/^(?:\.aistudio\/|artwork\/|management\/|docs\/prototypes\/|v2\/|e
 // The current public art entry points are documented in public/art/README.md.
 // New business-purpose directories require an explicit catalog and gate update.
 const publicArtDirs=new Set(['characters','covers','decorations','postcards','room-review','rooms','world-scenes']);
-const publicArtRootFiles=new Set(['README.md','r12-53-transition-manifest.json','yuesha-avatar-v3.webp','yuesha-bust-v3.webp','yuesha-portrait-v3.webp']);
+const publicArtRootFiles=new Set(['README.md','r12-53-transition-manifest.json']);
 const paths=execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
 const failures=[];
 const roots=new Set();
@@ -25,11 +25,12 @@ for(const file of paths){
   }
   if(/^public\/art\/world-scenes\/(?:workshop|town)\/review\//.test(file))failures.push('Retired PC transition directory: '+file);
   if(/^public\/art\/rooms\/(?:brook|cinder|fern|yuesha)\/review\//.test(file))failures.push('Retired room scenic directory: '+file);
+  if(file.startsWith('public/assets/aistudio/'))failures.push('Retired public design references: '+file);
   if(file.startsWith('public/art/beauty-beasts/'))failures.push('Retired beauty-beasts directory: '+file);
   // Check consumers, not just tracked asset paths. Historical documents and provenance
   // may legitimately retain their original paths; this gate targets runtime code.
   if(/^(?:app|src|engine\/src)\//.test(file)&&/\.(?:[cm]?[jt]sx?|css|json)$/.test(file)){
-    const retiredArt=/(?:art\/(?:beauty-beasts|a05|feature-postcards)\/|art\/world-scenes\/(?:workshop|town)\/review\/|art\/rooms\/(?:brook|cinder|fern|yuesha)\/review\/|art\/lobby-hero-v[234](?:-mobile)?\.webp)/;
+    const retiredArt=/(?:art\/(?:beauty-beasts|a05|feature-postcards)\/|art\/world-scenes\/(?:workshop|town)\/review\/|art\/rooms\/(?:brook|cinder|fern|yuesha)\/review\/|art\/lobby-hero-v[234](?:-mobile)?\.webp|art\/yuesha-(?:avatar|bust|portrait)-v3\.webp|assets\/aistudio\/|Gothic_Moonlit_Summoning_Screen_8181b3a5\.png|image_(?:26a43a92|6273408e)\.png)/;
     readFileSync(file,'utf8').split('\n').forEach((line,index)=>{
       if(retiredArt.test(line.replaceAll('\\/','/')))failures.push('Retired art reference: '+file+':'+(index+1));
     });

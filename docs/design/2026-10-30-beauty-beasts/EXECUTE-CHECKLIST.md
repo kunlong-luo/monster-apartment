@@ -3,7 +3,7 @@
 > 此文件可直接复制给 AI 图像生成工具（如 chatgpt + 图像生成）执行。
 
 ## 1. 视觉参考
-- 参考图：`public/assets/aistudio/Gothic_Moonlit_Summoning_Screen_8181b3a5.png`
+- 参考图：`docs/design/2026-10-29-gothic-red-gold/references/Gothic_Moonlit_Summoning_Screen_8181b3a5.png`
 - 风格：红黑金哥特月蚀、深酒红背景、金色镀金边框、烛光氛围、成熟女性主角、无 UI 文字、无按钮、无水印
 
 ## 2. 需生成的 4 张缺失图片

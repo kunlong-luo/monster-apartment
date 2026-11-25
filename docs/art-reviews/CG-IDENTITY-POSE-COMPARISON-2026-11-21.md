@@ -32,11 +32,11 @@
 
 | 卡面 | 不可改变的人物身份参考 | 最新独立动作研究 | 对照结论 |
 | --- | --- | --- | --- |
-| **月纱·月蚀** | ![月纱 V3](../../public/art/yuesha-avatar-v3.webp) | ![月纱单人前踏持镰](sources/yuesha-cg-eclipse-pose-study-v1.webp) | **待改**：镰刃安全区、银发 V3 面部一致性；尚未达原生尺寸 |
+| **月纱·月蚀** | ![月纱 V3](../../public/art/characters/yuesha/yuesha-avatar-v3.webp) | ![月纱单人前踏持镰](sources/yuesha-cg-eclipse-pose-study-v1.webp) | **待改**：镰刃安全区、银发 V3 面部一致性；尚未达原生尺寸 |
 | **泉泡·潮汐** | ![泉泡现行头像](../../public/art/characters/brook/face.webp) | ![泉泡新版独立踏浪](sources/brook-cg-tide-pose-study-v2.webp) | **v2 外观修正成功**：银蓝浅发与头顶毛绒蓝兽耳可见；同脸骨相/戟尖边距/高清尺寸仍未人工核准 |
 | **炽角·余烬** | ![炽角现行头像](../../public/art/characters/cinder/face.webp) | ![炽角单人火链镰](sources/cinder-cg-ember-pose-study-v1.webp) | **单人战斗姿态完成**：粉红红发、双角、甲胄和宽弓步符合重制方向；镰刃边距和骨相仍需复核 |
 | **青枝·春芽** | ![青枝现行头像](../../public/art/characters/fern/face.webp) | ![青枝独立侧身拉弓](sources/fern-cg-spring-pose-study-v1.webp) | **单人游侠拉弓研究稿已入库**；藤弓上缘/箭尖接近边界，手指与身份未签署，尺寸不足 |
-| **月纱·誓约** | ![月纱 V3 胸像](../../public/art/yuesha-bust-v3.webp) | ![月纱侧坐邀约独立研究](sources/yuesha-cg-vow-pose-study-v1.webp) | **G2-02 独立姿势研究稿完成**：侧坐、伸手邀请、誓约细剑、银白酒红仪式裙；两张月纱的面部身份与细剑边距尚待审核，非正式 CG |
+| **月纱·誓约** | ![月纱 V3 胸像](../../public/art/characters/yuesha/yuesha-bust-v3.webp) | ![月纱侧坐邀约独立研究](sources/yuesha-cg-vow-pose-study-v1.webp) | **G2-02 独立姿势研究稿完成**：侧坐、伸手邀请、誓约细剑、银白酒红仪式裙；两张月纱的面部身份与细剑边距尚待审核，非正式 CG |
 
 > GitHub 的上表显示实际入库图片。**不能根据图片旁边写了“完成”就认为人物身份通过**：目前所有已入库研究稿均为 1086×1448；正式 CG 原生尺寸门槛是 1536×2048，所有卡位 `status: portrait` 不变。
 

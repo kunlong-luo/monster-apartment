@@ -29,5 +29,31 @@
       "status": "unapproved-concept"
     }
   ],
-  "githubPreview": "layout-map.svg"
+  "githubPreview": "layout-map.svg",
+  "repositoryReferenceCopies": [
+    {
+      "path": "references/Gothic_Moonlit_Summoning_Screen_8181b3a5.png",
+      "previousPath": "public/assets/aistudio/Gothic_Moonlit_Summoning_Screen_8181b3a5.png",
+      "gitBlobSha": "3be0ecd75dd6b4ab30c674e21f2a1aaa59d96c16",
+      "sizeBytes": 2726560,
+      "status": "historical-reference-only",
+      "originalManifestIdentityVerified": false
+    },
+    {
+      "path": "references/image_26a43a92.png",
+      "previousPath": "public/assets/aistudio/image_26a43a92.png",
+      "gitBlobSha": "6c8131dd6719de4cbc5421e9d494900eafdae7c0",
+      "sizeBytes": 3154947,
+      "status": "historical-reference-only",
+      "originalManifestIdentityVerified": false
+    },
+    {
+      "path": "references/image_6273408e.png",
+      "previousPath": "public/assets/aistudio/image_6273408e.png",
+      "gitBlobSha": "ea8234301ea325a4af5b4ede7ac0d13a711931aa",
+      "sizeBytes": 3279821,
+      "status": "historical-reference-only",
+      "originalManifestIdentityVerified": false
+    }
+  ]
 }

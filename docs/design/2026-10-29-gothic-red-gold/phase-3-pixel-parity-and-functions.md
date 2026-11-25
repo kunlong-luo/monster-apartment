@@ -2,7 +2,7 @@
 
 ## 参考图片与目标
 - 用户提供的 1648×928 黑金酒红召唤屏：左五主题、中央月纱人物、右卡面与概率/进度、顶部资源、底部 7 项。
-- 原设计 PNG 已在仓库 \`public/assets/aistudio/Gothic_Moonlit_Summoning_Screen_8181b3a5.png\`。**该图片只作参考，不直接盖在功能按钮背后**，否则会重复显示虚假的数字、旧活动日期和不可点击的文字。
+- 原设计 PNG 已在仓库 \`docs/design/2026-10-29-gothic-red-gold/references/Gothic_Moonlit_Summoning_Screen_8181b3a5.png\`。**该图片只作参考，不直接盖在功能按钮背后**，否则会重复显示虚假的数字、旧活动日期和不可点击的文字。
 - 同一角色路由 \`/characters/#summon-screen\` 是全屏召唤视图；\`/characters/\` 仍是原人物图鉴、私人房间和装备。没有新增全局路由。
 
 ## 已接通

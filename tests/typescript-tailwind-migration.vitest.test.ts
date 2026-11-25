@@ -56,9 +56,9 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
       {file:'public/art/world-scenes/lobby/lobby-hero-v3.webp',minWidth:1550,minHeight:980,minBytes:300000},
       {file:'public/art/world-scenes/lobby/lobby-hero-v4.webp',minWidth:1672,minHeight:941,minBytes:300000},
       {file:'public/art/world-scenes/lobby/lobby-hero-v4-mobile.webp',minWidth:941,minHeight:1672,minBytes:300000},
-      {file:'public/art/yuesha-portrait-v3.webp',minWidth:1086,minHeight:1448,minBytes:140000},
-      {file:'public/art/yuesha-bust-v3.webp',minWidth:930,minHeight:910,minBytes:100000},
-      {file:'public/art/yuesha-avatar-v3.webp',minWidth:600,minHeight:600,minBytes:70000},
+      {file:'public/art/characters/yuesha/yuesha-portrait-v3.webp',minWidth:1086,minHeight:1448,minBytes:140000},
+      {file:'public/art/characters/yuesha/yuesha-bust-v3.webp',minWidth:930,minHeight:910,minBytes:100000},
+      {file:'public/art/characters/yuesha/yuesha-avatar-v3.webp',minWidth:600,minHeight:600,minBytes:70000},
     ];
     for(const art of scenes){
       const data=readFileSync(join(root,art.file));

@@ -1,7 +1,7 @@
 import {describe,expect,it} from 'vitest';
 import {readFileSync} from 'node:fs';
 import {sha256,verifyRoomApproval} from '../scripts/promote-room-background.mjs';
-const bytes=readFileSync('public/art/yuesha-bust-v3.webp');
+const bytes=readFileSync('public/art/characters/yuesha/yuesha-bust-v3.webp');
 // Review fixture coordinates are safe for real 44px square targets.
 // The legacy concept manifest anchors are not production-review approved.
 const anchors={seal:[.56,.35],tea:[.65,.5],ledger:[.78,.7]};

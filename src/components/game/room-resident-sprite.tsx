@@ -2,7 +2,7 @@
 
 import {ReliableImage as Image} from './reliable-image';
 import {AnimatePresence,motion,useReducedMotion} from 'motion/react';
-import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
+import moonveilBust from '../../../public/art/characters/yuesha/yuesha-bust-v3.webp';
 import type {CharacterId,WorkerCharacterId} from '@/core/character-life';
 import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import type {RoomPose} from '@/core/room-performance';

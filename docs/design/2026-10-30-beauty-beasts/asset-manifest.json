@@ -106,7 +106,7 @@
     {
       "assetId": "R12-53-yuesha-thumbnail",
       "status": "transition-candidate",
-      "path": "public/art/yuesha-avatar-v3.webp",
+      "path": "public/art/characters/yuesha/yuesha-avatar-v3.webp",
       "width": 600,
       "height": 600,
       "sizeBytes": 70710,

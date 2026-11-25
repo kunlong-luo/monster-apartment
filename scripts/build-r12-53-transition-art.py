@@ -72,10 +72,10 @@ C=P+"characters/"
 front={i:A+"characters/"+i+"/identity/front.png" for i in ("yuesha","brook","fern","cinder")}
 boxes={"yuesha":(250,0,850,600),"brook":(300,0,900,600),"fern":(315,0,915,600),"cinder":(220,0,820,600)}
 for i, box in boxes.items():
-    dest=P+"yuesha-avatar-v3.webp" if i=="yuesha" else C+i+"/face.webp"
+    dest=P+"characters/yuesha/yuesha-avatar-v3.webp" if i=="yuesha" else C+i+"/face.webp"
     export(front[i],dest,(1086,1448),"identity-avatar",box)
-export(front["yuesha"],P+"yuesha-portrait-v3.webp",(1086,1448),"identity-portrait")
-export(front["yuesha"],P+"yuesha-bust-v3.webp",(1086,1448),"identity-bust",(78,0,1008,910))
+export(front["yuesha"],P+"characters/yuesha/yuesha-portrait-v3.webp",(1086,1448),"identity-portrait")
+export(front["yuesha"],P+"characters/yuesha/yuesha-bust-v3.webp",(1086,1448),"identity-bust",(78,0,1008,910))
 for device,size in (("desktop",(1672,941)),("mobile",(941,1672))):
     export(A+"covers/welcome-"+device+".png",P+"covers/world-cover"+("-mobile" if device=="mobile" else "")+".webp",size,"welcome")
     export(A+"scenes/lobby/"+device+".png",P+"world-scenes/lobby/lobby-hero-v4"+("-mobile" if device=="mobile" else "")+".webp",size,"lobby")

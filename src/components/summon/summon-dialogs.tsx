@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import {useGothicMotion} from '@/lib/game/gothic-motion';
 import Image from 'next/image';
-import moonveilAvatar from '../../../public/art/yuesha-avatar-v3.webp';
+import moonveilAvatar from '../../../public/art/characters/yuesha/yuesha-avatar-v3.webp';
 import {
   History,
   Scroll,

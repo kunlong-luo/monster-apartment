@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ReliableImage as Image } from '@/components/game/reliable-image';
 import { HEROINE_FACE_ART } from './heroine-portrait-assets';
-import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
+import moonveilBust from '../../../public/art/characters/yuesha/yuesha-bust-v3.webp';
 import { Search } from 'lucide-react';
 
 export type FeaturedWorker = 'brook' | 'fern' | 'cinder' | null;

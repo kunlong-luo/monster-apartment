@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import {useState} from 'react';
-import moonshaPainting from '../../../public/art/yuesha-portrait-v3.webp';
+import moonshaPainting from '../../../public/art/characters/yuesha/yuesha-portrait-v3.webp';
 import {CHARACTER_PROFILES} from '@/core/character-life';
 import type {CharacterId} from '@/core/character-life';
 import {roomInvestigations} from '@/core/room-investigation';
