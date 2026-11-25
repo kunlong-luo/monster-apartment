@@ -65,4 +65,4 @@ R13.0-B：R13.0-A 的真实仓库身份技术校验已通过 Quality（456163404
 
 R13.0-C（并行审稿准备，不代表 B 已完成）：青枝与炽角补齐独立正侧面制作任务、原图/头像对照和拒收标准，详见 [角色 SOP](../CHARACTER-CREATION-SOP.md#r130-c--青枝与炽角身份审核与原生侧脸返工准备未签审)。四人正面尺寸达标 4/4、侧脸原生高度达标 0/4、正式身份 0/4、正式 CG 0/5。原图二进制读取仍受限，本次不生成、不入库、不晋级，不将技术检查视为人审。继续 B1/B2 后 C1/C2，四人同尺度灰阶身份板及签审完成后，按现行 R13.1–R13.3 路线推进独立绘景、经营闭环和真人验证，不改版本及评分。
 
-工程并行事项：PR #63（65b7ace）的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45615216421)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45615216278) 已成功，[Gameplay Browser Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45615216586) 核查时仍运行。GitHub 最新可合并状态为 true，但主线与验证分支仍有分歧（核查时领先 1、落后 4）；保留既有 CI 门槛，不提前合并，不将候选成功等同于主线发布。
+工程并行事项：PR #63（65b7ace）的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45615216421)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45615216278) 已成功，[Gameplay Browser Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45615216586) 已成功。三项候选 CI 均通过；随后再次读取 PR，GitHub 报告 mergeable=false，主线与验证分支仍有分歧（核查时领先 1、落后 6）。不强制合并或覆盖主线，先复核冲突/合并计算状态，并在同步后复验；候选成功不等于主线发布。
