@@ -41,8 +41,8 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     const declaration=read('src/types/next-static-webp.d.ts');
     const polish=read('src/components/game/gothic-polish.css');
     expect(declaration).toContain("declare module '*.webp'");
-    expect(lobby).toContain("import lobbyHero from '../../../public/art/lobby-hero-v4.webp'");
-    expect(lobby).toContain("import lobbyHeroMobile from '../../../public/art/lobby-hero-v4-mobile.webp'");
+    expect(lobby).toContain("import lobbyHero from '../../../public/art/world-scenes/lobby/lobby-hero-v4.webp'");
+    expect(lobby).toContain("import lobbyHeroMobile from '../../../public/art/world-scenes/lobby/lobby-hero-v4-mobile.webp'");
     expect(lobby).toContain('<picture className="gothic-lobby__painting">');
     expect(lobby).toContain('data-testid="gothic-lobby-painting-image"');
     expect(lobby).toContain('unoptimized');
@@ -53,9 +53,9 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
   it('ships real lossily-compressed WebP paintings at usable resolutions',()=>{
     const scenes=[
       // V3 remains a live fallback for the apartment and Pixi. V4 is the independent lobby pair.
-      {file:'public/art/lobby-hero-v3.webp',minWidth:1550,minHeight:980,minBytes:300000},
-      {file:'public/art/lobby-hero-v4.webp',minWidth:1672,minHeight:941,minBytes:300000},
-      {file:'public/art/lobby-hero-v4-mobile.webp',minWidth:941,minHeight:1672,minBytes:300000},
+      {file:'public/art/world-scenes/lobby/lobby-hero-v3.webp',minWidth:1550,minHeight:980,minBytes:300000},
+      {file:'public/art/world-scenes/lobby/lobby-hero-v4.webp',minWidth:1672,minHeight:941,minBytes:300000},
+      {file:'public/art/world-scenes/lobby/lobby-hero-v4-mobile.webp',minWidth:941,minHeight:1672,minBytes:300000},
       {file:'public/art/yuesha-portrait-v3.webp',minWidth:1086,minHeight:1448,minBytes:140000},
       {file:'public/art/yuesha-bust-v3.webp',minWidth:930,minHeight:910,minBytes:100000},
       {file:'public/art/yuesha-avatar-v3.webp',minWidth:600,minHeight:600,minBytes:70000},
@@ -228,7 +228,11 @@ describe('game runtime TypeScript + Tailwind v4 migration boundaries',()=>{
     expect(loader).toContain("loadPaintedTexture(assetBase,'lobby-hero-v3.webp',1)");
     expect(loader).toContain("new URL('./assets/'+filename,assetBase)");
     expect(builder).toContain("'../public/art/world-scenes/workshop-gothic-hall.webp'");
-    expect(builder).toContain("'../public/art/lobby-hero-v3.webp'");
+    expect(builder).toContain("'../public/art/world-scenes/lobby/lobby-hero-v3.webp'");
+    expect(builder).toContain("'../public/art/world-scenes/lobby/lobby-hero-v2.webp'");
+    expect(builder).toContain("'dist/assets/lobby-hero-v3.webp'");
+    expect(builder).toContain("'dist/assets/lobby-hero-v2.webp'");
+    expect(readFileSync(join(root,'public/art/world-scenes/lobby/lobby-hero-v2.webp')).byteLength).toBeGreaterThan(0);
   });
   it('communicates selected plots and tools with a typed runtime callback',()=>{
     const runtime=read('engine/src/main.ts');
