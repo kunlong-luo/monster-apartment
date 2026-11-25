@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.103）
+# 怪物公寓 · 美术资源总目录（R12.107）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -497,4 +497,15 @@ R12.102 第一批候选（PR #61）：fcfecf4 的静态导出、Pixi 构建与�
 
 R12.103 候选全量审计（31cdcb3 / Quality 45586963823，checks job 139110904572）：完整 Git tree 724 个 blob、185 Markdown（docs 内 179）、19 CSS；目录 12 根/0 违规，621 条文档链接/0 违规，旧引擎可执行路径 0 违规。组件审计 333 文件、11 app roots、92 组件/样式全部 app-reachable，0 auxiliary-only、0 review-unreachable、0 unresolved local references、0 nonliteral imports；不能据此证明每条 CSS 选择器或动态资源路径有效，暂不删除组件/CSS。媒体真实字节 SHA-256 审计 141 路径、156439517 B、1 组已登记 WineChan 155188 B 重复、0 意外重复，库存匹配；历史三图隔离已在候选完成。Next 静态导出和 Pixi 三方检查通过，类型与 lint 通过。Vitest 62/64 文件通过，318/319 已执行测试通过，room-art-promotion 套件收集失败，room-art-review-pipeline 一项失败，皆为旧月纱胸像路径；本次只改两个 fixture 路径，保留真实 WebP 与审批门槛测试，需新 SHA 重跑。PR #61 尚未合并。
 
+## R12.104 · 发布收口与文档职责收敛
+
+R12.104 验收记录：候选 372f26f 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45587291301) 三个 job 全部成功，64 个 Vitest 文件全通过；目录、文档链接、资源库存、重复媒体、组件引用、设计、类型、Lint、Next 导出及 Pixi 构建均通过。候选浏览器/像素检查在本次整理时尚未全部完成；正式发布状态以 main 的同 SHA Quality/Pages 为准，不提前提高评分。
+
+完整迁移经过、失败修复和审计证据统一保存在资源总目录；清理前各文档的完整版本见 [372f26f 固定快照](https://github.com/kunlong-luo/monster-apartment/tree/372f26f28933050840b6c6f8ff5f18ed99075e44)。不再逐轮复制报告。
+
 R12.106 发布验收补记：372f26f 的 Quality 45587291301、像素证据 45587291545、Desktop Visual Review 45587291242 全部成功。完整 Gameplay Browser Review 45587291325：196 passed / 3 skipped / 3 failed，三个失败均为 e2e/character-room-mobile.spec.ts 的 setInputFiles 读取已迁移月纱胸像旧路径（ENOENT）。更新三处为 public/art/characters/yuesha/yuesha-bust-v3.webp；保留原 WebP 字节、非透明素材拒绝、显式本地审稿与不写入存档的断言。未变更运行代码、媒体或审批。新候选 SHA 仍须独立验收，PR #61 不提前合并。
+
+
+## R12.107 · 合并验收与候选同步
+
+R12.107：PR #61 已合并至 main（8ac89d7，候选 73bb21d 的 Quality 45589086675、Desktop 45589086721、像素 45589086614、完整玩法 45589086651 全部成功；199 passed / 3 skipped / 0 failed）。合并后 Quality 45611878515、Desktop 45611878567、Gameplay 45611878531 初查运行中，Pages 未确认，不能称已上线。PR #62 的旧 d94bbdf Quality、Desktop、像素均成功，完整玩法 45588982327 的 3 失败仍为未同步的旧胸像上传路径，196 passed / 3 skipped；本次将已验收 main 合并进 PR #62，原 fixture 修复原 blob 继承，不改变样式或运行行为，重新验证合并候选。

@@ -162,8 +162,6 @@
 - 两处真正的代码误用已修：① 首页玩家资料「夜色蔷薇」不再使用月纱脸，而用独立家纹，不改变按钮行为；② `/town/` 不再把三位同模版女性的 `world-cover.webp` 当成市集街景，切回现成 `town-moonlit-gate.webp` **过渡**建筑图。相应 Playwright 检查已同步。**没有创造已签审的真月光街，也没有新角色 CG 晋级**。
 - 品牌封面 PC/手机需要重新设计：四位可玩女主真正不同骨相、独立动作和服装，月纱两卡仍同人同脸；先 G1 人工面部板对照再各卡制作。S02/S05/S06 等 review 图正式状态不变，仍需原生尺寸与人审；本轮 Quality / Visual / Browser / Pages 应按最新 SHA 验收。
 
-
-
 - 回查旧主分支 `3891ab8` Gameplay Browser Review 共 178 通过、3 跳过、1 失败；失败用例从旧首页底栏寻找已取消的「工坊」快捷链接。新提交更新为**顶角世界地图→工坊**真实用户路径，而不是删除工坊存档/经济测试。需要新 SHA 的浏览器运行结果确认。
 
 ## 2026-11-24 · S02 六门研究交互（R12.35）
@@ -194,16 +192,13 @@ R12.36 全量浏览器 186/1/3，唯一失败为旧月纱剧情测试在深链�
 
 R12.36 场景专项执行时取消，R12.40 全量回归仍运行。将六项场景原画/真实六门测试移至并行独立 job，单独保存截图与失败证据，补齐资源变更触发路径。见 [R12.41](R12-41-INDEPENDENT-SCENE-VISUAL-REVIEW-2026-11-24.md)；新 job 结果待核实，VIS-01/VIS-02 未关闭。
 
-
 ## R12.72 首批 PC 体验
 
 R12.71 Quality 三作业通过，321/321 Vitest，144 个媒体路径、0 未登记重复。V3.106.0 更新鉴赏画框实时 DPR、欢迎页实际召唤引导，删除已证实无引用装饰组件。新增 Chromium 真实分辨率切换回归，待同 SHA 检查；VIS-01、VIS-02、ART-01、UX-01 不因此关闭。
 
-
 ## R12.72-B PC 大厅布局与回退
 
 V3.106.0 Quality/Pages 成功；独立场景视觉作业成功，综合视觉和全量玩法尚未取得结果。V3.107.0 源码核查发现右栏两组绝对定位独立，且地点海报错误时回退旧大厅人像。已改为共享活动高度/间距、紧凑矮屏、统一普通 HUD 材质、同地点绘景回退。新增 Chromium 三视口及网络失败测试；新 SHA 待验收，VIS-01/UI-01 不提前关闭。
-
 
 ## R12.72-C
 
@@ -213,17 +208,13 @@ V3.107.0 Quality/Pages 成功，综合桌面 27 项相关测试通过、A05 动�
 
 旧 [TASKS.csv](https://github.com/kunlong-luo/monster-apartment/tree/782fc74fd6e597048a293cbf9777593447c76bb3/management/TASKS.csv) 保留在 Git 历史，不再作为当前状态。其未完成事项迁移原则：P016/P017/P021/R113-05 → UX-01 真人首次体验；P020/V040-06/R113-06/R120-03/04/05 → VIS-01/VIS-02/ART-01；R113-04 → GOV-01；R120-01/02/06、P035/P040/P041 与旧 V040/UI-08 验收 → QA-01/UI-01，按现行七路由重新核验，旧底栏和 Vite/Phaser 验收标准退役。仍未启动的商业/发行事项不冒充完成：P022 真实玩法短视频、P023 网页游戏平台发行规则、P024 产品继续/调整/停止复盘、P025 Electron 调研（待真人验证后考虑）均作为后置候选；核心体验优先。当前任务只维护本台账与 GitHub Issues。
 
-
 ## R12.75 · 工坊目录收敛
 
 R12.74 Quality 已通过（45378259228）。`v2/docs/` 四份收为一份 [设备规格](../design/WORKSHOP-ASSET-SPEC.md)，旧资料使用固定 SHA。旧工坊 M3/M4/M5 尚有多路线/新配方、设备与仓储容量、剧情协作、音效及经济长期平衡等长期候选，未实施不得标 DONE；优先真实玩家验证、独立原画及现行经营循环。引擎更名独立进行，先读 `audit:engine-paths` 实际报告，再迁移所有引用并验证 Quality、构建与浏览器。DOC-01/ENG-02 仍有历史文档及资源命名待清理。
 
-
 R12.76：R12.75 Quality 与 Pages 成功；路径报告 19 runtime、26 tests、12 tooling、38 docs、1 internal。候选完成引擎根路径替换与原字节迁移；待 PR Quality 和相关浏览器验证，不关闭存档或视觉风险。
 
-
 R12.81：#60 已合并、Quality/Pages/性能/WebGL 生命周期通过；#53/#54/#58 的新候选 Quality 均通过，浏览器仍待结果，不标记合并。原 V0.x 六份 Markdown 退役，商业验证原则保留：先免费真人试玩，按理解/核心乐趣/重玩反馈决定调整或停止，真实录屏后再评估发行，收入不作保证；旧守卫战保留为历史实验，重新立项需明确产品价值及存档兼容，不自动恢复旧代码。DOC-01 仍未整体关闭。
-
 
 R12.82：三功能独立 Quality、Desktop、Gameplay 全部成功，组合候选保留原运行/测试 blob 并合并最新文档；待组合 SHA 质量与浏览器验收，不关闭真人、正式 CG 或原画风险。#54/#58 外部 4K 原包获取失败另行追踪。
 
@@ -245,32 +236,16 @@ R12.95：对 R12.94 资源分类实施第一批实际迁退：10 个离线研究
 
 R12.96：将 public/art/a05 与 public/art/feature-postcards 两组历史命名迁为 decorations 与 postcards；5 个媒体、2 个来源清单原 Git blob 不变。同步 3 个 React 消费者、海报回退 E2E、转换脚本和来源工作流，保留 A05 验收 ID、截图目录、旧历史 SHA、来源与审批。351 个代码/工具/测试文件、185 个 Markdown、19 个资源 JSON/CSV 已做相关路径与文件名专项扫描。未改变玩法、布局、图片字节及存档；43 公开媒体、141 全仓媒体不变。新提交 CI/Pages/视觉结果独立验证。 剩余角色、封面、场景、房间及历史设计参考路径仍待独立核查。
 
-R12.97：将 public/art 顶层业务目录与现存根文件纳入现有 `pnpm audit:repository-layout` 门禁；旧 a05、feature-postcards、任意未登记顶层目录或根文件均失败。新用途必须同步更新资源目录、public/art 入口和门禁；现存角色、封面、房间、场景及回退路径不动。下一批优先核对正常 PC 场景 review 路径，未完成完整引用扫描前不迁移或删除；暂缓批量生成新美术。
-
-R12.98：将正常 PC 工坊、月光街两张过渡 WebP 由各自 review/ 移入地点目录，命名 workshop-desktop-transition.webp、town-desktop-transition.webp；原 Git blob、原始 PNG、四候选 SHA-256、尺寸、review-only 状态及未选研究图不变。同步两处页面导入、两处真实浏览器断言、生成器、审核器及资源清单。旧路径不再保留副本；手机背景、故障回退、正式场景准入、存档不变。公开媒体仍 43、全仓 141；新提交 Quality、桌面浏览器及 Pages 须独立核验。暂缓批量新美术；下一批审查角色与欢迎封面目录。
-
-R12.99（第一批：欢迎封面）：两张双端群像 WebP 由 beauty-beasts/cover/ 原 Git blob 迁入 public/art/covers/，保留 world-cover.webp 与 world-cover-mobile.webp 文件名、欢迎页语义标记和大厅故障回退。同步欢迎页、大厅、R12.53 转换脚本及 manifest、库存测试、设计资源清单和当前缺口台账；目录门禁登记 covers 并拒绝旧封面目录回流。媒体仍 43 公开、141 全仓；未改变审批、图片字节、布局、概率或存档。人物目录仍为 beauty-beasts/characters/，须完成头像、CG 晋级脚本、历史证据及动态路径引用核对后独立迁移（R12.99 第二批）；不宣称全部角色目录已收敛。暂缓批量新美术；新提交 CI、桌面及 Pages 结果独立验收。
-
-R12.99 第二批：将 beauty-beasts/characters/ 的 3 张头像、3 张候选 CG 原 Git blob 迁入 public/art/characters/<id>/，同时迁移 cg-manifest.json 并更新五卡正式/预览槽、运行注册、CG 审核/晋级/生成、源图映射、测试及现行 SOP。beauty-beasts/ 整个公开历史目录退役，门禁登记 characters 并拒绝旧目录回流。月纱根目录三张 V3 肖像仍留待 R12.101；泉泡/炽角继续共享 rooms 下站姿，不重建两张重复候选。五卡仍 portrait（0/5 production），现行原画、哈希、身份、抽卡、存档、回退不变。固定历史 SHA URL、历史清单与 legacyOutput 保留旧路径。43 公开媒体、141 全仓媒体不变；新 SHA 的 Quality、真实浏览器及 Pages 独立验收。暂缓批量新美术；下一阶段 R12.100 核查房间正常观景与显式研究图路径。
-
-R12.100 第一批（发布修复优先）：R12.99 第二批 5a44daf 的 Quality 静态导出与桌面浏览器失败，Pages 跳过；CI 日志定位工坊全景及派工控件共六个旧头像静态导入。两组件改为复用 HEROINE_FACE_ART 唯一注册表，保持图片、角色 ID、显示行为和存档不变。扩展 audit:repository-layout，在 app/src/engine 的运行代码及 CSS/JSON 中扫描退役 beauty-beasts、a05、feature-postcards 和 PC 场景 review 路径的字面引用；历史文档和 provenance 的旧路径不参与此运行引用门禁。新 SHA 需独立通过 Quality、桌面及 Pages 验收，之后才迁移私人房间 8 个观景层；显式月纱审稿图及回退保留。没有移动、删除或新增图片；43 公开媒体、141 全仓媒体不变。继续暂停批量生成新美术。
-
-R12.100 第二批：四个房间的 8 张常规观景/显式审稿共用 WebP 原 Git blob 迁至 rooms/<id>/scenic/{background,standing}.webp；roomScenicArt 统一普通观景与显式审稿的路径解析；R12.57 转换、审核与输出清单、R12.53 转换清单、CG 预览注册及审核、单元与真实浏览器断言同步。泉泡、炽角仍共享站姿，四张 concept-scene.svg 与独立月纱 room-review 保留，正式 room manifest、剧情热点、原画、Alpha、SHA-256、审批、存档不变；旧四个 review 目录防回流。公开媒体 43、全仓 141，未新增美术。前置修复 029f019 已通过 Quality/Pages；本次提交仍须独立验收。下一批 R12.101 整理根目录散落肖像与大厅图。
-
-R12.101 第一批：四张大厅 WebP（V2、V3、V4 桌面与 V4 手机）原 Git blob 迁入 public/art/world-scenes/lobby/，保留原文件名；正常大厅、欢迎页回退、公寓背景及 Pixi V3→V2 回退均保留。engine/scripts/build.mjs 只调整源路径，dist/assets 输出文件名不变；同步 R12.53 转换器、清单、测试及目录门禁，禁止根目录旧大厅路径回流。未新增、删除或重新编码媒体，43 公开媒体与 141 全仓媒体保持不变。前置 R12.100 已通过 Quality/Pages，本提交须独立验收。月纱三张根目录肖像留待 R12.101 第二批；暂停新增美术。
-
-R12.101 第二批前置发布修复：ffe0698 的 Quality（45572993876）目录审计及静态导出失败，Pages（45573188961）跳过。实际 CI 日志定位 world-ui.tsx 的 V3 背景和 gothic-summon-screen.tsx 的 V3/V2 背景，共三处旧 public/art/lobby-hero-v*.webp 静态导入。修复为 world-scenes/lobby/ 同一原图路径；保留所有回退及 Pixi dist/assets 公开文件名，不修改图片、玩法、存档或审核状态。原图 43 公开、141 全仓媒体不变。月纱三张根目录肖像暂不迁移，须先确认本修复 Quality/Pages，并完成全仓引用预检（包括静态导入、CSS、动态路径、机器清单、构建复制和测试）。目录门禁在本次故障中正确报告三处遗留路径，不能以树/哈希一致代替编译。当前远端逐文件读取无法证明穷尽扫描，后续路径迁移应先在同一候选 SHA 完成 audit:repository-layout、pnpm build、Pixi build 和定向测试，再作为发布候选；若无法本地执行，先使用临时验证分支的 CI，成功后快进 main，避免再次直接引入构建失败。
-
-R12.101 发布收口：bfff544 的 Desktop Visual Review 45573444869、Gameplay Browser Review 45573444886、Quality 中 static-export 与 pixi-v2-scaffold 已通过；checks 的 pnpm test 有 318 通过/3 失败（64 个测试文件）。三个失败均源于 tests/typescript-tailwind-migration.vitest.test.ts 的旧大厅路径（静态导入、WebP 文件读取、引擎复制源）。仅更新至 public/art/world-scenes/lobby/，保留所有原有格式、尺寸、字节门槛及运行/回退断言；同时新增已保留 V2 文件存在与引擎输出名检查。新 SHA 须独立通过 Quality/Pages，不以此前浏览器成功代替。月纱迁移将在独立候选 PR 验证，不直接将未经构建的迁移提交 main。
-
-R12.101 第二批候选：月纱头像、半身像、肖像三张原 Git blob 迁入 public/art/characters/yuesha/（原文件名不变），同步跨页面静态导入、人物注册、抽卡公开 URL、CG 身份参考、R12.53 转换器及 manifest、设计清单、资源测试与目录门禁。Pixi 构建仅改变源路径，dist/assets/yuesha-avatar-v3.webp 及引擎加载链不变。公开 art 根目录只允许 README.md 和 r12-53-transition-manifest.json；43 公开、141 全仓媒体、原始像素、身份、卡面审批、存档、概率与回退保持不变。此迁移在独立 PR 进行候选 CI，未通过前不得称已合并或上线。
-
-R12.101 第二批 PR #61 验收修复：主线 c6c0624 的 Quality 45577636793 与 Pages 45577758778 均成功；候选 2e39b0f 的目录审计与静态构建因六处旧月纱路径失败（45577859432），桌面及像素检查由相同缺图故障阻塞。补齐 room-memory-gallery、room-resident-sprite、yuesha-memory-shelf、SummonHeroineSpotlight、summon-dialogs、summon-showcase 的原图静态导入；不改渲染行为、原始图片、概率、存档及准入。继续在同一 PR 验证，未通过不合并。
-
-R12.102 迁移前实盘：public/assets/aistudio/ 仅三张 PNG，合计 9,161,328 B；按 Git tree 精确列在第 5 节（当前仍保留）。docs/ 内媒体 39 项、17,428,549 B：art-reviews 38 项（含 WineChan 来源/审稿及人物姿态证据），design 仅 layout-map.svg 1 项（现有设计说明直接引用）。下一批优先把三张公开历史设计参考原字节移出部署目录，目标 docs/design/2026-10-29-gothic-red-gold/references/；先逐个验证实际引用、原图 SHA-256 与映射，不按文件名猜测归属或授权。WineChan candidate-05.webp 与运行审稿图为已登记的 155188 B 唯一重复组，保留两条路径和 intake 审核链，待明确引用与许可后再处理；不删除证据。旧日期的文档仅在无独有规范、验收、授权或入站链接时退役至固定 Git SHA。此次仅完成分类与计划，不声称已迁移/删除历史文件或降低线上包大小。
-
-R12.102 第一批候选（PR #61）：fcfecf4 的静态导出、Pixi 构建与目录审计通过，Quality 因 CG-IDENTITY-POSE-COMPARISON 两处旧月纱 Markdown 图片链接失败（45586490095），现已修正。三张原 public/assets/aistudio PNG 原 Git blob 迁入 docs/design/2026-10-29-gothic-red-gold/references/，合计 9,161,328 B；退役公开目录并新增运行引用门禁，更新设计说明、路线图、执行清单及 reference manifest 的实际仓库副本记录。旧外部原始设计清单不改写、未核实 SHA-256 一一对应，不将匿名图片猜测为指定原图；保留旧文件名便于追溯。全仓 141 媒体、156439517 B 不变，public/art 43 项不变，整个 public 媒体 47→44 项，docs 媒体 39→42 项、26589877 B。候选 CI 需独立验证静态导出、运行与文档引用；未完成全仓动态路径穷尽审查，未合并/部署前不宣称线上包缩减。未删除设计证据或改变玩法、存档、审批。
-
-R12.103 候选全量审计（31cdcb3 / Quality 45586963823，checks job 139110904572）：完整 Git tree 724 个 blob、185 Markdown（docs 内 179）、19 CSS；目录 12 根/0 违规，621 条文档链接/0 违规，旧引擎可执行路径 0 违规。组件审计 333 文件、11 app roots、92 组件/样式全部 app-reachable，0 auxiliary-only、0 review-unreachable、0 unresolved local references、0 nonliteral imports；不能据此证明每条 CSS 选择器或动态资源路径有效，暂不删除组件/CSS。媒体真实字节 SHA-256 审计 141 路径、156439517 B、1 组已登记 WineChan 155188 B 重复、0 意外重复，库存匹配；历史三图隔离已在候选完成。Next 静态导出和 Pixi 三方检查通过，类型与 lint 通过。Vitest 62/64 文件通过，318/319 已执行测试通过，room-art-promotion 套件收集失败，room-art-review-pipeline 一项失败，皆为旧月纱胸像路径；本次只改两个 fixture 路径，保留真实 WebP 与审批门槛测试，需新 SHA 重跑。PR #61 尚未合并。
-
 R12.103 评分复核：正式已发布基线暂保持 72/100（17 架构 +18 文档资源 +15 功能存档 +10 视觉 +12 验证发布 +0 真人反馈）。候选已解决公开设计 PNG 与根目录散落图片，但未完成 CI/合并/Pages，不提前加分。待合并且同 SHA 通过 Quality 与 Pages，资源维可考虑 19/20（候选参考 73/100），仍需独立原画生产、人审、长循环、真人试玩、分支保护及动态引用/CSS 验证，85 分未达成。
+
+## R12.104 · 现行职责与验收
+
+现行评分仍为 72/100；候选具备提高资源维度至 19/20 的证据，但先完成浏览器验收、合并与同 SHA Pages，再更新正式评分。未登记重复媒体为零，已登记的月纱审稿重复组及人工原画批准仍有独立职责。
+
+[美术资源总目录](../ART-RESOURCE-CATALOG.md)：完整迁移经过、失败修复和审计证据统一保存在资源总目录；清理前各文档的完整版本见 [372f26f 固定快照](https://github.com/kunlong-luo/monster-apartment/tree/372f26f28933050840b6c6f8ff5f18ed99075e44)。不再逐轮复制报告。
+
+R12.105：CSS 级联风险与动态资源测试见 [架构审计](../CURRENT_ARCHITECTURE.md#r12105--css-与动态资源专项核查)；优先收口 PR #61，后续只处理有实际浏览器证据的样式覆盖，不把 !important 数量直接计为缺陷。不调整正式 72/100 评分，不删除有职责的 CSS 或媒体。
+
+R12.106：召唤移动端同断点覆盖第一批收敛，详见 [架构](../CURRENT_ARCHITECTURE.md#r12106--召唤移动断点覆盖收敛候选)。PR #61 的 Quality、像素、独立场景通过，桌面/玩法尚未结束；PR #62 原 2e598b3 Quality 与像素通过，新增 CSS 候选须独立验收。正式评分保持 72/100；不再创建第三条验证分支。
+
+R12.107：PR #61 四项候选验收均通过并已合并，完整玩法 199 通过、3 跳过、0 失败；同 SHA Pages 未确认前正式 72/100 不提高。PR #62 同步主线后待新 CI，详见[资源总目录](../ART-RESOURCE-CATALOG.md)。

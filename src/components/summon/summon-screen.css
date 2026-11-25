@@ -140,20 +140,13 @@
  .summon-cinematic-title{margin-bottom:auto!important}
 }
 @media(max-width:600px){
- .summon-cinematic-header{height:67px!important;padding:7px!important;gap:4px}
- .summon-cinematic-header>div:first-child{max-width:122px;min-width:113px}
  .summon-cinematic-header h1{font-size:14px!important;letter-spacing:.08em!important}
  .summon-cinematic-header>div:last-child{display:flex;overflow-x:auto;flex:1;scrollbar-width:none;gap:4px}
  .summon-cinematic-header>div:last-child>div{flex-shrink:0}
- .summon-cinematic-center{min-height:500px}
  .summon-cinematic-character{opacity:.87}
- .summon-cinematic-quote{margin-right:0!important;margin-top:4px!important;max-width:64%;font-size:10px!important}
- .summon-cinematic-title{margin-top:auto!important;padding:8px 4px}
- .summon-cinematic-title h2{font-size:33px!important}
- .summon-cinematic-title>div>div{padding:5px!important}
- .summon-cinematic-center>div:last-child{width:100%;margin-bottom:12px!important}
- .summon-cinematic-center>div:last-child>div{gap:4px!important}
- .summon-cinematic-center>div:last-child button{min-width:0;padding:5px!important}
+ .summon-cinematic-quote{margin-right:0!important;margin-top:4px!important;font-size:10px!important}
+ .summon-cinematic-center>div:last-child{width:100%}
+ .summon-cinematic-center>div:last-child button{min-width:0}
  .summon-cinematic-center>div:last-child button:first-child,
  .summon-cinematic-center>div:last-child button:last-child{font-size:9px}
  .summon-cinematic-sidebar{display:flex!important;flex-direction:column}

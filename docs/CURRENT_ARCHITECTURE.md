@@ -128,16 +128,13 @@
 - PixiJS 工坊的正式场景优先读取 `lobby-hero-v3.webp`，资源解码失败则回退 V2 WebP、旧 AVIF、程序地景；工坊角色月纱优先显示以圆形 Graphics mask 裁切的 `yuesha-avatar-v3.webp` 徽章，而非把有背景的平面肖像强行拼成行走人物。旧动画角色保留资源失败时的后备。
 - 委托状态及选中回调、全部存档键、工坊生产规则和场景导航保持不变。测试覆盖浏览器原生图像分辨率、WebP 文件有效性、月纱访客徽章及路由往返。
 
-
 ## R12.74 · 目录所有权
 
 根目录白名单 12 个，详见根 README；不再保留 AI Studio 临时方案、重复历史任务表、无运行入口 TSX 原型、旧 Gemini 配置与单独的 artwork 元数据目录。旧归档索引进入 docs/art-reviews，历史证据在固定 Git SHA。`engine` 是实际运行时及构建链；迁移保留原有相对目录、公开 URL 和存档键，候选须通过所有相关检查。
 
-
 ## R12.75 · 工坊文档与运行边界
 
 旧 V2 路由说明和独立实验路线已退役（[固定快照](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs)）。当前 Next 七路由、Pixi IIFE、React 挂载/销毁、静态资源同源、现有端口和双存档键依本架构、实际代码与工作流；不恢复独立 HTML。工坊资产制作统一至 [设备规格](design/WORKSHOP-ASSET-SPEC.md)。`pnpm audit:engine-paths` 为后续迁移提供逐文件引用报告；R12.75 时位置仍为 `v2/`；R12.76 已通过四项候选检查并合并 f3a3b70，完整目录迁到 `engine/`，旧路径仅属于历史；主线 Quality、Pages、性能基准和 WebGL 生命周期已通过。
-
 
 V3.109.0 已发布（80eb69a）：仓库需求/采购预览复用 engine 的 importPatronCore 与 forecastPatronCommission；公寓 HUD 共存仅显式审稿临时状态；工坊 Motion 粒子只读工作状态和预测产量，均不另建存档、经济或运行引擎。
 
@@ -149,4 +146,20 @@ V3.109.0 已发布（80eb69a）：仓库需求/采购预览复用 engine 的 imp
 
 R12.95：历史 V2 月纱头像与胸像路径不再存在于工作树，原字节在 [固定历史提交](https://github.com/kunlong-luo/monster-apartment/tree/87a37023dcc5161696aab9fe006749f3a5a04bb4/public/art)；V3 与必要 Pixi V2 大厅回退仍保留。
 
-R12.103 候选全量审计（31cdcb3 / Quality 45586963823，checks job 139110904572）：完整 Git tree 724 个 blob、185 Markdown（docs 内 179）、19 CSS；目录 12 根/0 违规，621 条文档链接/0 违规，旧引擎可执行路径 0 违规。组件审计 333 文件、11 app roots、92 组件/样式全部 app-reachable，0 auxiliary-only、0 review-unreachable、0 unresolved local references、0 nonliteral imports；不能据此证明每条 CSS 选择器或动态资源路径有效，暂不删除组件/CSS。媒体真实字节 SHA-256 审计 141 路径、156439517 B、1 组已登记 WineChan 155188 B 重复、0 意外重复，库存匹配；历史三图隔离已在候选完成。Next 静态导出和 Pixi 三方检查通过，类型与 lint 通过。Vitest 62/64 文件通过，318/319 已执行测试通过，room-art-promotion 套件收集失败，room-art-review-pipeline 一项失败，皆为旧月纱胸像路径；本次只改两个 fixture 路径，保留真实 WebP 与审批门槛测试，需新 SHA 重跑。PR #61 尚未合并。
+## R12.104 · 现行职责与验收
+
+现行组件审计证据与媒体路径见资源总目录；92 个组件/样式模块可达不代表每条 CSS 选择器有效，动态资源及样式细粒度核查仍待执行。
+
+[美术资源总目录](ART-RESOURCE-CATALOG.md)：完整迁移经过、失败修复和审计证据统一保存在资源总目录；清理前各文档的完整版本见 [372f26f 固定快照](https://github.com/kunlong-luo/monster-apartment/tree/372f26f28933050840b6c6f8ff5f18ed99075e44)。不再逐轮复制报告。
+
+## R12.105 · CSS 与动态资源专项核查
+
+基于 PR #61 的 372f26f：逐份读取全部 19 CSS（Git tree 281603 B）。单一 :root 色板在 gothic-premium-tokens.css；扫描 :root 内 --craft-*、--moon-ui-*、--color-gothic-* 声明未发现重复，19 份 CSS 未发现字面 url(...)。文本计数 407 处 !important，其中 summon-screen.css 124、gothic-desktop-ui.css 118、gothic-red-gold.css 97，共 339（83.3%）。这些是级联风险热点，不等于无效选择器；最大文件 gothic-workshop.css 49760 B。先按实际七路由、PC/手机、交互状态及审稿状态建立覆盖证据，再逐组消除覆盖，禁止全局批删或为少量样式引入新依赖。保持唯一色板、当前布局和审批不变。
+
+动态 URL：现有 siteAssetUrl、roomScenicArt、workshopAssetRoot 各自承担公开路径、私室分层、Pixi sidecar 目录职责。旧 site-asset-url 测试使用已退役的月纱样例但没有检查文件存在。本候选改用真实现行路径，增加 5 卡及 5 卡池头像、四房 8 个观景图的 WebP 文件头与 Pages 前缀/idempotence 测试，并覆盖末尾斜杠、协议相对和 data URL。未改运行逻辑；新测试尚未执行，需独立 Quality。
+
+### R12.106 · 召唤移动断点覆盖收敛（候选）
+
+检查 summon-screen.css 两个 max-width:600px 区块，后置 V3.58 紧凑 HUD 规则在同断点覆盖早期 header、首个子区、center、quote、title 及底部操作区属性。仅移除前置明确被后置同选择器（或更高优先级同目标声明）覆盖的 14 项声明；不改后置值、桌面断点、相邻有效规则、角色/卡池/稀有度及抽卡逻辑。该文件 !important 124→116；保留所有真实胜出的声明，不盲目取消强制覆盖。现有 320×700/390×844 浏览器 HUD 测试补充 header 高度 88px、padding 4px 8px、首子区 min-width 0、卡池 72px 计算样式检查，并接入 Desktop Visual Review 定向步骤。尚未执行候选浏览器，不能声称视觉完全一致。
+
+R12.107：R12.106 的 14 项早期覆盖声明删除已通过原 d94bbdf 桌面和 Quality 检查；完整回归仅旧胸像 fixture 失败，已继承主线修复。合并候选继续独立验收。本轮不继续叠加全局 CSS 改动，避免扩大发布风险。
