@@ -13,7 +13,7 @@
 | 月光街 | art-sources/scenes/town/desktop-candidate-v1.png | 1672×941 |
 | 月光街 | art-sources/scenes/town/desktop-candidate-v2.png | 1671×941 |
 
-输出在 public/art/world-scenes/{workshop,town}/review/，统一 desktop-candidate-v1/v2.webp；机器清单 r12-61-workshop-town-review.json 记录原始像素、哈希、文件大小及候选状态。Pillow 实际解码原始 PNG 与输出 WebP 并校验原像素不变。转换工作流只写候选分支。当前未确认实际输出或目视优胜方案，不声称上线或晋级。
+R12.61 当时的输出位于 public/art/world-scenes 下各地点的 review/，当时命名 desktop-candidate-v1/v2.webp；现行路径以资源总目录和机器清单为准。机器清单 r12-61-workshop-town-review.json 记录原始像素、哈希、文件大小及候选状态。Pillow 实际解码原始 PNG 与输出 WebP 并校验原像素不变。转换工作流只写候选分支。当前未确认实际输出或目视优胜方案，不声称上线或晋级。
 
 ## 工坊代码实际架构与替换范围
 
@@ -26,3 +26,5 @@
 后续以实际 WebP 输出及截图决定择优和正式接入，不删除两份候选中尚未选择的原图。
 
 R12.95：两份未选 WebP 已移至 `docs/art-reviews/sources/workshop-desktop-candidate-v2.webp` 和 `docs/art-reviews/sources/town-desktop-candidate-v1.webp`；已选 PC 图仍留在原运行路径。四项转换清单和脚本路径同步，原图、哈希与审稿状态不变。
+
+R12.98：将正常 PC 工坊、月光街两张过渡 WebP 由各自 review/ 移入地点目录，命名 workshop-desktop-transition.webp、town-desktop-transition.webp；原 Git blob、原始 PNG、四候选 SHA-256、尺寸、review-only 状态及未选研究图不变。同步两处页面导入、两处真实浏览器断言、生成器、审核器及资源清单。旧路径不再保留副本；手机背景、故障回退、正式场景准入、存档不变。公开媒体仍 43、全仓 141；新提交 Quality、桌面浏览器及 Pages 须独立核验。暂缓批量新美术；下一批审查角色与欢迎封面目录。

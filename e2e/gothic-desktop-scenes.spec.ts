@@ -52,7 +52,7 @@ test('PC apartment doors and town portals use structured icons without clipping'
   // Town art is a real location, NOT an unrelated three-woman brand cover.
   // Next.js static image URLs include a content hash before .webp.
   const townPainting=page.getByTestId('town-painting');
-  await expect.poll(()=>townPainting.evaluate((img:HTMLImageElement)=>img.currentSrc)).toContain('desktop-candidate-v2');
+  await expect.poll(()=>townPainting.evaluate((img:HTMLImageElement)=>img.currentSrc)).toContain('town-desktop-transition');
   await expect(townPainting).toHaveJSProperty('naturalWidth',1671);
   await expect(townPainting).toHaveJSProperty('naturalHeight',941);
   await expect(page.locator('.mw-town-scene-credit')).toContainText('过渡绘景');

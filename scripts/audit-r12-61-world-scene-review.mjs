@@ -17,7 +17,7 @@ for(const scene of ['workshop','town'])for(const variant of [1,2]){
   assert(e);
   assert.equal(e.source,'art-sources/scenes/'+scene+'/desktop-candidate-v'+variant+'.png');
   const selected=(scene==='workshop'&&variant===1)||(scene==='town'&&variant===2);
-  const output=selected?'public/art/world-scenes/'+scene+'/review/desktop-candidate-v'+variant+'.webp':
+  const output=selected?'public/art/world-scenes/'+scene+'/'+scene+'-desktop-transition.webp':
     'docs/art-reviews/sources/'+scene+'-desktop-candidate-v'+variant+'.webp';
   assert.equal(e.output,output);
   assert.equal(e.status,'review-only');

@@ -12,3 +12,5 @@ R12.61 [转换](https://github.com/kunlong-luo/monster-apartment/actions/runs/45
 实际改动：PC WorkshopCinematicStage 使用独立 ReliableImage 环境层，原 hall 作为重试失败回退，层本身 pointer-events:none。原三主设备、真实生产、15 格棋盘、Pixi 资产、外层背景、设备位置、移动端仍保持。选择先仅更新 PC 全景，而非在精密棋盘叠加预绘机械。月光街用 picture 的 1100px 以上 source 加载 V2，移动端仍加载原图，失败重试后回退。原三个建筑入口是独立链接，不映射至具体绘制门。无新菜单、不改交易和存档。正式场景 manifest 仍不晋级，尚无独立手机稿或正式 4K 源图。
 
 Quality 新增四图真实哈希、尺寸、状态校验；现有 PC/手机工坊测试增加实际新图加载和手机不加载断言；PC 月光街检查 currentSrc 与原生尺寸，手机保留旧图及三个真实入口。发布前以实际 CI 与截图为准。本候选基于 V3.103.0，不混入仍在验收的 PR #56；最终发布前须同步 main 并确定版本号。
+
+R12.98：将正常 PC 工坊、月光街两张过渡 WebP 由各自 review/ 移入地点目录，命名 workshop-desktop-transition.webp、town-desktop-transition.webp；原 Git blob、原始 PNG、四候选 SHA-256、尺寸、review-only 状态及未选研究图不变。同步两处页面导入、两处真实浏览器断言、生成器、审核器及资源清单。旧路径不再保留副本；手机背景、故障回退、正式场景准入、存档不变。公开媒体仍 43、全仓 141；新提交 Quality、桌面浏览器及 Pages 须独立核验。暂缓批量新美术；下一批审查角色与欢迎封面目录。

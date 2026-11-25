@@ -12,7 +12,7 @@
       "source": "art-sources/scenes/workshop/desktop-candidate-v1.png",
       "sourceGitBlobSha": "813a14b8972d95f8def62369bbcfa3ea7f8027fa",
       "sourceSha256": "09357498ad9218720f41ad984e259fabce42f638ca2de7feef166007968272f5",
-      "output": "public/art/world-scenes/workshop/review/desktop-candidate-v1.webp",
+      "output": "public/art/world-scenes/workshop/workshop-desktop-transition.webp",
       "outputSha256": "066ccc61b44efc0caf194575cc1ce44cf01ff8d3d68bc71022ae388f4452029e",
       "bytes": 599408,
       "nativeSize": [
@@ -72,7 +72,7 @@
       "source": "art-sources/scenes/town/desktop-candidate-v2.png",
       "sourceGitBlobSha": "93a5acd7b7eea5990450197b65a096ab81096eb6",
       "sourceSha256": "139cd9b20cb8d464a605bdcbbe9cdc9cd15489439035a7b57fd04b6d9d4d4b08",
-      "output": "public/art/world-scenes/town/review/desktop-candidate-v2.webp",
+      "output": "public/art/world-scenes/town/town-desktop-transition.webp",
       "outputSha256": "e7b679ee38cdf9db68318e2b69e53464f00c9495c8ad449133f56e6e37bfdbd4",
       "bytes": 636018,
       "nativeSize": [

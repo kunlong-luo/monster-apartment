@@ -18,7 +18,7 @@ import {
   type ApprovedMachineUrls,type WorkerPaintingUrls
 } from '@/lib/moonwork/workshop-machine-art-index';
 import hall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
-import hallTransition from '../../../public/art/world-scenes/workshop/review/desktop-candidate-v1.webp';
+import hallTransition from '../../../public/art/world-scenes/workshop/workshop-desktop-transition.webp';
 import wellLegacy from '../../../engine/art/well-art-review.avif';
 import gardenLegacy from '../../../engine/art/garden-art-review.avif';
 import kilnLegacy from '../../../engine/art/kiln-art-review.avif';

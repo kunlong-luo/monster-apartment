@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.97）
+# 怪物公寓 · 美术资源总目录（R12.98）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -143,7 +143,7 @@
 | `rooms/{yuesha,brook,fern,cinder}/concept-scene.svg` | 4 | 保留 | 正常故事概念背景与观景故障回退 |
 | `rooms/{yuesha,brook,fern,cinder}/review/{background-candidate,standing-candidate}.webp` | 8 | 保留 | 四房正常观景；泉泡、炽角站姿也为候选卡；不能按 review 名称删除 |
 | `world-scenes/{town-moonlit-gate,workshop-gothic-hall}.webp` | 2 | 保留 | 月光街手机/回退、Pixi 与图鉴背景 |
-| `world-scenes/town/review/desktop-candidate-v2.webp`、`world-scenes/workshop/review/desktop-candidate-v1.webp` | 2 | 保留 | 正常 PC 过渡绘景，后续单独迁移稳定运行路径 |
+| `world-scenes/town/town-desktop-transition.webp`、`world-scenes/workshop/workshop-desktop-transition.webp` | 2 | 保留 | 正常 PC 过渡绘景，R12.98 已迁至稳定路径；非 production |
 | `lobby-hero-v2.webp` | 1 | 必要回退 | `engine/scripts/build.mjs` 复制，`engine/src/workshop-painted-art.ts` 加载链；不可直接删 |
 | `room-review/yuesha-salon-candidate.webp` | 1 | 显式审稿保留 | room-art-local-preview 动态调用；与 docs 证据重复已有授权例外 |
 | `world-scenes/review/2026-11-22/` 三张及 `2026-11-23/` 三张 WebP | 6 | 显式审稿保留 | S02/S05/S06 双端互动研究，现行哈希/热点仍引用 |
@@ -165,9 +165,9 @@
 
 S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/scenes/apartment/) 仅含 `desktop-candidate.png` 与 `mobile-candidate.png`；新 `desktop-candidate-v2.png` 仍未入库。下一批单独核验正常运行的 review 路径、根目录旧版本名、交互研究重复图和三张 public/assets 历史参考；不将本轮写成已完成全部路径重构。
 
-## 5. 全仓实际资源菜单（R12.97）
+## 5. 全仓实际资源菜单（R12.98）
 
-R12.96 路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
+R12.98 路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
 
 ### 源图与研究（40）
 
@@ -255,9 +255,9 @@ R12.96 路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线
 | `public/art/world-scenes/review/2026-11-23/apartment-six-door-mobile-v1.webp` | 423086 | `931970f6dfb9` |
 | `public/art/world-scenes/review/2026-11-23/warehouse-mobile-v1.webp` | 419522 | `3e5173ddb694` |
 | `public/art/world-scenes/town-moonlit-gate.webp` | 120894 | `c422f2cdf82c` |
-| `public/art/world-scenes/town/review/desktop-candidate-v2.webp` | 636018 | `f6da756b2007` |
+| `public/art/world-scenes/town/town-desktop-transition.webp` | 636018 | `f6da756b2007` |
 | `public/art/world-scenes/workshop-gothic-hall.webp` | 180542 | `2e21a83315dd` |
-| `public/art/world-scenes/workshop/review/desktop-candidate-v1.webp` | 599408 | `50511005b937` |
+| `public/art/world-scenes/workshop/workshop-desktop-transition.webp` | 599408 | `50511005b937` |
 | `public/art/yuesha-avatar-v3.webp` | 70710 | `fa60ea5d52da` |
 | `public/art/yuesha-bust-v3.webp` | 151936 | `ba77c88612de` |
 | `public/art/yuesha-portrait-v3.webp` | 259898 | `3cfe23285826` |
@@ -365,7 +365,7 @@ PR #56 首轮构建因观景按钮字符串未闭合失败；已修复并保留�
 
 ## R12.61 工坊和月光街候选
 
-4 张已入库横版原图按原生尺寸转换至 `public/art/world-scenes/{workshop,town}/review/`；机器证据由实际转换生成。没有独立手机稿，生产场景不变。详见 [R12.61](art-reviews/R12-61-WORKSHOP-TOWN-SOURCE-INTAKE-2026-11-24.md)。
+4 张已入库横版原图在 R12.61 按原生尺寸转换至当时的审稿目录；R12.95 未选图迁至文档证据目录，R12.98 已选图迁至各地点的稳定运行路径；机器证据由实际转换生成。没有独立手机稿，生产场景不变。详见 [R12.61](art-reviews/R12-61-WORKSHOP-TOWN-SOURCE-INTAKE-2026-11-24.md)。
 
 ## R12.62 工坊与街区实际输出
 
@@ -459,3 +459,5 @@ R12.96：将 public/art/a05 与 public/art/feature-postcards 两组历史命名�
 旧目录不保留副本；原路径见 [固定历史基线](https://github.com/kunlong-luo/monster-apartment/tree/03490ccca8197bb7a48a28edf6cf34b78c74ac9f/public/art)。其余角色、封面、大厅、世界地点和房间路径分批迁移，未宣称全部完成。
 
 R12.97：将 public/art 顶层业务目录与现存根文件纳入现有 `pnpm audit:repository-layout` 门禁；旧 a05、feature-postcards、任意未登记顶层目录或根文件均失败。新用途必须同步更新资源目录、public/art 入口和门禁；现存角色、封面、房间、场景及回退路径不动。下一批优先核对正常 PC 场景 review 路径，未完成完整引用扫描前不迁移或删除；暂缓批量生成新美术。
+
+R12.98：将正常 PC 工坊、月光街两张过渡 WebP 由各自 review/ 移入地点目录，命名 workshop-desktop-transition.webp、town-desktop-transition.webp；原 Git blob、原始 PNG、四候选 SHA-256、尺寸、review-only 状态及未选研究图不变。同步两处页面导入、两处真实浏览器断言、生成器、审核器及资源清单。旧路径不再保留副本；手机背景、故障回退、正式场景准入、存档不变。公开媒体仍 43、全仓 141；新提交 Quality、桌面浏览器及 Pages 须独立核验。暂缓批量新美术；下一批审查角色与欢迎封面目录。

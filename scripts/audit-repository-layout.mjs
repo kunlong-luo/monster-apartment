@@ -22,6 +22,7 @@ for(const file of paths){
       failures.push('Unregistered public art entry: '+file);
     }
   }
+  if(/^public\/art\/world-scenes\/(?:workshop|town)\/review\//.test(file))failures.push('Retired PC transition directory: '+file);
   if(retired.test(file))failures.push('Retired path: '+file);
 }
 console.log('Tracked root directories: '+[...roots].sort().join(', '));

@@ -6,7 +6,7 @@ import {Anvil,ScrollText,Archive,Waves,Sprout,Gem} from 'lucide-react';
 import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import townBackdrop from '../../../public/art/world-scenes/town-moonlit-gate.webp';
-import townTransition from '../../../public/art/world-scenes/town/review/desktop-candidate-v2.webp';
+import townTransition from '../../../public/art/world-scenes/town/town-desktop-transition.webp';
 import {workshopRank,TOWN_MARKET,townMarketAvailable,TOWN_RESIDENTS,residentForDay,residentRequestStock,residentRequestAvailable} from '../../../engine/src/workshop-engine';
 import type {WorkshopState} from '../../../engine/src/workshop-engine';
 import {Action} from './world-primitives';

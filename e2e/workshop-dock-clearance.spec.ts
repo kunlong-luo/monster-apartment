@@ -26,7 +26,7 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
       await expect(stageComposition).toHaveAttribute('data-view','cinematic');
       await expect(page.getByTestId('workshop-cinematic-scene')).toBeVisible();
       const painting=page.getByTestId('workshop-cinematic-painting');
-      await expect.poll(()=>painting.evaluate((img:HTMLImageElement)=>img.currentSrc)).toContain('desktop-candidate-v1');
+      await expect.poll(()=>painting.evaluate((img:HTMLImageElement)=>img.currentSrc)).toContain('workshop-desktop-transition');
       await expect(painting).toHaveJSProperty('naturalWidth',1672);
       await expect(painting).toHaveJSProperty('naturalHeight',941);
       await expect(painting).toHaveAttribute('data-image-load','original');

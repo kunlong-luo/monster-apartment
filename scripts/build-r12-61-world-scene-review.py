@@ -31,7 +31,7 @@ for scene in ("workshop", "town"):
             assert im.width > im.height
             rgb = im.convert("RGB")
         selected = (scene == "workshop" and version == 1) or (scene == "town" and version == 2)
-        output = (f"public/art/world-scenes/{scene}/review/desktop-candidate-v{version}.webp" if selected
+        output = (f"public/art/world-scenes/{scene}/{scene}-desktop-transition.webp" if selected
                   else f"docs/art-reviews/sources/{scene}-desktop-candidate-v{version}.webp")
         dest = ROOT / output
         dest.parent.mkdir(parents=True, exist_ok=True)
