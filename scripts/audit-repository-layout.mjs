@@ -24,11 +24,12 @@ for(const file of paths){
     }
   }
   if(/^public\/art\/world-scenes\/(?:workshop|town)\/review\//.test(file))failures.push('Retired PC transition directory: '+file);
+  if(/^public\/art\/rooms\/(?:brook|cinder|fern|yuesha)\/review\//.test(file))failures.push('Retired room scenic directory: '+file);
   if(file.startsWith('public/art/beauty-beasts/'))failures.push('Retired beauty-beasts directory: '+file);
   // Check consumers, not just tracked asset paths. Historical documents and provenance
   // may legitimately retain their original paths; this gate targets runtime code.
   if(/^(?:app|src|engine\/src)\//.test(file)&&/\.(?:[cm]?[jt]sx?|css|json)$/.test(file)){
-    const retiredArt=/(?:art\/(?:beauty-beasts|a05|feature-postcards)\/|art\/world-scenes\/(?:workshop|town)\/review\/)/;
+    const retiredArt=/(?:art\/(?:beauty-beasts|a05|feature-postcards)\/|art\/world-scenes\/(?:workshop|town)\/review\/|art\/rooms\/(?:brook|cinder|fern|yuesha)\/review\/)/;
     readFileSync(file,'utf8').split('\n').forEach((line,index)=>{
       if(retiredArt.test(line.replaceAll('\\/','/')))failures.push('Retired art reference: '+file+':'+(index+1));
     });

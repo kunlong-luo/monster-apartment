@@ -23,11 +23,11 @@ for(const profile of [{width:1440,height:900},{width:390,height:844}]){
       await page.getByTestId('room-art-r12-57-pair').click();
       await expect(back).toHaveAttribute('data-local-preview','true');
       const img=back.locator('img');
-      await expect(img).toHaveAttribute('src',new RegExp(id+'/review/background-candidate[.]webp'));
+      await expect(img).toHaveAttribute('src',new RegExp(id+'/scenic/background[.]webp'));
       await expect.poll(()=>img.evaluate((el:HTMLImageElement)=>el.naturalWidth)).toBe(1672);
       await expect(img).toHaveJSProperty('naturalHeight',941);
       const actor=resident.getByTestId('room-portrait-frame').locator('img');
-      await expect(actor).toHaveAttribute('src',new RegExp(id+'/review/standing-candidate[.]webp'));
+      await expect(actor).toHaveAttribute('src',new RegExp(id+'/scenic/standing[.]webp'));
       await expect.poll(()=>actor.evaluate((el:HTMLImageElement)=>el.naturalWidth)).toBe(1086);
       await expect(actor).toHaveJSProperty('naturalHeight',1448);
       await expect(page.getByTestId('room-art-r12-57-status')).toBeVisible();

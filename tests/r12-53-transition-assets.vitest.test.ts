@@ -43,7 +43,7 @@ describe('R12.53 source-bound transition artwork',()=>{
       const card=cg.cards[id+'-'+variant as keyof typeof cg.cards];
       const row=manifest.outputs.find(e=>e.output===card.previewPath)!;
       const room=roomReview.outputs.find(e=>e.resident===id&&e.kind==='standing')!;
-      expect(card.previewPath).toBe('public/art/rooms/'+id+'/review/standing-candidate.webp');
+      expect(card.previewPath).toBe('public/art/rooms/'+id+'/scenic/standing.webp');
       expect(row.output).toBe(room.output);
       expect(row.source).toBe(room.source);
       expect(row.sourceSha256).toBe(room.sourceSha256);

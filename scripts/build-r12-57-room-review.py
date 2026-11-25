@@ -38,7 +38,7 @@ for resident in ("yuesha","brook","fern","cinder"):
                     "alphaBounds":list(mask.getbbox()),"requiresAlphaRework":near_opaque<.08 or max(corners)>32}
         else:
             im=im.convert("RGB")
-        path=f"public/art/rooms/{resident}/review/{kind}-candidate.webp"
+        path=f"public/art/rooms/{resident}/scenic/{kind}.webp"
         out=ROOT/path
         out.parent.mkdir(parents=True,exist_ok=True)
         im.save(out,"WEBP",quality=91,method=6)

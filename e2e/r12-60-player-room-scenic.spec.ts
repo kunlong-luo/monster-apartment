@@ -30,13 +30,13 @@ for(const profile of [{width:1440,height:900},{width:390,height:844}]){
       await expect(room).toHaveAttribute('data-room-view','scenic');
       await expect(backdrop).toHaveAttribute('data-scenic-art','true');
       await expect(backdrop).toHaveAttribute('data-local-preview','false');
-      await expect(backdrop.locator('img')).toHaveAttribute('src',new RegExp(id+'/review/background-candidate[.]webp'));
+      await expect(backdrop.locator('img')).toHaveAttribute('src',new RegExp(id+'/scenic/background[.]webp'));
       await expect.poll(()=>backdrop.locator('img').evaluate((img:HTMLImageElement)=>img.naturalWidth)).toBe(1672);
       await expect(backdrop.locator('img')).toHaveJSProperty('naturalHeight',941);
       await expect(actor).toHaveAttribute('data-scenic-art','true');
       await expect(actor).toHaveAttribute('data-review-performer','false');
       const standing=actor.getByTestId('room-portrait-frame').locator('img');
-      await expect(standing).toHaveAttribute('src',new RegExp(id+'/review/standing-candidate[.]webp'));
+      await expect(standing).toHaveAttribute('src',new RegExp(id+'/scenic/standing[.]webp'));
       await expect.poll(()=>standing.evaluate((img:HTMLImageElement)=>img.naturalWidth)).toBe(1086);
       await expect(standing).toHaveJSProperty('naturalHeight',1448);
       await expect(room.getByTestId('room-story-rail')).toBeHidden();

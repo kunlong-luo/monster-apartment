@@ -46,9 +46,9 @@ export function artworkPixelBudget(width:number,height:number,devicePixelRatio:n
 export const CARD_PREVIEW_PATHS={
   'yuesha-eclipse':'public/art/characters/yuesha/cg-eclipse-candidate.webp',
   'yuesha-vow':'public/art/characters/yuesha/cg-vow-candidate.webp',
-  'brook-tide':'public/art/rooms/brook/review/standing-candidate.webp',
+  'brook-tide':'public/art/rooms/brook/scenic/standing.webp',
   'fern-spring':'public/art/characters/fern/cg-spring-candidate.webp',
-  'cinder-ember':'public/art/rooms/cinder/review/standing-candidate.webp',
+  'cinder-ember':'public/art/rooms/cinder/scenic/standing.webp',
 } as const;
 export type ContractCardId=keyof typeof CARD_PREVIEW_PATHS;
 export const YUESHA_ECLIPSE_PREVIEW_PATH=CARD_PREVIEW_PATHS['yuesha-eclipse'];

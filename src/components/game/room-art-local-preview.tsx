@@ -6,6 +6,7 @@ import type {CharacterId} from '@/core/character-life';
 import type {RoomPose} from '@/core/room-performance';
 import {RoomPosePreviewControls} from './room-pose-preview-controls';
 import {siteAssetUrl} from '@/lib/game/site-asset-url';
+import {roomScenicArt} from '@/core/room-scenic-art';
 import {YUESHA_REVIEW_OBJECTS,reviewAnchorGeometry,buildUnapprovedAnchorJson}
   from '@/core/room-art-review-geometry';
 import type {YueshaReviewId,YueshaAnchorDraft,ReviewAnchor} from '@/core/room-art-review-geometry';
@@ -153,9 +154,9 @@ export function useRoomArtLocalPreview(enabled:boolean){
       if(!enabled)return;
       if(backgroundRef.current)URL.revokeObjectURL(backgroundRef.current);
       backgroundRef.current=null;
-      const root='/art/rooms/'+id+'/review/';
-      setBackgroundUrl(siteAssetUrl(root+'background-candidate.webp'));
-      setPackagedStandingUrl(siteAssetUrl(root+'standing-candidate.webp'));
+      const scenic=roomScenicArt(id);
+      setBackgroundUrl(scenic.background);
+      setPackagedStandingUrl(scenic.standing);
       setSelectedPose(null);
       resetAnchors();resetPropArtwork();setError('');
     },

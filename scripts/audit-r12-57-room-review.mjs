@@ -20,7 +20,7 @@ for(const id of ['yuesha','brook','fern','cinder']){
     assert.equal(matches.length,1,id+' '+kind);
     const row=matches[0];
     const source=kind==='background'?'art-sources/rooms/'+id+'/background.png':'art-sources/characters/'+id+'/sprites/standing.png';
-    const output='public/art/rooms/'+id+'/review/'+kind+'-candidate.webp';
+    const output='public/art/rooms/'+id+'/scenic/'+kind+'.webp';
     const size=kind==='background'?[1672,941]:[1086,1448];
     assert.equal(row.source,source);
     assert.equal(row.output,output);
@@ -47,6 +47,6 @@ for(const id of ['yuesha','brook','fern','cinder']){
   }
   assert.equal(rooms.rooms[id].backgroundStatus,'concept');
   assert.equal(rooms.rooms[id].residentStatus,'concept');
-  assert(rooms.rooms[id].poses.every(path=>!path.includes('/review/')));
+  assert(rooms.rooms[id].poses.every(path=>!path.includes('/review/')&&!path.includes('/scenic/')));
 }
 console.info('R12.57: eight verified native WebP review layers; production manifest remains concept.');

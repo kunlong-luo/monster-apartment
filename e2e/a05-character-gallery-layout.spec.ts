@@ -109,7 +109,7 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   for(const picture of selectedCandidates){
     expect(picture.width).toBeGreaterThanOrEqual(960);
     expect(picture.height).toBeGreaterThanOrEqual(1280);
-    expect(picture.src).toMatch(/(?:\/art\/characters\/(?:yuesha\/cg-(?:eclipse|vow)|fern\/cg-spring)-candidate\.webp|\/art\/rooms\/(?:brook|cinder)\/review\/standing-candidate\.webp)(?:\?|$)/);
+    expect(picture.src).toMatch(/(?:\/art\/characters\/(?:yuesha\/cg-(?:eclipse|vow)|fern\/cg-spring)-candidate\.webp|\/art\/rooms\/(?:brook|cinder)\/scenic\/standing\.webp)(?:\?|$)/);
     expect(picture.fit).toBe('cover'); // slim card crop only
     expect(picture.kind).toBe('candidate-figure'); // never production
   }

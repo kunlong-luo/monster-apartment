@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.99）
+# 怪物公寓 · 美术资源总目录（R12.100）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -141,7 +141,7 @@
 | `lobby-hero-v3.webp` | 1 | 保留 | 公寓/世界背景与 Pixi 回退 |
 | `yuesha-{avatar,bust,portrait}-v3.webp` | 3 | 保留 | 当前角色注册与对话/剧情 |
 | `rooms/{yuesha,brook,fern,cinder}/concept-scene.svg` | 4 | 保留 | 正常故事概念背景与观景故障回退 |
-| `rooms/{yuesha,brook,fern,cinder}/review/{background-candidate,standing-candidate}.webp` | 8 | 保留 | 四房正常观景；泉泡、炽角站姿也为候选卡；不能按 review 名称删除 |
+| `rooms/{yuesha,brook,fern,cinder}/scenic/{background,standing}.webp` | 8 | 保留 | 四房正常观景；泉泡、炽角站姿也为候选卡；R12.100 已迁至稳定观景路径，不是 production |
 | `world-scenes/{town-moonlit-gate,workshop-gothic-hall}.webp` | 2 | 保留 | 月光街手机/回退、Pixi 与图鉴背景 |
 | `world-scenes/town/town-desktop-transition.webp`、`world-scenes/workshop/workshop-desktop-transition.webp` | 2 | 保留 | 正常 PC 过渡绘景，R12.98 已迁至稳定路径；非 production |
 | `lobby-hero-v2.webp` | 1 | 必要回退 | `engine/scripts/build.mjs` 复制，`engine/src/workshop-painted-art.ts` 加载链；不可直接删 |
@@ -165,9 +165,9 @@
 
 S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/scenes/apartment/) 仅含 `desktop-candidate.png` 与 `mobile-candidate.png`；新 `desktop-candidate-v2.png` 仍未入库。下一批单独核验正常运行的 review 路径、根目录旧版本名、交互研究重复图和三张 public/assets 历史参考；不将本轮写成已完成全部路径重构。
 
-## 5. 全仓实际资源菜单（R12.99）
+## 5. 全仓实际资源菜单（R12.100）
 
-R12.99 第二批路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
+R12.100 第二批路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
 
 ### 源图与研究（40）
 
@@ -237,17 +237,17 @@ R12.99 第二批路径迁移后完整 Git tree：141 路径、156439517 B。R12.
 | `public/art/lobby-hero-v4.webp` | 353842 | `555069296ce8` |
 | `public/art/room-review/yuesha-salon-candidate.webp` | 155188 | `3e384235b220` |
 | `public/art/rooms/brook/concept-scene.svg` | 9598 | `d2adfb278f67` |
-| `public/art/rooms/brook/review/background-candidate.webp` | 621298 | `53d8af7b95dd` |
-| `public/art/rooms/brook/review/standing-candidate.webp` | 821724 | `f6b7d13dcdff` |
+| `public/art/rooms/brook/scenic/background.webp` | 621298 | `53d8af7b95dd` |
+| `public/art/rooms/brook/scenic/standing.webp` | 821724 | `f6b7d13dcdff` |
 | `public/art/rooms/cinder/concept-scene.svg` | 12259 | `99fa591dd43a` |
-| `public/art/rooms/cinder/review/background-candidate.webp` | 571828 | `fc4ff05e5908` |
-| `public/art/rooms/cinder/review/standing-candidate.webp` | 593462 | `867fb42c5d26` |
+| `public/art/rooms/cinder/scenic/background.webp` | 571828 | `fc4ff05e5908` |
+| `public/art/rooms/cinder/scenic/standing.webp` | 593462 | `867fb42c5d26` |
 | `public/art/rooms/fern/concept-scene.svg` | 24221 | `5bb774279f3d` |
-| `public/art/rooms/fern/review/background-candidate.webp` | 648462 | `b2d8ade7f8bd` |
-| `public/art/rooms/fern/review/standing-candidate.webp` | 585116 | `287ae3c81b86` |
+| `public/art/rooms/fern/scenic/background.webp` | 648462 | `b2d8ade7f8bd` |
+| `public/art/rooms/fern/scenic/standing.webp` | 585116 | `287ae3c81b86` |
 | `public/art/rooms/yuesha/concept-scene.svg` | 21566 | `9b4729638861` |
-| `public/art/rooms/yuesha/review/background-candidate.webp` | 479202 | `589f25b5191b` |
-| `public/art/rooms/yuesha/review/standing-candidate.webp` | 664030 | `419852a5868b` |
+| `public/art/rooms/yuesha/scenic/background.webp` | 479202 | `589f25b5191b` |
+| `public/art/rooms/yuesha/scenic/standing.webp` | 664030 | `419852a5868b` |
 | `public/art/world-scenes/review/2026-11-22/orders-desktop-v1.webp` | 382216 | `61122e427bcd` |
 | `public/art/world-scenes/review/2026-11-22/orders-mobile-v1.webp` | 463436 | `d21372731b9a` |
 | `public/art/world-scenes/review/2026-11-22/warehouse-desktop-v1.webp` | 387164 | `2c823339e8b3` |
@@ -357,7 +357,7 @@ R12.55 Quality 320/320、桌面视觉与像素检查通过；完整玩法 186 �
 
 ## R12.60 玩家可见的房间观景资源
 
-V3.103.0 已成功部署（main 39138900，Pages 45367299176）；R12.57 八张真实房间图由原候选分支原 blob 迁入本候选，未重新编码。每个 `public/art/rooms/<id>/review/` 下 background-candidate.webp 与 standing-candidate.webp 仅在玩家观景或显式审稿使用；`r12-57-review-manifest.json` 是原始转换证据，生产房间 manifest 不变。现有概念剧情背景仍用于真实物件调查；正式 CG 0/5。见 [R12.60](design/R12-60-PLAYER-ROOM-SCENIC-MODE-2026-11-24.md)。
+V3.103.0 已成功部署（main 39138900，Pages 45367299176）；R12.57 八张真实房间图由原候选分支原 blob 迁入本候选，未重新编码。现行 `public/art/rooms/<id>/scenic/` 下 background.webp 与 standing.webp 仅在玩家观景或显式审稿使用；`r12-57-review-manifest.json` 是原始转换证据，生产房间 manifest 不变。现有概念剧情背景仍用于真实物件调查；正式 CG 0/5。见 [R12.60](design/R12-60-PLAYER-ROOM-SCENIC-MODE-2026-11-24.md)。
 
 ## R12.62 房间发布回归
 
@@ -383,20 +383,20 @@ V3.105.0 的 PC 新场景与四间观景已合并、Quality/Pages 通过；不�
 | 重复路径 A | 重复路径 B | 字节 | 当前处置 |
 | --- | --- | ---: | --- |
 | `docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-05.webp` | `public/art/room-review/yuesha-salon-candidate.webp` | 155188 | 来源证据/运行审稿，先核对授权与引用 |
-| `public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp` | `public/art/rooms/brook/review/standing-candidate.webp` | 821724 | 两份 manifest 独立角色槽，核对原图与转换，禁止直接删 |
-| `public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp` | `public/art/rooms/cinder/review/standing-candidate.webp` | 593462 | 同上 |
+| `public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp` | `public/art/rooms/brook/scenic/standing.webp` | 821724 | 两份 manifest 独立角色槽，核对原图与转换，禁止直接删 |
+| `public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp` | `public/art/rooms/cinder/scenic/standing.webp` | 593462 | 同上 |
 
 重复路径潜在工作树空间 1,570,374 B；本轮未删除媒体。相同输出不证明原始来源、人物用途或授权一致。CG manifest 的 previewPath 和 R12.57 房间 manifest 的 output 分属独立审核契约；先检查实际原图及生成脚本、动态 URL、生产/回退、文档链接、测试再确定唯一引用。不可用简单文本搜索零命中判定无用。
 
 
 ## R12.70 · 同源站姿输出统一
 
-泉泡、炽角的 R12.53 CG 过渡候选与 R12.57 站姿原图、source SHA-256、源 Git blob、输出 SHA-256、字节数均相同。现行 CG manifest/运行注册/转换清单/准入检查统一指向房间 review 下的 standing-candidate.webp；R12.53 生成脚本本身按 manifest.previewPath 输出，上传清单补齐共享路径。删除两个旧 CG 候选副本，保留原始 PNG、原候选旧路径/旧 blob 记录、其他五卡验证和独立 production CG 槽。实际工作树减少 1,415,186 B，不宣称 Git 历史同等缩小。历史报告中的原路径属于当时快照，可按 8f85a130 回读。
+泉泡、炽角的 R12.53 CG 过渡候选与 R12.57 站姿原图、source SHA-256、源 Git blob、输出 SHA-256、字节数均相同。现行 CG manifest/运行注册/转换清单/准入检查统一指向房间共享站姿（现行 scenic/standing.webp）；R12.53 生成脚本本身按 manifest.previewPath 输出，上传清单补齐共享路径。删除两个旧 CG 候选副本，保留原始 PNG、原候选旧路径/旧 blob 记录、其他五卡验证和独立 production CG 槽。实际工作树减少 1,415,186 B，不宣称 Git 历史同等缩小。历史报告中的原路径属于当时快照，可按 8f85a130 回读。
 
 | 退役路径 | 唯一运行时路径 | 保留 Git blob |
 | --- | --- | --- |
-| `public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp` | `public/art/rooms/brook/review/standing-candidate.webp` | `f6b7d13dcdffc8607b1f9e8ac6fd38518de46e97` |
-| `public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp` | `public/art/rooms/cinder/review/standing-candidate.webp` | `867fb42c5d268eaa0f00001dcaec858b32ecb019` |
+| `public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp` | `public/art/rooms/brook/scenic/standing.webp` | `f6b7d13dcdffc8607b1f9e8ac6fd38518de46e97` |
+| `public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp` | `public/art/rooms/cinder/scenic/standing.webp` | `867fb42c5d268eaa0f00001dcaec858b32ecb019` |
 
 月纱会客室的来源证据与运行时审稿副本仍保留（155,188 B）；不能在未核对证据清单和授权链前删除。原图和批准状态均不改变，正式 CG 0/5。R12.70 Quality 三作业成功、321/321；浏览器与 Pages 另验。
 
@@ -467,3 +467,5 @@ R12.99（第一批：欢迎封面）：两张双端群像 WebP 由 beauty-beasts
 R12.99 第二批：将 beauty-beasts/characters/ 的 3 张头像、3 张候选 CG 原 Git blob 迁入 public/art/characters/<id>/，同时迁移 cg-manifest.json 并更新五卡正式/预览槽、运行注册、CG 审核/晋级/生成、源图映射、测试及现行 SOP。beauty-beasts/ 整个公开历史目录退役，门禁登记 characters 并拒绝旧目录回流。月纱根目录三张 V3 肖像仍留待 R12.101；泉泡/炽角继续共享 rooms 下站姿，不重建两张重复候选。五卡仍 portrait（0/5 production），现行原画、哈希、身份、抽卡、存档、回退不变。固定历史 SHA URL、历史清单与 legacyOutput 保留旧路径。43 公开媒体、141 全仓媒体不变；新 SHA 的 Quality、真实浏览器及 Pages 独立验收。暂缓批量新美术；下一阶段 R12.100 核查房间正常观景与显式研究图路径。
 
 R12.100 第一批（发布修复优先）：R12.99 第二批 5a44daf 的 Quality 静态导出与桌面浏览器失败，Pages 跳过；CI 日志定位工坊全景及派工控件共六个旧头像静态导入。两组件改为复用 HEROINE_FACE_ART 唯一注册表，保持图片、角色 ID、显示行为和存档不变。扩展 audit:repository-layout，在 app/src/engine 的运行代码及 CSS/JSON 中扫描退役 beauty-beasts、a05、feature-postcards 和 PC 场景 review 路径的字面引用；历史文档和 provenance 的旧路径不参与此运行引用门禁。新 SHA 需独立通过 Quality、桌面及 Pages 验收，之后才迁移私人房间 8 个观景层；显式月纱审稿图及回退保留。没有移动、删除或新增图片；43 公开媒体、141 全仓媒体不变。继续暂停批量生成新美术。
+
+R12.100 第二批：四个房间的 8 张常规观景/显式审稿共用 WebP 原 Git blob 迁至 rooms/<id>/scenic/{background,standing}.webp；roomScenicArt 统一普通观景与显式审稿的路径解析；R12.57 转换、审核与输出清单、R12.53 转换清单、CG 预览注册及审核、单元与真实浏览器断言同步。泉泡、炽角仍共享站姿，四张 concept-scene.svg 与独立月纱 room-review 保留，正式 room manifest、剧情热点、原画、Alpha、SHA-256、审批、存档不变；旧四个 review 目录防回流。公开媒体 43、全仓 141，未新增美术。前置修复 029f019 已通过 Quality/Pages；本次提交仍须独立验收。下一批 R12.101 整理根目录散落肖像与大厅图。
