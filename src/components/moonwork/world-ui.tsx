@@ -7,7 +7,7 @@ import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
 import {useWorkshopWorld} from './world-save-react';
 import {GothicResourcePill} from '@/components/game/gothic-hud';
 import {WORLD_NAV} from './world-navigation';
-import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
+import lobbyHero from '../../../public/art/world-scenes/lobby/lobby-hero-v3.webp';
 import townBackdrop from '../../../public/art/world-scenes/town-moonlit-gate.webp';
 import {Panel,WorkshopLink} from './world-primitives';
 import {Town} from './world-town';
