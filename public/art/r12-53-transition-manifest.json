@@ -179,7 +179,7 @@
         941
       ],
       "crop": null,
-      "output": "public/art/lobby-hero-v4.webp",
+      "output": "public/art/world-scenes/lobby/lobby-hero-v4.webp",
       "size": [
         1672,
         941
@@ -219,7 +219,7 @@
         1672
       ],
       "crop": null,
-      "output": "public/art/lobby-hero-v4-mobile.webp",
+      "output": "public/art/world-scenes/lobby/lobby-hero-v4-mobile.webp",
       "size": [
         941,
         1672

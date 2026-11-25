@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.100）
+# 怪物公寓 · 美术资源总目录（R12.101）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -13,7 +13,7 @@
 | 原有审稿原画 | [art-sources/review/](../art-sources/review/) | 已绑定 R12 哈希和审核证据，保留路径 |
 | 正式角色与卡面 | [public/art/characters/](../public/art/characters/) | 由 [CG manifest](../public/art/characters/cg-manifest.json) 及 [角色注册](../src/components/summon/heroine-portrait-assets.ts) 管理 |
 | 正式欢迎页 | [public/art/covers/](../public/art/covers/) | 当前 PC/mobile 群像 |
-| 正式大厅 | [public/art/](../public/art/) | lobby-hero-v4.webp / lobby-hero-v4-mobile.webp；V3 为旧公寓及回退 |
+| 正式大厅 | [public/art/world-scenes/lobby/](../public/art/world-scenes/lobby/) | lobby-hero-v4.webp / lobby-hero-v4-mobile.webp；V3 为旧公寓及回退 |
 | 正式私室 | [public/art/rooms/](../public/art/rooms/) | [rooms manifest](../public/art/rooms/manifest.json)，现有概念及未来背景/姿态槽 |
 | 世界地点 | [public/art/world-scenes/](../public/art/world-scenes/) | [R12 manifest](../public/art/world-scenes/r12-scene-manifest.json)，现行图和显式审稿资源 |
 | 图鉴装饰 | [public/art/decorations/](../public/art/decorations/) | 独立 SVG 装饰及来源清单，不是正式场景 CG |
@@ -137,14 +137,14 @@
 | `characters/yuesha/cg-{eclipse,vow}-candidate.webp`、`characters/fern/cg-spring-candidate.webp` | 3 | 保留 | 正常召唤/鉴赏候选画，不是已审批 CG |
 | `covers/world-cover.webp`、`world-cover-mobile.webp` | 2 | 保留 | 欢迎页双端，PC 图也用于大厅回退 |
 | `postcards/{gothic-workshop,moonlit-street}.webp` | 2 | 保留 | 大厅地点入口 |
-| `lobby-hero-v4.webp`、`lobby-hero-v4-mobile.webp` | 2 | 保留 | 正常大厅双端、欢迎页回退 |
-| `lobby-hero-v3.webp` | 1 | 保留 | 公寓/世界背景与 Pixi 回退 |
+| `world-scenes/lobby/lobby-hero-v4.webp`、`world-scenes/lobby/lobby-hero-v4-mobile.webp` | 2 | 保留 | 正常大厅双端、欢迎页回退 |
+| `world-scenes/lobby/lobby-hero-v3.webp` | 1 | 保留 | 公寓/世界背景与 Pixi 回退 |
 | `yuesha-{avatar,bust,portrait}-v3.webp` | 3 | 保留 | 当前角色注册与对话/剧情 |
 | `rooms/{yuesha,brook,fern,cinder}/concept-scene.svg` | 4 | 保留 | 正常故事概念背景与观景故障回退 |
 | `rooms/{yuesha,brook,fern,cinder}/scenic/{background,standing}.webp` | 8 | 保留 | 四房正常观景；泉泡、炽角站姿也为候选卡；R12.100 已迁至稳定观景路径，不是 production |
 | `world-scenes/{town-moonlit-gate,workshop-gothic-hall}.webp` | 2 | 保留 | 月光街手机/回退、Pixi 与图鉴背景 |
 | `world-scenes/town/town-desktop-transition.webp`、`world-scenes/workshop/workshop-desktop-transition.webp` | 2 | 保留 | 正常 PC 过渡绘景，R12.98 已迁至稳定路径；非 production |
-| `lobby-hero-v2.webp` | 1 | 必要回退 | `engine/scripts/build.mjs` 复制，`engine/src/workshop-painted-art.ts` 加载链；不可直接删 |
+| `world-scenes/lobby/lobby-hero-v2.webp` | 1 | 必要回退 | `engine/scripts/build.mjs` 复制，`engine/src/workshop-painted-art.ts` 加载链；不可直接删 |
 | `room-review/yuesha-salon-candidate.webp` | 1 | 显式审稿保留 | room-art-local-preview 动态调用；与 docs 证据重复已有授权例外 |
 | `world-scenes/review/2026-11-22/` 三张及 `2026-11-23/` 三张 WebP | 6 | 显式审稿保留 | S02/S05/S06 双端互动研究，现行哈希/热点仍引用 |
 
@@ -165,9 +165,9 @@
 
 S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/scenes/apartment/) 仅含 `desktop-candidate.png` 与 `mobile-candidate.png`；新 `desktop-candidate-v2.png` 仍未入库。下一批单独核验正常运行的 review 路径、根目录旧版本名、交互研究重复图和三张 public/assets 历史参考；不将本轮写成已完成全部路径重构。
 
-## 5. 全仓实际资源菜单（R12.100）
+## 5. 全仓实际资源菜单（R12.101）
 
-R12.100 第二批路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
+R12.101 第一批路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
 
 ### 源图与研究（40）
 
@@ -231,10 +231,10 @@ R12.100 第二批路径迁移后完整 Git tree：141 路径、156439517 B。R12
 | `public/art/covers/world-cover.webp` | 526046 | `17c30be4f413` |
 | `public/art/postcards/gothic-workshop.webp` | 59254 | `34c4b7fdc29d` |
 | `public/art/postcards/moonlit-street.webp` | 34350 | `e7b5404a42ca` |
-| `public/art/lobby-hero-v2.webp` | 209336 | `2541cfaeaf7b` |
-| `public/art/lobby-hero-v3.webp` | 435400 | `2b10407ea824` |
-| `public/art/lobby-hero-v4-mobile.webp` | 344590 | `72307e846c10` |
-| `public/art/lobby-hero-v4.webp` | 353842 | `555069296ce8` |
+| `public/art/world-scenes/lobby/lobby-hero-v2.webp` | 209336 | `2541cfaeaf7b` |
+| `public/art/world-scenes/lobby/lobby-hero-v3.webp` | 435400 | `2b10407ea824` |
+| `public/art/world-scenes/lobby/lobby-hero-v4-mobile.webp` | 344590 | `72307e846c10` |
+| `public/art/world-scenes/lobby/lobby-hero-v4.webp` | 353842 | `555069296ce8` |
 | `public/art/room-review/yuesha-salon-candidate.webp` | 155188 | `3e384235b220` |
 | `public/art/rooms/brook/concept-scene.svg` | 9598 | `d2adfb278f67` |
 | `public/art/rooms/brook/scenic/background.webp` | 621298 | `53d8af7b95dd` |
@@ -469,3 +469,5 @@ R12.99 第二批：将 beauty-beasts/characters/ 的 3 张头像、3 张候选 C
 R12.100 第一批（发布修复优先）：R12.99 第二批 5a44daf 的 Quality 静态导出与桌面浏览器失败，Pages 跳过；CI 日志定位工坊全景及派工控件共六个旧头像静态导入。两组件改为复用 HEROINE_FACE_ART 唯一注册表，保持图片、角色 ID、显示行为和存档不变。扩展 audit:repository-layout，在 app/src/engine 的运行代码及 CSS/JSON 中扫描退役 beauty-beasts、a05、feature-postcards 和 PC 场景 review 路径的字面引用；历史文档和 provenance 的旧路径不参与此运行引用门禁。新 SHA 需独立通过 Quality、桌面及 Pages 验收，之后才迁移私人房间 8 个观景层；显式月纱审稿图及回退保留。没有移动、删除或新增图片；43 公开媒体、141 全仓媒体不变。继续暂停批量生成新美术。
 
 R12.100 第二批：四个房间的 8 张常规观景/显式审稿共用 WebP 原 Git blob 迁至 rooms/<id>/scenic/{background,standing}.webp；roomScenicArt 统一普通观景与显式审稿的路径解析；R12.57 转换、审核与输出清单、R12.53 转换清单、CG 预览注册及审核、单元与真实浏览器断言同步。泉泡、炽角仍共享站姿，四张 concept-scene.svg 与独立月纱 room-review 保留，正式 room manifest、剧情热点、原画、Alpha、SHA-256、审批、存档不变；旧四个 review 目录防回流。公开媒体 43、全仓 141，未新增美术。前置修复 029f019 已通过 Quality/Pages；本次提交仍须独立验收。下一批 R12.101 整理根目录散落肖像与大厅图。
+
+R12.101 第一批：四张大厅 WebP（V2、V3、V4 桌面与 V4 手机）原 Git blob 迁入 public/art/world-scenes/lobby/，保留原文件名；正常大厅、欢迎页回退、公寓背景及 Pixi V3→V2 回退均保留。engine/scripts/build.mjs 只调整源路径，dist/assets 输出文件名不变；同步 R12.53 转换器、清单、测试及目录门禁，禁止根目录旧大厅路径回流。未新增、删除或重新编码媒体，43 公开媒体与 141 全仓媒体保持不变。前置 R12.100 已通过 Quality/Pages，本提交须独立验收。月纱三张根目录肖像留待 R12.101 第二批；暂停新增美术。

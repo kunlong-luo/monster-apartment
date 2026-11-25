@@ -7,7 +7,7 @@ import {AnimatePresence} from 'motion/react';
 import {useCallback,useEffect,useState,useSyncExternalStore} from 'react';
 import moonveil from '../../../public/art/yuesha-avatar-v3.webp';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
-import lobbyHero from '../../../public/art/lobby-hero-v3.webp';
+import lobbyHero from '../../../public/art/world-scenes/lobby/lobby-hero-v3.webp';
 import {R12SceneBackdrop} from './r12-scene-painting';
 import {newCozyGame,validCozySave,resumeCozySave,
   relocateCozyResident,cozyDay,cozyGoal,cozyDailyIncome} from '@/core/cozy-engine';

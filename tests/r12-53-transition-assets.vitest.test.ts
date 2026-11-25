@@ -63,8 +63,8 @@ describe('R12.53 source-bound transition artwork',()=>{
       ...Object.fromEntries(['brook','fern','cinder'].map(id=>[c+id+'/face.webp',a+'characters/'+id+'/identity/front.png'])),
       [p+'covers/world-cover.webp']:a+'covers/welcome-desktop.png',
       [p+'covers/world-cover-mobile.webp']:a+'covers/welcome-mobile.png',
-      [p+'lobby-hero-v4.webp']:a+'scenes/lobby/desktop.png',
-      [p+'lobby-hero-v4-mobile.webp']:a+'scenes/lobby/mobile.png',
+      [p+'world-scenes/lobby/lobby-hero-v4.webp']:a+'scenes/lobby/desktop.png',
+      [p+'world-scenes/lobby/lobby-hero-v4-mobile.webp']:a+'scenes/lobby/mobile.png',
       ...Object.fromEntries(Object.entries(cardSources).map(([id,path])=>[cg.cards[id as keyof typeof cg.cards].previewPath,path])),
     };
     expect(manifest.status).toBe('transition-candidate-not-production-cg');

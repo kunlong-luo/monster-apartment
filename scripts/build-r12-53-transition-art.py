@@ -78,7 +78,7 @@ export(front["yuesha"],P+"yuesha-portrait-v3.webp",(1086,1448),"identity-portrai
 export(front["yuesha"],P+"yuesha-bust-v3.webp",(1086,1448),"identity-bust",(78,0,1008,910))
 for device,size in (("desktop",(1672,941)),("mobile",(941,1672))):
     export(A+"covers/welcome-"+device+".png",P+"covers/world-cover"+("-mobile" if device=="mobile" else "")+".webp",size,"welcome")
-    export(A+"scenes/lobby/"+device+".png",P+"lobby-hero-v4"+("-mobile" if device=="mobile" else "")+".webp",size,"lobby")
+    export(A+"scenes/lobby/"+device+".png",P+"world-scenes/lobby/lobby-hero-v4"+("-mobile" if device=="mobile" else "")+".webp",size,"lobby")
 manifest_path=ROOT/(C+"cg-manifest.json")
 manifest=json.loads(manifest_path.read_text())
 for card,entry in manifest["cards"].items():
