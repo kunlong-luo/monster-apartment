@@ -1,4 +1,5 @@
 import {execFileSync} from 'node:child_process';
+import {readFileSync} from 'node:fs';
 
 const allowedRoots=new Set(['.agents','.github','app','art-sources','docs','e2e','public','scripts','src','tests','engine','vendor']);
 const retired=/^(?:\.aistudio\/|artwork\/|management\/|docs\/prototypes\/|v2\/|engine\/docs\/|metadata\.json$)/;
@@ -24,6 +25,14 @@ for(const file of paths){
   }
   if(/^public\/art\/world-scenes\/(?:workshop|town)\/review\//.test(file))failures.push('Retired PC transition directory: '+file);
   if(file.startsWith('public/art/beauty-beasts/'))failures.push('Retired beauty-beasts directory: '+file);
+  // Check consumers, not just tracked asset paths. Historical documents and provenance
+  // may legitimately retain their original paths; this gate targets runtime code.
+  if(/^(?:app|src|engine\/src)\//.test(file)&&/\.(?:[cm]?[jt]sx?|css|json)$/.test(file)){
+    const retiredArt=/(?:art\/(?:beauty-beasts|a05|feature-postcards)\/|art\/world-scenes\/(?:workshop|town)\/review\/)/;
+    readFileSync(file,'utf8').split('\n').forEach((line,index)=>{
+      if(retiredArt.test(line.replaceAll('\\/','/')))failures.push('Retired art reference: '+file+':'+(index+1));
+    });
+  }
   if(retired.test(file))failures.push('Retired path: '+file);
 }
 console.log('Tracked root directories: '+[...roots].sort().join(', '));

@@ -22,13 +22,11 @@ import hallTransition from '../../../public/art/world-scenes/workshop/workshop-d
 import wellLegacy from '../../../engine/art/well-art-review.avif';
 import gardenLegacy from '../../../engine/art/garden-art-review.avif';
 import kilnLegacy from '../../../engine/art/kiln-art-review.avif';
-import brook from '../../../public/art/beauty-beasts/characters/brook/face.webp';
-import fern from '../../../public/art/beauty-beasts/characters/fern/face.webp';
-import cinder from '../../../public/art/beauty-beasts/characters/cinder/face.webp';
+import {HEROINE_FACE_ART} from '../summon/heroine-portrait-assets';
 
 const CRAFTS=['well','garden','kiln'] as const;
 const DEFAULT_ART={well:wellLegacy,garden:gardenLegacy,kiln:kilnLegacy};
-const WORKER_ART={brook,fern,cinder} as const;
+const WORKER_ART={brook:HEROINE_FACE_ART.brook,fern:HEROINE_FACE_ART.fern,cinder:HEROINE_FACE_ART.cinder} as const;
 const LEGEND={
   well:{serial:'I',caption:'月井水脉',material:'水汽净化与抽提'},
   garden:{serial:'II',caption:'银叶苗床',material:'孢子培植与纤维'},

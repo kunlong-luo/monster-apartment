@@ -5,9 +5,7 @@ import Image from 'next/image';
 import type {ReactNode} from 'react';
 import {Waves,Sprout,Gem,Settings2,ClipboardList,ChevronRight,Play,Pause,MoveHorizontal,TriangleAlert} from 'lucide-react';
 import type {LucideIcon} from 'lucide-react';
-import brookFace from '../../../public/art/beauty-beasts/characters/brook/face.webp';
-import fernFace from '../../../public/art/beauty-beasts/characters/fern/face.webp';
-import cinderFace from '../../../public/art/beauty-beasts/characters/cinder/face.webp';
+import {HEROINE_FACE_ART} from '../summon/heroine-portrait-assets';
 import {WORKERS, MACHINES, autoAssignWorkers, machineLevel} from '../../../engine/src/workshop-engine';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
 import {
@@ -22,7 +20,7 @@ import kilnArt from '../../../engine/art/kiln-art-review.avif';
 const workers = ['brook', 'fern', 'cinder'] as const;
 const machines = ['well', 'garden', 'kiln'] as const;
 const MACHINE_ICONS:Record<Craft,LucideIcon>={well:Waves,garden:Sprout,kiln:Gem};
-const WORKER_PORTRAITS={brook:brookFace,fern:fernFace,cinder:cinderFace} as const;
+const WORKER_PORTRAITS={brook:HEROINE_FACE_ART.brook,fern:HEROINE_FACE_ART.fern,cinder:HEROINE_FACE_ART.cinder} as const;
 
 const MACHINE_IMAGES = {
   well: wellArt,
