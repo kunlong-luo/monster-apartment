@@ -1,6 +1,6 @@
-# 当前架构（R12.76 目录核查）
+# 当前架构（R12.91 复审）
 
-以 V3.105.0 主线 `0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0` 为证据基线。下方历史实现记录不用于推断当前资产或数量。
+现行架构以 V3.109.0、R12.90 主线 `ef5aa5bc01c2d54d52ab7a666ebe3dcafaff7132` 为证据基线。实际 Quality 92/92 组件及样式可达、19 份 CSS、321/321 Vitest；历史实现记录不用于推断当前资产或数量。评分及后续重构优先级见[风险台账](engineering/GAP-REGISTER-2026-11-22.md)。
 
 - Next.js App Router + React + TypeScript strict + Tailwind CSS v4 + Motion；PixiJS 8 独立工坊运行时。根 `package.json` 声明 Zustand 与 Dexie；依赖声明不等同全站实际用法，未完成逐模块使用审计，不再断言不存在。
 - 七个游戏路由见[根 README](../README.md)；研究页独立。根布局挂载共享导航、过渡、错误边界、发布提示和工坊自动运行。现行大厅采用顶角地图而非旧底部 Dock，见[现行视觉合同](design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md)。

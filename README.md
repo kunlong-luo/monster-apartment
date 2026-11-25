@@ -14,6 +14,8 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 - V3.109.0 仓库显示真实需求/采购反馈、公寓显式研究模式支持六门与 HUD 共存、工坊按真实产量显示三种工序动效；正常玩家场景、七路由、存档与审批不变。
 - 完整玩法、跨页统一账本、真实玩家验证、原生高清正式原画仍须分别验收。查看[当前治理与风险](docs/README.md)。
 
+2026-11-25 工程治理基线 [ef5aa5b](https://github.com/kunlong-luo/monster-apartment/commit/ef5aa5bc01c2d54d52ab7a666ebe3dcafaff7132) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556789291) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556888621) 成功；最新组件审计 92/92 可达、321/321 Vitest、144 媒体库存一致。R12.91 综合证据暂评 **72/100**，85 是目标，非玩家评分；新 CSS 提交的桌面与玩法仍待结果，正式原画和真人验证尚未完成。评分与下一阶段只维护于[风险台账](docs/engineering/GAP-REGISTER-2026-11-22.md)。
+
 ## 七个正式游戏场景
 
 | 路由 | 玩家功能 |
