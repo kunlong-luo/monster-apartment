@@ -62,3 +62,7 @@ R12.93 第一批（2026-11-25）实际生成 S02 六门中庭 PC 独立候选 v2
 R13.0-A：已将现有四人 8 张正面/侧脸原图与 4 个实际头像的直接审稿入口及完整性检查加入 [角色 SOP](../CHARACTER-CREATION-SOP.md#r130-a--现有原图审稿入口与完整性校验)。四张 3/4 候选原生高度均低于 1448；月纱、泉泡优先身份返工，青枝、炽角先审核后补尺寸。当前未生成新图、未批准身份、未改变生产 manifest。新增检查须由新 SHA Quality 验收。
 
 R13.0-B：R13.0-A 的真实仓库身份技术校验已通过 Quality（45616340403）。月纱、泉泡的可视对照及逐张独立 3/4 返工任务见[角色 SOP](../CHARACTER-CREATION-SOP.md#r130-b--月纱与泉泡侧脸返工任务待取得图像参考后制作)。当前图像参考读取受限，未生成、未入仓新版侧脸，拟存路径不是实际库存。保持既有身份与生产审批状态；不得无参照生成新脸。
+
+R13.0-C（并行审稿准备，不代表 B 已完成）：青枝与炽角补齐独立正侧面制作任务、原图/头像对照和拒收标准，详见 [角色 SOP](../CHARACTER-CREATION-SOP.md#r130-c--青枝与炽角身份审核与原生侧脸返工准备未签审)。四人正面尺寸达标 4/4、侧脸原生高度达标 0/4、正式身份 0/4、正式 CG 0/5。原图二进制读取仍受限，本次不生成、不入库、不晋级，不将技术检查视为人审。继续 B1/B2 后 C1/C2，四人同尺度灰阶身份板及签审完成后，按现行 R13.1–R13.3 路线推进独立绘景、经营闭环和真人验证，不改版本及评分。
+
+工程并行事项：PR #63（65b7ace）的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45615216421)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45615216278) 已成功，[Gameplay Browser Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45615216586) 核查时仍运行。GitHub 最新可合并状态为 true，但主线与验证分支仍有分歧（核查时领先 1、落后 4）；保留既有 CI 门槛，不提前合并，不将候选成功等同于主线发布。
