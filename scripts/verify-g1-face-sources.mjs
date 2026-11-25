@@ -118,7 +118,7 @@ export function verifyCurrentG1FaceSources(rootDir){
       const metadata=exactAsset(root,{path,bytes:entry.bytes,sha256:inventory.sourceSha256,
         pixelDimensions:inventory.size},path);
       const data=readFileSync(join(root,path));
-      const blob=createHash('sha1').update('blob '+data.length+'\\0').update(data).digest('hex');
+      const blob=createHash('sha1').update('blob '+data.length).update(Buffer.from([0])).update(data).digest('hex');
       demand(blob===entry.gitBlobSha,'Git blob mismatch '+path);
       return {...metadata,path,status:entry.status,notes:entry.notes};
     };
@@ -148,7 +148,7 @@ export function verifyCurrentG1FaceSources(rootDir){
 function parseArgs(args){
   if(!args.length)return process.cwd();
   if(args.length===2&&args[0]==='--source-dir'&&args[1])return args[1];
-  fail('usage: node scripts/verify-g1-face-sources.mjs [--source-dir /path/to/unpacked-zip]');
+  fail('usage: node scripts/verify-g1-face-sources.mjs [--current | --source-dir /path/to/unpacked-zip]');
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
   try{
