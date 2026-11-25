@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.107）
+# 怪物公寓 · 美术资源总目录（R12.108）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -509,3 +509,7 @@ R12.106 发布验收补记：372f26f 的 Quality 45587291301、像素证据 4558
 ## R12.107 · 合并验收与候选同步
 
 R12.107：PR #61 已合并至 main（8ac89d7，候选 73bb21d 的 Quality 45589086675、Desktop 45589086721、像素 45589086614、完整玩法 45589086651 全部成功；199 passed / 3 skipped / 0 failed）。合并后 Quality 45611878515、Desktop 45611878567、Gameplay 45611878531 初查运行中，Pages 未确认，不能称已上线。PR #62 的旧 d94bbdf Quality、Desktop、像素均成功，完整玩法 45588982327 的 3 失败仍为未同步的旧胸像上传路径，196 passed / 3 skipped；本次将已验收 main 合并进 PR #62，原 fixture 修复原 blob 继承，不改变样式或运行行为，重新验证合并候选。
+
+## R12.108 · 发布确认
+
+8ac89d7 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878515)、[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878567)、[完整玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878531)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45612035406) 全部成功。PR #62 候选 3529ac9 的 Quality 45612055891、像素 45612055884、桌面 45612056041、玩法 45612055914 均成功，已合并 main 083699c；同 SHA Pages 尚未确认。 正式资源库存 141 路径 / 156439517 B，公开 44 媒体（public/art 43），三张历史参考图原 blob 已隔离，未晋级任何原画审批。本候选不改媒体。

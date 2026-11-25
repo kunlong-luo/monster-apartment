@@ -2,6 +2,12 @@
 
 > 取证时点：`main` = [`770ed3c25cb3`](https://github.com/kunlong-luo/monster-apartment/commit/770ed3c25cb3a32f60273f458aa3a0ee27418f9f)。本表根据仓库文件、`branches/main` 和所列 Issue 的当时状态整理；**不把历史报告或自动测试写成今天已完成的人工验收**。每轮修复后应重核并更新，不要仅因完成文档治理就勾选产品任务。
 
+## R12.108 · 当前评分与执行优先级
+
+8ac89d7 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878515)、[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878567)、[完整玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878531)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45612035406) 全部成功。PR #62 候选 3529ac9 的 Quality 45612055891、像素 45612055884、桌面 45612056041、玩法 45612055914 均成功，已合并 main 083699c；同 SHA Pages 尚未确认。
+
+正式基线 73/100（架构 17/20、文档与资源 19/20、功能与存档 15/20、UI 与视觉 10/20、验证发布 12/15、真人反馈 0/5）。资源维 +1：公开历史三 PNG 隔离、稳定人物/场景路径、141 项库存及唯一重复例外、Quality 和 Pages 同 SHA 成功；其他维不变，未取得新原画人审/真人试玩、长循环证据或保护配置。85/100 仍是目标。优先完成 PR #62 发布与最后一批 CSS 候选验收，之后转入 R13.0 身份基准、独立绘景、经营首单到下一目标闭环及真人反馈，不继续以目录整理代替玩家价值。下列 R12.91 为历史评分，不覆盖本节。
+
 ## R12.91 · 2026-11-25 综合复审（现行优先级）
 
 审查基线 [ef5aa5b](https://github.com/kunlong-luo/monster-apartment/commit/ef5aa5bc01c2d54d52ab7a666ebe3dcafaff7132)： [Quality checks](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556789291/job/139010655591) 和 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556888621) 成功，Quality 三作业成功。实际日志 64 个 Vitest 文件/321 测试全通过，333 文件/11 app 根/92 组件及样式模块全部可达，未解析及不可达均为 0；185 Markdown、16 必需入口、580 条匹配相对链接、0 违规；144 媒体、156696945 B、0 库存偏差、0 未登记重复；[静态导出](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556789291/job/139010655224) 七路由 23 个 SSR 图片 URL 可解析。V3.109.0 功能基线 80eb69a 四项工作流成功；后续 CSS 修改 be66775 的 Quality/Pages 成功， [桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556397863) 和 [玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556397722) 核查时仍运行，不视为新视觉验收。本轮不重新截屏、不进行真人试玩、不改变版本。

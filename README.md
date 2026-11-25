@@ -6,9 +6,9 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 
 ## 当前可核实发布基线
 
-2026-11-25 资源治理 [PR #61](https://github.com/kunlong-luo/monster-apartment/pull/61) 已合并 [8ac89d7](https://github.com/kunlong-luo/monster-apartment/commit/8ac89d72f32e918507f28abb0d97829355c62c0d)；候选四项检查通过，合并后 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878515) 与 Pages 尚待确认。上一已核实发布基线如下。详细验收见[资源总目录](docs/ART-RESOURCE-CATALOG.md)。
+8ac89d7 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878515)、[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878567)、[完整玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878531)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45612035406) 全部成功。PR #62 候选 3529ac9 的 Quality 45612055891、像素 45612055884、桌面 45612056041、玩法 45612055914 均成功，已合并 main 083699c；同 SHA Pages 尚未确认。
 
-当前发布基线：2026-11-25 `c6c0624` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45577636793) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45577758778) 成功；月纱与历史参考图治理见 [PR #61](https://github.com/kunlong-luo/monster-apartment/pull/61)。版本号仍 V3.109.0，以下 80eb69a 为历史完整功能验收。
+正式资源治理评分 73/100，详见[风险台账](docs/engineering/GAP-REGISTER-2026-11-22.md#r12108--当前评分与执行优先级)。
 
 2026-11-24，V3.109.0 正式主线 [80eb69a](https://github.com/kunlong-luo/monster-apartment/commit/80eb69abb56c8a0a398e53ff27cdf513e76b695e)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45392165404)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45392165400)、[Gameplay Browser Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45392165444)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45392330890) 全部成功。三功能由 [#53](https://github.com/kunlong-luo/monster-apartment/pull/53) 统一合并；#54/#58 的有效代码和测试原 blob 一致，重复 PR 已关闭。原包下载独立失败仍待处理，不代表正式美术审核。R12.84 仅整理文档，不改变 UI 版本。
 

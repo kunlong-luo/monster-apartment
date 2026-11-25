@@ -151,21 +151,9 @@
   .gothic-workshop-shell #root.lab.gothic-workshop .console .gothic-panel-roster .panel-head{
     flex-wrap:nowrap;justify-content:space-between;
   }
-  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options{
-    gap:6px;align-content:start;
-  }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options>button{
-    min-height:57px;grid-template-columns:minmax(0,1fr) auto;
-    padding:6px 9px;border:1px solid #a88a6e5e!important;
-    border-radius:8px!important;background:#1c121ecf!important;
-    box-shadow:inset 0 1px #e5c99a20!important;
+    grid-template-columns:minmax(0,1fr) auto;
     transition:background-color .18s,border-color .18s;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options>button:is(:hover,:focus-visible,[aria-pressed="true"]){
-    border-color:#e3bf90!important;background:#402438d9!important;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .console .worker-miniature{
-    width:38px;height:38px;border-color:#b99a76ac;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console .worker-status{
     display:flex;flex-wrap:nowrap;align-items:center;gap:3px;
@@ -281,7 +269,6 @@
     align-items:center;padding:9px 11px!important;gap:10px;
   }
   .mw.mw-gothic[data-area="town"] .mw-market-icon{
-    flex-basis:32px;width:32px;height:32px;
     border:1px solid #ac89665d;border-radius:8px;
     background:#2a1d29;color:#edca99;
   }
