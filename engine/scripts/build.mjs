@@ -51,7 +51,7 @@ await copyFile(resolve(root,'../public/art/world-scenes/workshop-gothic-hall.web
   resolve(root,'dist/assets/workshop-gothic-hall.webp'));
 await copyFile(resolve(root,'../public/art/world-scenes/lobby/lobby-hero-v3.webp'),
   resolve(root,'dist/assets/lobby-hero-v3.webp'));
-await copyFile(resolve(root,'../public/art/yuesha-avatar-v3.webp'),
+await copyFile(resolve(root,'../public/art/characters/yuesha/yuesha-avatar-v3.webp'),
   resolve(root,'dist/assets/yuesha-avatar-v3.webp'));
 await copyFile(resolve(root,'../public/art/world-scenes/lobby/lobby-hero-v2.webp'),
   resolve(root,'dist/assets/lobby-hero-v2.webp'));

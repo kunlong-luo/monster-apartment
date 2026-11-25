@@ -19,7 +19,7 @@
         850,
         600
       ],
-      "output": "public/art/yuesha-avatar-v3.webp",
+      "output": "public/art/characters/yuesha/yuesha-avatar-v3.webp",
       "size": [
         600,
         600
@@ -114,7 +114,7 @@
         1448
       ],
       "crop": null,
-      "output": "public/art/yuesha-portrait-v3.webp",
+      "output": "public/art/characters/yuesha/yuesha-portrait-v3.webp",
       "size": [
         1086,
         1448
@@ -139,7 +139,7 @@
         1008,
         910
       ],
-      "output": "public/art/yuesha-bust-v3.webp",
+      "output": "public/art/characters/yuesha/yuesha-bust-v3.webp",
       "size": [
         930,
         910

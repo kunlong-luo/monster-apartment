@@ -95,8 +95,8 @@ pnpm check:design && pnpm test && pnpm build
 本轮检查发现 `prepare-character-cg.mjs` 原来按照 `card.split('-')[0]/face.webp` 从角色目录读取身份基准。这会把 **月纱已退役的黑发角饰概念头像**拿给新原画作者作参考，与现有银白长发、赤瞳 V3 月纱冲突。
 
 现已修复并在审核脚本中锁定五张卡的准确源文件：
-- 神话月蚀：`public/art/yuesha-portrait-v3.webp`
-- 月下誓约：`public/art/yuesha-bust-v3.webp`
+- 神话月蚀：`public/art/characters/yuesha/yuesha-portrait-v3.webp`
+- 月下誓约：`public/art/characters/yuesha/yuesha-bust-v3.webp`
 - 泉泡：`public/art/characters/brook/face.webp`
 - 青枝：`public/art/characters/fern/face.webp`
 - 炽角：`public/art/characters/cinder/face.webp`
@@ -144,3 +144,5 @@ pnpm check:design && pnpm test && pnpm build
 现在将原生 1086×1448 正式列为首批角色卡可审核的最低规格，支持在现有高质量独立动作研究稿上继续优化，并将“原生 1536×2048”改为后期可选精修任务。代码门禁见 `scripts/audit-character-cg.mjs`（`CG_MIN_NATIVE_SIZE`）；审核工具 `pnpm art:cg:review` 与 `pnpm art:cg:promote` 同步使用该标准，但**原生尺寸、权利、人物身份、武器/服装/动作、三视口及人工签署要求全部保留**。目前候选/研究稿不会因更改尺寸门槛自动晋级。
 
 **新增人物必须按 [CHARACTER-CREATION-SOP.md](CHARACTER-CREATION-SOP.md) 的 G0—G7 流程**：先立项确认新人物/旧人物新卡 → 冻结独立面部骨相及耳角结构 → 对比全体已有角色的姿态、武器与服装剪影 → 单人原画与原生像素记录 → WebP/哈希/版权/三视口审核 → 人工签署后晋级 → 如需可玩则接入人物、卡池、存档与测试。任务开始时复制 [设计模板](templates/CHARACTER-DESIGN-BRIEF-TEMPLATE.md)，禁止跳过身份和差异化设计直接批量生成。
+
+R12.101 第二批候选：月纱头像、半身像、肖像三张原 Git blob 迁入 public/art/characters/yuesha/（原文件名不变），同步跨页面静态导入、人物注册、抽卡公开 URL、CG 身份参考、R12.53 转换器及 manifest、设计清单、资源测试与目录门禁。Pixi 构建仅改变源路径，dist/assets/yuesha-avatar-v3.webp 及引擎加载链不变。公开 art 根目录只允许 README.md 和 r12-53-transition-manifest.json；43 公开、141 全仓媒体、原始像素、身份、卡面审批、存档、概率与回退保持不变。此迁移在独立 PR 进行候选 CI，未通过前不得称已合并或上线。

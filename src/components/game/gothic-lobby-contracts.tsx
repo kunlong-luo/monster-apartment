@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {ArrowUpRight,ChevronRight,Crown,ScrollText} from 'lucide-react';
 import {ReliableImage as Image} from './reliable-image';
 import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
-import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
+import moonveilBust from '../../../public/art/characters/yuesha/yuesha-bust-v3.webp';
 
 type LobbyContractsProps={
   orderReady:boolean;

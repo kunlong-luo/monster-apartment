@@ -25,8 +25,8 @@ export const CG_PREVIEW_PATHS={
  * R12.53 proposes new black-haired YueSha artwork in the same slots;
  * the unrelated retired yuesha/face.webp remains excluded from approval. */
 export const CG_IDENTITY_REFERENCE_PATHS={
-  'yuesha-eclipse':'public/art/yuesha-portrait-v3.webp',
-  'yuesha-vow':'public/art/yuesha-bust-v3.webp',
+  'yuesha-eclipse':'public/art/characters/yuesha/yuesha-portrait-v3.webp',
+  'yuesha-vow':'public/art/characters/yuesha/yuesha-bust-v3.webp',
   'brook-tide':'public/art/characters/brook/face.webp',
   'fern-spring':'public/art/characters/fern/face.webp',
   'cinder-ember':'public/art/characters/cinder/face.webp',

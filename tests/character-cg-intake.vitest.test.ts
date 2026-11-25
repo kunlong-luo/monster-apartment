@@ -26,8 +26,8 @@ describe('A05 production CG intake and preview',()=>{
     }
   });
   it('pins YueSha to the current canonical portrait slots, never retired concept face',()=>{
-    expect(CG_IDENTITY_REFERENCE_PATHS['yuesha-eclipse']).toBe('public/art/yuesha-portrait-v3.webp');
-    expect(CG_IDENTITY_REFERENCE_PATHS['yuesha-vow']).toBe('public/art/yuesha-bust-v3.webp');
+    expect(CG_IDENTITY_REFERENCE_PATHS['yuesha-eclipse']).toBe('public/art/characters/yuesha/yuesha-portrait-v3.webp');
+    expect(CG_IDENTITY_REFERENCE_PATHS['yuesha-vow']).toBe('public/art/characters/yuesha/yuesha-bust-v3.webp');
     for(const [id,reference] of Object.entries(CG_IDENTITY_REFERENCE_PATHS)){
       expect(existsSync(resolve(reference))).toBe(true);
       if(id.startsWith('yuesha'))expect(reference).not.toMatch(/characters\/yuesha\/face.webp$/);

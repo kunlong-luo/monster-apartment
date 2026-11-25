@@ -57,9 +57,9 @@ describe('R12.53 source-bound transition artwork',()=>{
   });
   it('checks all fifteen actual WebPs, independent screens, native geometry and exact source mapping',()=>{
     const expected:Record<string,string>={
-      [p+'yuesha-avatar-v3.webp']:a+'characters/yuesha/identity/front.png',
-      [p+'yuesha-bust-v3.webp']:a+'characters/yuesha/identity/front.png',
-      [p+'yuesha-portrait-v3.webp']:a+'characters/yuesha/identity/front.png',
+      [p+'characters/yuesha/yuesha-avatar-v3.webp']:a+'characters/yuesha/identity/front.png',
+      [p+'characters/yuesha/yuesha-bust-v3.webp']:a+'characters/yuesha/identity/front.png',
+      [p+'characters/yuesha/yuesha-portrait-v3.webp']:a+'characters/yuesha/identity/front.png',
       ...Object.fromEntries(['brook','fern','cinder'].map(id=>[c+id+'/face.webp',a+'characters/'+id+'/identity/front.png'])),
       [p+'covers/world-cover.webp']:a+'covers/welcome-desktop.png',
       [p+'covers/world-cover-mobile.webp']:a+'covers/welcome-mobile.png',

@@ -19,9 +19,9 @@ import {WorkshopControls} from './workshop-controls';
 import {workshopDialogue} from '@/lib/moonwork/workshop-dialogue';
 import {newWorkshop,workshopRank,type WorkshopState} from '../../../engine/src/workshop-engine';
 import workshopHall from '../../../public/art/world-scenes/workshop-gothic-hall.webp';
-import moonveilPortrait from '../../../public/art/yuesha-portrait-v3.webp';
-import yueshaBust from '../../../public/art/yuesha-bust-v3.webp';
-import yueshaAvatar from '../../../public/art/yuesha-avatar-v3.webp';
+import moonveilPortrait from '../../../public/art/characters/yuesha/yuesha-portrait-v3.webp';
+import yueshaBust from '../../../public/art/characters/yuesha/yuesha-bust-v3.webp';
+import yueshaAvatar from '../../../public/art/characters/yuesha/yuesha-avatar-v3.webp';
 import Image from 'next/image';
 import {RotateCcw} from 'lucide-react';
 import type {

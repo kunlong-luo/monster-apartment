@@ -167,3 +167,5 @@ pnpm build
 ## R12.75 · 工坊角色规范归并
 
 旧 V2 成年人物方案已退役（[固定快照](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs/adult-character-art-direction.md)），不沿用其未实施的别名与身份。角色保持明确成年、独立脸型/体态/姿态、职业服装与实际工具，工作岗位保留合理防护；服装不遮挡有效交互。制作独立工作帧而非静图平移，人物身份、年龄与原画审批以现行数据与本 SOP 为准，不重复另建角色规范。
+
+R12.101 第二批候选：月纱头像、半身像、肖像三张原 Git blob 迁入 public/art/characters/yuesha/（原文件名不变），同步跨页面静态导入、人物注册、抽卡公开 URL、CG 身份参考、R12.53 转换器及 manifest、设计清单、资源测试与目录门禁。Pixi 构建仅改变源路径，dist/assets/yuesha-avatar-v3.webp 及引擎加载链不变。公开 art 根目录只允许 README.md 和 r12-53-transition-manifest.json；43 公开、141 全仓媒体、原始像素、身份、卡面审批、存档、概率与回退保持不变。此迁移在独立 PR 进行候选 CI，未通过前不得称已合并或上线。

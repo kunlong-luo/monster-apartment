@@ -6,8 +6,8 @@ import {ReliableImage as Image,retryAssetUrl} from '@/components/game/reliable-i
 import {AnimatePresence} from 'motion/react';
 import {useMemo,useState} from 'react';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
-import moonveilAvatar from '../../../public/art/yuesha-avatar-v3.webp';
-import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
+import moonveilAvatar from '../../../public/art/characters/yuesha/yuesha-avatar-v3.webp';
+import moonveilBust from '../../../public/art/characters/yuesha/yuesha-bust-v3.webp';
 import lobbyHero from '../../../public/art/world-scenes/lobby/lobby-hero-v4.webp';
 import lobbyHeroMobile from '../../../public/art/world-scenes/lobby/lobby-hero-v4-mobile.webp';
 import lobbyHeroBackup from '../../../public/art/covers/world-cover.webp';
