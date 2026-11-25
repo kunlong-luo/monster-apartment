@@ -289,6 +289,10 @@ test('320px and 390px summon HUD keeps resource row and core actions in first sc
         spill:document.documentElement.scrollWidth-innerWidth,
       };
     });
+    await expect(header).toHaveCSS('height','88px');
+    await expect(header).toHaveCSS('padding','4px 8px');
+    await expect(header.locator('> div').first()).toHaveCSS('min-width','0px');
+    await expect(pool).toHaveCSS('height','72px');
     expect(geometry.spill).toBeLessThanOrEqual(2);
     expect(geometry.tools.right).toBeLessThanOrEqual(width+1);
     expect(geometry.wallet.y).toBeGreaterThan(geometry.tools.y);

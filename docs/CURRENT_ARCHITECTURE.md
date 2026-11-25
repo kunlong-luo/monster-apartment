@@ -157,3 +157,7 @@ R12.95：历史 V2 月纱头像与胸像路径不再存在于工作树，原字�
 基于 PR #61 的 372f26f：逐份读取全部 19 CSS（Git tree 281603 B）。单一 :root 色板在 gothic-premium-tokens.css；扫描 :root 内 --craft-*、--moon-ui-*、--color-gothic-* 声明未发现重复，19 份 CSS 未发现字面 url(...)。文本计数 407 处 !important，其中 summon-screen.css 124、gothic-desktop-ui.css 118、gothic-red-gold.css 97，共 339（83.3%）。这些是级联风险热点，不等于无效选择器；最大文件 gothic-workshop.css 49760 B。先按实际七路由、PC/手机、交互状态及审稿状态建立覆盖证据，再逐组消除覆盖，禁止全局批删或为少量样式引入新依赖。保持唯一色板、当前布局和审批不变。
 
 动态 URL：现有 siteAssetUrl、roomScenicArt、workshopAssetRoot 各自承担公开路径、私室分层、Pixi sidecar 目录职责。旧 site-asset-url 测试使用已退役的月纱样例但没有检查文件存在。本候选改用真实现行路径，增加 5 卡及 5 卡池头像、四房 8 个观景图的 WebP 文件头与 Pages 前缀/idempotence 测试，并覆盖末尾斜杠、协议相对和 data URL。未改运行逻辑；新测试尚未执行，需独立 Quality。
+
+### R12.106 · 召唤移动断点覆盖收敛（候选）
+
+检查 summon-screen.css 两个 max-width:600px 区块，后置 V3.58 紧凑 HUD 规则在同断点覆盖早期 header、首个子区、center、quote、title 及底部操作区属性。仅移除前置明确被后置同选择器（或更高优先级同目标声明）覆盖的 14 项声明；不改后置值、桌面断点、相邻有效规则、角色/卡池/稀有度及抽卡逻辑。该文件 !important 124→116；保留所有真实胜出的声明，不盲目取消强制覆盖。现有 320×700/390×844 浏览器 HUD 测试补充 header 高度 88px、padding 4px 8px、首子区 min-width 0、卡池 72px 计算样式检查，并接入 Desktop Visual Review 定向步骤。尚未执行候选浏览器，不能声称视觉完全一致。
