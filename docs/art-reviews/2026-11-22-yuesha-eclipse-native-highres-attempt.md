@@ -9,7 +9,7 @@
 | 项目 | 结果 |
 | --- | --- |
 | 角色 | `yuesha-eclipse`，原生独立单人画面 |
-| V2 文件 | `public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v2.webp` |
+| V2 文件 | `docs/art-reviews/sources/yuesha-cg-eclipse-pose-study-v2.webp` |
 | PNG 原生像素 | **1086×1448**（不是正式要求的 1536×2048） |
 | WebP 导出像素 | 1086×1448；513912 B（quality 92，未放大） |
 | WebP SHA-256 | `6f3f41109ccef8e3d1fcb1e96176ae241c27b609ab60fa47652fb34cd6cc0aa9` |

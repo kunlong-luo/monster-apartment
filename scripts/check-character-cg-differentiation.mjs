@@ -37,10 +37,10 @@ for(const [id,study] of Object.entries(brief.poseStudies??{})){
   const revision=study.revision??1;
   if(!Number.isInteger(revision)||revision<1||revision>99)
     fail('invalid pose study revision '+id);
-  const expected='public/art/beauty-beasts/characters/'+resident+'/cg-'+cardSlug+'-pose-study-v'+revision+'.webp';
+  const expected='docs/art-reviews/sources/'+resident+'-cg-'+cardSlug+'-pose-study-v'+revision+'.webp';
   if(study.path!==expected)
     fail('unapproved pose study path cannot point into a live or arbitrary slot '+id);
-  if(revision>1&&study.supersedes!=='public/art/beauty-beasts/characters/'+resident+'/cg-'+cardSlug+'-pose-study-v'+(revision-1)+'.webp')
+  if(revision>1&&study.supersedes!=='docs/art-reviews/sources/'+resident+'-cg-'+cardSlug+'-pose-study-v'+(revision-1)+'.webp')
     fail('revised pose study must preserve an explicit predecessor '+id);
   if(study.status!=='research-only'||study.approved!==false)fail('pose study must remain unapproved '+id);
   const bytes=readFileSync(resolve(root,study.path));
@@ -62,7 +62,7 @@ for(const [id,study] of Object.entries(brief.alternativePoseStudies??{})){
   if(!Number.isInteger(revision)||revision!==(current.revision??1)+1)
     fail('alternative revision must follow active research '+id);
   const [resident,cardSlug]=id.split('-');
-  const expected='public/art/beauty-beasts/characters/'+resident+'/cg-'+cardSlug+'-pose-study-v'+revision+'.webp';
+  const expected='docs/art-reviews/sources/'+resident+'-cg-'+cardSlug+'-pose-study-v'+revision+'.webp';
   if(study.path!==expected||study.supersedes!==current.path)
     fail('alternative reference path or predecessor invalid '+id);
   if(study.selected!==false||study.approved!==false||study.status!=='research-only')

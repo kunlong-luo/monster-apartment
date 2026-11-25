@@ -5,7 +5,7 @@
 | 项目 | 值 |
 | --- | --- |
 | 作品 | 泉泡·潮汐（Brook / `brook-tide`） |
-| 研究稿路径 | `public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v1.webp` |
+| 研究稿路径 | `docs/art-reviews/sources/brook-cg-tide-pose-study-v1.webp` |
 | 原生 PNG 与导出 WebP 尺寸 | 1086 × 1448 |
 | WebP 大小 | 514656 B |
 | SHA-256 | `5a182181b0a562ec9be81546bbb227ded7ec7480d0f6ed2c247cd312e3dd54fa` |

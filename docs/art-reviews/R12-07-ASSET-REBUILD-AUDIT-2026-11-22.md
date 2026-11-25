@@ -115,3 +115,5 @@
 
 第一幅**全新独立** S05 契约大厅桌面样张已生成，原生 **1672×941** PNG（并输出同尺寸 WebP）。新的环境视觉包含红月玫瑰窗、契约柜台与右侧 HUD 留白，明显不同于大厅沙龙与工坊设备；但尺寸**低于正式 2560×1440**，手机没有独立竖幅，也没有人审/商用权利和真实浏览器截图。图像 ZIP 交付于本轮对话，**未存 Git / 未接入线上**。真实 PNG 与 WebP 哈希、构图复查、缺口、下一轮正式绘制步骤见 [R12-08 S05 第一张候选审稿](R12-08-S05-CONTRACT-HALL-REVIEW-2026-11-22.md)。CSV `ART-S05-D` 的进度更新为 `REVIEW_SOURCE_ONLY_NATIVE_INSUFFICIENT`，不是完成。
 
+
+R12.95：研究图现行路径以 [CG 镜头表](CG-DIFFERENTIATION-SHOT-LIST.json) 为准；退役月纱旧 face 原字节见 [固定历史提交](https://github.com/kunlong-luo/monster-apartment/blob/87a37023dcc5161696aab9fe006749f3a5a04bb4/public/art/beauty-beasts/characters/yuesha/face.webp)。

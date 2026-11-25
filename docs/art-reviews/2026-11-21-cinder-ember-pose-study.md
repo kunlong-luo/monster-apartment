@@ -2,12 +2,12 @@
 
 > **仅研究稿，尚未通过人工美术与权利审核，不能改动正式 CG 卡位。** 本轮专门解决此前多次生成五人拼版、无法作为独立角色原画的问题。
 
-![炽角·余烬动作研究稿](../../public/art/beauty-beasts/characters/cinder/cg-ember-pose-study-v1.webp)
+![炽角·余烬动作研究稿](sources/cinder-cg-ember-pose-study-v1.webp)
 
 | 字段 | 记录 |
 | --- | --- |
 | 卡位 | `cinder-ember` |
-| 资源路径 | `public/art/beauty-beasts/characters/cinder/cg-ember-pose-study-v1.webp` |
+| 资源路径 | `docs/art-reviews/sources/cinder-cg-ember-pose-study-v1.webp` |
 | 原生 PNG / WebP | 1086×1448 / 1086×1448 |
 | WebP 大小 | 591622 bytes |
 | SHA-256 | `37b1865233799c582aea5917655bc27b9f2deaa928b633becceeeb41814fb808` |

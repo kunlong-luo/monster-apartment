@@ -32,7 +32,7 @@
       "source": "art-sources/scenes/workshop/desktop-candidate-v2.png",
       "sourceGitBlobSha": "454501ad0087a8ff3725faea2759fa625bbebab8",
       "sourceSha256": "dcaf5f597eaa60255de9d74bba79708eba88884b8909c222ed0763f94ae385bc",
-      "output": "public/art/world-scenes/workshop/review/desktop-candidate-v2.webp",
+      "output": "docs/art-reviews/sources/workshop-desktop-candidate-v2.webp",
       "outputSha256": "ecc6cfc106409cfa3da40932dbbffc2b27ab9685ef39c5878716582205be0383",
       "bytes": 598416,
       "nativeSize": [
@@ -52,7 +52,7 @@
       "source": "art-sources/scenes/town/desktop-candidate-v1.png",
       "sourceGitBlobSha": "404ea9b9f32db3e3303eb5c1cc05fb43a0cddeea",
       "sourceSha256": "61894fe6b21c44a9621bc839c5ca764a88e63467887c83629af905e8a774ad63",
-      "output": "public/art/world-scenes/town/review/desktop-candidate-v1.webp",
+      "output": "docs/art-reviews/sources/town-desktop-candidate-v1.webp",
       "outputSha256": "d99c98f5bf9d49d671bf64239758924d4c37530a4902fb41622ba901d338e816",
       "bytes": 629238,
       "nativeSize": [

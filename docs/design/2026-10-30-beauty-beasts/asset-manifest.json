@@ -198,7 +198,9 @@
       "alpha": false,
       "usage": "Summon pool + catalog + card reveal headshot only",
       "derivedFrom": "a_highly_detailed_cinematic_fantasy_game_key_art.png",
-      "note": "One independently cropped character face from a shared concept montage; NOT final separate full-body CG or validated lock-face sheet."
+      "note": "One independently cropped character face from a shared concept montage; NOT final separate full-body CG or validated lock-face sheet.",
+      "historicalSourceCommit": "87a37023dcc5161696aab9fe006749f3a5a04bb4",
+      "retiredFromWorkingTree": true
     },
     {
       "assetId": "P3-brook-thumbnail-v1",

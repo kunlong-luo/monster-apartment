@@ -24,3 +24,5 @@
 - 当前没有独立手机工坊或街景原画。旧手机背景/棋盘仍保留。正式高分辨率、权利、人审门禁不变；先走可回退的过渡视觉，正式晋级另行记录。
 
 后续以实际 WebP 输出及截图决定择优和正式接入，不删除两份候选中尚未选择的原图。
+
+R12.95：两份未选 WebP 已移至 `docs/art-reviews/sources/workshop-desktop-candidate-v2.webp` 和 `docs/art-reviews/sources/town-desktop-candidate-v1.webp`；已选 PC 图仍留在原运行路径。四项转换清单和脚本路径同步，原图、哈希与审稿状态不变。

@@ -30,7 +30,9 @@ for scene in ("workshop", "town"):
             im.load()
             assert im.width > im.height
             rgb = im.convert("RGB")
-        output = f"public/art/world-scenes/{scene}/review/desktop-candidate-v{version}.webp"
+        selected = (scene == "workshop" and version == 1) or (scene == "town" and version == 2)
+        output = (f"public/art/world-scenes/{scene}/review/desktop-candidate-v{version}.webp" if selected
+                  else f"docs/art-reviews/sources/{scene}-desktop-candidate-v{version}.webp")
         dest = ROOT / output
         dest.parent.mkdir(parents=True, exist_ok=True)
         rgb.save(dest, "WEBP", quality=91, method=6)

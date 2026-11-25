@@ -5,7 +5,7 @@
 | 项目 | 记录 |
 | --- | --- |
 | 卡位 | `yuesha-vow` |
-| 路径 | `public/art/beauty-beasts/characters/yuesha/cg-vow-pose-study-v1.webp` |
+| 路径 | `docs/art-reviews/sources/yuesha-cg-vow-pose-study-v1.webp` |
 | 原始 PNG / WebP 像素 | 1086×1448 / 1086×1448 |
 | WebP 大小 | 474174 bytes |
 | WebP SHA-256 | `876ff5783fe7ffe940dc65f79f05b729c110a850f8495234da8fbe94f35b9dc9` |

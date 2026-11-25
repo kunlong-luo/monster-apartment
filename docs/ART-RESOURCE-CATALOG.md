@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.90）
+# 怪物公寓 · 美术资源总目录（R12.95）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -125,9 +125,9 @@
 
 清理 9,161,328 B 的工作树副本；不代表 Git 历史或线上包同等缩小。另组重复：`docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-05.webp` / `public/art/room-review/yuesha-salon-candidate.webp`，待将审稿和文档引用统一后再判断去重。
 
-### 4.1 R12.94 · public/art 全量用途分类（2026-11-25）
+### 4.1 R12.95 · public/art 用途清退（2026-11-25）
 
-基线 [329cbde](https://github.com/kunlong-luo/monster-apartment/commit/329cbdec70273a91f788f8de18689bdde4e7cac8) 的完整未截断 Git tree：本目录共 67 个文件（56 媒体、9 JSON、2 Markdown），媒体 19764765 B。按实际读取的 React 资源注册、私室动态路径、场景预览、Pixi 构建及回退链、选定审稿 manifest 和测试分类。下表范围互斥，路径均相对于 `public/art/`，合计 56 张；第 5 节仍为唯一逐文件库存，不增加第二份清单。
+基线 [87a3702](https://github.com/kunlong-luo/monster-apartment/commit/87a37023dcc5161696aab9fe006749f3a5a04bb4) 的 56 个媒体已经完成本轮迁退：现有 43 个公开媒体（14008511 B）、9 JSON、2 Markdown。下表为当前工作树公开资源，合计 43 张；第 5 节为唯一逐文件库存。正常运行及必要回退 36 张、显式交互研究 7 张。审批不变。
 
 | 路径 / 精确范围 | 数量 | 处置 | 实际职责或验收限制 |
 | --- | ---: | --- | --- |
@@ -142,24 +142,31 @@
 | `rooms/{yuesha,brook,fern,cinder}/concept-scene.svg` | 4 | 保留 | 正常故事概念背景与观景故障回退 |
 | `rooms/{yuesha,brook,fern,cinder}/review/{background-candidate,standing-candidate}.webp` | 8 | 保留 | 四房正常观景；泉泡、炽角站姿也为候选卡；不能按 review 名称删除 |
 | `world-scenes/{town-moonlit-gate,workshop-gothic-hall}.webp` | 2 | 保留 | 月光街手机/回退、Pixi 与图鉴背景 |
-| `world-scenes/town/review/desktop-candidate-v2.webp`、`world-scenes/workshop/review/desktop-candidate-v1.webp` | 2 | 保留 | 正常 PC 过渡绘景，未来单独迁移稳定运行路径 |
+| `world-scenes/town/review/desktop-candidate-v2.webp`、`world-scenes/workshop/review/desktop-candidate-v1.webp` | 2 | 保留 | 正常 PC 过渡绘景，后续单独迁移稳定运行路径 |
 | `lobby-hero-v2.webp` | 1 | 必要回退 | `engine/scripts/build.mjs` 复制，`engine/src/workshop-painted-art.ts` 加载链；不可直接删 |
 | `room-review/yuesha-salon-candidate.webp` | 1 | 显式审稿保留 | room-art-local-preview 动态调用；与 docs 证据重复已有授权例外 |
 | `world-scenes/review/2026-11-22/` 三张及 `2026-11-23/` 三张 WebP | 6 | 显式审稿保留 | S02/S05/S06 双端互动研究，现行哈希/热点仍引用 |
-| `beauty-beasts/characters/brook/cg-tide-pose-study-v{1,2}.webp`、`cinder/cg-ember-pose-study-v1.webp`、`fern/cg-spring-pose-study-v1.webp`、`yuesha/cg-eclipse-pose-study-v{1,2}.webp`、`yuesha/cg-vow-pose-study-v1.webp`（同一 characters 根） | 7 | 离线研究候选 | 非当前 CG 注册表选中图；先核验动态/测试/来源，再迁到既有 art-sources 或 docs/art-reviews，或将无独立价值的研究稿退役到 Git 历史 |
-| `beauty-beasts/characters/fern/review/cg-spring-bow-v1.webp` | 1 | 离线研究候选 | 有原图/审稿证据链，先迁引用再移出 public，不删唯一原图 |
-| `world-scenes/town/review/desktop-candidate-v1.webp`、`world-scenes/workshop/review/desktop-candidate-v2.webp` | 2 | 离线研究候选 | 未选的 PC 方案仍在 R12.61 转换清单；保留原 PNG、迁移输出及清单后从 public 移除 |
-| `beauty-beasts/characters/yuesha/face.webp`、`yuesha-bust-v2.webp`、`yuesha-portrait-v2.webp` | 3 | 优先退役候选 | 未出现在当前人物注册表；全量运行/测试/动态/文档引用与历史签名核验通过后，才实际删除或保留独立证据 |
 
-合计：正常使用/回退 35 张 11088633 B；Pixi 专用必要回退 1 张 209336 B；交互研究 7 张 2710542 B；拟移出 public 的离线研究 10 张 5498826 B；优先退役候选 3 张 257428 B。若后两类全部安全迁退，公开媒体可从 56 减至 43，静态源目录约减少 5756254 B（不等于页面下载量）。此次分类不是对所有 351 个候选源/测试/工具文件的完整引用证明，不能据零命中声称可删。
+**实际迁出 10 张（5498826 B，Git blob 不变）**：统一移到既有 [docs/art-reviews/sources/](art-reviews/sources/)，不再发布纯离线研究输出；文件名加稳定人物/地点 ID。保留全部原画与研究 SHA-256。
 
-关键引用：[人物注册](../src/components/summon/heroine-portrait-assets.ts)、[私室观景动态路径](../src/core/room-scenic-art.ts)、[私室研究预览](../src/components/game/room-art-local-preview.tsx)、[双端场景预览](../src/lib/game/r12-scene-review-art.ts)、[Pixi 构建](../engine/scripts/build.mjs)、[Pixi 回退](../engine/src/workshop-painted-art.ts)、[工坊 PC](../src/components/moonwork/workshop-cinematic-stage.tsx)、[街区 PC](../src/components/moonwork/world-town.tsx)。全部 JSON 及必要原图/审核保留；不创建新的重复库存或归档目录。执行顺序：先核实 3 张退役候选的全量引用、修正迁移测试与旧文档链接，提交删除；再迁 10 张研究图的来源/证据引用，保留原始 PNG 和当前运行回退；最后把已正常使用的 review 路径按稳定角色/场景用途迁名，统一动态映射，逐次核验 Quality/Pixi build 与相关浏览器。没有完成前不将“候选”写成“已删除”。
+- [brook-cg-tide-pose-study-v1.webp](art-reviews/sources/brook-cg-tide-pose-study-v1.webp)
+- [brook-cg-tide-pose-study-v2.webp](art-reviews/sources/brook-cg-tide-pose-study-v2.webp)
+- [cinder-cg-ember-pose-study-v1.webp](art-reviews/sources/cinder-cg-ember-pose-study-v1.webp)
+- [fern-cg-spring-bow-v1.webp](art-reviews/sources/fern-cg-spring-bow-v1.webp)
+- [fern-cg-spring-pose-study-v1.webp](art-reviews/sources/fern-cg-spring-pose-study-v1.webp)
+- [town-desktop-candidate-v1.webp](art-reviews/sources/town-desktop-candidate-v1.webp)
+- [workshop-desktop-candidate-v2.webp](art-reviews/sources/workshop-desktop-candidate-v2.webp)
+- [yuesha-cg-eclipse-pose-study-v1.webp](art-reviews/sources/yuesha-cg-eclipse-pose-study-v1.webp)
+- [yuesha-cg-eclipse-pose-study-v2.webp](art-reviews/sources/yuesha-cg-eclipse-pose-study-v2.webp)
+- [yuesha-cg-vow-pose-study-v1.webp](art-reviews/sources/yuesha-cg-vow-pose-study-v1.webp)
 
-S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/scenes/apartment/) 仅含 `desktop-candidate.png` 与 `mobile-candidate.png`；新 `desktop-candidate-v2.png` 仍是未入库的拟定文件名，不是缺少目录。原两张不覆盖，不创建空占位，不改媒体清单。
+**实际删除 3 张（257428 B）**： [月纱旧 face](https://github.com/kunlong-luo/monster-apartment/blob/87a37023dcc5161696aab9fe006749f3a5a04bb4/public/art/beauty-beasts/characters/yuesha/face.webp)、[旧半身像](https://github.com/kunlong-luo/monster-apartment/blob/87a37023dcc5161696aab9fe006749f3a5a04bb4/public/art/yuesha-bust-v2.webp)、[旧肖像](https://github.com/kunlong-luo/monster-apartment/blob/87a37023dcc5161696aab9fe006749f3a5a04bb4/public/art/yuesha-portrait-v2.webp)。历史仅通过固定 Git 提交追溯，不另建归档副本。扫描 351 个 app/src/engine/scripts/tests/e2e/workflow/public JSON 与代码文件、19 个 docs/art-sources JSON/CSV、185 个 Markdown 的相关名称；旧 face 的历史清单和排除断言保留。研究镜头表、R12-09 ledger、R12-61 输出清单、审核脚本与文档图片链接同步；保持尺寸、哈希及 production 约束。静态文字扫描不是全部动态或外部 URL 的证明，新 SHA 仍需 Quality 验证。公开媒体减少 5756254 B（非页面实际下载量），全仓媒体仅减少 257428 B。
 
-## 5. 全仓实际资源菜单（R12.90）
+S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/scenes/apartment/) 仅含 `desktop-candidate.png` 与 `mobile-candidate.png`；新 `desktop-candidate-v2.png` 仍未入库。下一批单独核验正常运行的 review 路径、根目录旧版本名、交互研究重复图和三张 public/assets 历史参考；不将本轮写成已完成全部路径重构。
 
-R12.90 基线 `be66775` 完整 Git tree：144 路径、156696945 B，全部逐项匹配下表的路径、字节及 Git blob 前缀。历史 R12.67 有 146 路径，R12.70 删除两个相同输出。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON 与 Markdown。Git blob SHA 不等于原文件 SHA-256；此表是实际资源索引，不自动授予生产状态。R12.52 的 132 路径统计属于历史。
+## 5. 全仓实际资源菜单（R12.95）
+
+本轮迁退后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
 
 ### 源图与研究（40）
 
@@ -206,28 +213,19 @@ R12.90 基线 `be66775` 完整 Git tree：144 路径、156696945 B，全部逐�
 | `art-sources/scenes/workshop/desktop-candidate-v1.png` | 3131454 | `813a14b8972d` |
 | `art-sources/scenes/workshop/desktop-candidate-v2.png` | 3103549 | `454501ad0087` |
 
-### Web 静态资源（60）
+### Web 静态资源（47）
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
 | `public/art/a05/foreground-ornaments.svg` | 2876 | `fbf4a3c67d88` |
 | `public/art/a05/moonlight-tracery.svg` | 4827 | `c5f2af6e18e6` |
 | `public/art/a05/rose-petal.svg` | 986 | `09f65722ff16` |
-| `public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v1.webp` | 514656 | `ae627af84c91` |
-| `public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v2.webp` | 563050 | `8a9f98b31eab` |
 | `public/art/beauty-beasts/characters/brook/face.webp` | 92138 | `7a6a0e8b1fb5` |
-| `public/art/beauty-beasts/characters/cinder/cg-ember-pose-study-v1.webp` | 591622 | `b12408260d7d` |
 | `public/art/beauty-beasts/characters/cinder/face.webp` | 83042 | `a36fe1b83f19` |
 | `public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp` | 601544 | `9235f2243085` |
-| `public/art/beauty-beasts/characters/fern/cg-spring-pose-study-v1.webp` | 581470 | `e18df48957c0` |
 | `public/art/beauty-beasts/characters/fern/face.webp` | 75438 | `ef097d0fc27a` |
-| `public/art/beauty-beasts/characters/fern/review/cg-spring-bow-v1.webp` | 505954 | `ace0a5dcb21d` |
 | `public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp` | 418170 | `8350e7fd568c` |
-| `public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v1.webp` | 526334 | `ee4d7faa8f82` |
-| `public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v2.webp` | 513912 | `ca6fd2886d12` |
 | `public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp` | 494826 | `7e60bcd337ba` |
-| `public/art/beauty-beasts/characters/yuesha/cg-vow-pose-study-v1.webp` | 474174 | `22dd33b5b579` |
-| `public/art/beauty-beasts/characters/yuesha/face.webp` | 53084 | `c08bde74549d` |
 | `public/art/beauty-beasts/cover/world-cover-mobile.webp` | 489132 | `edb65eec7fe0` |
 | `public/art/beauty-beasts/cover/world-cover.webp` | 526046 | `17c30be4f413` |
 | `public/art/feature-postcards/gothic-workshop.webp` | 59254 | `34c4b7fdc29d` |
@@ -256,15 +254,11 @@ R12.90 基线 `be66775` 完整 Git tree：144 路径、156696945 B，全部逐�
 | `public/art/world-scenes/review/2026-11-23/apartment-six-door-mobile-v1.webp` | 423086 | `931970f6dfb9` |
 | `public/art/world-scenes/review/2026-11-23/warehouse-mobile-v1.webp` | 419522 | `3e5173ddb694` |
 | `public/art/world-scenes/town-moonlit-gate.webp` | 120894 | `c422f2cdf82c` |
-| `public/art/world-scenes/town/review/desktop-candidate-v1.webp` | 629238 | `55daae532263` |
 | `public/art/world-scenes/town/review/desktop-candidate-v2.webp` | 636018 | `f6da756b2007` |
 | `public/art/world-scenes/workshop-gothic-hall.webp` | 180542 | `2e21a83315dd` |
 | `public/art/world-scenes/workshop/review/desktop-candidate-v1.webp` | 599408 | `50511005b937` |
-| `public/art/world-scenes/workshop/review/desktop-candidate-v2.webp` | 598416 | `5660e04024a0` |
 | `public/art/yuesha-avatar-v3.webp` | 70710 | `fa60ea5d52da` |
-| `public/art/yuesha-bust-v2.webp` | 116672 | `5070dd1dc4ac` |
 | `public/art/yuesha-bust-v3.webp` | 151936 | `ba77c88612de` |
-| `public/art/yuesha-portrait-v2.webp` | 87672 | `d0e019d24e6a` |
 | `public/art/yuesha-portrait-v3.webp` | 259898 | `3cfe23285826` |
 | `public/assets/aistudio/Gothic_Moonlit_Summoning_Screen_8181b3a5.png` | 2726560 | `3be0ecd75dd6` |
 | `public/assets/aistudio/image_26a43a92.png` | 3154947 | `6c8131dd6719` |
@@ -291,7 +285,7 @@ R12.90 基线 `be66775` 完整 Git tree：144 路径、156696945 B，全部逐�
 | `engine/art/production/machines/well/lv3.webp` | 33168 | `d64e7248dac2` |
 | `engine/art/well-art-review.avif` | 2817 | `b0159e630ab7` |
 
-### 文档审核证据（29）
+### 文档审核证据（39）
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
@@ -300,6 +294,12 @@ R12.90 基线 `be66775` 完整 Git tree：144 路径、156696945 B，全部逐�
 | `docs/art-reviews/pose-differentiation-2026-11-21.webp` | 428690 | `1598822d80ed` |
 | `docs/art-reviews/pose-differentiation-five-cards-2026-11-22.webp` | 487286 | `4a481fe4e35a` |
 | `docs/art-reviews/pose-differentiation-five-cards-brook-v2-2026-11-22.webp` | 432064 | `0939f6ddbec2` |
+| `docs/art-reviews/sources/brook-cg-tide-pose-study-v1.webp` | 514656 | `ae627af84c91` |
+| `docs/art-reviews/sources/brook-cg-tide-pose-study-v2.webp` | 563050 | `8a9f98b31eab` |
+| `docs/art-reviews/sources/cinder-cg-ember-pose-study-v1.webp` | 591622 | `b12408260d7d` |
+| `docs/art-reviews/sources/fern-cg-spring-bow-v1.webp` | 505954 | `ace0a5dcb21d` |
+| `docs/art-reviews/sources/fern-cg-spring-pose-study-v1.webp` | 581470 | `e18df48957c0` |
+| `docs/art-reviews/sources/town-desktop-candidate-v1.webp` | 629238 | `55daae532263` |
 | `docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-01.webp` | 157098 | `89b11fd01b68` |
 | `docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-02.webp` | 109326 | `a6f124ce0022` |
 | `docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-03.webp` | 135414 | `e587690236ce` |
@@ -322,6 +322,10 @@ R12.90 基线 `be66775` 完整 Git tree：144 路径、156696945 B，全部逐�
 | `docs/art-reviews/sources/winechan-gothic-manor/publisher-preview-03.review.webp` | 46562 | `dc3539afbb03` |
 | `docs/art-reviews/sources/winechan-vampire-living-room/publisher-preview-01.jpg` | 672316 | `eb84de1980be` |
 | `docs/art-reviews/sources/winechan-vampire-living-room/publisher-preview-01.review.webp` | 52004 | `11ecd755ddd0` |
+| `docs/art-reviews/sources/workshop-desktop-candidate-v2.webp` | 598416 | `5660e04024a0` |
+| `docs/art-reviews/sources/yuesha-cg-eclipse-pose-study-v1.webp` | 526334 | `ee4d7faa8f82` |
+| `docs/art-reviews/sources/yuesha-cg-eclipse-pose-study-v2.webp` | 513912 | `ca6fd2886d12` |
+| `docs/art-reviews/sources/yuesha-cg-vow-pose-study-v1.webp` | 474174 | `22dd33b5b579` |
 | `docs/art-reviews/yuesha-eclipse-pose-v1-v2-qa-2026-11-22.webp` | 353470 | `1c9efc2783a8` |
 | `docs/design/2026-10-29-gothic-red-gold/layout-map.svg` | 4145 | `7d4a9dbecabe` |
 

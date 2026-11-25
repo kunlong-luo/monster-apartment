@@ -13,7 +13,7 @@
 | 青枝 Fern | 绿植/森林主题、与其他角色不同的轮廓与服装 | 春芽契约 | `fern/face.webp` |
 | 炽角 Cinder | 烬火/角饰主题、鲜明的暖色材质和体态 | 余烬契约 | `cinder/face.webp` |
 
-旧 `beauty-beasts/characters/yuesha/face.webp` 黑发角饰与已上线银发月纱不一致，不能作为正式月纱 CG 的参考或加载回退。保留源文件供历史核对，不把它误认成第五位新角色。
+旧 `beauty-beasts/characters/yuesha/face.webp` 黑发角饰与已上线银发月纱不一致，不能作为正式月纱 CG 的参考或加载回退。R12.95 已退役该旧 WebP，历史原件见 [固定 Git 快照](https://github.com/kunlong-luo/monster-apartment/blob/87a37023dcc5161696aab9fe006749f3a5a04bb4/public/art/beauty-beasts/characters/yuesha/face.webp)，不把它误认成第五位新角色。
 
 ## 02 · 原画交付要求
 

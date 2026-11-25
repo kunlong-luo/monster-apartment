@@ -132,7 +132,7 @@
   },
   "poseStudies": {
     "yuesha-eclipse": {
-      "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v1.webp",
+      "path": "docs/art-reviews/sources/yuesha-cg-eclipse-pose-study-v1.webp",
       "width": 1086,
       "height": 1448,
       "bytes": 526334,
@@ -142,9 +142,9 @@
       "notes": "镰刃边距、原生分辨率及身份待审"
     },
     "brook-tide": {
-      "path": "public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v2.webp",
+      "path": "docs/art-reviews/sources/brook-cg-tide-pose-study-v2.webp",
       "revision": 2,
-      "supersedes": "public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v1.webp",
+      "supersedes": "docs/art-reviews/sources/brook-cg-tide-pose-study-v1.webp",
       "width": 1086,
       "height": 1448,
       "bytes": 563050,
@@ -154,7 +154,7 @@
       "notes": "外观初审：银白浅蓝发、头顶蓝色毛绒兽耳、圆润眼型、踏浪持戟已修正；鼻唇骨相/手指/三叉戟安全边距及原生 1536×2048 仍未人工审核"
     },
     "cinder-ember": {
-      "path": "public/art/beauty-beasts/characters/cinder/cg-ember-pose-study-v1.webp",
+      "path": "docs/art-reviews/sources/cinder-cg-ember-pose-study-v1.webp",
       "width": 1086,
       "height": 1448,
       "bytes": 591622,
@@ -164,7 +164,7 @@
       "notes": "单人、低重心火链挥击与锻炉战甲研究稿；火焰镰刃触底边，未达到正式规格"
     },
     "fern-spring": {
-      "path": "public/art/beauty-beasts/characters/fern/cg-spring-pose-study-v1.webp",
+      "path": "docs/art-reviews/sources/fern-cg-spring-pose-study-v1.webp",
       "width": 1086,
       "height": 1448,
       "bytes": 581470,
@@ -174,7 +174,7 @@
       "notes": "单人侧身拉藤弓与游侠轻甲；上方弓梢和箭头边距需修正，原生尺寸不足，身份待审"
     },
     "yuesha-vow": {
-      "path": "public/art/beauty-beasts/characters/yuesha/cg-vow-pose-study-v1.webp",
+      "path": "docs/art-reviews/sources/yuesha-cg-vow-pose-study-v1.webp",
       "width": 1086,
       "height": 1448,
       "bytes": 474174,
@@ -186,9 +186,9 @@
   },
   "alternativePoseStudies": {
     "yuesha-eclipse": {
-      "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v2.webp",
+      "path": "docs/art-reviews/sources/yuesha-cg-eclipse-pose-study-v2.webp",
       "revision": 2,
-      "supersedes": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v1.webp",
+      "supersedes": "docs/art-reviews/sources/yuesha-cg-eclipse-pose-study-v1.webp",
       "width": 1086,
       "height": 1448,
       "bytes": 513912,

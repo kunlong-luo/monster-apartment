@@ -16,7 +16,10 @@ for(const scene of ['workshop','town'])for(const variant of [1,2]){
   const e=report.outputs.find(row=>row.scene===scene&&row.variant===variant);
   assert(e);
   assert.equal(e.source,'art-sources/scenes/'+scene+'/desktop-candidate-v'+variant+'.png');
-  assert.equal(e.output,'public/art/world-scenes/'+scene+'/review/desktop-candidate-v'+variant+'.webp');
+  const selected=(scene==='workshop'&&variant===1)||(scene==='town'&&variant===2);
+  const output=selected?'public/art/world-scenes/'+scene+'/review/desktop-candidate-v'+variant+'.webp':
+    'docs/art-reviews/sources/'+scene+'-desktop-candidate-v'+variant+'.webp';
+  assert.equal(e.output,output);
   assert.equal(e.status,'review-only');
   assert.equal(e.device,'desktop');
   const src=read(e.source),out=read(e.output);

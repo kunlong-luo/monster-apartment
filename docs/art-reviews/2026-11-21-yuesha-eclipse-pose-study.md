@@ -4,7 +4,7 @@
 
 | 字段 | 内容 |
 | --- | --- |
-| 路径 | `public/art/beauty-beasts/characters/yuesha/cg-eclipse-pose-study-v1.webp` |
+| 路径 | `docs/art-reviews/sources/yuesha-cg-eclipse-pose-study-v1.webp` |
 | PNG 原生尺寸 | 1086×1448 |
 | WebP 导出尺寸 | 1086×1448 |
 | WebP 大小 | 526334 B |

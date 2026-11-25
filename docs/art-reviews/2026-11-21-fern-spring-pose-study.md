@@ -5,7 +5,7 @@
 | 字段 | 值 |
 | --- | --- |
 | 卡位 | `fern-spring` |
-| 图片路径 | `public/art/beauty-beasts/characters/fern/cg-spring-pose-study-v1.webp` |
+| 图片路径 | `docs/art-reviews/sources/fern-cg-spring-pose-study-v1.webp` |
 | 原生 PNG | 1086 × 1448 |
 | 导出 WebP | 1086 × 1448，quality 91 |
 | WebP 字节数 | 581470 |

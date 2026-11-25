@@ -119,3 +119,5 @@
 泉泡旧踏浪版 `brook/cg-tide-pose-study-v1.webp` 由于精灵尖耳、饱和蓝发与原有头像冲突，被保留为不可晋级的历史研究。新版本 `brook/cg-tide-pose-study-v2.webp` 已从独立 PNG 转 WebP，**头顶两只蓝色毛绒兽耳、银白浅蓝长发**得到外观修正；仍为 1086×1448 的 `research-only`：**已满足第一阶段尺寸要求，但身份和整体质量尚未经人工验收**，因此不是正式 CG。两版 SHA-256、尺寸与对照结论见 `docs/art-reviews/2026-11-22-brook-tide-pose-study-v2.md`。
 
 镜头表以 v2 作为当前研究稿、用 `supersedes` 留存 v1 来源，`check:design` 针对每条研究稿核对可控路径、修订序号、大小与哈希。**哈希和文本检查无法代替脸型、人手、武器、真实视口及授权的人审**；五个生产卡槽仍必须保持 `status: portrait`。
+
+R12.95：七张动作研究稿全部迁入 [sources/](art-reviews/sources/)（角色 ID 前缀），镜头表和检查器同步新路径。旧文中角色相对路径为历史称呼，非现行 public 资产。

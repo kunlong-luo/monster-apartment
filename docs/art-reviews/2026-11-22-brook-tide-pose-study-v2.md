@@ -5,7 +5,7 @@
 | 字段 | 当前 v2 |
 | --- | --- |
 | 角色卡位 | `brook-tide` |
-| 新研究稿路径 | `public/art/beauty-beasts/characters/brook/cg-tide-pose-study-v2.webp` |
+| 新研究稿路径 | `docs/art-reviews/sources/brook-cg-tide-pose-study-v2.webp` |
 | 原始 PNG / WebP 原生尺寸 | 1086×1448 / 1086×1448 |
 | 导出格式 | WebP quality 93，563050 B |
 | WebP SHA-256 | `dbb1e0d09c09bb948ea0bedbf474dfeda25ffdb13060a42db063c6b55279dacb` |

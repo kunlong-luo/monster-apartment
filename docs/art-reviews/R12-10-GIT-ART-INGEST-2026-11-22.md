@@ -11,7 +11,7 @@
 | `art-sources/review/2026-11-22/orders-mobile-v1.png` | 941×1672 | `0c1bf9901e493c849acfe6cdb75329e00690a696` |
 | `public/art/world-scenes/review/2026-11-22/orders-mobile-v1.webp` | 941×1672 | `d21372731b9a6a20b881a9afa3e1f584cee194c5` |
 | `art-sources/review/2026-11-22/fern-spring-bow-v1.png` | 1086×1448 | `2309293fe10fe1788ab8d4c8edeeaf7bca7fd482` |
-| `public/art/beauty-beasts/characters/fern/review/cg-spring-bow-v1.webp` | 1086×1448 | `ace0a5dcb21ddffdf8a669880eb0ed21c4223121` |
+| `docs/art-reviews/sources/fern-cg-spring-bow-v1.webp` | 1086×1448 | `ace0a5dcb21ddffdf8a669880eb0ed21c4223121` |
 | `docs/art-reviews/R12-09-ART-CONTACT-SHEET-REVIEW-ONLY.jpg` | 联系表，仅审稿 | `da82adeccbac39cd94ea3a0b8d515b70af675762` |
 
 代码与审核清单：
