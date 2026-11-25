@@ -52,3 +52,16 @@ Chromium，进入欢迎页后的现有玩家状态，`prefers-reduced-motion`。
 - 未建立额外的 ChatGPT 定时监控；图片取证是 GitHub Actions 在 PR / 手动事件触发，和 ChatGPT 的定时任务名额不同。
 
 本记录可供新的独立美术 PR 作为**变更前对照证据**，禁止将文件格式、原图宽度或一次截图简单等同于发布完成。
+
+## R12.92 · 最新大厅像素证据与四视口归档
+
+基线 `be66775` 的 [Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556397863) 两个 job 均成功，独立场景 8 项通过；[桌面日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556397863/job/139009368874) 实测：
+
+| 视口（DPR2） | 实际 currentSrc 原图 | 原生尺寸 | 有效 cover 采样比 |
+| --- | --- | --- | ---: |
+| 1648×928 | lobby-hero-v4.webp | 1672×941 | 1.972 |
+| 390×844 | lobby-hero-v4-mobile.webp | 941×1672 | 1.010 |
+
+两次均 object-fit cover、filter none、transform none、无失败回退。相对旧 V3 的 2.08 / 1.70 是不同资产下的记录对比；PC 原生像素仍明显不足，手机接近 1。DPR2 大屏的同构图最低预算约 3296×1856，正式目标保持 3840×2160；手机独立 1080×1920。不把插值放大当真实细节。已存在两个浏览器截图 artifact： [场景审稿](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556397863/artifacts/14995842474)、[桌面截图](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556397863/artifacts/14995164566)。本轮只回读日志和 artifact 元数据，未目视解包截图，不代表人工签审。
+
+修复证据链缺口：[大厅 DPR 测试](../../e2e/r12-web-lobby-dpr-budget.spec.ts) 由两组扩展为 1440×900、1648×928、390×844、390×550 全部 DPR2；保留原设备最低像素与采样预算，明确校验桌面/手机源路径，记录 object-position、实际尺寸与采样比。每组 JSON 和 PNG 写入现有 visual-evidence/lobby-dpr，独立于后续 Playwright 清空 test-results；Desktop Visual Review 检查四组均存在并上传 JSON。历史其他精确尺寸测试仍需在正式换图时同步更新，不提前放宽。新增四视口结果须等新 SHA 的工作流实测，不预填数字。此次没有更换画面、原画或生产审批；#24/#16 保持开放。

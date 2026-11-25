@@ -228,3 +228,7 @@ R12.81：#60 已合并、Quality/Pages/性能/WebGL 生命周期通过；#53/#54
 R12.82：三功能独立 Quality、Desktop、Gameplay 全部成功，组合候选保留原运行/测试 blob 并合并最新文档；待组合 SHA 质量与浏览器验收，不关闭真人、正式 CG 或原画风险。#54/#58 外部 4K 原包获取失败另行追踪。
 
 R12.83–84：V3.109.0 主线 80eb69a 的 Quality、Desktop、Gameplay 与 Pages 全部成功；#54/#58 有效运行/测试 blob 已逐一核对一致并关闭重复 PR。原包下载失败与 VIS-01/VIS-02/ART-01/UX-01 不关闭；DOC-01 继续收敛，四份旧设计报告退役，保留独立原画/审批和回归历史。实际分支 refs 尚未删除。
+
+## R12.92 · 真实浏览器视觉回归与像素诊断
+
+R12.91 主线 `81bf2d9` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45557278055) 成功；R12.89 `be66775` 的 [Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556397863) 两 job 成功，导航测试覆盖 PC 地图七路由、键盘焦点返回、手机 44px 入口与矮屏；独立场景 8 项通过。完整 [玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556397722) 核查时仍运行。大厅 DPR2 1648×928 实测 1.972、390×844 实测 1.010，均 filter/transform none，源图像素而非 CSS 是当前已测的清晰度瓶颈。新增四视口真实 JSON/PNG 留存及 CI 产物检查，详见[像素证据](../art-reviews/R12-01-REAL-BROWSER-PIXEL-EVIDENCE.md)；新结果独立核对。本轮未亲自打开截图、未取得新原画/签审、不变更运行代码和版本；#24/#16/#25 仍 open，综合 72 暂不提高。R12.93 优先按现行视觉合同准备 S02/S05/S06 原生独立场景及四人身份基准；不凭历史截图宣称画质已修复。

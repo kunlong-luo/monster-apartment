@@ -157,7 +157,7 @@ jobs:
         run: |
           mkdir -p visual-evidence/general
           find test-results -maxdepth 1 -type f \( -name 'desktop-*.png' -o -name 'mobile-lobby-*.png' \) -exec cp {} visual-evidence/general/ \; || true
-      - name: Measure current PC and mobile lobby source-pixel debt on real DPR2 Chromium
+      - name: Measure four PC and mobile lobby viewports on real DPR2 Chromium
         run: pnpm exec playwright test e2e/r12-web-lobby-dpr-budget.spec.ts --workers=1 --retries=0
       - name: Verify player room scenic mode and original review isolation
         run: pnpm exec playwright test e2e/r12-60-player-room-scenic.spec.ts e2e/r12-57-room-review.spec.ts --workers=1 --retries=0
@@ -169,6 +169,12 @@ jobs:
         run: pnpm exec playwright test e2e/workshop-dock-clearance.spec.ts --workers=1 --retries=0
       - name: Check realtime workshop starts, produces and pauses in browser
         run: pnpm exec playwright test e2e/moonwork-next-workshop.spec.ts --grep "automatic production runs" --workers=1 --retries=0
+      - name: Verify four lobby pixel reports and screenshots survive subsequent browser suites
+        run: |
+          for profile in pc-1440-dpr2 pc-1648-dpr2 mobile-390-dpr2 mobile-short-390-dpr2; do
+            test -s "visual-evidence/lobby-dpr/$profile.json"
+            test -s "visual-evidence/lobby-dpr/$profile.png"
+          done
       - name: Verify A05 screenshots survive subsequent browser suites
         run: |
           test -s visual-evidence/a05/desktop-a05-reference-1672.png
@@ -181,6 +187,7 @@ jobs:
           name: desktop-v377-screenshots
           path: |
             visual-evidence/**/*.png
+            visual-evidence/lobby-dpr/*.json
             test-results/desktop-*.png
             test-results/**/test-failed-*.png
             test-results/**/error-context.md
