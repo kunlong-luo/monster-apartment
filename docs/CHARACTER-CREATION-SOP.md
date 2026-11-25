@@ -199,3 +199,26 @@ R12.101 第二批候选：月纱头像、半身像、肖像三张原 Git blob �
 四张侧脸均低于现行竖幅身份原画 1448px 高度门槛，不能作为最终原生达标稿；其中两张还存在明确身份漂移。优先重绘月纱、泉泡；青枝、炽角先审身份，再补匹配角度和原生尺寸。不得放大冒充原生，也不得以正面达标自动判定侧脸通过。
 
 复用现有 G1 校验器：`node scripts/verify-g1-face-sources.mjs --current`，检查 8 个 PNG 原始字节、尺寸、SHA-256、Git blob、源图/转换清单状态和 4 个 WebP 实际头像字节、600×600 裁切元数据及来源关系。原 `pnpm art:g1:verify` 仍检查历史 R12.22 外部 ZIP，两个入口不混用。现有 `pnpm art:g1:test` / `pnpm check:design` 增加真实仓库检查；新检查尚待 CI，不替代像素级裁切对照、人工身份/授权签署。下一步为原生独立单人侧脸返工与审稿，不改运行资源、概率、审批或存档。
+
+### R13.0-B · 月纱与泉泡侧脸返工任务（待取得图像参考后制作）
+
+R13.0-A 已经通过 [Quality 45616340403](https://github.com/kunlong-luo/monster-apartment/actions/runs/45616340403)：当前 12 项 PNG/WebP 字节、尺寸、来源与哈希检查通过；历史 ZIP 校验测试与当前仓库校验共 10/10，64 Vitest 文件/324 测试通过，649 条文档链接零违规。此为自动技术核验，不代表人工身份审核。当前会话 GitHub 读取接口无法返回原画二进制，不能把未看见的图像当作已视觉比对，也不生成缺少原图参照的替代脸。以下为真实文件的 GitHub 可视审稿入口，未复制图片。
+
+| 人物 | 现行正面原画（以此为身份参考） | 已登记返工侧脸（不得当作身份参考） |
+| --- | --- | --- |
+| 月纱 | [<img src="../art-sources/characters/yuesha/identity/front.png" width="210" alt="月纱现行正面候选">](../art-sources/characters/yuesha/identity/front.png) | [<img src="../art-sources/characters/yuesha/identity/three-quarter-candidate.png" width="210" alt="月纱待返工侧脸">](../art-sources/characters/yuesha/identity/three-quarter-candidate.png) |
+| 泉泡 | [<img src="../art-sources/characters/brook/identity/front.png" width="210" alt="泉泡现行正面候选">](../art-sources/characters/brook/identity/front.png) | [<img src="../art-sources/characters/brook/identity/three-quarter-candidate.png" width="210" alt="泉泡待返工侧脸">](../art-sources/characters/brook/identity/three-quarter-candidate.png) |
+
+#### B1 月纱：独立 3/4 身份原画
+
+以 R12.53 已入库正面原图为唯一人物身份图像参照，而不是银发旧候选。成年哥特奇幻女性、黑发赤瞳、蔷薇与金月饰、沉静自信；以正面实图锁定脸部骨相、颧骨、下颌、眉眼、鼻唇比例、发际线与衣领，不自行增删原图既有饰物。头部转向约 35–45°、自然视线、中性闭唇表情；头顶、全部发饰、双肩可见；中性暗紫背景、柔和侧前光、头部比例与原正面一致。禁止银发回退、凭空新增双角、换成模板脸、拼版、文字、水印、UI、放大冒充原生。只输出一位角色的一张独立 3:4 PNG；至少 1086×1448，推荐 1536×2048。拟存 `art-sources/characters/yuesha/identity/three-quarter-candidate-v2.png`（尚不存在）。
+
+#### B2 泉泡：独立 3/4 身份原画
+
+以 R12.53 泉泡正面原图为唯一人物身份图像参照。成年幻想女性、浅银蓝发、头顶蓝色毛绒兽耳、柔和圆润骨相；严格核对耳朵根部、毛绒质感、面部宽高比和眼鼻唇结构，沿用正面服饰与配饰。采用与 B1 一致的头部角度、画幅、镜头比例、中性表情和光照，保持人物本身差异而非靠颜色识别。禁止鱼鳍状兽耳、长尖精灵耳、饱和蓝发、月纱式模板脸、其他角色、拼版、文字、水印与 UI。独立原生 3:4 PNG ≥1086×1448。拟存 `art-sources/characters/brook/identity/three-quarter-candidate-v2.png`（尚不存在）。
+
+#### 收件与拒收
+
+- 先检查单人物、原生尺寸、源图实际字节、权利/生成来源；只在文件实际入仓并读回 SHA-256/Git blob 后新增源图登记。v1 原稿及原转换清单保持不动；新稿标记 review 与 supersedes，不能改写 v1 哈希或把拟存路径列入实际库存。
+- 对照正面及头像：人审记录骨相、耳/角、发际线、同人连续性、风格一致性，另附至少三种表情参考与跨人物同尺度灰阶审稿。任何失败退回重绘；没有人审签署不晋级。
+- 当前两张新版侧脸均未生成、未上传、未批准；先完成 B1，再 B2，不先生成封面或 CG。青枝、炽角继续按现有 SOP 评估；正式身份 0/4，正式 CG 0/5。
