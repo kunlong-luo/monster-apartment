@@ -123,7 +123,7 @@ test('optional in-game HD review only uses an ephemeral local preview',async({pa
   await expect(page.getByTestId('room-art-review-toggle')).toHaveAttribute('aria-expanded','true');
   const backdrop=page.getByTestId('room-scene-backdrop');
   await expect(backdrop).toHaveAttribute('data-local-preview','false');
-  await page.getByTestId('room-art-local-file').setInputFiles('public/art/yuesha-bust-v3.webp');
+  await page.getByTestId('room-art-local-file').setInputFiles('public/art/characters/yuesha/yuesha-bust-v3.webp');
   await expect(page.getByTestId('room-art-local-review').getByRole('alert')).toContainText('背景候选须至少');
   await expect(backdrop).toHaveAttribute('data-local-preview','false');
   await page.getByTestId('room-art-local-file').setInputFiles(await reviewBackgroundCandidate(page));
@@ -143,7 +143,7 @@ test('transparent portrait review rejects baked CG and previews alpha-only frame
   await page.getByTestId('room-art-review-toggle').click();
   await expect(page.getByTestId('room-pose-review')).toBeVisible();
   await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-local-pose-preview','false');
-  await page.getByTestId('room-pose-upload-idle').setInputFiles('public/art/yuesha-bust-v3.webp');
+  await page.getByTestId('room-pose-upload-idle').setInputFiles('public/art/characters/yuesha/yuesha-bust-v3.webp');
   await expect(page.getByTestId('room-pose-review-error')).toBeVisible();
   await expect(page.getByTestId('room-resident-layer')).toHaveAttribute('data-local-pose-preview','false');
 
@@ -238,7 +238,7 @@ test('all three worker rooms can review local background and reject nontranspare
     await review.getByTestId('room-art-local-file').setInputFiles(await reviewBackgroundCandidate(page));
     await expect(backdrop).toHaveAttribute('data-local-preview','true');
     await expect(backdrop.locator('img')).toHaveAttribute('src',/^blob:/);
-    await review.getByTestId('room-pose-upload-idle').setInputFiles('public/art/yuesha-bust-v3.webp');
+    await review.getByTestId('room-pose-upload-idle').setInputFiles('public/art/characters/yuesha/yuesha-bust-v3.webp');
     await expect(review.getByTestId('room-pose-review-error')).toBeVisible();
     await review.getByTestId('room-art-local-reset').click();
     await expect(backdrop).toHaveAttribute('data-local-preview','false');
