@@ -1,6 +1,6 @@
 # 《怪物公寓》文档总入口
 
-> R12.89：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
+> R12.90：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
 
 ## 现行规范（新开发从这里开始）
 
@@ -101,3 +101,7 @@ R12.87 主线 `cd07183` 的 [Quality](https://github.com/kunlong-luo/monster-apa
 ## R12.89 · 组件与样式残留清理
 
 R12.88 `b70830c` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45554784920) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45554886829) 均成功。最新组件审计 92/92 app 可达、0 不可达与未解析本地引用，321/321 Vitest，故不删除整组件。扫描全部 80 份 app/src/engine/src TSX、19 份 CSS 及 16 个相关测试/脚本，收敛旧底部导航残留：8 条退役选择器规则、2 处选择器列表旧成员、1 个空 media 块、1 个无效 GothicDock compact 参数；CSS 减少 1176 个字符。现行规则见 [当前架构](CURRENT_ARCHITECTURE.md)。未穷尽非 TSX 动态类或全站视觉覆盖，通用 dock 样式保留；未修改生产逻辑、路由、资产与版本号。新 SHA 的 CI 与浏览器证据分别核验；下一批治理聚焦真实资产路径、动态引用与目录层级。
+
+## R12.90 · 美术库存自动对账
+
+基线 `be66775` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556397728) 已成功；桌面、玩法和 Pages 结果另核。完整 Git 树的 144 条媒体路径、156696945 B 与现行资源目录第 5 节逐项相符，33 条新批源图清单也一致。将第 5 节完整路径、实际文件字节与 Git blob 前缀核对接入现有媒体去重门禁及测试，输出目录归属统计；唯一历史重复例外和审批不变。未移动或删除原画、不新增目录或依赖。三份公开目录设计参考共 9161328 B 是后续隔离候选，须先核查动态与测试引用。详见 [资源总目录](ART-RESOURCE-CATALOG.md)。本轮不宣称已完成全量资源可达性或实机画质复审；新 SHA 的 Quality/Pages 单独验收。

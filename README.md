@@ -63,7 +63,7 @@ npm --prefix engine run dev
 
 文档治理：`pnpm audit:doc-links` 已接入 Quality，R12.86 自动检查全部 Git 跟踪 Markdown（基线 187 份），并要求 16 份核心入口始终存在。历史证据使用固定 Git SHA；检查仓库相对路径，不替代外链、锚点及内容事实审查。
 
-资源治理：`pnpm audit:media-duplicates` 核查 Git 跟踪媒体的实际字节，只有明确路径和 Git blob 的授权例外可重复；`pnpm test:media-duplicates` 验证新副本及变更例外被拒绝。
+资源治理：`pnpm audit:media-duplicates` 核查 Git 跟踪媒体的实际字节，只有明确路径和 Git blob 的授权例外可重复；R12.90 同一门禁核对资源总目录第 5 节的完整路径、实际字节及 Git blob 前缀，并输出分目录体积；`pnpm test:media-duplicates` 覆盖重复、缺漏、失效路径和不一致记录。
 
 工作流入口：现行 10 份 GitHub Actions 分为 Quality/Pages、桌面/玩法回归、原画像素证据、三个来源审查、工坊性能/WebGL。已退役固定事故取消和两条已不存在候选分支的转换工作流；转换脚本保留用于历史复现，不直接在 main 重跑旧批次。具体边界见[迭代手册](docs/engineering/ITERATION-PLAYBOOK.md)。
 

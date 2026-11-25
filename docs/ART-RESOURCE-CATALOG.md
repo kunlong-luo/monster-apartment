@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.71）
+# 怪物公寓 · 美术资源总目录（R12.90）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -125,9 +125,9 @@
 
 清理 9,161,328 B 的工作树副本；不代表 Git 历史或线上包同等缩小。另组重复：`docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-05.webp` / `public/art/room-review/yuesha-salon-candidate.webp`，待将审稿和文档引用统一后再判断去重。
 
-## 5. 全仓实际资源菜单（R12.70）
+## 5. 全仓实际资源菜单（R12.90）
 
-统计基线 `0f9188a282dfa8a831b9d4d8d389a43e4ed1e2d0`，完整 Git tree，共 146 路径；R12.70 删除两个相同输出后现为 144 路径。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON 与 Markdown。Git blob SHA 不等于原文件 SHA-256；此表是实际资源索引，不自动授予生产状态。R12.52 的 132 路径统计属于历史。
+R12.90 基线 `be66775` 完整 Git tree：144 路径、156696945 B，全部逐项匹配下表的路径、字节及 Git blob 前缀。历史 R12.67 有 146 路径，R12.70 删除两个相同输出。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON 与 Markdown。Git blob SHA 不等于原文件 SHA-256；此表是实际资源索引，不自动授予生产状态。R12.52 的 132 路径统计属于历史。
 
 ### 源图与研究（40）
 
@@ -382,3 +382,19 @@ R12.75：设备制作与锚点规范统一见 [WORKSHOP-ASSET-SPEC.md](design/WO
 
 
 R12.76：原 `v2/art/` 迁入 `engine/art/`，全部 16 个跟踪文件（含 manifest）路径变更但 Git blob 不变；目录表使用新路径。历史审批和源 PNG 不变。
+
+## R12.90 · 资源目录与字节自动对账
+
+基线 `be66775` 的完整 Git 树与第 5 节 144 条记录逐项匹配，缺失、额外、大小或 blob 前缀不一致均为 0；33 条新批源图清单的完整 Git blob 与字节也均一致。唯一相同 blob 仍是 R12.71 登记例外。以下为跟踪文件工作树字节合计，不等于下载流量、Git 历史体积或图片解码内存。
+
+| 目录归属 | 媒体路径 | 字节 |
+| --- | ---: | ---: |
+| art-sources | 40 | 115372885 |
+| docs | 29 | 11929723 |
+| engine/art | 15 | 310778 |
+| public/art | 56 | 19764765 |
+| public/assets | 3 | 9161328 |
+| public 其他 | 1 | 157466 |
+| 合计 | 144 | 156696945 |
+
+现有 `pnpm audit:media-duplicates` 增加第 5 节完整清单与实际文件字节对账及分目录统计；沿用原 Quality 步骤及现有测试入口，不另建库存文件或新依赖。三份 `public/assets/aistudio/` 历史设计参考 PNG 共 9161328 B，仍需核对实际 UI、测试、文档和动态引用后才能迁出 public；不按文件名推断无人使用。原始 PNG、研究稿、过渡和正式资源状态均不改变。此次未解码新图、未做全量动态引用审计或实际搬迁；新提交 CI 结果独立核查。
