@@ -159,7 +159,7 @@
         941
       ],
       "crop": null,
-      "output": "public/art/beauty-beasts/cover/world-cover.webp",
+      "output": "public/art/covers/world-cover.webp",
       "size": [
         1672,
         941
@@ -199,7 +199,7 @@
         1672
       ],
       "crop": null,
-      "output": "public/art/beauty-beasts/cover/world-cover-mobile.webp",
+      "output": "public/art/covers/world-cover-mobile.webp",
       "size": [
         941,
         1672

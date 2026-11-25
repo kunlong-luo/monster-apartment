@@ -53,7 +53,7 @@
     }
   ],
   "plannedPaths": [
-    "public/art/beauty-beasts/cover/world-cover.webp",
+    "public/art/covers/world-cover.webp",
     "public/art/beauty-beasts/ui/logo.webp",
     "public/art/beauty-beasts/characters/{id}/portrait.webp",
     "public/art/beauty-beasts/characters/{id}/face.webp",
@@ -63,7 +63,7 @@
     "public/art/beauty-beasts/beasts/{beastId}/full.webp",
     "public/art/beauty-beasts/pairings/{id}-bond.webp",
     "public/art/beauty-beasts/cards/{card-key}.webp",
-    "public/art/beauty-beasts/cover/world-cover-mobile.webp"
+    "public/art/covers/world-cover-mobile.webp"
   ],
   "acceptance": {
     "fourDistinctFaces": true,
@@ -78,7 +78,7 @@
     {
       "assetId": "R12-53-cover-desktop",
       "status": "transition-candidate",
-      "path": "public/art/beauty-beasts/cover/world-cover.webp",
+      "path": "public/art/covers/world-cover.webp",
       "width": 1672,
       "height": 941,
       "sizeBytes": 526046,
@@ -92,7 +92,7 @@
     {
       "assetId": "R12-53-cover-mobile",
       "status": "transition-candidate",
-      "path": "public/art/beauty-beasts/cover/world-cover-mobile.webp",
+      "path": "public/art/covers/world-cover-mobile.webp",
       "width": 941,
       "height": 1672,
       "sizeBytes": 489132,
@@ -164,7 +164,7 @@
     {
       "assetId": "P2-cover-desktop-v1",
       "status": "integrated",
-      "path": "public/art/beauty-beasts/cover/world-cover.webp",
+      "path": "public/art/covers/world-cover.webp",
       "width": 1920,
       "height": 1080,
       "sizeBytes": 203790,
@@ -177,7 +177,7 @@
     {
       "assetId": "P2-cover-mobile-v1",
       "status": "integrated",
-      "path": "public/art/beauty-beasts/cover/world-cover-mobile.webp",
+      "path": "public/art/covers/world-cover-mobile.webp",
       "width": 900,
       "height": 1539,
       "sizeBytes": 116024,

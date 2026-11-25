@@ -10,7 +10,7 @@ import moonveilAvatar from '../../../public/art/yuesha-avatar-v3.webp';
 import moonveilBust from '../../../public/art/yuesha-bust-v3.webp';
 import lobbyHero from '../../../public/art/lobby-hero-v4.webp';
 import lobbyHeroMobile from '../../../public/art/lobby-hero-v4-mobile.webp';
-import lobbyHeroBackup from '../../../public/art/beauty-beasts/cover/world-cover.webp';
+import lobbyHeroBackup from '../../../public/art/covers/world-cover.webp';
 import {newWorkshop} from '../../../engine/src/workshop-engine';
 import {CHANGE_EVENT,commitWorldAction} from '@/lib/moonwork/world-store';
 import {GothicAtmosphere} from './gothic-atmosphere';

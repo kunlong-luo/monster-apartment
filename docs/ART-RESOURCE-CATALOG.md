@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.98）
+# 怪物公寓 · 美术资源总目录（R12.99）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -12,7 +12,7 @@
 | 世界地点 | [art-sources/scenes/](../art-sources/scenes/) | lobby/apartment/workshop/town 等稳定地点 ID |
 | 原有审稿原画 | [art-sources/review/](../art-sources/review/) | 已绑定 R12 哈希和审核证据，保留路径 |
 | 正式角色与卡面 | [public/art/beauty-beasts/characters/](../public/art/beauty-beasts/characters/) | 由 [CG manifest](../public/art/beauty-beasts/characters/cg-manifest.json) 及 [角色注册](../src/components/summon/heroine-portrait-assets.ts) 管理 |
-| 正式欢迎页 | [public/art/beauty-beasts/cover/](../public/art/beauty-beasts/cover/) | 当前 PC/mobile 群像 |
+| 正式欢迎页 | [public/art/covers/](../public/art/covers/) | 当前 PC/mobile 群像 |
 | 正式大厅 | [public/art/](../public/art/) | lobby-hero-v4.webp / lobby-hero-v4-mobile.webp；V3 为旧公寓及回退 |
 | 正式私室 | [public/art/rooms/](../public/art/rooms/) | [rooms manifest](../public/art/rooms/manifest.json)，现有概念及未来背景/姿态槽 |
 | 世界地点 | [public/art/world-scenes/](../public/art/world-scenes/) | [R12 manifest](../public/art/world-scenes/r12-scene-manifest.json)，现行图和显式审稿资源 |
@@ -135,7 +135,7 @@
 | `decorations/{foreground-ornaments,moonlight-tracery,rose-petal}.svg` | 3 | 保留 | 图鉴场景、粒子动态 URL |
 | `beauty-beasts/characters/{brook,fern,cinder}/face.webp` | 3 | 保留 | 当前人物头像注册 |
 | `beauty-beasts/characters/yuesha/cg-{eclipse,vow}-candidate.webp`、`beauty-beasts/characters/fern/cg-spring-candidate.webp` | 3 | 保留 | 正常召唤/鉴赏候选画，不是已审批 CG |
-| `beauty-beasts/cover/world-cover.webp`、`world-cover-mobile.webp` | 2 | 保留 | 欢迎页双端，PC 图也用于大厅回退 |
+| `covers/world-cover.webp`、`world-cover-mobile.webp` | 2 | 保留 | 欢迎页双端，PC 图也用于大厅回退 |
 | `postcards/{gothic-workshop,moonlit-street}.webp` | 2 | 保留 | 大厅地点入口 |
 | `lobby-hero-v4.webp`、`lobby-hero-v4-mobile.webp` | 2 | 保留 | 正常大厅双端、欢迎页回退 |
 | `lobby-hero-v3.webp` | 1 | 保留 | 公寓/世界背景与 Pixi 回退 |
@@ -165,9 +165,9 @@
 
 S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/scenes/apartment/) 仅含 `desktop-candidate.png` 与 `mobile-candidate.png`；新 `desktop-candidate-v2.png` 仍未入库。下一批单独核验正常运行的 review 路径、根目录旧版本名、交互研究重复图和三张 public/assets 历史参考；不将本轮写成已完成全部路径重构。
 
-## 5. 全仓实际资源菜单（R12.98）
+## 5. 全仓实际资源菜单（R12.99）
 
-R12.98 路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
+R12.99 第一批路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
 
 ### 源图与研究（40）
 
@@ -227,8 +227,8 @@ R12.98 路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线
 | `public/art/beauty-beasts/characters/fern/face.webp` | 75438 | `ef097d0fc27a` |
 | `public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp` | 418170 | `8350e7fd568c` |
 | `public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp` | 494826 | `7e60bcd337ba` |
-| `public/art/beauty-beasts/cover/world-cover-mobile.webp` | 489132 | `edb65eec7fe0` |
-| `public/art/beauty-beasts/cover/world-cover.webp` | 526046 | `17c30be4f413` |
+| `public/art/covers/world-cover-mobile.webp` | 489132 | `edb65eec7fe0` |
+| `public/art/covers/world-cover.webp` | 526046 | `17c30be4f413` |
 | `public/art/postcards/gothic-workshop.webp` | 59254 | `34c4b7fdc29d` |
 | `public/art/postcards/moonlit-street.webp` | 34350 | `e7b5404a42ca` |
 | `public/art/lobby-hero-v2.webp` | 209336 | `2541cfaeaf7b` |
@@ -461,3 +461,5 @@ R12.96：将 public/art/a05 与 public/art/feature-postcards 两组历史命名�
 R12.97：将 public/art 顶层业务目录与现存根文件纳入现有 `pnpm audit:repository-layout` 门禁；旧 a05、feature-postcards、任意未登记顶层目录或根文件均失败。新用途必须同步更新资源目录、public/art 入口和门禁；现存角色、封面、房间、场景及回退路径不动。下一批优先核对正常 PC 场景 review 路径，未完成完整引用扫描前不迁移或删除；暂缓批量生成新美术。
 
 R12.98：将正常 PC 工坊、月光街两张过渡 WebP 由各自 review/ 移入地点目录，命名 workshop-desktop-transition.webp、town-desktop-transition.webp；原 Git blob、原始 PNG、四候选 SHA-256、尺寸、review-only 状态及未选研究图不变。同步两处页面导入、两处真实浏览器断言、生成器、审核器及资源清单。旧路径不再保留副本；手机背景、故障回退、正式场景准入、存档不变。公开媒体仍 43、全仓 141；新提交 Quality、桌面浏览器及 Pages 须独立核验。暂缓批量新美术；下一批审查角色与欢迎封面目录。
+
+R12.99（第一批：欢迎封面）：两张双端群像 WebP 由 beauty-beasts/cover/ 原 Git blob 迁入 public/art/covers/，保留 world-cover.webp 与 world-cover-mobile.webp 文件名、欢迎页语义标记和大厅故障回退。同步欢迎页、大厅、R12.53 转换脚本及 manifest、库存测试、设计资源清单和当前缺口台账；目录门禁登记 covers 并拒绝旧封面目录回流。媒体仍 43 公开、141 全仓；未改变审批、图片字节、布局、概率或存档。人物目录仍为 beauty-beasts/characters/，须完成头像、CG 晋级脚本、历史证据及动态路径引用核对后独立迁移（R12.99 第二批）；不宣称全部角色目录已收敛。暂缓批量新美术；新提交 CI、桌面及 Pages 结果独立验收。

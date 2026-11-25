@@ -1,8 +1,8 @@
 'use client';
 import {ReliableImage as Image,retryAssetUrl} from '@/components/game/reliable-image';
 import {useState,useSyncExternalStore} from 'react';
-import coverDesktop from '../../../public/art/beauty-beasts/cover/world-cover.webp';
-import coverMobile from '../../../public/art/beauty-beasts/cover/world-cover-mobile.webp';
+import coverDesktop from '../../../public/art/covers/world-cover.webp';
+import coverMobile from '../../../public/art/covers/world-cover-mobile.webp';
 import coverFallback from '../../../public/art/lobby-hero-v4.webp';
 import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import {GAME_UI_RELEASE,GAME_UI_CHAPTER} from '@/core/game-release';

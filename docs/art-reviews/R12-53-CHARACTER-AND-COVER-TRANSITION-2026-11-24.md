@@ -17,3 +17,5 @@
 ## R12.54 实际转换结果
 
 转换作业成功，候选提交 `13482e9230e84d123dcab3578bc3cba7e8d132d1` 已包含 15 张真实 WebP；33 源图与 15 输出路径/字节均已回读。输出 5,376,498 B。新增持续完整性检查及欢迎实际 URL 回归；[R12.54 验收记录](R12-54-TRANSITION-ASSET-VERIFICATION-2026-11-24.md)。仍未合并，生产 CG 0/5。
+
+R12.99（第一批：欢迎封面）：两张双端群像 WebP 由 beauty-beasts/cover/ 原 Git blob 迁入 public/art/covers/，保留 world-cover.webp 与 world-cover-mobile.webp 文件名、欢迎页语义标记和大厅故障回退。同步欢迎页、大厅、R12.53 转换脚本及 manifest、库存测试、设计资源清单和当前缺口台账；目录门禁登记 covers 并拒绝旧封面目录回流。媒体仍 43 公开、141 全仓；未改变审批、图片字节、布局、概率或存档。人物目录仍为 beauty-beasts/characters/，须完成头像、CG 晋级脚本、历史证据及动态路径引用核对后独立迁移（R12.99 第二批）；不宣称全部角色目录已收敛。暂缓批量新美术；新提交 CI、桌面及 Pages 结果独立验收。
