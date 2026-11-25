@@ -12,7 +12,7 @@
 - `02-契约召唤界面设计图.png` — 卡池预览、红色月蚀、中央角色大图、右侧概率与收录、单抽入口。
 - `03-月蚀人物CG候选.png` — 未审批美术候选，仅作人物氛围参考。
 
-以上原始图片不作为游戏已审核的生产图片。**GitHub 当前目录保存设计说明和实现源代码；PNG 二进制已经上传项目文档库，尚未写入 GitHub 的 docs 目录。** 需要另外使用二进制 Git/LFS 传输后才可把原始 PNG 复制到本目录 `references/`，不可假称已经在 GitHub。
+以上原始图片不作为游戏已审核的生产图片。原始设计清单的三个指定文件尚未逐一确认入库。R12.102 候选将此前公开目录三张历史参考 PNG 按原 Git blob 移入本目录 `references/`，保留旧文件名；这不证明三张与外部原始清单一一相同。
 
 ## 设计 Token
 
@@ -46,3 +46,11 @@
 ## 2026-10-30 · 美女与野兽产品和素材联合计划
 
 新设计已转入 [《美女与野兽》产品—素材路线图](../2026-10-30-beauty-beasts/ROADMAP.md) 与 [人物/异兽视觉圣经](../2026-10-30-beauty-beasts/CHARACTER_AND_BEAST_BIBLE.md)。新计划明确哪些环节应继续工程打磨、哪些环节必须生成**独立无字高清角色和野兽图片**，并说明审批、素材入库、代码引用、CI、Pages 全链路验收。现有 2026-10-29 PNG 设计参考与 2026-10-30 三张概念图都不能被标记为已接入游戏。
+
+## R12.102 · 仓库现有参考图隔离（候选）
+
+- [Gothic_Moonlit_Summoning_Screen_8181b3a5.png](references/Gothic_Moonlit_Summoning_Screen_8181b3a5.png)：2726560 B，Git blob `3be0ecd75dd6b4ab30c674e21f2a1aaa59d96c16`。
+- [image_26a43a92.png](references/image_26a43a92.png)：3154947 B，Git blob `6c8131dd6719de4cbc5421e9d494900eafdae7c0`。
+- [image_6273408e.png](references/image_6273408e.png)：3279821 B，Git blob `ea8234301ea325a4af5b4ede7ac0d13a711931aa`。
+
+三图仅供历史设计参考；未确认外部原图 SHA-256 对应关系、不授予生产审批，不允许由运行时加载。原始外部文件清单保持原值；实际仓库副本见 manifest 的 repositoryReferenceCopies。
