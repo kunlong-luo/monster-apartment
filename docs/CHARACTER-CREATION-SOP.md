@@ -222,3 +222,18 @@ R13.0-A 已经通过 [Quality 45616340403](https://github.com/kunlong-luo/monste
 - 先检查单人物、原生尺寸、源图实际字节、权利/生成来源；只在文件实际入仓并读回 SHA-256/Git blob 后新增源图登记。v1 原稿及原转换清单保持不动；新稿标记 review 与 supersedes，不能改写 v1 哈希或把拟存路径列入实际库存。
 - 对照正面及头像：人审记录骨相、耳/角、发际线、同人连续性、风格一致性，另附至少三种表情参考与跨人物同尺度灰阶审稿。任何失败退回重绘；没有人审签署不晋级。
 - 当前两张新版侧脸均未生成、未上传、未批准；先完成 B1，再 B2，不先生成封面或 CG。青枝、炽角继续按现有 SOP 评估；正式身份 0/4，正式 CG 0/5。
+
+### R13.0-C · 青枝与炽角身份审核与原生侧脸返工准备（未签审）
+
+本阶段并行准备剩余两位的审稿任务，不表示 R13.0-B 已完成。以下问题来自现有台账和转换清单，不是本次重新看图的结论。
+
+| 人物 | 现行正面参照 | 现行侧脸候选（均不达原生高度） | 正式游戏头像对照 |
+| --- | --- | --- | --- |
+| 青枝 | [正面](../art-sources/characters/fern/identity/front.png) | [1218×1292，review](../art-sources/characters/fern/identity/three-quarter-candidate.png) | [头像](../public/art/characters/fern/face.webp) |
+| 炽角 | [正面](../art-sources/characters/cinder/identity/front.png) | [1199×1312，review](../art-sources/characters/cinder/identity/three-quarter-candidate.png) | [头像](../public/art/characters/cinder/face.webp) |
+
+- C1 青枝：保留浅金发、绿瞳、杏眼、花叶冠、清晰颧骨和游侠神态。对照正面与实际头像审核颊纹、尖耳和淡疤是否有正典依据；未经确认不得新增或擅删。拒绝泉泡式圆脸、月纱式女王脸。拟存 `art-sources/characters/fern/identity/three-quarter-candidate-v2.png`（拟定路径，尚未交付）。
+- C2 炽角：保留玫瑰红发、粉赤眼、坚定眉眼、较宽下颌；双角必须遵守金属铸角头饰设定，不得变成生物角。审核旧头像与研究稿脸型差别及新增纹样、脸疤；未经签审不得确认为正典。拟存 `art-sources/characters/cinder/identity/three-quarter-candidate-v2.png`（拟定路径，尚未交付）。
+- 两位与 B1/B2 统一独立单人原生 3:4 PNG，至少 1086×1448，推荐 1536×2048，35–45° 机位、中性闭唇、同尺度柔和审稿光；不得拼版裁切、插值放大或烘焙 UI。优先锁定实际正面面部结构，再补侧脸。新图实际入库、读取哈希、来源及人工签审之后才更新登记与生产状态。
+- 四人最终联合审查：先同尺度灰阶遮蔽发色与装饰，比对眼距、颧骨、颌线、鼻唇与年龄感；再核对色彩、耳角、发饰及同人正侧面连续性。每位分别记录通过、拒绝或待审、审稿人及证据；技术门禁通过不等于人审。
+- 当前四位正面尺寸合格 4/4，侧脸高度达标 0/4，正式身份 0/4，正式 CG 0/5。未取得原画图像内容，不生成无参照新脸，不更改 v1 或生产 manifest，不提前进入封面及 CG 重制。B1/B2 优先制作，C1/C2 为并行准备；四位通过身份审稿后才推进五卡。
