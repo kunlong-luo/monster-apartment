@@ -237,3 +237,21 @@ R13.0-A 已经通过 [Quality 45616340403](https://github.com/kunlong-luo/monste
 - 两位与 B1/B2 统一独立单人原生 3:4 PNG，至少 1086×1448，推荐 1536×2048，35–45° 机位、中性闭唇、同尺度柔和审稿光；不得拼版裁切、插值放大或烘焙 UI。优先锁定实际正面面部结构，再补侧脸。新图实际入库、读取哈希、来源及人工签审之后才更新登记与生产状态。
 - 四人最终联合审查：先同尺度灰阶遮蔽发色与装饰，比对眼距、颧骨、颌线、鼻唇与年龄感；再核对色彩、耳角、发饰及同人正侧面连续性。每位分别记录通过、拒绝或待审、审稿人及证据；技术门禁通过不等于人审。
 - 当前四位正面尺寸合格 4/4，侧脸高度达标 0/4，正式身份 0/4，正式 CG 0/5。未取得原画图像内容，不生成无参照新脸，不更改 v1 或生产 manifest，不提前进入封面及 CG 重制。B1/B2 优先制作，C1/C2 为并行准备；四位通过身份审稿后才推进五卡。
+
+### R13.0-D · 四人五卡身份映射（准备完成，尚未签审）
+
+以 [源图清单](../art-sources/source-catalog.json)、[转换清单](../public/art/r12-53-transition-manifest.json)、[CG manifest](../public/art/characters/cg-manifest.json) 和 [运行注册表](../src/components/summon/heroine-portrait-assets.ts) 为准。每位人物的正面与侧脸固定在 `art-sources/characters/<id>/identity/{front,three-quarter-candidate}.png`；站姿源在 `sprites/standing.png`，房间观景使用 `public/art/rooms/<id>/scenic/standing.webp`，不等于正式角色层审批。
+
+| 卡 ID | 人物 | 原始 CG（相对 art-sources/characters） | 现行预览（相对 public/art） |
+| --- | --- | --- | --- |
+| yuesha-eclipse | 月纱 | yuesha/cg/eclipse.png · review | characters/yuesha/cg-eclipse-candidate.webp |
+| yuesha-vow | 月纱 | yuesha/cg/vow.png · review | characters/yuesha/cg-vow-candidate.webp |
+| brook-tide | 泉泡 | brook/cg/tide.png · rework | rooms/brook/scenic/standing.webp |
+| fern-spring | 青枝 | fern/cg/spring.png · review | characters/fern/cg-spring-candidate.webp |
+| cinder-ember | 炽角 | cinder/cg/ember.png · rework | rooms/cinder/scenic/standing.webp |
+
+五项预览路径、来源人物目录、类型和登记输出 SHA-256 在两个 manifest 间一致；本次为元数据核对，非实际图片哈希重算。月纱头像、肖像及胸像来自同一正面候选；两卡独立 CG 不能换脸。其余三人使用各自 face.webp，泉泡与炽角的过渡站姿共享路径不新建副本。仍为 4 正面、4 侧脸、5 CG、4 站姿源，身份批准 0/4、正式 CG 0/5。
+
+[现行机器镜头表](art-reviews/CG-DIFFERENTIATION-SHOT-LIST.json) 已纠偏：浅银蓝泉泡、浅金青枝、金属铸角与粉赤眼炽角、黑发同脸月纱。暂沿用 R12.53 机器表魔典/重锤候选方向，历史细剑/链镰保留为备选研究而非强制要求，最终武器须产品/人工确认。五项姿态、剪影、武器、服装 ID 分别唯一；两张月纱 face/identity 字段一致。见 [差异化规范](CHARACTER-CG-DIFFERENTIATION-V1.md) 的 R13.0-D 当前覆盖规则；历史研究图与哈希不变。
+
+现有 CG 审核器会核对卡位、当前肖像哈希、原生尺寸、商业授权、具名视觉人审和三视口，但不能判断实际脸部一致性，且肖像引用不等于独立 G1 签审。后续正式晋级前必须补四人 G1 正侧脸具名签审与证据绑定，不能靠改 status 绕过。B/C 原画未交付前，不执行封面/CG 批量重绘或运行时切换。保持卡池权重、概率、角色 ID、存档及资源审批原样。
