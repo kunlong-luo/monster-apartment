@@ -32,7 +32,7 @@ web
 - **不使用 Lucide Sparkles（闪光星）图标**；使用 Diamond、Crown、MoonStar、Gem 等有明确含义的图标。
 
 ## Evidence on Hand
-- `public/art/beauty-beasts/characters/*/face.webp`、`public/art/yuesha-portrait-v3.webp`：已存在的独立人物肖像。
+- `public/art/characters/{brook,fern,cinder}/face.webp`、`public/art/characters/yuesha/yuesha-portrait-v3.webp`：已存在的独立人物肖像。
 - `public/art/rooms/*/concept-scene.svg` 为概念背景，四套正式高清无人物房间 CG 尚未全部入库。
 - `src/components/summon/`：V3.72 的电影式抽卡、十连与收藏卡组件；已有五张竖幅候选可供大卡展示，其中泉泡与炽角复用各自房间站姿，不是独立 CG，但生产 manifest 五卡均为 `portrait`，0/5 正式全身 CG。
 - 真正的视觉质量要通过 `Desktop Visual Review` 的 Playwright 截图判断，编译成功不足以代表美术验收。

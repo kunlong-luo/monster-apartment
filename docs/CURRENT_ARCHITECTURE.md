@@ -151,3 +151,9 @@ R12.95：历史 V2 月纱头像与胸像路径不再存在于工作树，原字�
 现行组件审计证据与媒体路径见资源总目录；92 个组件/样式模块可达不代表每条 CSS 选择器有效，动态资源及样式细粒度核查仍待执行。
 
 [美术资源总目录](ART-RESOURCE-CATALOG.md)：完整迁移经过、失败修复和审计证据统一保存在资源总目录；清理前各文档的完整版本见 [372f26f 固定快照](https://github.com/kunlong-luo/monster-apartment/tree/372f26f28933050840b6c6f8ff5f18ed99075e44)。不再逐轮复制报告。
+
+## R12.105 · CSS 与动态资源专项核查
+
+基于 PR #61 的 372f26f：逐份读取全部 19 CSS（Git tree 281603 B）。单一 :root 色板在 gothic-premium-tokens.css；扫描 :root 内 --craft-*、--moon-ui-*、--color-gothic-* 声明未发现重复，19 份 CSS 未发现字面 url(...)。文本计数 407 处 !important，其中 summon-screen.css 124、gothic-desktop-ui.css 118、gothic-red-gold.css 97，共 339（83.3%）。这些是级联风险热点，不等于无效选择器；最大文件 gothic-workshop.css 49760 B。先按实际七路由、PC/手机、交互状态及审稿状态建立覆盖证据，再逐组消除覆盖，禁止全局批删或为少量样式引入新依赖。保持唯一色板、当前布局和审批不变。
+
+动态 URL：现有 siteAssetUrl、roomScenicArt、workshopAssetRoot 各自承担公开路径、私室分层、Pixi sidecar 目录职责。旧 site-asset-url 测试使用已退役的月纱样例但没有检查文件存在。本候选改用真实现行路径，增加 5 卡及 5 卡池头像、四房 8 个观景图的 WebP 文件头与 Pages 前缀/idempotence 测试，并覆盖末尾斜杠、协议相对和 data URL。未改运行逻辑；新测试尚未执行，需独立 Quality。

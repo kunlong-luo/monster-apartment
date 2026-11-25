@@ -122,3 +122,5 @@ R12.96：按业务用途重命名 public 资源时，除了页面导入/动态 U
 资源改名必须核对静态/动态引用、CSS、生成脚本、工作流、manifest、测试 fixture 和 Markdown 链接；高风险改名先在候选 SHA 完成 Quality 与相应浏览器验证，再合并并核对 Pages。保留原审批与公开引擎导出 URL。文档只更新对应唯一责任入口，历史证据以固定 SHA 追溯，不在所有 README、台账和手册反复粘贴阶段报告。
 
 [美术资源总目录](../ART-RESOURCE-CATALOG.md)：完整迁移经过、失败修复和审计证据统一保存在资源总目录；清理前各文档的完整版本见 [372f26f 固定快照](https://github.com/kunlong-luo/monster-apartment/tree/372f26f28933050840b6c6f8ff5f18ed99075e44)。不再逐轮复制报告。
+
+R12.105：动态资源 URL 测试必须使用现行实际 catalog，并验证真实媒体存在与文件头、Pages basePath 恰好一次；预留未批准生产路径不应被当作必存在。样式清理须区分字面引用、动态类、伪类及断点/交互状态，不以静态 grep 单独决定删除。审计结果归 CURRENT_ARCHITECTURE.md。
