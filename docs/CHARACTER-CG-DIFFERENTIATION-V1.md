@@ -88,7 +88,7 @@
 
 **阶段 G4 · 正式批准**：逐张检验手指、武器连接点、关节、透视、黑白剪影与小图辨识；做跨人物 2×2 比较并人工签署角色身份、权利来源和原生分辨率。不得自动将视觉规范 JSON 当作人审证明。只有 `art:cg:review` 和 `art:cg:promote` 的完整流程通过后才修改 `cg-manifest.json` 的生产状态。
 
-- 候选路径：`public/art/beauty-beasts/characters/{yuesha,brook,fern,cinder}/cg-*-candidate.webp`，使用仓库已锁定的精确卡位表，不随意换路由。
+- 候选路径：`public/art/characters/{yuesha,brook,fern,cinder}/cg-*-candidate.webp`，使用仓库已锁定的精确卡位表，不随意换路由。
 - **绝不能**为了上线将低像素图放大当原生 CG、将 `status: portrait` 强行设为 `production`、将月纱退役黑发概念用作现行 identity 基准。
 - 武器首先是**人物叙事与视觉身份设计**，不代表已经有战斗玩法；若要加入装备数值、技能与锻造，必须另外设计数据和游戏系统，不能靠美术暗示“已经实现”。
 

@@ -5,7 +5,7 @@ import {pathToFileURL} from 'node:url';
 import {webpDimensions} from './prepare-room-background.mjs';
 
 const root=resolve(import.meta.dirname,'..');
-const manifestPath=join(root,'public/art/beauty-beasts/characters/cg-manifest.json');
+const manifestPath=join(root,'public/art/characters/cg-manifest.json');
 export const CG_PATHS={
   'yuesha-eclipse':'yuesha/cg-eclipse.webp',
   'yuesha-vow':'yuesha/cg-vow.webp',
@@ -15,10 +15,10 @@ export const CG_PATHS={
 };
 /** Keep the runtime art-slot allowlist and the Node intake check aligned. */
 export const CG_PREVIEW_PATHS={
-  'yuesha-eclipse':'public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp',
-  'yuesha-vow':'public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp',
+  'yuesha-eclipse':'public/art/characters/yuesha/cg-eclipse-candidate.webp',
+  'yuesha-vow':'public/art/characters/yuesha/cg-vow-candidate.webp',
   'brook-tide':'public/art/rooms/brook/review/standing-candidate.webp',
-  'fern-spring':'public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp',
+  'fern-spring':'public/art/characters/fern/cg-spring-candidate.webp',
   'cinder-ember':'public/art/rooms/cinder/review/standing-candidate.webp',
 };
 /** The stable current portrait slots hold the selected resident identity.
@@ -27,9 +27,9 @@ export const CG_PREVIEW_PATHS={
 export const CG_IDENTITY_REFERENCE_PATHS={
   'yuesha-eclipse':'public/art/yuesha-portrait-v3.webp',
   'yuesha-vow':'public/art/yuesha-bust-v3.webp',
-  'brook-tide':'public/art/beauty-beasts/characters/brook/face.webp',
-  'fern-spring':'public/art/beauty-beasts/characters/fern/face.webp',
-  'cinder-ember':'public/art/beauty-beasts/characters/cinder/face.webp',
+  'brook-tide':'public/art/characters/brook/face.webp',
+  'fern-spring':'public/art/characters/fern/face.webp',
+  'cinder-ember':'public/art/characters/cinder/face.webp',
 };
 export const CG_VIEWPORTS=['desktop-1440x900','desktop-1648x928','mobile-390x844'];
 /** Phase-1 native art minimum. Higher 1536×2048 detail is optional, not a release block. */
@@ -95,7 +95,7 @@ export function auditCharacterCg(){
   let production=0;
   for(const card of ids){
     const entry=manifest.cards[card];
-    const relative='public/art/beauty-beasts/characters/'+CG_PATHS[card];
+    const relative='public/art/characters/'+CG_PATHS[card];
     check(entry.path===relative,'invalid asset path '+card);
     check(['portrait','production'].includes(entry.status),'invalid status '+card);
     const assetPath=join(root,relative);

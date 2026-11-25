@@ -13,7 +13,7 @@ test('user-selected YueSha Eclipse preview is decoded and displayed without CG r
         path:new URL(img.currentSrc).pathname,fit:getComputedStyle(img).objectFit}:null;
   }),{timeout:15000}).toMatchObject({
     width:1086,height:1448,fit:'contain',
-    path:expect.stringMatching(/\/art\/beauty-beasts\/characters\/yuesha\/cg-eclipse-candidate\.webp$/),
+    path:expect.stringMatching(/\/art\/characters\/yuesha\/cg-eclipse-candidate\.webp$/),
   });
   // Candidate illustration is not approved production CG.
   await expect(page.getByTestId('summon-featured-card-tier')).not.toContainText('制作中');

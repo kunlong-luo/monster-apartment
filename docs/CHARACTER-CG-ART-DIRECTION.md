@@ -29,7 +29,7 @@
 1. **Critique**：用真实截图检查人物视觉身份是否和大厅/房间一致；任何黑发月纱或同脸异角度、手指畸形、穿模都不通过。
 2. **Polish**：逐张原画修正材质、完整体态和光源，导出适用 WebP；不要以 CSS 光晕代替画质。
 3. **Audit**：核实画像来源与授权、原生像素尺寸、无烘焙 UI、人物边界/构图，再记录人工审核信息。没有真实审批不得标记已审核。
-4. 将通过审核的图片加入 `public/art/beauty-beasts/characters/<id>/`，再更新 `src/components/summon/heroine-portrait-assets.ts`；保持原有卡牌 ID、抽卡概率、保存及奖励不变。
+4. 将通过审核的图片加入 `public/art/characters/<id>/`，再更新 `src/components/summon/heroine-portrait-assets.ts`；保持原有卡牌 ID、抽卡概率、保存及奖励不变。
 5. 执行 `pnpm check:design`、`pnpm test`、`pnpm build` 和 PC/手机视觉截图，确认实际 Next.js 静态导出与 Pages 发布成功。
 6. 房间 CG 是另一条制作线：宽幅至少 1920×1080、单独纯背景、物件锚点一致；严格按照 `scripts/prepare-room-background.mjs` / `promote-room-background.mjs` 的人工审批流程，不能提前修改 `public/art/rooms/manifest.json` 的生产状态。
 
@@ -39,7 +39,7 @@ V3.79 只使用库中已经存在的 V3 银发月纱肖像，实现跨页面身�
 
 ## 05 · V3.80 已接入 CG 生产门禁
 
-正式卡位清单：`public/art/beauty-beasts/characters/cg-manifest.json`。五张人物卡对应五条确定的生产路径；`status=portrait` 时沿用独立肖像，只有完整人工审核通过且资源存在才将卡位标记为 `production`。召唤卡的图片来源由 `getApprovedCardCg` 自动切换，失败则退回原人物肖像；抽卡结果、保底、奖励和存档完全不变。
+正式卡位清单：`public/art/characters/cg-manifest.json`。五张人物卡对应五条确定的生产路径；`status=portrait` 时沿用独立肖像，只有完整人工审核通过且资源存在才将卡位标记为 `production`。召唤卡的图片来源由 `getApprovedCardCg` 自动切换，失败则退回原人物肖像；抽卡结果、保底、奖励和存档完全不变。
 
 **审核候选**（生成的图先放在本地工作目录，不在正式游戏路径里）：
 
@@ -97,9 +97,9 @@ pnpm check:design && pnpm test && pnpm build
 现已修复并在审核脚本中锁定五张卡的准确源文件：
 - 神话月蚀：`public/art/yuesha-portrait-v3.webp`
 - 月下誓约：`public/art/yuesha-bust-v3.webp`
-- 泉泡：`public/art/beauty-beasts/characters/brook/face.webp`
-- 青枝：`public/art/beauty-beasts/characters/fern/face.webp`
-- 炽角：`public/art/beauty-beasts/characters/cinder/face.webp`
+- 泉泡：`public/art/characters/brook/face.webp`
+- 青枝：`public/art/characters/fern/face.webp`
+- 炽角：`public/art/characters/cinder/face.webp`
 
 新审核草稿记录每张身份基准的相对路径及 SHA-256。正式晋级与 CI 审核都必须核对该哈希，避免准备、签署与正式入库期间偷偷换参考面孔。旧草稿必须重新走审核，不能直接用来跳过最新审查。
 

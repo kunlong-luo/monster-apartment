@@ -75,7 +75,7 @@
         "使用玫瑰王冠或重铠"
       ],
       "identityAnchors": {
-        "canonicalPortrait": "public/art/beauty-beasts/characters/brook/face.webp",
+        "canonicalPortrait": "public/art/characters/brook/face.webp",
         "hair": "水蓝长发、蓝色毛绒兽耳；不得换鱼鳍或精灵耳",
         "ears": "蓝色毛绒兽耳，禁止用尖长精灵耳代替",
         "face": "圆润鹅蛋脸，偏柔和下垂眼；不可套用月纱细长上挑凤眼"
@@ -123,7 +123,7 @@
         "与月纱同款细下巴脸"
       ],
       "identityAnchors": {
-        "canonicalPortrait": "public/art/beauty-beasts/characters/cinder/face.webp",
+        "canonicalPortrait": "public/art/characters/cinder/face.webp",
         "hair": "赤红长发、黑曜石熔岩双角",
         "horns": "黑曜石与深红渐层的两只弯曲魔角，禁止换成普通金属发冠",
         "face": "琥珀色眉眼，成熟有力的下颌与颧骨；不套用其他角色脸型"

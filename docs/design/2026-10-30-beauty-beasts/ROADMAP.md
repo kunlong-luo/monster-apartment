@@ -38,9 +38,9 @@ P0/P2/P5/P8 属于**产品与工程优先**；P1/P3/P4/P6 是**美术生产与�
 | A-COVER-01 | public/art/covers/world-cover.webp | P2 | 无 UI 字的 16:9、至少 2560×1440 | 欢迎页场景全屏背景 |
 | A-WELCOME-02 | public/art/covers/welcome-atmosphere.webp | P2 | 无文字的夜色场景或只复用 cover | 欢迎页光照、局部动效 |
 | A-LOGO-03 | public/art/beauty-beasts/ui/logo.webp 或独立可访问 SVG | P2 | 透明标题资产，不含“开始游戏” | 欢迎页左上/中央品牌区 |
-| A-CHAR-04 | public/art/beauty-beasts/characters/{id}/portrait.webp | P3 | 四人各 ≥1024×1536 独立全身 CG | 召唤、房间、图鉴 |
-| A-FACE-05 | public/art/beauty-beasts/characters/{id}/face.webp | P3 | 四人各 ≥512×512，严格基于各自已锁定的脸 | 头像、卡池、对话 |
-| A-POSE-06 | public/art/beauty-beasts/characters/{id}/pose-{idle,talk,work}.webp | P3/P6 | 无背景 alpha 图层，各角色各三态 | 人物房间/工坊/Pixi |
+| A-CHAR-04 | public/art/characters/{id}/portrait.webp | P3 | 四人各 ≥1024×1536 独立全身 CG | 召唤、房间、图鉴 |
+| A-FACE-05 | public/art/characters/{id}/face.webp | P3 | 四人各 ≥512×512，严格基于各自已锁定的脸 | 头像、卡池、对话 |
+| A-POSE-06 | public/art/characters/{id}/pose-{idle,talk,work}.webp | P3/P6 | 无背景 alpha 图层，各角色各三态 | 人物房间/工坊/Pixi |
 | A-BEAST-07 | public/art/beauty-beasts/beasts/{id}/full.webp | P4 | 四兽各 ≥1024×1024，透明全身且不同骨骼轮廓 | 关系图鉴、剧情、召唤特效 |
 | A-BOND-08 | public/art/beauty-beasts/pairings/{id}-bond.webp | P4 | 每对一张 16:9 情绪 CG，不带文字 | 回忆收藏与剧情节点 |
 | A-CARD-09 | public/art/beauty-beasts/cards/{card-key}.webp | P5 | 五款卡面，独立于抽卡 UI | 卡池/揭晓/收藏 |
@@ -79,7 +79,7 @@ P0/P2/P5/P8 属于**产品与工程优先**；P1/P3/P4/P6 是**美术生产与�
 - **P0 已通过稳定发布基线**：4163865 的 Quality 全项成功、Pages 部署成功。
 - **P1 人物与异兽设定**：已冻结四位成年人形角色和四种独立兽型；共享 Canvas 过渡绘景已具有不同面部构造，正式锁脸标准仍待美术审核。
 - **P2 实现完成并已提交**：真实首访欢迎页，使用 1920×1080、900×1539 两张正式 WebP 背景（文件在 public/art/covers/）；“开始/继续”是 HTML 交互，原游戏存档不重置。
-- **P3 部分集成**：四张彼此不同的 512×512 人物头像（路径 public/art/beauty-beasts/characters/{id}/face.webp）已用于卡池、揭晓和收藏。它们来自美术概念群像的独立裁剪，**不等于正式全身 CG、多姿态 Sprite 或最终锁脸**。
+- **P3 部分集成**：四张彼此不同的 512×512 人物头像（路径 public/art/characters/{id}/face.webp）已用于卡池、揭晓和收藏。它们来自美术概念群像的独立裁剪，**不等于正式全身 CG、多姿态 Sprite 或最终锁脸**。
 - **P4 尚未完成**：四兽唯一身份与契约传说已经进入真正的角色收藏面板；独立兽体 CG、透明素材和野兽动作尚未生成、审核或接入。
 - **P5 玩法在迭代**：五个主题预览对应不同女性主角，不改变真实的 RNG 概率及保底；真实单抽/十连与存档同步继续沿用现有引擎。
 - **最新提交状态**：完整 CI 应以最新 main 的 Actions 结果为准，不能把之前 4163865 的成功冒充新资产版本已经发布。
@@ -135,7 +135,7 @@ P0/P2/P5/P8 属于**产品与工程优先**；P1/P3/P4/P6 是**美术生产与�
 
 ### 7.3 生成后验收检查清单（交给前端/产品核对）
 
-- [ ] 5 张文件全部放入对应 `public/art/beauty-beasts/characters/{id}/` 目录
+- [ ] 5 张文件全部放入对应 `public/art/characters/{id}/` 目录
 - [ ] 文件命名严格为 `cg-{card-key}-candidate.webp`
 - [ ] 分辨率 ≥ 1024×1536，WebP 格式，透明或纯色背景
 - [ ] 无画内文字、无 UI 元素、无按钮、无水印

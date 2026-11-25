@@ -4,13 +4,13 @@ import {createHash} from 'node:crypto';
 import {webpDimensions} from '../scripts/prepare-room-background.mjs';
 import manifest from '../public/art/r12-53-transition-manifest.json';
 import catalog from '../art-sources/source-catalog.json';
-import cg from '../public/art/beauty-beasts/characters/cg-manifest.json';
+import cg from '../public/art/characters/cg-manifest.json';
 import roomReview from '../public/art/rooms/r12-57-review-manifest.json';
 
 const sha256=(data:Buffer)=>createHash('sha256').update(data).digest('hex');
 const blobSha=(data:Buffer)=>createHash('sha1').update('blob '+data.length+'\0').update(data).digest('hex');
 const p='public/art/';
-const c=p+'beauty-beasts/characters/';
+const c=p+'characters/';
 const a='art-sources/';
 const cardSources={
   'yuesha-eclipse':a+'characters/yuesha/cg/eclipse.png',

@@ -113,7 +113,7 @@ test('collected YueSha opens the real full-body artwork at desktop and mobile si
       path:new URL(img.currentSrc).pathname,fit:getComputedStyle(img).objectFit}:null;
   }),{timeout:15000}).toMatchObject({
     width:1086,height:1448,fit:'contain',
-    path:expect.stringMatching(/\/art\/beauty-beasts\/characters\/yuesha\/cg-eclipse-candidate\.webp$/),
+    path:expect.stringMatching(/\/art\/characters\/yuesha\/cg-eclipse-candidate\.webp$/),
   });
   await page.screenshot({path:'test-results/desktop-yuesha-collection-art.png',animations:'disabled'});
   await page.setViewportSize({width:390,height:844});

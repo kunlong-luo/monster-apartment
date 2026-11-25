@@ -7,10 +7,10 @@
 import yueshaAvatar from '../../../public/art/yuesha-avatar-v3.webp';
 import yueshaPortrait from '../../../public/art/yuesha-portrait-v3.webp';
 import yueshaBust from '../../../public/art/yuesha-bust-v3.webp';
-import brook from '../../../public/art/beauty-beasts/characters/brook/face.webp';
-import fern from '../../../public/art/beauty-beasts/characters/fern/face.webp';
-import cinder from '../../../public/art/beauty-beasts/characters/cinder/face.webp';
-import cgManifest from '../../../public/art/beauty-beasts/characters/cg-manifest.json';
+import brook from '../../../public/art/characters/brook/face.webp';
+import fern from '../../../public/art/characters/fern/face.webp';
+import cinder from '../../../public/art/characters/cinder/face.webp';
+import cgManifest from '../../../public/art/characters/cg-manifest.json';
 import {siteAssetUrl} from '../../lib/game/site-asset-url';
 
 export const HEROINE_FACE_ART={yuesha:yueshaAvatar,brook,fern,cinder} as const;
@@ -44,10 +44,10 @@ export function artworkPixelBudget(width:number,height:number,devicePixelRatio:n
  * opt-in through the manifest AND match the correct resident folder.
  * Unapproved candidates can never bypass the production provenance gate. */
 export const CARD_PREVIEW_PATHS={
-  'yuesha-eclipse':'public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp',
-  'yuesha-vow':'public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp',
+  'yuesha-eclipse':'public/art/characters/yuesha/cg-eclipse-candidate.webp',
+  'yuesha-vow':'public/art/characters/yuesha/cg-vow-candidate.webp',
   'brook-tide':'public/art/rooms/brook/review/standing-candidate.webp',
-  'fern-spring':'public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp',
+  'fern-spring':'public/art/characters/fern/cg-spring-candidate.webp',
   'cinder-ember':'public/art/rooms/cinder/review/standing-candidate.webp',
 } as const;
 export type ContractCardId=keyof typeof CARD_PREVIEW_PATHS;

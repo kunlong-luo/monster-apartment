@@ -55,11 +55,11 @@
   "plannedPaths": [
     "public/art/covers/world-cover.webp",
     "public/art/beauty-beasts/ui/logo.webp",
-    "public/art/beauty-beasts/characters/{id}/portrait.webp",
-    "public/art/beauty-beasts/characters/{id}/face.webp",
-    "public/art/beauty-beasts/characters/{id}/pose-idle.webp",
-    "public/art/beauty-beasts/characters/{id}/pose-talk.webp",
-    "public/art/beauty-beasts/characters/{id}/pose-work.webp",
+    "public/art/characters/{id}/portrait.webp",
+    "public/art/characters/{id}/face.webp",
+    "public/art/characters/{id}/pose-idle.webp",
+    "public/art/characters/{id}/pose-talk.webp",
+    "public/art/characters/{id}/pose-work.webp",
     "public/art/beauty-beasts/beasts/{beastId}/full.webp",
     "public/art/beauty-beasts/pairings/{id}-bond.webp",
     "public/art/beauty-beasts/cards/{card-key}.webp",
@@ -120,7 +120,7 @@
     {
       "assetId": "R12-53-brook-thumbnail",
       "status": "transition-candidate",
-      "path": "public/art/beauty-beasts/characters/brook/face.webp",
+      "path": "public/art/characters/brook/face.webp",
       "width": 600,
       "height": 600,
       "sizeBytes": 92138,
@@ -134,7 +134,7 @@
     {
       "assetId": "R12-53-fern-thumbnail",
       "status": "transition-candidate",
-      "path": "public/art/beauty-beasts/characters/fern/face.webp",
+      "path": "public/art/characters/fern/face.webp",
       "width": 600,
       "height": 600,
       "sizeBytes": 75438,
@@ -148,7 +148,7 @@
     {
       "assetId": "R12-53-cinder-thumbnail",
       "status": "transition-candidate",
-      "path": "public/art/beauty-beasts/characters/cinder/face.webp",
+      "path": "public/art/characters/cinder/face.webp",
       "width": 600,
       "height": 600,
       "sizeBytes": 83042,

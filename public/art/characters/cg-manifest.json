@@ -3,35 +3,35 @@
   "cards": {
     "yuesha-eclipse": {
       "status": "portrait",
-      "path": "public/art/beauty-beasts/characters/yuesha/cg-eclipse.webp",
-      "previewPath": "public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp",
+      "path": "public/art/characters/yuesha/cg-eclipse.webp",
+      "previewPath": "public/art/characters/yuesha/cg-eclipse-candidate.webp",
       "previewSha256": "a0373a2c8f39d20d0ebccb5caf25d85e2241658207b98d3f14d861d0e9533c86",
       "previewSourceKind": "illustrated-cg-candidate"
     },
     "yuesha-vow": {
       "status": "portrait",
-      "path": "public/art/beauty-beasts/characters/yuesha/cg-vow.webp",
-      "previewPath": "public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp",
+      "path": "public/art/characters/yuesha/cg-vow.webp",
+      "previewPath": "public/art/characters/yuesha/cg-vow-candidate.webp",
       "previewSha256": "9590d80f332c7211e5d42c6e791a0c89caff0bd0be5286f502e7e5b16e6b0212",
       "previewSourceKind": "illustrated-cg-candidate"
     },
     "brook-tide": {
       "status": "portrait",
-      "path": "public/art/beauty-beasts/characters/brook/cg-tide.webp",
+      "path": "public/art/characters/brook/cg-tide.webp",
       "previewPath": "public/art/rooms/brook/review/standing-candidate.webp",
       "previewSha256": "b2da93867d25eb8efdde530f27a368f47e5ae357d65b32c6a03e846c026c2bc8",
       "previewSourceKind": "sprite-transition-card"
     },
     "fern-spring": {
       "status": "portrait",
-      "path": "public/art/beauty-beasts/characters/fern/cg-spring.webp",
-      "previewPath": "public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp",
+      "path": "public/art/characters/fern/cg-spring.webp",
+      "previewPath": "public/art/characters/fern/cg-spring-candidate.webp",
       "previewSha256": "9d5cdf45290e5705944b906d28bc46149718d8790ed544ee72c3196c3aa3d0ee",
       "previewSourceKind": "illustrated-cg-candidate"
     },
     "cinder-ember": {
       "status": "portrait",
-      "path": "public/art/beauty-beasts/characters/cinder/cg-ember.webp",
+      "path": "public/art/characters/cinder/cg-ember.webp",
       "previewPath": "public/art/rooms/cinder/review/standing-candidate.webp",
       "previewSha256": "c4b015647ffcf3f919b8d180c394245ff7c5ac5d21a0a37b9e4ef81603f679b9",
       "previewSourceKind": "sprite-transition-card"

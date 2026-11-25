@@ -18,7 +18,7 @@
 
 ### G1 · 冻结角色身份（先做头像/身份板，再做 CG）
 
-建立**唯一身份锚点**：脸型和颧骨、下颌、眉眼/眼距、鼻梁和唇形、发际线、发色、耳/角结构、成熟感、体型比例、姿态习惯、人物性格气质。为新角色制作清晰面部基准并经人工核对后，放在 `public/art/beauty-beasts/characters/<characterId>/face.webp`（现有月纱为例外，使用已锁定的 V3 银发肖像）。头像素材需记录来源、版本、原始像素、SHA-256。未经明确审查不得更换头像。
+建立**唯一身份锚点**：脸型和颧骨、下颌、眉眼/眼距、鼻梁和唇形、发际线、发色、耳/角结构、成熟感、体型比例、姿态习惯、人物性格气质。为新角色制作清晰面部基准并经人工核对后，放在 `public/art/characters/<characterId>/face.webp`（现有月纱为例外，使用已锁定的 V3 银发肖像）。头像素材需记录来源、版本、原始像素、SHA-256。未经明确审查不得更换头像。
 
 现有角色身份必须保持：
 
@@ -53,7 +53,7 @@
 **示例文件约定**（`<cardSlug>` 为卡面主题，不是人物名）：
 
 ```text
-public/art/beauty-beasts/characters/<characterId>/
+public/art/characters/<characterId>/
   face.webp
   cg-<cardSlug>-pose-study-v1.webp       # 仅研究，不由游戏读取
   cg-<cardSlug>-candidate.webp           # 指定候选，配套 SHA-256
@@ -101,7 +101,7 @@ pnpm build
 
 1. **身份与剧情**：`src/core/character-life.ts` 的 `CharacterId`、`CHARACTER_PROFILES`、房间物件/对话及相关角色路由；如果只是旧角色新卡，不新增 `CharacterId`。
 2. **卡面和抽取**：`src/core/character-collection.ts` 的卡位、`src/lib/summon/gacha-engine.ts` 的 `GACHA_CHARACTERS` 和必要卡池/规则。**概率总量应经过设计审查、加总核对与测试**；绝不因新增人物静默修改原有抽卡概率或保底。
-3. **素材路由与锁定基准**：`src/components/summon/heroine-portrait-assets.ts` 的头像和预览表；`scripts/audit-character-cg.mjs` 的生产/候选/身份白名单；`public/art/beauty-beasts/characters/cg-manifest.json` 的卡位；镜头表与审核相关测试。考虑将现有固定 5 卡断言逐步重构为集中注册，但未经迁移测试不要贸然改造。
+3. **素材路由与锁定基准**：`src/components/summon/heroine-portrait-assets.ts` 的头像和预览表；`scripts/audit-character-cg.mjs` 的生产/候选/身份白名单；`public/art/characters/cg-manifest.json` 的卡位；镜头表与审核相关测试。考虑将现有固定 5 卡断言逐步重构为集中注册，但未经迁移测试不要贸然改造。
 4. **经营、收藏与存档兼容**：新人物房间、人物关系、工坊派工、装备/属性、存档验证与旧存档迁移逐项审查。不得因增加角色导致已收藏、已有装备、老玩家数据无效；必要时增加向后兼容策略和回归测试。
 5. **发布**：Quality、PC 桌面与移动端视觉、人物抽卡/收藏/房间导航及 GitHub Pages 部署确认后才能宣布已上线。若未接入玩法，说明“只有美术设定，尚不可抽取/访问”。
 

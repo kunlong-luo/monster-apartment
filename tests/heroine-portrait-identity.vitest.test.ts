@@ -3,7 +3,7 @@ import {readFileSync,statSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {resolve} from 'node:path';
 import {HEROINE_FACE_ART,getCardFace,getApprovedCardCg,getCardPortraitFallback,getCardPortraitKind,getCardArtTier,artworkPixelBudget,getSelectedCardPreview,getCollectibleCardArt,CARD_PREVIEW_PATHS,YUESHA_ECLIPSE_PREVIEW_PATH} from '../src/components/summon/heroine-portrait-assets';
-import cgManifest from '../public/art/beauty-beasts/characters/cg-manifest.json';
+import cgManifest from '../public/art/characters/cg-manifest.json';
 import {GACHA_CHARACTERS,GACHA_POOLS} from '../src/lib/summon/gacha-engine';
 
 describe('character portrait visual identity',()=>{
@@ -13,13 +13,13 @@ describe('character portrait visual identity',()=>{
     for(const id of cardIds){
       const entry=cgManifest.cards[id as keyof typeof cgManifest.cards];
       expect(['portrait','production']).toContain(entry.status);
-      expect(entry.path).toMatch(/^public\/art\/beauty-beasts\/characters\/[a-z-]+\/cg-[a-z-]+\.webp$/);
+      expect(entry.path).toMatch(/^public\/art\/characters\/[a-z-]+\/cg-[a-z-]+\.webp$/);
       if(entry.status==='portrait')expect(getApprovedCardCg(id)).toBeNull();
-      else expect(getApprovedCardCg(id)).toMatch(/^\/art\/beauty-beasts\/characters\//);
+      else expect(getApprovedCardCg(id)).toMatch(/^\/art\/characters\//);
     }
   });
   it('verifies all five opt-in previews against real image bytes without granting production approval',()=>{
-    expect(YUESHA_ECLIPSE_PREVIEW_PATH).toBe('public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp');
+    expect(YUESHA_ECLIPSE_PREVIEW_PATH).toBe('public/art/characters/yuesha/cg-eclipse-candidate.webp');
     expect(Object.keys(CARD_PREVIEW_PATHS).sort()).toEqual(Object.keys(cgManifest.cards).sort());
     for(const id of Object.keys(CARD_PREVIEW_PATHS)){
       const entry=cgManifest.cards[id as keyof typeof cgManifest.cards];
@@ -57,7 +57,7 @@ describe('character portrait visual identity',()=>{
     } as const;
     for(const [poolId,resident] of Object.entries(expected)){
       const pool=GACHA_POOLS.find(p=>p.id===poolId);
-      expect(pool?.avatar).toBe('/art/beauty-beasts/characters/'+resident+'/face.webp');
+      expect(pool?.avatar).toBe('/art/characters/'+resident+'/face.webp');
       expect(GACHA_CHARACTERS.find(card=>card.id.startsWith(resident+'-'))?.avatar)
         .toBe(pool?.avatar);
     }
@@ -97,7 +97,7 @@ describe('character portrait visual identity',()=>{
       // The published catalog must not point to the lobby heroine if the
       // character portrait is reloaded or used by another component.
       const catalog=GACHA_CHARACTERS.find(c=>c.id===id);
-      expect(catalog?.avatar).toBe('/art/beauty-beasts/characters/'+resident+'/face.webp');
+      expect(catalog?.avatar).toBe('/art/characters/'+resident+'/face.webp');
     }
     expect(getCardFace('unlisted-character')).toBeNull();
   });

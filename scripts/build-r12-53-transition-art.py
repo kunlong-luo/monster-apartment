@@ -68,7 +68,7 @@ def export(src, dest, expected, kind, crop=None, alpha=False):
     return result
 A="art-sources/"
 P="public/art/"
-C=P+"beauty-beasts/characters/"
+C=P+"characters/"
 front={i:A+"characters/"+i+"/identity/front.png" for i in ("yuesha","brook","fern","cinder")}
 boxes={"yuesha":(250,0,850,600),"brook":(300,0,900,600),"fern":(315,0,915,600),"cinder":(220,0,820,600)}
 for i, box in boxes.items():

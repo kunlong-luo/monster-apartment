@@ -11,7 +11,7 @@
 | 私人房间 | [art-sources/rooms/](../art-sources/rooms/) | 每个角色独立背景；卧室候选分开 |
 | 世界地点 | [art-sources/scenes/](../art-sources/scenes/) | lobby/apartment/workshop/town 等稳定地点 ID |
 | 原有审稿原画 | [art-sources/review/](../art-sources/review/) | 已绑定 R12 哈希和审核证据，保留路径 |
-| 正式角色与卡面 | [public/art/beauty-beasts/characters/](../public/art/beauty-beasts/characters/) | 由 [CG manifest](../public/art/beauty-beasts/characters/cg-manifest.json) 及 [角色注册](../src/components/summon/heroine-portrait-assets.ts) 管理 |
+| 正式角色与卡面 | [public/art/characters/](../public/art/characters/) | 由 [CG manifest](../public/art/characters/cg-manifest.json) 及 [角色注册](../src/components/summon/heroine-portrait-assets.ts) 管理 |
 | 正式欢迎页 | [public/art/covers/](../public/art/covers/) | 当前 PC/mobile 群像 |
 | 正式大厅 | [public/art/](../public/art/) | lobby-hero-v4.webp / lobby-hero-v4-mobile.webp；V3 为旧公寓及回退 |
 | 正式私室 | [public/art/rooms/](../public/art/rooms/) | [rooms manifest](../public/art/rooms/manifest.json)，现有概念及未来背景/姿态槽 |
@@ -133,8 +133,8 @@
 | 路径 / 精确范围 | 数量 | 处置 | 实际职责或验收限制 |
 | --- | ---: | --- | --- |
 | `decorations/{foreground-ornaments,moonlight-tracery,rose-petal}.svg` | 3 | 保留 | 图鉴场景、粒子动态 URL |
-| `beauty-beasts/characters/{brook,fern,cinder}/face.webp` | 3 | 保留 | 当前人物头像注册 |
-| `beauty-beasts/characters/yuesha/cg-{eclipse,vow}-candidate.webp`、`beauty-beasts/characters/fern/cg-spring-candidate.webp` | 3 | 保留 | 正常召唤/鉴赏候选画，不是已审批 CG |
+| `characters/{brook,fern,cinder}/face.webp` | 3 | 保留 | 当前人物头像注册 |
+| `characters/yuesha/cg-{eclipse,vow}-candidate.webp`、`characters/fern/cg-spring-candidate.webp` | 3 | 保留 | 正常召唤/鉴赏候选画，不是已审批 CG |
 | `covers/world-cover.webp`、`world-cover-mobile.webp` | 2 | 保留 | 欢迎页双端，PC 图也用于大厅回退 |
 | `postcards/{gothic-workshop,moonlit-street}.webp` | 2 | 保留 | 大厅地点入口 |
 | `lobby-hero-v4.webp`、`lobby-hero-v4-mobile.webp` | 2 | 保留 | 正常大厅双端、欢迎页回退 |
@@ -167,7 +167,7 @@ S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/s
 
 ## 5. 全仓实际资源菜单（R12.99）
 
-R12.99 第一批路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
+R12.99 第二批路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
 
 ### 源图与研究（40）
 
@@ -221,12 +221,12 @@ R12.99 第一批路径迁移后完整 Git tree：141 路径、156439517 B。R12.
 | `public/art/decorations/foreground-ornaments.svg` | 2876 | `fbf4a3c67d88` |
 | `public/art/decorations/moonlight-tracery.svg` | 4827 | `c5f2af6e18e6` |
 | `public/art/decorations/rose-petal.svg` | 986 | `09f65722ff16` |
-| `public/art/beauty-beasts/characters/brook/face.webp` | 92138 | `7a6a0e8b1fb5` |
-| `public/art/beauty-beasts/characters/cinder/face.webp` | 83042 | `a36fe1b83f19` |
-| `public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp` | 601544 | `9235f2243085` |
-| `public/art/beauty-beasts/characters/fern/face.webp` | 75438 | `ef097d0fc27a` |
-| `public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp` | 418170 | `8350e7fd568c` |
-| `public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp` | 494826 | `7e60bcd337ba` |
+| `public/art/characters/brook/face.webp` | 92138 | `7a6a0e8b1fb5` |
+| `public/art/characters/cinder/face.webp` | 83042 | `a36fe1b83f19` |
+| `public/art/characters/fern/cg-spring-candidate.webp` | 601544 | `9235f2243085` |
+| `public/art/characters/fern/face.webp` | 75438 | `ef097d0fc27a` |
+| `public/art/characters/yuesha/cg-eclipse-candidate.webp` | 418170 | `8350e7fd568c` |
+| `public/art/characters/yuesha/cg-vow-candidate.webp` | 494826 | `7e60bcd337ba` |
 | `public/art/covers/world-cover-mobile.webp` | 489132 | `edb65eec7fe0` |
 | `public/art/covers/world-cover.webp` | 526046 | `17c30be4f413` |
 | `public/art/postcards/gothic-workshop.webp` | 59254 | `34c4b7fdc29d` |
@@ -463,3 +463,5 @@ R12.97：将 public/art 顶层业务目录与现存根文件纳入现有 `pnpm a
 R12.98：将正常 PC 工坊、月光街两张过渡 WebP 由各自 review/ 移入地点目录，命名 workshop-desktop-transition.webp、town-desktop-transition.webp；原 Git blob、原始 PNG、四候选 SHA-256、尺寸、review-only 状态及未选研究图不变。同步两处页面导入、两处真实浏览器断言、生成器、审核器及资源清单。旧路径不再保留副本；手机背景、故障回退、正式场景准入、存档不变。公开媒体仍 43、全仓 141；新提交 Quality、桌面浏览器及 Pages 须独立核验。暂缓批量新美术；下一批审查角色与欢迎封面目录。
 
 R12.99（第一批：欢迎封面）：两张双端群像 WebP 由 beauty-beasts/cover/ 原 Git blob 迁入 public/art/covers/，保留 world-cover.webp 与 world-cover-mobile.webp 文件名、欢迎页语义标记和大厅故障回退。同步欢迎页、大厅、R12.53 转换脚本及 manifest、库存测试、设计资源清单和当前缺口台账；目录门禁登记 covers 并拒绝旧封面目录回流。媒体仍 43 公开、141 全仓；未改变审批、图片字节、布局、概率或存档。人物目录仍为 beauty-beasts/characters/，须完成头像、CG 晋级脚本、历史证据及动态路径引用核对后独立迁移（R12.99 第二批）；不宣称全部角色目录已收敛。暂缓批量新美术；新提交 CI、桌面及 Pages 结果独立验收。
+
+R12.99 第二批：将 beauty-beasts/characters/ 的 3 张头像、3 张候选 CG 原 Git blob 迁入 public/art/characters/<id>/，同时迁移 cg-manifest.json 并更新五卡正式/预览槽、运行注册、CG 审核/晋级/生成、源图映射、测试及现行 SOP。beauty-beasts/ 整个公开历史目录退役，门禁登记 characters 并拒绝旧目录回流。月纱根目录三张 V3 肖像仍留待 R12.101；泉泡/炽角继续共享 rooms 下站姿，不重建两张重复候选。五卡仍 portrait（0/5 production），现行原画、哈希、身份、抽卡、存档、回退不变。固定历史 SHA URL、历史清单与 legacyOutput 保留旧路径。43 公开媒体、141 全仓媒体不变；新 SHA 的 Quality、真实浏览器及 Pages 独立验收。暂缓批量新美术；下一阶段 R12.100 核查房间正常观景与显式研究图路径。

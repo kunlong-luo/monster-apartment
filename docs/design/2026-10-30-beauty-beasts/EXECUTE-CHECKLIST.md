@@ -10,10 +10,10 @@
 
 | 序号 | 角色 | 内部 ID | 目标文件路径 | 契约卡 | 提示词重点 |
 |---|---|---|---|---|---|
-| 1 | 泉泡 | brook | `public/art/beauty-beasts/characters/brook/cg-tide-candidate.webp` | brook-tide | 银色冷金波浪长发，蓝灰杏圆眼，心形脸，薄纱盔甲，皎月冷光，侧脸轻笑 |
-| 2 | 青枝 | fern | `public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp` | fern-spring | 赤铜红卷发，绿色猫眼，菱形脸，精灵耳，藤蔓礼服，抬手施法，荆棘花开 |
-| 3 | 炽角 | cinder | `public/art/beauty-beasts/characters/cinder/cg-ember-candidate.webp` | cinder-ember | 深赤棕马尾，琥珀眼，方椭圆脸，左眉伤疤，锻造衣，金属角，锻炉热光 |
-| 4 | 月纱（誓约） | yuesha | `public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp` | yuesha-vow | 长黑发酒红冷光，红黑金蔷薇冠，鹅蛋脸，上挑眼，束腰礼服，红月王座 |
+| 1 | 泉泡 | brook | `public/art/characters/brook/cg-tide-candidate.webp` | brook-tide | 银色冷金波浪长发，蓝灰杏圆眼，心形脸，薄纱盔甲，皎月冷光，侧脸轻笑 |
+| 2 | 青枝 | fern | `public/art/characters/fern/cg-spring-candidate.webp` | fern-spring | 赤铜红卷发，绿色猫眼，菱形脸，精灵耳，藤蔓礼服，抬手施法，荆棘花开 |
+| 3 | 炽角 | cinder | `public/art/characters/cinder/cg-ember-candidate.webp` | cinder-ember | 深赤棕马尾，琥珀眼，方椭圆脸，左眉伤疤，锻造衣，金属角，锻炉热光 |
+| 4 | 月纱（誓约） | yuesha | `public/art/characters/yuesha/cg-vow-candidate.webp` | yuesha-vow | 长黑发酒红冷光，红黑金蔷薇冠，鹅蛋脸，上挑眼，束腰礼服，红月王座 |
 
 ## 3. 通用生成要求（Negative + Positive）
 
@@ -29,7 +29,7 @@
 
 ## 4. 生成后的前端验收（交给开发）
 
-- [ ] 4 个文件放入对应 `public/art/beauty-beasts/characters/{id}/` 目录
+- [ ] 4 个文件放入对应 `public/art/characters/{id}/` 目录
 - [ ] 文件命名严格为 `cg-{card-key}-candidate.webp`
 - [ ] 分辨率 ≥ 1024×1536，WebP，透明或纯色背景
 - [ ] 无画内文字、无 UI、无按钮、无水印
@@ -42,3 +42,5 @@
 ## 5. 代码端已就绪，无需改动
 
 `src/components/summon/heroine-portrait-assets.ts` 中 `CARD_PREVIEW_PATHS` 已预留全部 5 张卡的路径，只需放入图片并更新 manifest 即可生效。
+
+R12.99 第二批：将 beauty-beasts/characters/ 的 3 张头像、3 张候选 CG 原 Git blob 迁入 public/art/characters/<id>/，同时迁移 cg-manifest.json 并更新五卡正式/预览槽、运行注册、CG 审核/晋级/生成、源图映射、测试及现行 SOP。beauty-beasts/ 整个公开历史目录退役，门禁登记 characters 并拒绝旧目录回流。月纱根目录三张 V3 肖像仍留待 R12.101；泉泡/炽角继续共享 rooms 下站姿，不重建两张重复候选。五卡仍 portrait（0/5 production），现行原画、哈希、身份、抽卡、存档、回退不变。固定历史 SHA URL、历史清单与 legacyOutput 保留旧路径。43 公开媒体、141 全仓媒体不变；新 SHA 的 Quality、真实浏览器及 Pages 独立验收。暂缓批量新美术；下一阶段 R12.100 核查房间正常观景与显式研究图路径。

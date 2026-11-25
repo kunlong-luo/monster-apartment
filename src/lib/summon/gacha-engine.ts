@@ -38,13 +38,13 @@ export const GACHA_CHARACTERS: readonly SummonableCharacter[] = [
     quote:'契约已成，星月为证。',bio:'月纱与旅人相遇时的誓约。',
     baseCardKey:'yuesha-vow' },
   { id:'cinder-ember',name:'炽角',title:'炽角 · 炉火余烬',epithet:'史诗 · 锻造',
-    rarity:'SR',rarityZh:'SR 精英',rate:17,avatar:'/art/beauty-beasts/characters/cinder/face.webp',
+    rarity:'SR',rarityZh:'SR 精英',rate:17,avatar:'/art/characters/cinder/face.webp',
     quote:'炉膛里的火还热着！',bio:'工坊的晶核锻造大师。',baseCardKey:'cinder-ember' },
   { id:'fern-spring',name:'青枝',title:'青枝 · 春芽誓约',epithet:'稀有 · 园艺',
-    rarity:'R',rarityZh:'R 稀有',rate:31,avatar:'/art/beauty-beasts/characters/fern/face.webp',
+    rarity:'R',rarityZh:'R 稀有',rate:31,avatar:'/art/characters/fern/face.webp',
     quote:'植物是不会说谎的。',bio:'能听懂植物低语的园艺师。',baseCardKey:'fern-spring' },
   { id:'brook-tide',name:'泉泡',title:'泉泡 · 潮汐来信',epithet:'普通 · 水汽',
-    rarity:'N',rarityZh:'N 常规',rate:46,avatar:'/art/beauty-beasts/characters/brook/face.webp',
+    rarity:'N',rarityZh:'N 常规',rate:46,avatar:'/art/characters/brook/face.webp',
     quote:'水汽管道今天一切正常！',bio:'活泼的水汽工匠。',baseCardKey:'brook-tide' },
 ];
 
@@ -87,15 +87,15 @@ export const GACHA_POOLS: readonly GachaPool[] = [
   {id:'eternal-struggle',name:'赤焰工坊',badge:'主题',subname:'炽角 · 炉火余烬',
     remainingDays:0,bgQuote:'每一抹微光都是恩赐。',
     bannerTitle:'赤焰 · 熔炉誓约',bannerSub:'炽角与赤焰铠兽的古老盟约。',
-    dateRange:'长期开放 · 概率同主池',avatar:'/art/beauty-beasts/characters/cinder/face.webp'},
+    dateRange:'长期开放 · 概率同主池',avatar:'/art/characters/cinder/face.webp'},
   {id:'bond-echo',name:'荆棘回响',badge:'主题',subname:'青枝 · 春芽誓约',
     remainingDays:0,bgQuote:'月光仍记得你的声音。',
     bannerTitle:'荆棘 · 春芽誓约',bannerSub:'青枝与花木古灵守护月光温室。',
-    dateRange:'长期开放 · 无自选概率提升',avatar:'/art/beauty-beasts/characters/fern/face.webp'},
+    dateRange:'长期开放 · 无自选概率提升',avatar:'/art/characters/fern/face.webp'},
   {id:'memory-remnant',name:'潮汐来信',badge:'主题',subname:'泉泡 · 水汽调谐',
     remainingDays:0,bgQuote:'尘封的记忆再次苏醒。',
     bannerTitle:'潮汐 · 皎月来信',bannerSub:'泉泡在银月之下听见霜狼的低语。',
-    dateRange:'长期开放 · 概率同主池',avatar:'/art/beauty-beasts/characters/brook/face.webp'},
+    dateRange:'长期开放 · 概率同主池',avatar:'/art/characters/brook/face.webp'},
 ];
 
 export interface GachaState {

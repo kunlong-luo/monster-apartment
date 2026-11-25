@@ -35,12 +35,12 @@ describe('A05 production CG intake and preview',()=>{
   });
   it('will not pretend an unreviewed source has already become full-body production artwork',()=>{
     const manifest=JSON.parse(readFileSync(resolve(
-      'public/art/beauty-beasts/characters/cg-manifest.json'),'utf8'));
+      'public/art/characters/cg-manifest.json'),'utf8'));
     expect(Object.keys(manifest.cards).sort()).toEqual(Object.keys(CG_PATHS).sort());
     expect(Object.keys(CG_PREVIEW_PATHS).sort()).toEqual(Object.keys(CG_PATHS).sort());
     for(const [id,card] of Object.entries(manifest.cards)){
       const data=card as {path:string;status:string;previewPath?:string;previewSha256?:string};
-      expect(data.path).toBe('public/art/beauty-beasts/characters/'+CG_PATHS[id as keyof typeof CG_PATHS]);
+      expect(data.path).toBe('public/art/characters/'+CG_PATHS[id as keyof typeof CG_PATHS]);
       expect(['portrait','production']).toContain(data.status);
       if(data.status==='portrait'){
         expect(existsSync(resolve(data.path))).toBe(false);
@@ -57,7 +57,7 @@ describe('A05 production CG intake and preview',()=>{
   });
   it('accepts 1086×1448 genuine artwork for stage-one review, but rejects unsigned promotion',()=>{
     expect(CG_MIN_NATIVE_SIZE).toEqual({width:1086,height:1448});
-    const art=readFileSync(resolve('public/art/beauty-beasts/characters/yuesha/cg-eclipse-candidate.webp'));
+    const art=readFileSync(resolve('public/art/characters/yuesha/cg-eclipse-candidate.webp'));
     const result=inspectCharacterCg(art);
     expect(result.width).toBe(1086);
     expect(result.height).toBe(1448);

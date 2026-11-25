@@ -7,7 +7,7 @@ import {webpDimensions} from './prepare-room-background.mjs';
 // Check brief structure and immutable pose-study file bytes. This cannot assess artistic quality or identity visually.
 const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
 const brief=JSON.parse(readFileSync(resolve(root,'docs/art-reviews/CG-DIFFERENTIATION-SHOT-LIST.json'),'utf8'));
-const manifest=JSON.parse(readFileSync(resolve(root,'public/art/beauty-beasts/characters/cg-manifest.json'),'utf8'));
+const manifest=JSON.parse(readFileSync(resolve(root,'public/art/characters/cg-manifest.json'),'utf8'));
 const fail=message=>{throw new Error('CG differentiation brief: '+message);};
 if(brief.schemaVersion!==1||brief.productionApproved!==false)fail('unexpected version or production approval');
 const ids=Object.keys(manifest.cards).sort(),specified=Object.keys(brief.cards).sort();

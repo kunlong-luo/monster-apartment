@@ -28,7 +28,7 @@ describe('current beauty/beast transition image integrity',()=>{
     }
   });
   it('all four active heroine thumbnails have different real image binaries',()=>{
-    const facePaths=['public/art/yuesha-avatar-v3.webp',...['brook','fern','cinder'].map(id=>'public/art/beauty-beasts/characters/'+id+'/face.webp')];
+    const facePaths=['public/art/yuesha-avatar-v3.webp',...['brook','fern','cinder'].map(id=>'public/art/characters/'+id+'/face.webp')];
     const faces=manifest.productionAssets.filter(a=>facePaths.includes(a.path));
     expect(faces.map(a=>a.path).sort()).toEqual(facePaths.sort());
     expect(new Set(faces.map(face=>face.sha256)).size).toBe(4);

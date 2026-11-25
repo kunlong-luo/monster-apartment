@@ -27,10 +27,10 @@ function main(argv){
     throw Error('Approved WebP source and review JSON must exist');
   const bytes=readFileSync(src),review=JSON.parse(readFileSync(proof,'utf8'));
   assertCharacterCgReview({card,review,bytes});
-  const file=join(root,'public/art/beauty-beasts/characters/cg-manifest.json');
+  const file=join(root,'public/art/characters/cg-manifest.json');
   const original=readFileSync(file),manifest=JSON.parse(original.toString('utf8'));
   const entry=manifest.cards?.[card];
-  if(!entry||entry.status!=='portrait'||entry.path!=='public/art/beauty-beasts/characters/'+CG_PATHS[card])
+  if(!entry||entry.status!=='portrait'||entry.path!=='public/art/characters/'+CG_PATHS[card])
     throw Error('Card already promoted or manifest altered');
   const dest=join(root,entry.path),provenance=join(dirname(dest),
     'cg-provenance-'+basename(dest,'.webp')+'.json');
