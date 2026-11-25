@@ -128,16 +128,13 @@
 - PixiJS 工坊的正式场景优先读取 `lobby-hero-v3.webp`，资源解码失败则回退 V2 WebP、旧 AVIF、程序地景；工坊角色月纱优先显示以圆形 Graphics mask 裁切的 `yuesha-avatar-v3.webp` 徽章，而非把有背景的平面肖像强行拼成行走人物。旧动画角色保留资源失败时的后备。
 - 委托状态及选中回调、全部存档键、工坊生产规则和场景导航保持不变。测试覆盖浏览器原生图像分辨率、WebP 文件有效性、月纱访客徽章及路由往返。
 
-
 ## R12.74 · 目录所有权
 
 根目录白名单 12 个，详见根 README；不再保留 AI Studio 临时方案、重复历史任务表、无运行入口 TSX 原型、旧 Gemini 配置与单独的 artwork 元数据目录。旧归档索引进入 docs/art-reviews，历史证据在固定 Git SHA。`engine` 是实际运行时及构建链；迁移保留原有相对目录、公开 URL 和存档键，候选须通过所有相关检查。
 
-
 ## R12.75 · 工坊文档与运行边界
 
 旧 V2 路由说明和独立实验路线已退役（[固定快照](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs)）。当前 Next 七路由、Pixi IIFE、React 挂载/销毁、静态资源同源、现有端口和双存档键依本架构、实际代码与工作流；不恢复独立 HTML。工坊资产制作统一至 [设备规格](design/WORKSHOP-ASSET-SPEC.md)。`pnpm audit:engine-paths` 为后续迁移提供逐文件引用报告；R12.75 时位置仍为 `v2/`；R12.76 已通过四项候选检查并合并 f3a3b70，完整目录迁到 `engine/`，旧路径仅属于历史；主线 Quality、Pages、性能基准和 WebGL 生命周期已通过。
-
 
 V3.109.0 已发布（80eb69a）：仓库需求/采购预览复用 engine 的 importPatronCore 与 forecastPatronCommission；公寓 HUD 共存仅显式审稿临时状态；工坊 Motion 粒子只读工作状态和预测产量，均不另建存档、经济或运行引擎。
 
@@ -149,4 +146,8 @@ V3.109.0 已发布（80eb69a）：仓库需求/采购预览复用 engine 的 imp
 
 R12.95：历史 V2 月纱头像与胸像路径不再存在于工作树，原字节在 [固定历史提交](https://github.com/kunlong-luo/monster-apartment/tree/87a37023dcc5161696aab9fe006749f3a5a04bb4/public/art)；V3 与必要 Pixi V2 大厅回退仍保留。
 
-R12.103 候选全量审计（31cdcb3 / Quality 45586963823，checks job 139110904572）：完整 Git tree 724 个 blob、185 Markdown（docs 内 179）、19 CSS；目录 12 根/0 违规，621 条文档链接/0 违规，旧引擎可执行路径 0 违规。组件审计 333 文件、11 app roots、92 组件/样式全部 app-reachable，0 auxiliary-only、0 review-unreachable、0 unresolved local references、0 nonliteral imports；不能据此证明每条 CSS 选择器或动态资源路径有效，暂不删除组件/CSS。媒体真实字节 SHA-256 审计 141 路径、156439517 B、1 组已登记 WineChan 155188 B 重复、0 意外重复，库存匹配；历史三图隔离已在候选完成。Next 静态导出和 Pixi 三方检查通过，类型与 lint 通过。Vitest 62/64 文件通过，318/319 已执行测试通过，room-art-promotion 套件收集失败，room-art-review-pipeline 一项失败，皆为旧月纱胸像路径；本次只改两个 fixture 路径，保留真实 WebP 与审批门槛测试，需新 SHA 重跑。PR #61 尚未合并。
+## R12.104 · 现行职责与验收
+
+现行组件审计证据与媒体路径见资源总目录；92 个组件/样式模块可达不代表每条 CSS 选择器有效，动态资源及样式细粒度核查仍待执行。
+
+[美术资源总目录](ART-RESOURCE-CATALOG.md)：完整迁移经过、失败修复和审计证据统一保存在资源总目录；清理前各文档的完整版本见 [372f26f 固定快照](https://github.com/kunlong-luo/monster-apartment/tree/372f26f28933050840b6c6f8ff5f18ed99075e44)。不再逐轮复制报告。

@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.103）
+# 怪物公寓 · 美术资源总目录（R12.104）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -496,3 +496,9 @@ R12.102 迁移前实盘：public/assets/aistudio/ 仅三张 PNG，合计 9,161,3
 R12.102 第一批候选（PR #61）：fcfecf4 的静态导出、Pixi 构建与目录审计通过，Quality 因 CG-IDENTITY-POSE-COMPARISON 两处旧月纱 Markdown 图片链接失败（45586490095），现已修正。三张原 public/assets/aistudio PNG 原 Git blob 迁入 docs/design/2026-10-29-gothic-red-gold/references/，合计 9,161,328 B；退役公开目录并新增运行引用门禁，更新设计说明、路线图、执行清单及 reference manifest 的实际仓库副本记录。旧外部原始设计清单不改写、未核实 SHA-256 一一对应，不将匿名图片猜测为指定原图；保留旧文件名便于追溯。全仓 141 媒体、156439517 B 不变，public/art 43 项不变，整个 public 媒体 47→44 项，docs 媒体 39→42 项、26589877 B。候选 CI 需独立验证静态导出、运行与文档引用；未完成全仓动态路径穷尽审查，未合并/部署前不宣称线上包缩减。未删除设计证据或改变玩法、存档、审批。
 
 R12.103 候选全量审计（31cdcb3 / Quality 45586963823，checks job 139110904572）：完整 Git tree 724 个 blob、185 Markdown（docs 内 179）、19 CSS；目录 12 根/0 违规，621 条文档链接/0 违规，旧引擎可执行路径 0 违规。组件审计 333 文件、11 app roots、92 组件/样式全部 app-reachable，0 auxiliary-only、0 review-unreachable、0 unresolved local references、0 nonliteral imports；不能据此证明每条 CSS 选择器或动态资源路径有效，暂不删除组件/CSS。媒体真实字节 SHA-256 审计 141 路径、156439517 B、1 组已登记 WineChan 155188 B 重复、0 意外重复，库存匹配；历史三图隔离已在候选完成。Next 静态导出和 Pixi 三方检查通过，类型与 lint 通过。Vitest 62/64 文件通过，318/319 已执行测试通过，room-art-promotion 套件收集失败，room-art-review-pipeline 一项失败，皆为旧月纱胸像路径；本次只改两个 fixture 路径，保留真实 WebP 与审批门槛测试，需新 SHA 重跑。PR #61 尚未合并。
+
+## R12.104 · 发布收口与文档职责收敛
+
+R12.104 验收记录：候选 372f26f 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45587291301) 三个 job 全部成功，64 个 Vitest 文件全通过；目录、文档链接、资源库存、重复媒体、组件引用、设计、类型、Lint、Next 导出及 Pixi 构建均通过。候选浏览器/像素检查在本次整理时尚未全部完成；正式发布状态以 main 的同 SHA Quality/Pages 为准，不提前提高评分。
+
+完整迁移经过、失败修复和审计证据统一保存在资源总目录；清理前各文档的完整版本见 [372f26f 固定快照](https://github.com/kunlong-luo/monster-apartment/tree/372f26f28933050840b6c6f8ff5f18ed99075e44)。不再逐轮复制报告。
