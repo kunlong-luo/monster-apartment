@@ -255,3 +255,11 @@ R13.0-A 已经通过 [Quality 45616340403](https://github.com/kunlong-luo/monste
 [现行机器镜头表](art-reviews/CG-DIFFERENTIATION-SHOT-LIST.json) 已纠偏：浅银蓝泉泡、浅金青枝、金属铸角与粉赤眼炽角、黑发同脸月纱。暂沿用 R12.53 机器表魔典/重锤候选方向，历史细剑/链镰保留为备选研究而非强制要求，最终武器须产品/人工确认。五项姿态、剪影、武器、服装 ID 分别唯一；两张月纱 face/identity 字段一致。见 [差异化规范](CHARACTER-CG-DIFFERENTIATION-V1.md) 的 R13.0-D 当前覆盖规则；历史研究图与哈希不变。
 
 现有 CG 审核器会核对卡位、当前肖像哈希、原生尺寸、商业授权、具名视觉人审和三视口，但不能判断实际脸部一致性，且肖像引用不等于独立 G1 签审。后续正式晋级前必须补四人 G1 正侧脸具名签审与证据绑定，不能靠改 status 绕过。B/C 原画未交付前，不执行封面/CG 批量重绘或运行时切换。保持卡池权重、概率、角色 ID、存档及资源审批原样。
+
+### R13.0-E · 正式 CG 的 G1 强制准入
+
+正式 CG 的审核与晋级均经 `assertCharacterCgReview`，现在必须验证同人物具名 G1 证明及其实际 SHA-256；两个现有候选/过渡流程不受影响。新审核草稿的 `g1Approval` 默认为 null，不可自动批准。
+
+未来每位通过人审的证明固定为 `art-sources/characters/<id>/identity/approval.json`（本轮不创建虚假证明）。schemaVersion=1、character、approved、humanVisualReview、identityConsistent、independentNativeSources、rightsConfirmed、commercialUse、crossCharacterReview 均须符合审核要求，并填写 reviewer、reviewedAt、reviewNotes、sourceReference。front 与 angle 分别指向 front.png 和 three-quarter-candidate-v2.png；每个证据含 path、bytes、sha256、pixelDimensions 数组。源图须原生 3:4 ≥1086×1448，源图清单唯一登记为 review、实际 Git blob 与字节一致；禁止 rework、同图或跨人物冒用。references 包含当前头像（及月纱肖像、胸像）的相同字段，须与现行转换清单中同一 front 来源及哈希、尺寸一致。正式 CG 审核 JSON 填入 g1Approval: {path,sha256}，两张月纱卡绑定同一个身份文件。任何身份文件或图片变更必须重新签审、核对 CG 来源。
+
+这是具名审核记录的技术完整性门禁，不是数字签名、图像完整解码或自动识脸；人审仍不可跳过。现行 CI 的 G1 测试增加合成正例及错误人物、缺失签审、过时哈希、尺寸不足、同图和来源错配反例。晋级成功时清除旧候选预览字段，仍保留原有失败回滚。没有新原画或真实人审，本轮正式身份 0/4、正式 CG 0/5，待新 SHA Quality 验收。

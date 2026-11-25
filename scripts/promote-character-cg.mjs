@@ -40,6 +40,9 @@ function main(argv){
     copyFileSync(src,dest,constants.COPYFILE_EXCL);copied=true;
     writeFileSync(provenance,JSON.stringify(review,null,2)+'\n',{flag:'wx'});documented=true;
     entry.status='production';
+    delete entry.previewPath;
+    delete entry.previewSha256;
+    delete entry.previewSourceKind;
     writeFileSync(file,JSON.stringify(manifest,null,2)+'\n');changed=true;
     auditCharacterCg();
     console.log('Promoted '+card+' into game. Run CI, browser visual checks and deploy.');

@@ -3,6 +3,7 @@ import {resolve,join,dirname,basename} from 'node:path';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {webpDimensions} from './prepare-room-background.mjs';
+import {verifyG1Approval} from './verify-g1-face-sources.mjs';
 
 const root=resolve(import.meta.dirname,'..');
 const manifestPath=join(root,'public/art/characters/cg-manifest.json');
@@ -51,13 +52,14 @@ export function assertCharacterCgReview({card,review,bytes}){
   check(review?.card===card&&review.approved===true&&review.humanVisualReview===true,
     'review approval and card identity required');
   // A signed review must attest to the current identity reference, not the
-  // old YueSha black-haired portrait or an arbitrary character's face.
+  // retired YueSha portrait or an arbitrary character's face.
   const canonicalPath=CG_IDENTITY_REFERENCE_PATHS[card];
   const canonicalFile=join(root,canonicalPath);
   check(existsSync(canonicalFile),'canonical identity art missing for '+card);
   check(review.identityReference?.path===canonicalPath&&
     review.identityReference?.sha256===sha256(readFileSync(canonicalFile)),
     'CG identity reference path/hash no longer matches '+card);
+  verifyG1Approval(root,card.split('-')[0],review.g1Approval);
   check(review.image?.sha256===info.sha256&&review.image.width===info.width&&
     review.image.height===info.height&&review.image.bytes===info.bytes,
     'reviewed image bytes or dimensions changed');

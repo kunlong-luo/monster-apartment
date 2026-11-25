@@ -145,6 +145,70 @@ export function verifyCurrentG1FaceSources(rootDir){
   return {verified:result.length*3,subjects:result,production:false};
 }
 
+/** Named human attestation for production CG. Technical validation is not
+ * a cryptographic signature or independent verification of the art review. */
+export function verifyG1Approval(rootDir,id,binding){
+  const root=resolve(rootDir);
+  demand(Object.hasOwn(SUBJECTS,id),'unknown approval subject');
+  const prefix='art-sources/characters/'+id+'/identity/';
+  const path=prefix+'approval.json';
+  demand(binding?.path===path&&/^[a-f0-9]{64}$/.test(binding.sha256??''),
+    'G1 approval binding required '+id);
+  const proofFile=join(root,path);
+  demand(lstatSync(proofFile,{throwIfNoEntry:false})?.isFile(),'missing G1 approval '+id);
+  const raw=readFileSync(proofFile);
+  demand(sha256(raw)===binding.sha256,'G1 approval hash mismatch '+id);
+  const proof=JSON.parse(raw.toString('utf8'));
+  demand(proof.schemaVersion===1&&proof.character===id&&proof.approved===true&&
+    proof.humanVisualReview===true&&proof.identityConsistent===true&&
+    proof.independentNativeSources===true&&proof.rightsConfirmed===true&&
+    proof.commercialUse===true&&proof.crossCharacterReview===true,
+    'G1 human identity approval incomplete '+id);
+  demand(typeof proof.reviewer==='string'&&proof.reviewer.trim().length>=3&&
+    Number.isFinite(Date.parse(proof.reviewedAt??''))&&
+    typeof proof.reviewNotes==='string'&&proof.reviewNotes.trim().length>=24&&
+    typeof proof.sourceReference==='string'&&proof.sourceReference.trim().length>=8,
+    'G1 dated reviewer, notes and source reference required '+id);
+  const catalog=JSON.parse(readFileSync(join(root,'art-sources/source-catalog.json'),'utf8'));
+  const transition=JSON.parse(readFileSync(join(root,'public/art/r12-53-transition-manifest.json'),'utf8'));
+  demand(catalog.schemaVersion===1&&transition.schemaVersion===1,'unexpected G1 source schema');
+  const unique=(entries,key,value)=>{
+    const matches=entries.filter(e=>e[key]===value);
+    demand(matches.length===1,'missing or duplicated G1 registration '+value);
+    return matches[0];
+  };
+  const source=(entry,name,category)=>{
+    const expected=prefix+name;
+    const info=exactAsset(root,entry,expected);
+    demand(info.width>=1086&&info.height>=1448&&info.width*4===info.height*3,
+      'G1 native 3:4 floor '+expected);
+    const registered=unique(catalog.assets,'path',expected);
+    const bytes=readFileSync(join(root,expected));
+    const blob=createHash('sha1').update('blob '+bytes.length).update(Buffer.from([0])).update(bytes).digest('hex');
+    demand(registered.category===category&&registered.status==='review'&&
+      registered.bytes===info.bytes&&registered.gitBlobSha===blob,
+      'G1 source registration mismatch or rework '+expected);
+    return info;
+  };
+  const front=source(proof.front,'front.png','identity');
+  const angle=source(proof.angle,'three-quarter-candidate-v2.png','identity-angle');
+  demand(front.sha256!==angle.sha256,'G1 duplicate front and angle '+id);
+  const names=id==='yuesha'?['yuesha-avatar-v3.webp','yuesha-portrait-v3.webp','yuesha-bust-v3.webp']:['face.webp'];
+  const refs=names.map(name=>'public/art/characters/'+id+'/'+name);
+  demand(Array.isArray(proof.references)&&proof.references.length===refs.length,'G1 reference roster mismatch '+id);
+  for(const expected of refs){
+    const entry=unique(proof.references,'path',expected);
+    const info=exactAsset(root,entry,expected);
+    const output=unique(transition.outputs,'output',expected);
+    demand(output.source===prefix+'front.png'&&output.sourceSha256===front.sha256&&
+      output.outputSha256===info.sha256&&output.bytes===info.bytes&&
+      JSON.stringify(output.sourceSize)===JSON.stringify([front.width,front.height])&&
+      JSON.stringify(output.size)===JSON.stringify([info.width,info.height]),
+      'G1 runtime reference source mismatch '+expected);
+  }
+  return {character:id,path,sha256:binding.sha256};
+}
+
 function parseArgs(args){
   if(!args.length)return process.cwd();
   if(args.length===2&&args[0]==='--source-dir'&&args[1])return args[1];

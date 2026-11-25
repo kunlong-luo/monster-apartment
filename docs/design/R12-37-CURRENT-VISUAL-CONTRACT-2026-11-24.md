@@ -68,3 +68,5 @@ R13.0-C（并行审稿准备，不代表 B 已完成）：青枝与炽角补齐�
 工程并行事项：PR #63（65b7ace）的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45615216421)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45615216278) 已成功，[Gameplay Browser Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45615216586) 已成功。三项候选 CI 均通过；随后再次读取 PR，GitHub 报告 mergeable=false，主线与验证分支仍有分歧（核查时领先 1、落后 6）。不强制合并或覆盖主线，先复核冲突/合并计算状态，并在同步后复验；候选成功不等于主线发布。
 
 R13.0-D：完成四人五卡现行源图、预览路径、类型、登记输出哈希与人物归属的跨清单核对（5/5 元数据一致，未重算图片字节哈希）。纠正 [机器镜头表](../art-reviews/CG-DIFFERENTIATION-SHOT-LIST.json) 的发色、角型、武器和姿态描述冲突；以 [角色 SOP](../CHARACTER-CREATION-SOP.md#r130-d--四人五卡身份映射准备完成尚未签审) 与 [差异化规范](../CHARACTER-CG-DIFFERENTIATION-V1.md) 为制作入口。泉泡与炽角正式 CG 源仍 rework，三张 review；月纱两卡共享正面身份，魔典/重锤只是暂定镜头，不改玩法。保持 0/4 人审身份、0/5 正式 CG；先补原生侧脸和 G1 具名证据绑定，才进入封面及 CG 批量生产。未生成、迁移、删除图片，未更改正式 manifest 或评分。PR #63 三项候选检查通过，仍未合并，最新合并状态需另行核查。
+
+R13.0-E：正式 CG 审核与晋级增加 G1 具名身份批准文件哈希、正侧脸原生尺寸与源图登记、同源头像/肖像/胸像绑定检查，草稿默认未批准，失败不改变正式资源。详见 [角色 SOP](../CHARACTER-CREATION-SOP.md#r130-e--正式-cg-的-g1-强制准入)。新增合成反例，不等于人工看图；现有候选路径及状态保持，正式身份 0/4、CG 0/5。新提交 Quality 待验证；PR #63 保持未合并，不覆盖主线。
