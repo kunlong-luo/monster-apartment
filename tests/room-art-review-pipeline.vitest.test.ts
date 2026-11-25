@@ -4,7 +4,7 @@ import {buildReviewHtml,coverProjection,webpDimensions} from '../scripts/prepare
 
 describe('V3.12 background candidate intake never bypasses visual approval',()=>{
   it('reads real WebP header and rejects arbitrary content',()=>{
-    const webp=readFileSync('public/art/yuesha-bust-v3.webp');
+    const webp=readFileSync('public/art/characters/yuesha/yuesha-bust-v3.webp');
     const dimensions=webpDimensions(webp);
     expect(dimensions.width).toBeGreaterThan(100);
     expect(dimensions.height).toBeGreaterThan(100);
