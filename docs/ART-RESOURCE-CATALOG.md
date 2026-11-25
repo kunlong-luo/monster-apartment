@@ -125,6 +125,38 @@
 
 清理 9,161,328 B 的工作树副本；不代表 Git 历史或线上包同等缩小。另组重复：`docs/art-reviews/sources/winechan-gothic-manor-full-pack/candidate-05.webp` / `public/art/room-review/yuesha-salon-candidate.webp`，待将审稿和文档引用统一后再判断去重。
 
+### 4.1 R12.94 · public/art 全量用途分类（2026-11-25）
+
+基线 [329cbde](https://github.com/kunlong-luo/monster-apartment/commit/329cbdec70273a91f788f8de18689bdde4e7cac8) 的完整未截断 Git tree：本目录共 67 个文件（56 媒体、9 JSON、2 Markdown），媒体 19764765 B。按实际读取的 React 资源注册、私室动态路径、场景预览、Pixi 构建及回退链、选定审稿 manifest 和测试分类。下表范围互斥，路径均相对于 `public/art/`，合计 56 张；第 5 节仍为唯一逐文件库存，不增加第二份清单。
+
+| 路径 / 精确范围 | 数量 | 处置 | 实际职责或验收限制 |
+| --- | ---: | --- | --- |
+| `a05/{foreground-ornaments,moonlight-tracery,rose-petal}.svg` | 3 | 保留 | 图鉴场景、粒子动态 URL |
+| `beauty-beasts/characters/{brook,fern,cinder}/face.webp` | 3 | 保留 | 当前人物头像注册 |
+| `beauty-beasts/characters/yuesha/cg-{eclipse,vow}-candidate.webp`、`beauty-beasts/characters/fern/cg-spring-candidate.webp` | 3 | 保留 | 正常召唤/鉴赏候选画，不是已审批 CG |
+| `beauty-beasts/cover/world-cover.webp`、`world-cover-mobile.webp` | 2 | 保留 | 欢迎页双端，PC 图也用于大厅回退 |
+| `feature-postcards/{gothic-workshop,moonlit-street}.webp` | 2 | 保留 | 大厅地点入口 |
+| `lobby-hero-v4.webp`、`lobby-hero-v4-mobile.webp` | 2 | 保留 | 正常大厅双端、欢迎页回退 |
+| `lobby-hero-v3.webp` | 1 | 保留 | 公寓/世界背景与 Pixi 回退 |
+| `yuesha-{avatar,bust,portrait}-v3.webp` | 3 | 保留 | 当前角色注册与对话/剧情 |
+| `rooms/{yuesha,brook,fern,cinder}/concept-scene.svg` | 4 | 保留 | 正常故事概念背景与观景故障回退 |
+| `rooms/{yuesha,brook,fern,cinder}/review/{background-candidate,standing-candidate}.webp` | 8 | 保留 | 四房正常观景；泉泡、炽角站姿也为候选卡；不能按 review 名称删除 |
+| `world-scenes/{town-moonlit-gate,workshop-gothic-hall}.webp` | 2 | 保留 | 月光街手机/回退、Pixi 与图鉴背景 |
+| `world-scenes/town/review/desktop-candidate-v2.webp`、`world-scenes/workshop/review/desktop-candidate-v1.webp` | 2 | 保留 | 正常 PC 过渡绘景，未来单独迁移稳定运行路径 |
+| `lobby-hero-v2.webp` | 1 | 必要回退 | `engine/scripts/build.mjs` 复制，`engine/src/workshop-painted-art.ts` 加载链；不可直接删 |
+| `room-review/yuesha-salon-candidate.webp` | 1 | 显式审稿保留 | room-art-local-preview 动态调用；与 docs 证据重复已有授权例外 |
+| `world-scenes/review/2026-11-22/` 三张及 `2026-11-23/` 三张 WebP | 6 | 显式审稿保留 | S02/S05/S06 双端互动研究，现行哈希/热点仍引用 |
+| `beauty-beasts/characters/brook/cg-tide-pose-study-v{1,2}.webp`、`cinder/cg-ember-pose-study-v1.webp`、`fern/cg-spring-pose-study-v1.webp`、`yuesha/cg-eclipse-pose-study-v{1,2}.webp`、`yuesha/cg-vow-pose-study-v1.webp`（同一 characters 根） | 7 | 离线研究候选 | 非当前 CG 注册表选中图；先核验动态/测试/来源，再迁到既有 art-sources 或 docs/art-reviews，或将无独立价值的研究稿退役到 Git 历史 |
+| `beauty-beasts/characters/fern/review/cg-spring-bow-v1.webp` | 1 | 离线研究候选 | 有原图/审稿证据链，先迁引用再移出 public，不删唯一原图 |
+| `world-scenes/town/review/desktop-candidate-v1.webp`、`world-scenes/workshop/review/desktop-candidate-v2.webp` | 2 | 离线研究候选 | 未选的 PC 方案仍在 R12.61 转换清单；保留原 PNG、迁移输出及清单后从 public 移除 |
+| `beauty-beasts/characters/yuesha/face.webp`、`yuesha-bust-v2.webp`、`yuesha-portrait-v2.webp` | 3 | 优先退役候选 | 未出现在当前人物注册表；全量运行/测试/动态/文档引用与历史签名核验通过后，才实际删除或保留独立证据 |
+
+合计：正常使用/回退 35 张 11088633 B；Pixi 专用必要回退 1 张 209336 B；交互研究 7 张 2710542 B；拟移出 public 的离线研究 10 张 5498826 B；优先退役候选 3 张 257428 B。若后两类全部安全迁退，公开媒体可从 56 减至 43，静态源目录约减少 5756254 B（不等于页面下载量）。此次分类不是对所有 351 个候选源/测试/工具文件的完整引用证明，不能据零命中声称可删。
+
+关键引用：[人物注册](../src/components/summon/heroine-portrait-assets.ts)、[私室观景动态路径](../src/core/room-scenic-art.ts)、[私室研究预览](../src/components/game/room-art-local-preview.tsx)、[双端场景预览](../src/lib/game/r12-scene-review-art.ts)、[Pixi 构建](../engine/scripts/build.mjs)、[Pixi 回退](../engine/src/workshop-painted-art.ts)、[工坊 PC](../src/components/moonwork/workshop-cinematic-stage.tsx)、[街区 PC](../src/components/moonwork/world-town.tsx)。全部 JSON 及必要原图/审核保留；不创建新的重复库存或归档目录。执行顺序：先核实 3 张退役候选的全量引用、修正迁移测试与旧文档链接，提交删除；再迁 10 张研究图的来源/证据引用，保留原始 PNG 和当前运行回退；最后把已正常使用的 review 路径按稳定角色/场景用途迁名，统一动态映射，逐次核验 Quality/Pixi build 与相关浏览器。没有完成前不将“候选”写成“已删除”。
+
+S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/scenes/apartment/) 仅含 `desktop-candidate.png` 与 `mobile-candidate.png`；新 `desktop-candidate-v2.png` 仍是未入库的拟定文件名，不是缺少目录。原两张不覆盖，不创建空占位，不改媒体清单。
+
 ## 5. 全仓实际资源菜单（R12.90）
 
 R12.90 基线 `be66775` 完整 Git tree：144 路径、156696945 B，全部逐项匹配下表的路径、字节及 Git blob 前缀。历史 R12.67 有 146 路径，R12.70 删除两个相同输出。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON 与 Markdown。Git blob SHA 不等于原文件 SHA-256；此表是实际资源索引，不自动授予生产状态。R12.52 的 132 路径统计属于历史。

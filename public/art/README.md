@@ -1,41 +1,21 @@
-# 怪物公寓 · 2D 原画资源（历史版本记录）
+# Web 美术资源入口（R12.94 用途核查）
 
-> 当前统一资源菜单与命名规则见 [docs/ART-RESOURCE-CATALOG.md](../../docs/ART-RESOURCE-CATALOG.md)。源图整理不等于正式资源替换。
+唯一完整资产清单、用途分类、清理条件及命名规则见 [美术资源总目录](../../docs/ART-RESOURCE-CATALOG.md)，尤其第 4.1 节和第 5 节。本页只说明目录职责，不维护第二份库存。当前游戏 V3.109.0；“运行中”不代表 production 人审通过。
 
-本目录包含从新生成的哥特幻想场景中裁切、剔除虚假 UI 后的正式游戏 WebP 图片。
-- `lobby-hero-v2.webp`：1030×645，209336B，无任何烘焙按钮或固定资源数字；适合大厅、公寓与月光街全屏绘景。
-- `yuesha-portrait-v2.webp`：450×510，87672B；月纱头像、角色图鉴、剧情对话。
-- `yuesha-bust-v2.webp`：620×560，116672B；大尺寸对话角色图。
-注意三张为带环境背景的平面插画，不是透明分层精灵；不要通过 CSS 假装骨骼动画，也不要对图片执行大幅 GPU 缩放或模糊。
-同一张背景在手机端应将 focal point 调整到 25% 附近，确保月纱可见。
-旧原型资源保留给仍在使用该资源的 Pixi 工坊侧车，直到其替换完毕。
+| 路径（相对于本目录） | 用途与处理 |
+| --- | --- |
+| `a05/` | 图鉴装饰与粒子，保留 |
+| `beauty-beasts/characters/` | 头像、当前候选卡、动作研究；按总目录分类，不整体删除 |
+| `beauty-beasts/cover/` | 双端欢迎封面与故障回退，保留 |
+| `feature-postcards/` | 大厅两张地点入口海报，保留 |
+| `lobby-hero-v4*.webp` | PC/手机大厅正常背景，保留 |
+| `lobby-hero-v3.webp`、`lobby-hero-v2.webp` | 旧公寓/世界背景与 Pixi 回退链，保留 |
+| `yuesha-*-v3.webp` | 当前注册头像、立绘和半身像，保留 |
+| `yuesha-*-v2.webp` | 退役候选，完成全引用核查后删除或以 Git 历史追溯 |
+| `rooms/` | 故事概念背景、正常观景背景与站姿、审稿清单，保留 |
+| `room-review/` | 显式月纱研究预览仍有调用，保留 |
+| `world-scenes/` | 地点正常背景、回退、显式交互审稿与未选研究稿，分别管理 |
 
-## V3 正式高清修复绘景
-- `lobby-hero-v3.webp`：1587×991，来自无烘焙交互控件的高清哥特沙龙主绘景，明确左右两区的可视焦点。
-- `yuesha-avatar-v3.webp`：500×500，月纱脸部居中的专用头像裁切，解决低清头像被拉伸后产生的失真。
-- `yuesha-portrait-v3.webp`：700×830，同源角色立绘，用于角色图鉴和正式委托。
-- `yuesha-bust-v3.webp`：930×910，同源剧情半身像，用于对话弹窗。
-- 四张素材都来自同一原画，以 WebP 有损压缩提供独立尺寸，确保跨场景脸型、发色和礼服一致；没有把平面图伪装成透明帧动画。V2 素材保留作为必要时的回退资源。
+9 个 JSON 均为来源/审稿/准入记录或运行 manifest；2 个 Markdown 为本入口和私室准入说明。不要把研究或来源记录当成可随意删的图片。正常使用的 `review/` 图保留并记录角色，纯离线研究图只有完成引用迁移才移出 public；未入 Git 的新原画不在此目录创建占位文件。
 
-## V3.79 人物身份统一（非全身 CG）
-
-**银发赤瞳、黑金蔷薇王冠**是玩家已在大厅与对话里看到的月纱唯一当前展示身份。召唤的两张月纱卡（`yuesha-eclipse`、`yuesha-vow`）已复用 `yuesha-portrait-v3.webp` 和 `yuesha-bust-v3.webp`；欢迎页、图鉴与大厅的月纱缩略图复用 `yuesha-avatar-v3.webp`。加载失败时同样退回月纱 V3 头像，而不是早期黑发角饰实验稿。
-
-`public/art/beauty-beasts/characters/yuesha/face.webp` 仅保留作历史概念，不再作为正式月纱召唤/欢迎头像。其他三位人物仍是其独立肖像过渡版。所有当前资源均**不是透明全身 CG**，不能将过渡肖像标为正式全身原画。
-
-正式升级路线与候选审核要求见 `docs/CHARACTER-CG-ART-DIRECTION.md`，新人物原画须经逐张角色身份、尺寸、权利来源及桌面/手机构图审核后才可以替换本文件中的对应映射。
-
-## V3.88 · 右侧入口独立横幅
-
-`feature-postcards/gothic-workshop.webp`：独立室内操作台宣传氛围图，960×320；`feature-postcards/moonlit-street.webp`：独立哥特夜景建筑宣传氛围图，960×320。两张均来自正常取得的 WineChan 原始 ZIP，原图为 1920×1080；生成前复查 ZIP 与原图 SHA-256，原文件名、源图/输出哈希及来源许可声明见 `feature-postcards/source-manifest.json`。
-
-**仅可用于大厅小型功能海报。** 源站公开声称 public domain，披露 AI-assisted；这不能替代对具体作品及正式场景的美术、著作权人工审核。两张均不是游戏完整街道、工坊工作场景或私人房间 CG，也不能拿去覆盖生产房间素材。
-
-
-## V3.89 · 世界地点 1920×1080 过渡绘景
-
-`world-scenes/workshop-gothic-hall.webp` 是哥特室内厅堂；`world-scenes/town-moonlit-gate.webp` 是夜间庄园入口，均来自已审计的 WineChan Gothic Manor 原始 ZIP，保持原尺寸且没有裁切放大。源图/输出 SHA、来源许可声明、使用范围见 `world-scenes/source-manifest.json`。工坊由 Pixi 侧车与 React 根容器共用同一场景背景，街区使用不同完整室外背景；不能用于四间私人房间的正式 CG，也未改变存档或概率。
-
-## R12.53 候选过渡美术
-
-新黑发月纱身份及四住客头像、双端欢迎/大厅与五张大卡候选将在独立分支生成，沿用现有稳定角色资产路径；新大厅另用 lobby-hero-v4 与 lobby-hero-v4-mobile，不覆盖仍被公寓引用的旧 V3 绘景。泉泡、炽角先用无文字静态透明立绘作候选卡，非正式独立 CG。旧版本描述为历史记录；最终启用以实际合并、浏览器和 Pages 为准。
+源 PNG 放在 [art-sources](../../art-sources/)，历史审稿资料放在 [docs/art-reviews](../../docs/art-reviews/)，设备侧车贴图放在 [engine/art](../../engine/art/)。原 `public/art/README.md` 的 V2/V3、V3.79 身份及 V3.88–89 来源历史见 [固定历史版本](https://github.com/kunlong-luo/monster-apartment/blob/329cbdec70273a91f788f8de18689bdde4e7cac8/public/art/README.md)，不再将早期银发/黑发身份叙述当作现行资产事实。

@@ -16,6 +16,8 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 
 2026-11-25 工程治理基线 [ef5aa5b](https://github.com/kunlong-luo/monster-apartment/commit/ef5aa5bc01c2d54d52ab7a666ebe3dcafaff7132) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556789291) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556888621) 成功；最新组件审计 92/92 可达、321/321 Vitest、144 媒体库存一致。R12.91 综合证据暂评 **72/100**，85 是目标，非玩家评分；新 CSS 提交的[桌面视觉回归](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556397863) 已成功、玩法仍待结果，正式原画和真人验证尚未完成。R12.92 四视口像素证据归档见[真实浏览器像素取证](docs/art-reviews/R12-01-REAL-BROWSER-PIXEL-EVIDENCE.md)，不等于高清原画已交付。评分与下一阶段只维护于[风险台账](docs/engineering/GAP-REGISTER-2026-11-22.md)。
 
+资源用途分类：`public/art/` 当前 56 媒体，36 正常/回退、7 交互研究、10 离线研究候选、3 优先退役候选。具体文件、用途及迁退条件统一见[资源总目录](docs/ART-RESOURCE-CATALOG.md) 第 4.1 节；旧版文件或 review 名称不等于未使用。新原图拟定路径不等于实际入 Git。
+
 ## 七个正式游戏场景
 
 | 路由 | 玩家功能 |
