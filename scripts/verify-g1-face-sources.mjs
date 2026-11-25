@@ -89,6 +89,62 @@ export function verifyG1FaceSources(rootDir){
   return {verified:checked,subjects:4,approved:0,production:false};
 }
 
+
+/** Current repository transition review; the historical ZIP gate remains separate.
+ * Uses existing source catalog, transition ledger and exact runtime avatar slots.
+ * No output writes, image conversion, identity signing or production promotion. */
+export function verifyCurrentG1FaceSources(rootDir){
+  const root=resolve(rootDir);
+  const catalog=JSON.parse(readFileSync(join(root,'art-sources/source-catalog.json'),'utf8'));
+  const transition=JSON.parse(readFileSync(join(root,'public/art/r12-53-transition-manifest.json'),'utf8'));
+  demand(catalog.schemaVersion===1&&transition.schemaVersion===1,'unexpected current manifest schema');
+  demand(transition.status==='transition-candidate-not-production-cg'&&transition.humanVisualReview===false,
+    'unexpected transition review state; re-evaluate this gate before promotion');
+  const unique=(entries,path,label)=>{
+    const matches=entries.filter(e=>e.path===path);
+    demand(matches.length===1,'missing or duplicated '+label+' '+path);
+    return matches[0];
+  };
+  const result=[];
+  for(const id of Object.keys(SUBJECTS)){
+    const prefix='art-sources/characters/'+id+'/identity/';
+    const readSource=(name,category)=>{
+      const path=prefix+name;
+      const entry=unique(catalog.assets,path,'source catalog');
+      const inventory=unique(transition.sourceInventory,path,'transition inventory');
+      demand(entry.category===category&&['review','rework'].includes(entry.status)&&
+        inventory.status===entry.status&&inventory.gitBlobSha===entry.gitBlobSha,
+        'source status or Git blob mismatch '+path);
+      const metadata=exactAsset(root,{path,bytes:entry.bytes,sha256:inventory.sourceSha256,
+        pixelDimensions:inventory.size},path);
+      const data=readFileSync(join(root,path));
+      const blob=createHash('sha1').update('blob '+data.length+'\\0').update(data).digest('hex');
+      demand(blob===entry.gitBlobSha,'Git blob mismatch '+path);
+      return {...metadata,path,status:entry.status,notes:entry.notes};
+    };
+    const front=readSource('front.png','identity');
+    const angle=readSource('three-quarter-candidate.png','identity-angle');
+    demand(front.width>=1086&&front.height>=1448,'front source below review floor '+id);
+    const path='public/art/characters/'+id+'/'+(id==='yuesha'?'yuesha-avatar-v3.webp':'face.webp');
+    const outputs=transition.outputs.filter(e=>e.output===path);
+    demand(outputs.length===1,'missing or duplicated runtime avatar '+id);
+    const output=outputs[0];
+    demand(output.kind==='identity-avatar'&&output.source===front.path&&
+      output.sourceSha256===front.sha256&&JSON.stringify(output.sourceSize)===JSON.stringify([front.width,front.height]),
+      'runtime avatar source mismatch '+id);
+    const crop=output.crop;
+    demand(Array.isArray(crop)&&crop.length===4&&crop.every(Number.isSafeInteger)&&
+      crop[0]>=0&&crop[1]>=0&&crop[2]<=front.width&&crop[3]<=front.height&&
+      crop[2]-crop[0]===600&&crop[3]-crop[1]===600&&
+      JSON.stringify(output.size)==='[600,600]','invalid runtime avatar crop '+id);
+    const avatar=exactAsset(root,{path,bytes:output.bytes,sha256:output.outputSha256,
+      pixelDimensions:output.size},path);
+    result.push({id,front,angle,avatar:{...avatar,path},angleMeetsPortraitFloor:
+      angle.width>=1086&&angle.height>=1448,humanApproved:false});
+  }
+  return {verified:result.length*3,subjects:result,production:false};
+}
+
 function parseArgs(args){
   if(!args.length)return process.cwd();
   if(args.length===2&&args[0]==='--source-dir'&&args[1])return args[1];
@@ -96,8 +152,13 @@ function parseArgs(args){
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
   try{
+    if(process.argv.length===3&&process.argv[2]==='--current'){
+      const result=verifyCurrentG1FaceSources(process.cwd());
+      console.log(JSON.stringify(result,null,2));
+    }else{
     const result=verifyG1FaceSources(parseArgs(process.argv.slice(2)));
     console.log('G1 research integrity OK: '+result.verified+'/'+result.verified+
       ' PNG/WebP files; 4 independent study portraits; 0 approved identities; NO promotion.');
+    }
   }catch(error){console.error(error.message);process.exitCode=1}
 }

@@ -4,7 +4,7 @@ import {mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, symlinkSync
 import {tmpdir} from 'node:os';
 import {join, dirname} from 'node:path';
 import {createHash} from 'node:crypto';
-import {verifyG1FaceSources} from '../verify-g1-face-sources.mjs';
+import {verifyG1FaceSources,verifyCurrentG1FaceSources} from '../verify-g1-face-sources.mjs';
 
 const ids={yuesha:'19',brook:'20',fern:'21',cinder:'22'};
 const names=['g1-four-independent-research-contact.webp',
@@ -87,3 +87,18 @@ test('contact file hash and count are required',()=>run(f=>{
 test('production CG assertion fails even if portraits look valid',()=>run(f=>{
   f.manifest.release.fullBodyCgProductionApproved=5;
 },/unapproved cover or CG marked production/));
+
+test('current repository verifies real identity source pairs and their visible avatar bytes',()=>{
+  const result=verifyCurrentG1FaceSources(process.cwd());
+  assert.equal(result.verified,12);
+  assert.equal(result.production,false);
+  assert.equal(result.subjects.length,4);
+  for(const subject of result.subjects){
+    assert.equal(subject.humanApproved,false);
+    assert.equal(subject.avatar.width,600);
+    assert.equal(subject.avatar.height,600);
+    assert.notEqual(subject.front.sha256,subject.angle.sha256);
+  }
+  assert.equal(result.subjects.find(s=>s.id==='yuesha').angle.status,'rework');
+  assert.equal(result.subjects.find(s=>s.id==='brook').angle.status,'rework');
+});

@@ -184,3 +184,18 @@ R12.101 第二批候选：月纱头像、半身像、肖像三张原 Git blob �
 | 炽角 | `characters/cinder/identity/front.png` | review：金属铸角、脸型及新增纹样 | 余烬原图 rework：烘焙英文标题/标志；重绘独立无字完整链镰画面 |
 
 表中路径相对于 `art-sources/`；其余 3/4、CG、站姿确切路径见源图清单。R13.0 第一切片先以四位已入仓正面原图制作同尺度身份对照，核查四张独立 3/4（优先修月纱与泉泡），表情参考至少三种，记录人审/来源与真实原生像素。再处理两张必须返工的 CG；其余三张先审后决定是否重绘，避免无意义重复生产。G1 没有签署不得改头像或晋级。原生 1086×1448 最低人审入口、1536×2048 推荐精修、PC/手机真实预览与现有概率/存档均保持。
+
+### R13.0-A · 现有原图审稿入口与完整性校验
+
+不新增图片副本。以下三列分别链接真实仓库正面、3/4 候选、玩家实际头像，打开即可对照原图。尺寸来自现行转换清单；不是本轮人工看图验收。
+
+| 人物 | 正面原图（1086×1448） | 侧脸原图（原生尺寸 / 状态） | 游戏头像（600×600） |
+| --- | --- | --- | --- |
+| 月纱 | [正面](../art-sources/characters/yuesha/identity/front.png) | [1199×1312 / rework](../art-sources/characters/yuesha/identity/three-quarter-candidate.png) | [头像](../public/art/characters/yuesha/yuesha-avatar-v3.webp) |
+| 泉泡 | [正面](../art-sources/characters/brook/identity/front.png) | [1199×1312 / rework](../art-sources/characters/brook/identity/three-quarter-candidate.png) | [头像](../public/art/characters/brook/face.webp) |
+| 青枝 | [正面](../art-sources/characters/fern/identity/front.png) | [1218×1292 / review](../art-sources/characters/fern/identity/three-quarter-candidate.png) | [头像](../public/art/characters/fern/face.webp) |
+| 炽角 | [正面](../art-sources/characters/cinder/identity/front.png) | [1199×1312 / review](../art-sources/characters/cinder/identity/three-quarter-candidate.png) | [头像](../public/art/characters/cinder/face.webp) |
+
+四张侧脸均低于现行竖幅身份原画 1448px 高度门槛，不能作为最终原生达标稿；其中两张还存在明确身份漂移。优先重绘月纱、泉泡；青枝、炽角先审身份，再补匹配角度和原生尺寸。不得放大冒充原生，也不得以正面达标自动判定侧脸通过。
+
+复用现有 G1 校验器：`node scripts/verify-g1-face-sources.mjs --current`，检查 8 个 PNG 原始字节、尺寸、SHA-256、Git blob、源图/转换清单状态和 4 个 WebP 实际头像字节、600×600 裁切元数据及来源关系。原 `pnpm art:g1:verify` 仍检查历史 R12.22 外部 ZIP，两个入口不混用。现有 `pnpm art:g1:test` / `pnpm check:design` 增加真实仓库检查；新检查尚待 CI，不替代像素级裁切对照、人工身份/授权签署。下一步为原生独立单人侧脸返工与审稿，不改运行资源、概率、审批或存档。
