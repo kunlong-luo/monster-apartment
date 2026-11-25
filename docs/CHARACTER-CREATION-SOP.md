@@ -263,3 +263,9 @@ R13.0-A 已经通过 [Quality 45616340403](https://github.com/kunlong-luo/monste
 未来每位通过人审的证明固定为 `art-sources/characters/<id>/identity/approval.json`（本轮不创建虚假证明）。schemaVersion=1、character、approved、humanVisualReview、identityConsistent、independentNativeSources、rightsConfirmed、commercialUse、crossCharacterReview 均须符合审核要求，并填写 reviewer、reviewedAt、reviewNotes、sourceReference。front 与 angle 分别指向 front.png 和 three-quarter-candidate-v2.png；每个证据含 path、bytes、sha256、pixelDimensions 数组。源图须原生 3:4 ≥1086×1448，源图清单唯一登记为 review、实际 Git blob 与字节一致；禁止 rework、同图或跨人物冒用。references 包含当前头像（及月纱肖像、胸像）的相同字段，须与现行转换清单中同一 front 来源及哈希、尺寸一致。正式 CG 审核 JSON 填入 g1Approval: {path,sha256}，两张月纱卡绑定同一个身份文件。任何身份文件或图片变更必须重新签审、核对 CG 来源。
 
 这是具名审核记录的技术完整性门禁，不是数字签名、图像完整解码或自动识脸；人审仍不可跳过。现行 CI 的 G1 测试增加合成正例及错误人物、缺失签审、过时哈希、尺寸不足、同图和来源错配反例。晋级成功时清除旧候选预览字段，仍保留原有失败回滚。没有新原画或真实人审，本轮正式身份 0/4、正式 CG 0/5，待新 SHA Quality 验收。
+
+### R13.0-F · 身份审核草稿与 CG 晋级闭环
+
+R13.0-E 的 [Quality 45618780099](https://github.com/kunlong-luo/monster-apartment/actions/runs/45618780099) 三作业成功。在仓库根目录执行 `node scripts/verify-g1-face-sources.mjs --draft brook` 可输出 JSON 草稿，所有人工批准字段默认为 false，缺失文件为 null，不创建 approval.json。实际 v2 原画入库后同步源图清单与媒体总目录第 5 节，生成草稿并具名人审；签审后才保存固定 approval.json 并将其 SHA-256 写入 CG 审核 JSON。
+
+历史动作研究与正式卡面可以共存：研究记录必须仍为 research-only、approved=false，哈希及路径固定，正式 CG 不能与研究稿字节相同。晋级后同时执行 CG 审核与差异化检查，失败恢复原 manifest 并移除本次新增正式资源和证明。新增合成测试覆盖草稿、独立正式晋级、历史稿冒用回滚和缺失 G1 拒收，不代表实际画稿人审。其他仓库级媒体库存与 CI 仍须独立同步验收。正式身份 0/4、CG 0/5。

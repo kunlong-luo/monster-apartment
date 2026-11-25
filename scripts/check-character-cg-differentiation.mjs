@@ -1,11 +1,12 @@
 import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
-import {fileURLToPath} from 'node:url';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {webpDimensions} from './prepare-room-background.mjs';
 
 // Check brief structure and immutable pose-study file bytes. This cannot assess artistic quality or identity visually.
-const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
+const defaultRoot=resolve(fileURLToPath(new URL('..',import.meta.url)));
+export function checkCharacterCgDifferentiation(root=defaultRoot){
 const brief=JSON.parse(readFileSync(resolve(root,'docs/art-reviews/CG-DIFFERENTIATION-SHOT-LIST.json'),'utf8'));
 const manifest=JSON.parse(readFileSync(resolve(root,'public/art/characters/cg-manifest.json'),'utf8'));
 const fail=message=>{throw new Error('CG differentiation brief: '+message);};
@@ -49,7 +50,8 @@ for(const [id,study] of Object.entries(brief.poseStudies??{})){
     fail('pose study dimensions or byte count changed '+id);
   const actual=createHash('sha256').update(bytes).digest('hex');
   if(study.sha256!==actual)fail('pose study checksum mismatch '+id);
-  if(manifest.cards[id].status!=='portrait')fail('research art must not bypass production review '+id);
+  if(manifest.cards[id].status==='production'&&createHash('sha256').update(readFileSync(resolve(root,'public/art/characters/'+resident+'/cg-'+cardSlug+'.webp'))).digest('hex')===study.sha256)
+    fail('research bytes cannot become production '+id);
 }
 
 // Alternate concepts are preserved for side-by-side artistic inspection, never selected
@@ -73,8 +75,13 @@ for(const [id,study] of Object.entries(brief.alternativePoseStudies??{})){
     fail('alternative size or dimensions changed '+id);
   if(createHash('sha256').update(bytes).digest('hex')!==study.sha256)
     fail('alternative checksum mismatch '+id);
-  if(manifest.cards[id].status!=='portrait')
-    fail('research alternative cannot approve production card '+id);
+  if(manifest.cards[id].status==='production'&&createHash('sha256').update(readFileSync(resolve(root,'public/art/characters/'+resident+'/cg-'+cardSlug+'.webp'))).digest('hex')===study.sha256)
+    fail('research bytes cannot become production '+id);
 }
 
-console.log('CG differentiation: 5 structural briefs and '+Object.keys(brief.poseStudies??{}).length+' checksum-locked research studies passed (NOT visual or commercial-use approval).');
+return {cards:ids.length,studies:Object.keys(brief.poseStudies??{}).length};
+}
+if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
+  const result=checkCharacterCgDifferentiation();
+  console.log('CG differentiation: '+result.cards+' structural briefs and '+result.studies+' checksum-locked research studies passed (NOT visual or commercial-use approval).');
+}

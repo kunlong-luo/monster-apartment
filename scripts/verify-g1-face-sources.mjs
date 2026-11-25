@@ -209,14 +209,40 @@ export function verifyG1Approval(rootDir,id,binding){
   return {character:id,path,sha256:binding.sha256};
 }
 
+/** Emit an unsigned review draft; never create an approval file. */
+export function buildG1ApprovalDraft(rootDir,id){
+  const root=resolve(rootDir);
+  demand(Object.hasOwn(SUBJECTS,id),'unknown approval subject');
+  const prefix='art-sources/characters/'+id+'/identity/';
+  const collect=(path)=>{
+    if(!lstatSync(join(root,path),{throwIfNoEntry:false})?.isFile())return null;
+    const bytes=readFileSync(join(root,path));
+    const png=path.endsWith('.png');
+    if(png)demand(bytes.length>=24&&bytes.subarray(0,8).equals(Buffer.from('89504e470d0a1a0a','hex'))&&
+      bytes.toString('ascii',12,16)==='IHDR','invalid PNG '+path);
+    const dim=png?[bytes.readUInt32BE(16),bytes.readUInt32BE(20)]:((d)=>[d.width,d.height])(webpDimensions(bytes));
+    const entry={path,bytes:bytes.length,sha256:sha256(bytes),pixelDimensions:dim};
+    exactAsset(root,entry,path);
+    return entry;
+  };
+  const names=id==='yuesha'?['yuesha-avatar-v3.webp','yuesha-portrait-v3.webp','yuesha-bust-v3.webp']:['face.webp'];
+  return {schemaVersion:1,character:id,approved:false,humanVisualReview:false,identityConsistent:false,
+    independentNativeSources:false,rightsConfirmed:false,commercialUse:false,crossCharacterReview:false,
+    reviewer:'',reviewedAt:'',reviewNotes:'',sourceReference:'',
+    front:collect(prefix+'front.png'),angle:collect(prefix+'three-quarter-candidate-v2.png'),
+    references:names.map(name=>collect('public/art/characters/'+id+'/'+name))};
+}
+
 function parseArgs(args){
   if(!args.length)return process.cwd();
   if(args.length===2&&args[0]==='--source-dir'&&args[1])return args[1];
-  fail('usage: node scripts/verify-g1-face-sources.mjs [--current | --source-dir /path/to/unpacked-zip]');
+  fail('usage: node scripts/verify-g1-face-sources.mjs [--current | --draft brook | --source-dir /path/to/unpacked-zip]');
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
   try{
-    if(process.argv.length===3&&process.argv[2]==='--current'){
+    if(process.argv.length===4&&process.argv[2]==='--draft'){
+      console.log(JSON.stringify(buildG1ApprovalDraft(process.cwd(),process.argv[3]),null,2));
+    }else if(process.argv.length===3&&process.argv[2]==='--current'){
       const result=verifyCurrentG1FaceSources(process.cwd());
       console.log(JSON.stringify(result,null,2));
     }else{
