@@ -100,3 +100,16 @@ R12.78：文档归并后执行 `pnpm audit:doc-links`，检查根 README、文�
 R12.85–86：文档链接门禁由 5 份索引扩至 16 份必需入口，再扩至全部 Git 跟踪 Markdown（自动发现，去重）；新主规范如属必需入口，同步更新 `scripts/audit-doc-links.mjs` 的必需清单。仅核查匹配到的仓库相对链接目标，不检查外链、锚点、引用式 Markdown 或内容准确性。历史报告中的旧路径应按当时事实使用固定 SHA，不为了通过检查恢复废弃目录。删除文档前独立核查其内容、证据和实际引用；链接通过不是删除许可。
 
 R12.87：场景审稿由 Next `useSearchParams` 驱动，保留静态导出所需 Suspense 和 portal hydration 边界；退出用挂载生命周期重置，不在 Effect 内同步级联 setState。PC/手机分别管理 pending/active 本地对象 URL；先取消旧 probe 回调与所有权再释放，解码失败保留旧图，固定仓库 URL 不 revoke。相关 `e2e/r12-local-scene-preview.spec.ts` 覆盖同页 History/Back、延迟解码、退出与对象 URL 释放，修改这些路径须定向回归。历史报告退役不等于删除测试或放宽现行规则；交互合同见 [DESIGN.md](../../DESIGN.md)。
+
+## R12.88 · 工作流和脚本保留边界
+
+现行 GitHub Actions 入口（以实际 workflow YAML 为准）：
+
+| 职责 | 工作流 |
+| --- | --- |
+| 类型、规则、资源、构建及发布 | [Quality](../../.github/workflows/quality.yml)、[Pages](../../.github/workflows/deploy-pages.yml) |
+| PC/手机视觉与玩法 | [Desktop Visual Review](../../.github/workflows/desktop-visual-review.yml)、[Gameplay Browser Review](../../.github/workflows/gameplay-browser-review.yml) |
+| 原画像素与来源核查 | [R12 Art Pixel Evidence](../../.github/workflows/r12-art-evidence.yml)、[Gothic Manor Source Review](../../.github/workflows/gothic-art-intake.yml)、[Full ZIP Review](../../.github/workflows/gothic-source-pack.yml)、[Licensed Native 4K Source Review](../../.github/workflows/r12-licensed-4k-review.yml) |
+| 工坊性能与 GPU 生命周期 | [Workshop Performance Baseline](../../.github/workflows/workshop-performance-baseline.yml)、[Workshop WebGL Lifecycle](../../.github/workflows/workshop-webgl-lifecycle.yml) |
+
+固定事故 SHA 的一次性恢复任务结束后应退役，不保留可误触发的 pages:write 入口；正常 Pages 仍须等待 main push 的 Quality 成功，保持现有不取消进行中部署的队列。限定候选分支的素材写入工作流在候选分支退役后删除，不放宽权限或分支条件来恢复。保留转换脚本、来源/哈希、生成证据及 CI 审计；历史批次复现使用对应固定 SHA 与工具版本，在隔离工作区执行，不直接重跑覆盖当前 main 资源。手动触发不等于无人使用；删除其他脚本或工作流前须核对 package scripts、工作流、测试、文档、人工入口、输出清单和真实引用。原画来源获取任务仍有独立用途，不能仅因最近失败或非日常调用删除。

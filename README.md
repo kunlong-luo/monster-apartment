@@ -65,6 +65,8 @@ npm --prefix engine run dev
 
 资源治理：`pnpm audit:media-duplicates` 核查 Git 跟踪媒体的实际字节，只有明确路径和 Git blob 的授权例外可重复；`pnpm test:media-duplicates` 验证新副本及变更例外被拒绝。
 
+工作流入口：现行 10 份 GitHub Actions 分为 Quality/Pages、桌面/玩法回归、原画像素证据、三个来源审查、工坊性能/WebGL。已退役固定事故取消和两条已不存在候选分支的转换工作流；转换脚本保留用于历史复现，不直接在 main 重跑旧批次。具体边界见[迭代手册](docs/engineering/ITERATION-PLAYBOOK.md)。
+
 日常：`pnpm check:design`、`pnpm typecheck`、`pnpm lint`、`pnpm test`、`NEXT_STATIC_EXPORT=1 pnpm build`。完整质量门禁见 [Quality 工作流](.github/workflows/quality.yml)，浏览器按风险分层运行。主分支保护、真实试玩仍由 [#9](https://github.com/kunlong-luo/monster-apartment/issues/9)、[#10](https://github.com/kunlong-luo/monster-apartment/issues/10) 跟踪。
 
 存档键保持 `monster-apartment:cozy:v1` 与 `monster-apartment:workshop-v2-lab`，两套经营状态独立；不允许为了整理仓库重置、迁移或假装共享余额。

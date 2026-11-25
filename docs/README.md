@@ -1,6 +1,6 @@
 # 《怪物公寓》文档总入口
 
-> R12.87：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
+> R12.88：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
 
 ## 现行规范（新开发从这里开始）
 
@@ -93,3 +93,7 @@ R12.82：三个既有功能 PR 的 Quality、桌面及完整玩法均通过；�
 R12.86 主线 `b9e00ac` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45400453801) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45400627025) 均成功。R12.33/R12.34 两份历史实施报告已逐份阅读，现行 URL 隔离、PC/手机异步解码与对象 URL 生命周期规则归入 [DESIGN.md](../DESIGN.md)，工程与回归约束归入 [迭代手册](engineering/ITERATION-PLAYBOOK.md)。原件及独立失败/验收证据以固定 SHA 保留：[R12.33 原报告](https://github.com/kunlong-luo/monster-apartment/blob/b9e00acf9b343fe4ab5cc1c423b9b8325afb57d2/docs/design/R12-33-WEB-REVIEW-QUERY-ISOLATION-2026-11-24.md) · [R12.34 原报告](https://github.com/kunlong-luo/monster-apartment/blob/b9e00acf9b343fe4ab5cc1c423b9b8325afb57d2/docs/design/R12-34-WEB-REVIEW-IMAGE-LIFECYCLE-2026-11-24.md)。
 
 完整 Git 树中的 187 份 Markdown 均逐份扫描两个明确文件名，仅发现两份退役报告之间的一条引用；另外核查 19 个相关工作流、审稿测试和审计脚本，无明确文件名引用。现行场景组件、三条页面包装及回归 spec 已回读，未改动其实现。未穷尽所有非 Markdown 动态引用。两份文件从主线移除，全仓 Markdown 187 → 185、设计 Markdown 28 → 26；没有新增目录、文档、依赖或媒体，生产审批、七路由、存档和 V3.109.0 均不变。新 SHA 的 Quality/Pages 须独立核验。下一步审查旧脚本与工作流的真实调用、产物及保留理由。
+
+## R12.88 · 工作流退役与工程入口治理
+
+R12.87 主线 `cd07183` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45407284178) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45407448939) 均成功。核查完整 Git 树 13 份工作流的触发条件、脚本引用及用途，并核查当前七条分支；185 份 Markdown 逐份扫描三个退役工作流明确文件名，无直接引用，其余工作流和根 package.json 无明确引用。退役三份：[recover-stale-pages.yml](https://github.com/kunlong-luo/monster-apartment/blob/cd07183d278de73f066fe891b48f16fd08b23444/.github/workflows/recover-stale-pages.yml) · [r12-53-art-transition.yml](https://github.com/kunlong-luo/monster-apartment/blob/cd07183d278de73f066fe891b48f16fd08b23444/.github/workflows/r12-53-art-transition.yml) · [r12-61-world-scene-art.yml](https://github.com/kunlong-luo/monster-apartment/blob/cd07183d278de73f066fe891b48f16fd08b23444/.github/workflows/r12-61-world-scene-art.yml)。第一份仅取消固定历史失败部署 `5dd2dae77ec8`，非通用恢复工具；后两份同时受已不存在候选分支的 push 和 job ref 限制，main 手动触发也不会执行转换。工作流 13 → 10；根 scripts/ 的 49 个跟踪文件、原始素材、转换配方、产物清单和 Quality 审核均保留。R12.53 和 R12.61 的转换脚本只作历史复现，不能在当前主线盲目覆盖已经迁移或重新审批的素材。现行 Pages 排队、Quality 成功门禁和独立视觉/玩法检查不变。工作流专属历史 runs 列表接口不可读，未声称查到一次性取消任务的具体执行结论；保留旧 SHA 可追溯。未穷尽非 Markdown 外部或动态引用。新 SHA 的 CI/Pages 独立验收，游戏版本仍 V3.109.0。下一批以真实组件可达性、CSS 动态引用及浏览器证据为准继续精简。
