@@ -232,3 +232,9 @@ R12.83–84：V3.109.0 主线 80eb69a 的 Quality、Desktop、Gameplay 与 Pages
 ## R12.92 · 真实浏览器视觉回归与像素诊断
 
 R12.91 主线 `81bf2d9` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45557278055) 成功；R12.89 `be66775` 的 [Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556397863) 两 job 成功，导航测试覆盖 PC 地图七路由、键盘焦点返回、手机 44px 入口与矮屏；独立场景 8 项通过。完整 [玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45556397722) 核查时仍运行。大厅 DPR2 1648×928 实测 1.972、390×844 实测 1.010，均 filter/transform none，源图像素而非 CSS 是当前已测的清晰度瓶颈。新增四视口真实 JSON/PNG 留存及 CI 产物检查，详见[像素证据](../art-reviews/R12-01-REAL-BROWSER-PIXEL-EVIDENCE.md)；新结果独立核对。本轮未亲自打开截图、未取得新原画/签审、不变更运行代码和版本；#24/#16/#25 仍 open，综合 72 暂不提高。R12.93 优先按现行视觉合同准备 S02/S05/S06 原生独立场景及四人身份基准；不凭历史截图宣称画质已修复。
+
+## R12.93 · 独立美术重制第一批
+
+基线 `7056767` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45557615576) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45557718604) 已成功；[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45557615689) 和 [玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45557615628) 核查时仍运行。R12.93 第一批（2026-11-25）实际生成 S02 六门中庭 PC 独立候选 v2，聊天原始 PNG 实测 1672×941 RGB、2528106 B、SHA-256 `c59fcb3fcf96faa0eb23a3051015090592c104412b8a049cfd0303287c0d384e`、本地计算 Git blob `bcb3d211792cce3613aa16e5d0475f0134b69639`（非已写入远端证明）。拟入库稳定路径 `art-sources/scenes/apartment/desktop-candidate-v2.png`，暂未传入 GitHub；本会话生成 PNG 可读，但当前连接的 Git blob 写入只接受 base64 文本，没有可用的大文件二进制直传桥接。禁止将拟定路径写成实际可用资源，禁止把未入库文件加入第 5 节库存或 manifest。原生尺寸低于 S02 ≥3296×1856 和目标 3840×2160，不执行插值超分晋级；手机独立原画尚未生成。现有两份已入仓六门研究图、六房索引、生产 review 状态、存档和 V3.109.0 均不变。
+
+具体交付条件见[现行视觉合同](../design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md)和[场景准入](../art-reviews/R12-02-SCENE-ART-INTAKE.md)。VIS-01/VIS-02/ART-01 不关闭，评分仍 72；下一批优先原图入库、独立竖版及其他地点，不假设新图已可上线。
