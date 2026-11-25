@@ -244,3 +244,5 @@ R12.94 资源清退专项：用户要求先整理 public/art。实际 67 文件�
 R12.95：对 R12.94 资源分类实施第一批实际迁退：10 个离线研究 WebP 原 blob 移出 public，3 个旧肖像删除；public/art 56 → 43 媒体，减少 5756254 B；全仓媒体 144 → 141。核查 351 源/测试/工具、19 JSON/CSV 和 185 Markdown 的相关名称，保留生产和正常/审稿回退。源图、审批、存档不变，新增 CI 待确认。余下正常 review 路径、必要回退和历史设计参考继续按用途逐步迁名，S02 v2 新图仍未上传。详见[资源目录](../ART-RESOURCE-CATALOG.md)。
 
 R12.96：将 public/art/a05 与 public/art/feature-postcards 两组历史命名迁为 decorations 与 postcards；5 个媒体、2 个来源清单原 Git blob 不变。同步 3 个 React 消费者、海报回退 E2E、转换脚本和来源工作流，保留 A05 验收 ID、截图目录、旧历史 SHA、来源与审批。351 个代码/工具/测试文件、185 个 Markdown、19 个资源 JSON/CSV 已做相关路径与文件名专项扫描。未改变玩法、布局、图片字节及存档；43 公开媒体、141 全仓媒体不变。新提交 CI/Pages/视觉结果独立验证。 剩余角色、封面、场景、房间及历史设计参考路径仍待独立核查。
+
+R12.97：将 public/art 顶层业务目录与现存根文件纳入现有 `pnpm audit:repository-layout` 门禁；旧 a05、feature-postcards、任意未登记顶层目录或根文件均失败。新用途必须同步更新资源目录、public/art 入口和门禁；现存角色、封面、房间、场景及回退路径不动。下一批优先核对正常 PC 场景 review 路径，未完成完整引用扫描前不迁移或删除；暂缓批量生成新美术。

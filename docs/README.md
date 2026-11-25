@@ -1,6 +1,6 @@
 # 《怪物公寓》文档总入口
 
-> R12.96：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
+> R12.97：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
 
 ## 现行规范（新开发从这里开始）
 
@@ -117,3 +117,5 @@ R12.94：核查 public/art 全部 67 文件，56 媒体按用途分类（36 正�
 R12.95：56 → 43 张 public/art，十张研究输出迁至已有 [sources/](art-reviews/sources/) 保持原 Git blob，三张废弃月纱头像/肖像退役；全仓 141 媒体、156439517 B。同步镜头表、场景输出清单、审核器、文档图片及第 5 节库存。现有玩家运行资源、回退、生产状态与存档不变。新 SHA CI 待验收；下一批继续正常 review 路径和历史 public/assets 隔离，详见[资源目录](ART-RESOURCE-CATALOG.md) 第 4.1 节。
 
 R12.96：将 public/art/a05 与 public/art/feature-postcards 两组历史命名迁为 decorations 与 postcards；5 个媒体、2 个来源清单原 Git blob 不变。同步 3 个 React 消费者、海报回退 E2E、转换脚本和来源工作流，保留 A05 验收 ID、截图目录、旧历史 SHA、来源与审批。351 个代码/工具/测试文件、185 个 Markdown、19 个资源 JSON/CSV 已做相关路径与文件名专项扫描。未改变玩法、布局、图片字节及存档；43 公开媒体、141 全仓媒体不变。新提交 CI/Pages/视觉结果独立验证。 详见[美术资源总目录](ART-RESOURCE-CATALOG.md)。上一轮 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45559920394)、[桌面视觉](https://github.com/kunlong-luo/monster-apartment/actions/runs/45559920349)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45560036324) 均成功。
+
+R12.97：将 public/art 顶层业务目录与现存根文件纳入现有 `pnpm audit:repository-layout` 门禁；旧 a05、feature-postcards、任意未登记顶层目录或根文件均失败。新用途必须同步更新资源目录、public/art 入口和门禁；现存角色、封面、房间、场景及回退路径不动。下一批优先核对正常 PC 场景 review 路径，未完成完整引用扫描前不迁移或删除；暂缓批量生成新美术。

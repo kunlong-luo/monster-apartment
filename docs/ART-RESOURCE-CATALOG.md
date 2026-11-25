@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.96）
+# 怪物公寓 · 美术资源总目录（R12.97）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -165,7 +165,7 @@
 
 S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/scenes/apartment/) 仅含 `desktop-candidate.png` 与 `mobile-candidate.png`；新 `desktop-candidate-v2.png` 仍未入库。下一批单独核验正常运行的 review 路径、根目录旧版本名、交互研究重复图和三张 public/assets 历史参考；不将本轮写成已完成全部路径重构。
 
-## 5. 全仓实际资源菜单（R12.96）
+## 5. 全仓实际资源菜单（R12.97）
 
 R12.96 路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
 
@@ -457,3 +457,5 @@ R12.96：将 public/art/a05 与 public/art/feature-postcards 两组历史命名�
 | `public/art/feature-postcards/source-manifest.json` | `public/art/postcards/source-manifest.json` | `9ffdafeec97b` |
 
 旧目录不保留副本；原路径见 [固定历史基线](https://github.com/kunlong-luo/monster-apartment/tree/03490ccca8197bb7a48a28edf6cf34b78c74ac9f/public/art)。其余角色、封面、大厅、世界地点和房间路径分批迁移，未宣称全部完成。
+
+R12.97：将 public/art 顶层业务目录与现存根文件纳入现有 `pnpm audit:repository-layout` 门禁；旧 a05、feature-postcards、任意未登记顶层目录或根文件均失败。新用途必须同步更新资源目录、public/art 入口和门禁；现存角色、封面、房间、场景及回退路径不动。下一批优先核对正常 PC 场景 review 路径，未完成完整引用扫描前不迁移或删除；暂缓批量生成新美术。
