@@ -61,7 +61,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/art-reviews/sources/winechan-gothic-manor-full-pack/ public/art/feature-postcards/ public/art/world-scenes/
+          git add docs/art-reviews/sources/winechan-gothic-manor-full-pack/ public/art/postcards/ public/art/world-scenes/
           if ! git diff --cached --quiet; then
             git commit -m "assets(art): add verified navigation postcards, keep rooms under review"
             TOKEN64="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"

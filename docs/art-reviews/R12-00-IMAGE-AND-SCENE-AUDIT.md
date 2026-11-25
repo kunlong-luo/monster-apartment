@@ -22,8 +22,8 @@ Git Tree `GET /git/trees/main?recursive=1`（`truncated=false`）下，列为 PN
 | P0 | `v2/art/kiln-art-review.avif` | 4402B，在仓库画面作为 180×180 小型插画 | 临时审稿切片不应被宣称正式原画 | 保留为临时辅助图，正式仓库背景独立替换 |
 | P0 | `public/art/world-scenes/workshop-gothic-hall.webp` | 1920×1080，180542B；工坊 React/Pixi 环境 | 源图已是独立过渡厅堂，但不是有完整锻造机具的专属工作间 | PC/手机与 Pixi 贴图的实际采样、色带、锐度和机器人遮挡 |
 | P1 | `public/art/world-scenes/town-moonlit-gate.webp` | 1920×1080，120894B；月光街环境 | 仅夜间大门，缺街区商铺与生活动线 | 不以 1920×1080 分辨率认定正式 CG；设计完整独立街景 |
-| P1 | `public/art/feature-postcards/gothic-workshop.webp` | 960×320，59254B；大厅右侧功能横幅 | **只批准用作小幅入口海报**，不是 PC 全屏场景 | 保持在 320px 海报级显示，禁止页面放大复用 |
-| P1 | `public/art/feature-postcards/moonlit-street.webp` | 960×320，34350B；大厅右侧街区横幅 | 同上 | 同上 |
+| P1 | `public/art/postcards/gothic-workshop.webp` | 960×320，59254B；大厅右侧功能横幅 | **只批准用作小幅入口海报**，不是 PC 全屏场景 | 保持在 320px 海报级显示，禁止页面放大复用 |
+| P1 | `public/art/postcards/moonlit-street.webp` | 960×320，34350B；大厅右侧街区横幅 | 同上 | 同上 |
 | P1 | `public/art/yuesha-avatar-v3.webp` | 500×500，87422B；头像 | 不能当人物图鉴的大型全身 CG | 保留缩略图用途、对比具体显示面积 |
 | P1 | `public/art/yuesha-portrait-v3.webp` | 700×830，178474B；角色与卡面过渡插画 | 大卡/超宽画面易露出裁切和无全身画稿的问题 | 核验脸部比例、像素倍率与审稿状态 |
 | P1 | `public/art/yuesha-bust-v3.webp` | 930×910，251540B；对话半身像 | 是带环境背景的平面画，不是透明人物精灵 | 角色层生产需要独立透明 4 姿态素材，不通过 CSS 假装分层 |
@@ -53,3 +53,5 @@ Git Tree `GET /git/trees/main?recursive=1`（`truncated=false`）下，列为 PN
 每张候选须列明 `sceneId`、`filePath`、原始来源/授权、许可声明、`sourceSha256`、`outputSha256`、像素尺寸、色域/Alpha、类型（背景/前景/人物/宣传图）、PC/手机构图、文件大小与渲染测试。人工审查和代码审核**分开记录**；即使某个平台宣称 public domain 或 AI-assisted，也不等于本次具体资产已完成权利核验。
 
 只读审计不能宣称用户「糊」感已经解决。真正完成定义：按图像类别交付经审核的独立高品质素材，用它们替换具体路由、完整运行且保留回退、裁切和旧档兼容。
+
+R12.96：本文涉及的装饰及海报资源路径已同步至现行目录 decorations/、postcards/，原画字节和原有审核语义未改变。

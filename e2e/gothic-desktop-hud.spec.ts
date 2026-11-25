@@ -40,8 +40,8 @@ test('PC HUD keeps a compact corner apartment shortcut plus seven-place atlas',a
   const posterSources=await Promise.all([
     workshopPainting.getAttribute('src'),streetPainting.getAttribute('src')
   ]);
-  expect(posterSources[0]).toContain('feature-postcards/gothic-workshop.webp');
-  expect(posterSources[1]).toContain('feature-postcards/moonlit-street.webp');
+  expect(posterSources[0]).toContain('postcards/gothic-workshop.webp');
+  expect(posterSources[1]).toContain('postcards/moonlit-street.webp');
   expect(posterSources[0]).not.toBe(posterSources[1]);
   await expect(page.getByTestId('gothic-reference-workshop')).toHaveAttribute('href',/workshop/);
   await expect(page.getByTestId('gothic-reference-town')).toHaveAttribute('href',/town/);
@@ -522,7 +522,7 @@ test('R12.72 desktop lobby right rail shares a single event height and keeps all
 
 test('R12.72 postcard failures retain the corresponding location art, not the lobby heroine',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
-  await page.route('**/art/feature-postcards/*.webp*',route=>route.abort());
+  await page.route('**/art/postcards/*.webp*',route=>route.abort());
   await page.goto('/');
   for(const [id,source] of [['gothic-postcard-workshop-art','workshop-gothic-hall'],['gothic-postcard-town-art','town-moonlit-gate']]){
     const image=page.getByTestId(id);

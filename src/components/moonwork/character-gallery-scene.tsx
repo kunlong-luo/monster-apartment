@@ -112,9 +112,9 @@ export function CharacterGalleryScene({routeVisitor}:{routeVisitor?:WorkerCharac
       style={{backgroundImage:"url("+JSON.stringify(hallBackdrop.src)+")"}}/>
     <div className="cg-scene__vignette" aria-hidden="true"/>
     <div className="cg-scene__tracery" data-testid="a05-tracery" aria-hidden="true"
-      style={{backgroundImage:'url('+JSON.stringify(siteAssetUrl('/art/a05/moonlight-tracery.svg'))+')'}}/>
+      style={{backgroundImage:'url('+JSON.stringify(siteAssetUrl('/art/decorations/moonlight-tracery.svg'))+')'}}/>
     <div className="cg-scene__ornaments" data-testid="a05-foreground-ornaments" aria-hidden="true"
-      style={{backgroundImage:'url('+JSON.stringify(siteAssetUrl('/art/a05/foreground-ornaments.svg'))+')'}}/>
+      style={{backgroundImage:'url('+JSON.stringify(siteAssetUrl('/art/decorations/foreground-ornaments.svg'))+')'}}/>
     <CharacterGalleryPetals reducedMotion={Boolean(prefersReducedMotion)}/>
     <header className="cg-topbar">
       <div className="cg-brand" aria-label="怪物公寓">

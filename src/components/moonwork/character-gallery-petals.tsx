@@ -16,7 +16,7 @@ const PETALS=[
 ] as const;
 
 export function CharacterGalleryPetals({reducedMotion}:{reducedMotion:boolean}){
-  const petal=siteAssetUrl('/art/a05/rose-petal.svg');
+  const petal=siteAssetUrl('/art/decorations/rose-petal.svg');
   return <div className="cg-petal-layer" data-testid="a05-petal-layer"
     aria-hidden="true" data-motion={reducedMotion?'reduced':'ambient'}>
     {PETALS.map((item,index)=><motion.span key={index}

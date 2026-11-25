@@ -78,14 +78,14 @@
 - 3 位工匠的 `512×768` 透明作业全身纹理为 **pending / 缺文件**；Pixi 当前可回退到 `raster-sprites.ts` + `worker-canvas.ts` 中三人各 8 个 Canvas2D 过渡姿态。**这是代码生成的过渡纹理，不是已签审的独立人物精灵表**。
 - 工坊月纱 NPC 的 `full` / `bust` / `idle` / `talk` / `trade` 5 个产物也由 `asset-pack.v1.json` 标为 pending；优先级低于玩家高频可见的三个作业工匠。
 - `v2/art/moon-workshop.avif` 真实像素 **360×228** 是失败兜底，不可升格全屏背景；`garden/kiln/well-art-review.avif` 各 **320×320**，属于小辅助画；`moonstone-floor.avif` **146×146** 是重复平铺纹理，**不能只因尺寸小就判废**。
-- `feature-postcards` 两张 **960×320** 只用于小幅海报；3 张身份肖像 **512×512** 只用于头像与缩略位。应核真实 CSS 框、DPR 与中心裁切后决定是否做升级版，而不是全部无差别重绘。
+- `postcards` 两张 **960×320** 只用于小幅海报；3 张身份肖像 **512×512** 只用于头像与缩略位。应核真实 CSS 框、DPR 与中心裁切后决定是否做升级版，而不是全部无差别重绘。
 
 ## 6. 封面、风格一致性和仓库资源卫生
 
 - `world-cover.webp` 为 **1920×1080**，`world-cover-mobile.webp` 为 **900×1539**。本次预览可见封面中心的黑发成年女性与兽类，和当前已锁定的 V3 银发月纱**并非同一明确形象**；如果封面叙事主角本来不是月纱，应明确标注角色设定，而非直接认定错脸。**封面是否重绘先由剧情/品牌确认主角身份**。手机版还需检验 390×844 DPR2 的纵向有效采样和页面文字安全区。
 - 2 张 `world-scenes` 过渡图来自 `winechan-gothic-manor` 审核路径；`source-manifest.json` 写有来源与发布者声称的授权，但这不是最终商业使用许可的人审。新的正式场景必须补齐版权/来源证据，且在游戏中有明确的地点功能与建筑语言。
 - Git Tree 识别 **3 对完全相同 Git blob SHA**：`.aistudio/artifacts/brain/.../.tempmediaStorage/*.png` 与 `public/assets/aistudio/*.png`，每份图尺寸分别 3,279,821／3,154,947／2,726,560 字节；每一组出现两份，总计约 **9.16 MB 重复存储**。这些是参考图而非已经确认的生产画。先检查是否有页面实际引用 `public/assets/aistudio`，保留一份适当位置的来源记录后再决定清理，**本轮不删文件**。
-- `public/art/a05/{foreground-ornaments,moonlight-tracery,rose-petal}.svg` 属于小 UI/装饰层；其价值与占比合理时**保留**。不要因为“禁止粗糙 SVG 人物”就误删所有 SVG。
+- `public/art/decorations/{foreground-ornaments,moonlight-tracery,rose-petal}.svg` 属于小 UI/装饰层；其价值与占比合理时**保留**。不要因为“禁止粗糙 SVG 人物”就误删所有 SVG。
 
 ## 7. 制作顺序（每轮要真实有画面变化）
 
@@ -117,3 +117,5 @@
 
 
 R12.95：研究图现行路径以 [CG 镜头表](CG-DIFFERENTIATION-SHOT-LIST.json) 为准；退役月纱旧 face 原字节见 [固定历史提交](https://github.com/kunlong-luo/monster-apartment/blob/87a37023dcc5161696aab9fe006749f3a5a04bb4/public/art/beauty-beasts/characters/yuesha/face.webp)。
+
+R12.96：本文涉及的装饰及海报资源路径已同步至现行目录 decorations/、postcards/，原画字节和原有审核语义未改变。

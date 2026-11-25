@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.95）
+# 怪物公寓 · 美术资源总目录（R12.96）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -16,7 +16,8 @@
 | 正式大厅 | [public/art/](../public/art/) | lobby-hero-v4.webp / lobby-hero-v4-mobile.webp；V3 为旧公寓及回退 |
 | 正式私室 | [public/art/rooms/](../public/art/rooms/) | [rooms manifest](../public/art/rooms/manifest.json)，现有概念及未来背景/姿态槽 |
 | 世界地点 | [public/art/world-scenes/](../public/art/world-scenes/) | [R12 manifest](../public/art/world-scenes/r12-scene-manifest.json)，现行图和显式审稿资源 |
-| 地点海报 | [public/art/feature-postcards/](../public/art/feature-postcards/) | 小型入口图，不当全屏背景 |
+| 图鉴装饰 | [public/art/decorations/](../public/art/decorations/) | 独立 SVG 装饰及来源清单，不是正式场景 CG |
+| 地点海报 | [public/art/postcards/](../public/art/postcards/) | 小型入口图，不当全屏背景 |
 | Pixi 工坊 | [engine/art/](../engine/art/) | 运行中的设备和环境资源，R12.76 源目录改名，字节不变 |
 | 文档证据 | [docs/art-reviews/](art-reviews/) | 审核来源、权利、对照图及历史记录 |
 | 历史设计参考 | [public/assets/aistudio/](../public/assets/aistudio/) | 保留原件及引用；不新增临时重复媒体 |
@@ -131,11 +132,11 @@
 
 | 路径 / 精确范围 | 数量 | 处置 | 实际职责或验收限制 |
 | --- | ---: | --- | --- |
-| `a05/{foreground-ornaments,moonlight-tracery,rose-petal}.svg` | 3 | 保留 | 图鉴场景、粒子动态 URL |
+| `decorations/{foreground-ornaments,moonlight-tracery,rose-petal}.svg` | 3 | 保留 | 图鉴场景、粒子动态 URL |
 | `beauty-beasts/characters/{brook,fern,cinder}/face.webp` | 3 | 保留 | 当前人物头像注册 |
 | `beauty-beasts/characters/yuesha/cg-{eclipse,vow}-candidate.webp`、`beauty-beasts/characters/fern/cg-spring-candidate.webp` | 3 | 保留 | 正常召唤/鉴赏候选画，不是已审批 CG |
 | `beauty-beasts/cover/world-cover.webp`、`world-cover-mobile.webp` | 2 | 保留 | 欢迎页双端，PC 图也用于大厅回退 |
-| `feature-postcards/{gothic-workshop,moonlit-street}.webp` | 2 | 保留 | 大厅地点入口 |
+| `postcards/{gothic-workshop,moonlit-street}.webp` | 2 | 保留 | 大厅地点入口 |
 | `lobby-hero-v4.webp`、`lobby-hero-v4-mobile.webp` | 2 | 保留 | 正常大厅双端、欢迎页回退 |
 | `lobby-hero-v3.webp` | 1 | 保留 | 公寓/世界背景与 Pixi 回退 |
 | `yuesha-{avatar,bust,portrait}-v3.webp` | 3 | 保留 | 当前角色注册与对话/剧情 |
@@ -164,9 +165,9 @@
 
 S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/scenes/apartment/) 仅含 `desktop-candidate.png` 与 `mobile-candidate.png`；新 `desktop-candidate-v2.png` 仍未入库。下一批单独核验正常运行的 review 路径、根目录旧版本名、交互研究重复图和三张 public/assets 历史参考；不将本轮写成已完成全部路径重构。
 
-## 5. 全仓实际资源菜单（R12.95）
+## 5. 全仓实际资源菜单（R12.96）
 
-本轮迁退后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
+R12.96 路径迁移后完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
 
 ### 源图与研究（40）
 
@@ -217,9 +218,9 @@ S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/s
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
-| `public/art/a05/foreground-ornaments.svg` | 2876 | `fbf4a3c67d88` |
-| `public/art/a05/moonlight-tracery.svg` | 4827 | `c5f2af6e18e6` |
-| `public/art/a05/rose-petal.svg` | 986 | `09f65722ff16` |
+| `public/art/decorations/foreground-ornaments.svg` | 2876 | `fbf4a3c67d88` |
+| `public/art/decorations/moonlight-tracery.svg` | 4827 | `c5f2af6e18e6` |
+| `public/art/decorations/rose-petal.svg` | 986 | `09f65722ff16` |
 | `public/art/beauty-beasts/characters/brook/face.webp` | 92138 | `7a6a0e8b1fb5` |
 | `public/art/beauty-beasts/characters/cinder/face.webp` | 83042 | `a36fe1b83f19` |
 | `public/art/beauty-beasts/characters/fern/cg-spring-candidate.webp` | 601544 | `9235f2243085` |
@@ -228,8 +229,8 @@ S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/s
 | `public/art/beauty-beasts/characters/yuesha/cg-vow-candidate.webp` | 494826 | `7e60bcd337ba` |
 | `public/art/beauty-beasts/cover/world-cover-mobile.webp` | 489132 | `edb65eec7fe0` |
 | `public/art/beauty-beasts/cover/world-cover.webp` | 526046 | `17c30be4f413` |
-| `public/art/feature-postcards/gothic-workshop.webp` | 59254 | `34c4b7fdc29d` |
-| `public/art/feature-postcards/moonlit-street.webp` | 34350 | `e7b5404a42ca` |
+| `public/art/postcards/gothic-workshop.webp` | 59254 | `34c4b7fdc29d` |
+| `public/art/postcards/moonlit-street.webp` | 34350 | `e7b5404a42ca` |
 | `public/art/lobby-hero-v2.webp` | 209336 | `2541cfaeaf7b` |
 | `public/art/lobby-hero-v3.webp` | 435400 | `2b10407ea824` |
 | `public/art/lobby-hero-v4-mobile.webp` | 344590 | `72307e846c10` |
@@ -440,3 +441,19 @@ R12.76：原 `v2/art/` 迁入 `engine/art/`，全部 16 个跟踪文件（含 ma
 R12.93 第一批（2026-11-25）实际生成 S02 六门中庭 PC 独立候选 v2，聊天原始 PNG 实测 1672×941 RGB、2528106 B、SHA-256 `c59fcb3fcf96faa0eb23a3051015090592c104412b8a049cfd0303287c0d384e`、本地计算 Git blob `bcb3d211792cce3613aa16e5d0475f0134b69639`（非已写入远端证明）。拟入库稳定路径 `art-sources/scenes/apartment/desktop-candidate-v2.png`，暂未传入 GitHub；本会话生成 PNG 可读，但当前连接的 Git blob 写入只接受 base64 文本，没有可用的大文件二进制直传桥接。禁止将拟定路径写成实际可用资源，禁止把未入库文件加入第 5 节库存或 manifest。原生尺寸低于 S02 ≥3296×1856 和目标 3840×2160，不执行插值超分晋级；手机独立原画尚未生成。现有两份已入仓六门研究图、六房索引、生产 review 状态、存档和 V3.109.0 均不变。
 
 实际库存仍 144 路径；只有真实 Git blob 入库后才更新第 5 节与来源清单，不为计划路径创建空目录或占位图片。
+
+## R12.96 · 装饰与入口海报路径迁移
+
+R12.96：将 public/art/a05 与 public/art/feature-postcards 两组历史命名迁为 decorations 与 postcards；5 个媒体、2 个来源清单原 Git blob 不变。同步 3 个 React 消费者、海报回退 E2E、转换脚本和来源工作流，保留 A05 验收 ID、截图目录、旧历史 SHA、来源与审批。351 个代码/工具/测试文件、185 个 Markdown、19 个资源 JSON/CSV 已做相关路径与文件名专项扫描。未改变玩法、布局、图片字节及存档；43 公开媒体、141 全仓媒体不变。新提交 CI/Pages/视觉结果独立验证。
+
+| 旧路径 | 新路径 | 原 Git blob 前缀 |
+| --- | --- | --- |
+| `public/art/a05/foreground-ornaments.svg` | `public/art/decorations/foreground-ornaments.svg` | `fbf4a3c67d88` |
+| `public/art/a05/moonlight-tracery.svg` | `public/art/decorations/moonlight-tracery.svg` | `c5f2af6e18e6` |
+| `public/art/a05/rose-petal.svg` | `public/art/decorations/rose-petal.svg` | `09f65722ff16` |
+| `public/art/a05/source-manifest.json` | `public/art/decorations/source-manifest.json` | `a6a2291214b9` |
+| `public/art/feature-postcards/gothic-workshop.webp` | `public/art/postcards/gothic-workshop.webp` | `34c4b7fdc29d` |
+| `public/art/feature-postcards/moonlit-street.webp` | `public/art/postcards/moonlit-street.webp` | `e7b5404a42ca` |
+| `public/art/feature-postcards/source-manifest.json` | `public/art/postcards/source-manifest.json` | `9ffdafeec97b` |
+
+旧目录不保留副本；原路径见 [固定历史基线](https://github.com/kunlong-luo/monster-apartment/tree/03490ccca8197bb7a48a28edf6cf34b78c74ac9f/public/art)。其余角色、封面、大厅、世界地点和房间路径分批迁移，未宣称全部完成。

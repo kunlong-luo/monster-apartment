@@ -136,7 +136,7 @@ PC 目标为 1672×941，并验证 1648×928 和 1440×900。底图铺满视口�
 
 ## 2026-11-02 · P3-A 独立场景装饰入库（非正式环境 CG）
 
-本次新增 `public/art/a05/moonlight-tracery.svg` 与 `public/art/a05/foreground-ornaments.svg` 两份**原创静态装饰图层**（1672×941）。前者仅有紫月光、尖拱花窗玻璃与窗棂；后者仅有边缘蜡烛、花瓣和铜金装饰，两者均无角色、没有按钮或属性文案。来源、尺寸、用途与审核状态记录于 `public/art/a05/source-manifest.json`，status 仍是 **transitional-decoration**，不修改任何角色 CG 生产批准状态。
+本次新增 `public/art/decorations/moonlight-tracery.svg` 与 `public/art/decorations/foreground-ornaments.svg` 两份**原创静态装饰图层**（1672×941）。前者仅有紫月光、尖拱花窗玻璃与窗棂；后者仅有边缘蜡烛、花瓣和铜金装饰，两者均无角色、没有按钮或属性文案。来源、尺寸、用途与审核状态记录于 `public/art/decorations/source-manifest.json`，status 仍是 **transitional-decoration**，不修改任何角色 CG 生产批准状态。
 
 实际游戏在既有 `workshop-gothic-hall.webp` 建筑照片上叠两层独立美术，React 资源栏、五张人物卡、右详情、抽卡、收藏和七项导航仍为原本可交互组件。新增图层设为 `pointer-events:none`，不会遮挡鼠标和键盘；宽度小于等于 900px 时关闭额外装饰，减少手机开销。已有七路由、工坊生产和玩家存档不做修改。
 
@@ -152,9 +152,9 @@ PC 目标为 1672×941，并验证 1648×928 和 1440×900。底图铺满视口�
 
 ## 2026-11-02 · P4-A 静态场景上的克制动态氛围
 
-- **真实实施**：新增原创透明 `public/art/a05/rose-petal.svg` (80×52)、`character-gallery-petals.tsx` 及 CSS 层；通过仓库既有 **Motion for React** 将 6 个花瓣以不同速度、角度和景深在画面边缘缓慢飘动。绝不把带按钮/数值的效果图铺成 UI。
+- **真实实施**：新增原创透明 `public/art/decorations/rose-petal.svg` (80×52)、`character-gallery-petals.tsx` 及 CSS 层；通过仓库既有 **Motion for React** 将 6 个花瓣以不同速度、角度和景深在画面边缘缓慢飘动。绝不把带按钮/数值的效果图铺成 UI。
 - **清晰度及性能**：粒子独立于厅堂和人物卡，只用少量合成层变换，`pointer-events:none`，不截获卡片、弹窗或底部导航的鼠标键盘事件；窄屏（900px 以下）禁用额外花瓣，在系统 `prefers-reduced-motion:reduce` 时彻底隐藏。
-- **真实素材门禁**：花瓣来源、尺寸与“过渡装饰”状态登记到 `public/art/a05/source-manifest.json`。角色 `cg-manifest.json` 仍为原来的 `portrait`；这次生成工具返回的仍是**完整 UI 合成图**，不是有效的独立人物全身 CG，故不予接入。
+- **真实素材门禁**：花瓣来源、尺寸与“过渡装饰”状态登记到 `public/art/decorations/source-manifest.json`。角色 `cg-manifest.json` 仍为原来的 `portrait`；这次生成工具返回的仍是**完整 UI 合成图**，不是有效的独立人物全身 CG，故不予接入。
 - **验证**：在 A05 浏览器专项测试中确认六份花瓣存在、原始透明 SVG 可解码为 80×52、事件穿透、移动端与减少动态效果时隐藏；仍需参考 1672×941 截图检查是否有视觉噪音。
 - **下一美术关卡**：四张原生至少 1536×2048 的独立角色全身画稿及专门紫月长廊 1920×1080 纯背景，完成身份/授权/场景源审查及人工验收后替换；不可用低分辨率 512×512 肖像拉伸冒充。
 
@@ -215,3 +215,5 @@ PC 目标为 1672×941，并验证 1648×928 和 1440×900。底图铺满视口�
 - 测试要求 PC 快捷栏有且只有三个独立操作，右侧两枚人物操作，人物栏空间实际增大；确保故事弹窗可以正常打开关闭且不露出根导航。
 
 **边界**：这轮是 UI/交互清理，不是新的全身 CG；`cg-manifest.json`、召唤抽取、收录状态、工坊与公寓存档都不修改。桌面 1672×941 / 1440×900 与手机 390×844 需由真实截图复审，避免在去重时出现溢出或遮挡。
+
+R12.96：本文涉及的装饰及海报资源路径已同步至现行目录 decorations/、postcards/，原画字节和原有审核语义未改变。

@@ -119,7 +119,7 @@ components:
 
 ## V3.88 · 右侧场景卡真实素材
 
-在 V3.87 锁定的左人像、中月纱、右海报、底导航布局上，只替换右侧工坊与月光街海报的**重复大厅画面**。正式 UI 现在使用 `public/art/feature-postcards/gothic-workshop.webp` 和 `moonlit-street.webp` 两张独立横幅（960×320）。来自 [WineChan Gothic Manor](https://winechan.itch.io/gothic-manor) 页面声称为 public domain / AI-assisted 的资源包；经过源 ZIP、源图 SHA-256 和导出文件 SHA-256 校验，具体见 `public/art/feature-postcards/source-manifest.json`。
+在 V3.87 锁定的左人像、中月纱、右海报、底导航布局上，只替换右侧工坊与月光街海报的**重复大厅画面**。正式 UI 现在使用 `public/art/postcards/gothic-workshop.webp` 和 `moonlit-street.webp` 两张独立横幅（960×320）。来自 [WineChan Gothic Manor](https://winechan.itch.io/gothic-manor) 页面声称为 public domain / AI-assisted 的资源包；经过源 ZIP、源图 SHA-256 和导出文件 SHA-256 校验，具体见 `public/art/postcards/source-manifest.json`。
 
 两张仅是“入口宣传气氛图”：第一张表现复古操作台，非完整设备工作场景；第二张是夜色哥特建筑，非正式月光街地图。不可用于四间私人房间，不能修改 `public/art/rooms/manifest.json` 审核状态或冒充像素级 1:1。完整工坊锻造 CG、独立夜街远景 CG 仍待制作。
 
@@ -200,3 +200,5 @@ V3.88 PC 截图表明 `/town/` 左侧曾使用 `lobby-hero-v2.webp`，`/workshop
 - 验收包括普通玩家无研究资源请求、主动预览、同页退出及 Back 不恢复旧图、快速换图/失败/清理，以及直接带查询参数访问。沿用现有场景审稿 spec，不为通过截图放宽审核门槛。
 
 历史实现、首轮 lint 失败、修正与当时验收证据：[R12.33 原报告](https://github.com/kunlong-luo/monster-apartment/blob/b9e00acf9b343fe4ab5cc1c423b9b8325afb57d2/docs/design/R12-33-WEB-REVIEW-QUERY-ISOLATION-2026-11-24.md) · [R12.34 原报告](https://github.com/kunlong-luo/monster-apartment/blob/b9e00acf9b343fe4ab5cc1c423b9b8325afb57d2/docs/design/R12-34-WEB-REVIEW-IMAGE-LIFECYCLE-2026-11-24.md)。现行工程实现以源码与同 SHA 检查为准。
+
+R12.96：本文涉及的装饰及海报资源路径已同步至现行目录 decorations/、postcards/，原画字节和原有审核语义未改变。

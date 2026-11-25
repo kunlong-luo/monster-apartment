@@ -8,7 +8,7 @@ import hashlib, io, json, sys, zipfile
 from pathlib import Path
 from PIL import Image, ImageOps, ImageEnhance
 
-TARGET=Path("public/art/feature-postcards")
+TARGET=Path("public/art/postcards")
 SOURCE_PAGE="https://winechan.itch.io/gothic-manor"
 EXPECTED_ZIP="1eadb5f0a69e4b12da974cebd3d035dffbd18c157dbf1079a1430b521112c9b3"
 POSTERS={

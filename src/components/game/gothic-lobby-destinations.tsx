@@ -14,7 +14,7 @@ export function GothicLobbyDestinations({onOpenMemories}:{onOpenMemories:()=>voi
       aria-label="公寓世界场景入口">
       <Link href="/workshop/" data-testid="gothic-reference-workshop"
         className="gothic-lobby__reference-postcard">
-        <Image src={siteAssetUrl('/art/feature-postcards/gothic-workshop.webp')}
+        <Image src={siteAssetUrl('/art/postcards/gothic-workshop.webp')}
           fallbackSrc={workshopFallback} fill unoptimized alt="" sizes="320px"
           data-testid="gothic-postcard-workshop-art"
           className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--workshop"/>
@@ -23,7 +23,7 @@ export function GothicLobbyDestinations({onOpenMemories}:{onOpenMemories:()=>voi
       </Link>
       <Link href="/town/" data-testid="gothic-reference-town"
         className="gothic-lobby__reference-postcard">
-        <Image src={siteAssetUrl('/art/feature-postcards/moonlit-street.webp')}
+        <Image src={siteAssetUrl('/art/postcards/moonlit-street.webp')}
           fallbackSrc={townFallback} fill unoptimized alt="" sizes="320px"
           data-testid="gothic-postcard-town-art"
           className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--town"/>

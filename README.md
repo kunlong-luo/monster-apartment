@@ -74,3 +74,5 @@ npm --prefix engine run dev
 日常：`pnpm check:design`、`pnpm typecheck`、`pnpm lint`、`pnpm test`、`NEXT_STATIC_EXPORT=1 pnpm build`。完整质量门禁见 [Quality 工作流](.github/workflows/quality.yml)，浏览器按风险分层运行。主分支保护、真实试玩仍由 [#9](https://github.com/kunlong-luo/monster-apartment/issues/9)、[#10](https://github.com/kunlong-luo/monster-apartment/issues/10) 跟踪。
 
 存档键保持 `monster-apartment:cozy:v1` 与 `monster-apartment:workshop-v2-lab`，两套经营状态独立；不允许为了整理仓库重置、迁移或假装共享余额。
+
+R12.96：图鉴装饰与地点海报分别归入 `public/art/decorations/`、`public/art/postcards/`，旧目录退役，运行引用和来源清单已同步；详见[资源总目录](docs/ART-RESOURCE-CATALOG.md)。
