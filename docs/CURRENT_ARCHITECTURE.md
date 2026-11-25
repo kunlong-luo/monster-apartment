@@ -140,3 +140,9 @@
 
 
 V3.109.0 已发布（80eb69a）：仓库需求/采购预览复用 engine 的 importPatronCore 与 forecastPatronCommission；公寓 HUD 共存仅显式审稿临时状态；工坊 Motion 粒子只读工作状态和预测产量，均不另建存档、经济或运行引擎。
+
+## R12.89 · 现行大厅导航与 CSS 残留收敛
+
+基线 `b70830c` 的 [Quality checks](https://github.com/kunlong-luo/monster-apartment/actions/runs/45554784920/job/139004104218) 实测扫描 333 文件、11 app 根、92 组件及样式模块，92 app 可达、0 辅助独占、0 不可达、0 未解析本地引用、0 未识别非字面导入/可能 glob；Vitest 64 文件/321 测试全通过。模块级可达不证明所有导出、props 或 CSS 选择器有效，不能因治理目标强删组件。
+
+逐份检查 80 个 app/src/engine/src TSX、19 个 CSS、16 个相关导航/设计测试及审计脚本的旧 dock 类名与 GothicDock 调用：现行 GothicDock 只在大厅调用，使用 quick/map 系列类；退役的 `gothic-dock__link`、`__icon`、`__subtitle`、`__label` 无 TSX 输出或相关测试引用。清除 token CSS 的七个仅旧 link 规则及两处选择器列表的旧成员、red-gold 的一条旧 label 规则、公寓空 media 块；移除 GothicDock 未解构/无调用的 compact 可选参数。保留所有当前导航类、仍可能匹配当前 DOM 的通用 dock 规则、设计变量、焦点与 reduced-motion 有效规则、七路由、19 份 CSS、游戏存档及美术审批。历史“七份 CSS”和 compact 说明仅为当时快照，不是现行接口。此次未穷尽非 TSX 动态类生成或全部 CSS 覆盖；新 SHA 的 CI/视觉验收独立记录。

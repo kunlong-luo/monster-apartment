@@ -1,6 +1,6 @@
 # 《怪物公寓》文档总入口
 
-> R12.88：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
+> R12.89：本页是导航和治理状态，不重复各阶段报告。先读 [AGENTS.md](../AGENTS.md)；当前事实以源码、manifest、发布 SHA 与实际验收为准。
 
 ## 现行规范（新开发从这里开始）
 
@@ -97,3 +97,7 @@ R12.86 主线 `b9e00ac` 的 [Quality](https://github.com/kunlong-luo/monster-apa
 ## R12.88 · 工作流退役与工程入口治理
 
 R12.87 主线 `cd07183` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45407284178) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45407448939) 均成功。核查完整 Git 树 13 份工作流的触发条件、脚本引用及用途，并核查当前七条分支；185 份 Markdown 逐份扫描三个退役工作流明确文件名，无直接引用，其余工作流和根 package.json 无明确引用。退役三份：[recover-stale-pages.yml](https://github.com/kunlong-luo/monster-apartment/blob/cd07183d278de73f066fe891b48f16fd08b23444/.github/workflows/recover-stale-pages.yml) · [r12-53-art-transition.yml](https://github.com/kunlong-luo/monster-apartment/blob/cd07183d278de73f066fe891b48f16fd08b23444/.github/workflows/r12-53-art-transition.yml) · [r12-61-world-scene-art.yml](https://github.com/kunlong-luo/monster-apartment/blob/cd07183d278de73f066fe891b48f16fd08b23444/.github/workflows/r12-61-world-scene-art.yml)。第一份仅取消固定历史失败部署 `5dd2dae77ec8`，非通用恢复工具；后两份同时受已不存在候选分支的 push 和 job ref 限制，main 手动触发也不会执行转换。工作流 13 → 10；根 scripts/ 的 49 个跟踪文件、原始素材、转换配方、产物清单和 Quality 审核均保留。R12.53 和 R12.61 的转换脚本只作历史复现，不能在当前主线盲目覆盖已经迁移或重新审批的素材。现行 Pages 排队、Quality 成功门禁和独立视觉/玩法检查不变。工作流专属历史 runs 列表接口不可读，未声称查到一次性取消任务的具体执行结论；保留旧 SHA 可追溯。未穷尽非 Markdown 外部或动态引用。新 SHA 的 CI/Pages 独立验收，游戏版本仍 V3.109.0。下一批以真实组件可达性、CSS 动态引用及浏览器证据为准继续精简。
+
+## R12.89 · 组件与样式残留清理
+
+R12.88 `b70830c` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45554784920) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45554886829) 均成功。最新组件审计 92/92 app 可达、0 不可达与未解析本地引用，321/321 Vitest，故不删除整组件。扫描全部 80 份 app/src/engine/src TSX、19 份 CSS 及 16 个相关测试/脚本，收敛旧底部导航残留：8 条退役选择器规则、2 处选择器列表旧成员、1 个空 media 块、1 个无效 GothicDock compact 参数；CSS 减少 1176 个字符。现行规则见 [当前架构](CURRENT_ARCHITECTURE.md)。未穷尽非 TSX 动态类或全站视觉覆盖，通用 dock 样式保留；未修改生产逻辑、路由、资产与版本号。新 SHA 的 CI 与浏览器证据分别核验；下一批治理聚焦真实资产路径、动态引用与目录层级。

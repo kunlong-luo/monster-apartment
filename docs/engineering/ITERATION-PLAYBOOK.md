@@ -113,3 +113,5 @@ R12.87：场景审稿由 Next `useSearchParams` 驱动，保留静态导出所�
 | 工坊性能与 GPU 生命周期 | [Workshop Performance Baseline](../../.github/workflows/workshop-performance-baseline.yml)、[Workshop WebGL Lifecycle](../../.github/workflows/workshop-webgl-lifecycle.yml) |
 
 固定事故 SHA 的一次性恢复任务结束后应退役，不保留可误触发的 pages:write 入口；正常 Pages 仍须等待 main push 的 Quality 成功，保持现有不取消进行中部署的队列。限定候选分支的素材写入工作流在候选分支退役后删除，不放宽权限或分支条件来恢复。保留转换脚本、来源/哈希、生成证据及 CI 审计；历史批次复现使用对应固定 SHA 与工具版本，在隔离工作区执行，不直接重跑覆盖当前 main 资源。手动触发不等于无人使用；删除其他脚本或工作流前须核对 package scripts、工作流、测试、文档、人工入口、输出清单和真实引用。原画来源获取任务仍有独立用途，不能仅因最近失败或非日常调用删除。
+
+R12.89：组件模块可达只是第一层检查；随后按实际调用、导出/props、CSS 选择器和动态 class 分层判断。旧导航只保留现行 quick/map 类与确实匹配的通用规则；删除孤立旧选择器时不得误删逗号列表中的有效成员、焦点、减少动效、媒体查询或 Pixi 动态 class。对可能改变现行级联的样式先做真实浏览器对比，不能凭静态零命中批量删除。现行架构及基线证据见 [CURRENT_ARCHITECTURE](../CURRENT_ARCHITECTURE.md)。

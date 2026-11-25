@@ -144,7 +144,6 @@ export function GothicDock({
   className?:string;
   activeHref:'/';
   testId?:string;
-  compact?:boolean;
 }){
   const [open,setOpen]=useState(false);
   const shellRef=useRef<HTMLDivElement>(null);
