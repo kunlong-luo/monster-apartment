@@ -509,3 +509,7 @@ R12.106 发布验收补记：372f26f 的 Quality 45587291301、像素证据 4558
 ## R12.107 · 合并验收与候选同步
 
 R12.107：PR #61 已合并至 main（8ac89d7，候选 73bb21d 的 Quality 45589086675、Desktop 45589086721、像素 45589086614、完整玩法 45589086651 全部成功；199 passed / 3 skipped / 0 failed）。合并后 Quality 45611878515、Desktop 45611878567、Gameplay 45611878531 初查运行中，Pages 未确认，不能称已上线。PR #62 的旧 d94bbdf Quality、Desktop、像素均成功，完整玩法 45588982327 的 3 失败仍为未同步的旧胸像上传路径，196 passed / 3 skipped；本次将已验收 main 合并进 PR #62，原 fixture 修复原 blob 继承，不改变样式或运行行为，重新验证合并候选。
+
+## R13.0-D · 四人五卡现行资源映射
+
+[角色 SOP 的四人五卡映射](CHARACTER-CREATION-SOP.md#r130-d--四人五卡身份映射准备完成尚未签审) 为原画制作与审核入口；[CG manifest](../public/art/characters/cg-manifest.json)、[转换清单](../public/art/r12-53-transition-manifest.json)、[源图清单](../art-sources/source-catalog.json) 是实际路径、类型与登记哈希依据。五项预览的登记路径、类型、输出 SHA-256 与人物归属均一致；本轮未重新读取图片字节。三张独立插画候选、泉泡/炽角两张共享房间站姿；后两张 CG 原始 PNG 为 rework，不能以站姿充当正式 CG。四位身份与五卡正式审批仍 0/4、0/5；未增删、迁移或复制媒体，未改 manifest、运行时、库存或版本。镜头制作要求归 [差异化规范](CHARACTER-CG-DIFFERENTIATION-V1.md)，不在资源目录重复维护。
