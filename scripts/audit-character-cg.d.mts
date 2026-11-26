@@ -11,6 +11,6 @@ export declare function inspectCharacterCg(bytes:Buffer):{
   width:number;height:number;bytes:number;sha256:string;
 };
 export declare function assertCharacterCgReview(args:{
-  card:string;review:Record<string,unknown>;bytes:Buffer;
+  card:string;review:Record<string,unknown>;bytes:Buffer;rootDir?:string;
 }):{width:number;height:number;bytes:number;sha256:string};
-export declare function auditCharacterCg():{production:number;total:number};
+export declare function auditCharacterCg(rootDir?:string):{production:number;total:number};

@@ -39,7 +39,7 @@
       "identity": "yuesha-r12-45",
       "face": "黑紫长发、红瞳、冷峻眉眼、红蔷薇与金月饰；两卡同一人物的新过渡身份，待人审",
       "poseId": "seated-offer-vow",
-      "pose": "侧坐在低矮祭坛边缘，膝盖朝左、上身朝镜头转回，左手掌心向上邀请缔约，右手让誓约细剑剑尖朝下轻触地面",
+      "pose": "侧坐在低矮祭坛边缘，膝盖朝左、上身朝镜头转回，左手掌心向上邀请缔约，右手自然引导悬浮契约魔典与月相法阵",
       "silhouetteId": "soft-seated-veil-curve",
       "weaponId": "vow-grimoire",
       "weapon": "悬浮契约魔典与月相法阵，手部施法动作清楚",
@@ -58,7 +58,7 @@
       "id": "brook-tide",
       "name": "泉泡·潮汐",
       "identity": "brook",
-      "face": "圆润鹅蛋脸、较宽眼距、柔和下垂大眼、自然圆润眉骨，保留原角色蓝色系耳朵特征",
+      "face": "浅银蓝发、蓝色毛绒兽耳、圆润鹅蛋脸、较宽眼距、柔和下垂大眼；正面原图为待签审的身份对照",
       "poseId": "wave-step-pivot",
       "pose": "脚尖踏上起伏水浪，身体扭转呈 S 曲线，左臂拨出水环，右手把三叉戟向后上方斜举",
       "silhouetteId": "s-curve-wave-trident",
@@ -66,7 +66,7 @@
       "weapon": "珍珠镶嵌潮汐三叉戟，戟尖和水流相连形成动态引导",
       "wardrobeId": "pearl-flowing-tunic",
       "wardrobe": "海蓝到珍珠白渐层的短外披、非对称多层薄纱水纹裙、贝壳护肩、水晶腰带，水润轻盈而非黑金宫廷裙",
-      "motion": "水流向两侧旋涡扩散，水蓝头发向后扬起，衣摆随浪倾斜",
+      "motion": "水流向两侧旋涡扩散，浅银蓝头发向后扬起，衣摆随浪倾斜",
       "scene": "月夜水上宫殿/潮汐台阶",
       "camera": "略高的斜角动态镜头",
       "prohibited": [
@@ -76,7 +76,7 @@
       ],
       "identityAnchors": {
         "canonicalPortrait": "public/art/characters/brook/face.webp",
-        "hair": "水蓝长发、蓝色毛绒兽耳；不得换鱼鳍或精灵耳",
+        "hair": "浅银蓝长发、蓝色毛绒兽耳；禁止高饱和蓝发、鱼鳍或精灵耳",
         "ears": "蓝色毛绒兽耳，禁止用尖长精灵耳代替",
         "face": "圆润鹅蛋脸，偏柔和下垂眼；不可套用月纱细长上挑凤眼"
       }
@@ -85,7 +85,7 @@
       "id": "fern-spring",
       "name": "青枝·春芽",
       "identity": "fern",
-      "face": "橄榄绿长发、绿瞳、长尖精灵耳与面颊叶纹，冷静纤长眉眼",
+      "face": "浅金发、绿瞳、自然杏眼、花叶冠、清晰颧骨；尖耳、颊纹、淡疤以正面及实际头像对照为准，未经签审不得增删",
       "poseId": "forest-archer-draw",
       "pose": "侧身弓步站在苔石上，前腿屈膝稳住重心，双手真实搭箭拉满藤弓，视线沿箭尖而非看镜头",
       "silhouetteId": "triangular-drawn-bow",
@@ -106,15 +106,15 @@
       "id": "cinder-ember",
       "name": "炽角·余烬",
       "identity": "cinder",
-      "face": "宽颧骨和鲜明下颌转折、略厚眉、尖锐猫眼、成熟挑衅的嘴角，保留红发与独特魔角",
+      "face": "玫瑰红发、粉赤眼、坚定眉眼、较宽下颌与鲜明颧骨；成对金属铸角头饰，不能变为生物角",
       "poseId": "wide-stance-chain-sweep",
-      "pose": "宽站姿肩扛熔岩重锤，强韧肩背与支撑重心",
-      "silhouetteId": "angular-lunge-chain-arc",
+      "pose": "宽站姿屈膝，肩背承重，双手合理握持熔岩重锤，保持低重心与完整武器轮廓",
+      "silhouetteId": "angular-wide-hammer",
       "weaponId": "forge-warhammer",
       "weapon": "熔岩重锤与火焰锻炉，握持重心清楚",
       "wardrobeId": "asymmetric-forge-armor",
       "wardrobe": "炭黑赤铜非对称锻炉战甲、单侧金属肩甲、厚实护腰、分节护腿与战靴；衣片短而结构硬朗，与四张裙装区分",
-      "motion": "铁链由远向近形成速度线，红发逆风扬起，火花和碎炭从脚边炸开",
+      "motion": "重锤斜线与肩背受力形成动势，红发逆风扬起，火花和碎炭从脚边散开",
       "scene": "熔岩锻炉/铁砧桥与裂纹金属",
       "camera": "低机位近距离广角但保持整个人及武器完整",
       "prohibited": [
@@ -124,9 +124,9 @@
       ],
       "identityAnchors": {
         "canonicalPortrait": "public/art/characters/cinder/face.webp",
-        "hair": "赤红长发、黑曜石熔岩双角",
-        "horns": "黑曜石与深红渐层的两只弯曲魔角，禁止换成普通金属发冠",
-        "face": "琥珀色眉眼，成熟有力的下颌与颧骨；不套用其他角色脸型"
+        "hair": "玫瑰红发，保留正面原图发际线与刘海",
+        "horns": "成对金属铸角头饰；遵守 character-life.ts 的非生物角设定",
+        "face": "粉赤眼、坚定眉眼、较宽下颌与颧骨；新增纹样或疤痕待人审"
       }
     }
   },
@@ -206,5 +206,5 @@
     "optional": true
   },
   "resolutionPolicy": "Phase one permits native 1086x1448 for signed release review; 1536x2048 is optional premium refinement. Never misstate upscaled images as native, and never bypass identity/rights/visual review.",
-  "transitionNote": "新过渡身份、魔典及重锤方向只对应新批候选；历史 poseStudies 仍为旧研究，均未批准。"
+  "transitionNote": "R13.0-D：现行黑发月纱及其余三人按 R13.0 SOP 的正面候选对照，尚未签审。魔典与重锤沿用 R12.53 机器镜头表的候选方向，仅为暂定方案，旧细剑/链镰研究仍保留，不表示武器正典或生产批准。历史 poseStudies 原样保留。"
 }

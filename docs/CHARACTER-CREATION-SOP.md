@@ -10,6 +10,8 @@
 
 ## 二、角色制作八道关口（必须按顺序执行）
 
+R12.109 现行身份和待办以本文最后的 R13.0 基线为准；早期银发、外部 ZIP 和旧研究路径为历史证据，不是新生产规范。
+
 ### G0 · 角色立项：先判断“新人物”还是“旧人物新卡面”
 
 填写 [角色设计任务模板](templates/CHARACTER-DESIGN-BRIEF-TEMPLATE.md)。至少确认：中文名、不可变英文 `characterId`、人物年龄设定为成年、世界观身份、房间、职业/故事职责、性格、动机、伏笔、属性倾向、与现有居民的关系，以及是否需要进入抽卡/经营系统。**旧人物新卡面**沿用同一个 `characterId`、锁定头像与既有角色设定，仅另建唯一 `cardId`；严禁生成另一张脸代替该人物。
@@ -18,13 +20,13 @@
 
 ### G1 · 冻结角色身份（先做头像/身份板，再做 CG）
 
-建立**唯一身份锚点**：脸型和颧骨、下颌、眉眼/眼距、鼻梁和唇形、发际线、发色、耳/角结构、成熟感、体型比例、姿态习惯、人物性格气质。为新角色制作清晰面部基准并经人工核对后，放在 `public/art/characters/<characterId>/face.webp`（现有月纱为例外，使用已锁定的 V3 银发肖像）。头像素材需记录来源、版本、原始像素、SHA-256。未经明确审查不得更换头像。
+建立**唯一身份锚点**：脸型和颧骨、下颌、眉眼/眼距、鼻梁和唇形、发际线、发色、耳/角结构、成熟感、体型比例、姿态习惯、人物性格气质。为新角色制作清晰面部基准并经人工核对后，放在 `public/art/characters/<characterId>/face.webp`（现有月纱为例外，使用 `public/art/characters/yuesha/yuesha-avatar-v3.webp` 的 R12.53 黑发过渡头像；正式 G1 尚待签署）。头像素材需记录来源、版本、原始像素、SHA-256。未经明确审查不得更换头像。
 
 现有角色身份必须保持：
 
 | 人物 | 不可丢失的识别锚点 | 禁止漂移 |
 | --- | --- | --- |
-| 月纱 `yuesha` | 银白长发、赤瞳、V3 脸部骨相、蔷薇哥特气质 | 不得回用已退役的黑发带角 `yuesha/face.webp` |
+| 月纱 `yuesha` | R12.53 现行黑发赤瞳过渡肖像、蔷薇哥特气质；以现行正面原图核对骨相 | 不自动恢复旧银发身份或新增未审核角饰；双卡不得换脸 |
 | 泉泡 `brook` | 浅银蓝发、头顶蓝色毛绒兽耳、圆润柔和脸部 | 不得换成高饱和蓝发或长尖精灵耳 |
 | 青枝 `fern` | 浅金发、绿眼、自然杏眼和花叶冠 | 不得换成泉泡式圆脸或月纱女王脸 |
 | 炽角 `cinder` | 玫瑰红发、粉赤眼、独特双角轮廓 | 尊重 `src/core/character-life.ts` 的**金属铸角头饰**世界观设定；不可擅自改成真正的生物角 |
@@ -135,7 +137,7 @@ pnpm build
 - **单角色身份稿必须是真正独立的一人一图**。任何输出若含项目进度板、标题、表格、CG 拼版、人物档案卡框、第二个人物或烘焙 UI，均直接标为 `rejected`；**不得从进度图裁切成独立源图**，即使裁出来局部尺寸看似可用。
 - 每位现有人物先获得**单独生成的正脸原始源图＋3/4 侧脸原始源图**，原生尺寸、SHA-256、来源与权利记录要可复核；四人 2×2 比较板只能作展示，不算四幅独立源图。每人还要有至少三种有区分度的表情参考；此处是 **G1 头像规格**，不能代替 G3 单人物完整武器/足部 CG。
 - **身份冻结与可绘性分开判**：新稿像素达到 1086×1448 不证明它就是 V3 月纱；必须先对照既有 canon，确认眼距、鼻唇、颧骨、脸型、耳/铸角类型与性格延续。四人灰度、遮发饰的同机位盲测和人工身份签署均不允许填充假结果。月纱双卡必须维持一张脸。
-- 候选先保存在带版本号的 `art-sources/identity-r12-XX/`，**下载包不等于 GitHub 入库**；必须核对文件真的存在于仓库并重算 SHA-256，才能宣称“已入项目”。确认身份和权限前不覆盖 `public/art/` 的现有 `face.webp` / V3，不动正式图片路由或 `cg-manifest.json`。
+- 新候选保存在 `art-sources/characters/<characterId>/identity/`，历史批次目录只用于追溯，**下载包不等于 GitHub 入库**；必须核对文件真的存在于仓库并重算 SHA-256，才能宣称“已入项目”。确认身份和权限前不覆盖 `public/art/` 的现有 `face.webp` / V3，不动正式图片路由或 `cg-manifest.json`。
 - 当前执行与拒收案例：[R12.19 月纱单人面部候选](art-reviews/R12-19-YUESHA-G1-INDEPENDENT-PORTRAIT-2026-11-23.md)、[G1 机器可读状态](art-reviews/R12-19-G1-IDENTITY-STATUS.json)。**截至该轮仅有月纱单人研究源图在会话 ZIP 中，4 人正式审核 0/4；封面 0/2、CG 0/5。**
 
 ### 2026-11-23 · R12.20 G1 审稿辅助板与错误生成隔离
@@ -169,3 +171,114 @@ pnpm build
 旧 V2 成年人物方案已退役（[固定快照](https://github.com/kunlong-luo/monster-apartment/tree/e4d74994de44989f3e16296caf9f85e118ab807c/v2/docs/adult-character-art-direction.md)），不沿用其未实施的别名与身份。角色保持明确成年、独立脸型/体态/姿态、职业服装与实际工具，工作岗位保留合理防护；服装不遮挡有效交互。制作独立工作帧而非静图平移，人物身份、年龄与原画审批以现行数据与本 SOP 为准，不重复另建角色规范。
 
 R12.101 第二批候选：月纱头像、半身像、肖像三张原 Git blob 迁入 public/art/characters/yuesha/（原文件名不变），同步跨页面静态导入、人物注册、抽卡公开 URL、CG 身份参考、R12.53 转换器及 manifest、设计清单、资源测试与目录门禁。Pixi 构建仅改变源路径，dist/assets/yuesha-avatar-v3.webp 及引擎加载链不变。公开 art 根目录只允许 README.md 和 r12-53-transition-manifest.json；43 公开、141 全仓媒体、原始像素、身份、卡面审批、存档、概率与回退保持不变。此迁移在独立 PR 进行候选 CI，未通过前不得称已合并或上线。
+
+## R12.109 → R13.0 · 现行角色原画交付基线（2026-11-25）
+
+现行过渡素材以已发布 083699c 的实际 [源图清单](../art-sources/source-catalog.json)、[转换清单](../public/art/r12-53-transition-manifest.json)、[CG manifest](../public/art/characters/cg-manifest.json) 为准。R12.24 的外部 G1 ZIP 属于不同历史批次，未入库的旧 ZIP 不等于现有四位原图缺失；不得混用哈希或更改历史审核记录。当前 `art-sources/characters/` 共 17 张独立登记 PNG：4 张正面、4 张 3/4 候选、5 张 CG 源图、4 张站姿。正面源图均为 review；人审签署 0/4，正式 CG 0/5。月纱当前玩家可见为 R12.53 黑发过渡身份（非正式 G1 批准），不是早期银发版本；不得按历史银发描述自动恢复或换脸。当前正面原图优先作为同人对照，正式身份仍须人审。
+
+| 人物 | 当前正面 | 3/4 候选 | CG 下一动作 |
+| --- | --- | --- | --- |
+| 月纱 | `characters/yuesha/identity/front.png` | rework：银发与新增双角偏离黑发基准 | 月蚀 / 誓约两稿均 review；先同脸对照，再各自完整武器、动作与衣装验收 |
+| 泉泡 | `characters/brook/identity/front.png` | rework：兽耳变鱼鳍 | 潮汐原图 rework：烘焙英文标题/标志；重绘独立无字完整三叉戟画面 |
+| 青枝 | `characters/fern/identity/front.png` | review：颊纹和脸部一致性 | 春芽原图 review：完整藤弓、手部和身份 |
+| 炽角 | `characters/cinder/identity/front.png` | review：金属铸角、脸型及新增纹样 | 余烬原图 rework：烘焙英文标题/标志；重绘独立无字完整链镰画面 |
+
+表中路径相对于 `art-sources/`；其余 3/4、CG、站姿确切路径见源图清单。R13.0 第一切片先以四位已入仓正面原图制作同尺度身份对照，核查四张独立 3/4（优先修月纱与泉泡），表情参考至少三种，记录人审/来源与真实原生像素。再处理两张必须返工的 CG；其余三张先审后决定是否重绘，避免无意义重复生产。G1 没有签署不得改头像或晋级。原生 1086×1448 最低人审入口、1536×2048 推荐精修、PC/手机真实预览与现有概率/存档均保持。
+
+### R13.0-A · 现有原图审稿入口与完整性校验
+
+不新增图片副本。以下三列分别链接真实仓库正面、3/4 候选、玩家实际头像，打开即可对照原图。尺寸来自现行转换清单；不是本轮人工看图验收。
+
+| 人物 | 正面原图（1086×1448） | 侧脸原图（原生尺寸 / 状态） | 游戏头像（600×600） |
+| --- | --- | --- | --- |
+| 月纱 | [正面](../art-sources/characters/yuesha/identity/front.png) | [1199×1312 / rework](../art-sources/characters/yuesha/identity/three-quarter-candidate.png) | [头像](../public/art/characters/yuesha/yuesha-avatar-v3.webp) |
+| 泉泡 | [正面](../art-sources/characters/brook/identity/front.png) | [1199×1312 / rework](../art-sources/characters/brook/identity/three-quarter-candidate.png) | [头像](../public/art/characters/brook/face.webp) |
+| 青枝 | [正面](../art-sources/characters/fern/identity/front.png) | [1218×1292 / review](../art-sources/characters/fern/identity/three-quarter-candidate.png) | [头像](../public/art/characters/fern/face.webp) |
+| 炽角 | [正面](../art-sources/characters/cinder/identity/front.png) | [1199×1312 / review](../art-sources/characters/cinder/identity/three-quarter-candidate.png) | [头像](../public/art/characters/cinder/face.webp) |
+
+四张侧脸均低于现行竖幅身份原画 1448px 高度门槛，不能作为最终原生达标稿；其中两张还存在明确身份漂移。优先重绘月纱、泉泡；青枝、炽角先审身份，再补匹配角度和原生尺寸。不得放大冒充原生，也不得以正面达标自动判定侧脸通过。
+
+复用现有 G1 校验器：`node scripts/verify-g1-face-sources.mjs --current`，检查 8 个 PNG 原始字节、尺寸、SHA-256、Git blob、源图/转换清单状态和 4 个 WebP 实际头像字节、600×600 裁切元数据及来源关系。原 `pnpm art:g1:verify` 仍检查历史 R12.22 外部 ZIP，两个入口不混用。现有 `pnpm art:g1:test` / `pnpm check:design` 增加真实仓库检查；新检查尚待 CI，不替代像素级裁切对照、人工身份/授权签署。下一步为原生独立单人侧脸返工与审稿，不改运行资源、概率、审批或存档。
+
+### R13.0-B · 月纱与泉泡侧脸返工任务（待取得图像参考后制作）
+
+R13.0-A 已经通过 [Quality 45616340403](https://github.com/kunlong-luo/monster-apartment/actions/runs/45616340403)：当前 12 项 PNG/WebP 字节、尺寸、来源与哈希检查通过；历史 ZIP 校验测试与当前仓库校验共 10/10，64 Vitest 文件/324 测试通过，649 条文档链接零违规。此为自动技术核验，不代表人工身份审核。当前会话 GitHub 读取接口无法返回原画二进制，不能把未看见的图像当作已视觉比对，也不生成缺少原图参照的替代脸。以下为真实文件的 GitHub 可视审稿入口，未复制图片。
+
+| 人物 | 现行正面原画（以此为身份参考） | 已登记返工侧脸（不得当作身份参考） |
+| --- | --- | --- |
+| 月纱 | [<img src="../art-sources/characters/yuesha/identity/front.png" width="210" alt="月纱现行正面候选">](../art-sources/characters/yuesha/identity/front.png) | [<img src="../art-sources/characters/yuesha/identity/three-quarter-candidate.png" width="210" alt="月纱待返工侧脸">](../art-sources/characters/yuesha/identity/three-quarter-candidate.png) |
+| 泉泡 | [<img src="../art-sources/characters/brook/identity/front.png" width="210" alt="泉泡现行正面候选">](../art-sources/characters/brook/identity/front.png) | [<img src="../art-sources/characters/brook/identity/three-quarter-candidate.png" width="210" alt="泉泡待返工侧脸">](../art-sources/characters/brook/identity/three-quarter-candidate.png) |
+
+#### B1 月纱：独立 3/4 身份原画
+
+以 R12.53 已入库正面原图为唯一人物身份图像参照，而不是银发旧候选。成年哥特奇幻女性、黑发赤瞳、蔷薇与金月饰、沉静自信；以正面实图锁定脸部骨相、颧骨、下颌、眉眼、鼻唇比例、发际线与衣领，不自行增删原图既有饰物。头部转向约 35–45°、自然视线、中性闭唇表情；头顶、全部发饰、双肩可见；中性暗紫背景、柔和侧前光、头部比例与原正面一致。禁止银发回退、凭空新增双角、换成模板脸、拼版、文字、水印、UI、放大冒充原生。只输出一位角色的一张独立 3:4 PNG；至少 1086×1448，推荐 1536×2048。拟存 `art-sources/characters/yuesha/identity/three-quarter-candidate-v2.png`（尚不存在）。
+
+#### B2 泉泡：独立 3/4 身份原画
+
+以 R12.53 泉泡正面原图为唯一人物身份图像参照。成年幻想女性、浅银蓝发、头顶蓝色毛绒兽耳、柔和圆润骨相；严格核对耳朵根部、毛绒质感、面部宽高比和眼鼻唇结构，沿用正面服饰与配饰。采用与 B1 一致的头部角度、画幅、镜头比例、中性表情和光照，保持人物本身差异而非靠颜色识别。禁止鱼鳍状兽耳、长尖精灵耳、饱和蓝发、月纱式模板脸、其他角色、拼版、文字、水印与 UI。独立原生 3:4 PNG ≥1086×1448。拟存 `art-sources/characters/brook/identity/three-quarter-candidate-v2.png`（尚不存在）。
+
+#### 收件与拒收
+
+- 先检查单人物、原生尺寸、源图实际字节、权利/生成来源；只在文件实际入仓并读回 SHA-256/Git blob 后新增源图登记。v1 原稿及原转换清单保持不动；新稿标记 review 与 supersedes，不能改写 v1 哈希或把拟存路径列入实际库存。
+- 对照正面及头像：人审记录骨相、耳/角、发际线、同人连续性、风格一致性，另附至少三种表情参考与跨人物同尺度灰阶审稿。任何失败退回重绘；没有人审签署不晋级。
+- 当前两张新版侧脸均未生成、未上传、未批准；先完成 B1，再 B2，不先生成封面或 CG。青枝、炽角继续按现有 SOP 评估；正式身份 0/4，正式 CG 0/5。
+
+### R13.0-C · 青枝与炽角身份审核与原生侧脸返工准备（未签审）
+
+本阶段并行准备剩余两位的审稿任务，不表示 R13.0-B 已完成。以下问题来自现有台账和转换清单，不是本次重新看图的结论。
+
+| 人物 | 现行正面参照 | 现行侧脸候选（均不达原生高度） | 正式游戏头像对照 |
+| --- | --- | --- | --- |
+| 青枝 | [正面](../art-sources/characters/fern/identity/front.png) | [1218×1292，review](../art-sources/characters/fern/identity/three-quarter-candidate.png) | [头像](../public/art/characters/fern/face.webp) |
+| 炽角 | [正面](../art-sources/characters/cinder/identity/front.png) | [1199×1312，review](../art-sources/characters/cinder/identity/three-quarter-candidate.png) | [头像](../public/art/characters/cinder/face.webp) |
+
+- C1 青枝：保留浅金发、绿瞳、杏眼、花叶冠、清晰颧骨和游侠神态。对照正面与实际头像审核颊纹、尖耳和淡疤是否有正典依据；未经确认不得新增或擅删。拒绝泉泡式圆脸、月纱式女王脸。拟存 `art-sources/characters/fern/identity/three-quarter-candidate-v2.png`（拟定路径，尚未交付）。
+- C2 炽角：保留玫瑰红发、粉赤眼、坚定眉眼、较宽下颌；双角必须遵守金属铸角头饰设定，不得变成生物角。审核旧头像与研究稿脸型差别及新增纹样、脸疤；未经签审不得确认为正典。拟存 `art-sources/characters/cinder/identity/three-quarter-candidate-v2.png`（拟定路径，尚未交付）。
+- 两位与 B1/B2 统一独立单人原生 3:4 PNG，至少 1086×1448，推荐 1536×2048，35–45° 机位、中性闭唇、同尺度柔和审稿光；不得拼版裁切、插值放大或烘焙 UI。优先锁定实际正面面部结构，再补侧脸。新图实际入库、读取哈希、来源及人工签审之后才更新登记与生产状态。
+- 四人最终联合审查：先同尺度灰阶遮蔽发色与装饰，比对眼距、颧骨、颌线、鼻唇与年龄感；再核对色彩、耳角、发饰及同人正侧面连续性。每位分别记录通过、拒绝或待审、审稿人及证据；技术门禁通过不等于人审。
+- 当前四位正面尺寸合格 4/4，侧脸高度达标 0/4，正式身份 0/4，正式 CG 0/5。未取得原画图像内容，不生成无参照新脸，不更改 v1 或生产 manifest，不提前进入封面及 CG 重制。B1/B2 优先制作，C1/C2 为并行准备；四位通过身份审稿后才推进五卡。
+
+### R13.0-D · 四人五卡身份映射（准备完成，尚未签审）
+
+以 [源图清单](../art-sources/source-catalog.json)、[转换清单](../public/art/r12-53-transition-manifest.json)、[CG manifest](../public/art/characters/cg-manifest.json) 和 [运行注册表](../src/components/summon/heroine-portrait-assets.ts) 为准。每位人物的正面与侧脸固定在 `art-sources/characters/<id>/identity/{front,three-quarter-candidate}.png`；站姿源在 `sprites/standing.png`，房间观景使用 `public/art/rooms/<id>/scenic/standing.webp`，不等于正式角色层审批。
+
+| 卡 ID | 人物 | 原始 CG（相对 art-sources/characters） | 现行预览（相对 public/art） |
+| --- | --- | --- | --- |
+| yuesha-eclipse | 月纱 | yuesha/cg/eclipse.png · review | characters/yuesha/cg-eclipse-candidate.webp |
+| yuesha-vow | 月纱 | yuesha/cg/vow.png · review | characters/yuesha/cg-vow-candidate.webp |
+| brook-tide | 泉泡 | brook/cg/tide.png · rework | rooms/brook/scenic/standing.webp |
+| fern-spring | 青枝 | fern/cg/spring.png · review | characters/fern/cg-spring-candidate.webp |
+| cinder-ember | 炽角 | cinder/cg/ember.png · rework | rooms/cinder/scenic/standing.webp |
+
+五项预览路径、来源人物目录、类型和登记输出 SHA-256 在两个 manifest 间一致；本次为元数据核对，非实际图片哈希重算。月纱头像、肖像及胸像来自同一正面候选；两卡独立 CG 不能换脸。其余三人使用各自 face.webp，泉泡与炽角的过渡站姿共享路径不新建副本。仍为 4 正面、4 侧脸、5 CG、4 站姿源，身份批准 0/4、正式 CG 0/5。
+
+[现行机器镜头表](art-reviews/CG-DIFFERENTIATION-SHOT-LIST.json) 已纠偏：浅银蓝泉泡、浅金青枝、金属铸角与粉赤眼炽角、黑发同脸月纱。暂沿用 R12.53 机器表魔典/重锤候选方向，历史细剑/链镰保留为备选研究而非强制要求，最终武器须产品/人工确认。五项姿态、剪影、武器、服装 ID 分别唯一；两张月纱 face/identity 字段一致。见 [差异化规范](CHARACTER-CG-DIFFERENTIATION-V1.md) 的 R13.0-D 当前覆盖规则；历史研究图与哈希不变。
+
+现有 CG 审核器会核对卡位、当前肖像哈希、原生尺寸、商业授权、具名视觉人审和三视口，但不能判断实际脸部一致性，且肖像引用不等于独立 G1 签审。后续正式晋级前必须补四人 G1 正侧脸具名签审与证据绑定，不能靠改 status 绕过。B/C 原画未交付前，不执行封面/CG 批量重绘或运行时切换。保持卡池权重、概率、角色 ID、存档及资源审批原样。
+
+### R13.0-E · 正式 CG 的 G1 强制准入
+
+正式 CG 的审核与晋级均经 `assertCharacterCgReview`，现在必须验证同人物具名 G1 证明及其实际 SHA-256；两个现有候选/过渡流程不受影响。新审核草稿的 `g1Approval` 默认为 null，不可自动批准。
+
+未来每位通过人审的证明固定为 `art-sources/characters/<id>/identity/approval.json`（本轮不创建虚假证明）。schemaVersion=1、character、approved、humanVisualReview、identityConsistent、independentNativeSources、rightsConfirmed、commercialUse、crossCharacterReview 均须符合审核要求，并填写 reviewer、reviewedAt、reviewNotes、sourceReference。front 与 angle 分别指向 front.png 和 three-quarter-candidate-v2.png；每个证据含 path、bytes、sha256、pixelDimensions 数组。源图须原生 3:4 ≥1086×1448，源图清单唯一登记为 review、实际 Git blob 与字节一致；禁止 rework、同图或跨人物冒用。references 包含当前头像（及月纱肖像、胸像）的相同字段，须与现行转换清单中同一 front 来源及哈希、尺寸一致。正式 CG 审核 JSON 填入 g1Approval: {path,sha256}，两张月纱卡绑定同一个身份文件。任何身份文件或图片变更必须重新签审、核对 CG 来源。
+
+这是具名审核记录的技术完整性门禁，不是数字签名、图像完整解码或自动识脸；人审仍不可跳过。现行 CI 的 G1 测试增加合成正例及错误人物、缺失签审、过时哈希、尺寸不足、同图和来源错配反例。晋级成功时清除旧候选预览字段，仍保留原有失败回滚。没有新原画或真实人审，本轮正式身份 0/4、正式 CG 0/5，待新 SHA Quality 验收。
+
+### R13.0-F · 身份审核草稿与 CG 晋级闭环
+
+R13.0-E 的 [Quality 45618780099](https://github.com/kunlong-luo/monster-apartment/actions/runs/45618780099) 三作业成功。在仓库根目录执行 `node scripts/verify-g1-face-sources.mjs --draft brook` 可输出 JSON 草稿，所有人工批准字段默认为 false，缺失文件为 null，不创建 approval.json。实际 v2 原画入库后同步源图清单与媒体总目录第 5 节，生成草稿并具名人审；签审后才保存固定 approval.json 并将其 SHA-256 写入 CG 审核 JSON。
+
+历史动作研究与正式卡面可以共存：研究记录必须仍为 research-only、approved=false，哈希及路径固定，正式 CG 不能与研究稿字节相同。晋级后同时执行 CG 审核与差异化检查，失败恢复原 manifest 并移除本次新增正式资源和证明。新增合成测试覆盖草稿、独立正式晋级、历史稿冒用回滚和缺失 G1 拒收，不代表实际画稿人审。其他仓库级媒体库存与 CI 仍须独立同步验收。正式身份 0/4、CG 0/5。
+
+### R13.0-G · 美术生产待办与收件
+
+[90b4959 Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45619281666) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45619429730) 已成功；技术准备不等于 G1 人审。2026-11-26 实际仓库树核对四份 v2 侧脸与四份 approval.json 全部不存在。
+
+| 优先 | 人物 | 下一份真实交付 | CG 后续 |
+| --- | --- | --- | --- |
+| 1 | 月纱 | 黑发正面参照 → 独立 3/4 v2，排除银发和多余角 | 月蚀与誓约先同脸审核 |
+| 2 | 泉泡 | 浅银蓝发、毛绒兽耳 3/4 v2 | 潮汐去烘焙标题标志，独立重绘 |
+| 3 | 青枝 | 浅金发、花叶冠 3/4 v2，额外纹样先确认 | 春芽完整藤弓与身份审核 |
+| 4 | 炽角 | 金属铸角、粉赤眼 3/4 v2 | 余烬去烘焙标题标志，武器候选先定案 |
+
+收件顺序：实际 PNG → 原生尺寸及真实字节/来源 → Git blob 与 SHA-256 → source-catalog.json 唯一路径 review 条目（保留旧 v1）→ 资源总目录第 5 节新增库存行 → `node scripts/verify-g1-face-sources.mjs --draft <id>` → 具名人审 → 正式审核 JSON 与绑定 → `pnpm audit:media-duplicates`、`pnpm check:design`、Quality。草稿不是批准；禁止对缺失路径填虚构哈希。若重绘正面，必须同时更新所有相关头像转换及证据，不单独改 front。已有原图 17 张不重复制；当前四人 G1 0/4、正式 CG 0/5。后续停止单纯扩张管理工具，优先实际原画或经营体验。

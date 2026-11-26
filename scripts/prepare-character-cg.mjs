@@ -83,7 +83,8 @@ export function cardReviewHtml(card){
     '<li>头发、双手、双足和全身完整，关键部位不被底部铭牌遮挡</li>'+
     '<li>身份一致，服装及装备有独特设计；无文字、按钮或虚构概率</li>'+
     '<li>上述三种屏幕的完整视图与 A05 细长卡片裁切都必须审查，注意面部与足部可见性</li>'+
-    '<li>原始来源、版权与商用许可由审核人确认并记录</li></ol>'+
+    '<li>原始来源、版权与商用许可由审核人确认并记录</li>'+ 
+    '<li>正式晋级前绑定该人物已签审的 G1 approval.json 路径和 SHA-256；未签审不得晋级</li></ol>'+
     '</body></html>';
 }
 
@@ -105,7 +106,7 @@ function main(argv){
   writeFileSync(join(target,'review.html'),cardReviewHtml(card));
   const review={
     card,status:'needs-human-review',approved:false,humanVisualReview:false,
-    image,identityReference:{path:referencePath,sha256:referenceSha256},sourceType:'',sourceReference:'',original:false,commercialUse:false,rightsConfirmed:false,
+    image,identityReference:{path:referencePath,sha256:referenceSha256},g1Approval:null,sourceType:'',sourceReference:'',original:false,commercialUse:false,rightsConfirmed:false,
     nativeResolution:{width:null,height:null},noBakedUI:false,noBakedText:false,
     fullBodyVisible:false,characterIdentityConsistent:false,handsAndFeetReviewed:false,
     visualReview:Object.fromEntries(CG_VIEWPORTS.map(v=>[v,false])),

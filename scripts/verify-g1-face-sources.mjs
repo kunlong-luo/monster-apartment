@@ -89,15 +89,166 @@ export function verifyG1FaceSources(rootDir){
   return {verified:checked,subjects:4,approved:0,production:false};
 }
 
+
+/** Current repository transition review; the historical ZIP gate remains separate.
+ * Uses existing source catalog, transition ledger and exact runtime avatar slots.
+ * No output writes, image conversion, identity signing or production promotion. */
+export function verifyCurrentG1FaceSources(rootDir){
+  const root=resolve(rootDir);
+  const catalog=JSON.parse(readFileSync(join(root,'art-sources/source-catalog.json'),'utf8'));
+  const transition=JSON.parse(readFileSync(join(root,'public/art/r12-53-transition-manifest.json'),'utf8'));
+  demand(catalog.schemaVersion===1&&transition.schemaVersion===1,'unexpected current manifest schema');
+  demand(transition.status==='transition-candidate-not-production-cg'&&transition.humanVisualReview===false,
+    'unexpected transition review state; re-evaluate this gate before promotion');
+  const unique=(entries,path,label)=>{
+    const matches=entries.filter(e=>e.path===path);
+    demand(matches.length===1,'missing or duplicated '+label+' '+path);
+    return matches[0];
+  };
+  const result=[];
+  for(const id of Object.keys(SUBJECTS)){
+    const prefix='art-sources/characters/'+id+'/identity/';
+    const readSource=(name,category)=>{
+      const path=prefix+name;
+      const entry=unique(catalog.assets,path,'source catalog');
+      const inventory=unique(transition.sourceInventory,path,'transition inventory');
+      demand(entry.category===category&&['review','rework'].includes(entry.status)&&
+        inventory.status===entry.status&&inventory.gitBlobSha===entry.gitBlobSha,
+        'source status or Git blob mismatch '+path);
+      const metadata=exactAsset(root,{path,bytes:entry.bytes,sha256:inventory.sourceSha256,
+        pixelDimensions:inventory.size},path);
+      const data=readFileSync(join(root,path));
+      const blob=createHash('sha1').update('blob '+data.length).update(Buffer.from([0])).update(data).digest('hex');
+      demand(blob===entry.gitBlobSha,'Git blob mismatch '+path);
+      return {...metadata,path,status:entry.status,notes:entry.notes};
+    };
+    const front=readSource('front.png','identity');
+    const angle=readSource('three-quarter-candidate.png','identity-angle');
+    demand(front.width>=1086&&front.height>=1448,'front source below review floor '+id);
+    const path='public/art/characters/'+id+'/'+(id==='yuesha'?'yuesha-avatar-v3.webp':'face.webp');
+    const outputs=transition.outputs.filter(e=>e.output===path);
+    demand(outputs.length===1,'missing or duplicated runtime avatar '+id);
+    const output=outputs[0];
+    demand(output.kind==='identity-avatar'&&output.source===front.path&&
+      output.sourceSha256===front.sha256&&JSON.stringify(output.sourceSize)===JSON.stringify([front.width,front.height]),
+      'runtime avatar source mismatch '+id);
+    const crop=output.crop;
+    demand(Array.isArray(crop)&&crop.length===4&&crop.every(Number.isSafeInteger)&&
+      crop[0]>=0&&crop[1]>=0&&crop[2]<=front.width&&crop[3]<=front.height&&
+      crop[2]-crop[0]===600&&crop[3]-crop[1]===600&&
+      JSON.stringify(output.size)==='[600,600]','invalid runtime avatar crop '+id);
+    const avatar=exactAsset(root,{path,bytes:output.bytes,sha256:output.outputSha256,
+      pixelDimensions:output.size},path);
+    result.push({id,front,angle,avatar:{...avatar,path},angleMeetsPortraitFloor:
+      angle.width>=1086&&angle.height>=1448,humanApproved:false});
+  }
+  return {verified:result.length*3,subjects:result,production:false};
+}
+
+/** Named human attestation for production CG. Technical validation is not
+ * a cryptographic signature or independent verification of the art review. */
+export function verifyG1Approval(rootDir,id,binding){
+  const root=resolve(rootDir);
+  demand(Object.hasOwn(SUBJECTS,id),'unknown approval subject');
+  const prefix='art-sources/characters/'+id+'/identity/';
+  const path=prefix+'approval.json';
+  demand(binding?.path===path&&/^[a-f0-9]{64}$/.test(binding.sha256??''),
+    'G1 approval binding required '+id);
+  const proofFile=join(root,path);
+  demand(lstatSync(proofFile,{throwIfNoEntry:false})?.isFile(),'missing G1 approval '+id);
+  const raw=readFileSync(proofFile);
+  demand(sha256(raw)===binding.sha256,'G1 approval hash mismatch '+id);
+  const proof=JSON.parse(raw.toString('utf8'));
+  demand(proof.schemaVersion===1&&proof.character===id&&proof.approved===true&&
+    proof.humanVisualReview===true&&proof.identityConsistent===true&&
+    proof.independentNativeSources===true&&proof.rightsConfirmed===true&&
+    proof.commercialUse===true&&proof.crossCharacterReview===true,
+    'G1 human identity approval incomplete '+id);
+  demand(typeof proof.reviewer==='string'&&proof.reviewer.trim().length>=3&&
+    Number.isFinite(Date.parse(proof.reviewedAt??''))&&
+    typeof proof.reviewNotes==='string'&&proof.reviewNotes.trim().length>=24&&
+    typeof proof.sourceReference==='string'&&proof.sourceReference.trim().length>=8,
+    'G1 dated reviewer, notes and source reference required '+id);
+  const catalog=JSON.parse(readFileSync(join(root,'art-sources/source-catalog.json'),'utf8'));
+  const transition=JSON.parse(readFileSync(join(root,'public/art/r12-53-transition-manifest.json'),'utf8'));
+  demand(catalog.schemaVersion===1&&transition.schemaVersion===1,'unexpected G1 source schema');
+  const unique=(entries,key,value)=>{
+    const matches=entries.filter(e=>e[key]===value);
+    demand(matches.length===1,'missing or duplicated G1 registration '+value);
+    return matches[0];
+  };
+  const source=(entry,name,category)=>{
+    const expected=prefix+name;
+    const info=exactAsset(root,entry,expected);
+    demand(info.width>=1086&&info.height>=1448&&info.width*4===info.height*3,
+      'G1 native 3:4 floor '+expected);
+    const registered=unique(catalog.assets,'path',expected);
+    const bytes=readFileSync(join(root,expected));
+    const blob=createHash('sha1').update('blob '+bytes.length).update(Buffer.from([0])).update(bytes).digest('hex');
+    demand(registered.category===category&&registered.status==='review'&&
+      registered.bytes===info.bytes&&registered.gitBlobSha===blob,
+      'G1 source registration mismatch or rework '+expected);
+    return info;
+  };
+  const front=source(proof.front,'front.png','identity');
+  const angle=source(proof.angle,'three-quarter-candidate-v2.png','identity-angle');
+  demand(front.sha256!==angle.sha256,'G1 duplicate front and angle '+id);
+  const names=id==='yuesha'?['yuesha-avatar-v3.webp','yuesha-portrait-v3.webp','yuesha-bust-v3.webp']:['face.webp'];
+  const refs=names.map(name=>'public/art/characters/'+id+'/'+name);
+  demand(Array.isArray(proof.references)&&proof.references.length===refs.length,'G1 reference roster mismatch '+id);
+  for(const expected of refs){
+    const entry=unique(proof.references,'path',expected);
+    const info=exactAsset(root,entry,expected);
+    const output=unique(transition.outputs,'output',expected);
+    demand(output.source===prefix+'front.png'&&output.sourceSha256===front.sha256&&
+      output.outputSha256===info.sha256&&output.bytes===info.bytes&&
+      JSON.stringify(output.sourceSize)===JSON.stringify([front.width,front.height])&&
+      JSON.stringify(output.size)===JSON.stringify([info.width,info.height]),
+      'G1 runtime reference source mismatch '+expected);
+  }
+  return {character:id,path,sha256:binding.sha256};
+}
+
+/** Emit an unsigned review draft; never create an approval file. */
+export function buildG1ApprovalDraft(rootDir,id){
+  const root=resolve(rootDir);
+  demand(Object.hasOwn(SUBJECTS,id),'unknown approval subject');
+  const prefix='art-sources/characters/'+id+'/identity/';
+  const collect=(path)=>{
+    if(!lstatSync(join(root,path),{throwIfNoEntry:false})?.isFile())return null;
+    const bytes=readFileSync(join(root,path));
+    const png=path.endsWith('.png');
+    if(png)demand(bytes.length>=24&&bytes.subarray(0,8).equals(Buffer.from('89504e470d0a1a0a','hex'))&&
+      bytes.toString('ascii',12,16)==='IHDR','invalid PNG '+path);
+    const dim=png?[bytes.readUInt32BE(16),bytes.readUInt32BE(20)]:((d)=>[d.width,d.height])(webpDimensions(bytes));
+    const entry={path,bytes:bytes.length,sha256:sha256(bytes),pixelDimensions:dim};
+    exactAsset(root,entry,path);
+    return entry;
+  };
+  const names=id==='yuesha'?['yuesha-avatar-v3.webp','yuesha-portrait-v3.webp','yuesha-bust-v3.webp']:['face.webp'];
+  return {schemaVersion:1,character:id,approved:false,humanVisualReview:false,identityConsistent:false,
+    independentNativeSources:false,rightsConfirmed:false,commercialUse:false,crossCharacterReview:false,
+    reviewer:'',reviewedAt:'',reviewNotes:'',sourceReference:'',
+    front:collect(prefix+'front.png'),angle:collect(prefix+'three-quarter-candidate-v2.png'),
+    references:names.map(name=>collect('public/art/characters/'+id+'/'+name))};
+}
+
 function parseArgs(args){
   if(!args.length)return process.cwd();
   if(args.length===2&&args[0]==='--source-dir'&&args[1])return args[1];
-  fail('usage: node scripts/verify-g1-face-sources.mjs [--source-dir /path/to/unpacked-zip]');
+  fail('usage: node scripts/verify-g1-face-sources.mjs [--current | --draft brook | --source-dir /path/to/unpacked-zip]');
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
   try{
+    if(process.argv.length===4&&process.argv[2]==='--draft'){
+      console.log(JSON.stringify(buildG1ApprovalDraft(process.cwd(),process.argv[3]),null,2));
+    }else if(process.argv.length===3&&process.argv[2]==='--current'){
+      const result=verifyCurrentG1FaceSources(process.cwd());
+      console.log(JSON.stringify(result,null,2));
+    }else{
     const result=verifyG1FaceSources(parseArgs(process.argv.slice(2)));
     console.log('G1 research integrity OK: '+result.verified+'/'+result.verified+
       ' PNG/WebP files; 4 independent study portraits; 0 approved identities; NO promotion.');
+    }
   }catch(error){console.error(error.message);process.exitCode=1}
 }

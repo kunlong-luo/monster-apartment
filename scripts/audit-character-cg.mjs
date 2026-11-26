@@ -3,9 +3,9 @@ import {resolve,join,dirname,basename} from 'node:path';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {webpDimensions} from './prepare-room-background.mjs';
+import {verifyG1Approval} from './verify-g1-face-sources.mjs';
 
 const root=resolve(import.meta.dirname,'..');
-const manifestPath=join(root,'public/art/characters/cg-manifest.json');
 export const CG_PATHS={
   'yuesha-eclipse':'yuesha/cg-eclipse.webp',
   'yuesha-vow':'yuesha/cg-vow.webp',
@@ -45,19 +45,20 @@ export function inspectCharacterCg(bytes){
   check(Math.abs(info.width/info.height-3/4)<.018,'CG must have a 3:4 canvas');
   return {...info,bytes:bytes.length,sha256:sha256(bytes)};
 }
-export function assertCharacterCgReview({card,review,bytes}){
+export function assertCharacterCgReview({card,review,bytes,rootDir=root}){
   check(Object.hasOwn(CG_PATHS,card),'unrecognized card '+card);
   const info=inspectCharacterCg(bytes);
   check(review?.card===card&&review.approved===true&&review.humanVisualReview===true,
     'review approval and card identity required');
   // A signed review must attest to the current identity reference, not the
-  // old YueSha black-haired portrait or an arbitrary character's face.
+  // retired YueSha portrait or an arbitrary character's face.
   const canonicalPath=CG_IDENTITY_REFERENCE_PATHS[card];
-  const canonicalFile=join(root,canonicalPath);
+  const canonicalFile=join(rootDir,canonicalPath);
   check(existsSync(canonicalFile),'canonical identity art missing for '+card);
   check(review.identityReference?.path===canonicalPath&&
     review.identityReference?.sha256===sha256(readFileSync(canonicalFile)),
     'CG identity reference path/hash no longer matches '+card);
+  verifyG1Approval(rootDir,card.split('-')[0],review.g1Approval);
   check(review.image?.sha256===info.sha256&&review.image.width===info.width&&
     review.image.height===info.height&&review.image.bytes===info.bytes,
     'reviewed image bytes or dimensions changed');
@@ -82,15 +83,15 @@ export function assertCharacterCgReview({card,review,bytes}){
     'native source dimensions must equal the reviewed image dimensions');
   return info;
 }
-export function auditCharacterCg(){
-  const manifest=JSON.parse(readFileSync(manifestPath,'utf8'));
+export function auditCharacterCg(rootDir=root){
+  const manifest=JSON.parse(readFileSync(join(rootDir,'public/art/characters/cg-manifest.json'),'utf8'));
   check(manifest.version===1,'unexpected manifest version');
   const ids=Object.keys(CG_PATHS);
   check(JSON.stringify(Object.keys(manifest.cards??{}).sort())===JSON.stringify([...ids].sort()),
     'manifest must contain exactly the five playable cards');
   check(JSON.stringify(Object.keys(CG_IDENTITY_REFERENCE_PATHS).sort())===JSON.stringify([...ids].sort()),
     'identity reference map must cover exactly the five playable cards');
-  for(const card of ids)check(existsSync(join(root,CG_IDENTITY_REFERENCE_PATHS[card])),
+  for(const card of ids)check(existsSync(join(rootDir,CG_IDENTITY_REFERENCE_PATHS[card])),
     'missing canonical identity reference for '+card);
   let production=0;
   for(const card of ids){
@@ -98,7 +99,7 @@ export function auditCharacterCg(){
     const relative='public/art/characters/'+CG_PATHS[card];
     check(entry.path===relative,'invalid asset path '+card);
     check(['portrait','production'].includes(entry.status),'invalid status '+card);
-    const assetPath=join(root,relative);
+    const assetPath=join(rootDir,relative);
     const proofPath=join(dirname(assetPath),'cg-provenance-'+basename(assetPath,'.webp')+'.json');
     if(entry.status==='portrait'){
       check(!existsSync(assetPath)&&!existsSync(proofPath),
@@ -106,7 +107,7 @@ export function auditCharacterCg(){
       if(entry.previewPath!==undefined){
         const preview=CG_PREVIEW_PATHS[card];
         check(entry.previewPath===preview,'preview path is not the approved card slot '+card);
-        const candidatePath=join(root,preview);
+        const candidatePath=join(rootDir,preview);
         check(existsSync(candidatePath),'manifest preview is missing '+card);
         const candidate=readFileSync(candidatePath);
         check(candidate.length>=100000&&candidate.length<=12*1024*1024,
@@ -122,12 +123,12 @@ export function auditCharacterCg(){
       }
       continue;
     }
-    check(entry.previewPath===undefined,
+    check(['previewPath','previewSha256','previewSourceKind'].every(key=>!Object.hasOwn(entry,key)),
       'approved production art must not retain stale preview selection '+card);
     check(existsSync(assetPath)&&existsSync(proofPath),'production art/provenance missing '+card);
     const bytes=readFileSync(assetPath);
     const review=JSON.parse(readFileSync(proofPath,'utf8'));
-    assertCharacterCgReview({card,review,bytes});
+    assertCharacterCgReview({card,review,bytes,rootDir});
     production++;
   }
   return {production,total:ids.length};

@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R12.108）
+# 怪物公寓 · 美术资源总目录（R13.0-G）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -512,4 +512,10 @@ R12.107：PR #61 已合并至 main（8ac89d7，候选 73bb21d 的 Quality 455890
 
 ## R12.108 · 发布确认
 
-8ac89d7 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878515)、[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878567)、[完整玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878531)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45612035406) 全部成功。PR #62 候选 3529ac9 的 Quality 45612055891、像素 45612055884、桌面 45612056041、玩法 45612055914 均成功，已合并 main 083699c；同 SHA Pages 尚未确认。 正式资源库存 141 路径 / 156439517 B，公开 44 媒体（public/art 43），三张历史参考图原 blob 已隔离，未晋级任何原画审批。本候选不改媒体。
+8ac89d7 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878515)、[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878567)、[完整玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45611878531)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45612035406) 全部成功。PR #62 候选 3529ac9 的 Quality 45612055891、像素 45612055884、桌面 45612056041、玩法 45612055914 均成功，已合并 main 083699c；后续同 SHA Quality 45614984483、Pages 45615170795 已确认成功。 正式资源库存 141 路径 / 156439517 B，公开 44 媒体（public/art 43），三张历史参考图原 blob 已隔离，未晋级任何原画审批。本候选不改媒体。
+
+## R13.0-D · 四人五卡现行资源映射
+
+[角色 SOP 的四人五卡映射](CHARACTER-CREATION-SOP.md#r130-d--四人五卡身份映射准备完成尚未签审) 为原画制作与审核入口；[CG manifest](../public/art/characters/cg-manifest.json)、[转换清单](../public/art/r12-53-transition-manifest.json)、[源图清单](../art-sources/source-catalog.json) 是实际路径、类型与登记哈希依据。五项预览的登记路径、类型、输出 SHA-256 与人物归属均一致；本轮未重新读取图片字节。三张独立插画候选、泉泡/炽角两张共享房间站姿；后两张 CG 原始 PNG 为 rework，不能以站姿充当正式 CG。四位身份与五卡正式审批仍 0/4、0/5；未增删、迁移或复制媒体，未改 manifest、运行时、库存或版本。镜头制作要求归 [差异化规范](CHARACTER-CG-DIFFERENTIATION-V1.md)，不在资源目录重复维护。
+
+R13.0-G：当前 Git 树核对 141 媒体，四张 three-quarter-candidate-v2.png 均未入库；拟定路径不列入第 5 节。新原图到件后按 [角色 SOP](CHARACTER-CREATION-SOP.md) 同一批同步真实文件、source-catalog.json、库存路径/字节/Git blob；运行 pnpm audit:media-duplicates 与 pnpm check:design。未改媒体、库存及审批。
