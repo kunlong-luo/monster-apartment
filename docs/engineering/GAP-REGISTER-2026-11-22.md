@@ -2,7 +2,11 @@
 
 > 取证时点：`main` = [`770ed3c25cb3`](https://github.com/kunlong-luo/monster-apartment/commit/770ed3c25cb3a32f60273f458aa3a0ee27418f9f)。本表根据仓库文件、`branches/main` 和所列 Issue 的当时状态整理；**不把历史报告或自动测试写成今天已完成的人工验收**。每轮修复后应重核并更新，不要仅因完成文档治理就勾选产品任务。
 
-## R13.1-I · 图鉴空间减负与首页回归校准（当前执行）
+## R13.1-J · 新美术收件与发布收口（当前执行）
+
+上一轮 9c5aea9 同 SHA [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746624328)、[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746624262)、[玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746624275)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746721073) 全部成功。随后 3174568 新增五项媒体及召唤组件；[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45750825010) 在媒体目录审计失败，仅缺 S02 desktop-candidate-v2.png 行，实际146项/165666116 B、0意外重复；静态导出/Pixi通过，[玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45750825015) 成功，桌面取消，Pages跳过。本轮不覆盖新增资源；核对完整 Git tree 与库存146行，补全源图清单/资源目录与汇总，S02同历史 blob 的1672×941原图为rework，新增字节/尺寸/哈希测试；两张清洁CG候选实际登记，但未经人审，五卡均portrait生产状态，四人G1 0/4。更新PRODUCT/SOP/场景准入与索引。此轮不改运行样式、经济、存档、原画；先恢复发布门禁，公寓布局与全站Tooltip验收顺延，不能称7/7布局完成。已上线基线73/100，免费Alpha可继续；最新提交需同SHA Quality/Pages，正式商业发行仍缺人审、独立场景、真人样本、主线保护。下一步核对新SHA发布与桌面再完成公寓及提示治理。
+
+## R13.1-I · 图鉴空间减负与首页回归校准（历史记录）
 
 上一 SHA 80a035c [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746246261)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746348755) 成功；[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746245979) 失败在 r12-lobby-mobile-art-clearance:52，旧PC召唤卡≥200px与R13.1-H主动缩短为176px冲突；手机路径已运行至PC断言，不能宣称整项通过。玩法45746245983核查时运行中。保留160–180px双边界并验证内容不溢出、真实链接命中，保留其余手机与导航检查；尚需实际重跑。图鉴维持 A05 五卡骨架，常规PC边距24、列距16、卡距14、右栏27%，属性14px/专长12px、核心动作44px，装备槽迁至养成、介绍保留详情，图鉴资源提示向下向内。真实经济、存档、卡面源图不变。修改现有 A05 真实交互测试以覆盖新标签位置与几何；新 SHA 待 Quality/Pages/桌面及实机验证。评分73/100为已部署基线，免费公开Alpha可用，正式商业发行未达标，主线未保护、0/5生产CG、独立场景及十名真人试玩仍未完成。下一轮优先核对首页/图鉴与此前工坊、委托仓库、月光街回归，再公寓及全站提示治理。
 

@@ -34,7 +34,7 @@ web
 ## Evidence on Hand
 - `public/art/characters/{brook,fern,cinder}/face.webp`、`public/art/characters/yuesha/yuesha-portrait-v3.webp`：已存在的独立人物肖像。
 - `public/art/rooms/*/concept-scene.svg` 为概念背景，四套正式高清无人物房间 CG 尚未全部入库。
-- `src/components/summon/`：V3.72 的电影式抽卡、十连与收藏卡组件；已有五张竖幅候选可供大卡展示，其中泉泡与炽角复用各自房间站姿，不是独立 CG，但生产 manifest 五卡均为 `portrait`，0/5 正式全身 CG。
+- `src/components/summon/`：V3.72 的电影式抽卡、十连与收藏卡组件；当前五张竖幅插画候选均有独立预览路径；3174568 新增泉泡/炽角 clean-v2 候选替代旧卡面站姿复用，房间站姿仍保留。生产 manifest 五卡均为 `portrait`，0/5 正式全身 CG，候选待人审。
 - 真正的视觉质量要通过 `Desktop Visual Review` 的 Playwright 截图判断，编译成功不足以代表美术验收。
 
 ## Product Principles

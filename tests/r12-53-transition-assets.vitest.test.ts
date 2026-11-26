@@ -64,6 +64,19 @@ describe('R12.53 source-bound transition artwork',()=>{
       expect(existsSync(room.output)).toBe(true);
     }
   });
+  it('registers the uploaded S02 desktop v2 as a below-floor research original, not production',()=>{
+    const path=a+'scenes/apartment/desktop-candidate-v2.png';
+    const entries=catalog.assets.filter(e=>e.path===path);
+    expect(entries).toHaveLength(1);
+    expect(entries[0].status).toBe('rework');
+    const bytes=readFileSync(path);
+    expect(bytes.length).toBe(entries[0].bytes);
+    expect(blobSha(bytes)).toBe(entries[0].gitBlobSha);
+    expect(sha256(bytes)).toBe('c59fcb3fcf96faa0eb23a3051015090592c104412b8a049cfd0303287c0d384e');
+    expect(bytes.subarray(0,8).toString('hex')).toBe('89504e470d0a1a0a');
+    expect([bytes.readUInt32BE(16),bytes.readUInt32BE(20)]).toEqual([1672,941]);
+    expect(manifest.outputs.some(e=>e.source===path)).toBe(false);
+  });
   it('checks all fifteen actual WebPs, independent screens, native geometry and exact source mapping',()=>{
     const expected:Record<string,string>={
       [p+'characters/yuesha/yuesha-avatar-v3.webp']:a+'characters/yuesha/identity/front.png',

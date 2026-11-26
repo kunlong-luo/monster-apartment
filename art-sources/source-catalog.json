@@ -284,6 +284,15 @@
       "notes": "生成图未呈现六个可独立定位实体门，不替代已通过交互的 S02 研究图。"
     },
     {
+      "id": "scenes.apartment.desktop-candidate-v2",
+      "category": "scene",
+      "path": "art-sources/scenes/apartment/desktop-candidate-v2.png",
+      "gitBlobSha": "bcb3d211792cce3613aa16e5d0475f0134b69639",
+      "bytes": 2528106,
+      "status": "rework",
+      "notes": "R12.93 六门中庭 PC 候选；历史原图实测1672×941 RGB，本次 Git blob 与历史记录完全一致。原生像素低于 S02 3296×1856 生产门槛；待核对六门、构图、许可与独立手机图，不作运行时或生产替换。"
+    },
+    {
       "id": "scenes.apartment.mobile-candidate",
       "category": "scene",
       "path": "art-sources/scenes/apartment/mobile-candidate.png",

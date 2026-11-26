@@ -1,4 +1,4 @@
-# 怪物公寓 · 美术资源总目录（R13.0-G）
+# 怪物公寓 · 美术资源总目录（R13.1-J）
 
 > 本文件是资源菜单、命名规范及去重记录。第 5 节是当前快照；以下 R12.52–64 阶段记录为历史证据。当前版本见 [根 README](../README.md)，生产与过渡状态以对应 manifest 为准。上传提交 [64485f5](https://github.com/kunlong-luo/monster-apartment/commit/64485f5a5c483bd21e9f781e8f7cd7bbe7c6eaad) 的全部 33 张新增 PNG 均按原 Git blob 迁移，无重新编码。程序仍使用原有正式资源；本次不晋级 CG、不替换页面、不改变版本、概率或存档。机器可读的新批次映射见 [source-catalog.json](../art-sources/source-catalog.json)。
 
@@ -163,13 +163,13 @@
 
 **实际删除 3 张（257428 B）**： [月纱旧 face](https://github.com/kunlong-luo/monster-apartment/blob/87a37023dcc5161696aab9fe006749f3a5a04bb4/public/art/beauty-beasts/characters/yuesha/face.webp)、[旧半身像](https://github.com/kunlong-luo/monster-apartment/blob/87a37023dcc5161696aab9fe006749f3a5a04bb4/public/art/yuesha-bust-v2.webp)、[旧肖像](https://github.com/kunlong-luo/monster-apartment/blob/87a37023dcc5161696aab9fe006749f3a5a04bb4/public/art/yuesha-portrait-v2.webp)。历史仅通过固定 Git 提交追溯，不另建归档副本。扫描 351 个 app/src/engine/scripts/tests/e2e/workflow/public JSON 与代码文件、19 个 docs/art-sources JSON/CSV、185 个 Markdown 的相关名称；旧 face 的历史清单和排除断言保留。研究镜头表、R12-09 ledger、R12-61 输出清单、审核脚本与文档图片链接同步；保持尺寸、哈希及 production 约束。静态文字扫描不是全部动态或外部 URL 的证明，新 SHA 仍需 Quality 验证。公开媒体减少 5756254 B（非页面实际下载量），全仓媒体仅减少 257428 B。
 
-S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/scenes/apartment/) 仅含 `desktop-candidate.png` 与 `mobile-candidate.png`；新 `desktop-candidate-v2.png` 仍未入库。下一批单独核验正常运行的 review 路径、根目录旧版本名、交互研究重复图和三张 public/assets 历史参考；不将本轮写成已完成全部路径重构。
+S02 当前路径：[desktop-candidate-v2.png](../art-sources/scenes/apartment/desktop-candidate-v2.png) 已由提交 [3174568](https://github.com/kunlong-luo/monster-apartment/commit/31745689d5fecd3980eeaeebc470d90be363648a) 实际入库，2528106 B，Git blob 与 R12.93 历史记录完全一致，原始记录1672×941，低于生产门槛，登记 rework；保留两份既有原图和当前可交互六门研究，不晋级或切换运行时。
 
-## 5. 全仓实际资源菜单（R12.103）
+## 5. 全仓实际资源菜单（R13.1-J）
 
-R12.103 候选完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
+R13.1-J 核对完整 Git tree 3174568：146 路径、165666116 B（其中5项为相对141项历史基线新增的媒体）。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
 
-### 源图与研究（42）
+### 源图与研究（43）
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
@@ -207,6 +207,7 @@ R12.103 候选完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R
 | `art-sources/rooms/fern/bedroom-candidate.png` | 3313487 | `2bcb5bfc8aeb` |
 | `art-sources/rooms/yuesha/background.png` | 2920537 | `f4ce90386009` |
 | `art-sources/rooms/yuesha/bedroom-candidate.png` | 2806135 | `3f7b37412d61` |
+| `art-sources/scenes/apartment/desktop-candidate-v2.png` | 2528106 | `bcb3d211792c` |
 | `art-sources/scenes/apartment/desktop-candidate.png` | 2969990 | `6e9d6dc207b6` |
 | `art-sources/scenes/apartment/mobile-candidate.png` | 3008274 | `b80b4fea7546` |
 | `art-sources/scenes/lobby/desktop.png` | 2588990 | `6a5303795e97` |
@@ -338,12 +339,12 @@ R12.103 候选完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R
 
 | 分类 | 路径数 | 字节 |
 | --- | ---: | ---: |
-| art-sources | 40 | 115372885 |
+| art-sources | 43 | 123552392 |
 | docs | 42 | 26589877 |
 | engine/art | 15 | 310778 |
-| public/art | 43 | 14008511 |
+| public/art | 45 | 15055603 |
 | public（其余） | 1 | 157466 |
-| **合计** | **141** | **156439517** |
+| **合计** | **146** | **165666116** |
 
 ## 6. 正式替换顺序与验收
 
@@ -523,3 +524,8 @@ R12.107：PR #61 已合并至 main（8ac89d7，候选 73bb21d 的 Quality 455890
 [角色 SOP 的四人五卡映射](CHARACTER-CREATION-SOP.md#r130-d--四人五卡身份映射准备完成尚未签审) 为原画制作与审核入口；[CG manifest](../public/art/characters/cg-manifest.json)、[转换清单](../public/art/r12-53-transition-manifest.json)、[源图清单](../art-sources/source-catalog.json) 是实际路径、类型与登记哈希依据。五项预览的登记路径、类型、输出 SHA-256 与人物归属均一致；本轮未重新读取图片字节。三张独立插画候选、泉泡/炽角两张共享房间站姿；后两张 CG 原始 PNG 为 rework，不能以站姿充当正式 CG。四位身份与五卡正式审批仍 0/4、0/5；未增删、迁移或复制媒体，未改 manifest、运行时、库存或版本。镜头制作要求归 [差异化规范](CHARACTER-CG-DIFFERENTIATION-V1.md)，不在资源目录重复维护。
 
 R13.0-G：当前 Git 树核对 141 媒体，四张 three-quarter-candidate-v2.png 均未入库；拟定路径不列入第 5 节。新原图到件后按 [角色 SOP](CHARACTER-CREATION-SOP.md) 同一批同步真实文件、source-catalog.json、库存路径/字节/Git blob；运行 pnpm audit:media-duplicates 与 pnpm check:design。未改媒体、库存及审批。
+
+
+## R13.1-J · 实际新增资源与运行边界
+
+3174568 实际加入五项媒体：泉泡与炽角 clean-v2 PNG（各自 review，原 rework PNG 保留）、两张独立候选 WebP，以及 S02 PC v2 原图（rework）。五卡 manifest 现在均登记 illustrated-cg-candidate，泉泡/炽角不再使用房间站姿作为卡面预览；旧 R12.53 转换清单仍为历史15项，房间站姿保留独立用途。新卡面 SHA-256、1086×1448 及来源/站姿分离由现有测试验证，尚待本 SHA Quality；不替代人审。S02 源图已上传但仅1672×941（历史同 blob 测量），不新增公开输出或改六门热点。四位正式 G1 0/4，正式 CG 0/5，正式场景审批不变。此次仅登记资源/更新规范并添加定向 S02 字节测试；不改或删任何媒体。前置 Quality 45750825010 报唯一目录缺失行，真实字节审计无意外重复；修复后须重跑。

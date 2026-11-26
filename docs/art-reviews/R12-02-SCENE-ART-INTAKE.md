@@ -106,3 +106,6 @@ WebP 的 header 尺寸和 SHA 哈希可以客观确认，却无法判断 AI 原�
 R12.93 第一批（2026-11-25）实际生成 S02 六门中庭 PC 独立候选 v2，聊天原始 PNG 实测 1672×941 RGB、2528106 B、SHA-256 `c59fcb3fcf96faa0eb23a3051015090592c104412b8a049cfd0303287c0d384e`、本地计算 Git blob `bcb3d211792cce3613aa16e5d0475f0134b69639`（非已写入远端证明）。拟入库稳定路径 `art-sources/scenes/apartment/desktop-candidate-v2.png`，暂未传入 GitHub；本会话生成 PNG 可读，但当前连接的 Git blob 写入只接受 base64 文本，没有可用的大文件二进制直传桥接。禁止将拟定路径写成实际可用资源，禁止把未入库文件加入第 5 节库存或 manifest。原生尺寸低于 S02 ≥3296×1856 和目标 3840×2160，不执行插值超分晋级；手机独立原画尚未生成。现有两份已入仓六门研究图、六房索引、生产 review 状态、存档和 V3.109.0 均不变。
 
 该稿为 AI 生成审稿候选，未完成人审/权利签署及实际游戏热点映射，不能作为 production 原图。补充候选入库后先验证原 PNG 字节、哈希、原生像素，同尺寸输出 WebP，并同步源图清单及资源目录第 5 节；再核查实机布局。下一批为 S02 独立竖版、S05 委托厅和 S06 仓库，现有场景 manifest 不变。
+
+
+R13.1-J 更新：S02 [desktop-candidate-v2.png](../../art-sources/scenes/apartment/desktop-candidate-v2.png) 已在 3174568 实际入仓，Git blob 与上文生成记录完全相同。登记 rework，尚无生产原生像素、六门位置与真实人审证据；不插值、不替换现有六门运行路径、不生成正式输出。独立手机版仍缺。新增定向测试回读源图签名、SHA-256、Git blob、尺寸与历史转换输出边界，待 CI。

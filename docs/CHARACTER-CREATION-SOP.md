@@ -282,3 +282,8 @@ R13.0-E 的 [Quality 45618780099](https://github.com/kunlong-luo/monster-apartme
 | 4 | 炽角 | 金属铸角、粉赤眼 3/4 v2 | 余烬去烘焙标题标志，武器候选先定案 |
 
 收件顺序：实际 PNG → 原生尺寸及真实字节/来源 → Git blob 与 SHA-256 → source-catalog.json 唯一路径 review 条目（保留旧 v1）→ 资源总目录第 5 节新增库存行 → `node scripts/verify-g1-face-sources.mjs --draft <id>` → 具名人审 → 正式审核 JSON 与绑定 → `pnpm audit:media-duplicates`、`pnpm check:design`、Quality。草稿不是批准；禁止对缺失路径填虚构哈希。若重绘正面，必须同时更新所有相关头像转换及证据，不单独改 front。已有原图 17 张不重复制；当前四人 G1 0/4、正式 CG 0/5。后续停止单纯扩张管理工具，优先实际原画或经营体验。
+
+
+## R13.1-J · 两张修复候选已实际入库
+
+泉泡 [tide-clean-v2.png](../art-sources/characters/brook/cg/tide-clean-v2.png)、炽角 [ember-clean-v2.png](../art-sources/characters/cinder/cg/ember-clean-v2.png) 已入 Git；角色源图现19张（4正面、4侧脸、7 CG含两份原rework与修复候选、4站姿）。两张独立公开候选由 [CG manifest](../public/art/characters/cg-manifest.json) 绑定，旧房间站姿仍供观景，不再为这两张卡的当前预览。原画去字、人物/武器与四人同人差异仍需人审；新 SHA 需验证现有原生尺寸与哈希测试。4张新版侧脸 v2 尚未入库；G1 0/4、生产CG 0/5，不能跳过审批。
