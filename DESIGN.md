@@ -216,3 +216,5 @@ V3.88 PC 截图表明 `/town/` 左侧曾使用 `lobby-hero-v2.webp`，`/workshop
 历史实现、首轮 lint 失败、修正与当时验收证据：[R12.33 原报告](https://github.com/kunlong-luo/monster-apartment/blob/b9e00acf9b343fe4ab5cc1c423b9b8325afb57d2/docs/design/R12-33-WEB-REVIEW-QUERY-ISOLATION-2026-11-24.md) · [R12.34 原报告](https://github.com/kunlong-luo/monster-apartment/blob/b9e00acf9b343fe4ab5cc1c423b9b8325afb57d2/docs/design/R12-34-WEB-REVIEW-IMAGE-LIFECYCLE-2026-11-24.md)。现行工程实现以源码与同 SHA 检查为准。
 
 R12.96：本文涉及的装饰及海报资源路径已同步至现行目录 decorations/、postcards/，原画字节和原有审核语义未改变。
+
+R13.1-K 公寓桌面房间操作区（候选）：复用既有 desktop CSS，不改变双列动作、六门入口和手机布局。故事/房间面板内边距20px，故事间距12px、正文16px、收入提示13px；房间动作间距12px、最低72px、标题14px、说明12px，关闭操作44×44px。普通房间操作和现有审稿边界须由真实浏览器确认；不改变经济、存档、原画、路由。沿用既有公寓 HUD 视觉测试，检查真实操作命中及截图；候选未验收前不称正式上线。

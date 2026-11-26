@@ -54,4 +54,23 @@ test('apartment status and controls remain reachable in 390px mobile viewport',a
   expect(Math.abs(desktop[0]-desktop[1])).toBeLessThan(10);
   expect(Math.abs(desktop[0]-desktop[2])).toBeLessThan(10);
   await page.screenshot({path:'visual-evidence/apartment/desktop-1440-hud.png',fullPage:false});
+
+  // Ordinary desktop room actions keep their existing two-column layout,
+  // with enough space and legible copy without changing the room economy.
+  await page.getByTestId('ga-room-2').click();
+  const drawer=page.getByTestId('ga-room-drawer');
+  const build=page.getByTestId('ga-build-bath');
+  const close=page.getByRole('button',{name:'关闭房间操作'});
+  await expect(drawer).toBeVisible();
+  await expect(drawer).toHaveCSS('padding-top','20px');
+  await expect(drawer.locator('.grid').first()).toHaveCSS('gap','12px');
+  await expect(build.locator('strong')).toHaveCSS('font-size','14px');
+  await expect(build.locator('small')).toHaveCSS('font-size','12px');
+  const hitbox=await close.boundingBox();
+  expect(hitbox?.width??0).toBeGreaterThanOrEqual(44);
+  expect(hitbox?.height??0).toBeGreaterThanOrEqual(44);
+  await build.click({trial:true});
+  await page.screenshot({path:'visual-evidence/apartment/desktop-1440-room-actions.png',animations:'disabled'});
+  await close.click();
+  await expect(drawer).toHaveCount(0);
 });

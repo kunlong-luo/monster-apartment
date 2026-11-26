@@ -2,7 +2,11 @@
 
 > 取证时点：`main` = [`770ed3c25cb3`](https://github.com/kunlong-luo/monster-apartment/commit/770ed3c25cb3a32f60273f458aa3a0ee27418f9f)。本表根据仓库文件、`branches/main` 和所列 Issue 的当时状态整理；**不把历史报告或自动测试写成今天已完成的人工验收**。每轮修复后应重核并更新，不要仅因完成文档治理就勾选产品任务。
 
-## R13.1-J · 新美术收件与发布收口（当前执行）
+## R13.1-K · 公寓桌面房间操作区减负（候选，待验收）
+
+2026-11-26 核验 main [9e683cf](https://github.com/kunlong-luo/monster-apartment/commit/9e683cfc56e62c05a96a37574df4311b1b53b580) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45809152014) 三作业与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45809315642) build/deploy 均成功，V3.109.0；该 SHA 无桌面/完整玩法运行，不能沿用旧截图。主线未保护。本候选仅收敛公寓桌面旧密度：面板20px内边距、12px间距、正文16px、房间操作标题14px/说明12px、关闭44×44px；保留六门、双列动作、手机与存档/经济不变量。扩展已有公寓 HUD 测试，检查普通房间操作真实命中及截图；本地浏览器未运行，候选 Quality/桌面/玩法仍待实际结果，未合并或发布。不新增文档、目录、依赖或原画。已发布基线仍73/100（17/20、19/20、15/20、10/20、12/15、0/5），不为未验证 UI 加分。遗留：真实四视口与审稿模式、全站 Tooltip、独立原画、真人试玩及主线保护。下一项：先收口本候选同 SHA 验收，再单独处理全站 Tooltip；不并行新增功能。
+
+## R13.1-J · 新美术收件与发布收口（历史记录）
 
 上一轮 9c5aea9 同 SHA [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746624328)、[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746624262)、[玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746624275)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746721073) 全部成功。随后 3174568 新增五项媒体及召唤组件；[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45750825010) 在媒体目录审计失败，仅缺 S02 desktop-candidate-v2.png 行，实际146项/165666116 B、0意外重复；静态导出/Pixi通过，[玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45750825015) 成功，桌面取消，Pages跳过。本轮不覆盖新增资源；核对完整 Git tree 与库存146行，补全源图清单/资源目录与汇总，S02同历史 blob 的1672×941原图为rework，新增字节/尺寸/哈希测试；两张清洁CG候选实际登记，但未经人审，五卡均portrait生产状态，四人G1 0/4。更新PRODUCT/SOP/场景准入与索引。此轮不改运行样式、经济、存档、原画；先恢复发布门禁，公寓布局与全站Tooltip验收顺延，不能称7/7布局完成。已上线基线73/100，免费Alpha可继续；最新提交需同SHA Quality/Pages，正式商业发行仍缺人审、独立场景、真人样本、主线保护。下一步核对新SHA发布与桌面再完成公寓及提示治理。
 
