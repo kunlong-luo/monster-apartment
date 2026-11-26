@@ -18,7 +18,7 @@ export function GothicLobbyDestinations({onOpenMemories}:{onOpenMemories:()=>voi
           fallbackSrc={workshopFallback} fill unoptimized alt="" sizes="320px"
           data-testid="gothic-postcard-workshop-art"
           className="gothic-lobby__reference-postcard-img gothic-lobby__reference-postcard-img--workshop"/>
-        <span><strong>工坊</strong><small>打造专属装备</small></span>
+        <span><strong>工坊</strong><small>经营与锻造</small></span>
         <ChevronRight aria-hidden="true" size={18}/>
       </Link>
       <Link href="/town/" data-testid="gothic-reference-town"

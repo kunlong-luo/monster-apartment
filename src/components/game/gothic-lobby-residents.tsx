@@ -13,7 +13,7 @@ export function GothicLobbyResidents(){
   return (
     <aside className="gothic-lobby__reference-roster" data-testid="gothic-design-roster"
       aria-label="公寓住客">
-      <span className="gothic-lobby__reference-roster-title">公寓住客 <small>RESIDENTS</small></span>
+      <span className="gothic-lobby__reference-roster-title">公寓住客</span>
       {([
         {id:'yuesha',name:'月纱',detail:'契约会客室'},
         {id:'brook',name:'泉泡',detail:'潮汐之室'},

@@ -531,3 +531,45 @@ test('R12.72 postcard failures retain the corresponding location art, not the lo
     await expect.poll(()=>image.evaluate((img:HTMLImageElement)=>img.complete&&img.naturalWidth>0)).toBe(true);
   }
 });
+
+test('R13.1-H lobby rails leave vertical breathing space and top hints open inside the viewport',async({page})=>{
+  for(const [width,height] of [[1440,900],[1648,928],[1100,720],[390,844]]){
+    await page.setViewportSize({width,height});
+    await page.goto('/');
+    const inbox=page.getByTestId('gothic-commission-status');
+    await expect(inbox).toBeVisible();
+    await inbox.hover();
+    const hint=await inbox.evaluate(el=>{
+      const p=getComputedStyle(el,'::after'),r=el.getBoundingClientRect();
+      return {content:p.content,top:parseFloat(p.top),bottom:p.bottom,
+        font:parseFloat(p.fontSize),width:parseFloat(p.width),
+        height:parseFloat(p.height),anchorBottom:r.bottom,
+        absoluteBottom:r.top+parseFloat(p.top)+parseFloat(p.height),
+        right:r.right,alignment:p.right,transform:p.transform};
+    });
+    expect(hint.content).toContain('查看本日委托');
+    expect(hint.top).toBeGreaterThan(0);
+    expect(hint.font).toBeGreaterThanOrEqual(13);
+    expect(hint.absoluteBottom).toBeLessThan(height);
+    expect(hint.right-hint.width).toBeGreaterThanOrEqual(0);
+    expect(hint.transform).toBe('none');
+    await page.screenshot({path:'test-results/desktop-lobby-tooltip-'+width+'x'+height+'.png',animations:'disabled'});
+    await page.mouse.move(width/2,height-5);
+    await page.keyboard.press('Tab');
+    await inbox.focus();
+    await expect.poll(()=>inbox.evaluate(el=>getComputedStyle(el,'::after').content)).toContain('查看本日委托');
+    await inbox.evaluate(el=>(el as HTMLElement).blur());
+    if(width>=1100){
+      const roster=await page.getByTestId('gothic-design-roster').boundingBox();
+      const quest=await page.getByTestId('gothic-main-quest').boundingBox();
+      const event=await page.getByTestId('gothic-eclipse-feature').boundingBox();
+      const rail=await page.getByTestId('gothic-design-right').boundingBox();
+      expect(roster&&quest&&event&&rail).toBeTruthy();
+      expect(quest!.y).toBeGreaterThanOrEqual(roster!.y+roster!.height);
+      expect(event!.height).toBeLessThanOrEqual(180);
+      expect(rail!.y-event!.y-event!.height).toBeGreaterThanOrEqual(12);
+      expect(rail!.y+rail!.height).toBeLessThan(height*.8);
+      await expect(page.getByTestId('gothic-eclipse-feature').locator('.gothic-lobby__contract-faces')).toBeHidden();
+    }
+  }
+});
