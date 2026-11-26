@@ -16,6 +16,8 @@ import {
   Megaphone,
   Settings,
   Trophy,
+  Diamond,
+  MoonStar,
 } from 'lucide-react';
 import type { SummonRecord, GachaPool } from '@/lib/summon/gacha-engine';
 
@@ -290,7 +292,11 @@ export function CharacterTrialModal({
 
         {battleState === 'action' && (
           <div className="my-10 space-y-3 animate-pulse">
-            <div className="text-4xl text-[#ff3366]">✦ ☾ ✦</div>
+            <div className="flex items-center justify-center gap-3 text-[var(--craft-mythic,#c98988)]" aria-hidden="true">
+              <Diamond size={20} strokeWidth={1.6}/>
+              <MoonStar size={32} strokeWidth={1.5} className="text-[var(--craft-champagne,#d9c2a1)]"/>
+              <Diamond size={20} strokeWidth={1.6}/>
+            </div>
             <h4 className="text-lg font-bold text-[#ffe5be]">月华破晓，暗蚀归于无形！</h4>
             <p className="text-xs text-[#d8b58f]">这是月蚀魔法的演示效果，尚不是正式战斗系统。</p>
           </div>

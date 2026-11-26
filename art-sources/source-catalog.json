@@ -14,6 +14,16 @@
       "notes": "生成图有烘焙英文标题/标志，先修正再作正式 CG。"
     },
     {
+      "id": "characters.brook.cg.tide-clean-v2",
+      "category": "cg",
+      "path": "art-sources/characters/brook/cg/tide-clean-v2.png",
+      "supersedes": "art-sources/characters/brook/cg/tide.png",
+      "gitBlobSha": "e37d24d5de4e8a7d3a08c472c90434de0899fc0b",
+      "bytes": 2863731,
+      "status": "review",
+      "notes": "基于 tide.png 原生 1086×1448 无字修复版（移除左上与右下烘焙英文标题/标志，保留原始人物与武器主体），供候选立绘审查，尚未人工签审。"
+    },
+    {
       "id": "characters.brook.identity.front",
       "category": "identity",
       "path": "art-sources/characters/brook/identity/front.png",
@@ -52,6 +62,16 @@
       "bytes": 2927246,
       "status": "rework",
       "notes": "生成图有烘焙英文标题/标志，先修正再作正式 CG。"
+    },
+    {
+      "id": "characters.cinder.cg.ember-clean-v2",
+      "category": "cg",
+      "path": "art-sources/characters/cinder/cg/ember-clean-v2.png",
+      "supersedes": "art-sources/characters/cinder/cg/ember.png",
+      "gitBlobSha": "e561e4e4e7a64b4de315389d444b182898dfe109",
+      "bytes": 2787670,
+      "status": "review",
+      "notes": "基于 ember.png 原生 1086×1448 无字修复版（移除左上与右下烘焙英文标题/标志，保留原始人物与熔岩重锤主体），供候选立绘审查，尚未人工签审。"
     },
     {
       "id": "characters.cinder.identity.front",

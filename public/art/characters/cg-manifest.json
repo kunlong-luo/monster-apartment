@@ -18,9 +18,9 @@
     "brook-tide": {
       "status": "portrait",
       "path": "public/art/characters/brook/cg-tide.webp",
-      "previewPath": "public/art/rooms/brook/scenic/standing.webp",
-      "previewSha256": "b2da93867d25eb8efdde530f27a368f47e5ae357d65b32c6a03e846c026c2bc8",
-      "previewSourceKind": "sprite-transition-card"
+      "previewPath": "public/art/characters/brook/cg-tide-candidate.webp",
+      "previewSha256": "a341623ef0d96380845446473fca289fc2f7ce709241983fa031d9d94b34ff9d",
+      "previewSourceKind": "illustrated-cg-candidate"
     },
     "fern-spring": {
       "status": "portrait",
@@ -32,9 +32,9 @@
     "cinder-ember": {
       "status": "portrait",
       "path": "public/art/characters/cinder/cg-ember.webp",
-      "previewPath": "public/art/rooms/cinder/scenic/standing.webp",
-      "previewSha256": "c4b015647ffcf3f919b8d180c394245ff7c5ac5d21a0a37b9e4ef81603f679b9",
-      "previewSourceKind": "sprite-transition-card"
+      "previewPath": "public/art/characters/cinder/cg-ember-candidate.webp",
+      "previewSha256": "3f68bef90606952b4d8283fc6e5fbd8498c15124be985708d1885c7b55f20596",
+      "previewSourceKind": "illustrated-cg-candidate"
     }
   }
 }

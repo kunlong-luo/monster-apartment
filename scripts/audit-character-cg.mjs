@@ -17,9 +17,9 @@ export const CG_PATHS={
 export const CG_PREVIEW_PATHS={
   'yuesha-eclipse':'public/art/characters/yuesha/cg-eclipse-candidate.webp',
   'yuesha-vow':'public/art/characters/yuesha/cg-vow-candidate.webp',
-  'brook-tide':'public/art/rooms/brook/scenic/standing.webp',
+  'brook-tide':'public/art/characters/brook/cg-tide-candidate.webp',
   'fern-spring':'public/art/characters/fern/cg-spring-candidate.webp',
-  'cinder-ember':'public/art/rooms/cinder/scenic/standing.webp',
+  'cinder-ember':'public/art/characters/cinder/cg-ember-candidate.webp',
 };
 /** The stable current portrait slots hold the selected resident identity.
  * R12.53 proposes new black-haired YueSha artwork in the same slots;

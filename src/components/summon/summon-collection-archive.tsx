@@ -1,7 +1,8 @@
 'use client';
 
-import {useState} from 'react';
+import {useEffect,useState} from 'react';
 import Link from 'next/link';
+import {Diamond,MoonStar,X} from 'lucide-react';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {HEROINE_FACE_ART,getCardPortraitFallback,getCollectibleCardArt} from './heroine-portrait-assets';
 import {CHARACTER_CARDS,type CollectionState,type CardKey} from '@/core/character-collection';
@@ -33,6 +34,17 @@ export function SummonCollectionArchive({open,collection,collectionStatus,onClos
   const artOwned=Boolean(artCard&&collection.draws.includes(artCard.key));
   const showArt=Boolean(artCard&&artPreview&&artOwned);
   const closeArchive=()=>{setSelectedArtId(null);onClose();};
+  useEffect(()=>{
+    if(!open)return;
+    const onKey=(event:KeyboardEvent)=>{
+      if(event.key==='Escape'){
+        setSelectedArtId(null);
+        onClose();
+      }
+    };
+    window.addEventListener('keydown',onKey);
+    return ()=>window.removeEventListener('keydown',onKey);
+  },[open,onClose]);
   const ownedEquipmentCharacters=[...new Set(CHARACTER_CARDS.filter(
     card=>collection.draws.includes(card.key)).map(card=>card.character))] as CharacterId[];
   const selectedEquipTarget=ownedEquipmentCharacters.includes(equipTarget)
@@ -45,22 +57,26 @@ export function SummonCollectionArchive({open,collection,collectionStatus,onClos
           aria-label="角色契约图鉴与装备锻造"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-md"
         >
-          <div className="relative flex max-h-[90vh] w-full max-w-4xl flex-col rounded-2xl border border-[#c49a62] bg-[#1a0f19] p-4 sm:p-5 shadow-[0_15px_50px_#000000ee] text-[#f2dac2]">
-            <div className="flex items-center justify-between border-b border-[#c49a6244] pb-3">
+          <div className="relative flex max-h-[90vh] w-full max-w-4xl flex-col rounded-2xl border border-[var(--craft-brass)] bg-[var(--craft-panel)] p-4 sm:p-5 shadow-[0_15px_50px_#000000ee] text-[var(--craft-ivory)]">
+            <div className="flex items-center justify-between border-b border-[var(--craft-hairline)] pb-3">
               <div>
-                <h3 className="text-lg font-bold text-[#ffe2be]">{showArt?'契约典藏 · 人物立绘':'♟ 人物契约图鉴与装备锻造'}</h3>
-                {showArt?<p className="text-xs text-[#d2af8e]">{artCard?.title} · 已收录的契约插画</p>:
-                  <p className="text-xs text-[#d2af8e]">
+                <h3 className="inline-flex items-center gap-2 text-lg font-bold text-[var(--craft-champagne)]">
+                  {!showArt&&<Diamond aria-hidden="true" size={16} strokeWidth={1.7} className="shrink-0"/>}
+                  <span>{showArt?'契约典藏 · 人物立绘':'人物契约图鉴与装备锻造'}</span>
+                </h3>
+                {showArt?<p className="text-xs text-[var(--craft-muted)]">{artCard?.title} · 已收录的契约插画</p>:
+                  <p className="text-xs text-[var(--craft-muted)]">
                     已收录契约：{new Set(collection.draws).size} / 5 | 锻造碎片：
                     <span data-testid="collection-shards">{collection.shards}</span>
                   </p>}
               </div>
               <button
                 type="button"
+                aria-label="关闭契约图鉴"
                 onClick={closeArchive}
-                className="flex size-8 items-center justify-center rounded-full border border-[#b88c58] text-sm text-[#eac59b] hover:bg-[#341a2c]"
+                className="flex size-8 items-center justify-center rounded-full border border-[var(--craft-brass)] text-sm text-[var(--craft-champagne)] hover:bg-[var(--craft-wine)] focus-visible:outline-2 focus-visible:outline-[var(--craft-champagne)]"
               >
-                ✕
+                <X aria-hidden="true" size={16} strokeWidth={1.8}/>
               </button>
             </div>
 
@@ -134,10 +150,13 @@ export function SummonCollectionArchive({open,collection,collectionStatus,onClos
               </div>
 
               <section data-testid="beast-contract-roster" aria-label="美女与野兽契约档案"
-                className="border-t border-[#b8895866] pt-3">
+                className="border-t border-[var(--craft-hairline)] pt-3">
                 <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
-                  <h4 className="text-sm font-semibold text-[#ffe0b5]">✦ 美女与野兽 · 契约传说</h4>
-                  <span className="text-[10px] text-[#d4b090]">四只独特异兽 · 正式 CG 制作中</span>
+                  <h4 className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--craft-champagne)]">
+                    <MoonStar aria-hidden="true" size={15} strokeWidth={1.6}/>
+                    <span>美女与野兽 · 契约传说</span>
+                  </h4>
+                  <span className="text-[10px] text-[var(--craft-muted)]">四只独特异兽 · 契约伙伴档案</span>
                 </div>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {Object.entries(COVENANT_BEASTS).map(([characterId,beast])=>{

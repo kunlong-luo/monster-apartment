@@ -21,12 +21,13 @@ const cardSources={
 } as const;
 
 describe('R12.53 source-bound transition artwork',()=>{
-  it('binds every uploaded original to the measured PNG and catalog hash',()=>{
+  it('binds every R12.53 original to the measured PNG and catalog hash',()=>{
     expect(manifest.sourceCommit).toBe(catalog.sourceCommit);
     expect(manifest.sourceInventory).toHaveLength(33);
     expect(new Set(manifest.sourceInventory.map(row=>row.path)).size).toBe(33);
-    expect(manifest.sourceInventory.map(row=>row.path).sort()).toEqual(catalog.assets.map(row=>row.path).sort());
+    const catalogPaths=new Set(catalog.assets.map(row=>row.path));
     for(const row of manifest.sourceInventory){
+      expect(catalogPaths.has(row.path)).toBe(true);
       const entry=catalog.assets.find(e=>e.path===row.path)!;
       expect(row.gitBlobSha).toBe(entry.gitBlobSha);
       expect(row.status).toBe(entry.status);
@@ -38,21 +39,29 @@ describe('R12.53 source-bound transition artwork',()=>{
       expect([bytes.readUInt32BE(16),bytes.readUInt32BE(20)]).toEqual(row.size);
     }
   });
-  it('shares exactly the source-bound standing transitions with the same resident room without duplicate files',()=>{
-    for(const [id,variant] of [['brook','tide'],['cinder','ember']] as const){
+  it('upgrades Brook Tide and Cinder Ember previews to clean 1086x1448 CG candidates while preserving room standing layers',()=>{
+    for(const [id,variant,cleanSource] of [
+      ['brook','tide',a+'characters/brook/cg/tide-clean-v2.png'],
+      ['cinder','ember',a+'characters/cinder/cg/ember-clean-v2.png'],
+    ] as const){
       const card=cg.cards[id+'-'+variant as keyof typeof cg.cards];
-      const row=manifest.outputs.find(e=>e.output===card.previewPath)!;
       const room=roomReview.outputs.find(e=>e.resident===id&&e.kind==='standing')!;
-      expect(card.previewPath).toBe('public/art/rooms/'+id+'/scenic/standing.webp');
-      expect(row.output).toBe(room.output);
-      expect(row.source).toBe(room.source);
-      expect(row.sourceSha256).toBe(room.sourceSha256);
-      expect(row.sourceGitBlobSha).toBe(room.sourceGitBlobSha);
-      expect(row.outputSha256).toBe(room.outputSha256);
-      expect(row.bytes).toBe(room.bytes);
-      expect(row.alpha).toBe(true);
+      const sourceEntry=catalog.assets.find(e=>e.path===cleanSource)!;
+      const candidatePath=c+id+'/cg-'+variant+'-candidate.webp';
+      expect(card.previewPath).toBe(candidatePath);
+      expect(card.previewSourceKind).toBe('illustrated-cg-candidate');
       expect(card.status).toBe('portrait');
-      expect(existsSync(c+id+'/cg-'+variant+'-candidate.webp')).toBe(false);
+      expect(existsSync(candidatePath)).toBe(true);
+      const candidateBytes=readFileSync(candidatePath);
+      expect(sha256(candidateBytes)).toBe(card.previewSha256);
+      expect(webpDimensions(candidateBytes)).toMatchObject({width:1086,height:1448,alpha:false});
+      expect(sourceEntry.status).toBe('review');
+      const sourceBytes=readFileSync(cleanSource);
+      expect(sourceBytes.length).toBe(sourceEntry.bytes);
+      expect(blobSha(sourceBytes)).toBe(sourceEntry.gitBlobSha);
+      expect([sourceBytes.readUInt32BE(16),sourceBytes.readUInt32BE(20)]).toEqual([1086,1448]);
+      expect(room.output).toBe('public/art/rooms/'+id+'/scenic/standing.webp');
+      expect(existsSync(room.output)).toBe(true);
     }
   });
   it('checks all fifteen actual WebPs, independent screens, native geometry and exact source mapping',()=>{
@@ -65,7 +74,11 @@ describe('R12.53 source-bound transition artwork',()=>{
       [p+'covers/world-cover-mobile.webp']:a+'covers/welcome-mobile.png',
       [p+'world-scenes/lobby/lobby-hero-v4.webp']:a+'scenes/lobby/desktop.png',
       [p+'world-scenes/lobby/lobby-hero-v4-mobile.webp']:a+'scenes/lobby/mobile.png',
-      ...Object.fromEntries(Object.entries(cardSources).map(([id,path])=>[cg.cards[id as keyof typeof cg.cards].previewPath,path])),
+      [c+'yuesha/cg-eclipse-candidate.webp']:cardSources['yuesha-eclipse'],
+      [c+'yuesha/cg-vow-candidate.webp']:cardSources['yuesha-vow'],
+      [c+'fern/cg-spring-candidate.webp']:cardSources['fern-spring'],
+      [p+'rooms/brook/scenic/standing.webp']:cardSources['brook-tide'],
+      [p+'rooms/cinder/scenic/standing.webp']:cardSources['cinder-ember'],
     };
     expect(manifest.status).toBe('transition-candidate-not-production-cg');
     expect(manifest.humanVisualReview).toBe(false);
@@ -94,11 +107,15 @@ describe('R12.53 source-bound transition artwork',()=>{
       }else expect(row.size).toEqual(source.size);
     }
     for(const [id,entry] of Object.entries(cg.cards)){
-      const row=manifest.outputs.find(e=>e.output===entry.previewPath)!;
       expect(entry.status).toBe('portrait');
-      expect(entry.previewSha256).toBe(row.outputSha256);
-      expect(entry.previewSourceKind).toBe(row.kind);
-      expect(row.alpha).toBe(id==='brook-tide'||id==='cinder-ember');
+      expect(entry.previewSourceKind).toBe('illustrated-cg-candidate');
+      const bytes=readFileSync(entry.previewPath!);
+      expect(sha256(bytes)).toBe(entry.previewSha256);
+      expect(webpDimensions(bytes)).toMatchObject({width:1086,height:1448,alpha:false});
+      if(id!=='brook-tide'&&id!=='cinder-ember'){
+        const row=manifest.outputs.find(e=>e.output===entry.previewPath)!;
+        expect(row.alpha).toBe(false);
+      }
     }
   });
 });

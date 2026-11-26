@@ -6,7 +6,7 @@ import {join, dirname} from 'node:path';
 import {createHash} from 'node:crypto';
 import {verifyG1FaceSources,verifyCurrentG1FaceSources,verifyG1Approval,buildG1ApprovalDraft} from '../verify-g1-face-sources.mjs';
 
-import {CG_PATHS,CG_IDENTITY_REFERENCE_PATHS,CG_VIEWPORTS,auditCharacterCg} from '../audit-character-cg.mjs';
+import {CG_PATHS,CG_PREVIEW_PATHS,CG_IDENTITY_REFERENCE_PATHS,CG_VIEWPORTS,auditCharacterCg} from '../audit-character-cg.mjs';
 import {promoteCharacterCg} from '../promote-character-cg.mjs';
 import {checkCharacterCgDifferentiation} from '../check-character-cg-differentiation.mjs';
 
@@ -200,8 +200,8 @@ function promotionFixture(useResearch=false){
   const cards=Object.fromEntries(Object.entries(CG_PATHS).map(([id,path])=>[id,{status:'portrait',path:'public/art/characters/'+path}]));
   const art=Buffer.alloc(100000);webp(1086,1448).copy(art);art.writeUInt32LE(art.length-8,4);
   const study=Buffer.from(art);if(!useResearch)study[study.length-1]=1;
-  const previewPath='public/art/rooms/brook/scenic/standing.webp';
-  put(previewPath,study);Object.assign(cards[card],{previewPath,previewSha256:hash(study),previewSourceKind:'sprite-transition-card'});
+  const previewPath=CG_PREVIEW_PATHS[card];
+  put(previewPath,study);Object.assign(cards[card],{previewPath,previewSha256:hash(study),previewSourceKind:'illustrated-cg-candidate'});
   const manifestPath=json('public/art/characters/cg-manifest.json',{version:1,cards});
   const brief=JSON.parse(readFileSync('docs/art-reviews/CG-DIFFERENTIATION-SHOT-LIST.json','utf8'));
   const studyPath='docs/art-reviews/sources/brook-cg-tide-pose-study-v1.webp';

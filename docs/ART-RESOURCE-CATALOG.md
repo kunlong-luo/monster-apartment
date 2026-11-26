@@ -169,14 +169,16 @@ S02 路径纠偏：实际目录 [art-sources/scenes/apartment/](../art-sources/s
 
 R12.103 候选完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R12.95 迁移十张原字节、删除三个旧头像。范围 PNG/WebP/JPEG/AVIF/GIF/SVG/OGG/MP3/WAV/WOFF2，不计 JSON/Markdown。Git blob SHA 不等于原文件 SHA-256；此表不授予生产状态。
 
-### 源图与研究（40）
+### 源图与研究（42）
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
+| `art-sources/characters/brook/cg/tide-clean-v2.png` | 2863731 | `e37d24d5de4e` |
 | `art-sources/characters/brook/cg/tide.png` | 3081979 | `aede1a30063d` |
 | `art-sources/characters/brook/identity/front.png` | 2604397 | `0768b615cdde` |
 | `art-sources/characters/brook/identity/three-quarter-candidate.png` | 2497845 | `ebede98fb2ce` |
 | `art-sources/characters/brook/sprites/standing.png` | 2734487 | `79f9147cd5f1` |
+| `art-sources/characters/cinder/cg/ember-clean-v2.png` | 2787670 | `e561e4e4e7a6` |
 | `art-sources/characters/cinder/cg/ember.png` | 2927246 | `0fdca72efc02` |
 | `art-sources/characters/cinder/identity/front.png` | 2514530 | `30f289982eea` |
 | `art-sources/characters/cinder/identity/three-quarter-candidate.png` | 2731098 | `f71ae79833a8` |
@@ -214,14 +216,16 @@ R12.103 候选完整 Git tree：141 路径、156439517 B。R12.94 基线 144，R
 | `art-sources/scenes/workshop/desktop-candidate-v1.png` | 3131454 | `813a14b8972d` |
 | `art-sources/scenes/workshop/desktop-candidate-v2.png` | 3103549 | `454501ad0087` |
 
-### Web 静态资源（44）
+### Web 静态资源（46）
 
 | 路径 | 字节 | Git blob SHA 前 12 位 |
 | --- | ---: | --- |
 | `public/art/decorations/foreground-ornaments.svg` | 2876 | `fbf4a3c67d88` |
 | `public/art/decorations/moonlight-tracery.svg` | 4827 | `c5f2af6e18e6` |
 | `public/art/decorations/rose-petal.svg` | 986 | `09f65722ff16` |
+| `public/art/characters/brook/cg-tide-candidate.webp` | 538120 | `a3036b5f77c7` |
 | `public/art/characters/brook/face.webp` | 92138 | `7a6a0e8b1fb5` |
+| `public/art/characters/cinder/cg-ember-candidate.webp` | 508972 | `14ecc91fbce8` |
 | `public/art/characters/cinder/face.webp` | 83042 | `a36fe1b83f19` |
 | `public/art/characters/fern/cg-spring-candidate.webp` | 601544 | `9235f2243085` |
 | `public/art/characters/fern/face.webp` | 75438 | `ef097d0fc27a` |

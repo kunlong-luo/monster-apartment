@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import {ChevronRight,Ticket} from 'lucide-react';
+import {ChevronRight,Diamond,MoonStar,Ticket} from 'lucide-react';
 import {ReliableImage as Image} from '@/components/game/reliable-image';
 import {HEROINE_FACE_ART,getCardFace} from './heroine-portrait-assets';
 import {siteAssetUrl} from '@/lib/game/site-asset-url';
@@ -45,8 +45,14 @@ export function SummonShowcase({featuredWorker,featuredName,featuredBeastName,fe
             {/* Card Meta */}
             <div className="mt-2">
               <div className="flex items-baseline justify-between">
-                <h3 className="text-base font-semibold text-[#ffe6c2]">{featuredName} ☾</h3>
-                <span className="text-[10px] text-[#e8c099]">✦ {featuredBeastName}</span>
+                <h3 className="inline-flex items-center gap-1.5 text-base font-semibold text-[var(--craft-champagne)]">
+                  <span>{featuredName}</span>
+                  <MoonStar aria-hidden="true" size={14} strokeWidth={1.6}/>
+                </h3>
+                <span className="inline-flex items-center gap-1 text-[10px] text-[var(--craft-muted)]">
+                  <Diamond aria-hidden="true" size={10} strokeWidth={1.7} className="text-[var(--craft-brass)]"/>
+                  {featuredBeastName}
+                </span>
               </div>
               <p className="mt-1 text-[10px] text-[#c9a786] italic leading-tight">
                 {quote}
