@@ -27,14 +27,22 @@ export function workshopDialogue(world:WorkshopState):readonly WorkshopDialogueL
       '第三份委托的封蜡上，有一道倒悬的新月。月纱说那只是旧街区的传闻，暂时没有委托人认领。');
   }else if(world.last?.fulfilled){
     append('delivered',
-      '这份委托确实交付了。账本里的星币已到账，下一张契约也已经开始计时。');
+      '最近一次手动轮班确实交付了委托。对应星币已结算；请以当前订单为下一目标。');
   }else if(world.last?.lost){
     append('missed',
-      '上一份委托没能如期交付。月纱合上账簿：“这次损失已结算，下次先检查晶核储备。”');
+      '最近一次手动轮班未能如期交付。月纱合上账簿：“这次损失已结算，下次先检查晶核储备。”');
+  }else if(world.completed>0){
+    append('delivered-total',
+      '累计已交付 '+world.completed+' 份委托，奖励已按真实订单结算。月纱翻开下一页：“第 '+world.order.due+' 日的新委托需要 '+world.order.cores+' 枚晶核。”');
   }else{
     append('welcome',
       '月纱拂去工坊账册上的灰尘：“每一道工序都算数；我会告诉你真正正在发生的事。”');
   }
+
+  // An automatic calendar settlement deliberately preserves the last manual
+  // report. Do not treat that report as the latest contract event.
+  if(world.completed>0&&world.last?.lost&&world.completed<3)
+    append('delivered-total','账本累计已完成 '+world.completed+' 份委托；最近的手动轮班记录不代表全部交付结果。');
 
   const {report,cycles}=projectMachineProduction(world);
   const blocked=cycles.find(cycle=>cycle.blocked);
@@ -122,7 +130,7 @@ export function workshopDialogue(world:WorkshopState):readonly WorkshopDialogueL
 
   if(world.patron?.status==='offered')
     append('patron-offer',
-      '月纱在门口留下一封带火漆的私人委托。是否接受，仍要先衡量真实库存和交期。');
+      '月纱在门口留下一封带火漆的私人委托：需要 '+world.patron.cores+' 枚晶核，第 '+world.patron.due+' 日到期。可在委托栏衡量库存与交期后决定是否接受。');
   else if(world.patron?.status==='active')
     append('patron-active',
       '那份私人委托已经接受。需要 '+world.patron.cores+

@@ -39,6 +39,12 @@ readonly WorkshopProductionLogEntry[]{
       text:'自动实际累计 '+output.zh+' ×'+output.quantity+'（历史产出，非当前库存）'
     });
   }
+  // Count is authoritative for manual AND automatic delivery; the save
+  // does not carry a separate timestamp or amount for the latest auto receipt.
+  if(world.completed>0)logs.push({
+    id:'contract-total',time:'委托累计',type:'all',kind:'contract',tone:'good',
+    text:'已累计交付 '+world.completed+' 份委托 · 当前委托第 '+world.order.due+' 日到期，需 '+world.order.cores+' 枚晶核'
+  });
   if(!report){
     if(world.auto?.enabled&&logs.length===0)logs.push({
       id:'auto-waiting',time:'自动生产',type:'all',kind:'note',
@@ -46,7 +52,9 @@ readonly WorkshopProductionLogEntry[]{
     });
     logs.push({
       id:'not-started',time:'手动轮班',type:'all',kind:'note',
-      tone:'neutral',text:'尚未完成生产班次。点击轮班后，这里会记录实际产量与告警。'
+      tone:'neutral',text:world.auto?.enabled
+        ?'尚无手动轮班报告；自动生产及履约成果请查看累计记录。'
+        :'尚未完成生产班次。点击轮班后，这里会记录实际产量与告警。'
     });
     return logs;
   }

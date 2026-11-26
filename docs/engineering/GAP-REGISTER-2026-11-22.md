@@ -2,7 +2,11 @@
 
 > 取证时点：`main` = [`770ed3c25cb3`](https://github.com/kunlong-luo/monster-apartment/commit/770ed3c25cb3a32f60273f458aa3a0ee27418f9f)。本表根据仓库文件、`branches/main` 和所列 Issue 的当时状态整理；**不把历史报告或自动测试写成今天已完成的人工验收**。每轮修复后应重核并更新，不要仅因完成文档治理就勾选产品任务。
 
-## R13.1-A · 上线资格评估与首轮公开试玩
+## R13.1-B · 首单结算反馈（当前执行）
+
+上一主线 e3ece48 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742748433) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742856178) 已成功。PR #63 候选 7eb469c 的 Quality 45742258649、Desktop 45742258663 已成功；完整玩法 45742258647 核查时运行中，未合并。本轮发现真实展示缺口：自动履约结算增加 completed 与 coins，但保留 last 手动报告，因此首单自动交付后可能仍显示欢迎语、日志缺少已交付结果。本轮在现有只读对话及日志中使用真实 completed、当前订单与 patron 数据，显示累计成果、下一单需求/日期和月纱私人委托入口提示；不虚构自动结算金额、时间或手动轮班，不更改规则、概率、保存键或资源。新增三项真实引擎路径测试（自动首单、缺货未交付、旧手动失败与后来自动成功），待本提交 Quality。无新画面截图及真实玩家数据，综合 73/100，仍仅建议免费 Alpha，暂缓正式商业发行。下一轮核验新 SHA、PR #63 全量回归及安全合并，再继续真实首单体验和独立原画。
+
+## R13.1-A · 上线资格评估与首轮公开试玩（历史基线）
 
 2026-11-26 实际核验：主线 [e1aa356](https://github.com/kunlong-luo/monster-apartment/commit/e1aa356cf5940ed32e3ea80e18325adffc9d795a) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742227852) 三作业与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742328737) 成功；release.json 仍 V3.109.0。PR #63 已同步主线，候选 7eb469c 仅 CSS 与架构记录差异，核查时 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742258649) 成功，[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742258663) 与 [完整玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742258647) 运行中；未合并，不影响此前已发布基线。GitHub API 确认 main protected=false，#9/#10/#16/#24/#25 均 open。
 

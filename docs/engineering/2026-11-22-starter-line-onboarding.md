@@ -19,10 +19,14 @@
 
 - 可用条件来自 `canPrepareStarterLine`：第 1 天、100 星币、默认订单/库存、无既有生产、自动时钟/市集行动、仅 06 水泵与 08 温室且均未升级/派工；其他任何存档返回原对象。
 - `prepareStarterLine` 复用 `moveMachine`、`placeMachine`、`autoAssignWorkers`，不可再写一次建造经济公式。真实费用、真实地块与真实工匠固定由既有引擎控制。
-- `v2/src/main.ts` 的 `prepare-starter-line` 指令在最近存档锁内验证，只有生效时调用一次 `apply`；失效不写原档。
+- `engine/src/main.ts` 的 `prepare-starter-line` 指令在最近存档锁内验证，只有生效时调用一次 `apply`；失效不写原档。
 - 新引导仅在已挂载、已读取存档的工坊出现；不新增游戏路由、全屏弹窗或重复菜单。
 - 定向 Vitest：初始一键成功、重复点击幂等、变更布局拒绝、与既有五步操作产生完全相同的 WorkshopState；主线 Quality 和真实浏览器发布情况应按提交 SHA 单独核实。
 
 ## 尚未声称完成
 
 没有新的 CG/场景图、跨七页统一账本或真实玩家完成率。本功能的玩家可理解性仍需 [10 人首次试玩](https://github.com/kunlong-luo/monster-apartment/issues/10) 验证。
+
+## R13.1-B · 自动履约后的成果与下一目标
+
+自动日历通过 `advanceSafeAutoContractDay` 结算时保留最近手动报告 last，而 completed、coins、order、patron 真实更新。现行 `workshopDialogue` 与 `workshopProductionLog` 增加真实累计交付及下一单信息，避免自动首单后仍只有欢迎语或提示点击禁用轮班。历史手动失败与后来自动成功分开呈现；当前委托栏的月纱私人委托仍由玩家选择，提示真实所需晶核、到期日。新增三项定向引擎/展示层测试，覆盖首次自动交付、恢复存档、等待缺货、历史手动报告；不新增奖励、不变更结算规则、不改变保存键。自动交付没有独立时间戳或单笔记录，累计日志不冒充逐笔流水。待新 SHA CI 和真实游戏体验验收。

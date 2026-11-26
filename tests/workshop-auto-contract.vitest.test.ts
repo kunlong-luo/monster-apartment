@@ -8,6 +8,8 @@ import {
   startWorkshopAuto,toggleWorkshopAutoDelivery,pauseWorkshopAuto,
   simulateWorkshopAutoUntil
 } from '../engine/src/workshop-auto-production';
+import {workshopDialogue} from '../src/lib/moonwork/workshop-dialogue';
+import {workshopProductionLog} from '../src/lib/moonwork/workshop-production-log';
 import {
   WORKSHOP_SAVE_KEY,parseWorkshopSnapshot,transactWorkshopSave
 } from '../engine/src/workshop-save-transaction';
@@ -246,5 +248,48 @@ describe('R11.2 independent contract calendar during workshop rearrangement',()=
     expect(replay.completed).toBe(0);
     expect(replay.auto?.nextContractAt).toBe(0);
     expect(validWorkshop(replay)).toBe(true);
+  });
+});
+
+describe('R13.1-B earned first-order feedback across automatic settlement and reload',()=>{
+  it('shows real cumulative completion, next order and patron after the first automatic delivery',()=>{
+    let s=toggleWorkshopAutoDelivery(startWorkshopAuto(line(),1000),1000);
+    for(let i=1;i<=5;i++)s=simulateWorkshopAutoUntil(s,1000+i*AUTO_CONTRACT_DAY_MS);
+    expect(s.completed).toBe(1);
+    expect(s.coins).toBe(132);
+    expect(s.last).toBeNull();
+    const restored=parseWorkshopSnapshot(JSON.stringify(s))!;
+    const before=JSON.stringify(restored);
+    const dialogue=workshopDialogue(restored);
+    expect(dialogue[0].id).toBe('delivered-total');
+    expect(dialogue[0].text).toContain('累计已交付 1 份委托');
+    expect(dialogue[0].text).toContain('第 9 日');
+    expect(dialogue.find(x=>x.id==='patron-offer')?.text).toContain('衡量库存与交期');
+    const log=workshopProductionLog(restored);
+    expect(log.filter(x=>x.id==='contract-total')).toHaveLength(1);
+    expect(log.find(x=>x.id==='contract-total')?.text).toContain('需 3 枚晶核');
+    expect(log.find(x=>x.id==='not-started')?.text).not.toContain('点击轮班');
+    expect(log.some(x=>x.id==='order-delivered')).toBe(false);
+    expect(JSON.stringify(restored)).toBe(before);
+    expect(workshopProductionLog(restored)).toEqual(log);
+  });
+  it('never announces completion before a delivery or on a shortage tick',()=>{
+    const s=toggleWorkshopAutoDelivery(startWorkshopAuto({
+      ...line(),day:5,order:{due:5,cores:80,reward:70}},1000),1000);
+    const waiting=simulateWorkshopAutoUntil(s,1000+AUTO_CONTRACT_DAY_MS);
+    expect(waiting.completed).toBe(0);
+    expect(workshopDialogue(waiting).some(x=>x.id==='delivered-total')).toBe(false);
+    expect(workshopProductionLog(waiting).some(x=>x.id==='contract-total')).toBe(false);
+  });
+  it('separates a retained failed manual report from later successful automatic delivery',()=>{
+    const failed=runShift({...newWorkshop(),day:5});
+    const ready={...failed,day:failed.order.due,warehouse:{core:failed.order.cores}};
+    const actual=advanceSafeAutoContractDay(ready);
+    expect(actual.last?.lost).toBe(true);
+    expect(actual.completed).toBe(1);
+    const lines=workshopDialogue(actual);
+    expect(lines[0].text).toContain('最近一次手动轮班');
+    expect(lines.find(x=>x.id==='delivered-total')?.text).toContain('累计已完成 1 份');
+    expect(workshopProductionLog(actual).some(x=>x.id==='contract-total')).toBe(true);
   });
 });
