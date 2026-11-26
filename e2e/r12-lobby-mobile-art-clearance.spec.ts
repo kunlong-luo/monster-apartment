@@ -43,13 +43,24 @@ test('mobile lobby prioritizes heroine painting without losing summon or seven r
   await expect(page).toHaveURL(/\/characters\/?#summon-screen$/);
   await expect(page.getByTestId('gothic-summon-stage')).toBeVisible();
 
-  // The approved PC design retains its large first-contract art feature.
+  // R13.1-H deliberately shortened the PC feature; protect its content,
+  // accessible action and the newly freed space rather than the old height.
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/',{waitUntil:'domcontentloaded'});
   await expect(feature).toBeVisible();
   const desktopFeature=await feature.boundingBox();
   const desktopDock=await dock.boundingBox();
-  expect(desktopFeature!.height).toBeGreaterThanOrEqual(200);
+  expect(desktopFeature!.height).toBeGreaterThanOrEqual(160);
+  expect(desktopFeature!.height).toBeLessThanOrEqual(180);
+  await expect(feature.getByTestId('lobby-summon-guide-title')).toBeVisible();
+  await expect(feature.getByTestId('lobby-summon-guide-detail')).toBeVisible();
+  const content=await feature.evaluate(el=>({
+    scrollHeight:el.scrollHeight,clientHeight:el.clientHeight,
+    scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,
+  }));
+  expect(content.scrollHeight).toBeLessThanOrEqual(content.clientHeight+2);
+  expect(content.scrollWidth).toBeLessThanOrEqual(content.clientWidth+2);
+  await feature.click({trial:true});
   expect(desktopDock!.width).toBeLessThanOrEqual(250);
   expect(desktopDock!.x).toBeGreaterThanOrEqual(950);
   expect(desktopDock!.y).toBeLessThan(105);

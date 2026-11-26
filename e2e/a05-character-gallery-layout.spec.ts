@@ -174,8 +174,28 @@ test('A05 desktop places five selectable portraits beside a real detail panel',a
   // source. It must not be silently replaced by another resident's face.
   await expect(page.locator('.cg-detail__hero-img'))
     .toHaveAttribute('src',/cg-spring-candidate\.webp$/);
-  await expect(page.getByTestId('cg-equipped-equipment')).toBeVisible();
-  await expect(page.getByTestId('cg-equipped-jewelry')).toBeVisible();
+  // Attributes stay focused; both actual equipment slots live in training.
+  await expect(page.getByTestId('cg-equipped-equipment')).toHaveCount(0);
+  await expect(page.getByTestId('cg-equipped-jewelry')).toHaveCount(0);
+  await page.getByRole('tab',{name:'养成'}).click();
+  for(const slot of ['equipment','jewelry']){
+    const target=page.getByTestId('cg-equipped-'+slot);
+    await expect(target).toBeVisible();
+    await target.scrollIntoViewIfNeeded();
+    expect((await target.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    await target.click({trial:true});
+  }
+  await expect(page.getByTestId('character-workshop-assignment')).toBeVisible();
+  await page.getByRole('tab',{name:'属性'}).click();
+  await expect(gauges).toHaveCount(6);
+  const spacing=await gallery.evaluate(el=>({
+    gap:parseFloat(getComputedStyle(el).columnGap),
+    layoutGap:parseFloat(getComputedStyle(el.closest('.cg-layout')!).columnGap),
+    pageOverflow:document.documentElement.scrollWidth-innerWidth,
+  }));
+  expect(spacing.gap).toBeGreaterThanOrEqual(14);
+  expect(spacing.layoutGap).toBeGreaterThanOrEqual(16);
+  expect(spacing.pageOverflow).toBeLessThanOrEqual(2);
   await page.getByRole('button',{name:'展开世界导航'}).click();
   const worldMap=page.getByRole('navigation',{name:'游戏七个正式地点'});
   await expect(worldMap.getByRole('link')).toHaveCount(7);

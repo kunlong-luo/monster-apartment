@@ -237,10 +237,10 @@ export function CharacterGalleryScene({routeVisitor}:{routeVisitor?:WorkerCharac
         aria-label="当前选中人物资料">
         <header className={'cg-detail__hero cg-detail__hero--'+CARD_CLASS[selected.key]}>
           <div className="cg-detail__hero-text">
-            <small>人物契约 · A05 角色名录</small>
+            <small>人物契约</small>
             <h2>{selected.title}</h2>
             <strong>{CARD_RARITY[selected.key]}</strong>
-            <p>{person.description}</p>
+            <p className="cg-detail__hero-note">{owned.has(selected.key)?'契约已收录':'尚未收录'}</p>
           </div>
           <motion.div key={selected.key} className="cg-detail__hero-art"
             initial={prefersReducedMotion?false:{opacity:0}}
@@ -295,6 +295,14 @@ export function CharacterGalleryScene({routeVisitor}:{routeVisitor?:WorkerCharac
                 </div>;
               })}
             </div>
+          </>}
+          {detailTab==='story'&&<div className="cg-detail__scroll">
+            <CharacterLifePortrait id={selected.character}/>
+            <p className="cg-detail__flavor">{person.goal}</p>
+          </div>}
+          {detailTab==='training'&&<div className="cg-detail__scroll">
+            <p>已收录：{owned.has(selected.key)?'当前契约已获得':'此契约尚未获得'}</p>
+            <p>已穿戴装备：{installed.join('、')||'暂无'}</p>
             <h3 className="cg-section-title">装备</h3>
             <div className="cg-equipment" aria-label="已装备首饰与防具">
               {([['equipment','装备'],['jewelry','首饰']] as const).map(([slot,label])=>{
@@ -312,14 +320,7 @@ export function CharacterGalleryScene({routeVisitor}:{routeVisitor?:WorkerCharac
                 </button>;
               })}
             </div>
-          </>}
-          {detailTab==='story'&&<div className="cg-detail__scroll">
-            <CharacterLifePortrait id={selected.character}/>
-            <p className="cg-detail__flavor">{person.goal}</p>
-          </div>}
-          {detailTab==='training'&&<div className="cg-detail__scroll">
-            <p>已收录：{owned.has(selected.key)?'当前契约已获得':'此契约尚未获得'}</p>
-            <p>已穿戴装备：{installed.join('、')||'暂无'}</p>
+
             {selected.character!=='yuesha'&&<>
               <p data-testid="character-workshop-assignment">
                 工坊状态：{workshopSlot>=0?'正在 '+String(workshopSlot+1).padStart(2,'0')+' 号工位':'目前待派工'}
