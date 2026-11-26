@@ -30,7 +30,7 @@ export function Orders({s}:{s:WorkshopState}){
       </div>
       <p data-testid="orders-calendar-status">{calendar.text}</p>
       <p>累计交付 {s.completed} 单 · 手动轮班违约损失 ✦{s.order.premium?PREMIUM_ORDER_PENALTY:STANDARD_ORDER_PENALTY} · {s.order.premium?'高额订单已接受':'普通交付'}</p>
-      <div className="mw-operation-links flex flex-wrap items-center gap-2"><WorkshopLink>前往工坊调整产线</WorkshopLink>
+      <div className="flex flex-wrap items-center gap-2"><WorkshopLink>前往工坊调整产线</WorkshopLink>
         <Link className={WORLD_LINK_CLASS} href="/warehouse/">去仓库查看材料 ↗</Link></div>
       {choice&&<div className="mw-risk-choice" data-testid="world-premium-offer">
         <strong>高额大宗订单 · 可选</strong>

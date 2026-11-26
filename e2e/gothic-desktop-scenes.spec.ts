@@ -148,3 +148,45 @@ test('R13.1-F operations retain readable facts, bounded panels and reachable act
     }
   }
 });
+
+test('R13.1-G town keeps the street painting, larger guide and readable actual trades',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/town/');
+  const resident=page.getByTestId('town-resident');
+  const market=page.getByTestId('moonlit-market');
+  await expect(resident).toBeVisible();
+  const art=page.getByTestId('town-painting');
+  await expect.poll(()=>art.evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  const guide=page.getByTestId('town-guide-painting');
+  await expect.poll(()=>guide.evaluate(el=>(el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  const dimensions=await resident.evaluate(el=>{
+    const portrait=el.querySelector<HTMLElement>('.mw-resident-character')!;
+    const action=el.querySelector('button')!;
+    const shell=el.closest<HTMLElement>('.mw-main--red-gold')!;
+    return {portraitWidth:portrait.getBoundingClientRect().width,
+      gap:parseFloat(getComputedStyle(el).columnGap),
+      padding:parseFloat(getComputedStyle(el).paddingLeft),
+      actionHeight:action.getBoundingClientRect().height,
+      panelOverflow:shell.scrollWidth-shell.clientWidth,
+      pageOverflow:document.documentElement.scrollWidth-innerWidth};
+  });
+  expect(dimensions.portraitWidth).toBeGreaterThanOrEqual(132);
+  expect(dimensions.gap).toBeGreaterThanOrEqual(16);
+  expect(dimensions.padding).toBeGreaterThanOrEqual(18);
+  expect(dimensions.actionHeight).toBeGreaterThanOrEqual(44);
+  expect(dimensions.panelOverflow).toBeLessThanOrEqual(2);
+  expect(dimensions.pageOverflow).toBeLessThanOrEqual(2);
+  await page.screenshot({path:'test-results/desktop-town-spacious-1440.png',animations:'disabled'});
+  for(const kind of ['water','fiber','core']){
+    const action=market.getByTestId('town-offer-'+kind).getByRole('button');
+    await action.scrollIntoViewIfNeeded();
+    await expect(action).toBeInViewport();
+    expect((await action.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  }
+  await page.screenshot({path:'test-results/desktop-town-market-1440.png',animations:'disabled'});
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/town/');
+  await expect(page.getByTestId('town-resident')).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  await page.screenshot({path:'test-results/desktop-town-mobile-390.png',animations:'disabled'});
+});

@@ -9,9 +9,9 @@ import {workshopCalendarStatus} from '../../../engine/src/workshop-guidance';
 
 /** Inventory rows are UI primitives, not hand-maintained CSS selectors. */
 function WarehouseStockLine({label,amount,primary=false}:{label:string;amount:number;primary?:boolean}){
-  return <div className={'mw-stock-line flex min-w-0 items-center justify-between gap-3 border-b border-gothic-brass/30 py-4'+(primary?' mw-stock-primary':'')}>
+  return <div className={'flex items-center justify-between gap-3 border-b border-gothic-brass/30 py-3 min-w-0 [overflow-wrap:anywhere] '+(primary?'col-span-2 flex-row':'flex-col !items-start')}>
     <span className="text-[15px] text-gothic-ivory">{label}</span>
-    <b className="font-[Georgia,serif] text-[32px] font-bold text-gothic-glow tabular-nums">{amount}</b>
+    <b className={'min-w-0 font-[Georgia,serif] font-bold text-gothic-glow tabular-nums '+(primary?'text-[40px] leading-tight':'text-[32px]')}>{amount}</b>
   </div>;
 }
 
@@ -46,7 +46,7 @@ export function Warehouse({s}:{s:WorkshopState}){
     </section>
     <div className="mw-grid mw-columns mw-operation-grid mt-2.5 grid grid-cols-1 gap-2.5">
     <Panel title="⬡ 当前真实库存">
-      <div className="mw-stock-grid" data-testid="warehouse-stock-grid">
+      <div className="grid grid-cols-2 gap-3" data-testid="warehouse-stock-grid">
         <WarehouseStockLine label="✦ 共享晶核" amount={s.warehouse.core} primary/>
         <WarehouseStockLine label="◈ 水汽泵储水" amount={stored('well')}/>
         <WarehouseStockLine label="❀ 温室内孢子" amount={stored('garden')}/>

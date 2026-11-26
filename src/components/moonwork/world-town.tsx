@@ -40,8 +40,7 @@ export function Town({s}:{s:WorkshopState}){
       </picture>
       <div className="mw-town-scrim" aria-hidden="true"/>
       <div className="mw-town-banner">
-        <p className="mw-eyebrow">MOONLIT DISTRICT · AFTER DARK</p>
-        <h2>月光街 · 夜间商区</h2>
+        <h2>夜间商区</h2>
         <p>选一家店进入，所有交易与工坊生产都使用同一份真实库存。</p>
       </div>
       <nav className="mw-town-portals" aria-label="月光街建筑入口">
@@ -64,7 +63,7 @@ export function Town({s}:{s:WorkshopState}){
       <div className="mw-resident-character" aria-label="月纱为你带来街头居民消息">
         <ReliableImage src={moonveilPortrait} fallbackSrc={moonveilBust}
           alt="月纱，来自工坊的魔法商人"
-          fill unoptimized loading="eager" sizes="(max-width: 760px) 140px, 220px"
+          fill unoptimized loading="eager" sizes="(max-width: 760px) 104px, 132px"
           className="mw-guide-painting" data-testid="town-guide-painting"/>
         <span className="mw-resident-guide-label">月纱 · 街区向导</span>
       </div>
@@ -86,7 +85,7 @@ export function Town({s}:{s:WorkshopState}){
       </div>
     </section>
     </div>
-    <div aria-label="街区经营概况" className="mt-2 flex flex-wrap gap-1.5 text-[11px] text-gothic-muted">
+    <div aria-label="街区经营概况" className="mt-4 flex flex-wrap gap-2 text-xs text-gothic-muted">
       <span className="rounded-full border border-gothic-brass/35 bg-gothic-panel/70 px-2.5 py-1">✦ {rank.zh}</span>
       <span className="rounded-full border border-gothic-brass/35 bg-gothic-panel/70 px-2.5 py-1">设备 {s.tiles.filter(Boolean).length}/15</span>
       <span className="rounded-full border border-gothic-brass/35 bg-gothic-panel/70 px-2.5 py-1">已交付 {s.completed} 单</span>
@@ -94,9 +93,8 @@ export function Town({s}:{s:WorkshopState}){
     <section className="mw-market" aria-label="月夜市集" data-testid="moonlit-market">
       <div className="mw-market-header">
         <div>
-          <p className="mw-eyebrow">ONCE PER DAY · TRUE INVENTORY</p>
           <h2>月夜市集</h2>
-          <p>每天只能在市集购买一批货，或者帮助一位居民。生产日推进后才有下一次机会；水汽和孢子进入现有设备，晶核进入共享仓库。</p>
+          <p>每日只能采购一批货或帮助一位居民。水汽、孢子进入设备，晶核进入共享仓库。</p>
         </div>
         <span className="mw-market-ticket" data-testid="market-status">
           {marketUsed?'今日交易已完成 · 明日再来':'第 '+s.day+' 天 · 可采购一批（市集与居民二选一）'}
