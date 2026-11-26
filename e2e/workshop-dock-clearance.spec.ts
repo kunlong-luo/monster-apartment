@@ -132,6 +132,29 @@ for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
       expect(expandedConsole).not.toBeNull();
       expect(compactStage!.height-expandedStage!.height).toBeGreaterThan(60);
       expect(expandedConsole!.height-compactConsole!.height).toBeGreaterThan(60);
+      // R13.1-E: assert actual computed desktop spacing, readable crew cards,
+      // and stage clearance; do not trade away a working hit target.
+      const expandedSpacing=await page.evaluate(()=>{
+        const consolePanel=document.querySelector<HTMLElement>('[data-testid="workshop-console"]')!;
+        const roster=document.querySelector<HTMLElement>('[data-testid="console-roster"]')!;
+        const worker=document.querySelector<HTMLElement>('[data-testid="v2-worker-cinder"]')!;
+        const shift=document.querySelector<HTMLElement>('[data-testid="v2-shift"]')!;
+        const middle=document.querySelector<HTMLElement>('#root .middle')!;
+        return {
+          gap:parseFloat(getComputedStyle(consolePanel).columnGap),
+          padding:parseFloat(getComputedStyle(roster).paddingLeft),
+          nameSize:parseFloat(getComputedStyle(worker.querySelector('strong')!).fontSize),
+          workerHeight:worker.getBoundingClientRect().height,
+          shiftHeight:shift.getBoundingClientRect().height,
+          stageClear:middle.getBoundingClientRect().bottom<=consolePanel.getBoundingClientRect().top,
+        };
+      });
+      expect(expandedSpacing.gap).toBeGreaterThanOrEqual(16);
+      expect(expandedSpacing.padding).toBeGreaterThanOrEqual(16);
+      expect(expandedSpacing.nameSize).toBeGreaterThanOrEqual(13);
+      expect(expandedSpacing.workerHeight).toBeGreaterThanOrEqual(144);
+      expect(expandedSpacing.shiftHeight).toBeGreaterThanOrEqual(44);
+      expect(expandedSpacing.stageClear).toBe(true);
       await page.screenshot({path:'visual-evidence/workshop/desktop-workshop-expanded-1440.png',animations:'disabled'});
 
       await layoutToggle.click();

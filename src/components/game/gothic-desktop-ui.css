@@ -120,7 +120,6 @@
 /* V3.65 PC interaction pass: preserve the paintings, make controls a legible
    in-game control surface rather than three squashed browser panels. */
 @media(min-width:1100px){
-  .gothic-workshop-shell{--workshop-dock-clearance:90px;--workshop-stage-gap:11px}
   .gothic-workshop-shell #root.lab.gothic-workshop .top{
     min-height:60px;padding:8px clamp(18px,2vw,32px);
   }
@@ -129,13 +128,9 @@
     box-shadow:inset 0 1px #f9deb239,0 4px 18px #0007!important;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console.gothic-console-3col{
-    height:clamp(310px,36dvh,360px);
     grid-template-columns:minmax(0,1.04fr) minmax(340px,1.13fr) minmax(245px,.94fr);
     grid-template-rows:minmax(0,1fr) auto;
     gap:10px;padding:0;align-items:stretch;
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .middle{
-    bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-dock-clearance) + var(--workshop-stage-gap) + clamp(310px,36dvh,360px));
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console .console-panel{
     display:flex;flex-direction:column;min-width:0;min-height:0;
@@ -340,12 +335,6 @@
 /* V3.67 measured PC fit: third worker must remain visible without scrolling
    in a 1440x900 first frame, without sacrificing the Pixi stage. */
 @media(min-width:1100px) and (min-height:780px){
-  .gothic-workshop-shell #root.lab.gothic-workshop .console.gothic-console-3col{
-    height:clamp(330px,38dvh,355px);
-  }
-  .gothic-workshop-shell #root.lab.gothic-workshop .middle{
-    bottom:calc(max(8px,env(safe-area-inset-bottom)) + var(--workshop-dock-clearance) + var(--workshop-stage-gap) + clamp(330px,38dvh,355px));
-  }
   .gothic-workshop-shell #root.lab.gothic-workshop .console .gothic-panel-roster{
     padding-top:8px;padding-bottom:8px;
   }
@@ -375,15 +364,15 @@
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options{
     display:grid!important;
     grid-template-columns:repeat(3,minmax(0,1fr))!important;
-    gap:7px!important;
-    margin-top:7px!important;
+    gap:12px!important;
+    margin-top:10px!important;
     align-items:start;align-content:start;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options>button{
     display:flex!important;flex-direction:column!important;
     align-items:center!important;justify-content:flex-start!important;
-    width:100%!important;min-width:0;min-height:125px!important;
-    padding:8px 3px 6px!important;gap:5px!important;
+    width:100%!important;min-width:0;min-height:144px!important;max-height:none;
+    padding:12px 6px 10px!important;gap:8px!important;
     border:1px solid #b3916c80!important;border-radius:9px!important;
     background:linear-gradient(160deg,#30202ddf,#1b121eea)!important;
     box-shadow:inset 0 1px #ebcb9b24,0 4px 12px #0007!important;
@@ -395,7 +384,7 @@
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-identity{
     display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-    gap:4px!important;min-width:0;width:100%;
+    gap:6px!important;min-width:0;width:100%;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-identity>div{
     width:100%;min-width:0;text-align:center;
@@ -404,24 +393,24 @@
     justify-content:center;gap:3px;flex-wrap:wrap;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-miniature{
-    display:block;width:43px;height:43px;flex:none;
+    display:block;width:52px;height:52px;flex:none;
     border-radius:50%;border-color:#d4b08a9b;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-identity strong{
-    font-size:11px;white-space:nowrap;line-height:1.2;
+    font-size:13px;white-space:nowrap;line-height:1.35;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-identity small{
-    display:block;font-size:10px;line-height:1.3;
+    display:block;font-size:12px;line-height:1.4;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap!important;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-status{
     display:flex;align-items:center;justify-content:center;gap:0;
-    flex:0 0 auto;width:100%;
+    position:static;flex:0 0 auto;width:100%;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-next{
     display:none;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .console #actions.options .worker-status span:first-child{
-    font-size:9px;padding:2px 7px;
+    font-size:11px;padding:3px 8px;line-height:1.4;
   }
 }

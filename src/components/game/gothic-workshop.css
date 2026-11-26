@@ -1210,6 +1210,7 @@
   }
   .gothic-workshop-shell[data-console-layout="expanded"]{
     --workshop-console-height:clamp(295px,36dvh,350px);
+    --workshop-stage-gap:16px;
   }
   .gothic-workshop-shell #root.lab.gothic-workshop .middle{
     top:70px;left:clamp(12px,1.3vw,22px);right:clamp(12px,1.3vw,22px);
@@ -1445,6 +1446,37 @@
   .gothic-workshop-shell[data-console-layout="scene"]
   #root.lab.gothic-workshop .console .workshop-console-actions{
     grid-row:1;grid-column:1;min-height:0;padding:5px 8px;align-items:stretch;
+  }
+}
+
+/* R13.1-E: breathe in the opt-in desktop console without sacrificing the
+ * default scene-first rail. Smaller/shorter windows retain the prior fit. */
+@media(min-width:1100px) and (min-height:780px){
+  .gothic-workshop-shell[data-console-layout="expanded"]{
+    --workshop-console-height:clamp(330px,38dvh,360px);
+  }
+  .gothic-workshop-shell[data-console-layout="expanded"] #root.lab.gothic-workshop .middle,
+  .gothic-workshop-shell[data-console-layout="expanded"] #root.lab.gothic-workshop .console.gothic-console-3col{
+    left:clamp(24px,2vw,32px);right:clamp(24px,2vw,32px);
+    gap:16px;
+  }
+  .gothic-workshop-shell[data-console-layout="expanded"] #root.lab.gothic-workshop .console .console-panel{
+    padding:16px;
+  }
+  .gothic-workshop-shell[data-console-layout="expanded"] #root.lab.gothic-workshop .console .panel-head{
+    gap:8px;margin-bottom:8px;padding-bottom:10px;
+  }
+  .gothic-workshop-shell[data-console-layout="expanded"] #root.lab.gothic-workshop .console #catalog.options{
+    gap:12px;
+  }
+  .gothic-workshop-shell[data-console-layout="expanded"] #root.lab.gothic-workshop .console #catalog.options>button{
+    padding:8px;
+  }
+  .gothic-workshop-shell[data-console-layout="expanded"] #root.lab.gothic-workshop .console .workshop-console-actions{
+    gap:12px;padding:6px 10px;
+  }
+  .gothic-workshop-shell[data-console-layout="expanded"] #root.lab.gothic-workshop .console .workshop-console-actions button{
+    min-height:44px;font-size:13px;
   }
 }
 
