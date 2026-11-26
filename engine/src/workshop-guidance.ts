@@ -72,6 +72,15 @@ export function workshopHint(s:WorkshopState):WorkshopHint {
   if(s.auto?.enabled)return {action:'wait',source:null,target:null};
   return {action:'shift',source:null,target:null};
 }
+/** Shared read-only calendar state; a manual forecast is not an automatic loss. */
+export function workshopCalendarStatus(s:WorkshopState):{mode:'manual'|'production-only'|'automatic';shortage:number;text:string}{
+  if(!s.auto?.enabled)return {mode:'manual',shortage:0,text:'手动轮班推进委托日；到期缺货按规则扣罚'};
+  if(!s.auto.autoDeliver)return {mode:'production-only',shortage:0,text:'自动生产中 · 委托日不推进，需单独开启自动履约或暂停后手动轮班'};
+  const shortage=autoContractShortage(s);
+  return {mode:'automatic',shortage,text:shortage>0
+    ?'自动履约等待晶核补足 · 到期委托合计还缺 '+shortage+' 枚，缺货不扣罚'
+    :'自动履约已开启 · 每4分钟安全推进1天，缺货不扣罚'};
+}
 export function workshopNextStep(s:WorkshopState):string {
   const hasConnection=(from:Craft,to:Craft)=>
     s.tiles.some((a,i)=>a?.craft===from&&s.tiles.some((b,j)=>
@@ -95,12 +104,7 @@ export function workshopNextStep(s:WorkshopState):string {
       return '第4步 · 选择工匠'+WORKERS[worker].zh+'，点击对应设备派工';
   }
   if(s.auto?.enabled){
-    if(s.auto.autoDeliver){
-      const shortage=autoContractShortage(s);
-      return shortage>0
-        ?'自动履约等待晶核补足 · 到期委托合计还缺 '+shortage+' 枚，缺货不扣罚'
-        :'自动履约已开启 · 每4分钟安全推进1天，缺货不扣罚';
-    }
+    if(s.auto.autoDeliver)return workshopCalendarStatus(s).text;
     return s.warehouse.core>=s.order.cores
       ?'晶核已备齐 · 可开启自动履约，或暂停后手动轮班结算'
       :'自动产线运行中 · 可开启自动履约；否则暂停后手动轮班推进委托日';

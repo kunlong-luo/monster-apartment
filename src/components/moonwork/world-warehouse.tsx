@@ -5,6 +5,7 @@ import {R12SceneHeroPainting} from '@/components/game/r12-scene-painting';
 import {PATRON_IMPORT_PRICE,importPatronCore,forecastPatronCommission} from '../../../engine/src/workshop-engine';
 import type {WorkshopState} from '../../../engine/src/workshop-engine';
 import {Panel,Action} from './world-primitives';
+import {workshopCalendarStatus} from '../../../engine/src/workshop-guidance';
 
 /** Inventory rows are UI primitives, not hand-maintained CSS selectors. */
 function WarehouseStockLine({label,amount}:{label:string;amount:number}){
@@ -17,6 +18,7 @@ function WarehouseStockLine({label,amount}:{label:string;amount:number}){
 export function Warehouse({s}:{s:WorkshopState}){
   const stored=(kind:'well'|'garden')=>s.tiles.filter(t=>t?.craft===kind).reduce((total,t)=>total+(t?.stored??0),0);
   const p=s.patron;
+  const calendar=workshopCalendarStatus(s);
   const activePatron=p?.status==='active'&&s.day<=p.due?p:null;
   // This is an immediate inventory comparison, not a reservation or a
   // prediction of the automatic production engine.
@@ -56,6 +58,7 @@ export function Warehouse({s}:{s:WorkshopState}){
         <p>已接受的月纱委托需求：{patronDue} 枚</p>
         <p data-testid="warehouse-core-shortfall" aria-live="polite">即时合计缺口：{shortfall} 枚</p>
         <p>仅比较现有库存与未到期的已接受订单，不预扣材料，也不包含未来生产。</p>
+        <p data-testid="warehouse-calendar-status">{calendar.text}</p>
         {p?.status==='offered'&&s.day<=p.due&&<p>月纱尚有 {p.cores} 枚晶核的待接受委托，未计入上方合计。</p>}
         <Link href="/orders/" className={WORLD_LINK_CLASS}>查看委托与交期 ↗</Link>
       </section>

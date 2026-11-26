@@ -7,6 +7,7 @@ import {
   startWorkshopAuto,pauseWorkshopAuto,simulateWorkshopAutoUntil,
   AUTO_STORAGE_CAPS,toggleWorkshopAutoDelivery
 } from '../engine/src/workshop-auto-production';
+import {workshopCalendarStatus} from '../engine/src/workshop-guidance';
 import {workshopDialogue} from '../src/lib/moonwork/workshop-dialogue';
 
 const connected=()=>{
@@ -145,5 +146,31 @@ describe('R13.1-C earned growth and shared contract stock',()=>{
     },1000),1000);
     expect(workshopNextStep(s)).not.toContain('合计还缺');
     expect(advanceSafeAutoContractDay(s).completed).toBe(1);
+  });
+});
+
+describe('R13.1-D shared calendar copy across world scenes',()=>{
+  it('separates manual, automatic production only and paused calendar modes',()=>{
+    const manual=connected();
+    expect(workshopCalendarStatus(manual)).toMatchObject({mode:'manual',shortage:0});
+    const running=startWorkshopAuto(manual,1000);
+    expect(workshopCalendarStatus(running)).toMatchObject({mode:'production-only',shortage:0});
+    expect(workshopCalendarStatus(running).text).toContain('委托日不推进');
+    const opted=toggleWorkshopAutoDelivery(running,1000);
+    expect(workshopCalendarStatus(opted).mode).toBe('automatic');
+    expect(workshopCalendarStatus(pauseWorkshopAuto(opted)).mode).toBe('manual');
+  });
+  it('shows the exact shared due shortage without counting a future or offered patron',()=>{
+    const s=toggleWorkshopAutoDelivery(startWorkshopAuto({
+      ...connected(),day:5,warehouse:{core:2},
+      patron:{status:'active',due:5,cores:5,reward:135}
+    },1000),1000);
+    const before=JSON.stringify(s);
+    expect(workshopCalendarStatus(s)).toMatchObject({mode:'automatic',shortage:5});
+    expect(workshopCalendarStatus(s).text).toBe(workshopNextStep(s));
+    expect(workshopCalendarStatus(s).text).toContain('缺货不扣罚');
+    expect(workshopCalendarStatus({...s,patron:{...s.patron!,status:'offered'}}).shortage).toBe(0);
+    expect(workshopCalendarStatus({...s,patron:{...s.patron!,due:6}}).shortage).toBe(0);
+    expect(JSON.stringify(s)).toBe(before);
   });
 });

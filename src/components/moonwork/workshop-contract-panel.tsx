@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {forecastPatronCommission, PATRON_IMPORT_PRICE} from '../../../engine/src/workshop-engine';
+import {forecastPatronCommission, PATRON_IMPORT_PRICE, importPatronCore} from '../../../engine/src/workshop-engine';
 import type {WorkshopState} from '../../../engine/src/workshop-engine';
 import type {WorkshopAction} from '../../../engine/src/workshop-runtime-contract';
 
@@ -67,7 +67,7 @@ export function WorkshopContractPanel({
         <small>晶核</small>
       </div>
 
-      <div className="meter" role="progressbar" aria-valuenow={world.warehouse.core} aria-valuemin={0} aria-valuemax={world.order.cores}>
+      <div className="meter" role="progressbar" aria-label="普通委托晶核库存进度" aria-valuenow={Math.min(world.warehouse.core,world.order.cores)} aria-valuemin={0} aria-valuemax={world.order.cores}>
         <div id="progress" style={{width: `${progressPercent}%`}}></div>
       </div>
 
@@ -130,8 +130,8 @@ export function WorkshopContractPanel({
         >
           {forecast
             ? forecast.deficit
-              ? `当前排班预测 ${forecast.available}/${forecast.required} · 还缺 ${forecast.deficit} 枚，接单可能损失 ✦20。升级熔炉或调整产线可改变结果。`
-              : `当前排班预测 ${forecast.available}/${forecast.required} · 特单有望完成，普通订单${
+              ? `按手动生产日推演 ${forecast.available}/${forecast.required} · 还缺 ${forecast.deficit} 枚，手动违约可能损失 ✦20。升级熔炉或调整产线可改变结果。`
+              : `按手动生产日推演 ${forecast.available}/${forecast.required} · 特单有望完成，普通订单${
                   forecast.nextNormalOrder === 'fulfilled'
                     ? '也有望完成。'
                     : forecast.nextNormalOrder === 'missed'
@@ -148,7 +148,7 @@ export function WorkshopContractPanel({
           onClick={()=>onAction({type:'accept-patron'})}
           hidden={patron?.status !== 'offered'}
         >
-          接受月纱委托 · 奖励 ✦135
+          接受月纱委托 · 奖励 ✦{patron?.reward??0}
         </button>
 
         <button
@@ -157,7 +157,7 @@ export function WorkshopContractPanel({
           data-testid="v2-patron-import"
           onClick={()=>onAction({type:'import-patron-core'})}
           hidden={!showImport}
-          disabled={world.coins < PATRON_IMPORT_PRICE}
+          disabled={importPatronCore(world)===world}
         >
           临时采购 +1 晶核 · ✦{PATRON_IMPORT_PRICE}
         </button>
