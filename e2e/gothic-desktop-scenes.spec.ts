@@ -108,3 +108,43 @@ test('mobile town keeps the existing artwork and all real destination links',asy
     await page.goto('/town/');
   }
 });
+
+test('R13.1-F operations retain readable facts, bounded panels and reachable actions',async({page})=>{
+  test.setTimeout(90_000);
+  for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
+    await page.setViewportSize(viewport);
+    for(const area of ['orders','warehouse'] as const){
+      await page.goto('/'+area+'/');
+      const world=page.getByTestId('moonwork-world');
+      const grid=world.locator('.mw-operation-grid');
+      await expect(grid).toBeVisible();
+      const primary=grid.locator('.mw-panel').first();
+      const action=area==='orders'?primary.getByRole('link',{name:'前往工坊调整产线'}):
+        primary.getByRole('link',{name:'查看委托与交期 ↗'});
+      const facts=page.getByTestId(area==='orders'?'order-primary-facts':'warehouse-stock-grid');
+      await expect(facts).toBeVisible();
+      const metrics=await grid.evaluate(el=>{
+        const panel=el.querySelector<HTMLElement>('.mw-panel')!;
+        const p=panel.querySelector('p')!;
+        const shell=el.closest<HTMLElement>('.mw-main--red-gold')!;
+        return {gap:parseFloat(getComputedStyle(el).rowGap),
+          padding:parseFloat(getComputedStyle(panel).paddingLeft),
+          text:parseFloat(getComputedStyle(p).fontSize),
+          panelOverflow:shell.scrollWidth-shell.clientWidth,
+          pageOverflow:document.documentElement.scrollWidth-innerWidth,
+          width:shell.getBoundingClientRect().width};
+      });
+      expect(metrics.gap).toBeGreaterThanOrEqual(16);
+      expect(metrics.padding).toBeGreaterThanOrEqual(viewport.width===1440?20:14);
+      // The existing 40px primary stock counter is also valid.
+      expect(metrics.text).toBeGreaterThanOrEqual(14);
+      expect(metrics.panelOverflow).toBeLessThanOrEqual(2);
+      expect(metrics.pageOverflow).toBeLessThanOrEqual(2);
+      if(viewport.width===1440)expect(metrics.width).toBeLessThanOrEqual(600);
+      await action.scrollIntoViewIfNeeded();
+      expect((await action.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+      await expect(action).toBeInViewport();
+      await page.screenshot({path:'test-results/desktop-operations-'+area+'-'+viewport.width+'.png',animations:'disabled'});
+    }
+  }
+});

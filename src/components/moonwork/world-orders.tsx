@@ -16,21 +16,22 @@ export function Orders({s}:{s:WorkshopState}){
     <section className="mw-world-art-hero mw-order-hero" data-testid="painted-order-hero">
       <R12SceneHeroPainting area="orders" alt="月夜委托所环境绘景"/>
       <div className="mw-world-hero-copy">
-        <span className="mw-eyebrow">MOONLIT COMMISSION GUILD</span>
-        <h2>月夜委托所</h2>
-        <p>你的订单和月纱契约使用同一份晶核库存。
-          高额订单可以多赚星币，也可能抢走本该留给居民的材料。</p>
+        <h2>月夜契约账簿</h2>
+        <p>普通委托、月纱契约与居民交易共享晶核库存。</p>
       </div>
     </section>
-    <div className="mw-grid mw-columns mt-2.5 grid grid-cols-1 gap-2.5">
+    <div className="mw-grid mw-columns mw-operation-grid mt-2.5 grid grid-cols-1 gap-2.5">
     <Panel title="◇ 正式委托">
-      <p className="mw-eyebrow">CURRENT ORDER</p>
       <p className="mw-big">{s.warehouse.core} <small>/ {s.order.cores} 晶核</small></p>
       <div className="mw-meter"><i style={{width:Math.min(100,100*s.warehouse.core/s.order.cores)+'%'}}/></div>
-      <p>第 {s.order.due} 天交付 · 剩余 {Math.max(0,s.order.due-s.day+1)} 个生产日</p>
-      <p>奖励 ✦{s.order.reward} · {s.warehouse.core>=s.order.cores?'当前库存已足够':'还缺 '+(s.order.cores-s.warehouse.core)+' 枚晶核'}</p>
+      <div className="mw-order-facts" data-testid="order-primary-facts">
+        <p>交期 <b>第 {s.order.due} 天</b><span>剩余 {Math.max(0,s.order.due-s.day+1)} 个生产日</span></p>
+        <p>奖励 <b>✦{s.order.reward}</b><span>{s.warehouse.core>=s.order.cores?'当前库存已足够':'还缺 '+(s.order.cores-s.warehouse.core)+' 枚晶核'}</span></p>
+      </div>
       <p data-testid="orders-calendar-status">{calendar.text}</p>
       <p>累计交付 {s.completed} 单 · 手动轮班违约损失 ✦{s.order.premium?PREMIUM_ORDER_PENALTY:STANDARD_ORDER_PENALTY} · {s.order.premium?'高额订单已接受':'普通交付'}</p>
+      <div className="mw-operation-links flex flex-wrap items-center gap-2"><WorkshopLink>前往工坊调整产线</WorkshopLink>
+        <Link className={WORLD_LINK_CLASS} href="/warehouse/">去仓库查看材料 ↗</Link></div>
       {choice&&<div className="mw-risk-choice" data-testid="world-premium-offer">
         <strong>高额大宗订单 · 可选</strong>
         <p>本期追加 {PREMIUM_EXTRA_CORES} 枚晶核、成功多赚 ✦{PREMIUM_EXTRA_REWARD}；
@@ -42,13 +43,11 @@ export function Orders({s}:{s:WorkshopState}){
         </p>
         <Action type="premium">接受高额大宗订单</Action>
       </div>}
-      <div className="flex flex-wrap items-center gap-2"><WorkshopLink>前往工坊调整产线</WorkshopLink>
-        <Link className={WORLD_LINK_CLASS} href="/warehouse/">去仓库查看材料 ↗</Link></div>
     </Panel>
     <Panel title="☽ 月纱的特别委托">
       {!p?<p>首次交付普通订单之后，28 岁的魔女商人月纱才会到访。她的订单与普通订单共享真实库存。</p>:
       <>
-        <p>目标 {p.cores} 枚 · 截止第 {p.due} 天 · 奖励 ✦{p.reward} · 手动违约损失 ✦20</p>
+        <div className="mw-order-facts"><p>目标 <b>{p.cores} 枚</b><span>截止第 {p.due} 天</span></p><p>奖励 <b>✦{p.reward}</b><span>手动违约损失 ✦20</span></p></div>
         <p>当前状态：{({offered:'待接受',active:'进行中',completed:'交付完成',missed:'未能如约交付',expired:'邀请已过期'} as const)[p.status]}</p>
         {forecast&&<p>按手动生产日推演 {forecast.available}/{forecast.required}，{forecast.deficit?'仍缺 '+forecast.deficit+' 枚':'有望如期完成'}。普通订单{forecast.nextNormalOrder==='missed'?'可能逾期':'仍需留意'}。</p>}
         {p.status==='offered'&&<Action type="accept">接受月纱委托</Action>}

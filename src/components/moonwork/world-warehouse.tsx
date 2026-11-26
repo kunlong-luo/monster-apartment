@@ -8,8 +8,8 @@ import {Panel,Action} from './world-primitives';
 import {workshopCalendarStatus} from '../../../engine/src/workshop-guidance';
 
 /** Inventory rows are UI primitives, not hand-maintained CSS selectors. */
-function WarehouseStockLine({label,amount}:{label:string;amount:number}){
-  return <div className="flex items-center justify-between gap-3 border-b border-gothic-brass/30 py-4">
+function WarehouseStockLine({label,amount,primary=false}:{label:string;amount:number;primary?:boolean}){
+  return <div className={'mw-stock-line flex min-w-0 items-center justify-between gap-3 border-b border-gothic-brass/30 py-4'+(primary?' mw-stock-primary':'')}>
     <span className="text-[15px] text-gothic-ivory">{label}</span>
     <b className="font-[Georgia,serif] text-[32px] font-bold text-gothic-glow tabular-nums">{amount}</b>
   </div>;
@@ -39,24 +39,24 @@ export function Warehouse({s}:{s:WorkshopState}){
     <section className="mw-world-art-hero mw-warehouse-hero" data-testid="painted-warehouse-hero">
       <R12SceneHeroPainting area="warehouse" alt="魔法仓库环境绘景"/>
       <div className="mw-world-hero-copy">
-        <span className="mw-eyebrow">SHARED MATERIALS · REAL ECONOMY</span>
-        <h2>魔法仓库</h2>
-        <p>水汽与孢子保存在各自设备内，晶核进入共享仓库；
-          工坊、居民、市集和委托全部从这里影响实际物资。</p>
+        <h2>共享物资账簿</h2>
+        <p>晶核供委托、居民与市集共同使用。</p>
       </div>
       <Link href="/town/" className={WORLD_LINK_CLASS+' shrink-0'}>去月光街补货 ↗</Link>
     </section>
-    <div className="mw-grid mw-columns mt-2.5 grid grid-cols-1 gap-2.5">
+    <div className="mw-grid mw-columns mw-operation-grid mt-2.5 grid grid-cols-1 gap-2.5">
     <Panel title="⬡ 当前真实库存">
-      <WarehouseStockLine label="✦ 共享晶核" amount={s.warehouse.core}/>
-      <WarehouseStockLine label="◈ 水汽泵储水" amount={stored('well')}/>
-      <WarehouseStockLine label="❀ 温室内孢子" amount={stored('garden')}/>
-      <p>水和孢子仍存放在设备内；普通订单和月纱委托争夺同一批晶核。</p>
+      <div className="mw-stock-grid" data-testid="warehouse-stock-grid">
+        <WarehouseStockLine label="✦ 共享晶核" amount={s.warehouse.core} primary/>
+        <WarehouseStockLine label="◈ 水汽泵储水" amount={stored('well')}/>
+        <WarehouseStockLine label="❀ 温室内孢子" amount={stored('garden')}/>
+      </div>
+      <p>水汽与孢子仍存放在对应设备内，不是可直接交付的晶核。</p>
       <section aria-label="晶核需求" data-testid="warehouse-core-demand"
         className="mt-3 space-y-1.5 rounded-md border border-gothic-brass/40 p-3">
+        <p data-testid="warehouse-core-shortfall" aria-live="polite" className="mw-demand-total">即时合计缺口：{shortfall} 枚</p>
         <p>普通订单需求：{orderDue} 枚</p>
         <p>已接受的月纱委托需求：{patronDue} 枚</p>
-        <p data-testid="warehouse-core-shortfall" aria-live="polite">即时合计缺口：{shortfall} 枚</p>
         <p>仅比较现有库存与未到期的已接受订单，不预扣材料，也不包含未来生产。</p>
         <p data-testid="warehouse-calendar-status">{calendar.text}</p>
         {p?.status==='offered'&&s.day<=p.due&&<p>月纱尚有 {p.cores} 枚晶核的待接受委托，未计入上方合计。</p>}

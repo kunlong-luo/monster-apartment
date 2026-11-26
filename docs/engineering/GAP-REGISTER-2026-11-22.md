@@ -2,7 +2,11 @@
 
 > 取证时点：`main` = [`770ed3c25cb3`](https://github.com/kunlong-luo/monster-apartment/commit/770ed3c25cb3a32f60273f458aa3a0ee27418f9f)。本表根据仓库文件、`branches/main` 和所列 Issue 的当时状态整理；**不把历史报告或自动测试写成今天已完成的人工验收**。每轮修复后应重核并更新，不要仅因完成文档治理就勾选产品任务。
 
-## R13.1-E · 桌面空间减负与发行资格（当前执行）
+## R13.1-F · 委托所/仓库空间减负（当前执行）
+
+上一 SHA 5d39355 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45745307306) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45745393784) 已成功；桌面 45745307194、玩法 45745307322 核查时运行中。本轮在委托所/仓库保留场景与单一右侧操作区，PC 宽度 440–600px、面板间距 16px/内边距 20px、正文 14px、核心操作 44px；委托两列交期/奖励与前置工坊/仓库入口，仓库共享晶核突出、水汽孢子并列、缺口优先；移除重复眉题并压缩未获原画的中性横幅。所有价格、手动风险、采购资格、原画审稿与原存档不变。现有桌面场景 E2E 增加 1440×900 和 390×844 几何、可达动作与截图验收；尚无本 SHA 实机证据，仍为 73/100、可免费 Alpha、正式商业发行暂缓。下一轮优先核验桌面结果，再推进月光街；独立高清原画、真人试玩及分支保护仍未完成。
+
+## R13.1-E · 桌面空间减负与发行资格（历史记录）
 
 PR #63 已合并为 [8e5041f](https://github.com/kunlong-luo/monster-apartment/commit/8e5041f2437a734a3d71e149ee897e45b5c174ae)，该 SHA [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45744157784)、[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45744157821)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45744277695) 成功，完整玩法 45744157688 核查仍运行中；主线未保护。旧验证分支尚未删除。用户指出布局紧凑，源码确认工坊旧全局 desktop CSS 重复硬编码控制台高度与旧 90px dock 预留；本轮删除这两组旧几何，保留工坊唯一几何变量，PC 展开面板间距/内边距 16px、外边距 24–32px、核心按钮最小 44px、工匠头像 52px、姓名 13px、卡片最小高度 144px 并移除旧绝对定位状态覆盖；默认 64px 场景优先栏、移动布局、真实引擎、存档与原画不变。现行 DESIGN 新增全站设计目标，非全站已完成。扩展既有 Playwright 真实几何断言与截图路径，尚未取得新 SHA 实机证据。评分维持 73/100（17/20 架构、19/20 文档资源、15/20 功能、10/20 视觉、12/15 验证、0/5 真人），公开免费 Alpha 可运行；正式商业发行需美术、玩法、真人和发布治理，85 分为内部目标非充分条件。下一切片先核验本轮布局，随后委托所/仓库密度，再月光街、图鉴及其他场景。
 
