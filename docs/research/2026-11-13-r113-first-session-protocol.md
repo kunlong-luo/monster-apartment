@@ -1,6 +1,6 @@
 # R11.3 · 十人首次试玩观察协议（待实际执行）
 
-> 本文是**执行协议和空白数据模板**，不是已有玩家的测试结果。对应 [Issue #10](https://github.com/kunlong-luo/monster-apartment/issues/10)、`management/TASKS.csv` 的 P016/P021/P041/R113-05。禁止用开发者自行操作或 Playwright E2E 冒充独立玩家反馈。
+> 本文是**执行协议和空白数据模板**，不是已有玩家的测试结果。对应 [Issue #10](https://github.com/kunlong-luo/monster-apartment/issues/10)及[现行风险台账](../engineering/GAP-REGISTER-2026-11-22.md)（旧 management 任务编号仅作历史追溯）。禁止用开发者自行操作或 Playwright E2E 冒充独立玩家反馈。
 
 ## 测试前门槛
 
@@ -63,3 +63,7 @@
 - 汇总有效参与者数量、PC/手机覆盖、各项观察字段的 **已观察分母**；以匿名记录为依据，明确统计口径及无法按时等待首单的情况。
 - 给出影响最大的 3 个可复现障碍（页面/操作、设备、影响人数、复现方式）；再评估是否应优先做新手引导、导航、生产反馈或者美术。不要因为场景截图不够漂亮就推定它是主要留存障碍。
 - 当真实样本不足 10 人，保持 [Issue #10](https://github.com/kunlong-luo/monster-apartment/issues/10) open，注明“尚未完成”；**不生成或补填虚构玩家结果**。
+
+## R13.1-A · 首轮公开试玩执行校准（2026-11-26）
+
+主线 e1aa356 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742227852) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742328737) 成功；本轮建议免费 Alpha 观察，不是商业发行。完整功能冻结仍需同 SHA 浏览器及发布验收。真实玩家样本仍未取得，#10 保持 open。复用现有匿名记录工具和 CSV，不加新路由或采集个人信息。原先逐台布置流程已有首条产线按钮；主持人不要提前告知该入口，记录玩家是否自主发现、是否理解真实费用，以及独立开启自动生产/自动履约。首单后在 notes 记录是否理解奖励、找到角色/故事或下一目标、刷新后能否继续；未观察留空。首轮建议目标 8/10 自主找到工坊、具备观察机会者中 ≥80% 自主开启两项独立自动操作，PC/手机分开汇总；首单按实际足够等待时间计分。指标为内部建议目标，不是实际结果；不自动评分、不伪造数据。正式发行门槛以 [风险台账](../engineering/GAP-REGISTER-2026-11-22.md) 为准。

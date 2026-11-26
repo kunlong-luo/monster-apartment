@@ -6,7 +6,7 @@ Next.js 16 + React 19 + TypeScript strict + Tailwind CSS v4 + Motion + PixiJS 8�
 
 ## 当前可核实发布基线
 
-2026-11-26 已核实 R13.0-F 主线 [90b4959](https://github.com/kunlong-luo/monster-apartment/commit/90b495912bd103831af9facfa36662bb1ca68716) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45619281666) 三作业及 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45619429730) 成功。版本仍 V3.109.0；G1/CG 审核工具更新不等于画面重制。PR #63 原候选 65b7ace 的 Quality、桌面及完整玩法均成功，合并前须同步最新主线并重新验收。正式评分 73/100，详见[风险台账](docs/engineering/GAP-REGISTER-2026-11-22.md)。
+2026-11-26 已核实当前主线 [e1aa356](https://github.com/kunlong-luo/monster-apartment/commit/e1aa356cf5940ed32e3ea80e18325adffc9d795a) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742227852) 三作业及 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742328737) 成功；版本 V3.109.0。R13.1-A 建议公开免费 Alpha/试玩，暂缓正式商业发行；综合 73/100、内部发行目标 85/100（非充分条件），具体门槛和优先级统一见[风险台账](docs/engineering/GAP-REGISTER-2026-11-22.md)。PR #63 已同步，候选 Quality 成功，桌面/完整玩法待验；未合并。
 
 2026-11-24，V3.109.0 正式主线 [80eb69a](https://github.com/kunlong-luo/monster-apartment/commit/80eb69abb56c8a0a398e53ff27cdf513e76b695e)：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45392165404)、[Desktop Visual Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45392165400)、[Gameplay Browser Review](https://github.com/kunlong-luo/monster-apartment/actions/runs/45392165444)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45392330890) 全部成功。三功能由 [#53](https://github.com/kunlong-luo/monster-apartment/pull/53) 统一合并；#54/#58 的有效代码和测试原 blob 一致，重复 PR 已关闭。原包下载独立失败仍待处理，不代表正式美术审核。R12.84 仅整理文档，不改变 UI 版本。
 

@@ -2,7 +2,23 @@
 
 > 取证时点：`main` = [`770ed3c25cb3`](https://github.com/kunlong-luo/monster-apartment/commit/770ed3c25cb3a32f60273f458aa3a0ee27418f9f)。本表根据仓库文件、`branches/main` 和所列 Issue 的当时状态整理；**不把历史报告或自动测试写成今天已完成的人工验收**。每轮修复后应重核并更新，不要仅因完成文档治理就勾选产品任务。
 
-## R13.0-G · 当前发布基线、评分与执行优先级
+## R13.1-A · 上线资格评估与首轮公开试玩
+
+2026-11-26 实际核验：主线 [e1aa356](https://github.com/kunlong-luo/monster-apartment/commit/e1aa356cf5940ed32e3ea80e18325adffc9d795a) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742227852) 三作业与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742328737) 成功；release.json 仍 V3.109.0。PR #63 已同步主线，候选 7eb469c 仅 CSS 与架构记录差异，核查时 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742258649) 成功，[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742258663) 与 [完整玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742258647) 运行中；未合并，不影响此前已发布基线。GitHub API 确认 main protected=false，#9/#10/#16/#24/#25 均 open。
+
+**发布定位建议：可公开免费 Alpha/试玩，暂不作为正式商业发行，不大规模推广或开启付费抽卡。** 这是产品风险判断，不是外部认证或已更改游戏版本/商业策略。综合 **73/100** 不变（17/20 架构，19/20 文档资源，15/20 功能存档，10/20 UI视觉，12/15 验证发布，0/5 真人反馈）；85/100 是内部正式发行目标而非充分条件。
+
+| 门槛 | 当前证据 | 正式发行前建议验收 |
+| --- | --- | --- |
+| 基础部署与稳定 | Quality/Pages 同 SHA 成功；PR 新视觉/玩法待验 | 冻结功能 SHA 的 Quality、桌面、完整玩法及 Pages 成功；无阻断性崩溃、丢档、结算错误 |
+| 真实美术 | G1 0/4，正式 CG 0/5，独立 S02/S05/S06 正式 0/3，私室正式背景及角色层 0/4，欢迎正式 0/2 | 优先四人身份、五卡、关键 PC/手机独立场景及角色层具名签审；实际视口像素与交互验收，不用候选代替正式 |
+| 核心循环 | 有首条产线、自动生产/独立自动履约；长循环与下一目标未获玩家验证 | 首单→真实奖励→人物契约/剧情→下一目标，保存、刷新、回到场景与继续经营全链路可验证 |
+| 玩家验证 | #10 open，无独立样本 | 复用十人协议，PC/手机覆盖、匿名真实记录、三大卡点修复复测；不以重玩意愿当留存 |
+| 发布治理与商业化 | #9 open，main 未保护；未验证收费、服务条款及发行合规 | 管理员真实 required checks/PR 规则，发布与回退方案；如计划商业化，另行评估数据隐私、消费与平台合规及支付安全 |
+
+建议下一轮并行：邀请 10 名首次接触玩家（PC 5/手机 5），现有 [匿名记录页](https://kunlong-luo.github.io/monster-apartment/research/first-session/) 与 [观察协议](../research/2026-11-13-r113-first-session-protocol.md) 已可用；首单操作路径先以观察为依据，不增虚假任务或奖励。内部初轮目标建议 8/10 自主找到工坊、在具备观察机会者中 ≥80% 自主开启两项独立自动操作；首单完成率按足够等待时间分母报告，不编造成功率；这些是建议目标，不是已经实现或统计显著结论。艺术生产继续依赖真实正面参照、S02 独立原画与签审；本轮无新画面/真人结果，不加分。历史 R13.0-G 记录保留，现行发布判断以本节为准。
+
+## R13.0-G · 历史发布基线、评分与执行优先级
 
 2026-11-26 核验 [90b4959](https://github.com/kunlong-luo/monster-apartment/commit/90b495912bd103831af9facfa36662bb1ca68716) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45619281666) 三作业与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45619429730) 成功，25 项 G1/CG 专项测试已纳入并通过该 Quality。已完成审核草稿、身份绑定和 CG 晋级/失败回滚技术闭环，但没有真实原画签审。PR #63 的原 CSS 候选三项 CI 成功；共同祖先与当前主线 CSS 原 blob 相同，准备复用现有验证分支同步主线，不再因旧文档冲突推迟；同步后的新 SHA 需独立验收，不能沿用旧 CI 宣称合并。当前树 141 媒体，四张新版侧脸与四份 G1 approval.json 均不存在。
 
