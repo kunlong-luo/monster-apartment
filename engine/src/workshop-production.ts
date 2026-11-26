@@ -145,12 +145,13 @@ export function runShift(s:WorkshopState):WorkshopState {
  * unchanged until the real production line produces sufficient cores.
  * Contract results remain normal earned results; no special bonus.
  */
+export function autoContractShortage(s:WorkshopState):number {
+  const normalCost=s.day>=s.order.due?s.order.cores:0;
+  const patronCost=s.patron?.status==='active'&&s.day>=s.patron.due?s.patron.cores:0;
+  return Math.max(0,normalCost+patronCost-s.warehouse.core);
+}
 export function advanceSafeAutoContractDay(s:WorkshopState):WorkshopState {
-  const normalDue=s.day>=s.order.due;
-  const normalCost=normalDue?s.order.cores:0;
-  if(s.warehouse.core<normalCost)return s;
-  if(s.patron?.status==='active'&&s.day>=s.patron.due &&
-      s.warehouse.core<normalCost+s.patron.cores)return s;
+  if(autoContractShortage(s)>0)return s;
   const blank:DailyProduction={
     water:0,fiber:0,cores:0,blocked:[],fulfilled:false,lost:false
   };

@@ -1,11 +1,11 @@
 import {describe,expect,it} from 'vitest';
 import {
   newWorkshop,moveMachine,placeMachine,assignWorker,
-  workshopHint,workshopNextStep,projectMachineProduction
+  workshopHint,workshopNextStep,projectMachineProduction,advanceSafeAutoContractDay,machineUpgradeQuote,upgradeMachine
 } from '../engine/src/workshop-engine';
 import {
   startWorkshopAuto,pauseWorkshopAuto,simulateWorkshopAutoUntil,
-  AUTO_STORAGE_CAPS
+  AUTO_STORAGE_CAPS,toggleWorkshopAutoDelivery
 } from '../engine/src/workshop-auto-production';
 import {workshopDialogue} from '../src/lib/moonwork/workshop-dialogue';
 
@@ -103,5 +103,47 @@ describe('R10.10 truthful auto-play guidance and dialogue',()=>{
     expect(gardenAfter.auto?.produced.fiber).toBe(0);
     expect(gardenAfter.tiles[5]?.stored).toBe(2);
     expect(gardenAfter.auto?.produced.water).toBe(2);
+  });
+});
+
+describe('R13.1-C earned growth and shared contract stock',()=>{
+  it('offers a real upgrade only after the first earned delivery',()=>{
+    const before={...connected(),day:5,warehouse:{core:2}};
+    expect(workshopDialogue(before).some(x=>x.id==='growth-upgrade')).toBe(false);
+    const earned=advanceSafeAutoContractDay(before);
+    expect(earned.completed).toBe(1);
+    expect(machineUpgradeQuote(earned,7)).toMatchObject({canUpgrade:true,cost:60,next:2});
+    const saved=JSON.stringify(earned);
+    expect(workshopDialogue(earned).find(x=>x.id==='growth-upgrade')?.text).toContain('需 60 星币');
+    expect(workshopDialogue(earned).find(x=>x.id==='growth-rank')?.text).toContain('1/3');
+    expect(JSON.stringify(earned)).toBe(saved);
+    const upgraded=upgradeMachine(earned,7);
+    expect(upgraded.coins).toBe(earned.coins-60);
+    expect(workshopDialogue(upgraded).find(x=>x.id==='growth-upgrade')?.text).not.toContain('08 号');
+    const poor={...earned,coins:0};
+    expect(workshopDialogue(poor).find(x=>x.id==='growth-upgrade')?.text).toContain('还缺 40 星币');
+    expect(workshopDialogue(poor).find(x=>x.id==='growth-upgrade')?.text).not.toContain('可升级');
+  });
+  it('reports shared due-stock shortage when a normal order alone looks affordable',()=>{
+    const s=toggleWorkshopAutoDelivery(startWorkshopAuto({
+      ...connected(),day:5,warehouse:{core:2},
+      patron:{status:'active',due:5,cores:5,reward:135}
+    },1000),1000);
+    expect(advanceSafeAutoContractDay(s)).toBe(s);
+    expect(workshopNextStep(s)).toContain('合计还缺 5 枚');
+    expect(workshopDialogue(s).find(x=>x.id==='contract-auto-shortage')?.text).toContain('还缺 5 枚');
+    expect(workshopDialogue(s).some(x=>x.id==='contract-due')).toBe(false);
+    const ready={...s,warehouse:{core:7}};
+    expect(workshopNextStep(ready)).toContain('自动履约已开启');
+    expect(workshopDialogue(ready).find(x=>x.id==='contract-due')?.text).toContain('等待自动履约节拍');
+    expect(advanceSafeAutoContractDay(ready).completed).toBe(1);
+  });
+  it('does not imply a future patron order blocks the current automatic day',()=>{
+    const s=toggleWorkshopAutoDelivery(startWorkshopAuto({
+      ...connected(),day:5,warehouse:{core:2},
+      patron:{status:'active',due:6,cores:5,reward:135}
+    },1000),1000);
+    expect(workshopNextStep(s)).not.toContain('合计还缺');
+    expect(advanceSafeAutoContractDay(s).completed).toBe(1);
   });
 });

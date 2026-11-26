@@ -2,6 +2,7 @@
  * Depends only on the saved state model, never React or PixiJS. */
 import {MACHINES,WORKERS,WIDTH,linked} from './workshop-model';
 import type {Craft,WorkerId,WorkshopState} from './workshop-model';
+import {autoContractShortage} from './workshop-production';
 
 /** Contextual objective: surface only one useful next decision in the
  * existing selection bar, instead of filling the full-screen art with UI. */
@@ -94,10 +95,12 @@ export function workshopNextStep(s:WorkshopState):string {
       return '第4步 · 选择工匠'+WORKERS[worker].zh+'，点击对应设备派工';
   }
   if(s.auto?.enabled){
-    if(s.auto.autoDeliver)
-      return s.day>=s.order.due&&s.warehouse.core<s.order.cores
-        ?'自动履约等待晶核补足 · 缺货不扣罚，库存达标后按节拍结算'
+    if(s.auto.autoDeliver){
+      const shortage=autoContractShortage(s);
+      return shortage>0
+        ?'自动履约等待晶核补足 · 到期委托合计还缺 '+shortage+' 枚，缺货不扣罚'
         :'自动履约已开启 · 每4分钟安全推进1天，缺货不扣罚';
+    }
     return s.warehouse.core>=s.order.cores
       ?'晶核已备齐 · 可开启自动履约，或暂停后手动轮班结算'
       :'自动产线运行中 · 可开启自动履约；否则暂停后手动轮班推进委托日';

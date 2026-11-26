@@ -1,5 +1,6 @@
-import {MACHINES,WORKERS,projectMachineProduction} from '../../../engine/src/workshop-engine';
+import {MACHINES,WORKERS,projectMachineProduction,machineUpgradeQuote,workshopRank} from '../../../engine/src/workshop-engine';
 import type {WorkshopState} from '../../../engine/src/workshop-engine';
+import {autoContractShortage} from '../../../engine/src/workshop-production';
 
 /** Month-end production reports and supply links are authored by the same
  * deterministic engine as the save. Moonveil's dialogue is a *read-only*
@@ -43,6 +44,28 @@ export function workshopDialogue(world:WorkshopState):readonly WorkshopDialogueL
   // report. Do not treat that report as the latest contract event.
   if(world.completed>0&&world.last?.lost&&world.completed<3)
     append('delivered-total','账本累计已完成 '+world.completed+' 份委托；最近的手动轮班记录不代表全部交付结果。');
+
+  // Growth quotes use the actual upgrade rule, not a new economy.
+  if(world.completed>0){
+    const rank=workshopRank(world.completed);
+    const options=tiles.flatMap((machine,index)=>{
+      const quote=machineUpgradeQuote(world,index);
+      return machine&&quote&&world.completed>=quote.requiresCompleted
+        ?[{machine,index,quote}]:[];
+    });
+    const affordable=options.filter(x=>x.quote.canUpgrade);
+    const target=affordable.find(x=>x.machine.craft==='kiln'&&x.machine.worker)
+      ??affordable[0]??options.reduce<(typeof options)[number]|undefined>(
+        (best,x)=>!best||x.quote.cost<best.quote.cost?x:best,undefined);
+    if(target){
+      const name=String(target.index+1).padStart(2,'0')+' 号'+MACHINES[target.machine.craft].zh;
+      append('growth-upgrade',target.quote.canUpgrade
+        ?name+'可升级至 Lv.'+target.quote.next+'，需 '+target.quote.cost+' 星币；选中设备查看升级。'
+        :name+'升级至 Lv.'+target.quote.next+' 还缺 '+(target.quote.cost-world.coins)+' 星币；继续交付积攒资金。');
+    }
+    if(rank.nextGoal!==null)
+      append('growth-rank','累计交付 '+world.completed+'/'+rank.nextGoal+' 单，继续经营可提升工坊等级。');
+  }
 
   const {report,cycles}=projectMachineProduction(world);
   const blocked=cycles.find(cycle=>cycle.blocked);
@@ -90,7 +113,7 @@ export function workshopDialogue(world:WorkshopState):readonly WorkshopDialogueL
         '月纱翻开真实账页：“自动累计水汽 '+totals.water+
         '、孢子 '+totals.fiber+'、晶核 '+totals.cores+
         '；现有晶核 '+world.warehouse.core+
-        '。自动节拍不推进委托日，交付前须暂停后手动轮班。”');
+        '。自动节拍不推进委托日；可单独开启自动履约，或暂停后手动轮班。”');
     else if(produced>0)
       append('auto-paused',
         '自动生产已暂停；此前累计水汽 '+totals.water+
@@ -116,7 +139,11 @@ export function workshopDialogue(world:WorkshopState):readonly WorkshopDialogueL
   }
 
   const remaining=world.order.due-world.day;
-  if(remaining<=0){
+  if(auto?.enabled&&auto.autoDeliver&&autoContractShortage(world)>0){
+    append('contract-auto-shortage','到期委托共享库存，还缺 '+autoContractShortage(world)+' 枚晶核。自动履约等待补足，不会扣罚。');
+  }else if(remaining<=0&&auto?.enabled&&auto.autoDeliver){
+    append('contract-due','第 '+world.order.due+' 日的委托库存已备齐，等待自动履约节拍结算。');
+  }else if(remaining<=0){
     append('contract-due',
       '第 '+world.order.due+' 日的委托就在本班结算，需要晶核 '+
       world.order.cores+' 枚；仓库现有 '+world.warehouse.core+

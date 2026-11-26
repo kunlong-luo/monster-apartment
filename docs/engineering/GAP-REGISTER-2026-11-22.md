@@ -2,7 +2,11 @@
 
 > 取证时点：`main` = [`770ed3c25cb3`](https://github.com/kunlong-luo/monster-apartment/commit/770ed3c25cb3a32f60273f458aa3a0ee27418f9f)。本表根据仓库文件、`branches/main` 和所列 Issue 的当时状态整理；**不把历史报告或自动测试写成今天已完成的人工验收**。每轮修复后应重核并更新，不要仅因完成文档治理就勾选产品任务。
 
-## R13.1-B · 首单结算反馈（当前执行）
+## R13.1-C · 经营成长目标与共享库存反馈（当前执行）
+
+上一提交 8a337f0 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45743360015) 已通过；核查时 Pages 45743474739 与玩法 45743359766 尚未完成。PR #63 的 Quality/桌面成功，完整玩法仍运行中，未合并。本轮复用真实 machineUpgradeQuote / workshopRank，在月纱既有对话中反馈首单后可购买的升级、费用/资金不足和下一等级目标；优先有工匠且可负担的熔炉，不承诺收益、不自动购买、不变更经济规则。自动履约与提示共用 autoContractShortage，修复普通订单库存足够而同时到期月纱特单缺货时仍显示可推进的问题；同时修正自动生产已开启但未开履约的选择说明。三项定向测试覆盖首单升级解锁/费用、共享库存缺货与未来特单不阻塞。新 SHA 待 CI、发布及实机；无新美术与真人样本，评分 73/100，免费 Alpha 可继续，正式发行暂缓。下一阶段优先完成 PR #63 回归及发布，核对真实工坊/委托反馈与跨场景经营目标；不新增存档字段。
+
+## R13.1-B · 首单结算反馈（历史记录）
 
 上一主线 e3ece48 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742748433) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45742856178) 已成功。PR #63 候选 7eb469c 的 Quality 45742258649、Desktop 45742258663 已成功；完整玩法 45742258647 核查时运行中，未合并。本轮发现真实展示缺口：自动履约结算增加 completed 与 coins，但保留 last 手动报告，因此首单自动交付后可能仍显示欢迎语、日志缺少已交付结果。本轮在现有只读对话及日志中使用真实 completed、当前订单与 patron 数据，显示累计成果、下一单需求/日期和月纱私人委托入口提示；不虚构自动结算金额、时间或手动轮班，不更改规则、概率、保存键或资源。新增三项真实引擎路径测试（自动首单、缺货未交付、旧手动失败与后来自动成功），待本提交 Quality。无新画面截图及真实玩家数据，综合 73/100，仍仅建议免费 Alpha，暂缓正式商业发行。下一轮核验新 SHA、PR #63 全量回归及安全合并，再继续真实首单体验和独立原画。
 
