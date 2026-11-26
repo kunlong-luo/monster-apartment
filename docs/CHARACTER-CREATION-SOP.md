@@ -269,3 +269,16 @@ R13.0-A 已经通过 [Quality 45616340403](https://github.com/kunlong-luo/monste
 R13.0-E 的 [Quality 45618780099](https://github.com/kunlong-luo/monster-apartment/actions/runs/45618780099) 三作业成功。在仓库根目录执行 `node scripts/verify-g1-face-sources.mjs --draft brook` 可输出 JSON 草稿，所有人工批准字段默认为 false，缺失文件为 null，不创建 approval.json。实际 v2 原画入库后同步源图清单与媒体总目录第 5 节，生成草稿并具名人审；签审后才保存固定 approval.json 并将其 SHA-256 写入 CG 审核 JSON。
 
 历史动作研究与正式卡面可以共存：研究记录必须仍为 research-only、approved=false，哈希及路径固定，正式 CG 不能与研究稿字节相同。晋级后同时执行 CG 审核与差异化检查，失败恢复原 manifest 并移除本次新增正式资源和证明。新增合成测试覆盖草稿、独立正式晋级、历史稿冒用回滚和缺失 G1 拒收，不代表实际画稿人审。其他仓库级媒体库存与 CI 仍须独立同步验收。正式身份 0/4、CG 0/5。
+
+### R13.0-G · 美术生产待办与收件
+
+[90b4959 Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45619281666) 与 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45619429730) 已成功；技术准备不等于 G1 人审。2026-11-26 实际仓库树核对四份 v2 侧脸与四份 approval.json 全部不存在。
+
+| 优先 | 人物 | 下一份真实交付 | CG 后续 |
+| --- | --- | --- | --- |
+| 1 | 月纱 | 黑发正面参照 → 独立 3/4 v2，排除银发和多余角 | 月蚀与誓约先同脸审核 |
+| 2 | 泉泡 | 浅银蓝发、毛绒兽耳 3/4 v2 | 潮汐去烘焙标题标志，独立重绘 |
+| 3 | 青枝 | 浅金发、花叶冠 3/4 v2，额外纹样先确认 | 春芽完整藤弓与身份审核 |
+| 4 | 炽角 | 金属铸角、粉赤眼 3/4 v2 | 余烬去烘焙标题标志，武器候选先定案 |
+
+收件顺序：实际 PNG → 原生尺寸及真实字节/来源 → Git blob 与 SHA-256 → source-catalog.json 唯一路径 review 条目（保留旧 v1）→ 资源总目录第 5 节新增库存行 → `node scripts/verify-g1-face-sources.mjs --draft <id>` → 具名人审 → 正式审核 JSON 与绑定 → `pnpm audit:media-duplicates`、`pnpm check:design`、Quality。草稿不是批准；禁止对缺失路径填虚构哈希。若重绘正面，必须同时更新所有相关头像转换及证据，不单独改 front。已有原图 17 张不重复制；当前四人 G1 0/4、正式 CG 0/5。后续停止单纯扩张管理工具，优先实际原画或经营体验。
