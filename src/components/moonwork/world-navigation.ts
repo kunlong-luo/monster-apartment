@@ -2,7 +2,7 @@
  * but global navigation must always have the same order, labels and purpose. */
 export const CANONICAL_GAME_NAV=[
   {id:'lobby',label:'大厅',full:'大厅',glyph:'⌂',href:'/',purpose:'查看当前目标，和月纱交谈'},
-  {id:'apartment',label:'公寓',full:'暗夜公寓',glyph:'♜',href:'/apartment/',purpose:'安排住客，经营房间'},
+  {id:'apartment',label:'公寓',full:'暗夜公寓',glyph:'♜',href:'/apartment/',purpose:'拜访四位住客，查看共同经营进度'},
   {id:'workshop',label:'工坊',full:'工坊',glyph:'⚒',href:'/workshop/',purpose:'建设设备，给工匠派工并生产晶核'},
   {id:'characters',label:'角色',full:'角色图鉴',glyph:'♟',href:'/characters/',purpose:'认识人物，拜访私人房间'},
   {id:'orders',label:'委托',full:'委托大厅',glyph:'❦',href:'/orders/',purpose:'核对交期，接取契约并领取收益'},

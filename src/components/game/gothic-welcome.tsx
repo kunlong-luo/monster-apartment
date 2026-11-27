@@ -6,7 +6,7 @@ import coverMobile from '../../../public/art/covers/world-cover-mobile.webp';
 import coverFallback from '../../../public/art/world-scenes/lobby/lobby-hero-v4.webp';
 import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import {GAME_UI_RELEASE,GAME_UI_CHAPTER} from '@/core/game-release';
-import {workshopStorage,collectionStorage,cozyStorage} from '@/lib/game/storage-service';
+import {workshopStorage,collectionStorage,characterLifeStorage,gachaStateStorage} from '@/lib/game/storage-service';
 import './gothic-welcome.css';
 
 function readExistingSave(){
@@ -15,7 +15,8 @@ function readExistingSave(){
     return Boolean(
       workshopStorage.readRaw()||
       collectionStorage.readRaw()||
-      cozyStorage.readRaw()
+      characterLifeStorage.readRaw()||
+      gachaStateStorage.readRaw()
     );
   }catch{return false;}
 }

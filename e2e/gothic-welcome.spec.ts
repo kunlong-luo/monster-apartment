@@ -79,3 +79,18 @@ test('an existing save changes the main CTA to continue, without resetting progr
   await page.getByTestId('welcome-enter').click();
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:character-collection:v1')!).shards)).toBe(9);
 });
+
+test('retired housing alone is not active progression and its raw record survives entry',async({page})=>{
+  const raw='{"version":1,"coins":999}';
+  await page.addInitScript(value=>localStorage.setItem('monster-apartment:cozy:v1',value),raw);
+  await page.goto('/');
+  await expect(page.getByTestId('welcome-enter')).toHaveText(/开始游戏/);
+  await page.getByTestId('welcome-enter').click();
+  await expect(page.getByTestId('gothic-lobby')).toBeVisible();
+  expect(await page.evaluate(()=>localStorage.getItem('monster-apartment:cozy:v1'))).toBe(raw);
+});
+test('existing character story progress still offers continuation',async({page})=>{
+  await page.addInitScript(()=>localStorage.setItem('monster-apartment:character-life:v1','{"version":1}'));
+  await page.goto('/');
+  await expect(page.getByTestId('welcome-enter')).toHaveText(/继续游戏/);
+});
