@@ -39,10 +39,10 @@ test('PC apartment doors and town portals use structured icons without clipping'
   await page.setViewportSize({width:1440,height:900});
   await page.goto('/apartment/');
   await expect(page.getByTestId('gothic-apartment')).toBeVisible();
-  await expect(page.locator('.ga-door')).toHaveCount(6);
-  await expect(page.locator('.ga-door svg')).toHaveCount(6);
+  await expect(page.locator('.ga-door')).toHaveCount(4);
+  await expect(page.locator('.ga-door svg')).toHaveCount(4);
   await page.getByTestId('ga-room-0').click();
-  await expect(page.getByTestId('ga-room-drawer')).toBeVisible();
+  await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
   await page.addStyleTag({content:'nextjs-portal{display:none!important}'});
   await page.screenshot({path:'test-results/desktop-apartment-v368.png',animations:'disabled'});
   await page.goto('/town/');

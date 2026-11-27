@@ -5,7 +5,7 @@ import {decideWorker,inspectCharacterRoom,newCharacterLife,visitCharacter} from 
 test('Moonsha private room preserves a meaningful first choice without changing apartment money',async({page})=>{
   await page.goto('/apartment/');
   await page.getByRole('button',{name:'与女主人月纱交流'}).click();
-  await expect(page.getByRole('dialog',{name:'与月纱交谈'})).toContainText('幸福度');
+  await expect(page.getByRole('dialog',{name:'与月纱交谈'})).toContainText('累计交付');
   await page.getByTestId('visit-yuesha-room').click();
   await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
   const chamber=page.getByRole('dialog',{name:'与月纱交谈'});
@@ -19,10 +19,10 @@ test('Moonsha private room preserves a meaningful first choice without changing 
   await expect(page.getByTestId('room-resident-present-yuesha')).toHaveCount(1);
   await page.screenshot({path:'test-results/room-yuesha-desktop.png'});
   await expect(page.getByTestId('life-profile-yuesha')).toContainText('谨慎而机敏');
-  const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'{}').coins);
+  const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')||'{}').coins);
   await page.getByTestId('yuesha-choice-transparent').click();
   await expect(page.getByTestId('yuesha-dialogue')).toContainText('账本摊开');
-  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:cozy:v1')||'{}').coins)).toBe(before);
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')||'{}').coins)).toBe(before);
   await expect(page.getByTestId('room-topic-yuesha-contract')).toBeDisabled();
   await expect(page.getByTestId('yuesha-memory-progress')).toContainText('0 / 4');
   await expect(page.getByTestId('yuesha-memory-card-contract')).toBeDisabled();

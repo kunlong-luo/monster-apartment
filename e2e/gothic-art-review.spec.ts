@@ -38,12 +38,12 @@ test('desktop and phone Gothic HUD scenes stay fully visible',async({page})=>{
   await page.screenshot({path:'test-results/gothic-lobby-mobile.png',animations:'disabled'});
   await page.goto('/apartment/');
   // R12.2 leaves the six-room list closed to reveal the heroine by default.
-  await expect(page.getByTestId('ga-room-5')).toBeHidden();
+  await expect(page.getByTestId('ga-room-3')).toBeHidden();
   await expect(page.getByTestId('ga-room-menu-toggle')).toBeVisible();
   await expect(page.locator('.ga-backdrop')).toHaveCSS('background-position','25% 50%');
   await page.screenshot({path:'test-results/gothic-apartment-mobile.png',animations:'disabled'});
   await page.getByTestId('ga-room-menu-toggle').click();
-  await expect(page.getByTestId('ga-room-5')).toBeVisible();
+  await expect(page.getByTestId('ga-room-3')).toBeVisible();
 });
 
 test('Pixi 2D atmosphere is optional and respects reduced-motion preference',async({page})=>{
