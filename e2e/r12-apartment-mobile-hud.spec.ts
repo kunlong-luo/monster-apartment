@@ -57,6 +57,7 @@ test('apartment status and controls remain reachable in 390px mobile viewport',a
 
   // Ordinary desktop room actions keep their existing two-column layout,
   // with enough space and legible copy without changing the room economy.
+  await page.emulateMedia({reducedMotion:'no-preference'});
   await page.getByTestId('ga-room-2').click();
   const drawer=page.getByTestId('ga-room-drawer');
   const build=page.getByTestId('ga-build-bath');
@@ -66,9 +67,25 @@ test('apartment status and controls remain reachable in 390px mobile viewport',a
   await expect(drawer.locator('.grid').first()).toHaveCSS('gap','12px');
   await expect(build.locator('strong')).toHaveCSS('font-size','14px');
   await expect(build.locator('small')).toHaveCSS('font-size','12px');
-  const hitbox=await close.boundingBox();
-  expect(hitbox?.width??0).toBeGreaterThanOrEqual(44);
-  expect(hitbox?.height??0).toBeGreaterThanOrEqual(44);
+  // Sample the real first animation frame, even on fast CI runners. The
+  // previous scale(.988) reduced the 44px control to 43.472px.
+  const enteringHitbox=await close.evaluate(button=>{
+    const animation=button.closest('.ga-room-drawer')?.getAnimations().find(
+      item=>item instanceof CSSAnimation&&item.animationName==='v04-panel-in');
+    if(!animation)throw new Error('Expected the room drawer entrance animation');
+    animation.pause();
+    try{
+      animation.currentTime=0;
+      const rect=button.getBoundingClientRect();
+      return {width:rect.width,height:rect.height};
+    }finally{animation.play();}
+  });
+  expect(enteringHitbox.width).toBeGreaterThanOrEqual(44);
+  expect(enteringHitbox.height).toBeGreaterThanOrEqual(44);
+  await expect.poll(async()=>{
+    const rect=await close.boundingBox();
+    return Math.min(rect?.width??0,rect?.height??0);
+  }).toBeGreaterThanOrEqual(44);
   await build.click({trial:true});
   await page.screenshot({path:'visual-evidence/apartment/desktop-1440-room-actions.png',animations:'disabled'});
   await close.click();
