@@ -113,3 +113,35 @@ export function workshopNextStep(s:WorkshopState):string {
     return '晶核已达标 · 点击「手动轮班」推进至第'+s.order.due+'日结算';
   return '第5步 · 开启自动生产持续制造晶核；或点击「手动轮班」推进委托日。自动履约需要单独开启';
 }
+
+/** The hostess acknowledges real delivery progress, then points to one existing
+ * action. This is narrative guidance, not a new quest or reward ledger. */
+export function moonveilFirstChapter(s:WorkshopState):{text:string;href:string;label:string}{
+  const patron=s.patron;
+  if(patron?.status==='offered')return {
+    text:'你已经完成了普通委托。谢谢你，我有一份特别委托想交给你，先看看期限和所需晶核吧。',
+    href:'/orders/',label:'查看委托与契约 ›',
+  };
+  if(patron?.status==='active')return {
+    text:`我们的特别委托约定在第 ${patron.due} 天交付 ${patron.cores} 枚晶核。库存还有 ${s.warehouse.core} 枚，也要留意普通委托的需求。`,
+    href:'/orders/',label:'查看委托与契约 ›',
+  };
+  if(patron?.status==='completed')return {
+    text:'特别委托已经完成。谢谢你兑现了我们的约定。来我的房间坐一会儿吧。',
+    href:'/apartment/?visit=yuesha',label:'拜访月纱 · 继续故事 ›',
+  };
+  if(s.completed>0)return {
+    text:patron?.status==='missed'||patron?.status==='expired'
+      ?'特别委托没能如约完成，不过我们已经有了经营公寓的经验。来我的房间聊聊吧。'
+      :'第一批委托已经完成。辛苦了，来我的房间聊聊吧。',
+    href:'/apartment/?visit=yuesha',label:'拜访月纱 · 继续故事 ›',
+  };
+  if(s.warehouse.core>=s.order.cores)return {
+    text:'第一批晶核已经备齐。去委托所确认交期与奖励；完成交付后再来找我。',
+    href:'/orders/',label:'查看委托与契约 ›',
+  };
+  return {
+    text:'欢迎来到夜色公寓。我是月纱。先去工坊开启自动生产，并按需开启自动履约；完成第一批委托后再来找我。',
+    href:'/workshop/',label:'进入晶核工坊 ›',
+  };
+}
