@@ -20,8 +20,6 @@ import {
   Coins,
   Gem,
   Moon,
-  Heart,
-  UsersRound,
   ChevronUp,
   X,
 } from 'lucide-react';
@@ -110,13 +108,10 @@ export function GothicResourcePill({
 }:{
   symbol:string;amount:string|number;label?:string;testId?:string;
 }){
-  // A single semantic mapping for all seven HUDs; avoid fallback font glyphs
-  // on desktop when labels legitimately differ between apartment and workshop.
+  // Shared operating HUD: one balance, inventory and date across all scenes.
   const ResourceIcon=label==='星币'?Coins
     :label==='晶核'?Gem
-    :label?.includes('天')||label==='生产日'?Moon
-    :label==='幸福度'?Heart
-    :label==='入住'?UsersRound:null;
+    :label?.includes('天')||label==='生产日'?Moon:null;
   return (
     <span
       data-tooltip={label}

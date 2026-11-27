@@ -4,7 +4,7 @@
 
 - Next.js App Router + React + TypeScript strict + Tailwind CSS v4 + Motion；PixiJS 8 独立工坊运行时。根 `package.json` 声明 Zustand 与 Dexie；依赖声明不等同全站实际用法，未完成逐模块使用审计，不再断言不存在。
 - 七个游戏路由见[根 README](../README.md)；研究页独立。根布局挂载共享导航、过渡、错误边界、发布提示和工坊自动运行。现行大厅采用顶角地图而非旧底部 Dock，见[现行视觉合同](design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md)。
-- R14.1-U 候选：公寓与工坊统一读取 `engine/src/workshop-engine.ts` 的经营快照，旧 Cozy V1 独立运行退役；旧记录只读保留，不自动兑换。人物收藏和剧情独立领域数据暂保持兼容；本候选尚待 CI 和实机验证。
+- R14.1-U 候选：公寓与工坊统一读取 `engine/src/workshop-engine.ts` 的经营快照，旧 Cozy V1 独立运行退役；旧记录只读保留，不自动兑换。人物收藏和剧情独立领域数据暂保持兼容；本候选尚待完整发布门禁。U04 在共享 HUD 删除旧幸福度/入住图标分支，并在现有 `pnpm audit:engine-paths` 增加退役住房名称、路径和旧键的专项报告/门禁；历史文档及旧档保护测试不属于第二经营引擎，既有只读导出边界保留。U05 独立审计旧 CSS；不按名称删除有效人物房间、绘景或研究资源。
 - `engine/src/runtime.ts`、`engine/src/workshop-lab-stage.ts`、`engine/scripts/build.mjs` 与 `engine/art/` 是当前 Pixi sidecar，不得按名称清除。
 - 当前 19 份 CSS（含 `app/globals.css`），全局视觉 token 为 `src/components/game/gothic-premium-tokens.css`。布局导入 tokens、globals、red-gold、desktop-ui；大厅导入 lobby、polish、reference-layout、lobby-navigation；共享导航和图鉴分别导入自己的样式，工人房间仍导入 polish。未证明全量 CSS 规则使用情况，不据数量删除。
 - 正式欢迎图/大厅 V4、四间房间观景、PC 工坊与街区新绘景的实际路径见[资源目录](ART-RESOURCE-CATALOG.md)。生产、过渡、审稿、回退分开。房间故事热点与观景层分离；Pixi 精密建造、手机与旧档保持。
@@ -35,7 +35,7 @@
 - 正式工坊仅挂载在 Next 的 `/workshop/`；`engine/src/runtime.ts`、`engine/scripts/build.mjs` 是必需的 Pixi 资源入口及编译工具，不是旧 UI。
 - CSS：共七份，`app/globals.css` 负责 Tailwind 主题；其他文件目前仍包含复杂哥特式绘景、响应式布局与特殊视觉效果。继续将普通控件样式迁移至 Tailwind，但不机械删除已在场景中使用的规则。
 - JavaScript：无 `.js`/`.jsx` 正式源文件。六个 `.mjs` 仅用于 lint/PostCSS、构建、资源审核与本地静态服务；这些属于现代 Node 工具链，不需要强制改成 TS。
-- 技术债：`src/core/cozy-engine.ts`、工坊规则模块及 `engine/src/workshop-lab-stage.ts` 仍需按职责逐步拆分。工坊 React 与 Pixi 暂态选中状态已采用显式 TypeScript 类型回调接口，不再通过 DOM dataset/custom events 反向读取状态；保留现有存档键及行为。
+- 技术债：工坊规则模块及 `engine/src/workshop-lab-stage.ts` 仍按实际职责与缺陷治理。旧 `src/core/cozy-engine.ts` 已在 R14.1-U 候选退役，不恢复或拆分旧系统。工坊 React 与 Pixi 暂态选中状态已采用显式 TypeScript 类型回调接口，不再通过 DOM dataset/custom events 反向读取状态；保留现有存档键及行为。
 
 ## 工坊领域模块（第二轮拆分）
 
