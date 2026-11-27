@@ -14,7 +14,7 @@
 | U02 | 公寓未用导入 | — | TypeScript 不再报 TS6133 | 通过（c318085 Quality） |
 | U03 | 公寓用途文案 | U01 | 导航不再提示安排住房经营 | 通过（c318085 源码/Quality） |
 | U04 | 残留引用 | U01–03 | TS/静态导出、组件和字面路径审计通过；历史文档/只读原始键允许 | 通过（bf806e0 同 SHA 四项 CI、577 文本专项） |
-| U05 | 旧住房样式 | U04 | 核查 ga-room-drawer、ga-warning 等实际引用后删死规则；保留活跃绘景/研究样式 | 待办 |
+| U05 | 旧住房样式 | U04 | 核查 ga-room-drawer、ga-warning 等实际引用后删死规则；保留活跃绘景/研究样式 | 候选（新 SHA 验收待核） |
 | U06 | 共享星币 | U04 | 大厅/公寓/工坊/街区/仓库真实交易前后一致 | 候选 |
 | U07 | 共享日期 | U04 | 无 V1 独立时钟；手动和自动履约真实推进 | 候选 |
 | U08 | 共享库存 | U04 | 晶核生产、采购、消耗跨页一致 | 候选 |
@@ -86,6 +86,8 @@
 候选 `826dd0f` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032664) 失败；[checks 日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032664/job/140283445970) 明确 TS6133（公寓未用 Link）及 TS2305（欢迎页仍导入已删除 cozyStorage）。Pixi 作业成功，静态导出因同一缺失导出失败；[Desktop](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032781)、[Pixel](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032667)、[Gameplay](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032641) 因 WebServer 无法编译而超时，未真正验收玩法/视觉。修复旧导入、未用导入及导航文案，不恢复旧引擎。新增欢迎页旧档保护及剧情继续的 E2E。新提交待 CI，暂不判通过；下一唯一项 U04：核对新 SHA 的 Quality 和残余引用，不绕过测试。历史73分不变，新产品未评，正式发行暂缓。
 
 ## R14.1-U · 单一经营体系切换（候选，最高优先）
+
+2026-11-27 · U05 代码候选：基于 `c25d9f1`（U04 原代码 SHA `bf806e0` 已验收）；逐一核对 19 份 CSS、现行公寓/房门/研究组件、main 已退役抽屉与旧房门实现及相关 E2E，删除四份目标 CSS 中旧抽屉、旧告警/救援、旧反馈、旧装载、旧居民/按压状态和其专属动画，收窄共享选择器及修正过时注释。保留当前四人房门、共享故事、绘景、研究模式、有效焦点和减弱动效；未改运行 TS/TSX、资源、存档、路由、数值或测试。现有 `audit:engine-paths` 从 U05 延后报告改为退役表现标识门禁（历史文档可引用），候选 CI 将执行全仓跟踪文本检查；无法在本地 clone/安装/运行浏览器，不能宣称本轮全仓动态覆盖或视觉已验收。保留有效的真实行为测试，不为通过而删测试。仅候选，待同 SHA Quality、Desktop、Pixel、Gameplay full 及双端证据；U05 未通过前不进入 U06。PR #65 保持 Draft，不合并、不发布、不重评。
 
 2026-11-27 · U04 验收收口：候选 [bf806e0](https://github.com/kunlong-luo/monster-apartment/commit/bf806e0770777ed5b28b37170e9e67864c2cef8f) 四项同 SHA workflow 均成功。[Quality checks 原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953564313/job/140354748866) 确认 TypeScript、Lint、63 文件/301 Vitest、组件审计 329 文件/91 组件及样式全部可达、0 未解析本地引用和未知动态导入、0 旧引擎路径及住房专项违规；静态导出和 Pixi job 成功。住房专项实际扫描 577 个跟踪文本，报告 runtime 1（公寓只读原始键声明）、tests 3（保护/回归）、docs 19、tooling/internal 0，另有四份 U05 CSS：gothic-apartment.css 21/33/34/46；gothic-desktop-ui.css 204/209/210/215/218；gothic-polish.css 112/113/116/118/119/158；gothic-red-gold.css 80/89/93/99（均为 bf806e0 行号，U05 重新核对）。[完整玩法原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953564371/job/140354851637) 198 passed、3 skipped、0 flaky、0 failed；[桌面原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953564302/job/140354887612) 月纱直链 --retries=0 通过、图鉴/房间四项定向回归通过，手机/研究场景相关步骤成功；[像素](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953564292) 成功。U04 通过；U13 前置现已满足，按既有专项与本轮回归同步为通过，不重复实施。3 跳过项未逐项归因，未人工阅图，已知名称文本门禁不证明任意字符串拼接或所有 CSS 覆盖，相关视觉及发布门禁仍独立。仅提交验收文档，不改生产代码；文档新 SHA 的 CI 另查，不以 bf806e0 结果冒充新 SHA。下一唯一任务 U05：在新会话核验最新候选和前置后，逐选择器清理四份 CSS 的死规则，保留活跃场景与研究样式。每个原子任务验收、更新台账及 PR 后生成下一会话完整研发命令；当前任务未验收不得切换。由用户开启新会话，不宣称后台跨会话执行。PR #65 保持 Draft，不合并、不发布；历史综合评分不变，R14 产品未评。
 

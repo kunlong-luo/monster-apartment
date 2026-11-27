@@ -7,10 +7,12 @@ const newPath=/(?:\bengine[\\/]|--prefix\s+["']?engine\b|["']engine["'])/;
 const counts={runtime:0,tests:0,tooling:0,docs:0,internal:0};
 const violations=[];
 // R14.1-U04: retired housing engine names and exact former entry paths.
-// Historical references, preservation tests and U05 CSS are reported separately.
+// Historical references and preservation tests are reported separately.
 const retiredHousing=/(?:\b(?:cozy-engine|cozy-save-transaction|gothic-room-drawer|cozyStorage|GothicRoomDrawer|Cozy[A-Z]\w*|COZY_[A-Z_]+|newCozyGame|resumeCozySave|validCozySave|parseCozySnapshot|transactCozySave|tickCozySave|resetCorruptCozySave|advanceCozy|cozyDay|cozyNeighborhood|cozyResidentWish|cozyReputation|cozyCommission|cozyCareKey|cozyCareUsedToday|cozyCareBoost|cozyRescuePreview|cozyRescueBoost|careForCozyResident|resolveCozyIncident|residentHappiness|buildingHappiness|dailyRent|cozyDailyIncome|buildCozyRoom|moveInCozy|relocateCozyResident|previewCozyRelocation|decorateCozy|cozyVisits|cozyGoal)\b|monster-apartment:cozy-save-v1)/;
 const retiredHousingKey='monster-apartment:cozy:v1';
-const deferredHousingCss=/\b(?:ga-room-drawer|ga-warning)\b/;
+// U05: retired housing presentation names and its private animation names.
+// These are not the live ga-story, ga-door, research or shared HUD selectors.
+const retiredHousingStyle=/\b(?:ga-room-drawer|ga-warning|ga-drawer-top|ga-dismiss|ga-loading|ga-rescue-helpers|ga-feedback|ga-door-icon|ga-door-copy|ga-conversation|ga-picks|ga-dock|v04-panel-in|v04-toast)\b|\.ga-door(?:\.is-occupied|\[data-resident=|\[aria-pressed=)/;
 const housingCounts={runtime:0,tests:0,tooling:0,docs:0,internal:0,css:0};
 const housingViolations=[];
 let housingScanned=0;
@@ -34,11 +36,14 @@ for(const file of files){
       // code may only name the old key at its existing read-only export boundary.
       if(group!=='docs'&&group!=='tests'&&!allowedRawKey)housingViolations.push(location);
     }
-    if(file.endsWith('.css')&&deferredHousingCss.test(line))cssHits.push(index+1);
+    if(retiredHousingStyle.test(line)){
+      if(file.endsWith('.css'))cssHits.push(index+1);
+      if(group!=='docs')housingViolations.push('Retired housing style '+location);
+    }
   });
   if(hits.length){counts[group]++;console.log(group+' '+file+' : '+hits.join(','));}
   if(housingHits.length){housingCounts[group]++;console.log('Retired housing reference '+group+' '+file+' : '+housingHits.join(','));}
-  if(cssHits.length){housingCounts.css++;console.log('U05 deferred housing CSS '+file+' : '+cssHits.join(','));}
+  if(cssHits.length){housingCounts.css++;console.log('Retired housing CSS '+file+' : '+cssHits.join(','));}
 }
 console.log('Engine reference files: '+JSON.stringify(counts));
 console.log('Old executable path violations: '+violations.length);
