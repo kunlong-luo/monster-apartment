@@ -13,7 +13,7 @@
 | U01 | 欢迎页旧存档引用 | — | 删除已退役导入，只有旧住房记录不算现行进度，字节不变；现行收藏/剧情/抽卡继续可识别 | 通过（dbf7d52 前序回归；c318085 Quality） |
 | U02 | 公寓未用导入 | — | TypeScript 不再报 TS6133 | 通过（c318085 Quality） |
 | U03 | 公寓用途文案 | U01 | 导航不再提示安排住房经营 | 通过（c318085 源码/Quality） |
-| U04 | 残留引用 | U01–03 | TS/静态导出、组件和字面路径审计通过；历史文档/只读原始键允许 | 候选（清理及专项门禁已提交，待新 SHA） |
+| U04 | 残留引用 | U01–03 | TS/静态导出、组件和字面路径审计通过；历史文档/只读原始键允许 | 通过（bf806e0 同 SHA 四项 CI、577 文本专项） |
 | U05 | 旧住房样式 | U04 | 核查 ga-room-drawer、ga-warning 等实际引用后删死规则；保留活跃绘景/研究样式 | 待办 |
 | U06 | 共享星币 | U04 | 大厅/公寓/工坊/街区/仓库真实交易前后一致 | 候选 |
 | U07 | 共享日期 | U04 | 无 V1 独立时钟；手动和自动履约真实推进 | 候选 |
@@ -22,7 +22,7 @@
 | U10 | 多标签事务 | U06–09 | 并发不丢更新、不重复结算 | 待办 |
 | U11 | 旧记录保护 | U04 | 正常/损坏原始字节不改、可下载、新玩家不创建旧键 | 候选 |
 | U12 | 现行恢复 | U04 | 损坏工坊不自动覆盖、备份恢复与锁仍有效 | 待办 |
-| U13 | 四间人物房间 | U04 | 四人真实入口、剧情、历史返回及直链有效 | 候选（专项复验通过；U04 前置待验） |
+| U13 | 四间人物房间 | U04 | 四人真实入口、剧情、历史返回及直链有效 | 通过（dbf7d52 专项复验、bf806e0 回归及 U04 前置） |
 | U14 | 桌面与手机 | U05–13 | 1440×900、390×844 实际截图、无溢出/遮挡、研究工具隔离 | 待办 |
 | U15 | 完整回归 | U14 | 同 SHA Quality、Desktop、Pixel、Gameplay full 全通过，0 flaky | 待办（U14 前置待验） |
 | U16 | 合并发布 | U15 | PR 合并，main 同 SHA Quality/Pages 与线上核验 | 待办 |
@@ -86,6 +86,8 @@
 候选 `826dd0f` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032664) 失败；[checks 日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032664/job/140283445970) 明确 TS6133（公寓未用 Link）及 TS2305（欢迎页仍导入已删除 cozyStorage）。Pixi 作业成功，静态导出因同一缺失导出失败；[Desktop](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032781)、[Pixel](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032667)、[Gameplay](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032641) 因 WebServer 无法编译而超时，未真正验收玩法/视觉。修复旧导入、未用导入及导航文案，不恢复旧引擎。新增欢迎页旧档保护及剧情继续的 E2E。新提交待 CI，暂不判通过；下一唯一项 U04：核对新 SHA 的 Quality 和残余引用，不绕过测试。历史73分不变，新产品未评，正式发行暂缓。
 
 ## R14.1-U · 单一经营体系切换（候选，最高优先）
+
+2026-11-27 · U04 验收收口：候选 [bf806e0](https://github.com/kunlong-luo/monster-apartment/commit/bf806e0770777ed5b28b37170e9e67864c2cef8f) 四项同 SHA workflow 均成功。[Quality checks 原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953564313/job/140354748866) 确认 TypeScript、Lint、63 文件/301 Vitest、组件审计 329 文件/91 组件及样式全部可达、0 未解析本地引用和未知动态导入、0 旧引擎路径及住房专项违规；静态导出和 Pixi job 成功。住房专项实际扫描 577 个跟踪文本，报告 runtime 1（公寓只读原始键声明）、tests 3（保护/回归）、docs 19、tooling/internal 0，另有四份 U05 CSS：gothic-apartment.css 21/33/34/46；gothic-desktop-ui.css 204/209/210/215/218；gothic-polish.css 112/113/116/118/119/158；gothic-red-gold.css 80/89/93/99（均为 bf806e0 行号，U05 重新核对）。[完整玩法原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953564371/job/140354851637) 198 passed、3 skipped、0 flaky、0 failed；[桌面原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953564302/job/140354887612) 月纱直链 --retries=0 通过、图鉴/房间四项定向回归通过，手机/研究场景相关步骤成功；[像素](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953564292) 成功。U04 通过；U13 前置现已满足，按既有专项与本轮回归同步为通过，不重复实施。3 跳过项未逐项归因，未人工阅图，已知名称文本门禁不证明任意字符串拼接或所有 CSS 覆盖，相关视觉及发布门禁仍独立。仅提交验收文档，不改生产代码；文档新 SHA 的 CI 另查，不以 bf806e0 结果冒充新 SHA。下一唯一任务 U05：在新会话核验最新候选和前置后，逐选择器清理四份 CSS 的死规则，保留活跃场景与研究样式。每个原子任务验收、更新台账及 PR 后生成下一会话完整研发命令；当前任务未验收不得切换。由用户开启新会话，不宣称后台跨会话执行。PR #65 保持 Draft，不合并、不发布；历史综合评分不变，R14 产品未评。
 
 2026-11-27 · U04 残留引用清理候选：基线 [c318085](https://github.com/kunlong-luo/monster-apartment/commit/c3180858370857f62463268780a25a10d62c8da0) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953008719) 三个 job 成功，63 文件、301 Vitest、329 审计文件、91/91 组件样式可达、0 不可达/未解析/未知动态导入、0 旧引擎路径违规；[像素](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953008690) 成功，核查时桌面与完整玩法仍运行。前序 dbf7d52 的 U13 专项复验为 198 passed、3 skipped、0 flaky；U01–03 回读欢迎页、存档保护测试、导航及最新类型检查。完整 Git 树 841 条（未截断），PR 已删除 cozy-engine、cozy-save-transaction、gothic-room-drawer 及两份旧单测；不重复删除。此次删除共享 GothicResourcePill 中已退出玩家路径的幸福度/入住图标分支，不动有效资源、经营规则或存档。现有 audit:engine-paths 增加 Git 跟踪文本的旧住房文件/符号/旧键检查及历史/测试/U05 CSS 分类报告，允许公寓现有只读原始键声明，不扩大兼容层。已确认 gothic-apartment.css、gothic-red-gold.css 存在 ga-room-drawer/ga-warning 定义，U05 再逐条核查，保留场景/研究 CSS 和原画。修正现行架构旧技术债。未能在本地检出仓库运行依赖工具，使用新候选 CI 完成实际全仓检查；新 SHA 尚未验证，不将旧 CI 冒充本轮验收。审计为已知路径/符号的文本门禁，不能证明任意动态拼接或 CSS 覆盖；新 CI 报告与必要浏览器回归待核。U04 保持候选，U05 不开始；PR #65 保持 Draft，不合并、不发布、不重评产品。
 
