@@ -12,6 +12,7 @@ import lobbyHero from '../../../public/art/world-scenes/lobby/lobby-hero-v4.webp
 import lobbyHeroMobile from '../../../public/art/world-scenes/lobby/lobby-hero-v4-mobile.webp';
 import lobbyHeroBackup from '../../../public/art/covers/world-cover.webp';
 import {newWorkshop} from '../../../engine/src/workshop-engine';
+import {moonveilFirstChapter} from '../../../engine/src/workshop-guidance';
 import {CHANGE_EVENT,commitWorldAction} from '@/lib/moonwork/world-store';
 import {GothicAtmosphere} from './gothic-atmosphere';
 import {GothicSceneIllumination} from './gothic-scene-illumination';
@@ -45,13 +46,12 @@ export function GothicLobby(){
   const ownedContractCount=new Set(collection.draws).size;
   const firstContract=collectionStatus==='ok'&&gacha.totalSummons===0&&collection.draws.length===0;
   const [dialogue,setDialogue]=useState('');
+  const chapter=moonveilFirstChapter(world);
   const {reduced:reducedMotion,toggle:toggleMotion}=useGothicMotion();
   const setOpen=(name:Panel)=>setPanel(existing=>existing===name?null:name);
   const talk=()=>{
     setPanel('bond');
-    setDialogue(world.patron?.status==='offered'
-      ?'你的第一批晶核已经准备好了吗？我的特别委托需要认真安排。'
-      :'欢迎来到夜色公寓。我是月纱。先经营好工坊，交付第一批委托，我们就会有更多故事。');
+    setDialogue('');
   };
   const [accepting,setAccepting]=useState(false);
   const accept=async()=>{
@@ -200,12 +200,12 @@ export function GothicLobby(){
           <span className="gothic-lobby__story-eyebrow">MOONVEIL · PRIVATE AUDIENCE</span>
           <h2>今晚，想和我聊些什么？</h2>
           <span className="gothic-lobby__story-rule" aria-hidden="true"/>
-          <p className="gothic-lobby__story-quote" role="status">“{dialogue||'月光街的灯已经亮起，我正在等你。'}”</p>
+          <p className="gothic-lobby__story-quote" role="status">“{dialogue||chapter.text}”</p>
           {world.patron?.status==='offered'&&<button type="button" onClick={accept} disabled={accepting}
             className="gothic-lobby__story-accept">
             接受月纱的特别委托
           </button>}
-          <GothicPanelLink href="/orders/">查看委托与契约 ›</GothicPanelLink>
+          <GothicPanelLink href={chapter.href}>{chapter.label}</GothicPanelLink>
         </section>
       </div>}
       {panel==='profile'&&<div className="min-w-0 flex-1 space-y-3 pr-5">
