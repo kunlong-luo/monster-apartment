@@ -244,3 +244,86 @@ test('choosing an illustrated guild worker preselects their real Pixi factory as
     return world?.tiles?.[7]?.worker??null;
   })).toBe('fern');
 });
+
+
+for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
+  test(`shared coins survive actual purchases, failed writes and commission rewards at ${viewport.width}px`,async({page})=>{
+    test.setTimeout(120_000);
+    await page.setViewportSize(viewport);
+    const key='monster-apartment:workshop-v2-lab';
+    const initial={
+      version:2,day:6,coins:132,
+      tiles:Array.from({length:15},(_,i)=>
+        i===5?{craft:'well',worker:'brook',stored:5}:
+        i===6?{craft:'garden',worker:'fern',stored:0}:
+        i===7?{craft:'kiln',worker:'cinder',stored:0}:null),
+      warehouse:{core:8},order:{due:6,cores:3,reward:95},last:null,
+      completed:1,failed:0,patron:{status:'offered',due:8,cores:15,reward:135}
+    };
+    await page.addInitScript(({key,initial})=>{
+      if(localStorage.getItem(key)===null)localStorage.setItem(key,JSON.stringify(initial));
+    },{key,initial});
+    const raw=()=>page.evaluate(key=>localStorage.getItem(key),key);
+    const read=async()=>JSON.parse((await raw())!);
+    await page.goto('/');
+    await expect(page.getByTestId('lobby-coins')).toHaveText('132');
+    await page.goto('/apartment/');
+    await expect(page.getByTestId('ga-coins')).toHaveText('132');
+    await navigateScene(page,'/town/');
+    await expect(page.getByTestId('world-coins')).toHaveText('132');
+    const beforeFailure=await raw();
+    // A real UI purchase with a simulated storage write failure must not debit.
+    await page.evaluate(key=>{
+      const set=Storage.prototype.setItem;
+      Storage.prototype.setItem=function(name,value){
+        if(name===key)throw new DOMException('Test storage failure','QuotaExceededError');
+        set.call(this,name,value);
+      };
+    },key);
+    const fiber=page.getByTestId('town-offer-fiber');
+    await fiber.getByRole('button',{name:'购买本日货箱'}).click();
+    await expect(fiber).toContainText('操作未完成');
+    await expect(page.getByTestId('world-coins')).toHaveText('132');
+    expect(await raw()).toBe(beforeFailure);
+    await page.reload();
+    await fiber.getByRole('button',{name:'购买本日货箱'}).click();
+    await expect(page.getByTestId('world-coins')).toHaveText('108');
+    expect((await read()).tiles[6].stored).toBe(3);
+    await expect(fiber.getByRole('button')).toBeDisabled();
+    await navigateScene(page,'/warehouse/');
+    await expect(page.getByTestId('world-coins')).toHaveText('108');
+    const buy=page.getByRole('button',{name:'付费采购 +1 晶核'});
+    await buy.click();
+    await expect(page.getByTestId('world-coins')).toHaveText('66');
+    await buy.click();
+    await expect(page.getByTestId('world-coins')).toHaveText('24');
+    await expect(page.getByTestId('world-cores')).toHaveText('10');
+    await expect(page.getByTestId('warehouse-purchase-blocked')).toContainText('星币不足');
+    await expect(buy).toHaveCount(0);
+    const beforeShift=await read();
+    expect(beforeShift.coins).toBe(24);
+    await navigateScene(page,'/workshop/');
+    await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+    await expect(page.getByTestId('v2-coins')).toHaveText('24');
+    await page.getByTestId('v2-shift').click();
+    await expect(page.getByTestId('v2-coins')).toHaveText('119');
+    const afterShift=await read();
+    expect(afterShift.coins).toBe(119);
+    expect(afterShift.completed).toBe(2);
+    expect(afterShift.last.fulfilled).toBe(true);
+    expect(afterShift.warehouse.core).toBe(beforeShift.warehouse.core+afterShift.last.cores-3);
+    await navigateScene(page,'/');
+    await expect(page.getByTestId('lobby-coins')).toHaveText('119');
+    await page.goto('/apartment/');
+    await expect(page.getByTestId('ga-coins')).toHaveText('119');
+    await navigateScene(page,'/town/');
+    await expect(page.getByTestId('world-coins')).toHaveText('119');
+    await navigateScene(page,'/warehouse/');
+    await expect(page.getByTestId('world-coins')).toHaveText('119');
+    await page.reload();
+    await expect(page.getByTestId('world-coins')).toHaveText('119');
+    await page.goto('/');
+    await expect(page.getByTestId('lobby-coins')).toHaveText('119');
+    expect((await read()).coins).toBe(119);
+  });
+}

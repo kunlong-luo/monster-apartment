@@ -63,6 +63,20 @@ test('corrupt unified economic record is not replaced or presented as a new bala
   await expect(page.getByTestId('ga-coins')).toHaveText('—');
   await expect(page.locator('.ga-story')).toContainText('经营记录暂不可用');
   expect(await page.evaluate(key=>localStorage.getItem(key),worldKey)).toBe('{broken-workshop');
+  await page.goto('/');
+  await expect(page.getByTestId('lobby-coins')).toHaveText('—');
+  await page.getByRole('button',{name:'打开玩家资料'}).click();
+  await expect(page.getByRole('dialog')).toContainText('经营记录暂不可用');
+  expect(await page.evaluate(key=>localStorage.getItem(key),worldKey)).toBe('{broken-workshop');
+  for(const route of ['/town/','/warehouse/','/orders/']){
+    await page.goto(route);
+    await expect(page.getByTestId('world-coins')).toHaveText('—');
+    expect(await page.evaluate(key=>localStorage.getItem(key),worldKey)).toBe('{broken-workshop');
+  }
+  await page.goto('/workshop/');
+  await expect(page.getByRole('alertdialog',{name:'工坊存档需要处理'})).toBeVisible();
+  await expect(page.getByTestId('v2-coins')).toHaveText('—');
+  expect(await page.evaluate(key=>localStorage.getItem(key),worldKey)).toBe('{broken-workshop');
 });
 
 test('redesigned pages never restore the old scrolling web dashboard',async({page})=>{

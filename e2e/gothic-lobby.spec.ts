@@ -11,6 +11,7 @@ test('lobby fills the viewport and keeps meaningful controls at screen edges',as
   await expect(page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link')).toHaveCount(1);
   await expect(page.getByRole('navigation',{name:'快捷功能'})).toHaveCount(0);
   await expect(page.getByTestId('lobby-coins')).toHaveText('100');
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('monster-apartment:workshop-v2-lab')!).coins)).toBe(100);
   // PC keeps one compact apartment shortcut and a full seven-place atlas.
   const dockLinks=page.getByRole('navigation',{name:'主要游戏功能'}).getByRole('link');
   const dockSize=await dockLinks.first().evaluate(el=>el.getBoundingClientRect().width);

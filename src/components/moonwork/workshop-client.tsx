@@ -347,7 +347,7 @@ export function WorkshopClient() {
               <span>
                 <GothicResourcePill
                   symbol="✦"
-                  amount={world.coins}
+                  amount={savedWorld?.coins??'—'}
                   label="星币"
                   testId="v2-coins"
                 />
