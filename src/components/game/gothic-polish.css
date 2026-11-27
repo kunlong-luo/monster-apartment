@@ -137,9 +137,11 @@
   from{opacity:.26;transform:translateX(-1.2%)}
   to{opacity:.54;transform:translateX(1.2%)}
 }
+/* Never scale interactive descendants: the 44px close target must stay
+   full size throughout the entrance, not just after animation settles. */
 @keyframes v04-panel-in{
-  from{opacity:0;transform:translateY(8px) scale(.988)}
-  to{opacity:1;transform:translateY(0) scale(1)}
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
 }
 @keyframes v04-toast{
   0%{opacity:0;transform:translate(-50%,9px)}
