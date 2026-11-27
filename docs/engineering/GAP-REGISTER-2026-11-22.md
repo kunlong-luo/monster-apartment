@@ -2,7 +2,15 @@
 
 > 取证时点：`main` = [`770ed3c25cb3`](https://github.com/kunlong-luo/monster-apartment/commit/770ed3c25cb3a32f60273f458aa3a0ee27418f9f)。本表根据仓库文件、`branches/main` 和所列 Issue 的当时状态整理；**不把历史报告或自动测试写成今天已完成的人工验收**。每轮修复后应重核并更新，不要仅因完成文档治理就勾选产品任务。
 
-## R13.1-J · 新美术收件与发布收口（当前执行）
+## R14.0 / R14.1-A · 产品重制与月纱首局衔接（候选，当前优先）
+
+用户确认重新设计产品，现行路线和评分见 [PRODUCT](../../PRODUCT.md#r14-产品重制路线现行方向)。以 [9e683cf](https://github.com/kunlong-luo/monster-apartment/commit/9e683cfc56e62c05a96a37574df4311b1b53b580) 为本轮候选基线；当前提交状态接口未返回检查项，不能确认本基线最新 Pages/完整浏览器结果。暂停没有真实缺陷的目录/文档治理与批量内容扩张；R13 未解决的发布阻塞、美术人审、分支保护、布局问题仍保留，不直接关闭。
+
+复现（源码）：大厅 GothicLobby 的月纱交谈只区分特别委托 offered 和其他，普通首单完成、特别委托完成后仍可能要求先交付第一批。候选修复：复用 workshop-guidance 的真实存档状态，在原有对话和唯一下一步链接中区别缺晶核、备齐、已交首单、特别委托待接受/进行中/已完成/失败；将玩家导向既有工坊、委托或月纱房间。没有新奖励、解锁、存档字段、资产、路由、依赖或概率变动。新增三个定向 Vitest 用例；本轮尚未运行，待候选 SHA Quality、桌面/手机普通点击与完整玩法验证，不宣称上线。验收需真实首单结算前后再次交谈、核对奖励、特别委托接受及结束、房间实际可达、刷新状态一致；月纱向导不是保证召唤获得人物。真实试玩与正式美术仍未完成。
+
+旧综合73/100仅历史基线，新产品评分待独立人工证据，不给分；正式商业发行仍暂缓。下一唯一项：核对候选 CI、发布基线与真实首局全链（包括旧档和自动履约），按复现修正阻塞，之后完成奖励→人物互动的真实因果切片，再推进原画。不凭文案修复宣称整个 R14.1 完成。
+
+## R13.1-J · 新美术收件与发布收口（历史记录）
 
 上一轮 9c5aea9 同 SHA [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746624328)、[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746624262)、[玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746624275)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746721073) 全部成功。随后 3174568 新增五项媒体及召唤组件；[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45750825010) 在媒体目录审计失败，仅缺 S02 desktop-candidate-v2.png 行，实际146项/165666116 B、0意外重复；静态导出/Pixi通过，[玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45750825015) 成功，桌面取消，Pages跳过。本轮不覆盖新增资源；核对完整 Git tree 与库存146行，补全源图清单/资源目录与汇总，S02同历史 blob 的1672×941原图为rework，新增字节/尺寸/哈希测试；两张清洁CG候选实际登记，但未经人审，五卡均portrait生产状态，四人G1 0/4。更新PRODUCT/SOP/场景准入与索引。此轮不改运行样式、经济、存档、原画；先恢复发布门禁，公寓布局与全站Tooltip验收顺延，不能称7/7布局完成。已上线基线73/100，免费Alpha可继续；最新提交需同SHA Quality/Pages，正式商业发行仍缺人审、独立场景、真人样本、主线保护。下一步核对新SHA发布与桌面再完成公寓及提示治理。
 
