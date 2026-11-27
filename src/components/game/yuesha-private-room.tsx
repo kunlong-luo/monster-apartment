@@ -24,13 +24,13 @@ import type {RoomPose} from '@/core/room-performance';
 import type {RoomConversationTopic} from '@/core/room-conversations';
 import {roomSceneReaction,yueshaRoomEasterEgg} from '@/core/room-scene-reactions';
 type Hotspot='seal'|'tea'|'ledger';
-type YueshaRoomProps={guests:number;happiness:number};
+type YueshaRoomProps={completed:number|null};
 export function YueshaPrivateRoom(props:YueshaRoomProps){
   const reviewEnabled=useSearchParams().get('roomArtReview')==='1';
   return <YueshaPrivateRoomView {...props} reviewEnabled={reviewEnabled}
     key={reviewEnabled?'review':'player'}/>;
 }
-function YueshaPrivateRoomView({guests,happiness,reviewEnabled}:YueshaRoomProps&{reviewEnabled:boolean}){
+function YueshaPrivateRoomView({completed,reviewEnabled}:YueshaRoomProps&{reviewEnabled:boolean}){
   const stageRef=useRef<HTMLDivElement>(null);
   const stageSize=useRoomStageSize(stageRef);
   const artReview=useRoomArtLocalPreview(reviewEnabled);
@@ -107,8 +107,7 @@ function YueshaPrivateRoomView({guests,happiness,reviewEnabled}:YueshaRoomProps&
     </div>
     <div data-testid="room-story-rail" className={'min-w-0 space-y-4 rounded-xl border border-gothic-brass/40 bg-gothic-panel/90 p-3 lg:max-h-[min(68dvh,720px)] lg:overflow-y-auto lg:pr-3 [scrollbar-width:thin] '+(playerScenic?'hidden':scenicMode?'lg:hidden':'')}>
     <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[#ad89644a] bg-[#211520b8] px-3 py-2 text-xs" data-testid="yuesha-living-state">
-      <span>今夜心情：{happiness>=70?'安心':'牵挂邻居'}</span>
-      <span>公寓现住 {guests} 位邻居</span>
+      <span>经营进度：{completed===null?'记录暂不可用':'已交付 '+completed+' 单'}</span>
       <span>与你的关系：{choice==='transparent'?'认可公开负责':choice==='careful'?'认可谨慎守约':'初识 · 保持距离'}</span>
     </div>
     {status!=='ok'&&<p role="alert" data-testid="character-life-error" className="rounded-lg border border-[#b37f82] p-3 text-xs text-[#ffc5c5]">

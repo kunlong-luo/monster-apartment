@@ -96,5 +96,4 @@ export const characterLifeStorage = getStorage('monster-apartment:character-life
 export const welcomeEnteredStorage = getStorage('monster-apartment:welcome-entered:v1');
 export const gachaStateStorage = getStorage('monster-apartment:gacha-v2');
 export const collectionStorage = getStorage('monster-apartment:character-collection:v1');
-export const cozyStorage = getStorage('monster-apartment:cozy:v1');
 export const workshopStorage = getStorage('monster-apartment:workshop-v2-lab');
