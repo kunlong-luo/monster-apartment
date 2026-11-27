@@ -4,7 +4,7 @@
 
 - Next.js App Router + React + TypeScript strict + Tailwind CSS v4 + Motion；PixiJS 8 独立工坊运行时。根 `package.json` 声明 Zustand 与 Dexie；依赖声明不等同全站实际用法，未完成逐模块使用审计，不再断言不存在。
 - 七个游戏路由见[根 README](../README.md)；研究页独立。根布局挂载共享导航、过渡、错误边界、发布提示和工坊自动运行。现行大厅采用顶角地图而非旧底部 Dock，见[现行视觉合同](design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md)。
-- R14.1-U 候选：公寓与工坊统一读取 `engine/src/workshop-engine.ts` 的经营快照，旧 Cozy V1 独立运行退役；旧记录只读保留，不自动兑换。人物收藏和剧情独立领域数据暂保持兼容；本候选尚待完整发布门禁。U04 在共享 HUD 删除旧幸福度/入住图标分支，并在现有 `pnpm audit:engine-paths` 增加退役住房名称、路径和旧键的专项报告/门禁；历史文档及旧档保护测试不属于第二经营引擎，既有只读导出边界保留。U05 候选：删除四份 CSS 中已退役住房抽屉、警告/救援、旧房门入住状态及专属动画样式；共享故事面板、现行四位人物房门、绘景、研究模式、可达焦点及减弱动效规则保留。现有路径审计对旧住房表现标识新增全仓文本门禁；候选仍需同 SHA Quality 与双端真实浏览器验收，不把文本审计当作 CSS 全覆盖。
+- R14.1-U 候选：公寓与工坊统一读取 `engine/src/workshop-engine.ts` 的经营快照，旧 Cozy V1 独立运行退役；旧记录只读保留，不自动兑换。人物收藏和剧情独立领域数据暂保持兼容；本候选尚待完整发布门禁。U04 在共享 HUD 删除旧幸福度/入住图标分支，并在现有 `pnpm audit:engine-paths` 增加退役住房名称、路径和旧键的专项报告/门禁；历史文档及旧档保护测试不属于第二经营引擎，既有只读导出边界保留。U05 已通过专项自动验收（e088d41）：删除四份 CSS 中已退役住房抽屉、警告/救援、旧房门入住状态及专属动画样式；共享故事面板、现行四位人物房门、绘景、研究模式、可达焦点及减弱动效规则保留。现有路径审计对旧住房表现标识新增全仓文本门禁；同 SHA Quality、桌面/手机真实 Chromium、像素和完整玩法已通过；详见风险台账。文本审计不证明任意动态拼接或 CSS 全覆盖，截图已归档但尚未人工阅图。
 - `engine/src/runtime.ts`、`engine/src/workshop-lab-stage.ts`、`engine/scripts/build.mjs` 与 `engine/art/` 是当前 Pixi sidecar，不得按名称清除。
 - 当前 19 份 CSS（含 `app/globals.css`），全局视觉 token 为 `src/components/game/gothic-premium-tokens.css`。布局导入 tokens、globals、red-gold、desktop-ui；大厅导入 lobby、polish、reference-layout、lobby-navigation；共享导航和图鉴分别导入自己的样式，工人房间仍导入 polish。未证明全量 CSS 规则使用情况，不据数量删除。
 - 正式欢迎图/大厅 V4、四间房间观景、PC 工坊与街区新绘景的实际路径见[资源目录](ART-RESOURCE-CATALOG.md)。生产、过渡、审稿、回退分开。房间故事热点与观景层分离；Pixi 精密建造、手机与旧档保持。
