@@ -22,9 +22,9 @@
 | U10 | 多标签事务 | U06–09 | 并发不丢更新、不重复结算 | 待办 |
 | U11 | 旧记录保护 | U04 | 正常/损坏原始字节不改、可下载、新玩家不创建旧键 | 候选 |
 | U12 | 现行恢复 | U04 | 损坏工坊不自动覆盖、备份恢复与锁仍有效 | 待办 |
-| U13 | 四间人物房间 | U04 | 四人真实入口、剧情、历史返回及直链有效 | 候选 |
+| U13 | 四间人物房间 | U04 | 四人真实入口、剧情、历史返回及直链有效 | 阻塞（深链接首次失败；修复候选待验） |
 | U14 | 桌面与手机 | U05–13 | 1440×900、390×844 实际截图、无溢出/遮挡、研究工具隔离 | 待办 |
-| U15 | 完整回归 | U14 | 同 SHA Quality、Desktop、Pixel、Gameplay full 全通过 | 待办 |
+| U15 | 完整回归 | U14 | 同 SHA Quality、Desktop、Pixel、Gameplay full 全通过，0 flaky | 阻塞（U13） |
 | U16 | 合并发布 | U15 | PR 合并，main 同 SHA Quality/Pages 与线上核验 | 待办 |
 
 ### I · 人物与成长统一（U16 后）
@@ -86,6 +86,9 @@
 候选 `826dd0f` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032664) 失败；[checks 日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032664/job/140283445970) 明确 TS6133（公寓未用 Link）及 TS2305（欢迎页仍导入已删除 cozyStorage）。Pixi 作业成功，静态导出因同一缺失导出失败；[Desktop](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032781)、[Pixel](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032667)、[Gameplay](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032641) 因 WebServer 无法编译而超时，未真正验收玩法/视觉。修复旧导入、未用导入及导航文案，不恢复旧引擎。新增欢迎页旧档保护及剧情继续的 E2E。新提交待 CI，暂不判通过；下一唯一项 U04：核对新 SHA 的 Quality 和残余引用，不绕过测试。历史73分不变，新产品未评，正式发行暂缓。
 
 ## R14.1-U · 单一经营体系切换（候选，最高优先）
+
+2026-11-27 · U13 验收阻塞修复候选：PR [#65](https://github.com/kunlong-luo/monster-apartment/pull/65) 在 [00a08d0](https://github.com/kunlong-luo/monster-apartment/commit/00a08d032848fc99f558bcc7b335469ed7affd20) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931982731)、[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931982729)、[像素](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931982726) 均成功，63 个 Vitest 文件、301 项通过，组件审计 0 不可达、0 未解析。[完整玩法原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931982721/job/140286457501) 实为 197 passed、1 flaky、3 skipped；月纱直链测试第 93 行首次执行在外部 pushState 后仍存在私人房间，重试通过，不视为 U13/U15 验收。怀疑 SSR 可见早于客户端 History API 桥接就绪，尚未独立复现根因。本轮在现有 E2E 中等待弹窗真实焦点和共享经营余额加载后才调用 History API，增加 URL 断言，保留原有关闭、后退、查询参数及其他测试断言；Playwright CI 启用 failOnFlakyTests，保留重试诊断但不允许绿色掩盖 flaky。未修改生产路由、存档、经济、资源或依赖。本修复 SHA 尚无新浏览器验证；下一唯一项：核对同 SHA CI 与原始日志，确认 U13 无 flaky 后返回 U04 残留引用，U05–U16 按前置顺序推进。PR 保持 Draft，不合并，不发布。全仓引用仍未穷尽。main [9e683cf](https://github.com/kunlong-luo/monster-apartment/commit/9e683cfc56e62c05a96a37574df4311b1b53b580) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45809152014) 和 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45809315642) 已成功；未重新评分。
+
 
 用户明确要求不再保留两套游戏。公寓候选不再启动 Cozy V1 两秒时钟、租金、房屋建造/装饰/搬迁/救援经济，直接订阅现行工坊 Zustand/同一持久化快照的天数、星币、晶核和已交付单数；四个正式人物房间真实入口与月纱剧情保留。六门研究原图仅作独立几何命中检查，不再调用旧住房游戏。旧原始 localStorage 记录不写、不删、不兑换，提供只读导出；当前未设兑换比例，旧住房资产不再可玩，不能称旧资产已迁移。角色剧情/收藏专项存档不是另一套经营余额，仍保留，后续合并需完整事务与迁移设计。
 

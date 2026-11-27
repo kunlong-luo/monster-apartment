@@ -88,8 +88,13 @@ test('PC Web YueSha room deep links stay in sync with browser history and art-re
   const dialogue=page.getByRole('dialog',{name:'与月纱交谈'});
   await expect(dialogue).toBeVisible();
 
-  // App Router observes externally created same-route History API entries.
+  // SSR can expose the room before App Router installs its History API bridge.
+  // Wait for real client effects (modal focus and shared world hydration), not
+  // an arbitrary delay, before simulating an external history entry.
+  await expect(dialogue).toBeFocused();
+  await expect(page.getByTestId('ga-coins')).toHaveText(String(newWorkshop().coins));
   await page.evaluate(()=>window.history.pushState(null,'','/apartment/'));
+  await expect(page).toHaveURL(/\/apartment\/?$/);
   await expect(page.getByTestId('yuesha-private-room')).toHaveCount(0);
   await expect(dialogue).toHaveCount(0);
 
