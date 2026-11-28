@@ -1,6 +1,6 @@
 import type {WorkshopState} from '../../../engine/src/workshop-engine';
 
-/** Read-only view of ACTUAL settlements from two independent engines:
+/** Read-only view of ACTUAL settlements from the shared workshop engine:
  * 1. auto.produced is cumulative real-time output, not current inventory;
  * 2. last is the most recently committed manual shift, not a prediction.
  * Never re-run either engine from this presentation, write a save, or
@@ -58,8 +58,10 @@ readonly WorkshopProductionLogEntry[]{
     });
     return logs;
   }
-  const day=Math.max(1,world.day-1);
-  const time='第 '+day+' 日';
+  // The current day can advance via automatic delivery while last retains
+  // an older manual report. The saved report has no historical day field:
+  // show its actual source instead of inventing a date from today's clock.
+  const time='手动轮班';
   const output=(
     id:'water'|'fiber'|'cores',kind:'water'|'fiber'|'core',
     name:string,quantity:number

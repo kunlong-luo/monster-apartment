@@ -30,7 +30,7 @@ export function getDiagnosisText(world: WorkshopState): string {
       : '熔炉缺孢子：让它靠近温室；两份孢子才能炼出晶核。';
   }
   if (report && report.cores === 0) {
-    return '今天还没炼出晶核。检查设备连接和工人分配。';
+    return '上一班没有炼出晶核。检查设备连接和工人分配。';
   }
   if (report) {
     return '生产链运转了。可以继续调整布局来提升产量。';

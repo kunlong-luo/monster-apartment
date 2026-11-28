@@ -4,7 +4,8 @@ import {
 } from '../engine/src/workshop-engine';
 import {workshopProductionLog} from '../src/lib/moonwork/workshop-production-log';
 import {
-  startWorkshopAuto,simulateWorkshopAutoUntil,pauseWorkshopAuto
+  startWorkshopAuto,simulateWorkshopAutoUntil,pauseWorkshopAuto,
+  toggleWorkshopAutoDelivery,AUTO_CONTRACT_DAY_MS
 } from '../engine/src/workshop-auto-production';
 
 describe('settled workshop production ledger',()=>{
@@ -38,7 +39,7 @@ describe('settled workshop production ledger',()=>{
     expect(rows.filter(x=>x.type==='output').map(x=>x.text)).toEqual([
       '实际产出 水汽 ×2','实际产出 孢子纤维 ×2','实际产出 晶核 ×2'
     ]);
-    expect(rows.every(x=>x.time==='第 1 日')).toBe(true);
+    expect(rows.every(x=>x.time==='手动轮班')).toBe(true);
     expect(rows.some(x=>x.type==='alert')).toBe(false);
     expect(JSON.stringify(actual)).toBe(source);
   });
@@ -130,9 +131,19 @@ describe('R10.9 actual automatic production receipts in the same read-only ledge
     const manuallySettled=runShift(paused);
     const actual=workshopProductionLog(manuallySettled);
     expect(actual.find(e=>e.id==='auto-cores')?.time).toBe('自动累计');
-    expect(actual.find(e=>e.id==='output-cores')?.time).toBe('第 1 日');
+    expect(actual.find(e=>e.id==='output-cores')?.time).toBe('手动轮班');
     expect(actual.some(e=>e.id==='not-started')).toBe(false);
     expect(manuallySettled.auto?.produced).toEqual({water:4,fiber:2,cores:2});
+  });
+  it('does not relabel a retained manual shift with a later automatic calendar day',()=>{
+    const manual=runShift(staffedLine());
+    const previous=workshopProductionLog(manual).filter(e=>e.time==='手动轮班');
+    expect(previous.length).toBeGreaterThan(0);
+    const started=toggleWorkshopAutoDelivery(startWorkshopAuto(manual,1000),1000);
+    const advanced=simulateWorkshopAutoUntil(started,1000+AUTO_CONTRACT_DAY_MS);
+    expect(advanced.day).toBe(manual.day+1);
+    expect(advanced.last).toEqual(manual.last);
+    expect(workshopProductionLog(advanced).filter(e=>e.time==='手动轮班')).toEqual(previous);
   });
   it('reports a genuine zero-output manual shift even if old automatic totals exist',()=>{
     const seeded={
@@ -143,7 +154,7 @@ describe('R10.9 actual automatic production receipts in the same read-only ledge
     };
     const records=workshopProductionLog(seeded);
     expect(records.map(r=>r.id)).toEqual(['auto-water','no-output']);
-    expect(records.filter(r=>r.time==='第 1 日').map(r=>r.id)).toEqual(['no-output']);
+    expect(records.filter(r=>r.time==='手动轮班').map(r=>r.id)).toEqual(['no-output']);
     expect(records[0].text).toContain('非当前库存');
   });
 });
