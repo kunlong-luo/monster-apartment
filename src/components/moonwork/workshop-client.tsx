@@ -355,8 +355,9 @@ export function WorkshopClient() {
               <span>
                 <GothicResourcePill
                   symbol="◆"
-                  amount={world.warehouse.core}
+                  amount={savedWorld?.warehouse.core??'—'}
                   label="晶核"
+                  testId="v2-cores"
                 />
               </span>
             </div>
@@ -443,18 +444,18 @@ export function WorkshopClient() {
         </section>
 
         {/* Factory input controls are one React-owned component. */}
-        <WorkshopControls
+        {savedWorld&&<WorkshopControls
           onAction={onAction}
           onAutoToggle={onAutoToggle}
           onAutoContractToggle={onAutoContractToggle}
           autoError={autoError}
           autoContractError={autoContractError}
-          world={world}
+          world={savedWorld}
           chosenWorker={selection.worker}
           chosenMachine={selection.machine}
           selectedTile={selectedTile}
           isMoving={isMoving}
-        />
+        />}
 
         {/* Only the explicit machine-art=review route can inspect source sprites. */}
         <WorkshopMachineArtReview />
