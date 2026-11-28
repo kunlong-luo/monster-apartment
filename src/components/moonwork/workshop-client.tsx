@@ -339,7 +339,7 @@ export function WorkshopClient() {
               <span className="hidden sm:inline-flex">
                 <GothicResourcePill
                   symbol="☾"
-                  amount={world.day}
+                  amount={savedWorld?.day??'—'}
                   label="工坊天数"
                   testId="v2-day"
                 />
@@ -347,7 +347,7 @@ export function WorkshopClient() {
               <span>
                 <GothicResourcePill
                   symbol="✦"
-                  amount={world.coins}
+                  amount={savedWorld?.coins??'—'}
                   label="星币"
                   testId="v2-coins"
                 />
@@ -355,8 +355,9 @@ export function WorkshopClient() {
               <span>
                 <GothicResourcePill
                   symbol="◆"
-                  amount={world.warehouse.core}
+                  amount={savedWorld?.warehouse.core??'—'}
                   label="晶核"
+                  testId="v2-cores"
                 />
               </span>
             </div>
@@ -413,7 +414,7 @@ export function WorkshopClient() {
               <p className="bubble-content"
                 data-testid="workshop-yuesha-dialogue"
                 data-beat-id={dialogue[speechIndex%dialogue.length]?.id??'welcome'}>
-                {dialogue[speechIndex%dialogue.length]?.text}
+                {savedWorld?dialogue[speechIndex%dialogue.length]?.text:'经营记录暂不可用。'}
               </p>
             </button>
           </aside>
@@ -434,25 +435,27 @@ export function WorkshopClient() {
           />
 
           <aside className="sidebar">
-            <WorkshopContractPanel world={world} portraitSrc={portraitUrl}
-              onAction={onAction} />
-            <WorkshopShiftPanel world={world} />
+            {savedWorld&&<>
+              <WorkshopContractPanel world={savedWorld} portraitSrc={portraitUrl}
+                onAction={onAction} />
+              <WorkshopShiftPanel world={savedWorld} />
+            </>}
           </aside>
         </section>
 
         {/* Factory input controls are one React-owned component. */}
-        <WorkshopControls
+        {savedWorld&&<WorkshopControls
           onAction={onAction}
           onAutoToggle={onAutoToggle}
           onAutoContractToggle={onAutoContractToggle}
           autoError={autoError}
           autoContractError={autoContractError}
-          world={world}
+          world={savedWorld}
           chosenWorker={selection.worker}
           chosenMachine={selection.machine}
           selectedTile={selectedTile}
           isMoving={isMoving}
-        />
+        />}
 
         {/* Only the explicit machine-art=review route can inspect source sprites. */}
         <WorkshopMachineArtReview />

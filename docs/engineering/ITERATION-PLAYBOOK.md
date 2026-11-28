@@ -17,9 +17,9 @@
 | 层 | 维护边界 |
 | --- | --- |
 | 路由 / HUD | `app/`、`src/components/game/`、`src/components/moonwork/`；统一七路由注册表和全站色板、材质，避免重复底栏 |
-| 经营规则 | `src/core/cozy-engine.ts`、`engine/src/workshop-engine.ts` 与其子模块；计算、交易、概率及存档用可测 TS 逻辑 |
+| 经营规则 | R14 起 `engine/src/workshop-engine.ts` 与其子模块为唯一经营时间与余额来源；禁止恢复旧 Cozy 独立小游戏 |
 | 场景 / 动效 | Motion 管 React 交互动效，PixiJS 8 管工坊 2D 场景；避免 DOM 与 Pixi 双重管理同一个交互控件 |
-| 数据 | 保留 `monster-apartment:cozy:v1` 与 `monster-apartment:workshop-v2-lab` 两个既有存档键；未设计并验证迁移前，不擅自统一账本或清档 |
+| 数据 | 唯一经营快照为 `monster-apartment:workshop-v2-lab`；旧 Cozy V1 字节仅只读导出、不兑换、不清档。角色收藏/剧情专项事务独立兼容；统一产品不要求塞入单一巨型文件 |
 | 素材 | 只通过角色/场景审核流程晋级，记录原生像素、来源、许可、SHA-256、浏览器呈现；不以模糊滤镜、放大或背景换色顶替独立绘景 |
 
 **不得**为新功能重新加入旧版 Vite/Phaser 页、`/classic`、`/legacy` 或独立 `/workshop-lab`。`engine/` 当前仍包含必需的 Pixi sidecar 运行时，不能因为目录名就删掉。

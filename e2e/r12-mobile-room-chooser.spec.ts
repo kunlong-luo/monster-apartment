@@ -9,9 +9,9 @@ test('mobile apartment keeps room entrances available without covering the chara
   const panel=page.getByTestId('ga-room-menu-panel');
   await expect(toggle).toBeVisible();
   await expect(toggle).toHaveAttribute('aria-expanded','false');
-  await expect(toggle).toContainText('房间 · 1/6 入住');
+  await expect(toggle).toContainText('人物房间 · 4 间');
   await expect(page.getByTestId('ga-room-0')).toBeHidden();
-  await expect(page.getByTestId('ga-room-5')).toBeHidden();
+  await expect(page.getByTestId('ga-room-3')).toBeHidden();
 
   mkdirSync('visual-evidence/apartment',{recursive:true});
   await page.screenshot({path:'visual-evidence/apartment/mobile-room-chooser-closed-390.png',animations:'disabled'});
@@ -19,7 +19,7 @@ test('mobile apartment keeps room entrances available without covering the chara
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-expanded','true');
   await expect(panel).toBeVisible();
-  for(let i=0;i<6;i++)await expect(page.getByTestId('ga-room-'+i)).toBeVisible();
+  for(let i=0;i<4;i++)await expect(page.getByTestId('ga-room-'+i)).toBeVisible();
 
   const bounds=await panel.boundingBox();
   expect(bounds).not.toBeNull();
@@ -33,14 +33,14 @@ test('mobile apartment keeps room entrances available without covering the chara
   await expect(toggle).toHaveAttribute('aria-expanded','false');
   await expect(toggle).toBeFocused();
   await toggle.click();
-  await page.getByTestId('ga-room-2').click();
-  await expect(page.getByTestId('ga-room-drawer')).toBeVisible();
+  await page.getByTestId('ga-room-0').click();
+  await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
+  await page.getByRole('button',{name:'关闭月纱对话'}).click();
   await expect(toggle).toHaveAttribute('aria-expanded','false');
-  await expect(page.getByTestId('ga-coins')).toHaveText('105');
 
-  // Desktop is still the same always-visible six-room rail with no extra toggle.
+  // Desktop is still the same always-visible four-character rail with no extra toggle.
   await page.setViewportSize({width:1440,height:900});
   await expect(toggle).toBeHidden();
-  for(let i=0;i<6;i++)await expect(page.getByTestId('ga-room-'+i)).toBeVisible();
+  for(let i=0;i<4;i++)await expect(page.getByTestId('ga-room-'+i)).toBeVisible();
   await page.screenshot({path:'visual-evidence/apartment/desktop-room-chooser-1440.png',animations:'disabled'});
 });

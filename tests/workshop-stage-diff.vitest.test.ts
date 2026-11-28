@@ -1,10 +1,26 @@
 import {describe,it,expect} from 'vitest';
 import {newWorkshop,runShift,assignWorker,moveMachine,placeMachine,upgradeMachine} from '../engine/src/workshop-engine';
-import {startWorkshopAuto,simulateWorkshopAutoUntil} from '../engine/src/workshop-auto-production';
-import {workshopMachineCaption,workshopStageStockPatch,workshopStagePlotPatch} from '../engine/src/workshop-stage-diff';
+import {startWorkshopAuto,simulateWorkshopAutoUntil,toggleWorkshopAutoDelivery,AUTO_CONTRACT_DAY_MS,pauseWorkshopAuto} from '../engine/src/workshop-auto-production';
+import {workshopMachineCaption,workshopStageStockPatch,workshopStagePlotPatch,isObservedManualShift} from '../engine/src/workshop-stage-diff';
 import {buyTownSupply} from '../engine/src/workshop-town';
 
 describe('R07 Pixi incremental scene projection',()=>{
+  it('only replays observed manual shifts, not automatic calendar ticks or hydration',()=>{
+    const before=assignWorker(newWorkshop(),'brook',5);
+    const manual=runShift(before);
+    expect(isObservedManualShift(before,manual)).toBe(true);
+    expect(isObservedManualShift(null,manual)).toBe(false);
+    expect(isObservedManualShift(manual,manual)).toBe(false);
+    const auto=toggleWorkshopAutoDelivery(startWorkshopAuto(manual,1000),1000);
+    const advanced=simulateWorkshopAutoUntil(auto,1000+AUTO_CONTRACT_DAY_MS);
+    expect(advanced.day).toBe(manual.day+1);
+    expect(advanced.last).toEqual(manual.last);
+    expect(isObservedManualShift(auto,advanced)).toBe(false);
+    const paused=pauseWorkshopAuto(advanced);
+    expect(isObservedManualShift(advanced,paused)).toBe(false);
+    expect(isObservedManualShift(paused,runShift(paused))).toBe(true);
+    expect(isObservedManualShift(before,runShift(manual))).toBe(false);
+  });
   it('reuses machine sprites for stock-only auto cycles',()=>{
     let state=newWorkshop();
     state=assignWorker(state,'brook',5);
@@ -15,6 +31,10 @@ describe('R07 Pixi incremental scene projection',()=>{
     expect(workshopMachineCaption('well',later.tiles[5]!.stored,
       {state:'working',problem:null})).toContain(String(later.tiles[5]!.stored));
     expect(JSON.stringify(state)).toBe(serialized);
+  });
+  it('describes kiln output as direct warehouse delivery rather than machine stock',()=>{
+    expect(workshopMachineCaption('kiln',0,{state:'working',problem:null}))
+      .toBe('晶核熔炉 · 晶核直入仓库 · 可生产');
   });
   it('skips all scene nodes for an unrelated warehouse-only trade',()=>{
     const state=newWorkshop();

@@ -164,7 +164,7 @@ export function WorkshopStageContainer({
           worldReady={worldReady}
           selectedPlot={selectedPlot} onAction={onAction}
           onOpenGrid={()=>onSceneModeChange('grid')}/>}
-        {showCinematic&&selectedTile&&selectedStation&&
+        {worldReady&&showCinematic&&selectedTile&&selectedStation&&
           <aside className="workshop-context" data-testid="workshop-context-panel"
             aria-label="当前设备情境操作">
             <div className="workshop-context__eyebrow">SELECTED STATION · {String(selectedStation.plot+1).padStart(2,'0')}</div>
@@ -172,7 +172,7 @@ export function WorkshopStageContainer({
             <span>{selectedStation.signal.state==='working'?'生产运行中':
               selectedStation.signal.state==='blocked'?'原料供应受阻':'等待工匠派驻'}</span>
             <span>工匠：{selectedStation.machine.worker?
-              WORKERS[selectedStation.machine.worker].zh:'尚未派驻'} · 库存 {selectedStation.machine.stored}</span>
+              WORKERS[selectedStation.machine.worker].zh:'尚未派驻'} · {selectedStation.machine.craft==='kiln'?'晶核直入仓库':'设备暂存 '+selectedStation.machine.stored}</span>
             <div className="workshop-context__actions">{selectedActions}
               {!expandedConsole&&<button type="button" onClick={onToggleConsole}
                 data-testid="workshop-context-manage">派工与设备管理</button>}

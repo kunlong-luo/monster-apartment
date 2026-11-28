@@ -3,13 +3,14 @@
 import './workshop-cinematic.css';
 import Image from 'next/image';
 import {ReliableImage} from '@/components/game/reliable-image';
-import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
+import {useEffect,useState,useSyncExternalStore} from 'react';
 import {motion} from 'motion/react';
 import {WorkshopProcessEffect} from './workshop-process-effect';
 import {ArrowUpRight,Grid3X3,MoveRight} from 'lucide-react';
 import {MACHINES,WORKERS,projectMachineProduction} from '../../../engine/src/workshop-engine';
 import {gothicMotionStorage} from '@/lib/game/storage-service';
 import {presentWorkshopStations} from '../../../engine/src/workshop-station-presenter';
+import {isObservedManualShift} from '../../../engine/src/workshop-stage-diff';
 import type {Craft,DailyProduction,WorkshopState} from '../../../engine/src/workshop-engine';
 import type {WorkshopAction} from '../../../engine/src/workshop-runtime-contract';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
@@ -112,24 +113,21 @@ export function WorkshopCinematicStage({
   },[]);
   // A transient VIEW of an actual completed shift. Initial hydration must not
   // replay the persisted last report as if production just happened.
-  const observedDay=useRef<number|null>(null);
+  const currentWorld=worldReady?world:null;
+  const [previousWorld,setPreviousWorld]=useState<WorkshopState|null>(null);
   const [settledShift,setSettledShift]=useState<{
     day:number;report:DailyProduction
   }|null>(null);
-  useEffect(()=>{
-    // Connect the real persisted world before tracking days. Otherwise the
-    // initial fallback newWorkshop() -> hydrated day N looks like an earned shift.
-    if(!worldReady){
-      observedDay.current=null;
-      return;
-    }
-    const previous=observedDay.current;
-    observedDay.current=world.day;
-    if(previous!==null&&world.day>previous&&world.last)
-      setSettledShift({day:world.day,report:world.last});
-    else if(previous!==null&&world.day<previous)
+  // Adjust transient presentation state only on a changed input snapshot.
+  // React retries this render before committing children; no synchronous
+  // effect update, stale animation frame, or replay on initial hydration.
+  if(currentWorld!==previousWorld){
+    setPreviousWorld(currentWorld);
+    if(currentWorld&&isObservedManualShift(previousWorld,currentWorld)&&currentWorld.last)
+      setSettledShift({day:currentWorld.day,report:currentWorld.last});
+    else if(!currentWorld||previousWorld?.day!==currentWorld.day)
       setSettledShift(null);
-  },[worldReady,world.day,world.last]);
+  }
   const stations=presentWorkshopStations(world,selectedPlot).groups;
   // Use the exact deterministic settlement projection; never calculate a
   // second fake visual throughput. No economy mutation or animation ticker.
@@ -158,7 +156,7 @@ export function WorkshopCinematicStage({
           data-testid="workshop-art-compare-review"
           onClick={()=>setReviewCandidate(true)}>512px 候选</button>
       </div>}
-      <span className="workshop-cinematic__chapter">第 {world.day} 日 · 月光工坊</span>
+      <span className="workshop-cinematic__chapter">第 {worldReady?world.day:'—'} 日 · 月光工坊</span>
     </div>
 
     <span className="sr-only" aria-live="polite" aria-atomic="true"
@@ -190,7 +188,7 @@ export function WorkshopCinematicStage({
             craft==='garden'?settledShift.report.fiber:settledShift.report.cores)
           :0;
         const outputName=craft==='well'?'水汽':craft==='garden'?'孢子':'晶核';
-        const statusText=status==='working'?'生产运行中':
+        const statusText=!worldReady?'经营记录暂不可用':status==='working'?'生产运行中':
           status==='blocked'?'材料供应受阻':station?'等待工匠派驻':'尚未建造';
         const reviewArt=base&&reviewCandidate&&!failedImages[craft]
           ?new URL('assets/review/machines/'+craft+'/lv'+level+'.webp',base).href
@@ -209,7 +207,8 @@ export function WorkshopCinematicStage({
           data-level={level}
           data-state={status??'unbuilt'}
           data-art-tier={isReview?'review':isReady?'ready':'legacy'}
-          aria-pressed={station?.plot===selectedPlot}
+          disabled={!worldReady}
+          aria-pressed={worldReady&&station?.plot===selectedPlot}
           aria-label={station
             ?'选择'+MACHINES[craft].zh+'，'+String(station.plot+1).padStart(2,'0')+'号工位，Lv.'+level+'，'+statusText+'，'+(worker?'工匠'+WORKERS[worker].zh:'未派工')
             :'建设'+MACHINES[craft].zh+'，打开建造棋盘'}
@@ -237,7 +236,7 @@ export function WorkshopCinematicStage({
               className={isReview?'object-contain drop-shadow-[0_12px_14px_rgba(0,0,0,.8)]':
                 'object-contain opacity-90 drop-shadow-[0_12px_15px_rgba(0,0,0,.85)]'}
             />
-            <WorkshopProcessEffect craft={craft} active={status==='working'&&(cycle?.amount??0)>0}
+            <WorkshopProcessEffect craft={craft} active={worldReady&&status==='working'&&(cycle?.amount??0)>0}
               motionEnabled={motionEnabled}/>
             {shiftedOutput>0&&<motion.span
               key={settledShift!.day+'-'+craft}
@@ -269,7 +268,7 @@ export function WorkshopCinematicStage({
               {station&&<span> · {String(station.plot+1).padStart(2,'0')}号地块</span>}
               <ArrowUpRight size={13} aria-hidden="true"/>
             </span>
-            {station&&<span className="workshop-cinematic__stock"
+            {worldReady&&station&&<span className="workshop-cinematic__stock"
               data-testid={'workshop-cinematic-stock-'+craft}>
               {craft==='kiln'?'晶核直入仓库':'设备暂存 '}
               {craft!=='kiln'&&<strong>{station.machine.stored}</strong>}
@@ -279,7 +278,7 @@ export function WorkshopCinematicStage({
               </span>
             </span>}
           </div>
-          {worker&&<span className="workshop-cinematic__worker"
+          {worldReady&&worker&&<span className="workshop-cinematic__worker"
             data-testid={'workshop-cinematic-worker-'+craft}
             data-state={status??'idle'}
             data-art-tier={fullWorkerArt?workerTier:'portrait'}>
@@ -297,11 +296,11 @@ export function WorkshopCinematicStage({
             />
             <span className="workshop-cinematic__worker-label">{WORKERS[worker].zh}</span>
           </span>}
-          {candidates.length>1&&<span className="workshop-cinematic__count">
+          {worldReady&&candidates.length>1&&<span className="workshop-cinematic__count">
             共 {candidates.length} 台 · 点击切换工位
           </span>}
           </button>
-          {openCraft===craft&&candidates.length>1&&
+          {worldReady&&openCraft===craft&&candidates.length>1&&
             <div className="workshop-cinematic__station-picker"
               role="group" aria-label={MACHINES[craft].zh+'的全部工位'}
               data-testid={'workshop-cinematic-picker-'+craft}>
@@ -326,10 +325,10 @@ export function WorkshopCinematicStage({
       <span className="workshop-cinematic__route" aria-label="生产路线">
         <span>水汽</span>
         <MoveRight size={13} aria-hidden="true" data-testid="workshop-route-water"
-          data-active={waterLinked?'true':'false'}/>
+          data-active={worldReady&&waterLinked?'true':'false'}/>
         <span>孢子</span>
         <MoveRight size={13} aria-hidden="true" data-testid="workshop-route-fiber"
-          data-active={fiberLinked?'true':'false'}/>
+          data-active={worldReady&&fiberLinked?'true':'false'}/>
         <span>晶核</span>
       </span>
       <button type="button" className="workshop-cinematic__grid-button"

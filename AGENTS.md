@@ -8,9 +8,9 @@
 ## 技术分工
 - Next.js 16、React 19、TypeScript（strict）及 Tailwind CSS v4 负责 UI。
 - Motion for React 管临时交互动效；PixiJS 8 管 2D 场景和环境粒子。
-- `src/core/cozy-engine.ts` 管公寓；`engine/src/workshop-engine.ts` 管工坊/市集/委托。
+- R14 统一经营：`engine/src/workshop-engine.ts` 及其领域模块是公寓、工坊、市集、委托的唯一经济与时间来源；退役 Cozy V1 住房小游戏，禁止恢复独立租金、星币和时钟。
 - `engine/src/runtime.ts`、`engine/src/workshop-lab-stage.ts` 是当前工坊 Pixi 资源，不是旧页面。
-- 公寓存档键及工坊存档键不得擅自清除或更换。
+- 工坊原存档键不得擅自清除或更换；旧 Cozy V1 原始记录保留只读导出，未经批准不换算余额、不删除玩家数据。人物剧情与收藏的专项存档保持兼容。
 - 保持满屏绘景与小型 HUD；不增加重复菜单、无意义按钮或整页长滚动后台。
 - 只为七个当前路由维护 Vitest 与 Playwright 测试。
 - 只有质量检查与 Pages 部署均成功后才声称已上线。

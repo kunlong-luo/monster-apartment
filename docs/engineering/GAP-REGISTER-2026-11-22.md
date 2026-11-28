@@ -2,7 +2,131 @@
 
 > 取证时点：`main` = [`770ed3c25cb3`](https://github.com/kunlong-luo/monster-apartment/commit/770ed3c25cb3a32f60273f458aa3a0ee27418f9f)。本表根据仓库文件、`branches/main` 和所列 Issue 的当时状态整理；**不把历史报告或自动测试写成今天已完成的人工验收**。每轮修复后应重核并更新，不要仅因完成文档治理就勾选产品任务。
 
-## R13.1-J · 新美术收件与发布收口（当前执行）
+## R14 · 原子任务执行队列（现行唯一优先级）
+
+状态：待办 / 候选（已提交但未验）/ 通过（有同 SHA 证据）/ 阻塞。一个任务或一个不可分割的缺陷簇完成后更新此表；先验收前置再继续，未通过不扩展。无需另建任务文档；涉及后续产品设计的具体数值在实施前验证，不提前伪造。
+
+### U · 单一经营架构（P0，当前）
+
+| ID | 最小任务 | 前置 | 可检查的完成条件 | 状态 |
+| --- | --- | --- | --- | --- |
+| U01 | 欢迎页旧存档引用 | — | 删除已退役导入，只有旧住房记录不算现行进度，字节不变；现行收藏/剧情/抽卡继续可识别 | 通过（dbf7d52 前序回归；c318085 Quality） |
+| U02 | 公寓未用导入 | — | TypeScript 不再报 TS6133 | 通过（c318085 Quality） |
+| U03 | 公寓用途文案 | U01 | 导航不再提示安排住房经营 | 通过（c318085 源码/Quality） |
+| U04 | 残留引用 | U01–03 | TS/静态导出、组件和字面路径审计通过；历史文档/只读原始键允许 | 通过（bf806e0 同 SHA 四项 CI、577 文本专项） |
+| U05 | 旧住房样式 | U04 | 核查 ga-room-drawer、ga-warning 等实际引用后删死规则；保留活跃绘景/研究样式 | 通过（e088d41 同 SHA 四项 CI、577 文本/0 CSS 违规、双端专项） |
+| U06 | 共享星币 | U04 | 大厅/公寓/工坊/街区/仓库真实交易前后一致 | 通过（231f000 同 SHA 四项 CI、双端真实交易与损坏档专项） |
+| U07 | 共享日期 | U04 | 无 V1 独立时钟；手动和自动履约真实推进 | 专项通过（0d391d9 同 SHA 四项 CI、双端日期回归及运行源码专项） |
+| U08 | 共享库存 | U04 | 晶核生产、采购、消耗跨页一致 | 候选 |
+| U09 | 共享委托 | U06–08 | 实际交付后各页进度一致 | 候选 |
+| U10 | 多标签事务 | U06–09 | 并发不丢更新、不重复结算 | 待办 |
+| U11 | 旧记录保护 | U04 | 正常/损坏原始字节不改、可下载、新玩家不创建旧键 | 候选 |
+| U12 | 现行恢复 | U04 | 损坏工坊不自动覆盖、备份恢复与锁仍有效 | 待办 |
+| U13 | 四间人物房间 | U04 | 四人真实入口、剧情、历史返回及直链有效 | 通过（dbf7d52 专项复验、bf806e0 回归及 U04 前置） |
+| U14 | 桌面与手机 | U05–13 | 1440×900、390×844 实际截图、无溢出/遮挡、研究工具隔离 | 待办 |
+| U15 | 完整回归 | U14 | 同 SHA Quality、Desktop、Pixel、Gameplay full 全通过，0 flaky | 待办（U14 前置待验） |
+| U16 | 合并发布 | U15 | PR 合并，main 同 SHA Quality/Pages 与线上核验 | 待办 |
+
+### I · 人物与成长统一（U16 后）
+
+| ID | 任务 | 前置 | 验收 |
+| --- | --- | --- | --- |
+| I01 | 清点人物身份和角色卡、工匠、私室映射 | U16 | 四人唯一 ID、卡牌变体与人物身份分离 |
+| I02 | 收敛重复角色定义 | I01 | 公寓/大厅/图鉴/派工同源名称、身份与肖像 |
+| I03 | 明确剧情访问与契约拥有规则 | I02 | 不混淆故事人物与随机获得的卡片 |
+| I04 | 明确星币、晶核、召唤券、碎片来源及用途 | I03 | 每种资源唯一权威账本、无无主币 |
+| I05 | 设计共同事务与旧专项存档迁移 | I04 | 并发、失败回滚、重试、幂等、原档保留方案 |
+| I06 | 实现迁移验证与事务边界 | I05 | 旧档、损坏、重复执行、跨标签测试通过 |
+| I07 | 连接真实经营奖励与人物成长 | I06 | 一次合法交付触发一次真实奖励 |
+| I08 | 连接召唤结算与收藏 | I06 | 保留概率、保底、十连、扣费和重复卡奖励 |
+| I09 | 连接装备打造与人物属性 | I07–08 | 真实材料扣除、装备归属和属性计算 |
+| I10 | 验证属性与生产或剧情的明确收益 | I09 | 显示值与实际效果一致、没有虚假属性 |
+| I11 | 合并人物/经济切片回归 | I10 | 同 SHA 回归、旧档及发布通过 |
+
+### C · 首局完整体验（I11 后）
+
+| ID | 任务 | 前置 | 验收 |
+| --- | --- | --- | --- |
+| C01 | 定义首局唯一目标 | I11 | 大厅清晰引导且不堆重复按钮 |
+| C02 | 新手自动产线 | C01 | 新玩家能安全开启生产 |
+| C03 | 自动履约引导 | C02 | 独立选择、不悄悄扣费 |
+| C04 | 第一单真实交付与反馈 | C03 | 收益真实且刷新不重复 |
+| C05 | 月纱特别委托 | C04 | 按真实期限、库存和结算反馈 |
+| C06 | 返回人物房间互动 | C04 | 奖励和人物反应有关联 |
+| C07 | 第一次收藏或装备成长 | C06 | 存档持久、下一目标明确 |
+| C08 | 首局从空档及旧档完整验证 | C01–07 | 路径可达、能继续玩、无软锁 |
+
+### A · 精品美术与 UI（C08 后）
+
+| ID | 任务 | 前置 | 验收 |
+| --- | --- | --- | --- |
+| A01 | 月纱身份基准 | C08 | 人工确认脸型、发型与角色设定 |
+| A02 | 月纱全身 CG | A01 | 原生尺寸、身份与比例人工签审 |
+| A03 | 月纱表情与站姿 | A01 | 独立动作、身份连续 |
+| A04 | 月纱房间独立绘景 | A01 | 独立 PC/移动原画和合法热点 |
+| A05 | 资源接入与像素验证 | A02–04 | 源图、授权、哈希、实际解码与截图 |
+| A06 | 大厅布局复原 | A05 | 对照认可设计，PC 画面、留白和点击 |
+| A07 | 私人房间交互与动画 | A05 | 剧情与观景不互相破坏 |
+| A08 | 召唤仪式与结果卡 | A05 | 单/十连完整展示、回看与减少动效 |
+| A09 | 其余人物逐位身份/CG/动作/房间 | A01–08 | 一人验收后再扩展 |
+| A10 | 其他场景逐页原画与 UI 验收 | A06–09 | 每页独立截图、交互真实可达 |
+
+### V · 玩家与发行（A10 后）
+
+| ID | 任务 | 前置 | 验收 |
+| --- | --- | --- | --- |
+| V01 | 首局观察协议执行 | A10 | 十名独立玩家实际观察 |
+| V02 | 按反馈优先修复阻塞 | V01 | 复测证据与未解决项 |
+| V03 | 产品六维评分 | V02 | 有实际证据的维度评分；未评不计总分 |
+| V04 | 发布门槛与回退核验 | V03 | CI、存档、分支保护、原画审批 |
+| V05 | 正式发行决策 | V04 | 85/100 只是拟议内部目标，不替代真实验收 |
+
+### 本轮 U01–03 取证
+
+候选 `826dd0f` 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032664) 失败；[checks 日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032664/job/140283445970) 明确 TS6133（公寓未用 Link）及 TS2305（欢迎页仍导入已删除 cozyStorage）。Pixi 作业成功，静态导出因同一缺失导出失败；[Desktop](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032781)、[Pixel](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032667)、[Gameplay](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931032641) 因 WebServer 无法编译而超时，未真正验收玩法/视觉。修复旧导入、未用导入及导航文案，不恢复旧引擎。新增欢迎页旧档保护及剧情继续的 E2E。新提交待 CI，暂不判通过；下一唯一项 U04：核对新 SHA 的 Quality 和残余引用，不绕过测试。历史73分不变，新产品未评，正式发行暂缓。
+
+## R14.1-U · 单一经营体系切换（候选，最高优先）
+
+2026-11-28 · U07 专项验收通过：代码基线 [0d391d9](https://github.com/kunlong-luo/monster-apartment/commit/0d391d946e31e9b9594eca47340f2d57ee5d5486) 的四项 workflow head_sha 一致、attempt 1、success。[Quality 原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/46111873054/job/140876974013) 63 文件/303 Vitest（自动履约 14、日志 10、stage-diff 10），设计、TS、Lint、91/91 组件样式可达、577 文本旧住房专项/0 旧执行路径违规，静态导出/Pixi 构建通过。[Desktop 原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/46111873055/job/140876974074) 定向 --retries=0，包括真实物理自动生产且不推进日期 1 passed、34 项工坊布局、双端导航/HUD/房间/图鉴及截图；[研究场景](https://github.com/kunlong-luo/monster-apartment/actions/runs/46111873055/job/140876974289) 8 passed；[Pixel](https://github.com/kunlong-luo/monster-apartment/actions/runs/46111873065/job/140876974146) 1 passed。[Gameplay full 原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/46111873089/job/140877052245) 实际运行 206 项，203 passed/3 skipped/0 failed/0 flaky，CI failOnFlakyTests 启用。最新 SHA 34 份 e2e spec 逐份复核，三个条件 skip 为独立授权 4K、R09 性能、WebGL 诊断，不含 U07。回读同 SHA 双端 1440×900/390×844 moonwork-routes：手动真实轮班第 6→7 天、失败购买日期不变、跨七路由/刷新；自动履约显式开启、缺货第 6 天/132 星币/2 晶核不变、真实市集购 1 晶核后 95 星币、模拟保存失败原字节不变、刷新恢复后第 7 天/190 星币/0 晶核/完成单 2、重复通知不重复奖励、关闭履约与暂停后日期稳定。moonwork-next-workshop PC 用例实际手动第 1→2 日、自动履约第 3→4 日不重播旧 last（电影式公告/产出、Pixi phase），另有自动物理生产不推进日期；gothic-apartment 损坏档日期不可用、原字节保护。测试仅加速调度时间戳、不直接写结算结果；完整日志为 dot reporter，未逐项输出日期/交易值，证据来自同 SHA 无跳过断言与完整回归。前序 841 条完整 Git 树/175 份运行源码样式字面扫描与后续表现层修复详见下方记录；本轮 compare 确认自 U06 文档基线只修改 13 份现有文件，无新增文件/依赖、未改领域结算或存档键。前一 6fe5187 Quality 失败、Gameplay cancelled 不计通过，已由本 SHA 独立复验取代。未本地运行或人工阅图，非字面动态拼接非穷尽证明，DPR2 大厅像素欠账仍在；不替代 U10 并发、U12 恢复、U14 全局双端及 U15 发布验收。U07 专项通过，仅更新既有架构与风险台账，新文档 SHA CI 独立核验。下一唯一项 U08（共享库存，已有候选先验收；晶核实际生产、采购、委托/访客消耗、跨场景及刷新一致，发现问题最小修复）。PR #65 保持 Draft，不合并、不发布、不重评。
+
+2026-11-28 · U07 第四次修复候选：基线 [6fe5187](https://github.com/kunlong-luo/monster-apartment/commit/6fe51870c7ff20d56d54a2b4b6332866b009c635) 的 [Quality 原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/46110879504/job/140873910702) 确认 TS 通过，Lint 在 workshop-cinematic-stage.tsx:125 报 react-hooks/set-state-in-effect（1 error/0 warnings），Vitest 等后续 checks 未执行；静态导出与 Pixi job 成功。[Desktop](https://github.com/kunlong-luo/monster-apartment/actions/runs/46110879501)、[Pixel](https://github.com/kunlong-luo/monster-apartment/actions/runs/46110879611) 成功，[Gameplay](https://github.com/kunlong-luo/monster-apartment/actions/runs/46110879515) 查询时仍运行。改用受前后输入快照身份比较保护的 React render-time state adjustment，不在 effect 中同步 setState，不关闭 Lint 规则、不删测试；保留共享单日手动判定及原动画清理。仅改电影式表现及现有两份文档，不改领域规则/存档/资源/依赖。未本地运行测试；新 SHA 独立验收，U07 不关闭、不进入 U08、不合并不发布不重评。
+
+2026-11-28 · U07 全仓日期专项与第三次修复候选：基线 [eabc5ab](https://github.com/kunlong-luo/monster-apartment/commit/eabc5abd91cf859f9dc0ee9559a874ef49eca247) 四项实际 workflow success：[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/46106831792/job/140861354511) 63 文件/302 Vitest（日志测试 10 项）、设计/TS/Lint/组件及路径审计通过，静态导出与 Pixi 构建成功；[Desktop](https://github.com/kunlong-luo/monster-apartment/actions/runs/46106831771/job/140861430655) 各双端专项及独立自动生产 --retries=0 通过；[Pixel](https://github.com/kunlong-luo/monster-apartment/actions/runs/46106831846)、[Gameplay full](https://github.com/kunlong-luo/monster-apartment/actions/runs/46106831763/job/140861421680) 202 passed/3 skipped（dot reporter，不逐项输出交易数值），四工作流全部成功。全量未截断 Git 树 841 条，逐份读取 app/src/engine/src 共 175 份 TS/TSX/JS/CSS/JSON，按 day/days、setInterval、Date.now、nextContractAt、旧键及中文日期标识扫描，0 读取失败。区分实际日期、委托期限、市集每日标签、动画/发布时间、剧情文案和 Dexie 备份元数据；并非任意动态拼接的形式证明。发现 Pixi 与电影式工坊均以日期增长加 last 推断手动产出，自动履约会保留旧报告并误播；电影式章节也有初始化假日期。以既有 stage-diff 表现模块统一观察到的单日手动转移判定，排除自动生产/自动履约、初次挂载和跨日跳变；电影式未就绪日期用不可用标记。新增真实引擎与 PC 浏览器手动后连续自动履约不重播的测试（加速现有时间戳，不写日期、库存或结果），待新 SHA 运行。不改经济、存档、引擎时间规则或资源，无新增文件、目录、依赖；截图未人工阅图，旧 DPR2 欠账仍在。U07 保持修复候选，不进入 U08，不合并不发布不重评。
+
+2026-11-28 · U07 补充修复候选：回读 [43fe697](https://github.com/kunlong-luo/monster-apartment/commit/43fe697156809f4a0a689bc77a6807476a576074) 后发现生产日志以当前 `day-1` 推断历史手动轮班日期；自动履约推进仍保留 last，导致旧记录日期随当前时钟改变。改用真实来源标签“手动轮班”，诊断明确“上一班”，不新增存档字段；既有日志单测更新日期语义并补真实引擎自动履约推进时手动报告及日志不变断言。原 U07 候选四项 CI 查询时仍运行，不视为通过。已尝试本地 Git 连接但 github.com 无法解析，连接器批量全仓读取触及调用上限；尚未完成全仓审计、本地构建或浏览器复验，下一候选 SHA 四项 CI 独立核验。U07 未通过，不进入 U08。
+
+2026-11-28 · U07 修复候选：基线 [9656787](https://github.com/kunlong-luo/monster-apartment/commit/9656787df1dd9e4989025eca0478200fe6b4029c) 的 Quality 与 Pixel 查询成功，Desktop/Gameplay 查询时运行中；U04–U06 既有验收记录保留，前序最新 SHA 四项仍需核对。回读共享 Zustand、锁事务、物理自动生产、履约、手动轮班及七路由相关展示，确认工坊 HUD 仍会以准备模型显示虚假第 1 天；改用有效快照，并在无有效快照时不展示委托剩余日/轮班报告，台词提示不可用。扩展现有 E2E：双端手动第 6→7 天、失败采购日期不变、七场景/刷新；新增双端真实 UI 自动履约开关、缺货等待、实际市集采购、自动结算写入失败原字节不变、重载后第 6→7 天/普通单奖励一次、关闭履约与重复事件保护。仅加速保存的自动履约时间戳，不写入日期或奖励；这些是待运行断言而非已通过结果。损坏档增加日期和工坊期限保护。无本地 clone/依赖执行/浏览器，未完成全仓动态扫描、自动履约双端及同 SHA 四项 CI 验收；不进入 U08，不改引擎规则、存档键、星币、资源、依赖或路由，不新增文件。PR #65 保持 Draft、不合并、不发布、不重评。
+
+2026-11-28 · U06 专项验收通过：候选 [231f000](https://github.com/kunlong-luo/monster-apartment/commit/231f00060d30e68820a8fe690b87b90f9428e261) 的四项 workflow head_sha 一致、attempt 1、success。[Quality 原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/46006834610/job/140531995314) 确认设计、TypeScript、Lint、63 文件/301 Vitest、329 审计文件/91 组件样式全部可达、0 未解析/非字面导入、577 文本旧住房专项（runtime 1 只读旧键、tests 3、docs 19、css/tooling/internal 0）、0 旧执行路径违规；静态导出与 Pixi 作业通过。[完整玩法原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/46006834655/job/140531995516) 实际执行 203 项，200 passed、3 skipped、0 flaky、0 failed，CI failOnFlakyTests 生效。回读同 SHA e2e/moonwork-routes.spec.ts 双端 1440×900/390×844 两个无 skip 测试：真实 UI 采购写入失败 132 原字节不变；市集孢子 132→108，库存设备增加 3；仓库两次采购各扣 42，108→66→24，晶核 8→10，余额不足拒绝再购；工坊真实轮班交付 3 晶核并奖励 95，24→119，完成单数变 2；大厅、公寓、街区、仓库回读均 119，刷新与返回大厅存档仍 119。公寓损坏档测试覆盖大厅、公寓、街区、仓库、委托、工坊显示不可用及原字节保护；损坏样本通过 init script 在各页注入，不能替代 U12 独立恢复/外部破坏场景。完整日志用 dot reporter，不逐项输出测试名和余额；交易证据由同 SHA 的无跳过源码断言与 203 项完整回归结果共同支持，不是另采人工交易流水。34 份 spec 逐份检查显式 skip：4K 授权原图、R09 性能及 R09.5 WebGL 三个条件跳过，均非 U06。对完整未截断 841 条 Git 树中 app/src/engine/src 的 175 份 TS/TSX/JS/CSS/JSON 文件逐份按 coins、星币、star coin、旧/现行存档键和 newWorkshop 字面扫描；回读现行事务锁、Zustand、Pixi 工作快照、自动运行及 Dexie 恢复副本，未发现平行经营账本。该专项不是任意动态拼接或所有历史文档内容的形式证明；现有工坊内部初始模型仅作运行准备/显式重置，HUD 不回退余额，写入须通过有效快照和锁；完整并发与恢复门槛仍归 U10/U12。 [桌面/手机](https://github.com/kunlong-luo/monster-apartment/actions/runs/46006834620)、[像素](https://github.com/kunlong-luo/monster-apartment/actions/runs/46006834614) 通过，实际截图归档 [桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/46006834620/artifacts/15200669731)、[研究](https://github.com/kunlong-luo/monster-apartment/actions/runs/46006834620/artifacts/15200843679)、[像素](https://github.com/kunlong-luo/monster-apartment/actions/runs/46006834614/artifacts/15200903502)、[玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/46006834655/artifacts/15202173648)；未解包人工阅图，既有大厅 DPR2 像素欠账仍在。不重复修改生产代码；本次仅提交现有台账/架构验收记录，文档新 SHA CI 独立核验。当前 U06 专项通过，下一唯一任务 U07（共享日期：无独立旧时钟，真实手动轮班及独立自动履约推进，跨页、刷新和异常保护；先核验最新候选与 CI，不重复开发）。U08–U16 不提前执行；PR #65 继续 Draft，不合并、不发布、不重评。
+
+2026-11-27 · U06 修复候选：基线 [9e47376](https://github.com/kunlong-luo/monster-apartment/commit/9e473768511559897ba522ef0b1e1a4eb2ed3020) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/46001448862)、[Desktop](https://github.com/kunlong-luo/monster-apartment/actions/runs/46001448846)、[Pixel](https://github.com/kunlong-luo/monster-apartment/actions/runs/46001448757)、[Gameplay full](https://github.com/kunlong-luo/monster-apartment/actions/runs/46001448974/job/140513826060) 均成功，原始日志为 63 文件/301 Vitest、198 passed/3 skipped；U04/U05 前置满足。回读现行共享 Zustand、锁定事务、领域 reducer、五场景余额展示与现有交易测试；发现大厅使用未持久化 newWorkshop() 回退显示初始余额/委托奖励、工坊 HUD 也回退初始余额。大厅改用现有 ensureWorkshopWorld 安全初始化，未取得有效共享存档不显示虚假余额/奖励；工坊 HUD 显示实际存档余额或不可用标记，恢复流程不变。扩展既有浏览器 spec：双端 1440×900/390×844 购买失败原字节不变、132→108→66→24（不足禁止采购）→119（真实普通委托奖励 95、实际晶核消耗），五场景同步/刷新/返回，以及损坏记录各场景不伪造余额、不覆盖。新增断言为待运行的预期值，不是已通过的交易证据。未在本地 clone 或运行浏览器（网络不可用），全仓动态引用审计未穷尽；新 SHA 四项 CI 和双端真实交易日志待核，不标 U06 通过，不进入 U07。保留原引擎、存档键、规则、资源、路由与既有恢复逻辑；不新增依赖或文件，PR #65 保持 Draft，不合并、不发布、不重评。
+
+2026-11-27 · U05 验收收口：候选 [e088d41](https://github.com/kunlong-luo/monster-apartment/commit/e088d4117658772ae3250e71c665409730e7e4ef) 四项同 SHA workflow 均成功。[Quality 原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45977729568/job/140433580390) 确认 63 个 Vitest 文件/301 项通过，329 审计文件、91/91 组件及样式可达、0 未解析本地引用/非字面导入，577 跟踪文本、退役 CSS 引用文件 0、退役住房及旧引擎路径违规均 0；设计、TypeScript、Lint、静态导出和 Pixi 作业通过。[桌面原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45977729740/job/140433749165) 定向用例 --retries=0：公寓 HUD、月纱直链/Back、手机四门选择器各 1 passed；人物房间观景及审稿隔离 4 passed；导航/弹窗、四场景 smoke、图鉴/房间定向均成功。现有 E2E 明确使用 1440×900 和 390×844，检查 HUD 与房门可见、边界、实际入口、研究隔离，并在真实 Chromium 截图。独立 [研究场景作业](https://github.com/kunlong-luo/monster-apartment/actions/runs/45977729740/job/140433749791) 8 passed；[像素工作流](https://github.com/kunlong-luo/monster-apartment/actions/runs/45977729553) 成功。[完整玩法日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45977729665/job/140433730958) 198 passed、3 skipped、0 flaky、0 failed，CI failOnFlakyTests 已启用。截图 ZIP 已归档：[桌面/手机](https://github.com/kunlong-luo/monster-apartment/actions/runs/45977729740/artifacts/15188337398)、[研究场景](https://github.com/kunlong-luo/monster-apartment/actions/runs/45977729740/artifacts/15188610259)、[像素](https://github.com/kunlong-luo/monster-apartment/actions/runs/45977729553/artifacts/15188625059)。未解包人工阅图，3 项跳过未逐项归因；已知大厅 PC DPR2 像素欠账仍存在（1672×941，coverScale 1.913，underResolved=true），不因此晋级原画或评产品分。前序文档 SHA c25d9f1 的桌面/玩法为 cancelled，Quality/Pixel 成功；不计作通过，已由 e088d41 独立完整复验取代。U05 专项自动验收通过，不代替 U14 全局双端验收或 U15 发布回归；动态拼接与所有 CSS 级联不作穷尽证明。仅更新现有架构与台账，不重复改生产代码。新文档 SHA CI 独立核验。下一唯一任务 U06（共享星币，已有候选，不重复实现）：先核对最新候选及前置，验证大厅/公寓/工坊/月光街/仓库真实交易前后一致，发现缺口再最小修复；不提前执行 U07–U16。PR #65 保持 Draft，不合并、不发布、不重评。
+
+2026-11-27 · U05 代码候选：基于 `c25d9f1`（U04 原代码 SHA `bf806e0` 已验收）；逐一核对 19 份 CSS、现行公寓/房门/研究组件、main 已退役抽屉与旧房门实现及相关 E2E，删除四份目标 CSS 中旧抽屉、旧告警/救援、旧反馈、旧装载、旧居民/按压状态和其专属动画，收窄共享选择器及修正过时注释。保留当前四人房门、共享故事、绘景、研究模式、有效焦点和减弱动效；未改运行 TS/TSX、资源、存档、路由、数值或测试。现有 `audit:engine-paths` 从 U05 延后报告改为退役表现标识门禁（历史文档可引用），候选 CI 将执行全仓跟踪文本检查；无法在本地 clone/安装/运行浏览器，不能宣称本轮全仓动态覆盖或视觉已验收。保留有效的真实行为测试，不为通过而删测试。仅候选，待同 SHA Quality、Desktop、Pixel、Gameplay full 及双端证据；U05 未通过前不进入 U06。PR #65 保持 Draft，不合并、不发布、不重评。
+
+2026-11-27 · U04 验收收口：候选 [bf806e0](https://github.com/kunlong-luo/monster-apartment/commit/bf806e0770777ed5b28b37170e9e67864c2cef8f) 四项同 SHA workflow 均成功。[Quality checks 原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953564313/job/140354748866) 确认 TypeScript、Lint、63 文件/301 Vitest、组件审计 329 文件/91 组件及样式全部可达、0 未解析本地引用和未知动态导入、0 旧引擎路径及住房专项违规；静态导出和 Pixi job 成功。住房专项实际扫描 577 个跟踪文本，报告 runtime 1（公寓只读原始键声明）、tests 3（保护/回归）、docs 19、tooling/internal 0，另有四份 U05 CSS：gothic-apartment.css 21/33/34/46；gothic-desktop-ui.css 204/209/210/215/218；gothic-polish.css 112/113/116/118/119/158；gothic-red-gold.css 80/89/93/99（均为 bf806e0 行号，U05 重新核对）。[完整玩法原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953564371/job/140354851637) 198 passed、3 skipped、0 flaky、0 failed；[桌面原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953564302/job/140354887612) 月纱直链 --retries=0 通过、图鉴/房间四项定向回归通过，手机/研究场景相关步骤成功；[像素](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953564292) 成功。U04 通过；U13 前置现已满足，按既有专项与本轮回归同步为通过，不重复实施。3 跳过项未逐项归因，未人工阅图，已知名称文本门禁不证明任意字符串拼接或所有 CSS 覆盖，相关视觉及发布门禁仍独立。仅提交验收文档，不改生产代码；文档新 SHA 的 CI 另查，不以 bf806e0 结果冒充新 SHA。下一唯一任务 U05：在新会话核验最新候选和前置后，逐选择器清理四份 CSS 的死规则，保留活跃场景与研究样式。每个原子任务验收、更新台账及 PR 后生成下一会话完整研发命令；当前任务未验收不得切换。由用户开启新会话，不宣称后台跨会话执行。PR #65 保持 Draft，不合并、不发布；历史综合评分不变，R14 产品未评。
+
+2026-11-27 · U04 残留引用清理候选：基线 [c318085](https://github.com/kunlong-luo/monster-apartment/commit/c3180858370857f62463268780a25a10d62c8da0) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953008719) 三个 job 成功，63 文件、301 Vitest、329 审计文件、91/91 组件样式可达、0 不可达/未解析/未知动态导入、0 旧引擎路径违规；[像素](https://github.com/kunlong-luo/monster-apartment/actions/runs/45953008690) 成功，核查时桌面与完整玩法仍运行。前序 dbf7d52 的 U13 专项复验为 198 passed、3 skipped、0 flaky；U01–03 回读欢迎页、存档保护测试、导航及最新类型检查。完整 Git 树 841 条（未截断），PR 已删除 cozy-engine、cozy-save-transaction、gothic-room-drawer 及两份旧单测；不重复删除。此次删除共享 GothicResourcePill 中已退出玩家路径的幸福度/入住图标分支，不动有效资源、经营规则或存档。现有 audit:engine-paths 增加 Git 跟踪文本的旧住房文件/符号/旧键检查及历史/测试/U05 CSS 分类报告，允许公寓现有只读原始键声明，不扩大兼容层。已确认 gothic-apartment.css、gothic-red-gold.css 存在 ga-room-drawer/ga-warning 定义，U05 再逐条核查，保留场景/研究 CSS 和原画。修正现行架构旧技术债。未能在本地检出仓库运行依赖工具，使用新候选 CI 完成实际全仓检查；新 SHA 尚未验证，不将旧 CI 冒充本轮验收。审计为已知路径/符号的文本门禁，不能证明任意动态拼接或 CSS 覆盖；新 CI 报告与必要浏览器回归待核。U04 保持候选，U05 不开始；PR #65 保持 Draft，不合并、不发布、不重评产品。
+
+2026-11-27 · U13 失败复验结论：候选 [dbf7d52](https://github.com/kunlong-luo/monster-apartment/commit/dbf7d521f61748d1826449da9bfa2c2805985963) 的四项 PR workflow 均核对 head_sha 一致、attempt 1、success。[完整玩法原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45935518799/job/140297714131) 为 198 passed、3 skipped、0 flaky、0 failed；[桌面专项日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45935518839/job/140297714596) 中月纱深链接以 --retries=0 首次通过（1 passed），人物图鉴的房间入口/历史回退等四项定向测试通过，桌面与手机相关步骤通过。[Quality 原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45935518778/job/140297714323) 为 63 文件、301 Vitest 通过、0 不可达模块、0 未解析本地引用；静态导出及 Pixi 作业成功。[像素工作流](https://github.com/kunlong-luo/monster-apartment/actions/runs/45935518770) 成功。回读 playwright.config.ts、e2e/gothic-apartment.spec.ts 和 e2e/character-collection.spec.ts：CI failOnFlakyTests 生效，月纱仍保留真实焦点、共享余额、外部 History、Back、关闭及审稿参数断言；公寓四门链接和人物图鉴泉泡/青枝/炽角实际打开覆盖保留。本次消除 U13 已观察到的 flaky 验收阻塞，不声称已经独立复现生产根因或证明永不 flaky；3 项跳过未逐项归因，截图未人工审阅。U13 专项证据通过，但 U04 前置尚未穷尽残留引用，队列暂记候选；U15 回到待办，U14 前置尚未完成。完整 Git 树未截断且已退役住房文件名未见匹配，但未逐文件扫描动态引用，不代替 U04。仅提交本台账的验收记录，不为重复实现修改生产代码或测试，不恢复旧住房、不新增目录/依赖。该证据绑定 dbf7d52，文档新 SHA 的 CI 另核。PR #65 继续 Draft，不合并不发布；下一唯一任务 U04（先确认 U01–03 证据，再完成残余引用审计和必要清理），不提前进入 U05 或新功能。历史73/100不变，新产品未评分。
+
+2026-11-27 · U13 验收阻塞修复候选：PR [#65](https://github.com/kunlong-luo/monster-apartment/pull/65) 在 [00a08d0](https://github.com/kunlong-luo/monster-apartment/commit/00a08d032848fc99f558bcc7b335469ed7affd20) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931982731)、[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931982729)、[像素](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931982726) 均成功，63 个 Vitest 文件、301 项通过，组件审计 0 不可达、0 未解析。[完整玩法原始日志](https://github.com/kunlong-luo/monster-apartment/actions/runs/45931982721/job/140286457501) 实为 197 passed、1 flaky、3 skipped；月纱直链测试第 93 行首次执行在外部 pushState 后仍存在私人房间，重试通过，不视为 U13/U15 验收。怀疑 SSR 可见早于客户端 History API 桥接就绪，尚未独立复现根因。本轮在现有 E2E 中等待弹窗真实焦点和共享经营余额加载后才调用 History API，增加 URL 断言，保留原有关闭、后退、查询参数及其他测试断言；Playwright CI 启用 failOnFlakyTests，保留重试诊断但不允许绿色掩盖 flaky。未修改生产路由、存档、经济、资源或依赖。本修复 SHA 尚无新浏览器验证；下一唯一项：核对同 SHA CI 与原始日志，确认 U13 无 flaky 后返回 U04 残留引用，U05–U16 按前置顺序推进。PR 保持 Draft，不合并，不发布。全仓引用仍未穷尽。main [9e683cf](https://github.com/kunlong-luo/monster-apartment/commit/9e683cfc56e62c05a96a37574df4311b1b53b580) 的 [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45809152014) 和 [Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45809315642) 已成功；未重新评分。
+
+
+用户明确要求不再保留两套游戏。公寓候选不再启动 Cozy V1 两秒时钟、租金、房屋建造/装饰/搬迁/救援经济，直接订阅现行工坊 Zustand/同一持久化快照的天数、星币、晶核和已交付单数；四个正式人物房间真实入口与月纱剧情保留。六门研究原图仅作独立几何命中检查，不再调用旧住房游戏。旧原始 localStorage 记录不写、不删、不兑换，提供只读导出；当前未设兑换比例，旧住房资产不再可玩，不能称旧资产已迁移。角色剧情/收藏专项存档不是另一套经营余额，仍保留，后续合并需完整事务与迁移设计。
+
+本候选未运行浏览器或 CI；不能合并/发行，需核对全部引用、同步旧功能测试到统一产品合同、验证跨页及跨标签页同一经济、旧原始字节保持、四房实际入口、研究工具隔离及原有存档恢复。只在这些验收通过后称经营统一上线。不新增依赖或路由，不另建文档。候选删除旧住房引擎、事务写入器、房屋操作抽屉及仅验证已退役规则的两份单测；替换旧住房 E2E 为共享经济、跨标签页、存档保护、四房可达及研究隔离，保留其他经营与剧情回归。全仓引用枚举因接口批量限制未完成，不能声称零残留。下一项：核验完整 Quality、桌面/手机与完整玩法，修复任何残留引用、文档链接及测试问题，再合并。
+
+## R14.0 / R14.1-A · 产品重制与月纱首局衔接（同一候选）
+
+用户确认重新设计产品，现行路线和评分见 [PRODUCT](../../PRODUCT.md#r14-产品重制路线现行方向)。以 [9e683cf](https://github.com/kunlong-luo/monster-apartment/commit/9e683cfc56e62c05a96a37574df4311b1b53b580) 为本轮候选基线；当前提交状态接口未返回检查项，不能确认本基线最新 Pages/完整浏览器结果。暂停没有真实缺陷的目录/文档治理与批量内容扩张；R13 未解决的发布阻塞、美术人审、分支保护、布局问题仍保留，不直接关闭。
+
+复现（源码）：大厅 GothicLobby 的月纱交谈只区分特别委托 offered 和其他，普通首单完成、特别委托完成后仍可能要求先交付第一批。候选修复：复用 workshop-guidance 的真实存档状态，在原有对话和唯一下一步链接中区别缺晶核、备齐、已交首单、特别委托待接受/进行中/已完成/失败；将玩家导向既有工坊、委托或月纱房间。没有新奖励、解锁、存档字段、资产、路由、依赖或概率变动。新增三个定向 Vitest 用例；本轮尚未运行，待候选 SHA Quality、桌面/手机普通点击与完整玩法验证，不宣称上线。验收需真实首单结算前后再次交谈、核对奖励、特别委托接受及结束、房间实际可达、刷新状态一致；月纱向导不是保证召唤获得人物。真实试玩与正式美术仍未完成。
+
+旧综合73/100仅历史基线，新产品评分待独立人工证据，不给分；正式商业发行仍暂缓。下一唯一项：核对候选 CI、发布基线与真实首局全链（包括旧档和自动履约），按复现修正阻塞，之后完成奖励→人物互动的真实因果切片，再推进原画。不凭文案修复宣称整个 R14.1 完成。
+
+## R13.1-J · 新美术收件与发布收口（历史记录）
 
 上一轮 9c5aea9 同 SHA [Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746624328)、[桌面](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746624262)、[玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746624275)、[Pages](https://github.com/kunlong-luo/monster-apartment/actions/runs/45746721073) 全部成功。随后 3174568 新增五项媒体及召唤组件；[Quality](https://github.com/kunlong-luo/monster-apartment/actions/runs/45750825010) 在媒体目录审计失败，仅缺 S02 desktop-candidate-v2.png 行，实际146项/165666116 B、0意外重复；静态导出/Pixi通过，[玩法](https://github.com/kunlong-luo/monster-apartment/actions/runs/45750825015) 成功，桌面取消，Pages跳过。本轮不覆盖新增资源；核对完整 Git tree 与库存146行，补全源图清单/资源目录与汇总，S02同历史 blob 的1672×941原图为rework，新增字节/尺寸/哈希测试；两张清洁CG候选实际登记，但未经人审，五卡均portrait生产状态，四人G1 0/4。更新PRODUCT/SOP/场景准入与索引。此轮不改运行样式、经济、存档、原画；先恢复发布门禁，公寓布局与全站Tooltip验收顺延，不能称7/7布局完成。已上线基线73/100，免费Alpha可继续；最新提交需同SHA Quality/Pages，正式商业发行仍缺人审、独立场景、真人样本、主线保护。下一步核对新SHA发布与桌面再完成公寓及提示治理。
 
@@ -323,3 +447,8 @@ R12.105：CSS 级联风险与动态资源测试见 [架构审计](../CURRENT_ARC
 R12.106：召唤移动端同断点覆盖第一批收敛，详见 [架构](../CURRENT_ARCHITECTURE.md#r12106--召唤移动断点覆盖收敛候选)。PR #61 的 Quality、像素、独立场景通过，桌面/玩法尚未结束；PR #62 原 2e598b3 Quality 与像素通过，新增 CSS 候选须独立验收。正式评分保持 72/100；不再创建第三条验证分支。
 
 R12.107：PR #61 四项候选验收均通过并已合并，完整玩法 199 通过、3 跳过、0 失败；同 SHA Pages 未确认前正式 72/100 不提高。PR #62 同步主线后待新 CI，详见[资源总目录](../ART-RESOURCE-CATALOG.md)。
+
+
+2026-11-28 · U08 修复候选：基线 [186dfd3](https://github.com/kunlong-luo/monster-apartment/commit/186dfd3cb62eff03b42727f161e8908d507e0f57) 四项 PR CI 成功（Quality 46113515421、Desktop 46113515555、Pixel 46113515445、Gameplay 46113515485）。回读工坊 HUD/控制台、共享场景、仓库与市集/委托领域实现，发现晶核 HUD 仍读取未持久化的 newWorkshop 备用模型，控制台也可展示假材料/成品；改为有效快照或不可用，保留场景准备及既有存档保护。扩展现有 E2E 双端普通生产守恒、损坏档跨页、真实居民晶核消耗、高额及特别委托同日结算、水汽采购、设备暂存/共享晶核及跨页刷新；新增断言是待运行预期，不是验收结果。未改变引擎、保存键、经济、依赖或路由。全仓审计、真实双端及同 SHA CI 待完成；U08 仍候选，不进入 U09，PR 保持 Draft、不合并不发布不重评。
+
+2026-11-28 · U08 补充修复候选：前一 [f8ddd2a](https://github.com/kunlong-luo/monster-apartment/commit/f8ddd2ad246e343e2a2bc4342008507860c64d65) 四项 CI 查询时 in_progress（46117735953/46117735949/46117735934/46117735938），未视为通过。继续回读共享 Zustand、Dexie 备份、事务锁、物理自动生产、手动结算与 Pixi/电影式设备表现：自动累计产量非库存，设备暂存非晶核；电影式未就绪仍显示备用设备的暂存/预测，精密建造与情境面板熔炉仍用 stored 数值。限制库存/预测与设备操作到就绪快照，熔炉明确直入仓库，补既有 Vitest 与损坏档断言；不新增文件、不改领域规则。当前环境 Git 无法解析 github.com，未本地运行；全仓审计未穷尽、新 SHA 四项 CI 独立验证，U08 仍候选，不进入 U09，不合并、不发布、不重评。

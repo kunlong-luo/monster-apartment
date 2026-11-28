@@ -4,7 +4,7 @@
 
 - Next.js App Router + React + TypeScript strict + Tailwind CSS v4 + Motion；PixiJS 8 独立工坊运行时。根 `package.json` 声明 Zustand 与 Dexie；依赖声明不等同全站实际用法，未完成逐模块使用审计，不再断言不存在。
 - 七个游戏路由见[根 README](../README.md)；研究页独立。根布局挂载共享导航、过渡、错误边界、发布提示和工坊自动运行。现行大厅采用顶角地图而非旧底部 Dock，见[现行视觉合同](design/R12-37-CURRENT-VISUAL-CONTRACT-2026-11-24.md)。
-- `src/core/cozy-engine.ts` 与 `engine/src/workshop-engine.ts` 是规则边界，两套存档键保持不变，未统一账本。
+- R14.1-U 候选：公寓与工坊统一读取 `engine/src/workshop-engine.ts` 的经营快照，旧 Cozy V1 独立运行退役；旧记录只读保留，不自动兑换。人物收藏和剧情独立领域数据暂保持兼容；本候选尚待完整发布门禁。U04 在共享 HUD 删除旧幸福度/入住图标分支，并在现有 `pnpm audit:engine-paths` 增加退役住房名称、路径和旧键的专项报告/门禁；历史文档及旧档保护测试不属于第二经营引擎，既有只读导出边界保留。U05 已通过专项自动验收（e088d41）：删除四份 CSS 中已退役住房抽屉、警告/救援、旧房门入住状态及专属动画样式；共享故事面板、现行四位人物房门、绘景、研究模式、可达焦点及减弱动效规则保留。现有路径审计对旧住房表现标识新增全仓文本门禁；同 SHA Quality、桌面/手机真实 Chromium、像素和完整玩法已通过；详见风险台账。文本审计不证明任意动态拼接或 CSS 全覆盖，截图已归档但尚未人工阅图。
 - `engine/src/runtime.ts`、`engine/src/workshop-lab-stage.ts`、`engine/scripts/build.mjs` 与 `engine/art/` 是当前 Pixi sidecar，不得按名称清除。
 - 当前 19 份 CSS（含 `app/globals.css`），全局视觉 token 为 `src/components/game/gothic-premium-tokens.css`。布局导入 tokens、globals、red-gold、desktop-ui；大厅导入 lobby、polish、reference-layout、lobby-navigation；共享导航和图鉴分别导入自己的样式，工人房间仍导入 polish。未证明全量 CSS 规则使用情况，不据数量删除。
 - 正式欢迎图/大厅 V4、四间房间观景、PC 工坊与街区新绘景的实际路径见[资源目录](ART-RESOURCE-CATALOG.md)。生产、过渡、审稿、回退分开。房间故事热点与观景层分离；Pixi 精密建造、手机与旧档保持。
@@ -35,7 +35,7 @@
 - 正式工坊仅挂载在 Next 的 `/workshop/`；`engine/src/runtime.ts`、`engine/scripts/build.mjs` 是必需的 Pixi 资源入口及编译工具，不是旧 UI。
 - CSS：共七份，`app/globals.css` 负责 Tailwind 主题；其他文件目前仍包含复杂哥特式绘景、响应式布局与特殊视觉效果。继续将普通控件样式迁移至 Tailwind，但不机械删除已在场景中使用的规则。
 - JavaScript：无 `.js`/`.jsx` 正式源文件。六个 `.mjs` 仅用于 lint/PostCSS、构建、资源审核与本地静态服务；这些属于现代 Node 工具链，不需要强制改成 TS。
-- 技术债：`src/core/cozy-engine.ts`、工坊规则模块及 `engine/src/workshop-lab-stage.ts` 仍需按职责逐步拆分。工坊 React 与 Pixi 暂态选中状态已采用显式 TypeScript 类型回调接口，不再通过 DOM dataset/custom events 反向读取状态；保留现有存档键及行为。
+- 技术债：工坊规则模块及 `engine/src/workshop-lab-stage.ts` 仍按实际职责与缺陷治理。旧 `src/core/cozy-engine.ts` 已在 R14.1-U 候选退役，不恢复或拆分旧系统。工坊 React 与 Pixi 暂态选中状态已采用显式 TypeScript 类型回调接口，不再通过 DOM dataset/custom events 反向读取状态；保留现有存档键及行为。
 
 ## 工坊领域模块（第二轮拆分）
 
@@ -169,3 +169,21 @@ R12.107：R12.106 的 14 项早期覆盖声明删除已通过原 d94bbdf 桌面�
 逐份核查 gothic-desktop-ui.css 与 gothic-red-gold.css 中相同选择器/媒体条件的重复规则：前者 5 组，后者 0 组（不表示无跨文件覆盖）。仅删除前者 16 项被后置同目标声明完全覆盖的前置属性，包括派工网格、工人按钮、hover/focus/pressed、头像尺寸及市场图标 flex-basis/尺寸；保留后置有效值、过渡动画、不同高度断点和其他样式，不改游戏逻辑、资源或存档。!important 118→112，现有 Desktop Visual Review 覆盖 1440×900 工坊三工人一行、月光街门户、390×844 手机及七路由；本候选尚须独立 CI，未声称视觉一致。保留 gothic-red-gold.css，不凭文本统计删有效兼容规则。
 
 R13.0-G：R12.108 原候选 65b7ace 的 Quality 45615216421、Desktop 45615216278、Gameplay 45615216586 均成功；现复用原验证分支并继承最新 R13 主线。CSS 使用原候选 Git blob，不覆盖任何新 G1/CG 工具或原画；合并候选须新 SHA 独立验证。
+
+
+R14.1-U06 专项已验收（231f000）：大厅不再以未持久化 `newWorkshop()` 代替共享存档余额，而通过既有 `ensureWorkshopWorld` 锁定初始化；无有效快照时显示不可用，不展示虚假委托奖励。工坊 HUD 星币也只取有效共享快照。交易仍走原领域 reducer 与同一存档锁，恢复边界不变。现有浏览器 spec 的双端跨页交易、失败写入、余额不足、真实委托奖励及损坏档保护已随同 SHA 四项 CI 通过（301 Vitest、200 浏览器通过/3 条件跳过）；175 份运行源码及样式已完成已知标识专项扫描。并发与完整恢复仍分别由 U10/U12 验收；细项及证据见风险台账。
+
+R14.1-U07 修复候选：现行经营日由 `WorkshopState.day` 唯一持有，手动轮班走 `runShift`，物理自动生产只执行机器节拍，明确开启自动履约后才通过 `advanceSafeAutoContractDay` 使用真实库存安全推进；同一事务锁与现行保存键保持。工坊 HUD 不再以准备模型 `newWorkshop()` 展示无效日期，无有效快照不渲染委托剩余日与轮班报告，月纱台词提示记录不可用。扩展原有双端 E2E：实际手动轮班跨七路由、真实自动履约缺货等待/购买/写入失败/重试成功/关闭及刷新，另补损坏记录日期不可用断言。测试中的加速仅设置自动履约时间戳，不直接修改结算结果。当前仅候选，尚待同 SHA CI 与完整审计；详见风险台账。
+
+U07 补充修复：历史手动报告 `last` 没有记录日期，自动履约推进后仍保留原报告，不能使用 `world.day - 1` 伪造报告日期。生产日志改为稳定标记“手动轮班”，上一班诊断不再称作今天；不新增历史日期字段或改存档。补充实际引擎推进的 Vitest 回归，待同 SHA 运行。
+
+U07 继续复验：eabc5ab 同 SHA 四项 CI 成功（302 Vitest、202 浏览器通过/3 跳过），但全仓日期专项发现 Pixi 及电影式场景均将自动履约日期增长误判为手动轮班，重播保留的 last 报告；电影式章节标题还可能显示准备模型日期。复用现有 stage-diff 表现模块的单日手动转移判定，两场景只在直接观察到关闭自动生产的真实单日手动转移时重播，不从自动履约、初始化或跨日跳变推断产出；未就绪章节日期显示不可用。新增既有 Vitest/E2E 中的手动后连续自动履约回归。无新保存字段或时间规则，最新修复候选须独立 CI。
+
+U07 Lint 修复候选：电影式场景不在 effect 内同步更新轮班表现状态；改为共享快照输入身份变化时受条件保护的 React render-time state adjustment，保留 `isObservedManualShift`、首次加载/自动履约不重播及动画完成清理。仅表现状态，不写经营快照。前一 SHA Quality 因 react-hooks/set-state-in-effect 失败，新 SHA 需重新完整验收。
+
+U07 专项验收通过：代码基线 [0d391d9](https://github.com/kunlong-luo/monster-apartment/commit/0d391d946e31e9b9594eca47340f2d57ee5d5486) 同 SHA 四项 CI 全绿（63 文件/303 Vitest，203 浏览器通过/3 个独立诊断跳过/0 flaky/0 failed）。唯一经营日期 `WorkshopState.day`，实际手动轮班和独立主动开启的安全自动履约推进；自动物理生产、缺货、保存失败和重复通知不伪造日期或结算。双端七路由/刷新、损坏档不可用、历史手动报告与自动履约表现隔离通过；真实调度时间戳加速而非直接修改结算。全仓运行源码样式字面专项 175 份，未穷尽动态拼接或人工阅图，U10/U12/U14/U15 独立门禁保留。详见风险台账。下一唯一任务 U08 共享库存（已有候选先验收，实际生产/采购/消耗跨页一致）。PR #65 保持 Draft，不合并不发布不重评；本次仅文档，新 SHA CI 独立核验。
+
+
+R14.1-U08 修复候选：工坊晶核 HUD 与星币/日期一样只显示有效共享快照；无有效快照时不渲染库存/材料/生产控制台，保留既有绘景准备模型及损坏档保护。现行仓库晶核、设备水汽/孢子暂存、生产历史计数职责不变。现有双端浏览器测试补普通生产与材料守恒、损坏档库存不可用，以及真实居民、普通/高额及特别委托、采购、跨场景刷新断言。尚待同 SHA 四项 CI 和全仓审计，不视为专项通过。
+
+U08 补充候选：电影式设备的暂存量、生产预测、工匠/供料动态只在真实工坊就绪时呈现；无效快照不启用设备操作。精密建造和情境面板不再将熔炉 stored 当成晶核库存，明确晶核直入仓库；水汽/孢子仍为设备暂存。只改表现与测试，保持原领域规则。新 SHA 独立验收。

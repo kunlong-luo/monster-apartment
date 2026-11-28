@@ -63,6 +63,48 @@ test('automatic production runs from saved machines without advancing contract d
   expect(paused).toEqual({day:baseline.day,auto:false});
 });
 
+test('automatic contract calendar does not replay retained manual production effects',async({page})=>{
+  test.setTimeout(90_000);
+  await page.setViewportSize({width:1440,height:900});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/workshop/');
+  const stage=page.getByTestId('v2-stage');
+  await expect(stage.locator('canvas')).toBeVisible({timeout:25_000});
+  await expect(page.getByTestId('v2-day')).toHaveText('1');
+  const announcement=page.getByTestId('workshop-cinematic-shift-announcement');
+  await expect(announcement).toBeAttached();
+  await page.getByTestId('v2-shift').click();
+  await expect(page.getByTestId('v2-day')).toHaveText('2');
+  await expect(announcement).toContainText('第1日生产完成');
+  const key='monster-apartment:workshop-v2-lab';
+  const previous=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)!).last,key);
+  expect(previous).not.toBeNull();
+  const auto=page.getByTestId('workshop-auto-toggle');
+  await auto.click();
+  await expect(auto).toHaveAttribute('aria-pressed','true');
+  const contract=page.getByTestId('workshop-auto-contract-toggle');
+  await contract.click();
+  await expect(contract).toHaveAttribute('aria-pressed','true');
+  const tick=()=>page.evaluate(key=>{
+    const s=JSON.parse(localStorage.getItem(key)!);
+    const now=Date.now();
+    s.auto.lastSimulatedAt=now-2000;
+    s.auto.nextContractAt=now-1000;
+    localStorage.setItem(key,JSON.stringify(s));
+    window.dispatchEvent(new Event('moonwork:v2-update'));
+  },key);
+  await tick();
+  await expect(page.getByTestId('v2-day')).toHaveText('3',{timeout:15_000});
+  await expect(announcement).toBeEmpty();
+  await expect(page.getByTestId('workshop-shift-output-well')).toHaveCount(0);
+  await expect(stage).toHaveAttribute('data-device-phase-events','');
+  await openPreciseGrid(page);
+  await tick();
+  await expect(page.getByTestId('v2-day')).toHaveText('4',{timeout:15_000});
+  await expect(stage).toHaveAttribute('data-device-phase-events','');
+  expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)!).last,key)).toEqual(previous);
+});
+
 test('Next-owned PixiJS workshop survives SPA navigation and keeps one save',async({page})=>{
   test.setTimeout(90_000);
   const errors:string[]=[];

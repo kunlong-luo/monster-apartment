@@ -4,6 +4,14 @@ import {inspectMachineSignals} from './workshop-machine-status';
 import {projectedSupplyTrails} from './workshop-machine-presentation';
 import type {MachineVisualSignal} from './workshop-machine-status';
 
+/** Only a directly observed manual one-day transition can replay the
+ * latest manual report. Auto delivery retains last and never runs a shift.
+ * Hydration, catch-up and ambiguous jumps must not fabricate production. */
+export function isObservedManualShift(before:WorkshopState|null,after:WorkshopState):boolean{
+  return Boolean(before&&!before.auto?.enabled&&!after.auto?.enabled&&
+    after.day===before.day+1&&after.last);
+}
+
 /** UI-only inventory caption: no settlement, economy, or save operation. */
 export function workshopMachineCaption(
   craft:keyof typeof MACHINES,stored:number,signal:MachineVisualSignal
@@ -12,7 +20,7 @@ export function workshopMachineCaption(
     signal.state==='blocked'
       ?'缺'+(signal.problem==='water'?'水汽':'孢子')
       :'可生产';
-  return MACHINES[craft].zh+' · '+stored+' · '+status;
+  return MACHINES[craft].zh+' · '+(craft==='kiln'?'晶核直入仓库':stored)+' · '+status;
 }
 
 export type WorkshopStagePlotPatch=Readonly<{

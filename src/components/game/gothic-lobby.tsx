@@ -4,14 +4,15 @@ import Link from 'next/link';
 import {BookOpen,DoorOpen,Mail,MoonStar,Orbit} from 'lucide-react';
 import {ReliableImage as Image,retryAssetUrl} from '@/components/game/reliable-image';
 import {AnimatePresence} from 'motion/react';
-import {useMemo,useState} from 'react';
+import {useEffect,useState} from 'react';
 import {useWorkshopWorld} from '@/components/moonwork/world-save-react';
 import moonveilAvatar from '../../../public/art/characters/yuesha/yuesha-avatar-v3.webp';
 import moonveilBust from '../../../public/art/characters/yuesha/yuesha-bust-v3.webp';
 import lobbyHero from '../../../public/art/world-scenes/lobby/lobby-hero-v4.webp';
 import lobbyHeroMobile from '../../../public/art/world-scenes/lobby/lobby-hero-v4-mobile.webp';
 import lobbyHeroBackup from '../../../public/art/covers/world-cover.webp';
-import {newWorkshop} from '../../../engine/src/workshop-engine';
+import {ensureWorkshopWorld} from '@/lib/moonwork/world-state';
+import {moonveilFirstChapter} from '../../../engine/src/workshop-guidance';
 import {CHANGE_EVENT,commitWorldAction} from '@/lib/moonwork/world-store';
 import {GothicAtmosphere} from './gothic-atmosphere';
 import {GothicSceneIllumination} from './gothic-scene-illumination';
@@ -32,12 +33,13 @@ import './gothic-lobby-navigation.css';
 type Panel='profile'|'bond'|'updates'|'memories'|null;
 
 export function GothicLobby(){
-  const saved=useWorkshopWorld();
-  const world=useMemo(()=>saved??newWorkshop(),[saved]);
-  const orderTarget=Math.max(1,world.order.cores);
-  const orderStock=world.warehouse.core;
+  const world=useWorkshopWorld();
+  useEffect(()=>{void ensureWorkshopWorld();},[]);
+  // No uncommitted starter snapshot is a player's balance or reward.
+  const orderTarget=Math.max(1,world?.order.cores??1);
+  const orderStock=world?.warehouse.core??0;
   const orderProgress=Math.round(Math.min(100,Math.max(0,orderStock/orderTarget*100)));
-  const orderReady=orderStock>=orderTarget;
+  const orderReady=Boolean(world)&&orderStock>=orderTarget;
   const [panel,setPanel]=useState<Panel>(null);
   const [paintingFailures,setPaintingFailures]=useState(0);
   const {state:gacha}=useGacha();
@@ -45,13 +47,12 @@ export function GothicLobby(){
   const ownedContractCount=new Set(collection.draws).size;
   const firstContract=collectionStatus==='ok'&&gacha.totalSummons===0&&collection.draws.length===0;
   const [dialogue,setDialogue]=useState('');
+  const chapter=world?moonveilFirstChapter(world):null;
   const {reduced:reducedMotion,toggle:toggleMotion}=useGothicMotion();
   const setOpen=(name:Panel)=>setPanel(existing=>existing===name?null:name);
   const talk=()=>{
     setPanel('bond');
-    setDialogue(world.patron?.status==='offered'
-      ?'你的第一批晶核已经准备好了吗？我的特别委托需要认真安排。'
-      :'欢迎来到夜色公寓。我是月纱。先经营好工坊，交付第一批委托，我们就会有更多故事。');
+    setDialogue('');
   };
   const [accepting,setAccepting]=useState(false);
   const accept=async()=>{
@@ -120,11 +121,11 @@ export function GothicLobby(){
           data-testid="lobby-player-seal" aria-hidden="true">
           <span className="gothic-lobby__player-seal-rune">夜</span>
         </span>
-        <span className="gothic-lobby__player-copy grid gap-1 whitespace-nowrap [text-shadow:0_2px_6px_#000]"><strong className="text-[clamp(13px,1.3vw,22px)] font-semibold">夜色蔷薇</strong><small className="text-[clamp(9px,.75vw,12px)] text-[#e3cbaa]">月光公寓 · 第 {world.day} 天</small></span>
+        <span className="gothic-lobby__player-copy grid gap-1 whitespace-nowrap [text-shadow:0_2px_6px_#000]"><strong className="text-[clamp(13px,1.3vw,22px)] font-semibold">夜色蔷薇</strong><small className="text-[clamp(9px,.75vw,12px)] text-[#e3cbaa]">月光公寓 · 第 {world?.day??'—'} 天</small></span>
       </button>
       <div className="flex items-center gap-1.5 pt-1 max-[840px]:col-span-2 max-[840px]:col-start-1 max-[840px]:row-start-2 max-[840px]:justify-center" aria-label="当前存档资源">
-        <GothicResourcePill symbol="✦" amount={world.coins} label="星币" testId="lobby-coins"/>
-        <GothicResourcePill symbol="◆" amount={world.warehouse.core} label="晶核" testId="lobby-cores"/>
+        <GothicResourcePill symbol="✦" amount={world?.coins??'—'} label="星币" testId="lobby-coins"/>
+        <GothicResourcePill symbol="◆" amount={world?.warehouse.core??'—'} label="晶核" testId="lobby-cores"/>
       </div>
       <div className="gothic-lobby__top-actions flex justify-end gap-2 pt-1 max-[840px]:col-start-2 max-[840px]:row-start-1">
         <button type="button" onClick={()=>setOpen('updates')} aria-label="委托消息"
@@ -132,7 +133,7 @@ export function GothicLobby(){
           data-tooltip="查看本日委托"
           className="gothic-lobby__inbox">
           <Mail aria-hidden="true" size={17} strokeWidth={1.7}/>
-          <span className="gothic-lobby__inbox-copy">委托<small>待交付 {Math.max(0,orderTarget-orderStock)} 枚</small></span>
+          <span className="gothic-lobby__inbox-copy">委托<small>{world?`待交付 ${Math.max(0,orderTarget-orderStock)} 枚`:'经营记录暂不可用'}</small></span>
         </button>
         <GothicIconButton label="切换动态特效" data-tooltip="切换动态特效" pressed={reducedMotion}
           onClick={toggleMotion}><Orbit aria-hidden="true" size={17} strokeWidth={1.7}/></GothicIconButton>
@@ -147,7 +148,7 @@ export function GothicLobby(){
     <GothicLobbyResidents/>
 
     <GothicLobbyContracts
-      orderReady={orderReady} orderTarget={orderTarget} orderStock={orderStock}
+      worldReady={Boolean(world)} orderReady={orderReady} orderTarget={orderTarget} orderStock={orderStock}
       orderProgress={orderProgress} firstContract={firstContract}
       collectionStatus={collectionStatus} tickets={gacha.tickets}
       ownedContractCount={ownedContractCount}/>
@@ -200,19 +201,21 @@ export function GothicLobby(){
           <span className="gothic-lobby__story-eyebrow">MOONVEIL · PRIVATE AUDIENCE</span>
           <h2>今晚，想和我聊些什么？</h2>
           <span className="gothic-lobby__story-rule" aria-hidden="true"/>
-          <p className="gothic-lobby__story-quote" role="status">“{dialogue||'月光街的灯已经亮起，我正在等你。'}”</p>
-          {world.patron?.status==='offered'&&<button type="button" onClick={accept} disabled={accepting}
+          <p className="gothic-lobby__story-quote" role="status">“{dialogue||chapter?.text||'经营记录暂不可用，请前往工坊检查存档。'}”</p>
+          {world?.patron?.status==='offered'&&<button type="button" onClick={accept} disabled={accepting}
             className="gothic-lobby__story-accept">
             接受月纱的特别委托
           </button>}
-          <GothicPanelLink href="/orders/">查看委托与契约 ›</GothicPanelLink>
+          <GothicPanelLink href={chapter?.href??'/workshop/'}>{chapter?.label??'检查工坊存档'}</GothicPanelLink>
         </section>
       </div>}
       {panel==='profile'&&<div className="min-w-0 flex-1 space-y-3 pr-5">
         <span className="text-[10px] tracking-widest text-gothic-gold">YOUR RESIDENCE</span>
         <h2 className="text-2xl font-semibold">夜色蔷薇</h2>
-        <p className="text-sm leading-7 text-gothic-muted">第 {world.day} 天 · 星币 {world.coins} · 晶核 {world.warehouse.core}</p>
-        <p className="text-sm leading-7 text-gothic-muted">累计交付 {world.completed} 单 · 街区互助 {world.residentsHelped??0} 次</p>
+        {world?<>
+          <p className="text-sm leading-7 text-gothic-muted">第 {world.day} 天 · 星币 {world.coins} · 晶核 {world.warehouse.core}</p>
+          <p className="text-sm leading-7 text-gothic-muted">累计交付 {world.completed} 单 · 街区互助 {world.residentsHelped??0} 次</p>
+        </>:<p className="text-sm text-gothic-muted">经营记录暂不可用</p>}
         <GothicPanelLink href="/workshop/">进入晶核工坊 ›</GothicPanelLink>
       </div>}
       {panel==='memories'&&<div className="gothic-lobby__story-scene" data-testid="gothic-memories-content">
@@ -226,16 +229,18 @@ export function GothicLobby(){
           <span className="gothic-lobby__story-eyebrow">CHAPTER I · THE MOONLIT VOW</span>
           <h2>月影之约 · 公寓手记</h2>
           <span className="gothic-lobby__story-rule" aria-hidden="true"/>
-          <p className="gothic-lobby__story-quote">你已在公寓度过 {world.day} 天，累计完成 {world.completed} 单委托，收录 {ownedContractCount} 位不同人物。</p>
-          <p className="gothic-lobby__story-detail">{world.completed>0?'完成交付的回响已经写进契约簿。':'第一章的线索：准备晶核并履行委托，月纱才会讲述更多秘密。'}</p>
+          <p className="gothic-lobby__story-quote">{world?`你已在公寓度过 ${world.day} 天，累计完成 ${world.completed} 单委托。`:'经营记录暂不可用。'}收录 {ownedContractCount} 位不同人物。</p>
+          <p className="gothic-lobby__story-detail">{world?world.completed>0?'完成交付的回响已经写进契约簿。':'第一章的线索：准备晶核并履行委托，月纱才会讲述更多秘密。':'请先检查工坊存档。'}</p>
           <GothicPanelLink href="/apartment/?visit=yuesha">拜访月纱 · 继续故事 ›</GothicPanelLink>
         </section>
       </div>}
       {panel==='updates'&&<div className="min-w-0 flex-1 space-y-3 pr-5">
         <span className="text-[10px] tracking-widest text-gothic-gold">COMMISSION UPDATE</span>
         <h2 className="text-2xl font-semibold">今日委托</h2>
-        <p className="text-sm leading-7 text-gothic-muted">第 {world.day} 天 · 需在第 {world.order.due} 天交付 {world.order.cores} 枚晶核。</p>
-        <p className="text-sm leading-7 text-gothic-muted">库存 {world.warehouse.core} 枚 · 成功奖励 {world.order.reward} 星币。</p>
+        {world?<>
+          <p className="text-sm leading-7 text-gothic-muted">第 {world.day} 天 · 需在第 {world.order.due} 天交付 {world.order.cores} 枚晶核。</p>
+          <p className="text-sm leading-7 text-gothic-muted">库存 {world.warehouse.core} 枚 · 成功奖励 {world.order.reward} 星币。</p>
+        </>:<p className="text-sm text-gothic-muted">经营记录暂不可用，请检查工坊存档。</p>}
         <GothicPanelLink href="/orders/">管理委托 ›</GothicPanelLink>
       </div>}
 

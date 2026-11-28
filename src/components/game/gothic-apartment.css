@@ -8,7 +8,6 @@
 .ga-backdrop{z-index:-2;background-size:cover;background-position:center}
 .ga-shade{z-index:-1;background:linear-gradient(180deg,#07050bd8,transparent 25%,transparent 70%,#09040be9),
   linear-gradient(90deg,#07040bb5,transparent 32%,transparent 72%,#0a0712ba)}
-.ga-loading{display:grid;place-items:center;font-size:24px;letter-spacing:.13em}
 .ga-witch{position:absolute;z-index:1;top:12%;left:39%;width:24%;height:70%;
   border:0;background:transparent!important;cursor:pointer}
 .ga-witch-title{position:absolute;left:50%;bottom:18%;transform:translateX(-50%);
@@ -18,7 +17,7 @@
 .ga-lower{position:absolute;right:clamp(10px,2vw,25px);top:26%;width:clamp(270px,27vw,380px);
   max-height:53%;z-index:3;overflow-y:auto;scrollbar-color:#a88057 #241621;
   scrollbar-width:thin}
-.ga-story,.ga-room-drawer{padding:17px 19px;border:1px solid #a98963a1;border-radius:13px;
+.ga-story{padding:17px 19px;border:1px solid #a98963a1;border-radius:13px;
   box-shadow:0 12px 29px #0008,inset 0 1px #f6d6a433;
   background:linear-gradient(130deg,#2d1b2ae8,#171018db);
   backdrop-filter:blur(15px)}
@@ -26,13 +25,6 @@
 .ga-micro{font-size:10px!important;letter-spacing:.15em;color:#bd986c}
 .ga-story strong{font-size:14px;line-height:1.7;font-weight:500}
 .ga-story small{font-size:11px;line-height:1.6;color:#c7a98c}
-.ga-drawer-top{display:flex;justify-content:space-between;align-items:start;
-  gap:9px;margin-bottom:13px;border-bottom:1px solid #b28f645c;padding-bottom:12px}
-.ga-drawer-top h2{margin:5px 0 0;font-size:23px;letter-spacing:.1em}
-.ga-dismiss{border:1px solid #ac8c65;background:#291b22;width:30px;height:30px;border-radius:50%;font-size:22px}
-.ga-warning{margin-top:10px;display:grid;gap:7px;font-size:11px;color:#ffb8a4}
-.ga-warning button{border:1px solid #c28d72;background:#502b33;
-  padding:8px;border-radius:8px}
 .ga :is(a,button):focus-visible{outline:2px solid #fff0be;outline-offset:2px}
 @media(max-width:850px){
   .ga-lower{top:auto;bottom:58px;width:260px;max-height:49%}
@@ -43,7 +35,7 @@
   .ga-witch-title{bottom:56%;left:74%;font-size:11px}
   .ga-witch-title small{display:none}
   .ga-lower{left:8px;right:8px;top:47%;bottom:55px;width:auto;max-height:none}
-  .ga-story,.ga-room-drawer{padding:12px 13px;border-radius:11px}
+  .ga-story{padding:12px 13px;border-radius:11px}
 }
 
 /* Match the portrait focal point with the lobby on mobile. */
@@ -56,17 +48,11 @@
 .ga:has([data-testid="r12-apartment-door-review"][data-review-mode="isolated"]) :is(.ga-red-gold-header,.ga-room-list,.ga-witch,.ga-witch-title,.ga-story){
   visibility:hidden;
 }
-
-/* Hiding the story child alone leaves its positioned parent above the six
-   doors (the R12.35 real-browser failure). Remove that empty hit plane,
-   but keep the real drawer and its controls fully interactive when selected. */
+/* Hide the empty story hit plane during isolated door inspection. */
 .ga:has([data-testid="r12-apartment-door-review"][data-review-mode="isolated"]) .ga-lower:has(.ga-story){
   display:none;
 }
-
-/* PC HUD coexistence is a separate, explicitly selected research mode.
-   The original isolated inspection and all ordinary player layouts remain
-   untouched. Keep the real header, room chooser, dialogue and drawer. */
+/* Explicit PC HUD coexistence research keeps the real header, room chooser and dialogue. */
 .ga-witch-hud-label{display:none}
 .ga:has([data-review-mode="hud"]) .ga-room-list{
   top:12%;width:max-content;max-height:80%;z-index:4;

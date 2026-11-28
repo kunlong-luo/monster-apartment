@@ -11,8 +11,8 @@ test('shared cinematic palette reaches apartment, workshop and commission screen
   await expect(page.getByTestId('ga-room-2')).toBeHidden();
   await page.getByTestId('ga-room-menu-toggle').click();
   await expect(page.getByTestId('ga-room-2')).toBeVisible();
-  await page.getByTestId('ga-room-2').click();
-  await expect(page.getByTestId('ga-room-drawer')).toBeVisible();
+  await page.getByTestId('ga-room-0').click();
+  await expect(page.getByTestId('yuesha-private-room')).toBeVisible();
   await page.goto('/orders/');
   await expect(page.getByTestId('moonwork-world')).toHaveAttribute('data-area','orders');
   await expect(page.locator('.mw-main--red-gold')).toBeVisible();

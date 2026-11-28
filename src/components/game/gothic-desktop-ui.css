@@ -194,33 +194,15 @@
     box-shadow:inset 0 1px #ffddaa20,0 4px 12px #0006!important;
     transform:none;
   }
-  .ga .ga-door:is(:hover,:focus-visible,[aria-pressed="true"]){
+  .ga .ga-door:is(:hover,:focus-visible){
     border-color:#f1c894!important;background:#432b38!important;
     transform:translateX(2px);
   }
-  .ga .ga-door-icon{color:#dcb789}
-  .ga .ga-door-copy strong{font-size:12px}
   .ga .ga-lower{top:26%;right:clamp(18px,2vw,36px);width:clamp(290px,24vw,345px)}
-  .ga .ga-story,.ga .ga-room-drawer{
+  .ga .ga-story{
     border:1px solid #b698747d!important;border-radius:10px!important;
     padding:13px 15px;background:linear-gradient(145deg,#231420e9,#150d19e7)!important;
     box-shadow:inset 0 1px #f6d5aa2a,0 8px 23px #0008!important;
-  }
-  .ga .ga-room-drawer .grid{gap:7px}
-  .ga .ga-room-drawer .grid>button{
-    min-height:61px;padding:8px 9px;border-radius:8px;
-    background:linear-gradient(135deg,#35202bd4,#1b121ddb);
-    border:1px solid #ad906e70;
-  }
-  .ga .ga-room-drawer .grid>button:is(:hover,:focus-visible){
-    border-color:#f1c994;background:#49303b;
-  }
-  .ga .ga-room-drawer .grid>button>span:first-child{
-    line-height:1;color:#e8bc83;
-  }
-  .ga .ga-dismiss{
-    display:grid;place-items:center;border-color:#ad8f6b;
-    background:#23141fd9;color:#dfbd97;
   }
   .mw.mw-gothic[data-area="town"] .mw-main--red-gold{
     width:clamp(440px,38vw,600px);max-width:calc(100vw - 92px);
@@ -306,13 +288,6 @@
     background:#3b2335d9!important;padding:5px 10px!important;
     font-size:11px;
   }
-  .ga .ga-door[data-resident="empty"]{border-left-color:#7b625d!important}
-  .ga .ga-door[data-resident="seedling"]{border-left-color:#79a879!important}
-  .ga .ga-door[data-resident="dewdrop"]{border-left-color:#85a6c3!important}
-  .ga .ga-door[data-resident="lantern-beetle"]{border-left-color:#d3ab76!important}
-  .ga .ga-door[data-resident="fern-hare"]{border-left-color:#8cbb88!important}
-  .ga .ga-door[data-resident="moon-scout"]{border-left-color:#ac9aca!important}
-  .ga .ga-door[aria-pressed="true"]{box-shadow:inset 0 1px #f4d4a047,0 0 16px #8b486449!important}
   .mw.mw-gothic[data-area="town"] .mw-town-painting{
     object-fit:cover;object-position:50% 30%;
     filter:saturate(.87) contrast(1.04);

@@ -54,7 +54,7 @@
   
 }
 
-/* Apartments: real architectural doors on the left, real room mechanics on the right. */
+/* Apartments: character-room links on the left, shared story guidance on the right. */
 .ga--red-gold{--ga-gold:var(--craft-champagne);--ga-panel:var(--craft-panel)}
 .ga--red-gold .ga-backdrop{filter:none;transform:none}
 .ga--red-gold .ga-shade{
@@ -77,7 +77,6 @@
   background:linear-gradient(145deg,#190d1ada,#130b17df);
   box-shadow:inset 0 1px #f0d2aa39,0 13px 24px #0009;
 }
-.ga--red-gold .ga-room-drawer,
 .ga--red-gold .ga-story{
   border:1px solid var(--craft-hairline)!important;border-radius:var(--craft-radius)!important;
   background:var(--craft-surface)!important;
@@ -85,18 +84,13 @@
   backdrop-filter:blur(8px);
 }
 .ga--red-gold .ga-micro{color:#efbb84!important;letter-spacing:.16em}
-.ga--red-gold .ga-drawer-top{border-color:#bd8e6685}
-.ga--red-gold .ga-warning{
-  border-left:3px solid #d05e73!important;
-  background:#3a1429d9!important;
-}
-.ga--red-gold :is(.ga-room-drawer,.ga-story) :is(button,a):not(:disabled):focus-visible{
+.ga--red-gold .ga-story :is(button,a):not(:disabled):focus-visible{
   outline:2px solid #ffdda8;outline-offset:2px;
 }
 @media(max-width:600px){
  .ga--red-gold .ga-doors{padding:4px!important}
  .ga--red-gold .ga-list-title{font-size:9px!important}
- .ga--red-gold .ga-story,.ga--red-gold .ga-room-drawer{backdrop-filter:none}
+ .ga--red-gold .ga-story{backdrop-filter:none}
 }
 
 /* Workshop uses the same material palette, without changing canvas geometry. */

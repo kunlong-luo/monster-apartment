@@ -7,6 +7,8 @@ export default defineConfig({
   testDir: './e2e',
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
+  // Keep retry diagnostics but never accept a flaky regression as a clean CI run.
+  failOnFlakyTests: !!process.env.CI,
   // Avoid 20+ concurrent cold Turbopack page compilations on GitHub runners.
   // The game is static-exported in production, but E2E runs a local dev server.
   workers: process.env.CI ? 2 : undefined,

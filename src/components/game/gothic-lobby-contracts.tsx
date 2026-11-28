@@ -7,6 +7,7 @@ import {HEROINE_FACE_ART} from '@/components/summon/heroine-portrait-assets';
 import moonveilBust from '../../../public/art/characters/yuesha/yuesha-bust-v3.webp';
 
 type LobbyContractsProps={
+  worldReady:boolean;
   orderReady:boolean;
   orderTarget:number;
   orderStock:number;
@@ -22,24 +23,24 @@ type LobbyContractsProps={
  * the summon contract. Gacha/store rules stay in the parent and domain engine.
  */
 export function GothicLobbyContracts({
-  orderReady,orderTarget,orderStock,orderProgress,
+  worldReady,orderReady,orderTarget,orderStock,orderProgress,
   firstContract,collectionStatus,tickets,ownedContractCount
 }:LobbyContractsProps){
   return (
     <section className="gothic-lobby__mission-rail" aria-label="当前主线与契约活动">
       <Link href={orderReady?'/orders/':'/workshop/'}
-        aria-label={orderReady?'晶核已备齐，查看委托交期':'晶核不足，前往工坊生产'}
+        aria-label={!worldReady?'经营记录暂不可用，检查工坊存档':orderReady?'晶核已备齐，查看委托交期':'晶核不足，前往工坊生产'}
         data-testid="gothic-main-quest" className="gothic-lobby__mission-card gothic-lobby__mission-card--quest">
         <span className="gothic-lobby__card-kicker"><ScrollText className="gothic-lobby__card-icon" aria-hidden="true" size={15} strokeWidth={1.55}/>主线 · 月影之约 <ArrowUpRight aria-hidden="true" size={15} strokeWidth={1.7}/></span>
-        <strong>{orderReady?'晶核已备齐 · 去委托核对交期':'与月纱一起筹备第一批晶核'}</strong>
+        <strong>{!worldReady?'经营记录暂不可用':orderReady?'晶核已备齐 · 去委托核对交期':'与月纱一起筹备第一批晶核'}</strong>
         <span className="gothic-lobby__mission-detail">
-          {orderReady?'下一步：确认交付和奖励':'去工坊生产 · 晶核 '+orderStock+' / '+orderTarget}
+          {!worldReady?'前往工坊检查存档':orderReady?'下一步：确认交付和奖励':'去工坊生产 · 晶核 '+orderStock+' / '+orderTarget}
         </span>
-        <span role="progressbar" aria-label="晶核收集进度"
+        {worldReady&&<span role="progressbar" aria-label="晶核收集进度"
           aria-valuemin={0} aria-valuemax={orderTarget}
           aria-valuenow={Math.min(orderStock,orderTarget)}
           data-testid="gothic-main-quest-progress"
-          className="gothic-lobby__progress"><span style={{width:orderProgress+'%'}}/></span>
+          className="gothic-lobby__progress"><span style={{width:orderProgress+'%'}}/></span>}
       </Link>
       <Link href="/characters/#summon-screen"
         className="gothic-lobby__mission-card gothic-lobby__mission-card--eclipse"
