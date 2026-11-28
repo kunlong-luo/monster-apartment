@@ -188,7 +188,7 @@ export function WorkshopCinematicStage({
             craft==='garden'?settledShift.report.fiber:settledShift.report.cores)
           :0;
         const outputName=craft==='well'?'水汽':craft==='garden'?'孢子':'晶核';
-        const statusText=status==='working'?'生产运行中':
+        const statusText=!worldReady?'经营记录暂不可用':status==='working'?'生产运行中':
           status==='blocked'?'材料供应受阻':station?'等待工匠派驻':'尚未建造';
         const reviewArt=base&&reviewCandidate&&!failedImages[craft]
           ?new URL('assets/review/machines/'+craft+'/lv'+level+'.webp',base).href
@@ -207,7 +207,8 @@ export function WorkshopCinematicStage({
           data-level={level}
           data-state={status??'unbuilt'}
           data-art-tier={isReview?'review':isReady?'ready':'legacy'}
-          aria-pressed={station?.plot===selectedPlot}
+          disabled={!worldReady}
+          aria-pressed={worldReady&&station?.plot===selectedPlot}
           aria-label={station
             ?'选择'+MACHINES[craft].zh+'，'+String(station.plot+1).padStart(2,'0')+'号工位，Lv.'+level+'，'+statusText+'，'+(worker?'工匠'+WORKERS[worker].zh:'未派工')
             :'建设'+MACHINES[craft].zh+'，打开建造棋盘'}
@@ -235,7 +236,7 @@ export function WorkshopCinematicStage({
               className={isReview?'object-contain drop-shadow-[0_12px_14px_rgba(0,0,0,.8)]':
                 'object-contain opacity-90 drop-shadow-[0_12px_15px_rgba(0,0,0,.85)]'}
             />
-            <WorkshopProcessEffect craft={craft} active={status==='working'&&(cycle?.amount??0)>0}
+            <WorkshopProcessEffect craft={craft} active={worldReady&&status==='working'&&(cycle?.amount??0)>0}
               motionEnabled={motionEnabled}/>
             {shiftedOutput>0&&<motion.span
               key={settledShift!.day+'-'+craft}
@@ -267,7 +268,7 @@ export function WorkshopCinematicStage({
               {station&&<span> · {String(station.plot+1).padStart(2,'0')}号地块</span>}
               <ArrowUpRight size={13} aria-hidden="true"/>
             </span>
-            {station&&<span className="workshop-cinematic__stock"
+            {worldReady&&station&&<span className="workshop-cinematic__stock"
               data-testid={'workshop-cinematic-stock-'+craft}>
               {craft==='kiln'?'晶核直入仓库':'设备暂存 '}
               {craft!=='kiln'&&<strong>{station.machine.stored}</strong>}
@@ -277,7 +278,7 @@ export function WorkshopCinematicStage({
               </span>
             </span>}
           </div>
-          {worker&&<span className="workshop-cinematic__worker"
+          {worldReady&&worker&&<span className="workshop-cinematic__worker"
             data-testid={'workshop-cinematic-worker-'+craft}
             data-state={status??'idle'}
             data-art-tier={fullWorkerArt?workerTier:'portrait'}>
@@ -295,11 +296,11 @@ export function WorkshopCinematicStage({
             />
             <span className="workshop-cinematic__worker-label">{WORKERS[worker].zh}</span>
           </span>}
-          {candidates.length>1&&<span className="workshop-cinematic__count">
+          {worldReady&&candidates.length>1&&<span className="workshop-cinematic__count">
             共 {candidates.length} 台 · 点击切换工位
           </span>}
           </button>
-          {openCraft===craft&&candidates.length>1&&
+          {worldReady&&openCraft===craft&&candidates.length>1&&
             <div className="workshop-cinematic__station-picker"
               role="group" aria-label={MACHINES[craft].zh+'的全部工位'}
               data-testid={'workshop-cinematic-picker-'+craft}>
@@ -324,10 +325,10 @@ export function WorkshopCinematicStage({
       <span className="workshop-cinematic__route" aria-label="生产路线">
         <span>水汽</span>
         <MoveRight size={13} aria-hidden="true" data-testid="workshop-route-water"
-          data-active={waterLinked?'true':'false'}/>
+          data-active={worldReady&&waterLinked?'true':'false'}/>
         <span>孢子</span>
         <MoveRight size={13} aria-hidden="true" data-testid="workshop-route-fiber"
-          data-active={fiberLinked?'true':'false'}/>
+          data-active={worldReady&&fiberLinked?'true':'false'}/>
         <span>晶核</span>
       </span>
       <button type="button" className="workshop-cinematic__grid-button"

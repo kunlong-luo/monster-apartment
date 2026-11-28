@@ -85,6 +85,8 @@ test('corrupt unified economic record is not replaced or presented as a new bala
   await expect(page.getByTestId('v2-day')).toHaveText('—');
   await expect(page.getByTestId('v2-cores')).toHaveText('—');
   await expect(page.getByTestId('workshop-console')).toHaveCount(0);
+  await expect(page.getByTestId('workshop-cinematic-stock-well')).toHaveCount(0);
+  await expect(page.getByTestId('workshop-cinematic-stock-garden')).toHaveCount(0);
   await expect(page.getByTestId('v2-deadline')).toHaveCount(0);
   expect(await page.evaluate(key=>localStorage.getItem(key),worldKey)).toBe('{broken-workshop');
 });

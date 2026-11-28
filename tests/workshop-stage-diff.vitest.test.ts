@@ -32,6 +32,10 @@ describe('R07 Pixi incremental scene projection',()=>{
       {state:'working',problem:null})).toContain(String(later.tiles[5]!.stored));
     expect(JSON.stringify(state)).toBe(serialized);
   });
+  it('describes kiln output as direct warehouse delivery rather than machine stock',()=>{
+    expect(workshopMachineCaption('kiln',0,{state:'working',problem:null}))
+      .toBe('晶核熔炉 · 晶核直入仓库 · 可生产');
+  });
   it('skips all scene nodes for an unrelated warehouse-only trade',()=>{
     const state=newWorkshop();
     const bought=buyTownSupply(state,'core');

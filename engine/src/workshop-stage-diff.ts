@@ -20,7 +20,7 @@ export function workshopMachineCaption(
     signal.state==='blocked'
       ?'缺'+(signal.problem==='water'?'水汽':'孢子')
       :'可生产';
-  return MACHINES[craft].zh+' · '+stored+' · '+status;
+  return MACHINES[craft].zh+' · '+(craft==='kiln'?'晶核直入仓库':stored)+' · '+status;
 }
 
 export type WorkshopStagePlotPatch=Readonly<{
