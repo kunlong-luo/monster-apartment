@@ -10,6 +10,7 @@ import {ArrowUpRight,Grid3X3,MoveRight} from 'lucide-react';
 import {MACHINES,WORKERS,projectMachineProduction} from '../../../engine/src/workshop-engine';
 import {gothicMotionStorage} from '@/lib/game/storage-service';
 import {presentWorkshopStations} from '../../../engine/src/workshop-station-presenter';
+import {isObservedManualShift} from '../../../engine/src/workshop-stage-diff';
 import type {Craft,DailyProduction,WorkshopState} from '../../../engine/src/workshop-engine';
 import type {WorkshopAction} from '../../../engine/src/workshop-runtime-contract';
 import {workshopAssetRoot} from '@/lib/moonwork/asset-root';
@@ -112,7 +113,7 @@ export function WorkshopCinematicStage({
   },[]);
   // A transient VIEW of an actual completed shift. Initial hydration must not
   // replay the persisted last report as if production just happened.
-  const observedDay=useRef<number|null>(null);
+  const observedWorld=useRef<WorkshopState|null>(null);
   const [settledShift,setSettledShift]=useState<{
     day:number;report:DailyProduction
   }|null>(null);
@@ -120,16 +121,17 @@ export function WorkshopCinematicStage({
     // Connect the real persisted world before tracking days. Otherwise the
     // initial fallback newWorkshop() -> hydrated day N looks like an earned shift.
     if(!worldReady){
-      observedDay.current=null;
+      observedWorld.current=null;
+      setSettledShift(null);
       return;
     }
-    const previous=observedDay.current;
-    observedDay.current=world.day;
-    if(previous!==null&&world.day>previous&&world.last)
+    const previous=observedWorld.current;
+    observedWorld.current=world;
+    if(isObservedManualShift(previous,world)&&world.last)
       setSettledShift({day:world.day,report:world.last});
-    else if(previous!==null&&world.day<previous)
+    else if(previous&&world.day!==previous.day)
       setSettledShift(null);
-  },[worldReady,world.day,world.last]);
+  },[worldReady,world]);
   const stations=presentWorkshopStations(world,selectedPlot).groups;
   // Use the exact deterministic settlement projection; never calculate a
   // second fake visual throughput. No economy mutation or animation ticker.
@@ -158,7 +160,7 @@ export function WorkshopCinematicStage({
           data-testid="workshop-art-compare-review"
           onClick={()=>setReviewCandidate(true)}>512px 候选</button>
       </div>}
-      <span className="workshop-cinematic__chapter">第 {world.day} 日 · 月光工坊</span>
+      <span className="workshop-cinematic__chapter">第 {worldReady?world.day:'—'} 日 · 月光工坊</span>
     </div>
 
     <span className="sr-only" aria-live="polite" aria-atomic="true"

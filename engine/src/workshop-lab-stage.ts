@@ -6,7 +6,7 @@ import { createFloatingFeedback } from './workshop-floating-feedback';
 import { paintShiftFeedback } from './workshop-shift-effects';
 import {inspectMachineSignals} from './workshop-machine-status';
 import {presentWorkshopStations} from './workshop-station-presenter';
-import {workshopStagePlotPatch,workshopMachineCaption} from './workshop-stage-diff';
+import {workshopStagePlotPatch,workshopMachineCaption,isObservedManualShift} from './workshop-stage-diff';
 import {createWorkshopFrameMeter} from './workshop-frame-metrics';
 import {releaseWorkshopPlot} from './workshop-plot-lifecycle';
 import {destroyWorkshopDisplayChildren} from './workshop-display-disposal';
@@ -238,7 +238,6 @@ export async function mountWorkshopLab(
   };
   const feedback=createFloatingFeedback(feedbackLayer,glabel);
   const {showFeedback}=feedback;
-  let lastShiftDay=state.day;
   let elapsed=0;
   let shiftBurst=0;
   for(let i=0;i<20;i++){
@@ -638,8 +637,7 @@ export async function mountWorkshopLab(
     }
     const previousPatronStatus=previousSnapshot?.patron?.status;
     const previousOrderReward=lastSnapshot?.order.reward??0;
-    const completedShift=current.day>lastShiftDay&&!!current.last;
-    lastShiftDay=current.day;
+    const completedShift=isObservedManualShift(previousSnapshot,current);
     lastSnapshot=current;lastSelection=selected;
     paintFocus(selected);
     if(selected!==null){cameraFocus=selected;focusCamera(selected);}
