@@ -3,7 +3,7 @@
 import './workshop-cinematic.css';
 import Image from 'next/image';
 import {ReliableImage} from '@/components/game/reliable-image';
-import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
+import {useEffect,useState,useSyncExternalStore} from 'react';
 import {motion} from 'motion/react';
 import {WorkshopProcessEffect} from './workshop-process-effect';
 import {ArrowUpRight,Grid3X3,MoveRight} from 'lucide-react';
@@ -113,25 +113,21 @@ export function WorkshopCinematicStage({
   },[]);
   // A transient VIEW of an actual completed shift. Initial hydration must not
   // replay the persisted last report as if production just happened.
-  const observedWorld=useRef<WorkshopState|null>(null);
+  const currentWorld=worldReady?world:null;
+  const [previousWorld,setPreviousWorld]=useState<WorkshopState|null>(null);
   const [settledShift,setSettledShift]=useState<{
     day:number;report:DailyProduction
   }|null>(null);
-  useEffect(()=>{
-    // Connect the real persisted world before tracking days. Otherwise the
-    // initial fallback newWorkshop() -> hydrated day N looks like an earned shift.
-    if(!worldReady){
-      observedWorld.current=null;
+  // Adjust transient presentation state only on a changed input snapshot.
+  // React retries this render before committing children; no synchronous
+  // effect update, stale animation frame, or replay on initial hydration.
+  if(currentWorld!==previousWorld){
+    setPreviousWorld(currentWorld);
+    if(currentWorld&&isObservedManualShift(previousWorld,currentWorld)&&currentWorld.last)
+      setSettledShift({day:currentWorld.day,report:currentWorld.last});
+    else if(!currentWorld||previousWorld?.day!==currentWorld.day)
       setSettledShift(null);
-      return;
-    }
-    const previous=observedWorld.current;
-    observedWorld.current=world;
-    if(isObservedManualShift(previous,world)&&world.last)
-      setSettledShift({day:world.day,report:world.last});
-    else if(previous&&world.day!==previous.day)
-      setSettledShift(null);
-  },[worldReady,world]);
+  }
   const stations=presentWorkshopStations(world,selectedPlot).groups;
   // Use the exact deterministic settlement projection; never calculate a
   // second fake visual throughput. No economy mutation or animation ticker.
