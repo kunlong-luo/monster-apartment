@@ -285,6 +285,7 @@ for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
     await expect(fiber).toContainText('操作未完成');
     await expect(page.getByTestId('world-coins')).toHaveText('132');
     expect(await raw()).toBe(beforeFailure);
+    expect((await read()).day).toBe(6);
     await page.reload();
     await fiber.getByRole('button',{name:'购买本日货箱'}).click();
     await expect(page.getByTestId('world-coins')).toHaveText('108');
@@ -302,6 +303,7 @@ for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
     await expect(buy).toHaveCount(0);
     const beforeShift=await read();
     expect(beforeShift.coins).toBe(24);
+    expect(beforeShift.day).toBe(6);
     await navigateScene(page,'/workshop/');
     await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
     await expect(page.getByTestId('v2-coins')).toHaveText('24');
@@ -309,21 +311,135 @@ for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
     await expect(page.getByTestId('v2-coins')).toHaveText('119');
     const afterShift=await read();
     expect(afterShift.coins).toBe(119);
+    expect(afterShift.day).toBe(7);
+    await expect(page.getByTestId('v2-day')).toHaveText('7');
     expect(afterShift.completed).toBe(2);
     expect(afterShift.last.fulfilled).toBe(true);
     expect(afterShift.warehouse.core).toBe(beforeShift.warehouse.core+afterShift.last.cores-3);
     await navigateScene(page,'/');
     await expect(page.getByTestId('lobby-coins')).toHaveText('119');
+    await expect(page.getByRole('button',{name:'打开玩家资料'})).toContainText('第 7 天');
     await page.goto('/apartment/');
     await expect(page.getByTestId('ga-coins')).toHaveText('119');
+    await expect(page.getByTestId('ga-day')).toHaveText('7');
     await navigateScene(page,'/town/');
     await expect(page.getByTestId('world-coins')).toHaveText('119');
+    await expect(page.getByTestId('world-day')).toHaveText('7');
     await navigateScene(page,'/warehouse/');
     await expect(page.getByTestId('world-coins')).toHaveText('119');
+    await expect(page.getByTestId('world-day')).toHaveText('7');
     await page.reload();
     await expect(page.getByTestId('world-coins')).toHaveText('119');
+    await expect(page.getByTestId('world-day')).toHaveText('7');
+    for(const route of ['/orders/','/characters/']){
+      await navigateScene(page,route);
+      await expect(page.getByTestId('world-day')).toHaveText('7');
+    }
     await page.goto('/');
     await expect(page.getByTestId('lobby-coins')).toHaveText('119');
     expect((await read()).coins).toBe(119);
+    expect((await read()).day).toBe(7);
   });
+  test(`shared calendar waits for real stock and advances once after an explicit auto contract opt-in at ${viewport.width}px`,async({page})=>{
+    test.setTimeout(120_000);
+    await page.setViewportSize(viewport);
+    const key='monster-apartment:workshop-v2-lab';
+    const initial={
+      version:2,day:6,coins:132,
+      tiles:Array.from({length:15},(_,i)=>i===5?{craft:'well',worker:'brook',stored:5}:null),
+      warehouse:{core:2},order:{due:6,cores:3,reward:95},last:null,
+      completed:1,failed:0,patron:{status:'offered',due:8,cores:15,reward:135}
+    };
+    await page.addInitScript(({key,initial})=>{
+      if(localStorage.getItem(key)===null)localStorage.setItem(key,JSON.stringify(initial));
+    },{key,initial});
+    const read=()=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)!),key);
+    // Accelerate only the saved scheduler deadline; never mutate day, stock,
+    // completion or reward. The mounted production runtime must transact.
+    const dueNow=(blockWrite=false)=>page.evaluate(({key,blockWrite})=>{
+      const s=JSON.parse(localStorage.getItem(key)!);
+      const now=Date.now();
+      s.auto.lastSimulatedAt=now-2000;
+      s.auto.nextContractAt=now-1000;
+      const raw=JSON.stringify(s);
+      localStorage.setItem(key,raw);
+      if(blockWrite){
+        const set=Storage.prototype.setItem;
+        Storage.prototype.setItem=function(name,value){
+          if(name===key){
+            document.documentElement.dataset.u07WriteFailed='true';
+            throw new DOMException('Test storage failure','QuotaExceededError');
+          }
+          set.call(this,name,value);
+        };
+      }
+      window.dispatchEvent(new Event('moonwork:v2-update'));
+      return {raw,due:s.auto.nextContractAt};
+    },{key,blockWrite});
+    await page.goto('/workshop/');
+    await expect(page.getByTestId('v2-stage').locator('canvas')).toBeVisible({timeout:25_000});
+    const auto=page.getByTestId('workshop-auto-toggle');
+    await auto.click();
+    await expect(auto).toHaveAttribute('aria-pressed','true');
+    const contract=page.getByTestId('workshop-auto-contract-toggle');
+    await expect(contract).toHaveAttribute('aria-pressed','false');
+    expect((await read()).day).toBe(6);
+    expect((await read()).auto.nextContractAt).toBe(0);
+    await expect(page.getByTestId('v2-shift')).toBeDisabled();
+    await contract.click();
+    await expect(contract).toHaveAttribute('aria-pressed','true');
+    expect((await read()).day).toBe(6);
+    const shortage=await dueNow();
+    await expect.poll(async()=>(await read()).auto.nextContractAt,{timeout:15000}).toBeGreaterThan(shortage.due);
+    const waiting=await read();
+    expect({day:waiting.day,coins:waiting.coins,cores:waiting.warehouse.core,
+      completed:waiting.completed,failed:waiting.failed}).toEqual({day:6,coins:132,cores:2,completed:1,failed:0});
+    await navigateScene(page,'/town/');
+    await expect(page.getByTestId('world-day')).toHaveText('6');
+    const purchase=page.getByTestId('town-offer-core').getByRole('button',{name:'购买本日货箱'});
+    await purchase.click();
+    await expect(page.getByTestId('world-cores')).toHaveText('3');
+    await expect(page.getByTestId('world-coins')).toHaveText('95');
+    const failed=await dueNow(true);
+    await expect(page.locator('html')).toHaveAttribute('data-u07-write-failed','true',{timeout:15000});
+    expect(await page.evaluate(key=>localStorage.getItem(key),key)).toBe(failed.raw);
+    await expect(page.getByTestId('world-day')).toHaveText('6');
+    // Reload restores storage availability, not a fabricated successful day.
+    await page.reload();
+    await expect(page.getByTestId('world-day')).toHaveText('7',{timeout:15000});
+    await expect(page.getByTestId('world-coins')).toHaveText('190');
+    const delivered=await read();
+    expect({day:delivered.day,coins:delivered.coins,cores:delivered.warehouse.core,
+      completed:delivered.completed,failed:delivered.failed,last:delivered.last})
+      .toEqual({day:7,coins:190,cores:0,completed:2,failed:0,last:null});
+    await page.evaluate(()=>{
+      for(let i=0;i<3;i++)window.dispatchEvent(new Event('moonwork:v2-update'));
+    });
+    await navigateScene(page,'/orders/');
+    await expect(page.getByTestId('world-day')).toHaveText('7');
+    await navigateScene(page,'/workshop/');
+    await expect(contract).toHaveAttribute('aria-pressed','true');
+    await contract.click();
+    await expect(contract).toHaveAttribute('aria-pressed','false');
+    expect((await read()).auto.nextContractAt).toBe(0);
+    expect((await read()).day).toBe(7);
+    await auto.click();
+    await expect(auto).toHaveAttribute('aria-pressed','false');
+    await expect(page.getByTestId('v2-shift')).toBeEnabled();
+    await navigateScene(page,'/');
+    await expect(page.getByRole('button',{name:'打开玩家资料'})).toContainText('第 7 天');
+    await page.goto('/apartment/');
+    await expect(page.getByTestId('ga-day')).toHaveText('7');
+    await navigateScene(page,'/warehouse/');
+    await expect(page.getByTestId('world-day')).toHaveText('7');
+    await navigateScene(page,'/characters/');
+    await expect(page.getByTestId('world-day')).toHaveText('7');
+    await page.reload();
+    await expect(page.getByTestId('world-day')).toHaveText('7');
+    const final=await read();
+    expect(final.day).toBe(7);
+    expect(final.completed).toBe(2);
+    expect(final.coins).toBe(190);
+  });
+
 }

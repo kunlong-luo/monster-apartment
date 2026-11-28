@@ -61,21 +61,26 @@ test('corrupt unified economic record is not replaced or presented as a new bala
   await page.addInitScript(({worldKey})=>localStorage.setItem(worldKey,'{broken-workshop'),{worldKey});
   await page.goto('/apartment/');
   await expect(page.getByTestId('ga-coins')).toHaveText('—');
+  await expect(page.getByTestId('ga-day')).toHaveText('—');
   await expect(page.locator('.ga-story')).toContainText('经营记录暂不可用');
   expect(await page.evaluate(key=>localStorage.getItem(key),worldKey)).toBe('{broken-workshop');
   await page.goto('/');
   await expect(page.getByTestId('lobby-coins')).toHaveText('—');
+  await expect(page.getByRole('button',{name:'打开玩家资料'})).toContainText('第 — 天');
   await page.getByRole('button',{name:'打开玩家资料'}).click();
   await expect(page.getByRole('dialog')).toContainText('经营记录暂不可用');
   expect(await page.evaluate(key=>localStorage.getItem(key),worldKey)).toBe('{broken-workshop');
-  for(const route of ['/town/','/warehouse/','/orders/']){
+  for(const route of ['/town/','/warehouse/','/orders/','/characters/']){
     await page.goto(route);
     await expect(page.getByTestId('world-coins')).toHaveText('—');
+    await expect(page.getByTestId('world-day')).toHaveText('—');
     expect(await page.evaluate(key=>localStorage.getItem(key),worldKey)).toBe('{broken-workshop');
   }
   await page.goto('/workshop/');
   await expect(page.getByRole('alertdialog',{name:'工坊存档需要处理'})).toBeVisible();
   await expect(page.getByTestId('v2-coins')).toHaveText('—');
+  await expect(page.getByTestId('v2-day')).toHaveText('—');
+  await expect(page.getByTestId('v2-deadline')).toHaveCount(0);
   expect(await page.evaluate(key=>localStorage.getItem(key),worldKey)).toBe('{broken-workshop');
 });
 

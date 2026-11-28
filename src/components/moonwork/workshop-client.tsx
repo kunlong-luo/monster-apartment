@@ -339,7 +339,7 @@ export function WorkshopClient() {
               <span className="hidden sm:inline-flex">
                 <GothicResourcePill
                   symbol="☾"
-                  amount={world.day}
+                  amount={savedWorld?.day??'—'}
                   label="工坊天数"
                   testId="v2-day"
                 />
@@ -413,7 +413,7 @@ export function WorkshopClient() {
               <p className="bubble-content"
                 data-testid="workshop-yuesha-dialogue"
                 data-beat-id={dialogue[speechIndex%dialogue.length]?.id??'welcome'}>
-                {dialogue[speechIndex%dialogue.length]?.text}
+                {savedWorld?dialogue[speechIndex%dialogue.length]?.text:'经营记录暂不可用。'}
               </p>
             </button>
           </aside>
@@ -434,9 +434,11 @@ export function WorkshopClient() {
           />
 
           <aside className="sidebar">
-            <WorkshopContractPanel world={world} portraitSrc={portraitUrl}
-              onAction={onAction} />
-            <WorkshopShiftPanel world={world} />
+            {savedWorld&&<>
+              <WorkshopContractPanel world={savedWorld} portraitSrc={portraitUrl}
+                onAction={onAction} />
+              <WorkshopShiftPanel world={savedWorld} />
+            </>}
           </aside>
         </section>
 
